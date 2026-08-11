@@ -1,8 +1,8 @@
 # 🛡️ get-fable
 
-**English** | [العربية](#-باللغة-العربية)
+> **Make ANY AI Model work with the performance, intelligence, and process discipline of Anthropic's flagship Claude models (Claude Fable 5 / Mythos Tier).**
 
-> **Make Opus 4.8, Gemini 3.5/3.6, or ANY AI Model work like Claude Fable 5 (Anthropic's Mythos-Class Tier)** — A unified system prompt installer, Fable Mode discipline engine, and mechanical guard hooks for Claude Code, Antigravity / Gemini CLI, Agent Kernel, Cursor, and AI coding agents.
+`get-fable` is a zero-dependency full system that bundles Anthropic's leaked Claude Code & Claude Design system prompts, agents, skills, and components, alongside a model router and mechanical guard hooks to elevate **any** LLM (Claude, Gemini 3.5/3.6, GPT-4o, Ollama, Llama, DeepSeek) into a Fable-grade engineering system.
 
 ```
 output quality = model capability × work discipline
@@ -12,7 +12,7 @@ output quality = model capability × work discipline
 
 ## ⚡ Quickstart
 
-Install Fable 5 System Prompt & Fable Mode globally across all your AI agent platforms with **one command**:
+Install the Fable 5 System Prompt, discipline engine, and mechanical hooks globally across all AI coding environments (**Claude Code**, **Antigravity / Gemini CLI**, **Agent Kernel**, **Cursor**, **OpenCode**):
 
 ```bash
 bunx get-fable install
@@ -20,13 +20,19 @@ bunx get-fable install
 npx get-fable install
 ```
 
-To turn on Fable Mode mechanical discipline in your current project:
+Initialize Fable Mode process discipline (`.fable/LEDGER.md`, `docs/SPEC.md`) in your current project:
 
 ```bash
 bunx get-fable init
 ```
 
-Check installation status and active hooks:
+Start the Mythos Router proxy server to wrap requests for any LLM provider (OpenAI, Gemini, Ollama):
+
+```bash
+bunx get-fable serve 8080
+```
+
+Inspect installation status and active hooks:
 
 ```bash
 bunx get-fable status
@@ -34,58 +40,76 @@ bunx get-fable status
 
 ---
 
-## 🎯 What `get-fable` Does
+## 📦 Bundled Assets & Leaks Engine
 
-1. **Claude Fable 5 System Prompt**: Injects Anthropic's official Mythos-tier intelligence standards, outcome-first reporting, transparent status updates, readable summaries, and high-discipline operating model into your global instructions (`~/.claude/CLAUDE.md`, `~/.gemini/config/rules/fable5-mode.md`, `~/.agent-kernel/rules/`).
-2. **Fable Mode Discipline Engine**:
-   - **Plan Gate**: Requires `SPEC.md` and `.fable/LEDGER.md` with *machine-checkable* acceptance tests before code changes.
-   - **Small-Card Execution**: Runs each task in isolation, advancing only when acceptance commands pass.
-   - **Adversarial Self-Check**: Refutes critical output before shipping.
-   - **Real-Product Verification**: End-to-end execution evidence before marking items complete (`- [x]`).
-   - **Context Hygiene**: External SPEC/PROGRESS memory instead of transcript bloat.
-   - **Checkpoint Autonomy**: Resumable checkpoints for background tasks.
-3. **Mechanical Guard Hooks** (`SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`):
-   - **Profile Injector**: Auto-injects dynamic session context.
-   - **Spawn Guard**: Enforces plan gate before sub-agent spawns & enforces model ceilings.
-   - **Fail-Streak Reminder**: Triggers attribution ladder after 3 consecutive errors.
-   - **Close Guard**: Blocks ending turn if ledger items are unverified or missing `-- evidence:`.
+`get-fable` aggregates and operationalizes 13 primary Anthropic source assets:
+
+| Asset Group | Count | Description |
+|---|---|---|
+| **System Prompts** | 3 Prompts | Official leaked Anthropic System Prompts for Claude Code Fable 5, Claude Design, and Docs Assistant. |
+| **Leaked Agents** | 10 Agents | Specialized agent definitions (`Explore`, `Plan`, `general-purpose`, `claude-code-guide`, `statusline-setup`, `observer`, `worker`, etc.). |
+| **Claude Code Skills** | 30 Skills | Complete set of bundled Claude Code skills (`dataviz`, `artifact-design`, `claude-api`, `simplify`, `security-review`, `schedule`, `loop`, etc.). |
+| **Claude Design Skills** | 22 Skills | Leaked Claude Design skills (`create-design-system`, `make-a-deck`, `3d-object`, `animated-video`, `save-as-pdf`, `hi-fi-design`, etc.). |
+| **Slash Commands** | 9 Commands | Slash command specs (`/goal`, `/compact`, `/recap`, `/session-title`, `/team-onboarding`, etc.). |
+| **Injected Reminders** | 8 Reminders | Dynamic context reminders and safety hooks. |
+| **Starter Components** | 10 Components | Leaked Claude Design JSX/JS components (`deck-stage`, `animations-v2`, `browser-window`, `tweaks-panel`, `macos-window`, `doc-page`). |
+| **Mythos Router** | 1 Proxy | Local HTTP proxy server adapted from `thewaltero/mythos-router` for dynamic model wrapping. |
+
+List all bundled assets anytime:
+
+```bash
+bunx get-fable assets
+```
 
 ---
 
-## 💻 CLI Usage
+## 🏛️ System Architecture
 
-| Command | Action |
-|---|---|
-| `get-fable install` | Installs Fable 5 Mode & System Prompt globally |
-| `get-fable init` | Initializes `.fable/` ledger & `docs/SPEC.md` in project |
-| `get-fable lint` | Lints `.fable/LEDGER.md` and `docs/SPEC.md` |
-| `get-fable status` | Displays system status and registered hooks |
-| `get-fable prompt` | Prints the complete Claude Code Fable 5 System Prompt |
+```
++-----------------------------------------------------------------------------------+
+|                                  get-fable CLI                                    |
++---------------------+-----------------------+----------------------+--------------+
+| Multi-Platform      | Fable Mode Discipline | Mythos Router Proxy  | Asset Vault  |
+| Installer (Claude,  | Engine (Hooks,        | Server (HTTP Proxy,  | (Prompts,    |
+| Gemini, Kernel)     | Spec/Ledger Lint)     | Context Injector)    | Skills, MCP) |
++---------------------+-----------------------+----------------------+--------------+
+```
+
+Detailed architecture specifications are documented in:
+- [docs/ADR-001-fable-supersystem.md](docs/ADR-001-fable-supersystem.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/USAGE.md](docs/USAGE.md)
 
 ---
 
-## 🌐 باللغة العربية
+## 🛠️ Mechanical Guard Hooks
 
-> **اجعل أي موديل ذكاء اصطناعي يعمل بكفاءة Claude Fable 5 (فئة Mythos الأسطورية من Anthropic)** — نظام شامل يثبت السيستم برومبت الرسمي ومهارات وانضباط Fable Mode مع هوكس ميكانيكية لجميع أدوات البرمجة (Claude Code, Antigravity / Gemini CLI, Agent Kernel, Cursor).
+Fable Mode turns process discipline into mechanical blocks via four Python/TS hooks:
 
-### 🚀 التشغيل السريع
+1. **Profile Injector** (`SessionStart`): Auto-injects dynamic project discipline sized to ledger state.
+2. **Spawn Guard** (`PreToolUse`): Enforces the Plan Gate before sub-agents spawn and enforces model capability ceilings.
+3. **Fail-Streak Reminder** (`PostToolUse`): Triggers the **Attribution Ladder** (Harness -> Runtime -> Product -> Class fix) after 3 consecutive errors.
+4. **Close Guard** (`Stop`): Blocks ending the turn if ledger items are unverified or missing `-- evidence:` annotations.
 
-تثبيت السيستم برومبت ونظام الفابل عالمياً ببرومبت واحد:
+---
 
-```bash
-bunx get-fable install
-```
+## 💻 CLI Command Reference
 
-لتفعيل الانضباط والمهمات الميكانيكية في مشروعك الحالي:
+```text
+get-fable v1.1.0 — Fable 5 Mythos System & Multi-Model Upgrade Suite
 
-```bash
-bunx get-fable init
-```
+USAGE:
+  $ bunx get-fable [command]
 
-للتحقق من حالة التثبيت والهوكس الشغالة:
-
-```bash
-bunx get-fable status
+COMMANDS:
+  install   (Default) Installs Fable 5 Mode & System Prompt globally across Claude Code, Antigravity, & Agent Kernel
+  init      Initializes .fable/ ledger, SPEC.md, and VERIFIER templates in the current project
+  serve     Starts the Mythos Router proxy server to wrap any LLM provider (OpenAI, Gemini, Ollama)
+  lint      Verifies .fable/LEDGER.md for acceptance criteria and evidence annotations
+  status    Displays current installation status and registered hooks
+  assets    Lists all bundled Anthropic Claude Code & Design agents, skills, and prompts
+  prompt    Outputs the complete Anthropic Claude Code Fable 5 System Prompt
+  help      Displays the help menu
 ```
 
 ---

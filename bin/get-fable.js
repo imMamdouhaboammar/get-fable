@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 // @bun
 // src/cli.ts
-import fs4 from "fs";
-import path4 from "path";
+import fs5 from "fs";
+import path5 from "path";
 
 // src/installer.ts
 import fs2 from "fs";
@@ -277,6 +277,189 @@ function runFableLint(targetDir = process.cwd()) {
   return !hasErrors;
 }
 
+// src/router/index.ts
+import http from "http";
+
+// src/router/provider-translator.ts
+class ProviderTranslator {
+  static normalizeRequest(body) {
+    if (Array.isArray(body.messages)) {
+      return {
+        model: body.model || "default-fable-model",
+        messages: body.messages.map((m) => ({
+          role: m.role || "user",
+          content: typeof m.content === "string" ? m.content : JSON.stringify(m.content),
+          name: m.name
+        })),
+        temperature: body.temperature,
+        max_tokens: body.max_tokens || body.max_completion_tokens,
+        stream: body.stream || false
+      };
+    }
+    if (Array.isArray(body.contents)) {
+      const messages = [];
+      if (body.systemInstruction) {
+        messages.push({
+          role: "system",
+          content: typeof body.systemInstruction === "string" ? body.systemInstruction : JSON.stringify(body.systemInstruction)
+        });
+      }
+      for (const item of body.contents) {
+        const role = item.role === "model" ? "assistant" : "user";
+        const partsText = (item.parts || []).map((p) => p.text || "").join(`
+`);
+        messages.push({ role, content: partsText });
+      }
+      return {
+        model: body.model || "gemini-fable-wrapper",
+        messages,
+        temperature: body.generationConfig?.temperature,
+        max_tokens: body.generationConfig?.maxOutputTokens,
+        stream: false
+      };
+    }
+    return {
+      model: body.model || "fable-generic",
+      messages: [{ role: "user", content: JSON.stringify(body) }]
+    };
+  }
+  static injectFableSystemPrompt(req, fablePromptText) {
+    const existingSystemIdx = req.messages.findIndex((m) => m.role === "system");
+    if (existingSystemIdx >= 0) {
+      req.messages[existingSystemIdx].content = `${fablePromptText}
+
+--- ORIGINAL SYSTEM INSTRUCTIONS ---
+${req.messages[existingSystemIdx].content}`;
+    } else {
+      req.messages.unshift({
+        role: "system",
+        content: fablePromptText
+      });
+    }
+    return req;
+  }
+}
+
+// src/router/context-injector.ts
+import fs4 from "fs";
+import path4 from "path";
+class ContextInjector {
+  static getFableSystemPrompt() {
+    const repoRoot = getRepoRootDir();
+    const promptPath = path4.join(repoRoot, "assets", "prompts", "claude-code-fable-5.md");
+    const rulesPath = path4.join(repoRoot, "prompts", "fable5-rules.md");
+    let fablePrompt = "";
+    if (fs4.existsSync(rulesPath)) {
+      fablePrompt += fs4.readFileSync(rulesPath, "utf-8") + `
+
+`;
+    }
+    if (fs4.existsSync(promptPath)) {
+      fablePrompt += fs4.readFileSync(promptPath, "utf-8");
+    }
+    return fablePrompt;
+  }
+  static loadSkill(skillName) {
+    const repoRoot = getRepoRootDir();
+    const claudeCodeSkill = path4.join(repoRoot, "assets", "skills", "claude-code", `${skillName}.md`);
+    const claudeDesignSkill = path4.join(repoRoot, "assets", "skills", "claude-design", `${skillName}.md`);
+    if (fs4.existsSync(claudeCodeSkill)) {
+      return fs4.readFileSync(claudeCodeSkill, "utf-8");
+    }
+    if (fs4.existsSync(claudeDesignSkill)) {
+      return fs4.readFileSync(claudeDesignSkill, "utf-8");
+    }
+    return null;
+  }
+  static loadAgent(agentName) {
+    const repoRoot = getRepoRootDir();
+    const agentPath = path4.join(repoRoot, "assets", "agents", `${agentName}.md`);
+    if (fs4.existsSync(agentPath)) {
+      return fs4.readFileSync(agentPath, "utf-8");
+    }
+    return null;
+  }
+}
+
+// src/router/index.ts
+function startMythosRouterServer(port = 8080) {
+  const fablePrompt = ContextInjector.getFableSystemPrompt();
+  const server = http.createServer(async (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+    if (req.url === "/health" || req.url === "/v1/health") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ status: "ok", mode: "Claude Fable 5 Mythos Router", port }));
+      return;
+    }
+    if (req.method === "POST" && (req.url === "/v1/chat/completions" || req.url === "/chat/completions")) {
+      let bodyStr = "";
+      req.on("data", (chunk) => {
+        bodyStr += chunk;
+      });
+      req.on("end", async () => {
+        try {
+          const body = JSON.parse(bodyStr);
+          const normalized = ProviderTranslator.normalizeRequest(body);
+          const enriched = ProviderTranslator.injectFableSystemPrompt(normalized, fablePrompt);
+          logInfo(`[Mythos Router] Wrapped request for model: ${enriched.model} with Fable 5 Mythos System Prompt.`);
+          const targetUpstream = process.env.UPSTREAM_OPENAI_URL;
+          if (targetUpstream) {
+            const upstreamRes = await fetch(targetUpstream, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: req.headers.authorization || ""
+              },
+              body: JSON.stringify(enriched)
+            });
+            const data = await upstreamRes.json();
+            res.writeHead(upstreamRes.status, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(data));
+          } else {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({
+              id: `chatcmpl-fable-${Date.now()}`,
+              object: "chat.completion",
+              created: Math.floor(Date.now() / 1000),
+              model: enriched.model,
+              choices: [
+                {
+                  index: 0,
+                  message: {
+                    role: "assistant",
+                    content: `[Fable 5 Mythos System Router] Enhanced Request for model ${enriched.model} processed successfully with Fable 5 process discipline. Set UPSTREAM_OPENAI_URL to route calls dynamically.`
+                  },
+                  finish_reason: "stop"
+                }
+              ],
+              fableEnriched: true,
+              systemPromptBytes: fablePrompt.length
+            }));
+          }
+        } catch (err) {
+          logError(`Router Error: ${err.message}`);
+          res.writeHead(500, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+      return;
+    }
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Endpoint not found. Use POST /v1/chat/completions" }));
+  });
+  server.listen(port, () => {
+    logSuccess(`\uD83D\uDEE1\uFE0F Fable 5 Mythos Router Server active on http://localhost:${port}`);
+    logInfo(`Post OpenAI-compatible requests to http://localhost:${port}/v1/chat/completions`);
+  });
+}
+
 // src/cli.ts
 function main() {
   const args = process.argv.slice(2);
@@ -299,12 +482,22 @@ function main() {
       logHeader("Fable System Installation Status");
       checkFableStatus();
       break;
+    case "serve":
+    case "router":
+      const port = parseInt(args[1] || "8080", 10);
+      logHeader(`Starting Mythos Router Server on Port ${port}`);
+      startMythosRouterServer(port);
+      break;
+    case "assets":
+      logHeader("Bundled Claude Fable Assets");
+      listAssets();
+      break;
     case "prompt":
       logHeader("Claude Code Fable 5 System Prompt");
       const repoRoot = getRepoRootDir();
-      const promptPath = path4.join(repoRoot, "prompts", "claude-code-fable-5.md");
-      if (fs4.existsSync(promptPath)) {
-        console.log(fs4.readFileSync(promptPath, "utf-8"));
+      const promptPath = path5.join(repoRoot, "prompts", "claude-code-fable-5.md");
+      if (fs5.existsSync(promptPath)) {
+        console.log(fs5.readFileSync(promptPath, "utf-8"));
       } else {
         console.log("Prompt file not found.");
       }
@@ -320,19 +513,37 @@ function main() {
       process.exit(1);
   }
 }
+function listAssets() {
+  const repoRoot = getRepoRootDir();
+  const assetsDir = path5.join(repoRoot, "assets");
+  const countItems = (dir) => {
+    if (!fs5.existsSync(dir))
+      return 0;
+    return fs5.readdirSync(dir).length;
+  };
+  console.log(`${colors.green}\u2714 System Prompts:${colors.reset} ${countItems(path5.join(assetsDir, "prompts"))} files`);
+  console.log(`${colors.green}\u2714 Leaked Agents:${colors.reset} ${countItems(path5.join(assetsDir, "agents"))} agents`);
+  console.log(`${colors.green}\u2714 Claude Code Skills:${colors.reset} ${countItems(path5.join(assetsDir, "skills", "claude-code"))} skills`);
+  console.log(`${colors.green}\u2714 Claude Design Skills:${colors.reset} ${countItems(path5.join(assetsDir, "skills", "claude-design"))} skills`);
+  console.log(`${colors.green}\u2714 Slash Commands:${colors.reset} ${countItems(path5.join(assetsDir, "slash-commands"))} commands`);
+  console.log(`${colors.green}\u2714 Injected Reminders:${colors.reset} ${countItems(path5.join(assetsDir, "injected-reminders"))} reminders`);
+  console.log(`${colors.green}\u2714 Starter Components:${colors.reset} ${countItems(path5.join(assetsDir, "starter-components"))} components`);
+}
 function showHelp() {
   console.log(`
-${colors.bright}${colors.cyan}get-fable v1.0.0${colors.reset} \u2014 Fable 5 Mythos System & Fable Mode Discipline Installer
+${colors.bright}${colors.cyan}get-fable v1.1.0${colors.reset} \u2014 Fable 5 Mythos System & Multi-Model Upgrade Suite
 
 ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}npx get-fable${colors.reset} [command]
   $ ${colors.green}bunx get-fable${colors.reset} [command]
 
 ${colors.bright}COMMANDS:${colors.reset}
-  ${colors.yellow}install${colors.reset}   (Default) Installs Fable 5 Mode & System Prompt globally across Claude Code & Antigravity/Gemini CLI
+  ${colors.yellow}install${colors.reset}   (Default) Installs Fable 5 Mode & System Prompt globally across Claude Code, Antigravity, & Agent Kernel
   ${colors.yellow}init${colors.reset}      Initializes .fable/ ledger, SPEC.md, and VERIFIER templates in the current project
+  ${colors.yellow}serve${colors.reset}     Starts the Mythos Router proxy server to wrap any LLM provider (OpenAI, Gemini, Ollama)
   ${colors.yellow}lint${colors.reset}      Verifies .fable/LEDGER.md for acceptance criteria and evidence annotations
   ${colors.yellow}status${colors.reset}    Displays current installation status and registered hooks
+  ${colors.yellow}assets${colors.reset}    Lists all bundled Anthropic Claude Code & Design agents, skills, and prompts
   ${colors.yellow}prompt${colors.reset}    Outputs the complete Anthropic Claude Code Fable 5 System Prompt
   ${colors.yellow}help${colors.reset}      Displays this help menu
 `);
