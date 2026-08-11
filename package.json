@@ -1,0 +1,34 @@
+{
+  "name": "get-fable",
+  "version": "1.0.0",
+  "description": "Fable 5 Mythos-Tier Agent Upgrade — Installs Claude Fable 5 System Prompt, Fable Mode Discipline, & Mechanical Hooks across Claude Code, Gemini CLI, Cursor, and AI Coding Agents.",
+  "main": "src/index.ts",
+  "bin": {
+    "get-fable": "bin/get-fable.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "bun run bin/get-fable.js",
+    "test": "bun test",
+    "build": "bun build ./src/cli.ts --outfile ./bin/get-fable.js --target bun && echo '#!/usr/bin/env bun' | cat - bin/get-fable.js > bin/get-fable.js.tmp && mv bin/get-fable.js.tmp bin/get-fable.js && chmod +x bin/get-fable.js",
+    "lint": "bun run bin/get-fable.js lint"
+  },
+  "keywords": [
+    "fable5",
+    "claude-code",
+    "fable-mode",
+    "ai-agent",
+    "system-prompt",
+    "antigravity",
+    "gemini-cli",
+    "agent-discipline",
+    "coding-agent"
+  ],
+  "author": "Mamdouh Abo Ammar",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
