@@ -138,7 +138,7 @@ Current checks include
 - Claude lifecycle hook registration count
 - Antigravity / Gemini rule presence
 - Antigravity plugin presence
-- Antigravity hook config presence
+- Antigravity lifecycle hook registration count
 - Agent Kernel rule presence
 - whether the current project has a `.fable` directory
 
@@ -196,6 +196,8 @@ Malformed JSON and unsupported request shapes return `400`
 Unsupported content types return `415`
 
 The default request-body limit is 1 MiB and oversized requests return `413`
+
+Oversized chunked requests stop being consumed once the limit is crossed and the response closes the connection
 
 ### Preview mode
 
