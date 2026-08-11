@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/mascot.svg" alt="get-fable mascot" width="120" height="120"/>
+
 # get-fable
 
 ### The Fable 5 Mythos System for every AI model.
