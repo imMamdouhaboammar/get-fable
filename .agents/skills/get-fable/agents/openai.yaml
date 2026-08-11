@@ -1,0 +1,6 @@
+interface:
+  display_name: "Get Fable"
+  short_description: "Repo-specific patterns and workflows for get-fable"
+  default_prompt: "Use the get-fable repo skill to follow existing architecture, testing, and workflow conventions."
+policy:
+  allow_implicit_invocation: true
