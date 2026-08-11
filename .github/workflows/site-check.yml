@@ -29,5 +29,5 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Run site tests
-        run: bun test site/site.test.ts
+      - name: Run full test suite
+        run: bun test
