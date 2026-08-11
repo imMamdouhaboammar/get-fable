@@ -70,25 +70,24 @@
         </a>
       </div>
 
-      <!-- Interactive Terminal Simulator -->
-      <div class="terminal-wrapper">
-        <div class="terminal-header">
-          <div class="terminal-dots">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
+        <div class="terminal-wrapper" aria-label="Interactive Terminal Simulator">
+          <div class="terminal-header">
+            <div class="terminal-dots" aria-hidden="true">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="terminal-tabs" role="tablist" aria-label="Terminal Commands">
+              <button class="term-tab active" role="tab" aria-selected="true" aria-controls="terminal-body" data-cmd="install">install</button>
+              <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="install-antigravity">antigravity</button>
+              <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="init">init</button>
+              <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="serve">serve</button>
+            </div>
           </div>
-          <div class="terminal-tabs">
-            <button class="term-tab active" data-cmd="install">install</button>
-            <button class="term-tab" data-cmd="install-antigravity">antigravity</button>
-            <button class="term-tab" data-cmd="init">init</button>
-            <button class="term-tab" data-cmd="serve">serve</button>
+          <div class="terminal-body" id="terminal-body" role="tabpanel" aria-live="polite">
+            <!-- Populated by JavaScript -->
           </div>
         </div>
-        <div class="terminal-body" id="terminal-body">
-          <!-- Populated by JavaScript -->
-        </div>
-      </div>
     </div>
   </header>
 
