@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentation — get-fable Mythos System</title>
-  <meta name="description" content="Complete documentation and installation guide for get-fable across Bun, Antigravity, Gemini CLI, OpenAI, and Ollama.">
+  <title>Documentation: get-fable Agent Harness</title>
+  <meta name="description" content="Technical documentation and usage guide for get-fable across Bun, Claude Code, Antigravity, Gemini CLI, and Agent Kernel.">
   <link rel="icon" type="image/svg+xml" href="mascot.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,20 +14,20 @@
   <nav class="navbar">
     <div class="container nav-container">
       <a href="index.html" class="brand">
-        <img src="mascot.svg" alt="get-fable mascot">
+        <img src="mascot.svg" alt="get-fable rabbit mascot">
         <span>get-fable</span>
       </a>
 
       <ul class="nav-links">
-        <li><a href="index.html#models">Models</a></li>
-        <li><a href="index.html#discipline">Discipline Engine</a></li>
-        <li><a href="index.html#skills">Skill Vault</a></li>
+        <li><a href="index.html#thesis">The Thesis</a></li>
+        <li><a href="index.html#changes">What It Changes</a></li>
+        <li><a href="index.html#hooks">Lifecycle Hooks</a></li>
         <li><a href="docs.html" class="active">Documentation</a></li>
       </ul>
 
       <div class="nav-actions">
-        <button class="btn btn-secondary copy-trigger" data-copy="bunx get-fable install">
-          <span>bunx get-fable install</span>
+        <button class="btn btn-secondary copy-trigger" data-copy="bun ./bin/get-fable.js install">
+          <span>bun ./bin/get-fable.js install</span>
         </button>
         <a href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" class="btn btn-primary">
           <span>GitHub</span>
@@ -43,28 +43,29 @@
       <!-- Sidebar Navigation -->
       <aside class="docs-sidebar">
         <div class="docs-nav-group">
-          <div class="docs-nav-title">Getting Started</div>
+          <div class="docs-nav-title">Quickstart</div>
           <ul class="docs-nav-list">
-            <li class="docs-nav-item"><a href="#quickstart" class="active">Quickstart</a></li>
-            <li class="docs-nav-item"><a href="#antigravity">Antigravity / Gemini CLI</a></li>
+            <li class="docs-nav-item"><a href="#requirements" class="active">Requirements</a></li>
+            <li class="docs-nav-item"><a href="#inspect">Inspect Assets</a></li>
             <li class="docs-nav-item"><a href="#init">Project Init</a></li>
+            <li class="docs-nav-item"><a href="#install">Global Install</a></li>
           </ul>
         </div>
 
         <div class="docs-nav-group">
-          <div class="docs-nav-title">Core Engine</div>
+          <div class="docs-nav-title">System Architecture</div>
           <ul class="docs-nav-list">
-            <li class="docs-nav-item"><a href="#router">Mythos Router Proxy</a></li>
-            <li class="docs-nav-item"><a href="#ledger">Ledger & Evidence</a></li>
-            <li class="docs-nav-item"><a href="#hooks">Guard Hooks</a></li>
+            <li class="docs-nav-item"><a href="#workflow">Workflow Behavior</a></li>
+            <li class="docs-nav-item"><a href="#hooks-ref">Hooks Reference</a></li>
+            <li class="docs-nav-item"><a href="#proxy-ref">Request Proxy</a></li>
           </ul>
         </div>
 
         <div class="docs-nav-group">
-          <div class="docs-nav-title">Architecture</div>
+          <div class="docs-nav-title">References</div>
           <ul class="docs-nav-list">
-            <li class="docs-nav-item"><a href="#structure">Directory Structure</a></li>
-            <li class="docs-nav-item"><a href="#licensing">License & Credits</a></li>
+            <li class="docs-nav-item"><a href="#upstream">Upstream References</a></li>
+            <li class="docs-nav-item"><a href="#disclaimer">Disclaimers</a></li>
           </ul>
         </div>
       </aside>
@@ -72,83 +73,123 @@
       <!-- Main Docs Content -->
       <main class="docs-content">
         <h1>get-fable Documentation</h1>
-        <p>The Fable 5 Mythos System brings Anthropic's internal Claude Code process discipline to every AI model and coding agent.</p>
+        <p>This documentation reflects the authoritative structure defined in <code>README.md</code>.</p>
 
-        <!-- Section: Quickstart -->
-        <section id="quickstart">
-          <h2>Quickstart Installation</h2>
-          <p>Install <code style="color: var(--accent-cyan)">get-fable</code> with a single command. The installer automatically detects your active environment and provisions your agent platforms.</p>
-
-          <div class="code-block">
-            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable install">Copy</button>
-            <pre><code style="color: var(--accent-cyan)"># Using Bun (Recommended)</code>
-bunx get-fable install
-
-<code style="color: var(--accent-cyan)"># Using npm</code>
-npx get-fable install</pre>
-          </div>
-        </section>
-
-        <!-- Section: Antigravity -->
-        <section id="antigravity">
-          <h2>Antigravity & Gemini CLI Integration</h2>
-          <p>Installs as a native Antigravity plugin — registering global rules, skills, and mechanical hooks directly in <code style="color: var(--accent-cyan)">~/.gemini/config</code>.</p>
-
-          <div class="code-block">
-            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable install-antigravity">Copy</button>
-            <pre>bunx get-fable install-antigravity</pre>
-          </div>
-          <p>Once installed, start or restart any Antigravity session to automatically load the Fable 5 system prompt and process rules.</p>
-        </section>
-
-        <!-- Section: Project Init -->
-        <section id="init">
-          <h2>Project Initialization</h2>
-          <p>Bootstrap Fable Mode process discipline into any project repository:</p>
-
-          <div class="code-block">
-            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable init">Copy</button>
-            <pre>bunx get-fable init</pre>
-          </div>
-
-          <p>This command creates the following structure in your working directory:</p>
+        <!-- Section: Requirements -->
+        <section id="requirements">
+          <h2>Requirements</h2>
           <ul style="color: var(--text-secondary); margin-left: 24px; margin-bottom: 20px;">
-            <li><code style="color: var(--accent-cyan)">.fable/LEDGER.md</code> — Task tracker with acceptance criteria and evidence fields.</li>
-            <li><code style="color: var(--accent-cyan)">docs/SPEC.md</code> — Project specification template.</li>
-            <li><code style="color: var(--accent-cyan)">.agents/skills/</code> — Custom local skill directory.</li>
-            <li><code style="color: var(--accent-cyan)">.agents/rules/</code> — Project-level enforcement rules.</li>
+            <li>Bun runtime</li>
+            <li>Python 3 for lifecycle hooks</li>
+            <li>Git if cloning from source</li>
           </ul>
         </section>
 
-        <!-- Section: Mythos Router -->
-        <section id="router">
-          <h2>Mythos Router Proxy</h2>
-          <p>Wrap any LLM provider (OpenAI GPT-4o, Ollama, Anthropic) with Fable-grade context injection via a lightweight local proxy server:</p>
+        <!-- Section: Inspect -->
+        <section id="inspect">
+          <h2>Inspect Before Installing</h2>
+          <p>Inspect the installation state and enumerate bundled assets directly from source:</p>
 
           <div class="code-block">
-            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable serve 8080">Copy</button>
-            <pre>bunx get-fable serve 8080</pre>
-          </div>
+            <button class="copy-code-btn copy-trigger" data-copy="bun ./bin/get-fable.js status">Copy</button>
+            <pre>git clone https://github.com/imMamdouhaboammar/get-fable.git
+cd get-fable
 
-          <p>Then configure your agent or client to use <code style="color: var(--accent-cyan)">http://localhost:8080</code> as its Base URL endpoint.</p>
+bun ./bin/get-fable.js status
+bun ./bin/get-fable.js assets</pre>
+          </div>
         </section>
 
-        <!-- Section: Structure -->
-        <section id="structure">
-          <h2>Repository & Asset Vault Structure</h2>
+        <!-- Section: Init -->
+        <section id="init">
+          <h2>Add get-fable to a Project</h2>
+          <p>Initialize Fable discipline inside a single working directory:</p>
+
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="bun /path/to/get-fable/bin/get-fable.js init">Copy</button>
+            <pre>bun /path/to/get-fable/bin/get-fable.js init</pre>
+          </div>
+
+          <p>Creates the following files without overwriting existing files:</p>
           <div class="code-block">
             <pre style="color: #a5b4fc;">
-get-fable/
-├── assets/
-├── agents/         # 10 specialized agent definitions
-├── skills/         # 51 leaked production skills
-├── prompts/        # 3 Fable 5 core system prompts
-├── hooks/          # 4 mechanical guard hooks
-├── bin/            # Executable CLI bundle
-├── src/            # TypeScript source code
-└── public/         # Modern web application assets
+.fable/
+  LEDGER.md
+  PROGRESS.md
+  VERIFIER_PROMPT.md
+
+.agents/
+  skills/fable-mode/SKILL.md
+  rules/fable5-mode.md
+
+docs/
+  SPEC.md
             </pre>
           </div>
+        </section>
+
+        <!-- Section: Install -->
+        <section id="install">
+          <h2>Global Integration Install</h2>
+          <p>Install global integrations across detected agent environments:</p>
+
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="bun ./bin/get-fable.js install">Copy</button>
+            <pre>bun ./bin/get-fable.js install</pre>
+          </div>
+
+          <p>Writes to the following locations:</p>
+          <ul style="color: var(--text-secondary); margin-left: 24px; margin-bottom: 20px;">
+            <li><code>~/.claude/</code>: Installs Fable Mode skill and 4 lifecycle hooks.</li>
+            <li><code>~/.gemini/config/</code>: Installs Antigravity plugin package, skill files, and rules.</li>
+            <li><code>~/.agent-kernel/</code>: Copies Fable rules when directory exists.</li>
+          </ul>
+        </section>
+
+        <!-- Section: Workflow -->
+        <section id="workflow">
+          <h2>Workflow Behavior</h2>
+          <ol style="color: var(--text-secondary); margin-left: 24px; margin-bottom: 20px; line-height: 1.8;">
+            <li style="margin-bottom: 8px;"><strong>Define work:</strong> <code>docs/SPEC.md</code> captures goals, tasks, acceptance checks, and decisions.</li>
+            <li style="margin-bottom: 8px;"><strong>Keep state visible:</strong> <code>.fable/LEDGER.md</code> tracks task state outside chat context.</li>
+            <li style="margin-bottom: 8px;"><strong>Gate transitions:</strong> Hooks intervene at session start, tool use, command failures, and turn close.</li>
+            <li style="margin-bottom: 8px;"><strong>Handle failures:</strong> The fail-streak hook shifts execution away from blind retries toward root cause analysis.</li>
+            <li style="margin-bottom: 8px;"><strong>Close with evidence:</strong> The close guard verifies ledger completion and evidence annotations before close.</li>
+          </ol>
+        </section>
+
+        <!-- Section: Hooks Reference -->
+        <section id="hooks-ref">
+          <h2>Lifecycle Hooks</h2>
+          <p>Plain Python scripts located in <code>hooks/</code>:</p>
+          <ul style="color: var(--text-secondary); margin-left: 24px; margin-bottom: 20px;">
+            <li><code>SessionStart</code>: <code>fable_profile_inject.py</code></li>
+            <li><code>PreToolUse</code>: <code>fable_spawn_guard.py</code></li>
+            <li><code>PostToolUse</code>: <code>fable_fail_streak.py</code></li>
+            <li><code>Stop</code>: <code>fable_close_guard.py</code></li>
+          </ul>
+        </section>
+
+        <!-- Section: Proxy Reference -->
+        <section id="proxy-ref">
+          <h2>Request Proxy Server</h2>
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="export UPSTREAM_OPENAI_URL='https://your-provider.example/v1/chat/completions' && bun ./bin/get-fable.js serve 8080">Copy</button>
+            <pre>export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
+bun ./bin/get-fable.js serve 8080</pre>
+          </div>
+          <p>Without <code>UPSTREAM_OPENAI_URL</code>, the server returns an enrichment preview instead of calling an upstream provider.</p>
+        </section>
+
+        <!-- Section: Upstream & Disclaimer -->
+        <section id="upstream">
+          <h2>Upstream References & Licensing</h2>
+          <p>Known community references:</p>
+          <ul style="color: var(--text-secondary); margin-left: 24px; margin-bottom: 20px;">
+            <li><a href="https://github.com/cozytab/fable5-mode" target="_blank" style="color: var(--accent-cyan);">cozytab/fable5-mode</a> (MIT)</li>
+            <li><a href="https://github.com/thewaltero/mythos-router" target="_blank" style="color: var(--accent-cyan);">thewaltero/mythos-router</a> (MIT)</li>
+            <li><a href="https://github.com/asgeirtj/system_prompts_leaks" target="_blank" style="color: var(--accent-cyan);">asgeirtj/system_prompts_leaks</a> (CC0 1.0)</li>
+          </ul>
         </section>
 
       </main>
@@ -159,11 +200,11 @@ get-fable/
   <footer>
     <div class="container footer-content">
       <div class="brand">
-        <img src="mascot.svg" alt="get-fable mascot">
+        <img src="mascot.svg" alt="get-fable rabbit mascot">
         <span>get-fable</span>
       </div>
       <div class="footer-text">
-        Released under the MIT License • Built with Bun & TypeScript
+        MIT License • Built with Bun & TypeScript
       </div>
     </div>
   </footer>
