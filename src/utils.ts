@@ -69,14 +69,16 @@ export function atomicWriteFileSync(filePath: string, content: string) {
   const dir = path.dirname(filePath);
   fs.mkdirSync(dir, { recursive: true });
 
+  const mode = fs.existsSync(filePath) ? fs.statSync(filePath).mode & 0o777 : 0o600;
   const tempPath = path.join(
     dir,
     `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`
   );
 
   try {
-    fs.writeFileSync(tempPath, content, 'utf-8');
+    fs.writeFileSync(tempPath, content, { encoding: 'utf-8', mode });
     fs.renameSync(tempPath, filePath);
+    fs.chmodSync(filePath, mode);
   } catch (error) {
     try {
       if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);

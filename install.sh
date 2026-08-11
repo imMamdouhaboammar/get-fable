@@ -35,4 +35,8 @@ echo "Running the get-fable global installer..."
 bun "$REPO_DIR/bin/get-fable.js" install
 
 echo "Installation complete"
-echo "Run 'bun $REPO_DIR/bin/get-fable.js status' to inspect the configured targets"
+if [[ -z "$TEMP_DIR" ]]; then
+  echo "Run 'bun $REPO_DIR/bin/get-fable.js status' to inspect the configured targets"
+else
+  echo "Run the status command from a get-fable checkout to inspect the configured targets"
+fi

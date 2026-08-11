@@ -53,4 +53,27 @@ describe('mergeJsonFile', () => {
 
     expect(() => mergeJsonFile(file, (existing) => existing)).toThrow('root value must be a JSON object');
   });
+
+  test('preserves existing file permissions on POSIX systems', () => {
+    if (process.platform === 'win32') return;
+
+    const dir = makeTempDir();
+    const file = path.join(dir, 'settings.json');
+    fs.writeFileSync(file, '{"enabled":false}\n', { mode: 0o640 });
+
+    mergeJsonFile(file, (existing) => ({ ...existing, enabled: true }));
+
+    expect(fs.statSync(file).mode & 0o777).toBe(0o640);
+  });
+
+  test('creates new configuration files with owner-only permissions on POSIX systems', () => {
+    if (process.platform === 'win32') return;
+
+    const dir = makeTempDir();
+    const file = path.join(dir, 'settings.json');
+
+    mergeJsonFile(file, () => ({ enabled: true }));
+
+    expect(fs.statSync(file).mode & 0o777).toBe(0o600);
+  });
 });
