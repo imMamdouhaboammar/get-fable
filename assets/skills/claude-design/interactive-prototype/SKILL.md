@@ -1,6 +1,6 @@
 ---
 name: interactive-prototype
-description: Interactive prototype
+description: Use when building clickable, interactive web prototypes for user feedback and testing
 ---
 
 # Interactive prototype

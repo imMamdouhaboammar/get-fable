@@ -1,6 +1,6 @@
 ---
 name: debug
-description: Debug an issue in the current Claude Code session by enabling debug logging, reading logs, and suggesting fixes.
+description: Use when diagnosing software errors, test failures, or unexpected runtime behavior
 ---
 
 # Debug Skill

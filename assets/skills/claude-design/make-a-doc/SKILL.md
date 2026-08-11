@@ -1,6 +1,6 @@
 ---
 name: make-a-doc
-description: Make a doc
+description: Use when formatting technical documentation, whitepapers, or long-form reports
 ---
 
 # Make a doc

@@ -1,6 +1,6 @@
 ---
 name: simplify
-description: Review the changed code for reuse, simplification, efficiency, and altitude cleanups, then apply the fixes.
+description: Use when refactoring, simplifying, or cleaning up existing code implementations
 ---
 
 `/simplify → 4 cleanup agents in parallel → apply the fixes`

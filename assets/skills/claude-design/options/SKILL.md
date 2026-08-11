@@ -1,6 +1,6 @@
 ---
 name: options
-description: Options
+description: Use when presenting structured design variations or implementation options for user review
 ---
 
 # Options

@@ -1,6 +1,6 @@
 ---
 name: save-as-standalone-html
-description: Save as standalone HTML
+description: Use when bundling web applications into single-file self-contained HTML assets
 ---
 
 # Save as standalone HTML

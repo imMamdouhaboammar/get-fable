@@ -1,6 +1,6 @@
 ---
 name: animated-video
-description: Animated video
+description: Use when creating animated product launch videos, GSAP timelines, or visual motion assets
 ---
 
 # Animated video

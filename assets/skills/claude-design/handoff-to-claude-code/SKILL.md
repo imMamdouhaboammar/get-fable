@@ -1,6 +1,6 @@
 ---
 name: handoff-to-claude-code
-description: Handoff to Claude Code
+description: Use when transferring interactive design prototypes into production code implementations
 ---
 
 # Handoff to Claude Code

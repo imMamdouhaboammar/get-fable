@@ -1,6 +1,6 @@
 ---
 name: memory-types
-description: Full reference for the memory type taxonomy — what each type captures, when to save it, how to structure the body, with examples.
+description: Use when managing persistent project memory, facts, and developer context
 ---
 
 ## Types of memory

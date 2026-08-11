@@ -1,6 +1,6 @@
 ---
 name: init
-description: Please analyze this codebase and create a CLAUDE.md file, which will be given to future instances of Claude Code to operate in this repository.
+description: Use when initializing project documentation, CLAUDE.md guidelines, or workspace rules
 ---
 
 Please analyze this codebase and create a CLAUDE.md file, which will be given to future instances of Claude Code to operate in this repository.

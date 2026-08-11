@@ -1,6 +1,6 @@
 ---
 name: web-research
-description: Web research
+description: Use when searching the web for modern documentation, APIs, and technical references
 ---
 
 # Web research

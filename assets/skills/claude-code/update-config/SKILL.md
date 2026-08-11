@@ -1,6 +1,6 @@
 ---
 name: update-config
-description: Update Config Skill
+description: Use when updating settings.json, environment variables, or CLI tool permissions
 ---
 
 # Update Config Skill

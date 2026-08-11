@@ -1,3 +1,8 @@
+---
+name: code-walkthrough
+description: Use when guiding a developer through unfamiliar codebases via step-by-step walkthroughs
+---
+
 ---  
 name: code-walkthrough  
 description: Generate an interactive walkthrough artifact explaining code in this project — expandable sections, annotated snippets, and "why this matters" callouts, pitched at someone seeing the code for the first time.  

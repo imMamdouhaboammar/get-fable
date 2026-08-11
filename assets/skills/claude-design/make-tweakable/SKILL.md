@@ -1,6 +1,6 @@
 ---
 name: make-tweakable
-description: Make tweakable
+description: Use when adding interactive parameter control sliders and tweak panels to web apps
 ---
 
 # Make tweakable

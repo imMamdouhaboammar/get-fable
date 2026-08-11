@@ -1,6 +1,6 @@
 ---
 name: claude-api-in-prototypes
-description: Claude API in prototypes
+description: Use when integrating Gemini or Claude API endpoints directly into interactive web prototypes
 ---
 
 # Claude API in prototypes

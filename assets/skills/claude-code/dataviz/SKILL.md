@@ -1,19 +1,6 @@
 ---
-name: Data Visualization
-description: >
-  Produce a chart, graph, dashboard, or any data visualization that reads as one
-  system — elegant, accessible, and consistent in light and dark — BRAND-NEUTRAL,
-  shipping a placeholder palette to swap for your own. Read this BEFORE generating
-  ANY chart (bar, line, area, heatmap, scatter,
-  sparkline, donut), choosing chart colors, building a stat tile / meter / KPI row,
-  or laying out a dashboard. Teaches a design-system-AGNOSTIC method: a form
-  heuristic, a color formula with a runnable validator, mark specs, and interaction
-  rules. The method is invariant; a design system plugs in its own ramps and
-  surfaces. A validated default palette is documented in `references/palette.md`
-  — swap that file's values for your brand's. Triggers on: "chart", "graph", "plot", "data viz", "dashboard",
-  "analytics", "visualize data", "categorical colors", "sequential / diverging
-  palette", "stat tile", "sparkline", "heatmap", "legend", "axis", "tooltip",
-  "chart colors", "color by series".
+name: dataviz
+description: Use when creating data visualizations, charts, graphs, stat tiles, or analytics dashboards
 ---
 
 # Data Visualization

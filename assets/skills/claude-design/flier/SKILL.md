@@ -1,6 +1,6 @@
 ---
 name: flier
-description: Flier
+description: Use when designing marketing fliers, single-page promotional posters, or social media cards
 ---
 
 # Flier

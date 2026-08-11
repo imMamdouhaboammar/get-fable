@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Complete a security review of the pending changes on the current branch.
+description: Use when auditing code for security vulnerabilities, OWASP flaws, and secret leaks
 ---
 
 You are a senior security engineer conducting a focused security review of the changes on this branch.

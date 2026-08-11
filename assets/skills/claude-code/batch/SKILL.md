@@ -1,6 +1,6 @@
 ---
 name: batch
-description: Orchestrate a large, parallelizable change across the codebase by decomposing it into independent units and spawning parallel worker agents in isolated worktrees.
+description: Use when executing multi-file batch operations or bulk code updates
 ---
 
 # Batch: Parallel Work Orchestration

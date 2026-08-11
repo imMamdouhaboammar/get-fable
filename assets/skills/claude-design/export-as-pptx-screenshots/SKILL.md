@@ -1,6 +1,6 @@
 ---
 name: export-as-pptx-screenshots
-description: Export as PPTX (screenshots)
+description: Use when exporting HTML slides into high-resolution PowerPoint screenshot decks
 ---
 
 # Export as PPTX (screenshots)

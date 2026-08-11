@@ -1,6 +1,6 @@
 ---
 name: 3d-object
-description: 3D object
+description: Use when modeling 3D objects, interactive scenes, or inspection models with Three.js
 ---
 
 # 3D object

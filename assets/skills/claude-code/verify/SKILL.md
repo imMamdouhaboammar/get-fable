@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Verify that a code change actually does what it's supposed to by exercising it end-to-end and observing behavior — drive the affected flow, not just tests or typecheck. Run before committing nontrivial changes; bootstraps this repo's project verify skill if none exists yet. Don't invoke it on a diff that only touches tests, docs, or other code with no runtime surface to drive (a change to product source always has one) — there's nothing to observe.
+description: Use when running automated tests, manual verification scripts, and acceptance gates
 ---
 
 **Verification is runtime observation.** You build the app, run it,

@@ -1,6 +1,6 @@
 ---
 name: make-a-deck
-description: Make a deck
+description: Use when building 16:9 presentation slide decks, visual storyboards, or pitch decks
 ---
 
 # Make a deck

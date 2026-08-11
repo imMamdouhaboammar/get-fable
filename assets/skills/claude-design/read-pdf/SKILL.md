@@ -1,6 +1,6 @@
 ---
 name: read-pdf
-description: Read PDF
+description: Use when extracting text, tables, or content from PDF documents
 ---
 
 # Read PDF

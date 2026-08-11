@@ -1,6 +1,6 @@
 ---
 name: hi-fi-design
-description: Hi-fi design
+description: Use when polishing UI mockups into pixel-perfect, high-fidelity production interfaces
 ---
 
 # Hi-fi design

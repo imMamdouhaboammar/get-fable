@@ -1,6 +1,6 @@
 ---
 name: claude-code-docs
-description: Answer questions about Claude Code features and settings
+description: Use when consulting official Claude Code documentation, CLI flags, settings, or integrations
 ---
 
 # Claude Code Configuration Guide

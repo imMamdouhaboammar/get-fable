@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Frontend design
+description: Use when implementing responsive, aesthetically rich frontend user interfaces and CSS layouts
 ---
 
 # Frontend design

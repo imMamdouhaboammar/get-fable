@@ -1,3 +1,8 @@
+---
+name: pr-explainer
+description: Use when writing pull request descriptions, release notes, or summary diffs
+---
+
 ---  
 name: pr-explainer  
 description: Generate a shareable walkthrough artifact for a pull request — what changed, why, and a reviewer-oriented before/after narrative.  

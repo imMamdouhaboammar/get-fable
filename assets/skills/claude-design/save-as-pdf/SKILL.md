@@ -1,6 +1,6 @@
 ---
 name: save-as-pdf
-description: Save as PDF
+description: Use when rendering HTML pages or documents into crisp PDF files
 ---
 
 # Save as PDF

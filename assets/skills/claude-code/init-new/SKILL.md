@@ -1,6 +1,6 @@
 ---
-name: init
-description: Initialize a new CLAUDE.md file with codebase documentation.
+name: init-new
+description: Use when setting up brand new repositories with modern project scaffolds and configurations
 ---
 
 Set up a minimal CLAUDE.md (and optionally skills and hooks) for this repo. CLAUDE.md is loaded into every Claude Code session, so it must be concise — only include what Claude would get wrong without it.

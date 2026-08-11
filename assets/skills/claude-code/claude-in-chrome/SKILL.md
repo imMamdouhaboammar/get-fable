@@ -1,6 +1,6 @@
 ---
 name: claude-in-chrome
-description: Let Claude browse and interact with pages in your Chrome
+description: Use when automating web browsing, page interactions, or DevTools via Chrome browser
 ---
 
 # Claude in Chrome browser automation

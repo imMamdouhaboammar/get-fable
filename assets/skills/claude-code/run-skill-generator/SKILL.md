@@ -1,6 +1,6 @@
 ---
 name: run-skill-generator
-description: Author or improve the run-<unit> skill — a per-project skill that tells agents how to build, launch, and drive this project's app. Use when the user asks to set up the project, get it running, write run instructions, or verify build/run steps work from a clean environment.
+description: Use when generating new skills from templates and TDD guidelines
 ---
 
 Your job is to produce a **skill** at `<unit>/.claude/skills/run-<unit-name>/`

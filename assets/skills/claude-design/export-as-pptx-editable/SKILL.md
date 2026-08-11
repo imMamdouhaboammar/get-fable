@@ -1,6 +1,6 @@
 ---
 name: export-as-pptx-editable
-description: Export as PPTX (editable)
+description: Use when exporting HTML presentation decks into editable native PowerPoint PPTX files
 ---
 
 # Export as PPTX (editable)

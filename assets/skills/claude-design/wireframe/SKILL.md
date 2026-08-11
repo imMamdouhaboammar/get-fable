@@ -1,6 +1,6 @@
 ---
 name: wireframe
-description: Wireframe
+description: Use when sketching low-fidelity layout wireframes and structural UI concepts
 ---
 
 # Wireframe

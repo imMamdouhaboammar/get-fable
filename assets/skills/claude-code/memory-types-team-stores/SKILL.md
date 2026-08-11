@@ -1,6 +1,6 @@
 ---
-name: memory-types
-description: Full reference for the memory type taxonomy — what each type captures, when to save it, how to structure the body, with examples.
+name: memory-types-team-stores
+description: Use when configuring shared team memory stores and knowledge graphs
 ---
 
 ## Types of memory

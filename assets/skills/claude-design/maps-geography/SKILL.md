@@ -1,6 +1,6 @@
 ---
 name: maps-geography
-description: Maps & geography
+description: Use when embedding interactive maps, geospatial charts, or Leaflet/Mapbox visualizations
 ---
 
 # Maps & geography

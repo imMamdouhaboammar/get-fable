@@ -1,3 +1,8 @@
+---
+name: morning
+description: Use when performing daily status check-ins, PR reviews, and morning workflow routines
+---
+
 ---  
 name: morning  
 description: "Render the user's morning brief as a styled HTML artifact, or set it up as a recurring weekday task. Use when: morning brief, daily brief, set up my morning brief, what's my day look like, run my brief."

@@ -1,6 +1,6 @@
 ---
 name: html-email
-description: HTML email
+description: Use when crafting responsive, cross-client HTML email templates and newsletters
 ---
 
 # HTML email

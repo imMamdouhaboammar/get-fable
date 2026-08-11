@@ -1,6 +1,6 @@
 ---
 name: create-design-system
-description: Create design system
+description: Use when building consistent design systems, visual tokens, components, and CSS foundations
 ---
 
 # Create design system
