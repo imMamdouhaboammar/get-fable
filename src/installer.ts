@@ -239,6 +239,34 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }
 
+function countAntigravityHookRegistrations(hooksJsonPath: string): number {
+  if (!fs.existsSync(hooksJsonPath)) return 0;
+
+  try {
+    const config = JSON.parse(fs.readFileSync(hooksJsonPath, 'utf-8'));
+    const hooks = Array.isArray(config.hooks) ? config.hooks : [];
+    const expected = [
+      { name: 'fable5-profile-inject', file: 'fable_profile_inject.py' },
+      { name: 'fable5-spawn-guard', file: 'fable_spawn_guard.py' },
+      { name: 'fable5-fail-streak', file: 'fable_fail_streak.py' },
+      { name: 'fable5-close-guard', file: 'fable_close_guard.py' },
+    ];
+
+    return expected.filter(({ name, file }) =>
+      hooks.some(
+        (hook: any) =>
+          hook?.name === name &&
+          typeof hook?.command === 'string' &&
+          hook.command.includes(file)
+      )
+    ).length;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    logWarn(`Antigravity hooks.json is not valid JSON: ${reason}`);
+    return 0;
+  }
+}
+
 export function checkFableStatus() {
   const claudeDir = getClaudeDir();
   const fableSkillDir = path.join(claudeDir, 'skills', 'fable-mode');
@@ -274,9 +302,10 @@ export function checkFableStatus() {
   const geminiRule = path.join(geminiConfig, 'rules', 'fable5-mode.md');
   const geminiPlugin = path.join(geminiConfig, 'plugins', 'get-fable', 'plugin.json');
   const geminiHooks = path.join(geminiConfig, 'hooks.json');
+  const antigravityHooksCount = countAntigravityHookRegistrations(geminiHooks);
   console.log(`Antigravity/Gemini Rule Installed: ${fs.existsSync(geminiRule) ? 'YES' : 'NO'}`);
   console.log(`Antigravity Plugin Installed: ${fs.existsSync(geminiPlugin) ? 'YES' : 'NO'}`);
-  console.log(`Antigravity Hooks Configured: ${fs.existsSync(geminiHooks) ? 'YES' : 'NO'}`);
+  console.log(`Antigravity Registered Hooks: ${antigravityHooksCount} / 4`);
 
   const kernelDir = getAgentKernelDir();
   const kernelRule = path.join(kernelDir, 'rules', 'fable5-mode.md');
