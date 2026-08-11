@@ -4,9 +4,9 @@
 
 # get-fable
 
-### Process discipline for AI coding agents
+### What if the model you already use could work more like a frontier model?
 
-Plan before code, keep work visible, and require evidence before calling a task done
+That question started this project
 
 <br/>
 
@@ -16,30 +16,57 @@ Plan before code, keep work visible, and require evidence before calling a task 
 
 </div>
 
-`get-fable` packages a practical set of controls for agentic coding work: project specs, a task ledger, verification hooks, reusable skills, agent definitions, and an OpenAI-compatible request-enrichment proxy
+## The question behind get-fable
 
-The point is not to make one model pretend to be another
+Why do everyday models fall apart on work that frontier models handle more reliably?
 
-The point is to make execution easier to inspect, repeat, and verify
+Raw model capability is part of the answer, but it is not the whole answer
+
+A strong agent experience also depends on what happens around the model: how the task is framed, what context survives between turns, when implementation is allowed to start, how failures are handled, which skills are available, and what counts as proof that the work is actually finished
+
+That led to a more useful question
+
+> **How much of frontier-style execution can we bring to the models and coding agents we already use, without changing the model itself?**
+
+`get-fable` is an open-source attempt to answer that question in code
+
+It gives AI coding agents a stricter working environment built around specs, persistent task state, lifecycle hooks, reusable skills, failure handling, evidence checks, and a request-enrichment proxy
+
+The project is inspired by the execution patterns around modern frontier agents and models, including public references such as [Claude Fable 5 / Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) and [GPT-5.6 Sol](https://openai.com/index/gpt-5-6/)
+
+The goal is not to claim that a smaller model becomes one of those models
+
+The goal is to improve the part we can actually change: **the harness around the model**
+
+## The thesis
+
+A model does not work alone
+
+Give the same model a vague prompt, no durable task state, weak tool rules, and no verification requirement, and long-running work becomes fragile fast
+
+Give it a clearer operating environment and the behavior can change substantially, even though the weights stay exactly the same
+
+`get-fable` focuses on six practical areas
+
+1. **Plan before implementation**
+2. **Keep task state outside the chat**
+3. **Carry working rules across turns**
+4. **React differently when failures repeat**
+5. **Make useful skills and agent instructions reusable**
+6. **Require observable evidence before calling work complete**
+
+This is the bet behind the repository
+
+Not that every model has the same intelligence
+
+That better execution discipline can make the model you already have more dependable on real work
 
 > [!IMPORTANT]
-> `get-fable` is an independent community project and is not affiliated with, endorsed by, or sponsored by Anthropic, Google, OpenAI, Cursor, or the maintainers of referenced upstream projects
+> `get-fable` does not modify model weights and does not claim model equivalence with Claude Fable 5, Claude Mythos 5, GPT-5.6 Sol, or any other frontier model
 >
-> Names such as `Fable 5` and `Mythos` are retained where they identify upstream community projects, source files, or compatibility conventions in this repository. They are not presented here as official Anthropic model names, product tiers, or claims of model equivalence
+> References to model and company names are descriptive only. `get-fable` is an independent community project and is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI, Google, Cursor, or the maintainers of referenced upstream projects
 
-## Why this exists
-
-Strong models still fail in ordinary ways
-
-- implementation starts before the requirement is settled
-- long tasks lose decisions between turns
-- repeated failures produce more retries instead of a diagnosis
-- work is marked complete without a test, artifact, or observable result
-- useful prompts and agent instructions remain scattered across machines and tools
-
-`get-fable` moves those checks into files, hooks, and commands that can be inspected like the rest of a codebase
-
-## What it actually does
+## What get-fable changes
 
 | Area | Current behavior |
 |---|---|
@@ -49,11 +76,11 @@ Strong models still fail in ordinary ways
 | **Agent Kernel** | Copies the Fable rules when `~/.agent-kernel` already exists |
 | **Asset library** | Organizes prompts, agent definitions, skills, slash-command references, reminders, MCP references, and starter components |
 | **Request proxy** | Accepts an OpenAI-style chat endpoint, normalizes supported request shapes, injects context, and can forward to one configured upstream URL |
-| **Inspection** | Reports installation state and enumerates the bundled assets from the repository itself |
+| **Inspection** | Reports installation state and enumerates bundled assets directly from the repository |
 
-No README table is treated as the source of truth for asset counts
+The README does not hard-code asset totals as a marketing claim
 
-Run this whenever you want the current repository counts
+Use the repository itself as the source of truth
 
 ```bash
 bun ./bin/get-fable.js assets
@@ -67,7 +94,7 @@ bun ./bin/get-fable.js assets
 - Python 3 for the lifecycle hooks
 - Git if you clone the repository from source
 
-### Inspect first
+### Inspect before installing
 
 ```bash
 git clone https://github.com/imMamdouhaboammar/get-fable.git
@@ -77,7 +104,7 @@ bun ./bin/get-fable.js status
 bun ./bin/get-fable.js assets
 ```
 
-### Add the workflow to one project
+### Add get-fable to one project
 
 From the project you want to prepare
 
@@ -119,25 +146,23 @@ The global installer currently writes to
 
 Review those locations before running a global install on a machine with important custom agent configuration
 
-## The workflow
-
-The repository follows a simple idea: important agent behavior should leave evidence outside the conversation
+## How the workflow behaves
 
 ### 1. Define the work
 
 `docs/SPEC.md` captures the goal, approach, task cards, acceptance checks, dependencies, and decisions
 
-### 2. Track execution
+### 2. Keep execution state visible
 
-`.fable/LEDGER.md` keeps tasks and evidence visible across turns instead of relying on chat history alone
+`.fable/LEDGER.md` keeps tasks and evidence outside the conversation, so a long job does not depend entirely on chat history
 
-### 3. Gate risky transitions
+### 3. Gate important transitions
 
 The hooks can intervene at session start, before selected tool calls, after repeated command failures, and before the agent closes the turn
 
-### 4. Diagnose repeated failure
+### 4. Treat repeated failure as a different problem
 
-The fail-streak hook changes the question from "try again" to "what class of problem is failing"
+The fail-streak hook shifts behavior away from blind retries and toward identifying what class of failure is actually happening
 
 ### 5. Close with evidence
 
@@ -182,17 +207,17 @@ Without `UPSTREAM_OPENAI_URL`, the server returns an enrichment preview instead 
 > [!WARNING]
 > The router is a development utility, not a hardened public gateway. The current implementation uses permissive CORS and does not provide its own authentication or authorization boundary. Do not expose it to an untrusted network without your own access controls
 
-## Compatibility, without pretending everything is automatic
+## Compatibility without fake universality
 
 Automatic configuration currently exists for Claude Code, the repository's Antigravity / Gemini config target, and Agent Kernel when present
 
-Other coding agents can still reuse project files, skills, rules, or the request proxy where their formats are compatible, but this repository does not claim that every IDE, provider, or model is automatically configured by the installer
+Other coding agents can reuse project files, skills, rules, or the request proxy where their formats are compatible, but this repository does not claim that every IDE, provider, or model is automatically configured by the installer
 
-That distinction is intentional
+That distinction matters
 
-## Included material
+## Where the Fable name comes from
 
-The repository contains both original project code and material adapted or collected from public upstream repositories
+`get-fable` grew from public community work around Fable Mode, Mythos routing, agent prompts, and reusable coding-agent skills
 
 Known upstream references include
 
@@ -200,7 +225,17 @@ Known upstream references include
 - [`thewaltero/mythos-router`](https://github.com/thewaltero/mythos-router), MIT
 - [`asgeirtj/system_prompts_leaks`](https://github.com/asgeirtj/system_prompts_leaks), CC0 1.0 at the referenced repository
 
-See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for the project attribution and licensing notes
+See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for attribution and licensing notes
+
+## What this project does not promise
+
+`get-fable` does not reproduce a proprietary model, a private service, hidden reasoning, or a vendor's internal infrastructure
+
+It does not guarantee correctness, eliminate hallucinations, or make a lightweight model equal to a frontier model
+
+It changes the working conditions around the model: planning, state, context, skills, failure handling, and verification
+
+That is a narrower claim, but it is also one we can inspect and test
 
 ## Documentation
 
@@ -208,14 +243,6 @@ See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for the project attribu
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Architecture decision record](./docs/ADR-001-fable-supersystem.md)
 - [Third-party notices](./THIRD_PARTY_NOTICES.md)
-
-## Scope and non-goals
-
-`get-fable` does not claim to reproduce a proprietary model, private service, hidden reasoning process, or official vendor product tier
-
-It also does not claim that process controls can guarantee correctness or eliminate hallucinations
-
-What it can do is make requirements, state, failure handling, and verification more explicit around the model you already use
 
 ## License
 
@@ -225,6 +252,6 @@ Third-party material remains subject to its applicable source terms and rights, 
 
 <div align="center">
 
-Built for people who want agent work they can inspect, not just impressive terminal output
+**The model matters. The way you make it work matters too.**
 
 </div>
