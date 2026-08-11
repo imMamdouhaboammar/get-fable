@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-// Terminal formatting colors
 export const colors = {
   reset: '\x1b[0m',
   bright: '\x1b[1m',
@@ -28,7 +27,7 @@ export function logWarn(msg: string) {
 }
 
 export function logError(msg: string) {
-  console.log(`${colors.red}✖ ${msg}${colors.reset}`);
+  console.error(`${colors.red}✖ ${msg}${colors.reset}`);
 }
 
 export function logHeader(msg: string) {
@@ -36,18 +35,15 @@ export function logHeader(msg: string) {
 }
 
 export function getClaudeDir(): string {
-  if (process.env.CLAUDE_CONFIG_DIR) {
-    return process.env.CLAUDE_CONFIG_DIR;
-  }
-  return path.join(os.homedir(), '.claude');
+  return process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
 }
 
 export function getGeminiConfigDir(): string {
-  return path.join(os.homedir(), '.gemini', 'config');
+  return process.env.FABLE_GEMINI_CONFIG_DIR || path.join(os.homedir(), '.gemini', 'config');
 }
 
 export function getAgentKernelDir(): string {
-  return path.join(os.homedir(), '.agent-kernel');
+  return process.env.FABLE_AGENT_KERNEL_DIR || path.join(os.homedir(), '.agent-kernel');
 }
 
 export function copyDirSync(src: string, dest: string) {
@@ -60,23 +56,59 @@ export function copyDirSync(src: string, dest: string) {
 
     if (entry.isDirectory()) {
       copyDirSync(srcPath, destPath);
-    } else {
+      continue;
+    }
+
+    if (entry.isFile()) {
       fs.copyFileSync(srcPath, destPath);
     }
   }
 }
 
-export function mergeJsonFile(filePath: string, updater: (existing: any) => any) {
-  let existing: any = {};
-  if (fs.existsSync(filePath)) {
+export function atomicWriteFileSync(filePath: string, content: string) {
+  const dir = path.dirname(filePath);
+  fs.mkdirSync(dir, { recursive: true });
+
+  const tempPath = path.join(
+    dir,
+    `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`
+  );
+
+  try {
+    fs.writeFileSync(tempPath, content, 'utf-8');
+    fs.renameSync(tempPath, filePath);
+  } catch (error) {
     try {
-      const raw = fs.readFileSync(filePath, 'utf-8');
-      existing = JSON.parse(raw);
-    } catch {
-      existing = {};
+      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+    } catch {}
+    throw error;
+  }
+}
+
+export function mergeJsonFile(
+  filePath: string,
+  updater: (existing: Record<string, unknown>) => Record<string, unknown>
+) {
+  let existing: Record<string, unknown> = {};
+
+  if (fs.existsSync(filePath)) {
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('root value must be a JSON object');
+      }
+      existing = parsed as Record<string, unknown>;
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(`Refusing to update invalid JSON file ${filePath}: ${reason}`);
     }
   }
+
   const updated = updater(existing);
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(updated, null, 2), 'utf-8');
+  if (!updated || typeof updated !== 'object' || Array.isArray(updated)) {
+    throw new Error(`JSON updater for ${filePath} must return an object`);
+  }
+
+  atomicWriteFileSync(filePath, `${JSON.stringify(updated, null, 2)}\n`);
 }

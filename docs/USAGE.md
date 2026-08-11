@@ -1,12 +1,12 @@
 # Usage: `get-fable`
 
-This guide documents the behavior present in the repository today
+This guide documents behavior implemented in the repository
 
-It avoids model-version claims and provider promises that are not implemented in source
+It does not treat bundled prompts, model names, or community material as proof of vendor affiliation or model equivalence
 
 ## Requirements
 
-- Bun
+- Bun 1.1 or newer
 - Python 3 for lifecycle hooks
 - Git for source-based setup
 
@@ -20,34 +20,41 @@ bun ./bin/get-fable.js status
 bun ./bin/get-fable.js assets
 ```
 
-`status` reports the configuration targets the CLI can currently inspect
+Running `get-fable` without a command only shows help
 
-`assets` reads the repository and reports the bundled asset counts from disk
+Installation is always explicit
+
+```bash
+bun ./bin/get-fable.js install
+```
 
 ## 2. Initialize one project
 
-Project initialization is the narrowest way to use `get-fable`
-
-From your target project
+From the project you want to prepare
 
 ```bash
 bun /path/to/get-fable/bin/get-fable.js init
 ```
 
-This creates
+This creates missing targets under
 
 ```text
-.fable/LEDGER.md
-.fable/PROGRESS.md
-.fable/VERIFIER_PROMPT.md
-.agents/skills/fable-mode/SKILL.md
-.agents/rules/fable5-mode.md
-docs/SPEC.md
+.fable/
+  LEDGER.md
+  PROGRESS.md
+  VERIFIER_PROMPT.md
+
+.agents/
+  skills/fable-mode/SKILL.md
+  rules/fable5-mode.md
+
+docs/
+  SPEC.md
 ```
 
-Existing template targets are skipped rather than replaced
+Existing target files are skipped rather than replaced
 
-The generated files are meant to keep requirements, progress, and verification evidence outside the chat transcript
+That rule applies to the project ledger/spec templates as well as the workspace skill and rules
 
 ## 3. Global install
 
@@ -55,7 +62,7 @@ The generated files are meant to keep requirements, progress, and verification e
 bun ./bin/get-fable.js install
 ```
 
-The global installer currently touches these locations
+The installer can write to
 
 ```text
 ~/.claude/
@@ -63,26 +70,31 @@ The global installer currently touches these locations
 ~/.agent-kernel/   # only when this directory already exists
 ```
 
-### Claude Code changes
+### Claude Code
 
-The installer currently
+The installer
 
 - writes `~/.claude/skills/fable-mode/SKILL.md`
-- copies four Python hooks under the same skill directory
+- copies the lifecycle hooks under that skill directory
 - merges hook registrations into `~/.claude/settings.json`
-- appends the Fable rules to `~/.claude/CLAUDE.md` once, based on the repository marker
+- appends the Fable workflow rules to `~/.claude/CLAUDE.md` once
 
-### Antigravity / Gemini config changes
+If `settings.json` exists but is not valid JSON, installation stops instead of replacing it with a new object
 
-The installer currently
+### Antigravity / Gemini config target
+
+The installer
 
 - writes `~/.gemini/config/rules/fable5-mode.md`
 - writes `~/.gemini/config/plugins/get-fable/plugin.json`
-- copies the bundled skills into the plugin directory
+- copies bundled skills into the plugin directory
+- copies lifecycle hooks into `~/.gemini/config/plugins/get-fable/hooks/`
 - writes `~/.gemini/config/skills/fable-mode/SKILL.md`
-- registers Antigravity hook entries when the referenced hook files are available
+- registers the plugin-owned hook paths in `~/.gemini/config/hooks.json`
 
-### Agent Kernel changes
+The Antigravity install no longer depends on Claude Code hook files being present
+
+### Agent Kernel
 
 If `~/.agent-kernel` already exists, the installer writes
 
@@ -92,27 +104,29 @@ If `~/.agent-kernel` already exists, the installer writes
 
 It does not create a complete Agent Kernel installation
 
-## Before a global install
+### Test-safe directory overrides
 
-Back up important custom agent configuration
+The following environment variables can redirect configuration targets
 
-The current JSON helper merges valid JSON and writes the updated result back to disk
+```text
+CLAUDE_CONFIG_DIR
+FABLE_GEMINI_CONFIG_DIR
+FABLE_AGENT_KERNEL_DIR
+```
 
-Malformed JSON cannot be preserved reliably by the current helper, so global installation should not be used as a repair mechanism for broken configuration files
+They are useful for isolated testing and controlled environments
 
-## 4. Dedicated Antigravity target
+## 4. Dedicated Antigravity install
 
 ```bash
 bun ./bin/get-fable.js install-antigravity
 ```
 
-This writes the Antigravity / Gemini config files described above without running the full global installer
+This command installs the rule, plugin, skill, hook files, and hook registrations required by the Antigravity / Gemini config target
 
-Hook registration is conditional on the referenced hook files being available
+It does not require a previous Claude Code installation
 
-If you need the full Claude Code hook setup as well, use the global `install` command
-
-## 5. Check status
+## 5. Status
 
 ```bash
 bun ./bin/get-fable.js status
@@ -121,42 +135,45 @@ bun ./bin/get-fable.js status
 Current checks include
 
 - Claude Fable skill presence
-- number of registered Claude lifecycle hooks
+- Claude lifecycle hook registration count
 - Antigravity / Gemini rule presence
 - Antigravity plugin presence
+- Antigravity hook config presence
+- Agent Kernel rule presence
 - whether the current project has a `.fable` directory
 
-`status` is an installation check, not a functional test of every bundled skill
+`status` checks installation state, not the correctness of every bundled skill
 
-## 6. Inspect bundled material
+## 6. Bundled assets
 
 ```bash
 bun ./bin/get-fable.js assets
-```
-
-This counts the current repository directories for prompts, agents, skill families, slash commands, reminders, and starter components
-
-To print the prompt file used by the CLI command
-
-```bash
 bun ./bin/get-fable.js prompt
 ```
 
-Treat bundled material as inspectable source material, not as proof of official vendor provenance or endorsement
+`assets` counts the current repository directories rather than relying on a marketing total
 
-See [`../THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
+`prompt` prints the bundled prompt file used by the command
 
-## 7. Start the request proxy
+See `THIRD_PARTY_NOTICES.md` before redistributing bundled third-party material
+
+## 7. Local request proxy
+
+Start the proxy
 
 ```bash
 bun ./bin/get-fable.js serve 8080
 ```
 
-Aliases
+Alias
 
 ```bash
 bun ./bin/get-fable.js router 8080
 ```
+
+The port must be an integer from 1 through 65535
+
+The server binds to `127.0.0.1` by default
 
 Health endpoints
 
@@ -172,30 +189,52 @@ POST /chat/completions
 POST /v1/chat/completions
 ```
 
-The server normalizes supported request bodies, injects the Fable prompt context, and then does one of two things
+Requests should use `Content-Type: application/json`
+
+Malformed JSON and unsupported request shapes return `400`
+
+Unsupported content types return `415`
+
+The default request-body limit is 1 MiB and oversized requests return `413`
 
 ### Preview mode
 
-If `UPSTREAM_OPENAI_URL` is not set, the server returns a synthetic response describing the enriched request
+If `UPSTREAM_OPENAI_URL` is not set, the server does not call a model provider
 
-No model provider is called by the router in this mode
+It returns a synthetic completion-style response with `previewMode: true`, `fableEnriched: true`, and prompt-size metadata
 
 ### Forwarding mode
 
-Set one upstream URL
+Set one absolute HTTP or HTTPS upstream URL
 
 ```bash
 export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
 bun ./bin/get-fable.js serve 8080
 ```
 
-The router forwards the normalized body and passes through the inbound `Authorization` header
+The proxy forwards the normalized and enriched body and passes through the inbound `Authorization` header when one is present
 
-The environment variable name reflects the current OpenAI-compatible transport shape. It should not be read as a promise that every OpenAI API feature or every provider API is supported
+Upstream response status, bytes, and content type are passed through without assuming the body is JSON
 
-## Request shapes currently normalized
+The default upstream timeout is 30 seconds
 
-### `messages`
+### Proxy environment variables
+
+```text
+FABLE_HOST                 default 127.0.0.1
+FABLE_CORS_ORIGIN          no default, CORS is off unless configured
+FABLE_MAX_BODY_BYTES       default 1048576
+FABLE_UPSTREAM_TIMEOUT_MS  default 30000
+UPSTREAM_OPENAI_URL        optional forwarding target
+```
+
+If you set `FABLE_HOST` to a non-loopback interface, apply your own network access controls and authentication boundary
+
+The proxy itself does not provide user authentication or authorization
+
+## Request shapes normalized today
+
+### OpenAI-style `messages`
 
 ```json
 {
@@ -211,6 +250,9 @@ The environment variable name reflects the current OpenAI-compatible transport s
 ```json
 {
   "model": "example-model",
+  "systemInstruction": {
+    "parts": [{ "text": "Follow the project rules" }]
+  },
   "contents": [
     {
       "role": "user",
@@ -220,47 +262,57 @@ The environment variable name reflects the current OpenAI-compatible transport s
 }
 ```
 
-The normalizer converts supported fields into the repository's generic chat request shape before context injection
+The normalizer converts these supported shapes into the repository's generic chat request format before context injection
 
-This does not make the proxy a complete Gemini, Anthropic, OpenAI, Ollama, or OpenRouter protocol adapter
-
-## Router security note
-
-The current router has permissive CORS and no built-in authentication or authorization check
-
-Do not expose it directly to an untrusted network
-
-If it must be reachable beyond a trusted development environment, put it behind your own authenticated gateway and network controls
+This is not a complete protocol adapter for every model provider
 
 ## Command reference
 
 ```text
 install               Install supported global integrations
 install-antigravity   Install the Antigravity / Gemini config target
-init                  Create project-local Fable files
-serve [port]          Start the request-enrichment proxy, default 8080
+init                  Create missing project-local Fable files
+serve [port]          Start the local request proxy, default 8080
 router [port]         Alias for serve
 lint                  Verify the current project ledger
 status                Report selected installation state
-assets                Count and list bundled asset groups
-prompt                Print the bundled Fable prompt used by the CLI command
-help                   Show CLI help
+assets                Count bundled asset groups
+prompt                Print the bundled prompt
+version               Print the package version
+help                  Show CLI help
 ```
+
+## Development checks
+
+Install development dependencies
+
+```bash
+bun install
+```
+
+Run all checks
+
+```bash
+bun run check
+```
+
+Individual checks
+
+```bash
+bun run typecheck
+bun test
+bun test --coverage
+bun run build
+```
+
+CI runs typechecking, the full test suite with coverage, a build, CLI smoke checks, and an npm package-content dry run
 
 ## Rollback
 
-The current CLI does not include an automated uninstall command
+There is no automated uninstall command yet
 
-For project-local initialization, remove only the files created by `init` after confirming they do not contain work you want to keep
+For project initialization, remove only files you have inspected and no longer need
 
-For global installation, inspect the changed files under `~/.claude` and `~/.gemini/config` before removing entries manually
+For global integrations, inspect the affected configuration before removing hook entries or files
 
-If you keep important custom configuration in those locations, restore from your own backup rather than deleting the whole directory
-
-## Compatibility language used in these docs
-
-- **automatic target** means installer code exists for that target
-- **request-shape support** means the normalizer handles the documented request structure
-- **reusable asset** means a file can be consumed manually where another agent accepts that format
-
-Those three meanings are deliberately kept separate
+If an existing JSON configuration is malformed, `get-fable` refuses to rewrite it. Repair or restore that file first

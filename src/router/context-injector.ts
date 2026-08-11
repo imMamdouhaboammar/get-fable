@@ -2,52 +2,53 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getRepoRootDir } from '../installer.js';
 
+function isSafeAssetName(name: string): boolean {
+  return (
+    name !== '.' &&
+    name !== '..' &&
+    /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(name)
+  );
+}
+
 export class ContextInjector {
-  /**
-   * Returns the consolidated Fable 5 Mythos System Prompt
-   */
   static getFableSystemPrompt(): string {
     const repoRoot = getRepoRootDir();
     const promptPath = path.join(repoRoot, 'assets', 'prompts', 'claude-code-fable-5.md');
     const rulesPath = path.join(repoRoot, 'prompts', 'fable5-rules.md');
 
-    let fablePrompt = '';
-    if (fs.existsSync(rulesPath)) {
-      fablePrompt += fs.readFileSync(rulesPath, 'utf-8') + '\n\n';
-    }
-    if (fs.existsSync(promptPath)) {
-      fablePrompt += fs.readFileSync(promptPath, 'utf-8');
+    const sections: string[] = [];
+    if (fs.existsSync(rulesPath)) sections.push(fs.readFileSync(rulesPath, 'utf-8').trim());
+    if (fs.existsSync(promptPath)) sections.push(fs.readFileSync(promptPath, 'utf-8').trim());
+
+    const prompt = sections.filter(Boolean).join('\n\n');
+    if (!prompt) {
+      throw new Error('No Fable prompt content was found in the repository');
     }
 
-    return fablePrompt;
+    return prompt;
   }
 
-  /**
-   * Loads a specific skill definition by name
-   */
   static loadSkill(skillName: string): string | null {
-    const repoRoot = getRepoRootDir();
-    const claudeCodeSkill = path.join(repoRoot, 'assets', 'skills', 'claude-code', `${skillName}.md`);
-    const claudeDesignSkill = path.join(repoRoot, 'assets', 'skills', 'claude-design', `${skillName}.md`);
+    if (!isSafeAssetName(skillName)) return null;
 
-    if (fs.existsSync(claudeCodeSkill)) {
-      return fs.readFileSync(claudeCodeSkill, 'utf-8');
+    const repoRoot = getRepoRootDir();
+    const candidates = [
+      path.join(repoRoot, 'assets', 'skills', 'claude-code', `${skillName}.md`),
+      path.join(repoRoot, 'assets', 'skills', 'claude-design', `${skillName}.md`),
+    ];
+
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) return fs.readFileSync(candidate, 'utf-8');
     }
-    if (fs.existsSync(claudeDesignSkill)) {
-      return fs.readFileSync(claudeDesignSkill, 'utf-8');
-    }
+
     return null;
   }
 
-  /**
-   * Loads a specific agent definition by name
-   */
   static loadAgent(agentName: string): string | null {
+    if (!isSafeAssetName(agentName)) return null;
+
     const repoRoot = getRepoRootDir();
     const agentPath = path.join(repoRoot, 'assets', 'agents', `${agentName}.md`);
-    if (fs.existsSync(agentPath)) {
-      return fs.readFileSync(agentPath, 'utf-8');
-    }
-    return null;
+    return fs.existsSync(agentPath) ? fs.readFileSync(agentPath, 'utf-8') : null;
   }
 }

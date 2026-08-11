@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install development dependencies
+        run: bun install --ignore-scripts
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test with coverage
+        run: bun test --coverage
+
+      - name: Build
+        run: bun run build
+
+      - name: CLI smoke test
+        run: |
+          bun ./bin/get-fable.js --version
+          bun ./bin/get-fable.js help >/dev/null
+
+      - name: Inspect package contents
+        run: npm pack --dry-run --ignore-scripts

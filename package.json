@@ -1,21 +1,39 @@
 {
   "name": "get-fable",
   "version": "1.0.0",
-  "description": "Process discipline for AI coding agents: project specs, task ledgers, verification hooks, reusable skills, and an OpenAI-compatible request-enrichment proxy.",
+  "description": "Process discipline for AI coding agents: project specs, task ledgers, verification hooks, reusable skills, and a local request-enrichment proxy.",
+  "type": "module",
   "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "bin": {
     "get-fable": "bin/get-fable.js"
   },
-  "type": "module",
+  "files": [
+    "bin/",
+    "src/",
+    "assets/",
+    "prompts/",
+    "hooks/",
+    "templates/",
+    "docs/",
+    "install.sh",
+    "THIRD_PARTY_NOTICES.md"
+  ],
   "scripts": {
-    "start": "bun run bin/get-fable.js",
+    "start": "bun ./bin/get-fable.js",
     "test": "bun test",
-    "build": "bun build ./src/cli.ts --outfile ./bin/get-fable.js --target bun && echo '#!/usr/bin/env bun' | cat - bin/get-fable.js > bin/get-fable.js.tmp && mv bin/get-fable.js.tmp bin/get-fable.js && chmod +x bin/get-fable.js",
-    "lint": "bun run bin/get-fable.js lint",
-    "serve:web": "bun --serve public"
+    "test:coverage": "bun test --coverage",
+    "typecheck": "tsc --noEmit",
+    "build": "rm -rf dist && bun build ./src/index.ts ./src/cli.ts --outdir ./dist --target bun",
+    "check": "bun run typecheck && bun test && bun run build",
+    "lint": "bun ./bin/get-fable.js lint",
+    "serve:web": "bun --serve public",
+    "prepack": "bun run check"
   },
   "keywords": [
-    "fable5",
     "claude-code",
     "fable-mode",
     "ai-agent",
@@ -27,6 +45,20 @@
   ],
   "author": "Mamdouh Abo Ammar",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imMamdouhaboammar/get-fable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imMamdouhaboammar/get-fable/issues"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable#readme",
+  "engines": {
+    "bun": ">=1.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.0.0",
