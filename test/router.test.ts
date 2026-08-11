@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from 'bun:test';
+import { request, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import type { Server } from 'node:http';
 import { createMythosRouterServer } from '../src/router/index.ts';
 
 const servers: Server[] = [];
@@ -97,6 +97,38 @@ describe('get-fable request proxy', () => {
     });
 
     expect(response.status).toBe(413);
+  });
+
+  test('stops reading an oversized chunked body and closes the connection', async () => {
+    const baseUrl = new URL(await startServer({ maxBodyBytes: 64 }));
+
+    const result = await new Promise<{ status: number; connection: string | undefined }>((resolve, reject) => {
+      const req = request(
+        {
+          hostname: baseUrl.hostname,
+          port: baseUrl.port,
+          path: '/v1/chat/completions',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Transfer-Encoding': 'chunked',
+          },
+        },
+        (res) => {
+          const connection = res.headers.connection;
+          res.resume();
+          res.on('end', () => resolve({ status: res.statusCode || 0, connection }));
+        }
+      );
+
+      req.on('error', reject);
+      req.write('{"model":"demo","messages":[{"role":"user","content":"');
+      req.write('x'.repeat(200));
+      req.end('"}]}');
+    });
+
+    expect(result.status).toBe(413);
+    expect(result.connection).toBe('close');
   });
 
   test('rejects non-http upstream URLs before listening', () => {
