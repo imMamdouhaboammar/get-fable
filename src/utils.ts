@@ -65,6 +65,22 @@ export function copyDirSync(src: string, dest: string) {
   }
 }
 
+function replaceTempFileSync(tempPath: string, filePath: string, mode: number) {
+  try {
+    fs.renameSync(tempPath, filePath);
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException)?.code;
+    if (code !== 'EEXIST' && code !== 'EPERM' && code !== 'EACCES') {
+      throw error;
+    }
+
+    fs.copyFileSync(tempPath, filePath);
+    fs.unlinkSync(tempPath);
+  }
+
+  fs.chmodSync(filePath, mode);
+}
+
 export function atomicWriteFileSync(filePath: string, content: string) {
   const dir = path.dirname(filePath);
   fs.mkdirSync(dir, { recursive: true });
@@ -77,8 +93,7 @@ export function atomicWriteFileSync(filePath: string, content: string) {
 
   try {
     fs.writeFileSync(tempPath, content, { encoding: 'utf-8', mode });
-    fs.renameSync(tempPath, filePath);
-    fs.chmodSync(filePath, mode);
+    replaceTempFileSync(tempPath, filePath, mode);
   } catch (error) {
     try {
       if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
