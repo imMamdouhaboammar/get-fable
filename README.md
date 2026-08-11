@@ -4,84 +4,169 @@
 
 # get-fable
 
-### A stricter working environment for AI coding agents
+### Your coding agent did not forget how to code. It lost the job somewhere along the way.
 
 [![CI](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 [![Bun](https://img.shields.io/badge/runtime-Bun-FBF0DF?style=flat-square&logo=bun&logoColor=14151A)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
+**Specs. Persistent task state. Lifecycle hooks. Failure handling. Evidence before done.**
+
 </div>
 
-## Why this exists
+## The moment this project started making sense
 
-Model capability matters, but long-running coding work also depends on what happens around the model
+You give an AI coding agent a real task
 
-Tasks drift when the brief is vague, state lives only in chat history, retries repeat without diagnosis, and completion is declared without evidence
+Not a ten-line demo
 
-`get-fable` focuses on the part a developer can inspect and change
+A migration. A refactor. A bug that crosses five files. A feature with edge cases. Something that takes long enough for the conversation to become part of the problem
 
-- project specs and task ledgers outside the chat transcript
-- reusable workspace rules and skills
-- lifecycle hooks for state injection, prerequisites, repeated failures, and close checks
-- explicit acceptance evidence
-- local installation targets for Claude Code, Antigravity / Gemini config, and Agent Kernel when present
-- a small request-enrichment proxy for supported chat request shapes
+The first few steps look good
 
-It does not modify model weights and does not make one model equivalent to another
+The brief is fresh. The intent is clear. The agent knows what it is doing
 
-> [!IMPORTANT]
-> `get-fable` is an independent community project
->
-> References to Anthropic, Claude, OpenAI, GPT, Google, Gemini, Antigravity, or other projects are descriptive only unless a cited upstream source says otherwise
->
-> This repository is not endorsed by or affiliated with those vendors
+Then the session gets longer
 
-## The working model
+A requirement gets buried
 
-`get-fable` applies six practical constraints
+A failed command gets retried without changing the diagnosis
 
-1. **Define the work before implementation**
-2. **Keep task state in project files**
-3. **Reload project rules across sessions**
-4. **Treat repeated failure as a diagnostic signal**
-5. **Reuse inspectable skills and agent instructions**
-6. **Require observable evidence before completion**
+A file that mattered twenty minutes ago drops out of working context
 
-The claim is deliberately narrow
+A subtask gets marked complete because the code looks plausible
 
-A better execution environment can improve consistency without changing the underlying model
+Then comes the sentence every developer has learned to distrust
 
-## What the repository currently does
+> Done
 
-| Area | Implemented behavior |
+But the acceptance check was never run
+
+The task did not necessarily fail because the model suddenly became worse at coding
+
+It failed because the work had nowhere durable to live
+
+That is the idea behind `get-fable`
+
+## The aha moment
+
+### The model is only one part of the result
+
+A coding agent also depends on the conditions around it
+
+What was agreed before implementation
+
+What survives after the conversation gets long
+
+What happens after the second failed attempt
+
+What the agent must prove before it can say the work is finished
+
+Those things are usually invisible
+
+`get-fable` makes them explicit and inspectable
+
+```text
+without get-fable
+
+prompt
+  ↓
+implementation
+  ↓
+context drift
+  ↓
+retry
+  ↓
+"done"
+  ↓
+maybe verified
+
+
+with get-fable
+
+spec
+  ↓
+ledger
+  ↓
+implementation
+  ↓
+lifecycle checks
+  ↓
+failure handling
+  ↓
+evidence
+  ↓
+done
+```
+
+Same codebase
+
+Same underlying model
+
+Different working conditions
+
+That is the product
+
+## What changes when the work gets serious
+
+Imagine a three-hour refactor
+
+At the beginning, the agent has the complete brief in context
+
+An hour later, it has opened dozens of files, run commands, made decisions, corrected mistakes, and accumulated a long conversation
+
+Normally, the original task is now competing with everything that happened after it
+
+With `get-fable`, the important parts are not left inside chat history alone
+
+### 1. The job gets written down
+
+`docs/SPEC.md` gives the work a durable definition outside the conversation
+
+### 2. Progress becomes inspectable
+
+`.fable/LEDGER.md` keeps tasks, acceptance checks, and evidence visible as the work moves forward
+
+### 3. Sessions can recover context
+
+Lifecycle hooks can reintroduce the project state and working rules when the agent starts again
+
+### 4. Repeated failure means something
+
+Instead of treating every failed command as an invitation to run the same idea again, the failure hook can push the workflow toward diagnosis
+
+### 5. "Done" has a cost
+
+The close guard checks unresolved work and missing evidence before the agent closes the task
+
+Nothing happened to the model weights
+
+The work simply became harder to forget, harder to fake, and easier to inspect
+
+## What `get-fable` actually gives you
+
+| Capability | What it changes |
 |---|---|
-| Project initialization | Creates missing spec, ledger, progress, verifier, workspace skill, and workspace rule files without replacing existing targets |
-| Claude Code | Installs the Fable skill and four Python lifecycle hooks, then merges hook registrations into Claude settings |
-| Antigravity / Gemini config | Installs its own plugin, rules, skill copy, hook files, and hook registrations without depending on Claude hook paths |
-| Agent Kernel | Copies the Fable rule when `~/.agent-kernel` already exists |
-| Configuration safety | Refuses to rewrite malformed JSON configuration instead of silently replacing it |
-| Asset inspection | Counts bundled prompts, agents, skills, commands, reminders, and starter components from disk |
-| Request proxy | Normalizes supported `messages` and Gemini-style `contents`, injects Fable context, and optionally forwards to one HTTP or HTTPS upstream |
-| Quality checks | Runs TypeScript checks, core behavior tests, site tests, a build, CLI smoke tests, and package-content inspection in CI |
+| **Project spec** | Keeps the goal, constraints, decisions, and acceptance conditions outside chat history |
+| **Task ledger** | Tracks unfinished work and the evidence attached to completed work |
+| **Lifecycle hooks** | Reintroduce state, check prerequisites, react to repeated failures, and inspect close conditions |
+| **Reusable skills and rules** | Keeps working instructions in files that can be reviewed and reused |
+| **Local installer targets** | Configures supported Claude Code, Antigravity / Gemini, and Agent Kernel targets |
+| **Request proxy** | Adds Fable context to supported chat request shapes before optional upstream forwarding |
+| **Repository-wide CI** | Checks TypeScript, behavior tests, build output, CLI behavior, and package contents |
 
-Asset totals are intentionally not hard-coded in the README
+The project does not ask you to trust a hard-coded asset count
 
-Use the repository as the source of truth
+Ask the repository
 
 ```bash
 bun ./bin/get-fable.js assets
 ```
 
-## Quick start
+## The shortest way to understand it
 
-### Requirements
-
-- Bun 1.1 or newer
-- Python 3 for lifecycle hooks
-- Git when working from source
-
-### Inspect first
+Clone the repo and inspect it before installing anything
 
 ```bash
 git clone https://github.com/imMamdouhaboammar/get-fable.git
@@ -89,23 +174,20 @@ cd get-fable
 
 bun ./bin/get-fable.js status
 bun ./bin/get-fable.js assets
-```
-
-Running the CLI without a command shows help and does not install anything
-
-```bash
 bun ./bin/get-fable.js
 ```
 
-### Initialize one project
+Running the CLI with no command shows help
 
-From the project you want to prepare
+It does not install anything automatically
+
+Then initialize a project
 
 ```bash
 bun /path/to/get-fable/bin/get-fable.js init
 ```
 
-This creates missing files under
+You will get missing workflow files under
 
 ```text
 .fable/
@@ -121,15 +203,40 @@ docs/
   SPEC.md
 ```
 
-Existing target files are skipped
+Existing target files are skipped rather than replaced
 
-### Install global integrations
+That is intentional
+
+Your project files belong to your project
+
+## Four hooks that change the rhythm of a long task
+
+| Event | Hook | Job |
+|---|---|---|
+| `SessionStart` | `fable_profile_inject.py` | Reintroduce project state and working rules |
+| `PreToolUse` | `fable_spawn_guard.py` | Check prerequisites before selected agent or task actions |
+| `PostToolUse` | `fable_fail_streak.py` | React when command failures start repeating |
+| `Stop` | `fable_close_guard.py` | Check unresolved work and missing evidence before close |
+
+The hooks are plain Python files under [`hooks/`](./hooks)
+
+Read them before you install them
+
+## Global install
+
+### Requirements
+
+- Bun 1.1 or newer
+- Python 3 for lifecycle hooks
+- Git when working from source
+
+Install the supported global integrations
 
 ```bash
 bun ./bin/get-fable.js install
 ```
 
-The supported installer targets are
+Current targets
 
 ```text
 ~/.claude/
@@ -137,28 +244,27 @@ The supported installer targets are
 ~/.agent-kernel/   # only when this directory already exists
 ```
 
-If an existing JSON configuration file is malformed, the installer stops rather than replacing its contents
-
 For the Antigravity / Gemini target only
 
 ```bash
 bun ./bin/get-fable.js install-antigravity
 ```
 
-## Lifecycle hooks
+### Configuration safety matters here
 
-| Event | Hook | Purpose |
-|---|---|---|
-| `SessionStart` | `fable_profile_inject.py` | Reintroduce project state and working rules |
-| `PreToolUse` | `fable_spawn_guard.py` | Check prerequisites before selected agent or task actions |
-| `PostToolUse` | `fable_fail_streak.py` | React to repeated command failures |
-| `Stop` | `fable_close_guard.py` | Check unresolved work and evidence before close |
+Installer code touches real user configuration
 
-The hook files live under [`hooks/`](./hooks) and can be inspected before installation
+So `get-fable` refuses to treat malformed JSON as an empty config
+
+If an existing JSON file is invalid, installation stops instead of silently replacing it
+
+Project initialization also skips existing target files
+
+These are small details until the tool is running against a machine you actually care about
 
 ## Local request proxy
 
-Start it on the default loopback address
+Start the local proxy
 
 ```bash
 bun ./bin/get-fable.js serve 8080
@@ -173,25 +279,26 @@ POST /chat/completions
 POST /v1/chat/completions
 ```
 
-Without an upstream URL, the proxy runs in preview mode and does not call a model provider
+Without an upstream URL, it runs in preview mode and does not call a model provider
 
-To forward an enriched request
+To forward enriched requests
 
 ```bash
 export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
 bun ./bin/get-fable.js serve 8080
 ```
 
-Current safety defaults
+Current defaults
 
 - binds to `127.0.0.1`
-- CORS is off unless `FABLE_CORS_ORIGIN` is set
+- CORS is disabled unless `FABLE_CORS_ORIGIN` is configured
 - request bodies are limited to 1 MiB by default
 - malformed JSON returns `400`
 - unsupported content types return `415`
+- oversized requests return `413`
 - upstream requests time out after 30 seconds by default
 - upstream URLs must use HTTP or HTTPS
-- non-JSON upstream responses are passed through without forcing JSON parsing
+- non-JSON upstream responses are passed through without forced JSON parsing
 
 Configurable environment variables
 
@@ -204,9 +311,9 @@ UPSTREAM_OPENAI_URL
 ```
 
 > [!WARNING]
-> The proxy does not implement user authentication or authorization
+> The proxy does not provide user authentication or authorization
 >
-> If you deliberately bind it beyond loopback, protect it with appropriate network controls and an authenticated gateway
+> If you bind it beyond loopback, protect it with appropriate network controls and an authenticated gateway
 
 ## Supported request shapes
 
@@ -235,7 +342,32 @@ Gemini-style contents
 }
 ```
 
-This support is intentionally narrower than a complete OpenAI, Gemini, Anthropic, Ollama, or OpenRouter protocol implementation
+This is request-shape support, not a claim of complete compatibility with every provider API
+
+## The important boundary
+
+`get-fable` does not make a smaller model become a larger model
+
+It does not reproduce private provider infrastructure
+
+It does not expose hidden reasoning
+
+It does not guarantee correct code
+
+It does not eliminate hallucinations
+
+It changes something narrower and more inspectable
+
+**How the work is defined, remembered, checked, retried, and closed**
+
+That is enough to be useful without pretending the underlying model changed
+
+> [!IMPORTANT]
+> `get-fable` is an independent community project
+>
+> References to Anthropic, Claude, OpenAI, GPT, Google, Gemini, Antigravity, or other projects are descriptive only unless an upstream source explicitly establishes otherwise
+>
+> This repository is not endorsed by or affiliated with those vendors
 
 ## CLI
 
@@ -253,7 +385,7 @@ version               Print the package version
 help                  Show CLI help
 ```
 
-## Development
+## For contributors
 
 Install development dependencies
 
@@ -261,13 +393,13 @@ Install development dependencies
 bun install
 ```
 
-Run the complete local check
+Run the complete check
 
 ```bash
 bun run check
 ```
 
-Or run individual checks
+Or run the pieces directly
 
 ```bash
 bun run typecheck
@@ -276,26 +408,15 @@ bun test --coverage
 bun run build
 ```
 
-The executable under `bin/get-fable.js` is a small Bun launcher that imports the TypeScript CLI source directly
+CI runs TypeScript checks, the full Bun test suite with coverage, a build, CLI smoke checks, and npm package-content inspection
 
-The build output is used as an additional bundling check rather than as a second hand-maintained copy of the CLI
+The executable under `bin/get-fable.js` is intentionally small and imports the TypeScript CLI source directly through Bun
 
-## Project boundaries
-
-`get-fable` does not promise to
-
-- reproduce proprietary models or private vendor infrastructure
-- expose hidden reasoning
-- eliminate hallucinations or correctness failures
-- configure every coding IDE or agent automatically
-- provide a public authenticated model gateway
-- prove that bundled community material is official vendor material
-
-Automatic installation support and reusable file compatibility are treated as separate claims
+That avoids maintaining a second generated copy of the CLI beside the source
 
 ## Upstream references and attribution
 
-The project grew from public work around Fable Mode, Mythos routing, system prompts, and coding-agent skills
+`get-fable` grew from public community work around Fable Mode, Mythos routing, system prompts, and coding-agent skills
 
 Known upstream references include
 
@@ -325,6 +446,7 @@ Third-party material remains subject to its applicable source terms and rights a
 
 <div align="center">
 
-**The model matters. The way you make it work matters too.**
+### The model matters.
+### The conditions you make it work under matter too.
 
 </div>
