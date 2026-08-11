@@ -90,6 +90,14 @@ function sendJson(res: ServerResponse, statusCode: number, payload: unknown) {
   res.end(JSON.stringify(payload));
 }
 
+function parseRequestPathname(req: IncomingMessage): string {
+  try {
+    return new URL(req.url || '/', 'http://localhost').pathname;
+  } catch {
+    throw new HttpError(400, 'Request target is not a valid URL');
+  }
+}
+
 async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise<unknown> {
   const contentType = req.headers['content-type'];
   if (contentType && !contentType.toLowerCase().includes('application/json')) {
@@ -98,30 +106,46 @@ async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise
 
   const contentLength = Number(req.headers['content-length']);
   if (Number.isFinite(contentLength) && contentLength > maxBodyBytes) {
+    req.pause();
     throw new HttpError(413, `Request body exceeds ${maxBodyBytes} bytes`);
   }
 
   return await new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     let bytes = 0;
-    let tooLarge = false;
+    let settled = false;
 
-    req.on('data', (chunk: Buffer | string) => {
+    const cleanup = () => {
+      req.removeListener('data', onData);
+      req.removeListener('end', onEnd);
+      req.removeListener('error', onError);
+    };
+
+    const fail = (error: Error) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(error);
+    };
+
+    const onData = (chunk: Buffer | string) => {
       const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
       bytes += buffer.length;
-      if (bytes > maxBodyBytes) {
-        tooLarge = true;
-        chunks.length = 0;
-        return;
-      }
-      if (!tooLarge) chunks.push(buffer);
-    });
 
-    req.on('end', () => {
-      if (tooLarge) {
-        reject(new HttpError(413, `Request body exceeds ${maxBodyBytes} bytes`));
+      if (bytes > maxBodyBytes) {
+        chunks.length = 0;
+        req.pause();
+        fail(new HttpError(413, `Request body exceeds ${maxBodyBytes} bytes`));
         return;
       }
+
+      chunks.push(buffer);
+    };
+
+    const onEnd = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
 
       const bodyText = Buffer.concat(chunks).toString('utf-8');
       if (!bodyText.trim()) {
@@ -134,9 +158,13 @@ async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise
       } catch {
         reject(new HttpError(400, 'Request body must contain valid JSON'));
       }
-    });
+    };
 
-    req.on('error', (error) => reject(error));
+    const onError = (error: Error) => fail(error);
+
+    req.on('data', onData);
+    req.on('end', onEnd);
+    req.on('error', onError);
   });
 }
 
@@ -179,7 +207,17 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
 
   return http.createServer(async (req, res) => {
     applyCors(res, resolved.corsOrigin);
-    const pathname = new URL(req.url || '/', 'http://localhost').pathname;
+
+    let pathname: string;
+    try {
+      pathname = parseRequestPathname(req);
+    } catch (error) {
+      if (error instanceof HttpError) {
+        sendJson(res, error.statusCode, { error: error.message });
+        return;
+      }
+      throw error;
+    }
 
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -239,6 +277,10 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
         });
       } catch (error) {
         if (error instanceof RequestValidationError || error instanceof HttpError) {
+          if (error.statusCode === 413) {
+            res.shouldKeepAlive = false;
+            res.setHeader('Connection', 'close');
+          }
           sendJson(res, error.statusCode, { error: error.message });
           return;
         }
