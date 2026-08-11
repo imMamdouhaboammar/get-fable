@@ -2,7 +2,11 @@ import { afterEach, describe, expect, test } from 'bun:test';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { initProjectFable, installAntigravityGlobal } from '../src/installer.ts';
+import {
+  checkFableStatus,
+  initProjectFable,
+  installAntigravityGlobal,
+} from '../src/installer.ts';
 
 const tempDirs: string[] = [];
 const previousGeminiDir = process.env.FABLE_GEMINI_CONFIG_DIR;
@@ -54,5 +58,26 @@ describe('installAntigravityGlobal', () => {
     const fableHooks = hooksConfig.hooks.filter((hook: any) => String(hook.name).startsWith('fable5-'));
     expect(fableHooks).toHaveLength(4);
     expect(fableHooks.every((hook: any) => hook.command.includes(pluginHooks))).toBe(true);
+  });
+
+  test('status does not treat an unrelated hooks.json as configured', () => {
+    const target = makeTempDir('get-fable-status-');
+    process.env.FABLE_GEMINI_CONFIG_DIR = target;
+    fs.writeFileSync(
+      path.join(target, 'hooks.json'),
+      JSON.stringify({ hooks: [{ name: 'other-hook', command: 'echo ok' }] })
+    );
+
+    const messages: string[] = [];
+    const originalLog = console.log;
+    console.log = (...args: unknown[]) => messages.push(args.map(String).join(' '));
+
+    try {
+      checkFableStatus();
+    } finally {
+      console.log = originalLog;
+    }
+
+    expect(messages.some((message) => message.includes('Antigravity Registered Hooks: 0 / 4'))).toBe(true);
   });
 });
