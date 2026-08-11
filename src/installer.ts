@@ -86,7 +86,7 @@ export function installGlobalFable() {
   if (!existingClaudeMd.includes('Fable 5 Mythos System Directive')) {
     existingClaudeMd += `\n\n${fableRuleText}`;
     fs.writeFileSync(claudeMdPath, existingClaudeMd.trim() + '\n', 'utf-8');
-    logSuccess('Updated ~/.claude/CLAUDE.md with Fable 5 System Prompt');
+    logSuccess('Updated ~/.claude/CLAUDE.md with Fable workflow rules');
   }
 
   // 2. Antigravity Setup
@@ -104,14 +104,14 @@ export function installGlobalFable() {
     logSuccess('Updated Agent Kernel rules');
   }
 
-  logSuccess('Global Fable 5 Mythos System & Fable Mode successfully installed across all platforms!');
+  logSuccess('Installed the supported get-fable global integrations');
 }
 
 export function installAntigravityGlobal() {
   const repoRoot = getRepoRootDir();
   const geminiConfigDir = getGeminiConfigDir();
 
-  logInfo(`Installing Fable 5 Mythos Suite into Antigravity (${geminiConfigDir})...`);
+  logInfo(`Installing get-fable into the Antigravity config target (${geminiConfigDir})...`);
   fs.mkdirSync(geminiConfigDir, { recursive: true });
 
   // 1. Rules
@@ -121,7 +121,7 @@ export function installAntigravityGlobal() {
     path.join(repoRoot, 'prompts', 'fable5-rules.md'),
     path.join(rulesDir, 'fable5-mode.md')
   );
-  logSuccess('Installed Antigravity Rule: fable5-mode.md');
+  logSuccess('Installed Antigravity rule: fable5-mode.md');
 
   // 2. Plugin Setup
   const pluginDir = path.join(geminiConfigDir, 'plugins', 'get-fable');
@@ -139,7 +139,7 @@ export function installAntigravityGlobal() {
     path.join(repoRoot, 'prompts', 'fable5-rules.md'),
     path.join(pluginRulesDir, 'fable5-mode.md')
   );
-  logSuccess('Installed Antigravity Plugin: get-fable');
+  logSuccess('Installed Antigravity plugin: get-fable');
 
   // 3. Global Skills Sync
   const globalSkillsDir = path.join(geminiConfigDir, 'skills');
@@ -148,7 +148,7 @@ export function installAntigravityGlobal() {
     path.join(repoRoot, 'prompts', 'fable-mode-skill.md'),
     path.join(globalSkillsDir, 'fable-mode', 'SKILL.md')
   );
-  logSuccess('Installed Antigravity Skill: fable-mode');
+  logSuccess('Installed Antigravity skill: fable-mode');
 
   // 4. Antigravity Hooks Registration (hooks.json)
   const hooksJsonPath = path.join(geminiConfigDir, 'hooks.json');
@@ -182,7 +182,7 @@ export function installAntigravityGlobal() {
       existing.hooks = hooksList;
       return existing;
     });
-    logSuccess('Registered Antigravity Hooks in ~/.gemini/config/hooks.json');
+    logSuccess('Registered Antigravity hooks in ~/.gemini/config/hooks.json');
   }
 }
 
@@ -228,9 +228,9 @@ export function initProjectFable(targetDir: string = process.cwd()) {
     path.join(repoRoot, 'prompts', 'fable5-rules.md'),
     path.join(agentsDir, 'rules', 'fable5-mode.md')
   );
-  logSuccess(`Installed Antigravity workspace rules & skills in .agents/`);
+  logSuccess('Installed workspace rules and skill in .agents/');
 
-  logSuccess(`Project initialized with Fable 5 discipline at ${targetDir}`);
+  logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }
 
 export function checkFableStatus() {
@@ -238,7 +238,7 @@ export function checkFableStatus() {
   const fableSkillDir = path.join(claudeDir, 'skills', 'fable-mode');
   const settingsPath = path.join(claudeDir, 'settings.json');
 
-  logInfo('--- Fable 5 System Status ---');
+  logInfo('--- get-fable status ---');
   console.log(`Claude Config Dir: ${claudeDir}`);
   console.log(`Skill Installed: ${fs.existsSync(fableSkillDir) ? 'YES' : 'NO'}`);
 

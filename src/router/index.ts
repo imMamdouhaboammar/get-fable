@@ -7,7 +7,6 @@ export function startMythosRouterServer(port: number = 8080) {
   const fablePrompt = ContextInjector.getFableSystemPrompt();
 
   const server = http.createServer(async (req, res) => {
-    // CORS Headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -20,7 +19,7 @@ export function startMythosRouterServer(port: number = 8080) {
 
     if (req.url === '/health' || req.url === '/v1/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ status: 'ok', mode: 'Claude Fable 5 Mythos Router', port }));
+      res.end(JSON.stringify({ status: 'ok', mode: 'get-fable request proxy', port }));
       return;
     }
 
@@ -36,9 +35,8 @@ export function startMythosRouterServer(port: number = 8080) {
           const normalized = ProviderTranslator.normalizeRequest(body);
           const enriched = ProviderTranslator.injectFableSystemPrompt(normalized, fablePrompt);
 
-          logInfo(`[Mythos Router] Wrapped request for model: ${enriched.model} with Fable 5 Mythos System Prompt.`);
+          logInfo(`[get-fable router] Enriched request for model: ${enriched.model}`);
 
-          // Return enriched response preview or forward to downstream upstream host if configured
           const targetUpstream = process.env.UPSTREAM_OPENAI_URL;
 
           if (targetUpstream) {
@@ -67,7 +65,7 @@ export function startMythosRouterServer(port: number = 8080) {
                     index: 0,
                     message: {
                       role: 'assistant',
-                      content: `[Fable 5 Mythos System Router] Enhanced Request for model ${enriched.model} processed successfully with Fable 5 process discipline. Set UPSTREAM_OPENAI_URL to route calls dynamically.`,
+                      content: `[get-fable router] Request for model ${enriched.model} enriched successfully. Set UPSTREAM_OPENAI_URL to forward the request to an upstream endpoint.`,
                     },
                     finish_reason: 'stop',
                   },
@@ -91,7 +89,7 @@ export function startMythosRouterServer(port: number = 8080) {
   });
 
   server.listen(port, () => {
-    logSuccess(`🛡️ Fable 5 Mythos Router Server active on http://localhost:${port}`);
+    logSuccess(`get-fable request proxy active on http://localhost:${port}`);
     logInfo(`Post OpenAI-compatible requests to http://localhost:${port}/v1/chat/completions`);
   });
 }
