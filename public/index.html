@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>get-fable — The Fable 5 Mythos System for Every AI Model</title>
+  <meta name="description" content="Install Anthropic's internal Claude Code process engine — system prompts, 51 production skills, agent definitions, and mechanical guard hooks across any coding agent.">
+  <link rel="icon" type="image/svg+xml" href="mascot.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand">
+        <img src="mascot.svg" alt="get-fable mascot">
+        <span>get-fable</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#models">Models</a></li>
+        <li><a href="#discipline">Discipline Engine</a></li>
+        <li><a href="#skills">Skill Vault</a></li>
+        <li><a href="docs.html">Documentation</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-secondary copy-trigger" data-copy="bunx get-fable install">
+          <span>bunx get-fable install</span>
+        </button>
+        <a href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" class="btn btn-primary">
+          <span>GitHub</span>
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge-wrapper">
+        <span class="badge">
+          <span class="badge-dot"></span>
+          <span>Fable 5 Mythos System v1.0.0</span>
+        </span>
+      </div>
+
+      <h1 class="hero-title">
+        Anthropic Process Engine <br/>
+        <span class="gradient-text">for Every AI Model</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Install Claude Code's internal leaked system prompts, 51 production skills, 10 agent personas, and mechanical guard hooks across Claude Code, Gemini CLI, OpenAI, and Ollama.
+      </p>
+
+      <div class="hero-actions">
+        <div class="install-bar">
+          <span class="install-prompt">$</span>
+          <span class="install-cmd">bunx get-fable install</span>
+          <button class="copy-btn copy-trigger" data-copy="bunx get-fable install" title="Copy Command">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </button>
+        </div>
+
+        <a href="docs.html" class="btn btn-secondary">
+          <span>Explore Documentation</span>
+        </a>
+      </div>
+
+      <!-- Interactive Terminal Simulator -->
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-tabs">
+            <button class="term-tab active" data-cmd="install">install</button>
+            <button class="term-tab" data-cmd="install-antigravity">antigravity</button>
+            <button class="term-tab" data-cmd="init">init</button>
+            <button class="term-tab" data-cmd="serve">serve</button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Models Section -->
+  <section class="section" id="models">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <div class="section-subtitle">Universal Compatibility</div>
+        <h2 class="section-title">One System. Any AI Model.</h2>
+      </div>
+
+      <div class="models-grid">
+        <div class="model-card">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="model-name">Claude Code</div>
+          <div class="model-desc">Native integration into Anthropic CLI agent prompt stack & skills directory.</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          </div>
+          <div class="model-name">Gemini CLI</div>
+          <div class="model-desc">Installs as native Antigravity plugin at ~/.gemini/config with auto-hooks.</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="model-name">OpenAI GPT-4o</div>
+          <div class="model-desc">Injects system prompts & tool definitions via local proxy router.</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+          </div>
+          <div class="model-name">Ollama Local</div>
+          <div class="model-desc">Wraps local open weights models (Llama 3, Qwen) with strict process discipline.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Discipline Architecture Section -->
+  <section class="section" id="discipline">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <div class="section-subtitle">Process Engine</div>
+        <h2 class="section-title">Output Quality = Capability × Discipline</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🛡️</div>
+          <h3 class="feature-title">Plan Gate</h3>
+          <p class="feature-text">
+            Implementation tool calls are strictly blocked until a clear <code style="color: var(--accent-cyan)">SPEC.md</code> and <code style="color: var(--accent-cyan)">PLAN.md</code> are written and explicitly approved.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">📜</div>
+          <h3 class="feature-title">Ledger Discipline</h3>
+          <p class="feature-text">
+            Every task step is tracked in <code style="color: var(--accent-cyan)">.fable/LEDGER.md</code> with mandatory acceptance criteria and verifiable <code style="color: var(--accent-amber)">-- evidence:</code> log citations.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🧗</div>
+          <h3 class="feature-title">Attribution Ladder</h3>
+          <p class="feature-text">
+            On 3 consecutive test or build failures, execution auto-escalates: <code style="color: var(--accent-indigo)">Harness → Runtime → Product → Class fix</code> before repeating attempts.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🔒</div>
+          <h3 class="feature-title">Spawn Guard</h3>
+          <p class="feature-text">
+            Monitors capability ceilings before sub-agent delegation, preventing runaway recursive calls or context budget exhaustion.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🏁</div>
+          <h3 class="feature-title">Close Guard</h3>
+          <p class="feature-text">
+            Turn control cannot end if active background tasks are unverified or required test evidence remains uncollected.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🔌</div>
+          <h3 class="feature-title">Mythos Proxy Router</h3>
+          <p class="feature-text">
+            Local zero-dependency proxy server (<code style="color: var(--accent-cyan)">bunx get-fable serve 8080</code>) that wraps any model endpoint with automated context injection.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Vault Section -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <div class="section-subtitle">Asset Vault</div>
+        <h2 class="section-title">51 Skills & 10 Defined Personas</h2>
+      </div>
+
+      <div class="skills-controls">
+        <div class="search-box">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="skill-search" placeholder="Search skills, rules, hooks...">
+        </div>
+
+        <div class="filter-pills">
+          <button class="filter-btn active" data-filter="all">All Assets</button>
+          <button class="filter-btn" data-filter="rules">Rules & Guards</button>
+          <button class="filter-btn" data-filter="skills">Production Skills</button>
+          <button class="filter-btn" data-filter="hooks">Hooks</button>
+        </div>
+      </div>
+
+      <div class="skills-grid" id="skills-grid">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="skill-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title" style="font-size: 1.5rem; font-weight: 700;">Skill Detail</h2>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div id="modal-body">
+        <!-- Content inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div class="brand">
+        <img src="mascot.svg" alt="get-fable mascot">
+        <span>get-fable</span>
+      </div>
+      <div class="footer-text">
+        Released under the MIT License • Built with Bun & TypeScript
+      </div>
+      <div style="display: flex; gap: 16px;">
+        <a href="docs.html" style="color: var(--text-secondary);">Documentation</a>
+        <a href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" style="color: var(--text-secondary);">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

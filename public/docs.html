@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — get-fable Mythos System</title>
+  <meta name="description" content="Complete documentation and installation guide for get-fable across Bun, Antigravity, Gemini CLI, OpenAI, and Ollama.">
+  <link rel="icon" type="image/svg+xml" href="mascot.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand">
+        <img src="mascot.svg" alt="get-fable mascot">
+        <span>get-fable</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html#models">Models</a></li>
+        <li><a href="index.html#discipline">Discipline Engine</a></li>
+        <li><a href="index.html#skills">Skill Vault</a></li>
+        <li><a href="docs.html" class="active">Documentation</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-secondary copy-trigger" data-copy="bunx get-fable install">
+          <span>bunx get-fable install</span>
+        </button>
+        <a href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" class="btn btn-primary">
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Docs Content Container -->
+  <div class="container">
+    <div class="docs-layout">
+      
+      <!-- Sidebar Navigation -->
+      <aside class="docs-sidebar">
+        <div class="docs-nav-group">
+          <div class="docs-nav-title">Getting Started</div>
+          <ul class="docs-nav-list">
+            <li class="docs-nav-item"><a href="#quickstart" class="active">Quickstart</a></li>
+            <li class="docs-nav-item"><a href="#antigravity">Antigravity / Gemini CLI</a></li>
+            <li class="docs-nav-item"><a href="#init">Project Init</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-title">Core Engine</div>
+          <ul class="docs-nav-list">
+            <li class="docs-nav-item"><a href="#router">Mythos Router Proxy</a></li>
+            <li class="docs-nav-item"><a href="#ledger">Ledger & Evidence</a></li>
+            <li class="docs-nav-item"><a href="#hooks">Guard Hooks</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-title">Architecture</div>
+          <ul class="docs-nav-list">
+            <li class="docs-nav-item"><a href="#structure">Directory Structure</a></li>
+            <li class="docs-nav-item"><a href="#licensing">License & Credits</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Main Docs Content -->
+      <main class="docs-content">
+        <h1>get-fable Documentation</h1>
+        <p>The Fable 5 Mythos System brings Anthropic's internal Claude Code process discipline to every AI model and coding agent.</p>
+
+        <!-- Section: Quickstart -->
+        <section id="quickstart">
+          <h2>Quickstart Installation</h2>
+          <p>Install <code style="color: var(--accent-cyan)">get-fable</code> with a single command. The installer automatically detects your active environment and provisions your agent platforms.</p>
+
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable install">Copy</button>
+            <pre><code style="color: var(--accent-cyan)"># Using Bun (Recommended)</code>
+bunx get-fable install
+
+<code style="color: var(--accent-cyan)"># Using npm</code>
+npx get-fable install</pre>
+          </div>
+        </section>
+
+        <!-- Section: Antigravity -->
+        <section id="antigravity">
+          <h2>Antigravity & Gemini CLI Integration</h2>
+          <p>Installs as a native Antigravity plugin — registering global rules, skills, and mechanical hooks directly in <code style="color: var(--accent-cyan)">~/.gemini/config</code>.</p>
+
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable install-antigravity">Copy</button>
+            <pre>bunx get-fable install-antigravity</pre>
+          </div>
+          <p>Once installed, start or restart any Antigravity session to automatically load the Fable 5 system prompt and process rules.</p>
+        </section>
+
+        <!-- Section: Project Init -->
+        <section id="init">
+          <h2>Project Initialization</h2>
+          <p>Bootstrap Fable Mode process discipline into any project repository:</p>
+
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable init">Copy</button>
+            <pre>bunx get-fable init</pre>
+          </div>
+
+          <p>This command creates the following structure in your working directory:</p>
+          <ul style="color: var(--text-secondary); margin-left: 24px; margin-bottom: 20px;">
+            <li><code style="color: var(--accent-cyan)">.fable/LEDGER.md</code> — Task tracker with acceptance criteria and evidence fields.</li>
+            <li><code style="color: var(--accent-cyan)">docs/SPEC.md</code> — Project specification template.</li>
+            <li><code style="color: var(--accent-cyan)">.agents/skills/</code> — Custom local skill directory.</li>
+            <li><code style="color: var(--accent-cyan)">.agents/rules/</code> — Project-level enforcement rules.</li>
+          </ul>
+        </section>
+
+        <!-- Section: Mythos Router -->
+        <section id="router">
+          <h2>Mythos Router Proxy</h2>
+          <p>Wrap any LLM provider (OpenAI GPT-4o, Ollama, Anthropic) with Fable-grade context injection via a lightweight local proxy server:</p>
+
+          <div class="code-block">
+            <button class="copy-code-btn copy-trigger" data-copy="bunx get-fable serve 8080">Copy</button>
+            <pre>bunx get-fable serve 8080</pre>
+          </div>
+
+          <p>Then configure your agent or client to use <code style="color: var(--accent-cyan)">http://localhost:8080</code> as its Base URL endpoint.</p>
+        </section>
+
+        <!-- Section: Structure -->
+        <section id="structure">
+          <h2>Repository & Asset Vault Structure</h2>
+          <div class="code-block">
+            <pre style="color: #a5b4fc;">
+get-fable/
+├── assets/
+├── agents/         # 10 specialized agent definitions
+├── skills/         # 51 leaked production skills
+├── prompts/        # 3 Fable 5 core system prompts
+├── hooks/          # 4 mechanical guard hooks
+├── bin/            # Executable CLI bundle
+├── src/            # TypeScript source code
+└── public/         # Modern web application assets
+            </pre>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div class="brand">
+        <img src="mascot.svg" alt="get-fable mascot">
+        <span>get-fable</span>
+      </div>
+      <div class="footer-text">
+        Released under the MIT License • Built with Bun & TypeScript
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

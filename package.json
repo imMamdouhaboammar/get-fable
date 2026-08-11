@@ -11,7 +11,8 @@
     "start": "bun run bin/get-fable.js",
     "test": "bun test",
     "build": "bun build ./src/cli.ts --outfile ./bin/get-fable.js --target bun && echo '#!/usr/bin/env bun' | cat - bin/get-fable.js > bin/get-fable.js.tmp && mv bin/get-fable.js.tmp bin/get-fable.js && chmod +x bin/get-fable.js",
-    "lint": "bun run bin/get-fable.js lint"
+    "lint": "bun run bin/get-fable.js lint",
+    "serve:web": "bun --serve public"
   },
   "keywords": [
     "fable5",
