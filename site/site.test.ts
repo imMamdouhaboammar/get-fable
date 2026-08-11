@@ -29,14 +29,14 @@ describe('get-fable site structure', () => {
     expect(html).toContain('id="boundaries"');
   });
 
-  test('uses only supported quick-start commands and real repository links', () => {
+  test('uses only supported quick-start commands and deploy-safe repository links', () => {
     expect(html).toContain('git clone https://github.com/imMamdouhaboammar/get-fable.git');
     expect(html).toContain('bun ./bin/get-fable.js status');
     expect(html).toContain('bun ./bin/get-fable.js assets');
     expect(html).toContain('bun ./bin/get-fable.js install');
     expect(html).toContain('https://github.com/imMamdouhaboammar/get-fable');
-    expect(html).toContain('../LICENSE');
-    expect(html).toContain('../THIRD_PARTY_NOTICES.md');
+    expect(html).toContain('https://github.com/imMamdouhaboammar/get-fable/blob/master/LICENSE');
+    expect(html).toContain('https://github.com/imMamdouhaboammar/get-fable/blob/master/THIRD_PARTY_NOTICES.md');
   });
 
   test('keeps the public claim inside the documented trust boundary', () => {
