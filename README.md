@@ -4,83 +4,70 @@
 
 # get-fable
 
-### What if the model you already use could work more like a frontier model?
+### A stricter working environment for AI coding agents
 
-That question started this project
-
-<br/>
-
+[![CI](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 [![Bun](https://img.shields.io/badge/runtime-Bun-FBF0DF?style=flat-square&logo=bun&logoColor=14151A)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 </div>
 
-## The question behind get-fable
+## Why this exists
 
-Why do everyday models fall apart on work that frontier models handle more reliably?
+Model capability matters, but long-running coding work also depends on what happens around the model
 
-Raw model capability is part of the answer, but it is not the whole answer
+Tasks drift when the brief is vague, state lives only in chat history, retries repeat without diagnosis, and completion is declared without evidence
 
-A strong agent experience also depends on what happens around the model: how the task is framed, what context survives between turns, when implementation is allowed to start, how failures are handled, which skills are available, and what counts as proof that the work is actually finished
+`get-fable` focuses on the part a developer can inspect and change
 
-That led to a more useful question
+- project specs and task ledgers outside the chat transcript
+- reusable workspace rules and skills
+- lifecycle hooks for state injection, prerequisites, repeated failures, and close checks
+- explicit acceptance evidence
+- local installation targets for Claude Code, Antigravity / Gemini config, and Agent Kernel when present
+- a small request-enrichment proxy for supported chat request shapes
 
-> **How much of frontier-style execution can we bring to the models and coding agents we already use, without changing the model itself?**
-
-`get-fable` is an open-source attempt to answer that question in code
-
-It gives AI coding agents a stricter working environment built around specs, persistent task state, lifecycle hooks, reusable skills, failure handling, evidence checks, and a request-enrichment proxy
-
-The project is inspired by the execution patterns around modern frontier agents and models, including public references such as [Claude Fable 5 / Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) and [GPT-5.6 Sol](https://openai.com/index/gpt-5-6/)
-
-The goal is not to claim that a smaller model becomes one of those models
-
-The goal is to improve the part we can actually change: **the harness around the model**
-
-## The thesis
-
-A model does not work alone
-
-Give the same model a vague prompt, no durable task state, weak tool rules, and no verification requirement, and long-running work becomes fragile fast
-
-Give it a clearer operating environment and the behavior can change substantially, even though the weights stay exactly the same
-
-`get-fable` focuses on six practical areas
-
-1. **Plan before implementation**
-2. **Keep task state outside the chat**
-3. **Carry working rules across turns**
-4. **React differently when failures repeat**
-5. **Make useful skills and agent instructions reusable**
-6. **Require observable evidence before calling work complete**
-
-This is the bet behind the repository
-
-Not that every model has the same intelligence
-
-That better execution discipline can make the model you already have more dependable on real work
+It does not modify model weights and does not make one model equivalent to another
 
 > [!IMPORTANT]
-> `get-fable` does not modify model weights and does not claim model equivalence with Claude Fable 5, Claude Mythos 5, GPT-5.6 Sol, or any other frontier model
+> `get-fable` is an independent community project
 >
-> References to model and company names are descriptive only. `get-fable` is an independent community project and is not affiliated with, endorsed by, or sponsored by Anthropic, OpenAI, Google, Cursor, or the maintainers of referenced upstream projects
+> References to Anthropic, Claude, OpenAI, GPT, Google, Gemini, Antigravity, or other projects are descriptive only unless a cited upstream source says otherwise
+>
+> This repository is not endorsed by or affiliated with those vendors
 
-## What get-fable changes
+## The working model
 
-| Area | Current behavior |
+`get-fable` applies six practical constraints
+
+1. **Define the work before implementation**
+2. **Keep task state in project files**
+3. **Reload project rules across sessions**
+4. **Treat repeated failure as a diagnostic signal**
+5. **Reuse inspectable skills and agent instructions**
+6. **Require observable evidence before completion**
+
+The claim is deliberately narrow
+
+A better execution environment can improve consistency without changing the underlying model
+
+## What the repository currently does
+
+| Area | Implemented behavior |
 |---|---|
-| **Project discipline** | Creates a project spec, task ledger, progress file, verifier prompt, workspace skill, and workspace rules |
-| **Claude Code** | Installs the Fable Mode skill and four lifecycle hooks, then adds the project rules to the Claude configuration |
-| **Antigravity / Gemini config** | Installs a plugin package, skill files, and rules under `~/.gemini/config` |
-| **Agent Kernel** | Copies the Fable rules when `~/.agent-kernel` already exists |
-| **Asset library** | Organizes prompts, agent definitions, skills, slash-command references, reminders, MCP references, and starter components |
-| **Request proxy** | Accepts an OpenAI-style chat endpoint, normalizes supported request shapes, injects context, and can forward to one configured upstream URL |
-| **Inspection** | Reports installation state and enumerates bundled assets directly from the repository |
+| Project initialization | Creates missing spec, ledger, progress, verifier, workspace skill, and workspace rule files without replacing existing targets |
+| Claude Code | Installs the Fable skill and four Python lifecycle hooks, then merges hook registrations into Claude settings |
+| Antigravity / Gemini config | Installs its own plugin, rules, skill copy, hook files, and hook registrations without depending on Claude hook paths |
+| Agent Kernel | Copies the Fable rule when `~/.agent-kernel` already exists |
+| Configuration safety | Refuses to rewrite malformed JSON configuration instead of silently replacing it |
+| Asset inspection | Counts bundled prompts, agents, skills, commands, reminders, and starter components from disk |
+| Request proxy | Normalizes supported `messages` and Gemini-style `contents`, injects Fable context, and optionally forwards to one HTTP or HTTPS upstream |
+| Quality checks | Runs TypeScript checks, core behavior tests, site tests, a build, CLI smoke tests, and package-content inspection in CI |
 
-The README does not hard-code asset totals as a marketing claim
+Asset totals are intentionally not hard-coded in the README
 
-Use the repository itself as the source of truth
+Use the repository as the source of truth
 
 ```bash
 bun ./bin/get-fable.js assets
@@ -90,11 +77,11 @@ bun ./bin/get-fable.js assets
 
 ### Requirements
 
-- Bun
-- Python 3 for the lifecycle hooks
-- Git if you clone the repository from source
+- Bun 1.1 or newer
+- Python 3 for lifecycle hooks
+- Git when working from source
 
-### Inspect before installing
+### Inspect first
 
 ```bash
 git clone https://github.com/imMamdouhaboammar/get-fable.git
@@ -104,7 +91,13 @@ bun ./bin/get-fable.js status
 bun ./bin/get-fable.js assets
 ```
 
-### Add get-fable to one project
+Running the CLI without a command shows help and does not install anything
+
+```bash
+bun ./bin/get-fable.js
+```
+
+### Initialize one project
 
 From the project you want to prepare
 
@@ -112,7 +105,7 @@ From the project you want to prepare
 bun /path/to/get-fable/bin/get-fable.js init
 ```
 
-This creates
+This creates missing files under
 
 ```text
 .fable/
@@ -128,15 +121,15 @@ docs/
   SPEC.md
 ```
 
-Existing template targets are skipped rather than replaced
+Existing target files are skipped
 
-### Install the supported global integrations
+### Install global integrations
 
 ```bash
 bun ./bin/get-fable.js install
 ```
 
-The global installer currently writes to
+The supported installer targets are
 
 ```text
 ~/.claude/
@@ -144,29 +137,13 @@ The global installer currently writes to
 ~/.agent-kernel/   # only when this directory already exists
 ```
 
-Review those locations before running a global install on a machine with important custom agent configuration
+If an existing JSON configuration file is malformed, the installer stops rather than replacing its contents
 
-## How the workflow behaves
+For the Antigravity / Gemini target only
 
-### 1. Define the work
-
-`docs/SPEC.md` captures the goal, approach, task cards, acceptance checks, dependencies, and decisions
-
-### 2. Keep execution state visible
-
-`.fable/LEDGER.md` keeps tasks and evidence outside the conversation, so a long job does not depend entirely on chat history
-
-### 3. Gate important transitions
-
-The hooks can intervene at session start, before selected tool calls, after repeated command failures, and before the agent closes the turn
-
-### 4. Treat repeated failure as a different problem
-
-The fail-streak hook shifts behavior away from blind retries and toward identifying what class of failure is actually happening
-
-### 5. Close with evidence
-
-The close guard checks for unfinished ledger items and missing evidence annotations before completion
+```bash
+bun ./bin/get-fable.js install-antigravity
+```
 
 ## Lifecycle hooks
 
@@ -177,47 +154,148 @@ The close guard checks for unfinished ledger items and missing evidence annotati
 | `PostToolUse` | `fable_fail_streak.py` | React to repeated command failures |
 | `Stop` | `fable_close_guard.py` | Check unresolved work and evidence before close |
 
-The hooks are plain Python files under [`hooks/`](./hooks), so their behavior can be reviewed before installation
+The hook files live under [`hooks/`](./hooks) and can be inspected before installation
 
-## Request proxy
+## Local request proxy
 
-Start the proxy
+Start it on the default loopback address
 
 ```bash
 bun ./bin/get-fable.js serve 8080
 ```
 
-The current endpoint is
+Endpoints
 
 ```text
+GET  /health
+GET  /v1/health
+POST /chat/completions
 POST /v1/chat/completions
 ```
 
-The proxy can normalize request bodies that use either a `messages` array or a Gemini-style `contents` array, then prepend the configured Fable prompt context
+Without an upstream URL, the proxy runs in preview mode and does not call a model provider
 
-To forward the enriched request, set one upstream URL
+To forward an enriched request
 
 ```bash
 export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
 bun ./bin/get-fable.js serve 8080
 ```
 
-Without `UPSTREAM_OPENAI_URL`, the server returns an enrichment preview instead of calling a model provider
+Current safety defaults
+
+- binds to `127.0.0.1`
+- CORS is off unless `FABLE_CORS_ORIGIN` is set
+- request bodies are limited to 1 MiB by default
+- malformed JSON returns `400`
+- unsupported content types return `415`
+- upstream requests time out after 30 seconds by default
+- upstream URLs must use HTTP or HTTPS
+- non-JSON upstream responses are passed through without forcing JSON parsing
+
+Configurable environment variables
+
+```text
+FABLE_HOST
+FABLE_CORS_ORIGIN
+FABLE_MAX_BODY_BYTES
+FABLE_UPSTREAM_TIMEOUT_MS
+UPSTREAM_OPENAI_URL
+```
 
 > [!WARNING]
-> The router is a development utility, not a hardened public gateway. The current implementation uses permissive CORS and does not provide its own authentication or authorization boundary. Do not expose it to an untrusted network without your own access controls
+> The proxy does not implement user authentication or authorization
+>
+> If you deliberately bind it beyond loopback, protect it with appropriate network controls and an authenticated gateway
 
-## Compatibility without fake universality
+## Supported request shapes
 
-Automatic configuration currently exists for Claude Code, the repository's Antigravity / Gemini config target, and Agent Kernel when present
+OpenAI-style messages
 
-Other coding agents can reuse project files, skills, rules, or the request proxy where their formats are compatible, but this repository does not claim that every IDE, provider, or model is automatically configured by the installer
+```json
+{
+  "model": "example-model",
+  "messages": [
+    { "role": "user", "content": "Review this change" }
+  ]
+}
+```
 
-That distinction matters
+Gemini-style contents
 
-## Where the Fable name comes from
+```json
+{
+  "model": "example-model",
+  "contents": [
+    {
+      "role": "user",
+      "parts": [{ "text": "Review this change" }]
+    }
+  ]
+}
+```
 
-`get-fable` grew from public community work around Fable Mode, Mythos routing, agent prompts, and reusable coding-agent skills
+This support is intentionally narrower than a complete OpenAI, Gemini, Anthropic, Ollama, or OpenRouter protocol implementation
+
+## CLI
+
+```text
+install               Install supported global integrations
+install-antigravity   Install the Antigravity / Gemini config target
+init                  Create missing project-local workflow files
+serve [port]          Start the local request proxy, default 8080
+router [port]         Alias for serve
+lint                  Verify ledger acceptance and evidence annotations
+status                Report selected installation state
+assets                Count bundled asset groups
+prompt                Print the bundled Fable prompt
+version               Print the package version
+help                  Show CLI help
+```
+
+## Development
+
+Install development dependencies
+
+```bash
+bun install
+```
+
+Run the complete local check
+
+```bash
+bun run check
+```
+
+Or run individual checks
+
+```bash
+bun run typecheck
+bun test
+bun test --coverage
+bun run build
+```
+
+The executable under `bin/get-fable.js` is a small Bun launcher that imports the TypeScript CLI source directly
+
+The build output is used as an additional bundling check rather than as a second hand-maintained copy of the CLI
+
+## Project boundaries
+
+`get-fable` does not promise to
+
+- reproduce proprietary models or private vendor infrastructure
+- expose hidden reasoning
+- eliminate hallucinations or correctness failures
+- configure every coding IDE or agent automatically
+- provide a public authenticated model gateway
+- prove that bundled community material is official vendor material
+
+Automatic installation support and reusable file compatibility are treated as separate claims
+
+## Upstream references and attribution
+
+The project grew from public work around Fable Mode, Mythos routing, system prompts, and coding-agent skills
 
 Known upstream references include
 
@@ -227,28 +305,23 @@ Known upstream references include
 
 See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for attribution and licensing notes
 
-## What this project does not promise
-
-`get-fable` does not reproduce a proprietary model, a private service, hidden reasoning, or a vendor's internal infrastructure
-
-It does not guarantee correctness, eliminate hallucinations, or make a lightweight model equal to a frontier model
-
-It changes the working conditions around the model: planning, state, context, skills, failure handling, and verification
-
-That is a narrower claim, but it is also one we can inspect and test
+Public model references provide context for the project name and research direction, not an endorsement of this repository
 
 ## Documentation
 
 - [Usage](./docs/USAGE.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Architecture decision record](./docs/ADR-001-fable-supersystem.md)
+- [Security policy](./SECURITY.md)
+- [Contributing](./CONTRIBUTING.md)
+- [Releasing](./docs/RELEASING.md)
 - [Third-party notices](./THIRD_PARTY_NOTICES.md)
 
 ## License
 
-The original `get-fable` project code is released under the [MIT License](./LICENSE)
+Original `get-fable` code is released under the [MIT License](./LICENSE)
 
-Third-party material remains subject to its applicable source terms and rights, as described in [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)
+Third-party material remains subject to its applicable source terms and rights as described in [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)
 
 <div align="center">
 

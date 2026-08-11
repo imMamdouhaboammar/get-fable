@@ -2,26 +2,24 @@
 
 ## Purpose
 
-`get-fable` is a local-first toolkit for making agentic coding work more explicit and easier to verify
+`get-fable` is a local-first toolkit for making coding-agent work explicit, persistent, and easier to verify
 
-It combines four concerns that are often handled separately
+It combines four concerns
 
 1. project state and task tracking
 2. lifecycle checks around agent execution
 3. reusable prompt, skill, and agent assets
-4. request enrichment through an OpenAI-compatible HTTP endpoint
+4. optional request enrichment through a local HTTP endpoint
 
-The architecture is intentionally inspectable
+The implementation favors inspectable files and small public boundaries over hidden runtime behavior
 
-Project rules live in files, hooks are plain Python scripts, installer targets are visible in source, and the router has a small surface area
+## Trust boundary
 
-## What the project does not claim
+The project does not reproduce a proprietary model, private provider service, or hidden reasoning process
 
-The project does not claim to reproduce a proprietary model, official vendor tier, private service, or hidden reasoning process
+The code in this repository is the source of truth for installation targets and request compatibility
 
-Names such as `Fable 5` and `Mythos` are retained only where they identify upstream community projects, source files, or compatibility conventions used by this repository
-
-The current code should be treated as the source of truth for compatibility
+Bundled community material and vendor names do not imply vendor endorsement
 
 ## High-level structure
 
@@ -44,69 +42,89 @@ The current code should be treated as the source of truth for compatibility
                               v
                    evidence-aware execution
 
-            optional request enrichment path
+            optional local request path
 
-client -> /v1/chat/completions -> normalize -> inject context
-                                      |
-                                      v
-                           configured upstream URL
+client -> local HTTP -> normalize -> inject context -> optional upstream
 ```
 
-## Components
+## 1. CLI boundary
 
-### 1. Multi-target installer
+Source: [`src/cli.ts`](../src/cli.ts)
+
+Executable: [`bin/get-fable.js`](../bin/get-fable.js)
+
+The file under `bin/` is intentionally small and imports the TypeScript CLI source through Bun
+
+This prevents a committed generated bundle from drifting behind `src/`
+
+The CLI
+
+- shows help when run without a command
+- requires installation commands to be explicit
+- reads its version from `package.json`
+- validates proxy ports before starting a server
+- returns command status through `process.exitCode`
+
+## 2. Multi-target installer
 
 Source: [`src/installer.ts`](../src/installer.ts)
 
-The installer currently knows about three target locations
+### Claude Code
 
-#### Claude Code
+Default target: `~/.claude`
 
-Writes under the Claude configuration directory, defaulting to `~/.claude`
+The installer
 
-It currently
-
-- installs the Fable Mode skill under `skills/fable-mode`
-- copies the Python lifecycle hooks with that skill
+- installs the Fable skill
+- copies four Python hooks
 - merges hook registrations into `settings.json`
-- appends the Fable rules to `CLAUDE.md` when the marker is not already present
+- appends the Fable rules to `CLAUDE.md` once
 
-The hook events registered by the installer are
+`CLAUDE_CONFIG_DIR` can redirect the target
 
-```text
-SessionStart
-PreToolUse
-PostToolUse
-Stop
-```
+### Antigravity / Gemini config target
 
-#### Antigravity / Gemini config target
+Default target: `~/.gemini/config`
 
-Writes under `~/.gemini/config`
+The installer
 
-It currently
-
-- writes `rules/fable5-mode.md`
+- writes the Fable rule
 - writes the `get-fable` plugin package
-- copies the bundled skill collection into the plugin
+- copies bundled skills into the plugin
+- copies lifecycle hooks into the plugin itself
 - installs the global `fable-mode` skill
-- attempts to register lifecycle hooks when the referenced hook files are available
+- registers plugin-owned hook paths in `hooks.json`
 
-This repository uses `~/.gemini/config` as the Antigravity / Gemini configuration target
+The dedicated Antigravity install does not depend on hook files under Claude configuration
 
-That path should not be read as a claim that every Gemini CLI installation or version uses the same plugin convention
+`FABLE_GEMINI_CONFIG_DIR` can redirect the target
 
-#### Agent Kernel
+### Agent Kernel
 
-If `~/.agent-kernel` already exists, the global installer writes
+Default target: `~/.agent-kernel`
 
-```text
-~/.agent-kernel/rules/fable5-mode.md
-```
+If that directory already exists, the global installer writes the Fable rule under `rules/`
 
-No broader Agent Kernel configuration is currently performed
+The installer does not create a full Agent Kernel installation
 
-### 2. Project initialization
+`FABLE_AGENT_KERNEL_DIR` can redirect the target
+
+## 3. Configuration writes
+
+Source: [`src/utils.ts`](../src/utils.ts)
+
+JSON configuration mutation follows these rules
+
+1. parse an existing file before modifying it
+2. require the JSON root to be an object
+3. refuse to continue when existing JSON is malformed
+4. write the updated JSON through a temporary file and rename
+
+The helper does not treat broken configuration as an empty object
+
+That choice is deliberate because preserving user configuration is more important than making an install appear successful
+
+## 4. Project initialization
 
 Command
 
@@ -114,9 +132,7 @@ Command
 bun ./bin/get-fable.js init
 ```
 
-Source: [`src/installer.ts`](../src/installer.ts)
-
-The initializer creates project-local files so execution state does not depend entirely on chat history
+The initializer creates missing project-local targets
 
 ```text
 .fable/
@@ -132,15 +148,13 @@ docs/
   SPEC.md
 ```
 
-Template files that already exist are skipped
+Every target is skip-if-present
 
-The workspace skill and rule files are copied into `.agents`
+The initializer does not replace an existing workspace skill, rule, ledger, progress file, verifier, or spec
 
-### 3. Lifecycle guard hooks
+## 5. Lifecycle hooks
 
 Source: [`hooks/`](../hooks)
-
-The current hook set is
 
 | Hook | Trigger | Responsibility |
 |---|---|---|
@@ -149,17 +163,13 @@ The current hook set is
 | `fable_fail_streak.py` | `PostToolUse` | React to repeated command failures |
 | `fable_close_guard.py` | `Stop` | Check unresolved ledger work and evidence before close |
 
-These are process controls, not correctness proofs
+These hooks are process checks, not correctness proofs
 
-A passing guard does not guarantee that the resulting implementation is correct
-
-### 4. Asset library
+## 6. Asset library
 
 Source: [`assets/`](../assets)
 
-The asset library groups reusable material by purpose rather than treating one prompt as the product
-
-Current categories include
+The library groups reusable material by purpose
 
 ```text
 assets/agents/
@@ -171,19 +181,34 @@ assets/slash-commands/
 assets/starter-components/
 ```
 
-The runtime count should be taken from the repository itself
+Counts come from disk at runtime
 
 ```bash
 bun ./bin/get-fable.js assets
 ```
 
-[`src/assets-manager.ts`](../src/assets-manager.ts) provides the same repository-backed summary programmatically
+User-provided skill and agent names are validated before they are converted into local asset paths
 
-### 5. Request enrichment proxy
+Names containing path traversal syntax are rejected
 
-Source: [`src/router/`](../src/router)
+## 7. Request normalization
 
-The current server exposes
+Source: [`src/router/provider-translator.ts`](../src/router/provider-translator.ts)
+
+The normalizer accepts two documented shapes
+
+- OpenAI-style `messages`
+- Gemini-style `contents`, including structured `systemInstruction.parts`
+
+Unsupported bodies return a validation error instead of being serialized into an implicit fallback message
+
+Context injection returns a new request object and does not mutate the caller's request
+
+## 8. Local request proxy
+
+Source: [`src/router/index.ts`](../src/router/index.ts)
+
+Endpoints
 
 ```text
 GET  /health
@@ -192,83 +217,89 @@ POST /chat/completions
 POST /v1/chat/completions
 ```
 
-Request processing is intentionally small
+Default request flow
 
-1. parse the incoming JSON body
-2. normalize a supported request shape
-3. prepend the configured Fable prompt context
-4. forward to one configured upstream URL when `UPSTREAM_OPENAI_URL` is set
-5. otherwise return an enrichment preview
+1. accept JSON on a supported endpoint
+2. enforce the configured body limit
+3. normalize the request
+4. inject Fable context
+5. return preview metadata when no upstream is configured
+6. otherwise forward to one configured HTTP or HTTPS upstream
 
-The request normalizer currently understands
+Safety defaults
 
-- an OpenAI-style `messages` array
-- a Gemini-style `contents` array
-- a generic fallback that serializes an unknown body into one user message
+```text
+host                     127.0.0.1
+CORS                     disabled unless configured
+max request body         1 MiB
+upstream timeout         30 seconds
+allowed upstream scheme  http / https
+```
 
-This is request-shape normalization, not full provider emulation
+The proxy preserves upstream status, content type, and response bytes rather than assuming every upstream response is JSON
 
-The proxy does not currently implement a complete Anthropic Messages adapter, provider discovery, retry policy, credential store, rate limiting, or provider-specific streaming translation
+The proxy still has no built-in user authentication or authorization boundary
 
-## Router trust boundary
+Binding it beyond loopback is an explicit operator decision and should be paired with external access controls
 
-The router is not designed as a public API gateway in its current form
+## 9. Tests and CI
 
-Important current behavior
+Core tests live under [`test/`](../test)
 
-- CORS is permissive
-- there is no built-in authentication or authorization check
-- an inbound `Authorization` header is forwarded to the configured upstream
-- the server forwards only when `UPSTREAM_OPENAI_URL` is present
+They cover public behavior around
 
-Keep the router on a trusted machine or network unless you add your own access controls
+- JSON merge safety
+- project initialization
+- Antigravity installation and idempotence
+- CLI defaults and port validation
+- request normalization and immutable context injection
+- local proxy HTTP behavior and body limits
+- asset path traversal rejection
+- Fable ledger lint behavior
 
-## Configuration mutation behavior
+The existing site contract tests remain under [`site/`](../site)
 
-Global installation changes user configuration files
+CI runs
 
-The installer merges valid JSON in supported configuration files and writes formatted JSON back to disk
-
-If a JSON file is malformed, the current helper cannot preserve that malformed content safely
-
-Back up important custom configuration before running a global install
-
-Project initialization is narrower and skips existing template targets instead of replacing them
+```text
+TypeScript typecheck
+full Bun test suite with coverage
+Bun build
+CLI smoke test
+npm package-content dry run
+```
 
 ## Compatibility policy
 
-Compatibility claims in project documentation follow these rules
+Documentation uses three separate meanings
 
-- automatic support means the installer contains code for that target
-- request compatibility means the router understands the request shape described in source
-- reusable assets do not imply automatic installation into every agent that can read Markdown
-- a vendor or product name is not an endorsement claim
+- automatic support means installer code exists for that target
+- request compatibility means the normalizer handles the documented request shape
+- reusable asset means a file may be consumable manually where another tool accepts that format
 
-Under that definition, the current automatic configuration targets are Claude Code, the repository's Antigravity / Gemini config target, and Agent Kernel when present
-
-Other agents may be able to consume the project files or proxy manually, but they are not described as automatic targets until the repository contains that integration
+Those meanings are not interchangeable
 
 ## Dependencies
 
-The npm package declares no runtime npm dependencies
+The package has no runtime npm dependencies
 
-The project still relies on external runtimes and local tools
+The project still depends on external runtimes and tools
 
-- Bun for the CLI and server
-- Python 3 for the lifecycle hooks
-- Git for source-based installation workflows
-
-That is more accurate than describing the entire project as dependency-free
+- Bun for the CLI, tests, build, and local server
+- Python 3 for lifecycle hooks
+- Git for source-based setup
 
 ## Provenance
 
 The repository contains original project code plus material adapted or collected from public upstream repositories
 
-Known upstream references and their repository licenses are documented in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md)
+See [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) for source and licensing notes
 
 ## Related docs
 
 - [README](../README.md)
 - [Usage](./USAGE.md)
 - [ADR-001](./ADR-001-fable-supersystem.md)
+- [Security](../SECURITY.md)
+- [Contributing](../CONTRIBUTING.md)
 - [Third-party notices](../THIRD_PARTY_NOTICES.md)

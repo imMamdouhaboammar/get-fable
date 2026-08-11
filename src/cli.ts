@@ -1,13 +1,42 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { installGlobalFable, installAntigravityGlobal, initProjectFable, checkFableStatus, getRepoRootDir } from './installer.js';
+import { fileURLToPath } from 'node:url';
+import {
+  installGlobalFable,
+  installAntigravityGlobal,
+  initProjectFable,
+  checkFableStatus,
+  getRepoRootDir,
+} from './installer.js';
 import { runFableLint } from './fable-lint.js';
 import { startMythosRouterServer } from './router/index.js';
-import { logHeader, colors } from './utils.js';
+import { logHeader, logError, colors } from './utils.js';
 
-export function main() {
-  const args = process.argv.slice(2);
-  const command = args[0] || 'install';
+export function getPackageVersion(): string {
+  try {
+    const packagePath = path.join(getRepoRootDir(), 'package.json');
+    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+    return typeof packageJson.version === 'string' ? packageJson.version : 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
+export function parsePort(value: string | undefined): number {
+  if (value === undefined) return 8080;
+  if (!/^\d+$/.test(value)) {
+    throw new Error('Port must be an integer between 1 and 65535');
+  }
+
+  const port = Number(value);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error('Port must be an integer between 1 and 65535');
+  }
+  return port;
+}
+
+export function runCli(args: string[] = process.argv.slice(2)): number {
+  const command = args[0] || 'help';
 
   switch (command) {
     case 'install':
@@ -18,68 +47,73 @@ export function main() {
         logHeader('Installing get-fable global integrations');
         installGlobalFable();
       }
-      break;
+      return 0;
 
     case 'install-antigravity':
       logHeader('Installing get-fable for Antigravity');
       installAntigravityGlobal();
-      break;
+      return 0;
 
     case 'init':
       logHeader('Initializing project workflow files (.fable/ & .agents/)');
       initProjectFable(process.cwd());
-      break;
+      return 0;
 
-    case 'lint':
+    case 'lint': {
       logHeader('Fable spec and ledger verification');
-      const pass = runFableLint(process.cwd());
-      process.exit(pass ? 0 : 1);
-      break;
+      return runFableLint(process.cwd()) ? 0 : 1;
+    }
 
     case 'status':
       logHeader('get-fable installation status');
       checkFableStatus();
-      break;
+      return 0;
 
     case 'serve':
-    case 'router':
-      const port = parseInt(args[1] || '8080', 10);
+    case 'router': {
+      const port = parsePort(args[1]);
       logHeader(`Starting request-enrichment proxy on port ${port}`);
       startMythosRouterServer(port);
-      break;
+      return 0;
+    }
 
     case 'assets':
       logHeader('Bundled get-fable assets');
       listAssets();
-      break;
+      return 0;
 
-    case 'prompt':
+    case 'prompt': {
       logHeader('Bundled Fable prompt');
-      const repoRoot = getRepoRootDir();
-      const promptPath = path.join(repoRoot, 'prompts', 'claude-code-fable-5.md');
-      if (fs.existsSync(promptPath)) {
-        console.log(fs.readFileSync(promptPath, 'utf-8'));
-      } else {
-        console.log('Prompt file not found.');
+      const promptPath = path.join(getRepoRootDir(), 'prompts', 'claude-code-fable-5.md');
+      if (!fs.existsSync(promptPath)) {
+        logError('Prompt file not found.');
+        return 1;
       }
-      break;
+      console.log(fs.readFileSync(promptPath, 'utf-8'));
+      return 0;
+    }
+
+    case 'version':
+    case '--version':
+    case '-v':
+      console.log(getPackageVersion());
+      return 0;
 
     case 'help':
     case '--help':
     case '-h':
       showHelp();
-      break;
+      return 0;
 
     default:
-      console.log(`Unknown command: ${command}`);
+      logError(`Unknown command: ${command}`);
       showHelp();
-      process.exit(1);
+      return 1;
   }
 }
 
 function listAssets() {
-  const repoRoot = getRepoRootDir();
-  const assetsDir = path.join(repoRoot, 'assets');
+  const assetsDir = path.join(getRepoRootDir(), 'assets');
 
   const countItems = (dir: string) => {
     if (!fs.existsSync(dir)) return 0;
@@ -95,9 +129,9 @@ function listAssets() {
   console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path.join(assetsDir, 'starter-components'))} components`);
 }
 
-function showHelp() {
+export function showHelp() {
   console.log(`
-${colors.bright}${colors.cyan}get-fable v1.0.0${colors.reset} | Process discipline toolkit for AI coding agents
+${colors.bright}${colors.cyan}get-fable v${getPackageVersion()}${colors.reset} | Process discipline toolkit for AI coding agents
 
 ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}get-fable${colors.reset} [command]
@@ -105,16 +139,34 @@ ${colors.bright}USAGE:${colors.reset}
 
 ${colors.bright}COMMANDS:${colors.reset}
   ${colors.yellow}install${colors.reset}              Install supported global integrations for Claude Code, Antigravity, and Agent Kernel when present
-  ${colors.yellow}install-antigravity${colors.reset}  Install the repository's Antigravity / Gemini config target
-  ${colors.yellow}init${colors.reset}                 Create .fable/, .agents/, and docs/SPEC.md in the current project
-  ${colors.yellow}serve${colors.reset}                Start the OpenAI-compatible request-enrichment proxy
-  ${colors.yellow}router${colors.reset}               Alias for serve
+  ${colors.yellow}install-antigravity${colors.reset}  Install the Antigravity / Gemini config target, including its own hook copies
+  ${colors.yellow}init${colors.reset}                 Create .fable/, .agents/, and docs/SPEC.md without replacing existing project files
+  ${colors.yellow}serve [port]${colors.reset}         Start the local request-enrichment proxy, default port 8080
+  ${colors.yellow}router [port]${colors.reset}        Alias for serve
   ${colors.yellow}lint${colors.reset}                 Verify .fable/LEDGER.md acceptance criteria and evidence annotations
   ${colors.yellow}status${colors.reset}               Report selected installation state
   ${colors.yellow}assets${colors.reset}               List bundled prompts, agent definitions, skills, and supporting assets
-  ${colors.yellow}prompt${colors.reset}               Print the bundled Fable prompt used by this command
+  ${colors.yellow}prompt${colors.reset}               Print the bundled Fable prompt
+  ${colors.yellow}version${colors.reset}              Print the installed get-fable version
   ${colors.yellow}help${colors.reset}                 Display this help menu
+
+Running get-fable without a command shows this help. Installation is always explicit.
 `);
 }
 
-main();
+export function main() {
+  try {
+    process.exitCode = runCli();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logError(message);
+    process.exitCode = 1;
+  }
+}
+
+function isDirectExecution() {
+  if (!process.argv[1]) return false;
+  return path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+}
+
+if (isDirectExecution()) main();

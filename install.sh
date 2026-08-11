@@ -1,30 +1,42 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-echo "Installing get-fable workflow support..."
+REPO_URL="https://github.com/imMamdouhaboammar/get-fable.git"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || pwd)"
+TEMP_DIR=""
 
-# Determine config directories
-CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
-GEMINI_DIR="$HOME/.gemini/config"
-KERNEL_DIR="$HOME/.agent-kernel"
+cleanup() {
+  if [[ -n "$TEMP_DIR" && -d "$TEMP_DIR" ]]; then
+    rm -rf "$TEMP_DIR"
+  fi
+}
+trap cleanup EXIT
 
-# Temporary clone directory if needed
-SKILL_DEST="$CLAUDE_DIR/skills/fable-mode"
-mkdir -p "$SKILL_DEST"
+if ! command -v bun >/dev/null 2>&1; then
+  echo "get-fable requires Bun. Install Bun first, then rerun this installer." >&2
+  exit 1
+fi
 
-REPO_URL="https://github.com/cozytab/fable5-mode"
-if [ ! -d "$SKILL_DEST/.git" ]; then
-    echo "Cloning the upstream Fable Mode repository..."
-    git clone --quiet "$REPO_URL" "$SKILL_DEST"
+if [[ -f "$SCRIPT_DIR/package.json" && -f "$SCRIPT_DIR/bin/get-fable.js" ]]; then
+  REPO_DIR="$SCRIPT_DIR"
 else
-    echo "Updating the existing Fable Mode checkout..."
-    git -C "$SKILL_DEST" pull --quiet || true
+  if ! command -v git >/dev/null 2>&1; then
+    echo "Git is required when install.sh is run outside a get-fable checkout." >&2
+    exit 1
+  fi
+
+  TEMP_DIR="$(mktemp -d)"
+  REPO_DIR="$TEMP_DIR/get-fable"
+  echo "Fetching get-fable..."
+  git clone --depth 1 --quiet "$REPO_URL" "$REPO_DIR"
 fi
 
-# Run fable-mode installer
-if [ -f "$SKILL_DEST/install.sh" ]; then
-    bash "$SKILL_DEST/install.sh"
-fi
+echo "Running the get-fable global installer..."
+bun "$REPO_DIR/bin/get-fable.js" install
 
-echo "Fable Mode workflow support installed"
-echo "Restart the affected agent session so it can load the updated configuration"
+echo "Installation complete"
+if [[ -z "$TEMP_DIR" ]]; then
+  echo "Run 'bun $REPO_DIR/bin/get-fable.js status' to inspect the configured targets"
+else
+  echo "Run the status command from a get-fable checkout to inspect the configured targets"
+fi

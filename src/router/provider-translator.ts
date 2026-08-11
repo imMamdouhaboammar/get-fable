@@ -1,5 +1,7 @@
+export type GenericChatRole = 'system' | 'user' | 'assistant' | 'tool';
+
 export interface GenericChatMessage {
-  role: 'system' | 'user' | 'assistant' | 'tool';
+  role: GenericChatRole;
   content: string;
   name?: string;
 }
@@ -12,70 +14,160 @@ export interface GenericLLMRequest {
   stream?: boolean;
 }
 
+export class RequestValidationError extends Error {
+  readonly statusCode = 400;
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'RequestValidationError';
+  }
+}
+
+function asRecord(value: unknown): Record<string, any> | null {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, any>)
+    : null;
+}
+
+function normalizeRole(value: unknown): GenericChatRole {
+  if (value === 'system' || value === 'assistant' || value === 'tool') return value;
+  return 'user';
+}
+
+function stringifyContent(value: unknown): string {
+  if (typeof value === 'string') return value;
+  if (value === null || value === undefined) return '';
+  return JSON.stringify(value);
+}
+
+function finiteNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
+function positiveInteger(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isInteger(value) && value > 0 ? value : undefined;
+}
+
+function extractPartsText(value: unknown): string {
+  const record = asRecord(value);
+  if (!record) return stringifyContent(value);
+
+  if (Array.isArray(record.parts)) {
+    return record.parts
+      .map((part: unknown) => {
+        const partRecord = asRecord(part);
+        return partRecord && typeof partRecord.text === 'string' ? partRecord.text : '';
+      })
+      .filter(Boolean)
+      .join('\n');
+  }
+
+  return stringifyContent(value);
+}
+
+function modelName(value: unknown, fallback: string): string {
+  return typeof value === 'string' && value.trim() ? value.trim() : fallback;
+}
+
 export class ProviderTranslator {
-  /**
-   * Transforms incoming request payload into generic format
-   */
-  static normalizeRequest(body: any): GenericLLMRequest {
-    if (Array.isArray(body.messages)) {
+  static normalizeRequest(body: unknown): GenericLLMRequest {
+    const request = asRecord(body);
+    if (!request) {
+      throw new RequestValidationError('Request body must be a JSON object');
+    }
+
+    if (Array.isArray(request.messages)) {
+      if (request.messages.length === 0) {
+        throw new RequestValidationError('messages must contain at least one message');
+      }
+
+      const messages = request.messages.map((message: unknown, index: number) => {
+        const item = asRecord(message);
+        if (!item) {
+          throw new RequestValidationError(`messages[${index}] must be an object`);
+        }
+
+        const normalized: GenericChatMessage = {
+          role: normalizeRole(item.role),
+          content: stringifyContent(item.content),
+        };
+
+        if (typeof item.name === 'string' && item.name.trim()) {
+          normalized.name = item.name;
+        }
+
+        return normalized;
+      });
+
       return {
-        model: body.model || 'default-fable-model',
-        messages: body.messages.map((m: any) => ({
-          role: m.role || 'user',
-          content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
-          name: m.name,
-        })),
-        temperature: body.temperature,
-        max_tokens: body.max_tokens || body.max_completion_tokens,
-        stream: body.stream || false,
+        model: modelName(request.model, 'default-fable-model'),
+        messages,
+        temperature: finiteNumber(request.temperature),
+        max_tokens:
+          positiveInteger(request.max_tokens) ?? positiveInteger(request.max_completion_tokens),
+        stream: request.stream === true,
       };
     }
-    // Gemini format fallback
-    if (Array.isArray(body.contents)) {
+
+    if (Array.isArray(request.contents)) {
+      if (request.contents.length === 0) {
+        throw new RequestValidationError('contents must contain at least one message');
+      }
+
       const messages: GenericChatMessage[] = [];
-      if (body.systemInstruction) {
+      if (request.systemInstruction !== undefined) {
         messages.push({
           role: 'system',
-          content: typeof body.systemInstruction === 'string'
-            ? body.systemInstruction
-            : JSON.stringify(body.systemInstruction),
+          content: extractPartsText(request.systemInstruction),
         });
       }
-      for (const item of body.contents) {
-        const role = item.role === 'model' ? 'assistant' : 'user';
-        const partsText = (item.parts || []).map((p: any) => p.text || '').join('\n');
-        messages.push({ role, content: partsText });
-      }
+
+      request.contents.forEach((content: unknown, index: number) => {
+        const item = asRecord(content);
+        if (!item) {
+          throw new RequestValidationError(`contents[${index}] must be an object`);
+        }
+
+        messages.push({
+          role: item.role === 'model' ? 'assistant' : 'user',
+          content: extractPartsText(item),
+        });
+      });
+
+      const generationConfig = asRecord(request.generationConfig) || {};
       return {
-        model: body.model || 'gemini-fable-wrapper',
+        model: modelName(request.model, 'gemini-fable-wrapper'),
         messages,
-        temperature: body.generationConfig?.temperature,
-        max_tokens: body.generationConfig?.maxOutputTokens,
+        temperature: finiteNumber(generationConfig.temperature),
+        max_tokens: positiveInteger(generationConfig.maxOutputTokens),
         stream: false,
       };
     }
 
-    return {
-      model: body.model || 'fable-generic',
-      messages: [{ role: 'user', content: JSON.stringify(body) }],
-    };
+    throw new RequestValidationError('Request must contain a messages or contents array');
   }
 
-  /**
-   * Injects Fable 5 System Prompt & discipline into system message
-   */
-  static injectFableSystemPrompt(req: GenericLLMRequest, fablePromptText: string): GenericLLMRequest {
-    const existingSystemIdx = req.messages.findIndex((m) => m.role === 'system');
-
-    if (existingSystemIdx >= 0) {
-      req.messages[existingSystemIdx].content = `${fablePromptText}\n\n--- ORIGINAL SYSTEM INSTRUCTIONS ---\n${req.messages[existingSystemIdx].content}`;
-    } else {
-      req.messages.unshift({
-        role: 'system',
-        content: fablePromptText,
-      });
+  static injectFableSystemPrompt(
+    request: GenericLLMRequest,
+    fablePromptText: string
+  ): GenericLLMRequest {
+    if (!fablePromptText.trim()) {
+      throw new Error('Fable system prompt is empty');
     }
 
-    return req;
+    const messages = request.messages.map((message) => ({ ...message }));
+    const existingSystemIndex = messages.findIndex((message) => message.role === 'system');
+
+    if (existingSystemIndex >= 0) {
+      const original = messages[existingSystemIndex];
+      messages[existingSystemIndex] = {
+        ...original,
+        content: `${fablePromptText}\n\n--- ORIGINAL SYSTEM INSTRUCTIONS ---\n${original.content}`,
+      };
+    } else {
+      messages.unshift({ role: 'system', content: fablePromptText });
+    }
+
+    return { ...request, messages };
   }
 }
