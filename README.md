@@ -305,9 +305,7 @@ Known upstream references include
 
 See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for attribution and licensing notes
 
-Public model references include Anthropic's published material for Claude Fable 5 / Claude Mythos 5 and OpenAI's published material for GPT-5.6 Sol
-
-Those references provide context for the project name and research direction, not an endorsement of this repository
+Public model references provide context for the project name and research direction, not an endorsement of this repository
 
 ## Documentation
 
@@ -316,6 +314,7 @@ Those references provide context for the project name and research direction, no
 - [Architecture decision record](./docs/ADR-001-fable-supersystem.md)
 - [Security policy](./SECURITY.md)
 - [Contributing](./CONTRIBUTING.md)
+- [Releasing](./docs/RELEASING.md)
 - [Third-party notices](./THIRD_PARTY_NOTICES.md)
 
 ## License
