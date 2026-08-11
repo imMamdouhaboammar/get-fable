@@ -12,7 +12,7 @@ output quality = model capability × work discipline
 
 ## ⚡ Quickstart
 
-Install the Fable 5 System Prompt, discipline engine, and mechanical hooks globally across all AI coding environments (**Claude Code**, **Antigravity / Gemini CLI**, **Agent Kernel**, **Cursor**, **OpenCode**):
+Install Fable 5 System Prompt, discipline engine, and mechanical hooks globally across all AI agent platforms (**Claude Code**, **Antigravity / Gemini CLI**, **Agent Kernel**, **Cursor**, **OpenCode**):
 
 ```bash
 bunx get-fable install
@@ -20,7 +20,17 @@ bunx get-fable install
 npx get-fable install
 ```
 
-Initialize Fable Mode process discipline (`.fable/LEDGER.md`, `docs/SPEC.md`) in your current project:
+### Dedicated Antigravity Installation
+
+To install `get-fable` specifically into **Antigravity / Gemini CLI** as a native plugin (`~/.gemini/config/plugins/get-fable`), registering global rules, skills, and hooks:
+
+```bash
+bunx get-fable install-antigravity
+```
+
+### Workspace Initialization
+
+Initialize Fable Mode process discipline (`.fable/LEDGER.md`, `docs/SPEC.md`, `.agents/skills/`, `.agents/rules/`) in your current project:
 
 ```bash
 bunx get-fable init
@@ -71,7 +81,7 @@ bunx get-fable assets
 +---------------------+-----------------------+----------------------+--------------+
 | Multi-Platform      | Fable Mode Discipline | Mythos Router Proxy  | Asset Vault  |
 | Installer (Claude,  | Engine (Hooks,        | Server (HTTP Proxy,  | (Prompts,    |
-| Gemini, Kernel)     | Spec/Ledger Lint)     | Context Injector)    | Skills, MCP) |
+| Antigravity, Kernel)| Spec/Ledger Lint)     | Context Injector)    | Skills, MCP) |
 +---------------------+-----------------------+----------------------+--------------+
 ```
 
@@ -96,20 +106,21 @@ Fable Mode turns process discipline into mechanical blocks via four Python/TS ho
 ## 💻 CLI Command Reference
 
 ```text
-get-fable v1.1.0 — Fable 5 Mythos System & Multi-Model Upgrade Suite
+get-fable v1.2.0 — Fable 5 Mythos System & Multi-Model Upgrade Suite
 
 USAGE:
   $ bunx get-fable [command]
 
 COMMANDS:
-  install   (Default) Installs Fable 5 Mode & System Prompt globally across Claude Code, Antigravity, & Agent Kernel
-  init      Initializes .fable/ ledger, SPEC.md, and VERIFIER templates in the current project
-  serve     Starts the Mythos Router proxy server to wrap any LLM provider (OpenAI, Gemini, Ollama)
-  lint      Verifies .fable/LEDGER.md for acceptance criteria and evidence annotations
-  status    Displays current installation status and registered hooks
-  assets    Lists all bundled Anthropic Claude Code & Design agents, skills, and prompts
-  prompt    Outputs the complete Anthropic Claude Code Fable 5 System Prompt
-  help      Displays the help menu
+  install              Installs Fable 5 Mode & System Prompt globally across Claude Code, Antigravity, & Agent Kernel
+  install-antigravity  Installs Fable 5 Plugin, Rules, Skills, and Hooks specifically into Antigravity (~/.gemini/config)
+  init                 Initializes .fable/ ledger, .agents/ rules/skills, and SPEC.md in current project
+  serve                Starts the Mythos Router proxy server to wrap any LLM provider (OpenAI, Gemini, Ollama)
+  lint                 Verifies .fable/LEDGER.md for acceptance criteria and evidence annotations
+  status               Displays current installation status across Claude Code & Antigravity
+  assets               Lists all bundled Anthropic Claude Code & Design agents, skills, and prompts
+  prompt               Outputs the complete Anthropic Claude Code Fable 5 System Prompt
+  help                 Displays the help menu
 ```
 
 ---

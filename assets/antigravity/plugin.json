@@ -1,0 +1,21 @@
+{
+  "name": "get-fable",
+  "displayName": "Fable 5 Mythos System & Multi-Model Upgrade Suite",
+  "version": "1.1.0",
+  "description": "Brings Claude Fable 5 Mythos-tier intelligence, system prompts, agents, skills, and mechanical guard hooks to Antigravity and any AI model.",
+  "author": "Mamdouh Abo Ammar",
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "license": "MIT",
+  "skills": [
+    "fable-mode",
+    "dataviz",
+    "artifact-design",
+    "create-design-system",
+    "make-a-deck",
+    "3d-object",
+    "animated-video"
+  ],
+  "rules": [
+    "fable5-mode.md"
+  ]
+}

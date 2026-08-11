@@ -2,7 +2,7 @@
 
 ## Installation Options
 
-### Global Automated Installation
+### 1. Global Multi-Platform Installation
 Run the command below using `bunx` or `npx`:
 
 ```bash
@@ -13,13 +13,30 @@ This command automatically:
 1. Installs the Fable 5 System Prompt and Fable Mode skill to `~/.claude/skills/fable-mode`.
 2. Registers all 4 mechanical hooks into `~/.claude/settings.json`.
 3. Injects Fable 5 Mythos rules into `~/.gemini/config/rules/fable5-mode.md`.
-4. Registers rules in `~/.agent-kernel/rules/fable5-mode.md`.
+4. Installs the native Antigravity Plugin into `~/.gemini/config/plugins/get-fable`.
+5. Registers Antigravity hooks into `~/.gemini/config/hooks.json`.
+6. Registers rules in `~/.agent-kernel/rules/fable5-mode.md`.
 
 ---
 
-## Project Initialization
+### 2. Dedicated Antigravity Installation
+To install specifically into **Antigravity / Gemini CLI**:
 
-To enforce Fable Mode discipline on a specific project:
+```bash
+bunx get-fable install-antigravity
+```
+
+This target creates:
+- `~/.gemini/config/plugins/get-fable/plugin.json`
+- `~/.gemini/config/plugins/get-fable/skills/`
+- `~/.gemini/config/rules/fable5-mode.md`
+- `~/.gemini/config/hooks.json` (Fable Mode lifecycle hooks)
+
+---
+
+## Project & Workspace Initialization
+
+To enforce Fable Mode discipline on a specific project or workspace:
 
 ```bash
 cd /path/to/my-project
@@ -30,6 +47,8 @@ This creates:
 - `.fable/LEDGER.md`: Machine-checkable task card ledger.
 - `.fable/PROGRESS.md`: Execution context memory.
 - `.fable/VERIFIER_PROMPT.md`: Independent verifier prompt.
+- `.agents/skills/fable-mode/SKILL.md`: Workspace Antigravity skill.
+- `.agents/rules/fable5-mode.md`: Workspace Antigravity rule.
 - `docs/SPEC.md`: Architecture & requirements specification with source tagging (`[measured]`, `[inferred]`, `[not-shown]`).
 
 ---
@@ -53,7 +72,7 @@ bunx get-fable serve 8080
 
 ## Inspecting System Status & Assets
 
-Check registered hooks and active project status:
+Check registered hooks and active project status across Claude Code and Antigravity:
 
 ```bash
 bunx get-fable status

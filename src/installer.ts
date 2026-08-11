@@ -89,24 +89,8 @@ export function installGlobalFable() {
     logSuccess('Updated ~/.claude/CLAUDE.md with Fable 5 System Prompt');
   }
 
-  // 2. Gemini CLI / Antigravity Setup
-  const geminiConfigDir = getGeminiConfigDir();
-  if (fs.existsSync(geminiConfigDir)) {
-    const geminiRulesDir = path.join(geminiConfigDir, 'rules');
-    fs.mkdirSync(geminiRulesDir, { recursive: true });
-    fs.copyFileSync(
-      path.join(repoRoot, 'prompts', 'fable5-rules.md'),
-      path.join(geminiRulesDir, 'fable5-mode.md')
-    );
-
-    const geminiSkillDir = path.join(geminiConfigDir, 'skills', 'fable-mode');
-    fs.mkdirSync(geminiSkillDir, { recursive: true });
-    fs.copyFileSync(
-      path.join(repoRoot, 'prompts', 'fable-mode-skill.md'),
-      path.join(geminiSkillDir, 'SKILL.md')
-    );
-    logSuccess('Updated Antigravity / Gemini CLI rules & skills');
-  }
+  // 2. Antigravity Setup
+  installAntigravityGlobal();
 
   // 3. Agent Kernel Setup
   const kernelDir = getAgentKernelDir();
@@ -120,16 +104,102 @@ export function installGlobalFable() {
     logSuccess('Updated Agent Kernel rules');
   }
 
-  logSuccess('Global Fable 5 Mythos System & Fable Mode successfully installed!');
+  logSuccess('Global Fable 5 Mythos System & Fable Mode successfully installed across all platforms!');
+}
+
+export function installAntigravityGlobal() {
+  const repoRoot = getRepoRootDir();
+  const geminiConfigDir = getGeminiConfigDir();
+
+  logInfo(`Installing Fable 5 Mythos Suite into Antigravity (${geminiConfigDir})...`);
+  fs.mkdirSync(geminiConfigDir, { recursive: true });
+
+  // 1. Rules
+  const rulesDir = path.join(geminiConfigDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'fable5-rules.md'),
+    path.join(rulesDir, 'fable5-mode.md')
+  );
+  logSuccess('Installed Antigravity Rule: fable5-mode.md');
+
+  // 2. Plugin Setup
+  const pluginDir = path.join(geminiConfigDir, 'plugins', 'get-fable');
+  fs.mkdirSync(pluginDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'assets', 'antigravity', 'plugin.json'),
+    path.join(pluginDir, 'plugin.json')
+  );
+
+  const pluginSkillsDir = path.join(pluginDir, 'skills');
+  const pluginRulesDir = path.join(pluginDir, 'rules');
+  copyDirSync(path.join(repoRoot, 'assets', 'skills'), pluginSkillsDir);
+  fs.mkdirSync(pluginRulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'fable5-rules.md'),
+    path.join(pluginRulesDir, 'fable5-mode.md')
+  );
+  logSuccess('Installed Antigravity Plugin: get-fable');
+
+  // 3. Global Skills Sync
+  const globalSkillsDir = path.join(geminiConfigDir, 'skills');
+  fs.mkdirSync(path.join(globalSkillsDir, 'fable-mode'), { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'fable-mode-skill.md'),
+    path.join(globalSkillsDir, 'fable-mode', 'SKILL.md')
+  );
+  logSuccess('Installed Antigravity Skill: fable-mode');
+
+  // 4. Antigravity Hooks Registration (hooks.json)
+  const hooksJsonPath = path.join(geminiConfigDir, 'hooks.json');
+  const hooksDest = path.join(claudeDirToHooks(getClaudeDir()), 'fable-mode', 'hooks');
+
+  if (fs.existsSync(hooksDest)) {
+    mergeJsonFile(hooksJsonPath, (existing) => {
+      const hooksList: any[] = existing.hooks || [];
+
+      const pyProfileInject = path.join(hooksDest, 'fable_profile_inject.py');
+      const pySpawnGuard = path.join(hooksDest, 'fable_spawn_guard.py');
+      const pyFailStreak = path.join(hooksDest, 'fable_fail_streak.py');
+      const pyCloseGuard = path.join(hooksDest, 'fable_close_guard.py');
+
+      const fableHooks = [
+        { name: 'fable5-profile-inject', events: ['SessionStart'], command: `python3 ${pyProfileInject}` },
+        { name: 'fable5-spawn-guard', events: ['PreToolUse'], command: `python3 ${pySpawnGuard}` },
+        { name: 'fable5-fail-streak', events: ['PostToolUse'], command: `python3 ${pyFailStreak}` },
+        { name: 'fable5-close-guard', events: ['Stop', 'SessionEnd'], command: `python3 ${pyCloseGuard}` },
+      ];
+
+      for (const fHook of fableHooks) {
+        const idx = hooksList.findIndex((h: any) => h.name === fHook.name);
+        if (idx >= 0) {
+          hooksList[idx] = fHook;
+        } else {
+          hooksList.push(fHook);
+        }
+      }
+
+      existing.hooks = hooksList;
+      return existing;
+    });
+    logSuccess('Registered Antigravity Hooks in ~/.gemini/config/hooks.json');
+  }
+}
+
+function claudeDirToHooks(claudeDir: string): string {
+  return path.join(claudeDir, 'skills');
 }
 
 export function initProjectFable(targetDir: string = process.cwd()) {
   const repoRoot = getRepoRootDir();
   const fableDir = path.join(targetDir, '.fable');
   const docsDir = path.join(targetDir, 'docs');
+  const agentsDir = path.join(targetDir, '.agents');
 
   fs.mkdirSync(fableDir, { recursive: true });
   fs.mkdirSync(docsDir, { recursive: true });
+  fs.mkdirSync(path.join(agentsDir, 'skills', 'fable-mode'), { recursive: true });
+  fs.mkdirSync(path.join(agentsDir, 'rules'), { recursive: true });
 
   const templatesDir = path.join(repoRoot, 'templates');
 
@@ -148,6 +218,17 @@ export function initProjectFable(targetDir: string = process.cwd()) {
       logWarn(`Skipped existing file ${path.relative(targetDir, item.dest)}`);
     }
   }
+
+  // Copy Antigravity Workspace rules & skills
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'fable-mode-skill.md'),
+    path.join(agentsDir, 'skills', 'fable-mode', 'SKILL.md')
+  );
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'fable5-rules.md'),
+    path.join(agentsDir, 'rules', 'fable5-mode.md')
+  );
+  logSuccess(`Installed Antigravity workspace rules & skills in .agents/`);
 
   logSuccess(`Project initialized with Fable 5 discipline at ${targetDir}`);
 }
@@ -176,10 +257,13 @@ export function checkFableStatus() {
       }
     } catch {}
   }
-  console.log(`Registered Hooks: ${registeredHooksCount} / 4`);
+  console.log(`Claude Registered Hooks: ${registeredHooksCount} / 4`);
 
-  const geminiRule = path.join(getGeminiConfigDir(), 'rules', 'fable5-mode.md');
+  const geminiConfig = getGeminiConfigDir();
+  const geminiRule = path.join(geminiConfig, 'rules', 'fable5-mode.md');
+  const geminiPlugin = path.join(geminiConfig, 'plugins', 'get-fable', 'plugin.json');
   console.log(`Antigravity/Gemini Rule Installed: ${fs.existsSync(geminiRule) ? 'YES' : 'NO'}`);
+  console.log(`Antigravity Plugin Installed: ${fs.existsSync(geminiPlugin) ? 'YES' : 'NO'}`);
 
   const activeProjectFable = fs.existsSync(path.join(process.cwd(), '.fable'));
   console.log(`Current Project (.fable active): ${activeProjectFable ? 'YES' : 'NO'}`);

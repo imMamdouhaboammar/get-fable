@@ -141,16 +141,7 @@ ${fableRuleText}`;
 `, "utf-8");
     logSuccess("Updated ~/.claude/CLAUDE.md with Fable 5 System Prompt");
   }
-  const geminiConfigDir = getGeminiConfigDir();
-  if (fs2.existsSync(geminiConfigDir)) {
-    const geminiRulesDir = path2.join(geminiConfigDir, "rules");
-    fs2.mkdirSync(geminiRulesDir, { recursive: true });
-    fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable5-rules.md"), path2.join(geminiRulesDir, "fable5-mode.md"));
-    const geminiSkillDir = path2.join(geminiConfigDir, "skills", "fable-mode");
-    fs2.mkdirSync(geminiSkillDir, { recursive: true });
-    fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable-mode-skill.md"), path2.join(geminiSkillDir, "SKILL.md"));
-    logSuccess("Updated Antigravity / Gemini CLI rules & skills");
-  }
+  installAntigravityGlobal();
   const kernelDir = getAgentKernelDir();
   if (fs2.existsSync(kernelDir)) {
     const kernelRulesDir = path2.join(kernelDir, "rules");
@@ -158,14 +149,71 @@ ${fableRuleText}`;
     fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable5-rules.md"), path2.join(kernelRulesDir, "fable5-mode.md"));
     logSuccess("Updated Agent Kernel rules");
   }
-  logSuccess("Global Fable 5 Mythos System & Fable Mode successfully installed!");
+  logSuccess("Global Fable 5 Mythos System & Fable Mode successfully installed across all platforms!");
+}
+function installAntigravityGlobal() {
+  const repoRoot = getRepoRootDir();
+  const geminiConfigDir = getGeminiConfigDir();
+  logInfo(`Installing Fable 5 Mythos Suite into Antigravity (${geminiConfigDir})...`);
+  fs2.mkdirSync(geminiConfigDir, { recursive: true });
+  const rulesDir = path2.join(geminiConfigDir, "rules");
+  fs2.mkdirSync(rulesDir, { recursive: true });
+  fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable5-rules.md"), path2.join(rulesDir, "fable5-mode.md"));
+  logSuccess("Installed Antigravity Rule: fable5-mode.md");
+  const pluginDir = path2.join(geminiConfigDir, "plugins", "get-fable");
+  fs2.mkdirSync(pluginDir, { recursive: true });
+  fs2.copyFileSync(path2.join(repoRoot, "assets", "antigravity", "plugin.json"), path2.join(pluginDir, "plugin.json"));
+  const pluginSkillsDir = path2.join(pluginDir, "skills");
+  const pluginRulesDir = path2.join(pluginDir, "rules");
+  copyDirSync(path2.join(repoRoot, "assets", "skills"), pluginSkillsDir);
+  fs2.mkdirSync(pluginRulesDir, { recursive: true });
+  fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable5-rules.md"), path2.join(pluginRulesDir, "fable5-mode.md"));
+  logSuccess("Installed Antigravity Plugin: get-fable");
+  const globalSkillsDir = path2.join(geminiConfigDir, "skills");
+  fs2.mkdirSync(path2.join(globalSkillsDir, "fable-mode"), { recursive: true });
+  fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable-mode-skill.md"), path2.join(globalSkillsDir, "fable-mode", "SKILL.md"));
+  logSuccess("Installed Antigravity Skill: fable-mode");
+  const hooksJsonPath = path2.join(geminiConfigDir, "hooks.json");
+  const hooksDest = path2.join(claudeDirToHooks(getClaudeDir()), "fable-mode", "hooks");
+  if (fs2.existsSync(hooksDest)) {
+    mergeJsonFile(hooksJsonPath, (existing) => {
+      const hooksList = existing.hooks || [];
+      const pyProfileInject = path2.join(hooksDest, "fable_profile_inject.py");
+      const pySpawnGuard = path2.join(hooksDest, "fable_spawn_guard.py");
+      const pyFailStreak = path2.join(hooksDest, "fable_fail_streak.py");
+      const pyCloseGuard = path2.join(hooksDest, "fable_close_guard.py");
+      const fableHooks = [
+        { name: "fable5-profile-inject", events: ["SessionStart"], command: `python3 ${pyProfileInject}` },
+        { name: "fable5-spawn-guard", events: ["PreToolUse"], command: `python3 ${pySpawnGuard}` },
+        { name: "fable5-fail-streak", events: ["PostToolUse"], command: `python3 ${pyFailStreak}` },
+        { name: "fable5-close-guard", events: ["Stop", "SessionEnd"], command: `python3 ${pyCloseGuard}` }
+      ];
+      for (const fHook of fableHooks) {
+        const idx = hooksList.findIndex((h) => h.name === fHook.name);
+        if (idx >= 0) {
+          hooksList[idx] = fHook;
+        } else {
+          hooksList.push(fHook);
+        }
+      }
+      existing.hooks = hooksList;
+      return existing;
+    });
+    logSuccess("Registered Antigravity Hooks in ~/.gemini/config/hooks.json");
+  }
+}
+function claudeDirToHooks(claudeDir) {
+  return path2.join(claudeDir, "skills");
 }
 function initProjectFable(targetDir = process.cwd()) {
   const repoRoot = getRepoRootDir();
   const fableDir = path2.join(targetDir, ".fable");
   const docsDir = path2.join(targetDir, "docs");
+  const agentsDir = path2.join(targetDir, ".agents");
   fs2.mkdirSync(fableDir, { recursive: true });
   fs2.mkdirSync(docsDir, { recursive: true });
+  fs2.mkdirSync(path2.join(agentsDir, "skills", "fable-mode"), { recursive: true });
+  fs2.mkdirSync(path2.join(agentsDir, "rules"), { recursive: true });
   const templatesDir = path2.join(repoRoot, "templates");
   const filesToCopy = [
     { src: "LEDGER.template.md", dest: path2.join(fableDir, "LEDGER.md") },
@@ -181,6 +229,9 @@ function initProjectFable(targetDir = process.cwd()) {
       logWarn(`Skipped existing file ${path2.relative(targetDir, item.dest)}`);
     }
   }
+  fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable-mode-skill.md"), path2.join(agentsDir, "skills", "fable-mode", "SKILL.md"));
+  fs2.copyFileSync(path2.join(repoRoot, "prompts", "fable5-rules.md"), path2.join(agentsDir, "rules", "fable5-mode.md"));
+  logSuccess(`Installed Antigravity workspace rules & skills in .agents/`);
   logSuccess(`Project initialized with Fable 5 discipline at ${targetDir}`);
 }
 function checkFableStatus() {
@@ -206,9 +257,12 @@ function checkFableStatus() {
       }
     } catch {}
   }
-  console.log(`Registered Hooks: ${registeredHooksCount} / 4`);
-  const geminiRule = path2.join(getGeminiConfigDir(), "rules", "fable5-mode.md");
+  console.log(`Claude Registered Hooks: ${registeredHooksCount} / 4`);
+  const geminiConfig = getGeminiConfigDir();
+  const geminiRule = path2.join(geminiConfig, "rules", "fable5-mode.md");
+  const geminiPlugin = path2.join(geminiConfig, "plugins", "get-fable", "plugin.json");
   console.log(`Antigravity/Gemini Rule Installed: ${fs2.existsSync(geminiRule) ? "YES" : "NO"}`);
+  console.log(`Antigravity Plugin Installed: ${fs2.existsSync(geminiPlugin) ? "YES" : "NO"}`);
   const activeProjectFable = fs2.existsSync(path2.join(process.cwd(), ".fable"));
   console.log(`Current Project (.fable active): ${activeProjectFable ? "YES" : "NO"}`);
 }
@@ -466,11 +520,20 @@ function main() {
   const command = args[0] || "install";
   switch (command) {
     case "install":
-      logHeader("Installing Fable 5 Mythos System & Fable Mode");
-      installGlobalFable();
+      if (args[1] === "--antigravity" || args[1] === "-a") {
+        logHeader("Installing Fable 5 Mythos Suite for Antigravity");
+        installAntigravityGlobal();
+      } else {
+        logHeader("Installing Fable 5 Mythos System & Fable Mode (All Platforms)");
+        installGlobalFable();
+      }
+      break;
+    case "install-antigravity":
+      logHeader("Installing Fable 5 Mythos Suite for Antigravity");
+      installAntigravityGlobal();
       break;
     case "init":
-      logHeader("Initializing Project Fable Discipline (.fable/)");
+      logHeader("Initializing Project Fable Discipline (.fable/ & .agents/)");
       initProjectFable(process.cwd());
       break;
     case "lint":
@@ -531,21 +594,22 @@ function listAssets() {
 }
 function showHelp() {
   console.log(`
-${colors.bright}${colors.cyan}get-fable v1.1.0${colors.reset} \u2014 Fable 5 Mythos System & Multi-Model Upgrade Suite
+${colors.bright}${colors.cyan}get-fable v1.2.0${colors.reset} \u2014 Fable 5 Mythos System & Multi-Model Upgrade Suite
 
 ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}npx get-fable${colors.reset} [command]
   $ ${colors.green}bunx get-fable${colors.reset} [command]
 
 ${colors.bright}COMMANDS:${colors.reset}
-  ${colors.yellow}install${colors.reset}   (Default) Installs Fable 5 Mode & System Prompt globally across Claude Code, Antigravity, & Agent Kernel
-  ${colors.yellow}init${colors.reset}      Initializes .fable/ ledger, SPEC.md, and VERIFIER templates in the current project
-  ${colors.yellow}serve${colors.reset}     Starts the Mythos Router proxy server to wrap any LLM provider (OpenAI, Gemini, Ollama)
-  ${colors.yellow}lint${colors.reset}      Verifies .fable/LEDGER.md for acceptance criteria and evidence annotations
-  ${colors.yellow}status${colors.reset}    Displays current installation status and registered hooks
-  ${colors.yellow}assets${colors.reset}    Lists all bundled Anthropic Claude Code & Design agents, skills, and prompts
-  ${colors.yellow}prompt${colors.reset}    Outputs the complete Anthropic Claude Code Fable 5 System Prompt
-  ${colors.yellow}help${colors.reset}      Displays this help menu
+  ${colors.yellow}install${colors.reset}              Installs Fable 5 Mode & System Prompt globally across Claude Code, Antigravity, & Agent Kernel
+  ${colors.yellow}install-antigravity${colors.reset}  Installs Fable 5 Plugin, Rules, Skills, and Hooks specifically into Antigravity (~/.gemini/config)
+  ${colors.yellow}init${colors.reset}                 Initializes .fable/ ledger, .agents/ rules/skills, and SPEC.md in current project
+  ${colors.yellow}serve${colors.reset}                Starts the Mythos Router proxy server to wrap any LLM provider (OpenAI, Gemini, Ollama)
+  ${colors.yellow}lint${colors.reset}                 Verifies .fable/LEDGER.md for acceptance criteria and evidence annotations
+  ${colors.yellow}status${colors.reset}               Displays current installation status across Claude Code & Antigravity
+  ${colors.yellow}assets${colors.reset}               Lists all bundled Anthropic Claude Code & Design agents, skills, and prompts
+  ${colors.yellow}prompt${colors.reset}               Outputs the complete Anthropic Claude Code Fable 5 System Prompt
+  ${colors.yellow}help${colors.reset}                 Displays the help menu
 `);
 }
 main();
