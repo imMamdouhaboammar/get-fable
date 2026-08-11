@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "🚀 Installing Fable 5 Mythos System & Fable Mode..."
+echo "Installing get-fable workflow support..."
 
 # Determine config directories
 CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
@@ -14,10 +14,10 @@ mkdir -p "$SKILL_DEST"
 
 REPO_URL="https://github.com/cozytab/fable5-mode"
 if [ ! -d "$SKILL_DEST/.git" ]; then
-    echo "📦 Cloning Fable Mode repository..."
+    echo "Cloning the upstream Fable Mode repository..."
     git clone --quiet "$REPO_URL" "$SKILL_DEST"
 else
-    echo "🔄 Updating existing Fable Mode repository..."
+    echo "Updating the existing Fable Mode checkout..."
     git -C "$SKILL_DEST" pull --quiet || true
 fi
 
@@ -26,5 +26,5 @@ if [ -f "$SKILL_DEST/install.sh" ]; then
     bash "$SKILL_DEST/install.sh"
 fi
 
-echo "✔ Global Fable 5 System Prompt & Fable Mode successfully installed!"
-echo "✨ Restart your session to activate Fable 5 Mythos intelligence & mechanical discipline!"
+echo "Fable Mode workflow support installed"
+echo "Restart the affected agent session so it can load the updated configuration"

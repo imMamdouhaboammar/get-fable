@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
   "version": "1.0.0",
-  "description": "Fable 5 Mythos-Tier Agent Upgrade — Installs Claude Fable 5 System Prompt, Fable Mode Discipline, & Mechanical Hooks across Claude Code, Gemini CLI, Cursor, and AI Coding Agents.",
+  "description": "Process discipline for AI coding agents: project specs, task ledgers, verification hooks, reusable skills, and an OpenAI-compatible request-enrichment proxy.",
   "main": "src/index.ts",
   "bin": {
     "get-fable": "bin/get-fable.js"
@@ -18,7 +18,7 @@
     "claude-code",
     "fable-mode",
     "ai-agent",
-    "system-prompt",
+    "agent-workflow",
     "antigravity",
     "gemini-cli",
     "agent-discipline",
