@@ -1,0 +1,33 @@
+name: Site check
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'site/**'
+      - 'vercel.json'
+      - '.github/workflows/site-check.yml'
+  pull_request:
+    paths:
+      - 'site/**'
+      - 'vercel.json'
+      - '.github/workflows/site-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  site-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run site tests
+        run: bun test site/site.test.ts
