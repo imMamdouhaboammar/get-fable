@@ -1,6 +1,6 @@
 ---
 name: fable-recover
-description: Recover a coding task after repeated failures, context drift, stale execution, or contradictory test evidence. Use when retrying the same fix is no longer producing new information.
+description: Diagnose repeated failures, stale execution, context drift, or contradictory evidence before another code edit. Use when retrying the same approach is no longer producing new information.
 ---
 
 # Fable Recover
@@ -9,15 +9,17 @@ Change the diagnosis before changing more code.
 
 ## Attribution ladder
 
-1. **Harness**: prove the command, test driver, fixture, expectation, and environment are valid.
-2. **Execution path**: prove the changed code is the code actually running. Check build output, caches, generated files, branch/worktree, and runtime selection.
-3. **Product logic**: debug the implementation only after the first two layers are supported by evidence.
-4. **Invariant**: state the general rule that was violated and fix that class of failure rather than one observed symptom.
+1. **Harness**: prove the command, test driver, fixture, expectation, permissions, and environment are valid.
+2. **Execution path**: prove the changed code is the code actually running. Check branch, worktree, build output, generated files, caches, runtime selection, and deployment identity.
+3. **Product logic**: inspect implementation only after the first two sources are supported by evidence.
+4. **Invariant**: restate the failure as a violated general rule and repair that class of failure instead of one visible symptom.
 
-## Recovery contract
+## Contract
 
-- Do not repeat an unchanged failed command as if repetition were diagnosis.
-- Record the new evidence and the revised hypothesis.
-- If the original assumptions changed, return to `$fable-plan`.
-- If the diagnosis is stable, return to `$fable-execute` with one bounded repair.
-- Always return to `$fable-verify` after the repair.
+- Never repeat an unchanged failed command as if repetition were diagnosis.
+- Record new evidence and the revised hypothesis.
+- If a load-bearing assumption changed, route to `$fable-discover` or `$fable-plan`.
+- If the diagnosis is stable, return exactly one bounded repair to `$fable-execute`.
+- After any repair, route to `$fable-verify` and rerun the complete affected path.
+
+The purpose of recovery is to reduce blind edit loops, not to add more retries.
