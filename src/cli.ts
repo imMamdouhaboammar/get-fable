@@ -6,10 +6,14 @@ import {
   installAntigravityGlobal,
   initProjectFable,
   checkFableStatus,
+  getFableStatus,
   getRepoRootDir,
 } from './installer.js';
 import { runFableLint } from './fable-lint.js';
 import { startMythosRouterServer } from './router/index.js';
+import { readFableState } from './core/state.js';
+import { routeTask } from './core/task-router.js';
+import { runDoctor } from './core/doctor.js';
 import { logHeader, logError, colors } from './utils.js';
 
 export function getPackageVersion(): string {
@@ -24,15 +28,34 @@ export function getPackageVersion(): string {
 
 export function parsePort(value: string | undefined): number {
   if (value === undefined) return 8080;
-  if (!/^\d+$/.test(value)) {
-    throw new Error('Port must be an integer between 1 and 65535');
-  }
+  if (!/^\d+$/.test(value)) throw new Error('Port must be an integer between 1 and 65535');
 
   const port = Number(value);
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error('Port must be an integer between 1 and 65535');
   }
   return port;
+}
+
+function hasJsonFlag(args: string[]): boolean {
+  return args.includes('--json');
+}
+
+function printRoute(task: string, json: boolean): number {
+  const state = readFableState(process.cwd());
+  const decision = routeTask(task, state || undefined);
+  if (json) {
+    console.log(JSON.stringify(decision));
+    return 0;
+  }
+
+  logHeader('get-fable routing decision');
+  console.log(`Selected skill: ${decision.selectedSkill}`);
+  console.log(`Confidence: ${decision.confidence}`);
+  console.log(`Requires plan: ${decision.requiresPlan ? 'YES' : 'NO'}`);
+  console.log(`Reasons: ${decision.reasons.join('; ')}`);
+  console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
+  return 0;
 }
 
 export function runCli(args: string[] = process.argv.slice(2)): number {
@@ -59,14 +82,39 @@ export function runCli(args: string[] = process.argv.slice(2)): number {
       initProjectFable(process.cwd());
       return 0;
 
+    case 'route': {
+      const task = args.slice(1).filter((arg) => arg !== '--json').join(' ').trim();
+      if (!task) {
+        logError('route requires task text');
+        return 1;
+      }
+      return printRoute(task, hasJsonFlag(args));
+    }
+
+    case 'doctor': {
+      const report = runDoctor(process.cwd());
+      if (hasJsonFlag(args)) {
+        console.log(JSON.stringify(report));
+      } else {
+        logHeader('get-fable doctor');
+        for (const item of report.checks) {
+          console.log(`${item.status.toUpperCase()} ${item.id}: ${item.message}`);
+        }
+      }
+      return report.ok ? 0 : 1;
+    }
+
     case 'lint': {
       logHeader('Fable spec and ledger verification');
       return runFableLint(process.cwd()) ? 0 : 1;
     }
 
     case 'status':
-      logHeader('get-fable installation status');
-      checkFableStatus();
+      if (hasJsonFlag(args)) console.log(JSON.stringify(getFableStatus(process.cwd())));
+      else {
+        logHeader('get-fable installation status');
+        checkFableStatus(process.cwd());
+      }
       return 0;
 
     case 'serve':
@@ -114,11 +162,7 @@ export function runCli(args: string[] = process.argv.slice(2)): number {
 
 function listAssets() {
   const assetsDir = path.join(getRepoRootDir(), 'assets');
-
-  const countItems = (dir: string) => {
-    if (!fs.existsSync(dir)) return 0;
-    return fs.readdirSync(dir).length;
-  };
+  const countItems = (dir: string) => (fs.existsSync(dir) ? fs.readdirSync(dir).length : 0);
 
   console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path.join(assetsDir, 'prompts'))} files`);
   console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path.join(assetsDir, 'agents'))} agents`);
@@ -131,22 +175,24 @@ function listAssets() {
 
 export function showHelp() {
   console.log(`
-${colors.bright}${colors.cyan}get-fable v${getPackageVersion()}${colors.reset} | Process discipline toolkit for AI coding agents
+${colors.bright}${colors.cyan}get-fable v${getPackageVersion()}${colors.reset} | Frontier-like execution discipline for AI coding agents
 
 ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}get-fable${colors.reset} [command]
   $ ${colors.green}bun ./bin/get-fable.js${colors.reset} [command]
 
 ${colors.bright}COMMANDS:${colors.reset}
-  ${colors.yellow}install${colors.reset}              Install supported global integrations for Claude Code, Antigravity, and Agent Kernel when present
-  ${colors.yellow}install-antigravity${colors.reset}  Install the Antigravity / Gemini config target, including its own hook copies
-  ${colors.yellow}init${colors.reset}                 Create .fable/, .agents/, and docs/SPEC.md without replacing existing project files
+  ${colors.yellow}install${colors.reset}              Install supported global integrations
+  ${colors.yellow}install-antigravity${colors.reset}  Install the Antigravity / Gemini target
+  ${colors.yellow}init${colors.reset}                 Create durable project state and canonical project skills
+  ${colors.yellow}route <task>${colors.reset}         Explain which Fable skill should handle a task; add --json for machine output
+  ${colors.yellow}doctor${colors.reset}               Validate registry, plugin, project state, skills, and hook runtime; add --json
   ${colors.yellow}serve [port]${colors.reset}         Start the local request-enrichment proxy, default port 8080
   ${colors.yellow}router [port]${colors.reset}        Alias for serve
-  ${colors.yellow}lint${colors.reset}                 Verify .fable/LEDGER.md acceptance criteria and evidence annotations
-  ${colors.yellow}status${colors.reset}               Report selected installation state
-  ${colors.yellow}assets${colors.reset}               List bundled prompts, agent definitions, skills, and supporting assets
-  ${colors.yellow}prompt${colors.reset}               Print the bundled Fable prompt
+  ${colors.yellow}lint${colors.reset}                 Verify ledger acceptance, evidence, and state consistency
+  ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
+  ${colors.yellow}assets${colors.reset}               List historical bundled assets
+  ${colors.yellow}prompt${colors.reset}               Print the legacy bundled Fable prompt
   ${colors.yellow}version${colors.reset}              Print the installed get-fable version
   ${colors.yellow}help${colors.reset}                 Display this help menu
 
