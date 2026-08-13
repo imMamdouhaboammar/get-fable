@@ -52,6 +52,8 @@ describe('initProjectFable', () => {
     for (const skill of canonicalSkills) {
       expect(fs.existsSync(path.join(target, '.agents', 'skills', skill, 'SKILL.md'))).toBe(true);
     }
+    expect(fs.existsSync(path.join(target, '.agents', 'skills', 'get-fable', 'registry.json'))).toBe(true);
+    expect(fs.existsSync(path.join(target, '.agents', 'skills', 'registry.json'))).toBe(false);
 
     const state = JSON.parse(fs.readFileSync(path.join(target, '.fable', 'state.json'), 'utf-8'));
     expect(state.schemaVersion).toBe(1);
@@ -76,7 +78,10 @@ describe('installAntigravityGlobal', () => {
       expect(fs.existsSync(path.join(pluginRoot, 'skills', skill, 'SKILL.md'))).toBe(true);
       expect(fs.existsSync(path.join(target, 'skills', skill, 'SKILL.md'))).toBe(true);
     }
-    expect(fs.existsSync(path.join(pluginRoot, 'skills', 'registry.json'))).toBe(true);
+    expect(fs.existsSync(path.join(pluginRoot, 'skills', 'get-fable', 'registry.json'))).toBe(true);
+    expect(fs.existsSync(path.join(pluginRoot, 'skills', 'registry.json'))).toBe(false);
+    expect(fs.existsSync(path.join(target, 'skills', 'get-fable', 'registry.json'))).toBe(true);
+    expect(fs.existsSync(path.join(target, 'skills', 'registry.json'))).toBe(false);
 
     const pluginManifest = JSON.parse(fs.readFileSync(path.join(pluginRoot, 'plugin.json'), 'utf-8'));
     expect(pluginManifest.skills).toEqual([...canonicalSkills, 'fable-mode']);
