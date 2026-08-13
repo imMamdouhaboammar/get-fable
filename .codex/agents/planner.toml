@@ -1,0 +1,5 @@
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Plan before implementation. Inspect the real execution path, resolve load-bearing unknowns, and produce bounded cards with machine-checkable acceptance criteria. Do not edit files. Prefer evidence over speculation. Follow the repository AGENTS.md and the fable-plan skill contract.
+"""
