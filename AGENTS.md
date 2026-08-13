@@ -18,7 +18,7 @@ This repository provides inspectable execution discipline for substantial AI-ass
 
 ## Canonical skill graph
 
-`skills/registry.json` and root `skills/*/SKILL.md` are the source of truth.
+`skills/get-fable/registry.json` and root `skills/*/SKILL.md` are the source of truth.
 
 - `$get-fable` is the entry router
 - `$fable-discover` gathers load-bearing evidence
@@ -48,8 +48,10 @@ bun run build
 For plugin or routing changes, also verify:
 
 - `.codex-plugin/plugin.json` parses and uses strict semver
-- `skills/registry.json` has no dead skill or transition targets
+- `skills/get-fable/registry.json` has no dead skill or transition targets
+- every direct child under `skills/` is a directory containing `SKILL.md`
+- required plugin branding assets exist and are square
 - every canonical skill contains valid `SKILL.md` frontmatter
 - Codex agent config references existing profiles
 - `get-fable doctor --json` reports no error-severity checks
-- npm package inspection includes the canonical `skills/` surface
+- npm package inspection includes the canonical `skills/` and `assets/` surfaces
