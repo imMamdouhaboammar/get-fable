@@ -1,20 +1,9 @@
 #!/usr/bin/env python3
-"""fable-mode Fail-Streak Reminder  (PostToolUse hook on Bash).
+"""get-fable PostToolUse failure attribution hook.
 
-Grinding is the failure mode this catches: N consecutive failing commands
-usually means the model is patching the wrong layer. At every 3rd consecutive
-Bash failure it injects the attribution ladder as context:
-
-    harness -> deployment -> product
-
-(1) suspect the test/driver itself, (2) prove the new code is actually
-running (cache/build/restart), (3) only then debug the product — and fix the
-class via an invariant, not the instance.
-
-Advisory only — never blocks (exit 0 always). Armed per project by `.fable/`;
-off while the ledger is PAUSED. Streak state lives beside the model cache in
-$TMPDIR/fable-mode-sessions/<sid>.fails and self-resets on the next success.
-Fail-open on any error.
+Each Bash result updates `.fable/state.json` when the project is initialized.
+Two consecutive failures move the durable workflow to `recovering` and select
+`fable-recover`. The hook remains advisory and fail-open.
 """
 import json
 import os
@@ -23,71 +12,78 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _fable_common import (  # noqa: E402
-    read_hook_input, start_dir, find_fable_dir, ledger_path, parse_ledger,
-    load_fail_streak, save_fail_streak,
+    read_hook_input,
+    start_dir,
+    find_fable_dir,
+    ledger_path,
+    parse_ledger,
+    load_fail_streak,
+    save_fail_streak,
+    record_command_result,
 )
-
-REMIND_EVERY = 3
 
 _EXIT_CODE_RE = re.compile(r"[Ee]xit code[: ]+([0-9]+)")
 
-LADDER = (
-    "[fable-mode] %d consecutive failing commands — before the next fix, walk "
-    "the attribution ladder (cheapest layer first): (1) HARNESS: the test/"
-    "driver/acceptance script is code too — falsify the test before the "
-    "tested; (2) DEPLOYMENT: prove the code you just changed is actually "
-    "running (behavior signature, cache-bust, rebuild/restart) — 'fix had no "
-    "effect' is often 'fix never ran'; (3) PRODUCT: only now debug, and fix "
-    "the class via an invariant, not the one observed symptom. If the same "
-    "command keeps failing verbatim, stop retrying it."
+RECOVERY_CONTEXT = (
+    "[get-fable] Repeated command failure moved durable state to fable-recover. "
+    "Change the diagnosis before another code edit. Attribution order: "
+    "(1) HARNESS: prove the command, test driver, fixture, expectation, permissions, and environment; "
+    "(2) EXECUTION PATH: prove the changed code is actually running, including branch, worktree, build output, generated files, cache, and runtime selection; "
+    "(3) PRODUCT LOGIC: debug implementation after the first two are supported by evidence; "
+    "(4) INVARIANT: state the general rule that would prevent this class of failure. "
+    "Record the revised hypothesis before retrying."
 )
 
 
 def command_failed(tool_response):
-    """Best-effort failure detection; uncertain -> treated as success."""
-    r = tool_response
-    if isinstance(r, str):
-        return bool(_EXIT_CODE_RE.search(r) and
-                    _EXIT_CODE_RE.search(r).group(1) != "0")
-    if not isinstance(r, dict):
+    """Best-effort failure detection; uncertain results fail open as success."""
+    response = tool_response
+    if isinstance(response, str):
+        match = _EXIT_CODE_RE.search(response)
+        return bool(match and match.group(1) != "0")
+    if not isinstance(response, dict):
         return False
     for key in ("exitCode", "exit_code", "code", "returncode"):
-        v = r.get(key)
-        if isinstance(v, int):
-            return v != 0
+        value = response.get(key)
+        if isinstance(value, int):
+            return value != 0
     for key in ("is_error", "isError"):
-        if r.get(key) is True:
+        if response.get(key) is True:
             return True
-    text = " ".join(str(r.get(k, "")) for k in ("stdout", "stderr", "output"))
-    m = _EXIT_CODE_RE.search(text)
-    return bool(m and m.group(1) != "0")
+    text = " ".join(str(response.get(key, "")) for key in ("stdout", "stderr", "output"))
+    match = _EXIT_CODE_RE.search(text)
+    return bool(match and match.group(1) != "0")
 
 
 def main():
     data = read_hook_input()
-    sid = data.get("session_id")
-    if not sid:
-        return 0
-
     fable_dir = find_fable_dir(start_dir(data))
     if not fable_dir:
-        return 0  # not opted in -> inert
-    _open, _has, paused = parse_ledger(ledger_path(fable_dir))
+        return 0
+
+    _open, _has_any, paused = parse_ledger(ledger_path(fable_dir))
     if paused:
         return 0
 
-    if not command_failed(data.get("tool_response")):
-        if load_fail_streak(sid):
-            save_fail_streak(sid, 0)
+    failed = command_failed(data.get("tool_response"))
+    durable = record_command_result(fable_dir, failed)
+
+    session_id = data.get("session_id")
+    if session_id:
+        if failed:
+            save_fail_streak(session_id, load_fail_streak(session_id) + 1)
+        elif load_fail_streak(session_id):
+            save_fail_streak(session_id, 0)
+
+    if not failed:
         return 0
 
-    streak = load_fail_streak(sid) + 1
-    save_fail_streak(sid, streak)
-    if streak >= REMIND_EVERY and streak % REMIND_EVERY == 0:
+    streak = int(durable.get("failureStreak", 0)) if isinstance(durable, dict) else load_fail_streak(session_id)
+    if streak >= 2:
         print(json.dumps({
             "hookSpecificOutput": {
                 "hookEventName": "PostToolUse",
-                "additionalContext": LADDER % streak,
+                "additionalContext": RECOVERY_CONTEXT + " failureStreak=%d." % streak,
             }
         }, ensure_ascii=False))
     return 0
@@ -96,6 +92,6 @@ def main():
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except Exception as e:  # advisory hook: never disturb the session
-        sys.stderr.write("[fable-mode] fail-streak error (ignored): %r\n" % e)
+    except Exception as exc:
+        sys.stderr.write("[get-fable] fail-streak error (ignored): %r\n" % exc)
         sys.exit(0)
