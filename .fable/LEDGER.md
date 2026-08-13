@@ -1,17 +1,15 @@
-# Ledger — <round name>
+# get-fable repository ledger
 
-State machine: `- [ ]` open (blocks turn-end) · `- [x]` done AND verified ·
-`- [~] ... -- deferred: reason` consciously out of this round.
-A line `PAUSED: reason` anywhere suspends enforcement (for user-steered work
-unrelated to this round) — the reason is required (bare `PAUSED` is ignored),
-the model ceiling stays active; remove the line to resume. Evidence notes on
-`- [x]` must be concrete (`evidence: ok` counts as missing).
+The repository is armed with get-fable, but no work round is persisted in this tracked file.
 
-Only mark `- [x]` after the acceptance command actually ran — the Close Guard
-blocks turn-end for any `- [x]` without an evidence note (`-- evidence:` /
-`verified:` / `证据:`):
+For substantial work, create bounded cards with explicit acceptance checks:
 
-- [ ] 1. <card> — acceptance: `<command>`
-- [ ] 2. <card> — acceptance: `<command>`
-- [x] 0. (example) scaffold -- evidence: `pytest -q` -> 12 passed
-- [~] 9. (example) dark mode -- deferred: not this round
+```text
+- [ ] <card> -- acceptance: <command or observable condition>
+- [x] <verified card> -- evidence: <command/result or concrete observation>
+- [~] <deferred card> -- deferred: <reason>
+```
+
+`PAUSED: <reason>` may temporarily suspend lifecycle enforcement for unrelated user work.
+
+Strict runtime phase, failure streak, routing decision, and evidence records live in `.fable/state.json`.
