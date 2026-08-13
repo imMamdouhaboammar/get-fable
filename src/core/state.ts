@@ -11,14 +11,14 @@ import {
 } from './types.js';
 
 const ALLOWED_TRANSITIONS: Record<FablePhase, FablePhase[]> = {
-  idle: ['discovering', 'planned', 'executing', 'blocked'],
-  discovering: ['planned', 'executing', 'verifying', 'blocked'],
-  planned: ['discovering', 'executing', 'blocked'],
+  idle: ['discovering', 'planned', 'executing', 'verifying', 'recovering', 'blocked'],
+  discovering: ['planned', 'executing', 'verifying', 'recovering', 'blocked'],
+  planned: ['discovering', 'executing', 'verifying', 'recovering', 'blocked'],
   executing: ['verifying', 'recovering', 'blocked'],
   verifying: ['complete', 'recovering', 'executing', 'blocked'],
   recovering: ['discovering', 'planned', 'executing', 'verifying', 'blocked'],
-  complete: ['idle', 'discovering', 'planned', 'executing'],
-  blocked: ['idle', 'discovering', 'planned', 'executing', 'recovering'],
+  complete: ['idle', 'discovering', 'planned', 'executing', 'verifying', 'recovering'],
+  blocked: ['idle', 'discovering', 'planned', 'executing', 'verifying', 'recovering'],
 };
 
 const PHASE_SKILL: Partial<Record<FablePhase, FableSkillId>> = {
@@ -27,6 +27,14 @@ const PHASE_SKILL: Partial<Record<FablePhase, FableSkillId>> = {
   executing: 'fable-execute',
   verifying: 'fable-verify',
   recovering: 'fable-recover',
+};
+
+const SKILL_PHASE: Record<Exclude<FableSkillId, 'get-fable'>, FablePhase> = {
+  'fable-discover': 'discovering',
+  'fable-plan': 'planned',
+  'fable-execute': 'executing',
+  'fable-verify': 'verifying',
+  'fable-recover': 'recovering',
 };
 
 export function createInitialState(now: string = new Date().toISOString()): FableState {
@@ -49,6 +57,17 @@ export function isFablePhase(value: unknown): value is FablePhase {
   );
 }
 
+function isFableSkillId(value: unknown): value is FableSkillId {
+  return (
+    value === 'get-fable' ||
+    value === 'fable-discover' ||
+    value === 'fable-plan' ||
+    value === 'fable-execute' ||
+    value === 'fable-verify' ||
+    value === 'fable-recover'
+  );
+}
+
 export function validateFableState(value: unknown): FableState {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error('Fable state must be an object');
@@ -58,6 +77,9 @@ export function validateFableState(value: unknown): FableState {
     throw new Error(`Unsupported Fable state schema: ${String(state.schemaVersion)}`);
   }
   if (!isFablePhase(state.phase)) throw new Error('Fable state phase is invalid');
+  if (state.currentSkill !== null && !isFableSkillId(state.currentSkill)) {
+    throw new Error('Fable state currentSkill is invalid');
+  }
   if (typeof state.failureStreak !== 'number' || !Number.isInteger(state.failureStreak) || state.failureStreak < 0) {
     throw new Error('Fable state failureStreak must be a non-negative integer');
   }
@@ -83,6 +105,10 @@ export function writeFableState(targetDir: string, state: FableState): void {
   atomicWriteFileSync(filePath, `${JSON.stringify(validateFableState(state), null, 2)}\n`);
 }
 
+export function phaseForSkill(skill: FableSkillId): FablePhase {
+  return skill === 'get-fable' ? 'idle' : SKILL_PHASE[skill];
+}
+
 export function setRoutingDecision(
   state: FableState,
   decision: RoutingDecision,
@@ -98,21 +124,48 @@ export function setRoutingDecision(
   };
 }
 
+export function applyRoutingDecision(
+  state: FableState,
+  decision: RoutingDecision,
+  now: string = new Date().toISOString()
+): FableState {
+  const substantial =
+    state.substantial ||
+    decision.requiresPlan ||
+    decision.selectedSkill === 'fable-recover' ||
+    decision.selectedSkill === 'fable-verify';
+  const routed = setRoutingDecision(state, decision, substantial, now);
+  return transitionState(routed, phaseForSkill(decision.selectedSkill), now);
+}
+
 export function addEvidence(
   state: FableState,
   evidence: Omit<EvidenceRecord, 'timestamp'> & { timestamp?: string }
 ): FableState {
+  const timestamp = evidence.timestamp || new Date().toISOString();
+  const nextFailureStreak = evidence.result === 'fail' ? state.failureStreak + 1 : 0;
+  let phase = state.phase;
+  let currentSkill = state.currentSkill;
+
+  if (nextFailureStreak >= 2 && state.phase !== 'complete') {
+    phase = 'recovering';
+    currentSkill = 'fable-recover';
+  }
+
   return {
     ...state,
+    phase,
+    currentSkill,
+    substantial: state.substantial || evidence.result === 'fail',
     evidence: [
       ...state.evidence,
       {
         ...evidence,
-        timestamp: evidence.timestamp || new Date().toISOString(),
+        timestamp,
       },
     ],
-    failureStreak: evidence.result === 'fail' ? state.failureStreak + 1 : 0,
-    updatedAt: evidence.timestamp || new Date().toISOString(),
+    failureStreak: nextFailureStreak,
+    updatedAt: timestamp,
   };
 }
 
@@ -125,7 +178,7 @@ export function transitionState(
   nextPhase: FablePhase,
   now: string = new Date().toISOString()
 ): FableState {
-  if (nextPhase === state.phase) return { ...state, updatedAt: now };
+  if (nextPhase === state.phase) return { ...state, currentSkill: PHASE_SKILL[nextPhase] || state.currentSkill, updatedAt: now };
   if (!ALLOWED_TRANSITIONS[state.phase].includes(nextPhase)) {
     throw new Error(`Invalid Fable state transition: ${state.phase} -> ${nextPhase}`);
   }
@@ -137,6 +190,7 @@ export function transitionState(
     ...state,
     phase: nextPhase,
     currentSkill: PHASE_SKILL[nextPhase] || null,
+    failureStreak: nextPhase === 'complete' ? 0 : state.failureStreak,
     updatedAt: now,
   };
 }
