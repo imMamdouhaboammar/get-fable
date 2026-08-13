@@ -104,10 +104,10 @@ function installCanonicalSkillPack(
     fs.copyFileSync(src, dest);
   }
 
-  const registrySrc = path.join(repoRoot, 'skills', 'registry.json');
-  const registryDest = path.join(targetSkillsDir, 'registry.json');
+  const registrySrc = path.join(repoRoot, 'skills', 'get-fable', 'registry.json');
+  const registryDest = path.join(targetSkillsDir, 'get-fable', 'registry.json');
   if (!skipExisting || !fs.existsSync(registryDest)) {
-    fs.mkdirSync(targetSkillsDir, { recursive: true });
+    fs.mkdirSync(path.dirname(registryDest), { recursive: true });
     fs.copyFileSync(registrySrc, registryDest);
   }
 }

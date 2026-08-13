@@ -77,10 +77,10 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
 }
 
 export function loadSkillRegistry(repoRoot: string = getCoreRepoRoot()): SkillRegistry {
-  const registryPath = path.join(repoRoot, 'skills', 'registry.json');
+  const registryPath = path.join(repoRoot, 'skills', 'get-fable', 'registry.json');
   const raw = JSON.parse(fs.readFileSync(registryPath, 'utf-8')) as unknown;
   const payload = asRecord(raw);
-  if (!payload) throw new Error('skills/registry.json must contain an object');
+  if (!payload) throw new Error('skills/get-fable/registry.json must contain an object');
   if (payload.schemaVersion !== FABLE_REGISTRY_SCHEMA_VERSION) {
     throw new Error(`Unsupported skill registry schema: ${String(payload.schemaVersion)}`);
   }

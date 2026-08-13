@@ -56,6 +56,7 @@ describe('frontier execution maturity contract', () => {
     ]) {
       expect(fs.existsSync(path.join(target, '.agents', 'skills', skill, 'SKILL.md'))).toBe(true);
     }
+    expect(fs.existsSync(path.join(target, '.agents', 'skills', 'get-fable', 'registry.json'))).toBe(true);
   });
 
   test('route chooses recovery for repeated-failure language and explains the decision', () => {
@@ -120,7 +121,9 @@ describe('frontier execution maturity contract', () => {
       expect(report.ok).toBe(true);
       expect(report.schemaVersion).toBe(1);
       expect(Array.isArray(report.checks)).toBe(true);
-      expect(report.checks.some((check: any) => check.id === 'skill-registry')).toBe(true);
+      expect(report.checks.some((check: any) => check.id === 'skill-registry' && check.status === 'pass')).toBe(true);
+      expect(report.checks.some((check: any) => check.id === 'plugin-branding' && check.status === 'pass')).toBe(true);
+      expect(report.checks.some((check: any) => check.id === 'plugin-skills-root' && check.status === 'pass')).toBe(true);
       expect(report.checks.some((check: any) => check.id === 'project-state')).toBe(true);
     } finally {
       process.chdir(previousCwd);

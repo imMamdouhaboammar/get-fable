@@ -9,7 +9,7 @@ The canonical workflow lives in the root `skills/` directory. Do not maintain a 
 
 ## Source of truth
 
-- `skills/registry.json`
+- `skills/get-fable/registry.json`
 - `skills/get-fable/SKILL.md`
 - `skills/fable-discover/SKILL.md`
 - `skills/fable-plan/SKILL.md`

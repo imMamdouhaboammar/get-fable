@@ -16,6 +16,27 @@ function readJson(relativePath: string) {
   return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf-8'));
 }
 
+function assertSquareSvg(relativePath: string) {
+  const content = fs.readFileSync(path.join(root, relativePath), 'utf-8');
+  const viewBox = content.match(/viewBox=["']([^"']+)["']/i);
+
+  if (viewBox) {
+    const values = viewBox[1].trim().split(/[\s,]+/).map(Number);
+    expect(values).toHaveLength(4);
+    expect(values.every(Number.isFinite)).toBe(true);
+    expect(values[2]).toBeGreaterThan(0);
+    expect(values[2]).toBe(values[3]);
+    return;
+  }
+
+  const width = content.match(/\bwidth=["']([0-9.]+)(?:px)?["']/i);
+  const height = content.match(/\bheight=["']([0-9.]+)(?:px)?["']/i);
+  expect(width).not.toBeNull();
+  expect(height).not.toBeNull();
+  expect(Number(width?.[1])).toBeGreaterThan(0);
+  expect(Number(width?.[1])).toBe(Number(height?.[1]));
+}
+
 describe('OpenAI plugin package', () => {
   test('declares a valid skill-only plugin manifest', () => {
     const manifest = readJson('.codex-plugin/plugin.json');
@@ -46,16 +67,37 @@ describe('OpenAI plugin package', () => {
     expect(manifest.hooks).toBeUndefined();
     expect(manifest.interface?.displayName).toBeTruthy();
     expect(manifest.interface?.shortDescription).toBeTruthy();
+    expect(manifest.interface.shortDescription.length).toBeLessThanOrEqual(30);
     expect(manifest.interface?.longDescription).toBeTruthy();
     expect(manifest.interface?.developerName).toBeTruthy();
-    expect(manifest.interface?.category).toBeTruthy();
+    expect(manifest.interface?.category).toBe('Developer Tools');
     expect(Array.isArray(manifest.interface?.capabilities)).toBe(true);
     expect(Array.isArray(manifest.interface?.defaultPrompt)).toBe(true);
     expect(manifest.interface.defaultPrompt.length).toBeGreaterThan(0);
+
+    for (const assetKey of ['composerIcon', 'logo']) {
+      const assetPath = manifest.interface?.[assetKey];
+      expect(typeof assetPath).toBe('string');
+      expect(assetPath.startsWith('./')).toBe(true);
+      const relativePath = assetPath.slice(2);
+      expect(fs.existsSync(path.join(root, relativePath))).toBe(true);
+      assertSquareSvg(relativePath);
+    }
+  });
+
+  test('skills root contains only importable skill directories', () => {
+    const skillsRoot = path.join(root, 'skills');
+    const entries = fs.readdirSync(skillsRoot, { withFileTypes: true });
+
+    expect(entries.length).toBeGreaterThan(0);
+    for (const entry of entries) {
+      expect(entry.isDirectory()).toBe(true);
+      expect(fs.existsSync(path.join(skillsRoot, entry.name, 'SKILL.md'))).toBe(true);
+    }
   });
 
   test('canonical registry and skill files define one ordered workflow graph', () => {
-    const registry = readJson('skills/registry.json');
+    const registry = readJson('skills/get-fable/registry.json');
     expect(registry.schemaVersion).toBe(1);
     expect(registry.entry).toBe('get-fable');
     expect(registry.skills.map((skill: any) => skill.id)).toEqual(canonicalSkills);
@@ -104,9 +146,9 @@ describe('OpenAI plugin package', () => {
   test('npm package metadata includes the plugin surface and registry', () => {
     const pkg = readJson('package.json');
 
-    for (const requiredPath of ['.codex-plugin/', '.codex/', 'AGENTS.md', 'skills/']) {
+    for (const requiredPath of ['.codex-plugin/', '.codex/', 'AGENTS.md', 'skills/', 'assets/']) {
       expect(pkg.files).toContain(requiredPath);
     }
-    expect(fs.existsSync(path.join(root, 'skills', 'registry.json'))).toBe(true);
+    expect(fs.existsSync(path.join(root, 'skills', 'get-fable', 'registry.json'))).toBe(true);
   });
 });

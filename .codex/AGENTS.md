@@ -4,7 +4,7 @@ This supplements root `AGENTS.md` with Codex-specific execution guidance.
 
 ## Source of truth
 
-- Canonical workflow registry: `skills/registry.json`
+- Canonical workflow registry: `skills/get-fable/registry.json`
 - Canonical entry skill: `skills/get-fable/SKILL.md`
 - Specialist skills: `skills/fable-*/SKILL.md`
 - Durable runtime state: `.fable/state.json` when the project is initialized
