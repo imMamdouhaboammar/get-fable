@@ -11,10 +11,20 @@ import {
 } from './installer.js';
 import { runFableLint } from './fable-lint.js';
 import { startMythosRouterServer } from './router/index.js';
-import { readFableState } from './core/state.js';
+import {
+  addEvidence,
+  applyRoutingDecision,
+  isFablePhase,
+  readFableState,
+  transitionState,
+  writeFableState,
+} from './core/state.js';
 import { routeTask } from './core/task-router.js';
 import { runDoctor } from './core/doctor.js';
+import type { EvidenceKind, EvidenceResult } from './core/types.js';
 import { logHeader, logError, colors } from './utils.js';
+
+const EVIDENCE_KINDS: EvidenceKind[] = ['test', 'build', 'runtime', 'review', 'observation'];
 
 export function getPackageVersion(): string {
   try {
@@ -37,25 +47,124 @@ export function parsePort(value: string | undefined): number {
   return port;
 }
 
-function hasJsonFlag(args: string[]): boolean {
-  return args.includes('--json');
+function hasFlag(args: string[], flag: string): boolean {
+  return args.includes(flag);
 }
 
-function printRoute(task: string, json: boolean): number {
+function hasJsonFlag(args: string[]): boolean {
+  return hasFlag(args, '--json');
+}
+
+function requireState() {
   const state = readFableState(process.cwd());
-  const decision = routeTask(task, state || undefined);
-  if (json) {
-    console.log(JSON.stringify(decision));
-    return 0;
+  if (!state) throw new Error('No .fable/state.json found. Run get-fable init first.');
+  return state;
+}
+
+function printJsonOrSummary(payload: unknown, json: boolean, summary: () => void): number {
+  if (json) console.log(JSON.stringify(payload));
+  else summary();
+  return 0;
+}
+
+function runRoute(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const apply = hasFlag(args, '--apply');
+  const task = args.filter((arg) => arg !== '--json' && arg !== '--apply').join(' ').trim();
+  if (!task) {
+    logError('route requires task text');
+    return 1;
   }
 
-  logHeader('get-fable routing decision');
-  console.log(`Selected skill: ${decision.selectedSkill}`);
-  console.log(`Confidence: ${decision.confidence}`);
-  console.log(`Requires plan: ${decision.requiresPlan ? 'YES' : 'NO'}`);
-  console.log(`Reasons: ${decision.reasons.join('; ')}`);
-  console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
-  return 0;
+  const currentState = readFableState(process.cwd());
+  const decision = routeTask(task, currentState || undefined);
+
+  if (apply) {
+    if (!currentState) {
+      logError('route --apply requires an initialized project. Run get-fable init first.');
+      return 1;
+    }
+    const nextState = applyRoutingDecision(currentState, decision);
+    writeFableState(process.cwd(), nextState);
+    return printJsonOrSummary(
+      { ...decision, applied: true, phase: nextState.phase },
+      json,
+      () => {
+        logHeader('get-fable routing decision applied');
+        console.log(`Selected skill: ${decision.selectedSkill}`);
+        console.log(`Phase: ${nextState.phase}`);
+        console.log(`Confidence: ${decision.confidence}`);
+        console.log(`Reasons: ${decision.reasons.join('; ')}`);
+        console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
+      }
+    );
+  }
+
+  return printJsonOrSummary(decision, json, () => {
+    logHeader('get-fable routing decision');
+    console.log(`Selected skill: ${decision.selectedSkill}`);
+    console.log(`Confidence: ${decision.confidence}`);
+    console.log(`Requires plan: ${decision.requiresPlan ? 'YES' : 'NO'}`);
+    console.log(`Reasons: ${decision.reasons.join('; ')}`);
+    console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
+  });
+}
+
+function runStateCommand(args: string[]): number {
+  const requestedPhase = args.find((arg) => !arg.startsWith('--'));
+  if (!isFablePhase(requestedPhase)) {
+    logError('state requires a valid phase: idle, discovering, planned, executing, verifying, recovering, complete, or blocked');
+    return 1;
+  }
+
+  let state = requireState();
+  if (hasFlag(args, '--substantial')) {
+    state = { ...state, substantial: true, updatedAt: new Date().toISOString() };
+  }
+  const nextState = transitionState(state, requestedPhase);
+  writeFableState(process.cwd(), nextState);
+
+  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+    logHeader('get-fable state transition');
+    console.log(`Phase: ${nextState.phase}`);
+    console.log(`Current skill: ${nextState.currentSkill || 'none'}`);
+    console.log(`Failure streak: ${nextState.failureStreak}`);
+    console.log(`Passing evidence: ${nextState.evidence.filter((item) => item.result === 'pass').length}`);
+  });
+}
+
+function runEvidenceCommand(args: string[]): number {
+  const positional = args.filter((arg) => !arg.startsWith('--'));
+  const result = positional[0] as EvidenceResult | undefined;
+  const kind = positional[1] as EvidenceKind | undefined;
+  const source = positional[2];
+  const detail = positional.slice(3).join(' ').trim();
+
+  if (result !== 'pass' && result !== 'fail') {
+    logError('evidence result must be pass or fail');
+    return 1;
+  }
+  if (!kind || !EVIDENCE_KINDS.includes(kind)) {
+    logError(`evidence kind must be one of: ${EVIDENCE_KINDS.join(', ')}`);
+    return 1;
+  }
+  if (!source || !detail) {
+    logError('evidence requires a source and concrete detail');
+    return 1;
+  }
+
+  const state = requireState();
+  const nextState = addEvidence(state, { kind, source, result, detail });
+  writeFableState(process.cwd(), nextState);
+
+  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+    logHeader('get-fable evidence recorded');
+    console.log(`Result: ${result}`);
+    console.log(`Kind: ${kind}`);
+    console.log(`Source: ${source}`);
+    console.log(`Phase: ${nextState.phase}`);
+    console.log(`Failure streak: ${nextState.failureStreak}`);
+  });
 }
 
 export function runCli(args: string[] = process.argv.slice(2)): number {
@@ -82,14 +191,14 @@ export function runCli(args: string[] = process.argv.slice(2)): number {
       initProjectFable(process.cwd());
       return 0;
 
-    case 'route': {
-      const task = args.slice(1).filter((arg) => arg !== '--json').join(' ').trim();
-      if (!task) {
-        logError('route requires task text');
-        return 1;
-      }
-      return printRoute(task, hasJsonFlag(args));
-    }
+    case 'route':
+      return runRoute(args.slice(1));
+
+    case 'state':
+      return runStateCommand(args.slice(1));
+
+    case 'evidence':
+      return runEvidenceCommand(args.slice(1));
 
     case 'doctor': {
       const report = runDoctor(process.cwd());
@@ -185,14 +294,16 @@ ${colors.bright}COMMANDS:${colors.reset}
   ${colors.yellow}install${colors.reset}              Install supported global integrations
   ${colors.yellow}install-antigravity${colors.reset}  Install the Antigravity / Gemini target
   ${colors.yellow}init${colors.reset}                 Create durable project state and canonical project skills
-  ${colors.yellow}route <task>${colors.reset}         Explain which Fable skill should handle a task; add --json for machine output
+  ${colors.yellow}route <task>${colors.reset}         Explain workflow selection; add --apply to persist it and --json for machine output
+  ${colors.yellow}state <phase>${colors.reset}        Transition durable workflow state; add --substantial and/or --json
+  ${colors.yellow}evidence ...${colors.reset}         Record pass/fail evidence: <result> <kind> <source> <detail>
   ${colors.yellow}doctor${colors.reset}               Validate registry, plugin, project state, skills, and hook runtime; add --json
   ${colors.yellow}serve [port]${colors.reset}         Start the local request-enrichment proxy, default port 8080
   ${colors.yellow}router [port]${colors.reset}        Alias for serve
   ${colors.yellow}lint${colors.reset}                 Verify ledger acceptance, evidence, and state consistency
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
   ${colors.yellow}assets${colors.reset}               List historical bundled assets
-  ${colors.yellow}prompt${colors.reset}               Print the legacy bundled Fable prompt
+  ${colors.yellow}prompt${colors.reset}               Print the compatibility execution prompt
   ${colors.yellow}version${colors.reset}              Print the installed get-fable version
   ${colors.yellow}help${colors.reset}                 Display this help menu
 
