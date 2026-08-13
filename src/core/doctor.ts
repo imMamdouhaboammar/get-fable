@@ -46,12 +46,22 @@ export function runDoctor(
       checks.push(check('project-state', 'error', message));
     }
 
+    const isSourceRepo = path.resolve(targetDir) === path.resolve(repoRoot);
+    const skillRoot = isSourceRepo
+      ? path.join(repoRoot, 'skills')
+      : path.join(targetDir, '.agents', 'skills');
     const missing = canonicalSkillIds().filter(
-      (skill) => !fs.existsSync(path.join(targetDir, '.agents', 'skills', skill, 'SKILL.md'))
+      (skill) => !fs.existsSync(path.join(skillRoot, skill, 'SKILL.md'))
     );
     checks.push(
       missing.length === 0
-        ? check('project-skills', 'pass', 'All canonical project skills are installed')
+        ? check(
+            'project-skills',
+            'pass',
+            isSourceRepo
+              ? 'Source repository canonical skills are present'
+              : 'All canonical project skills are installed'
+          )
         : check('project-skills', 'error', `Missing project skills: ${missing.join(', ')}`)
     );
   }
