@@ -24,12 +24,15 @@ jobs:
         include:
           - os: ubuntu-latest
             bun: 1.1.0
+            coverage: false
             inspect_package: false
           - os: ubuntu-latest
             bun: 1.3.14
+            coverage: true
             inspect_package: true
           - os: macos-latest
             bun: 1.3.14
+            coverage: false
             inspect_package: false
 
     steps:
@@ -47,7 +50,12 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      - name: Test with coverage
+      - name: Test declared runtime floor
+        if: ${{ !matrix.coverage }}
+        run: bun test
+
+      - name: Test current runtime with coverage
+        if: matrix.coverage
         run: bun test --coverage
 
       - name: Build
