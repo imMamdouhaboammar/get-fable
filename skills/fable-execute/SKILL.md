@@ -1,21 +1,25 @@
 ---
 name: fable-execute
-description: Implement a bounded coding task against explicit acceptance criteria. Use after scope is stable and the requested change can be executed without reopening product design.
+description: Implement one bounded work card against an explicit acceptance condition. Use only when scope is stable enough that implementation does not need a new architecture decision.
 ---
 
 # Fable Execute
 
-Implement the accepted card without widening scope.
+Make the smallest coherent change that satisfies the accepted card.
 
-## Procedure
+## Contract
 
-1. Restate the active card and its acceptance condition internally from durable state or the current request.
-2. Read the minimum code required to trace the real execution path.
-3. Make the smallest coherent change that satisfies the card.
-4. Match local naming, error-handling, testing, and architectural conventions.
-5. Run the card's acceptance check immediately.
-6. Do not mark the card complete until the check passes and the evidence is recorded.
+1. Read the active card, its constraints, and its acceptance condition.
+2. Trace only the code needed to prove the real execution path.
+3. Match repository conventions and avoid unrelated cleanup.
+4. Implement one bounded change.
+5. Run the card acceptance check immediately.
+6. Record concrete evidence before marking the card complete.
 
-If the same approach fails twice or the evidence contradicts the plan, stop patching symptoms and route to `$fable-recover`.
+## Failure boundary
 
-After the last implementation card, route to `$fable-verify` for the complete behavior.
+One failure may justify a targeted correction when the diagnosis is clear. Repeated failure, unchanged retries, stale execution, or contradictory evidence routes to `$fable-recover` before another edit.
+
+## Exit condition
+
+After all accepted cards are implemented, route the complete affected behavior to `$fable-verify`. Passing a narrow unit test does not by itself prove the final product path.

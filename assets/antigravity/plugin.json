@@ -1,19 +1,19 @@
 {
   "name": "get-fable",
-  "displayName": "Fable 5 Mythos System & Multi-Model Upgrade Suite",
+  "displayName": "get-fable Execution Discipline",
   "version": "1.1.0",
-  "description": "Brings Claude Fable 5 Mythos-tier intelligence, system prompts, agents, skills, and mechanical guard hooks to Antigravity and any AI model.",
+  "description": "Adds modular evidence, planning, execution, verification, recovery, and lifecycle guard workflows for AI-assisted software work.",
   "author": "Mamdouh Abo Ammar",
   "homepage": "https://github.com/imMamdouhaboammar/get-fable",
   "license": "MIT",
   "skills": [
-    "fable-mode",
-    "dataviz",
-    "artifact-design",
-    "create-design-system",
-    "make-a-deck",
-    "3d-object",
-    "animated-video"
+    "get-fable",
+    "fable-discover",
+    "fable-plan",
+    "fable-execute",
+    "fable-verify",
+    "fable-recover",
+    "fable-mode"
   ],
   "rules": [
     "fable5-mode.md"

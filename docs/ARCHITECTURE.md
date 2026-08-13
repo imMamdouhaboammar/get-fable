@@ -1,214 +1,166 @@
-# Architecture: `get-fable`
+# Architecture: get-fable 1.1
 
 ## Purpose
 
-`get-fable` is a local-first toolkit for making coding-agent work explicit, persistent, and easier to verify
+`get-fable` is a local-first execution-discipline framework for AI-assisted software work.
 
-It combines four concerns
+Its goal is narrow and testable: make high-value behaviors such as evidence gathering, bounded planning, verification, recovery, and durable context harder to skip.
 
-1. project state and task tracking
-2. lifecycle checks around agent execution
-3. reusable prompt, skill, and agent assets
-4. optional request enrichment through a local HTTP endpoint
+It does not modify model weights or claim model equivalence.
 
-The implementation favors inspectable files and small public boundaries over hidden runtime behavior
-
-## Trust boundary
-
-The project does not reproduce a proprietary model, private provider service, or hidden reasoning process
-
-The code in this repository is the source of truth for installation targets and request compatibility
-
-Bundled community material and vendor names do not imply vendor endorsement
-
-## High-level structure
+## Core architecture
 
 ```text
-                       user / coding agent
-                              |
-              +---------------+---------------+
-              |                               |
-              v                               v
-      project initialization              global install
-              |                               |
-              v                               v
-    .fable + .agents + docs        Claude + Gemini config + Kernel
-              |                               |
-              +---------------+---------------+
-                              |
-                              v
-                    lifecycle guard hooks
-                              |
-                              v
-                   evidence-aware execution
-
-            optional local request path
-
-client -> local HTTP -> normalize -> inject context -> optional upstream
+user task
+   |
+   v
+Task Router <---------------- .fable/state.json
+   |
+   v
+skills/registry.json
+   |
+   +--> fable-discover
+   +--> fable-plan
+   +--> fable-execute
+   +--> fable-verify
+   +--> fable-recover
+   |
+   v
+Prompt Compiler / host adapter
+   |
+   v
+LLM execution
+   |
+   v
+evidence + state transition
 ```
 
-## 1. CLI boundary
+The root `skills/` directory and `skills/registry.json` are the canonical workflow source. Host-specific files adapt that workflow but do not own independent semantics.
 
-Source: [`src/cli.ts`](../src/cli.ts)
+## 1. Canonical skill registry
 
-Executable: [`bin/get-fable.js`](../bin/get-fable.js)
+Source: `skills/registry.json`
 
-The file under `bin/` is intentionally small and imports the TypeScript CLI source through Bun
+The registry has schema version 1 and defines:
 
-This prevents a committed generated bundle from drifting behind `src/`
+- stable skill IDs
+- display order
+- phase ownership
+- allowed next skills
+- routing hints
 
-The CLI
-
-- shows help when run without a command
-- requires installation commands to be explicit
-- reads its version from `package.json`
-- validates proxy ports before starting a server
-- returns command status through `process.exitCode`
-
-## 2. Multi-target installer
-
-Source: [`src/installer.ts`](../src/installer.ts)
-
-### Claude Code
-
-Default target: `~/.claude`
-
-The installer
-
-- installs the Fable skill
-- copies four Python hooks
-- merges hook registrations into `settings.json`
-- appends the Fable rules to `CLAUDE.md` once
-
-`CLAUDE_CONFIG_DIR` can redirect the target
-
-### Antigravity / Gemini config target
-
-Default target: `~/.gemini/config`
-
-The installer
-
-- writes the Fable rule
-- writes the `get-fable` plugin package
-- copies bundled skills into the plugin
-- copies lifecycle hooks into the plugin itself
-- installs the global `fable-mode` skill
-- registers plugin-owned hook paths in `hooks.json`
-
-The dedicated Antigravity install does not depend on hook files under Claude configuration
-
-`FABLE_GEMINI_CONFIG_DIR` can redirect the target
-
-### Agent Kernel
-
-Default target: `~/.agent-kernel`
-
-If that directory already exists, the global installer writes the Fable rule under `rules/`
-
-The installer does not create a full Agent Kernel installation
-
-`FABLE_AGENT_KERNEL_DIR` can redirect the target
-
-## 3. Configuration writes
-
-Source: [`src/utils.ts`](../src/utils.ts)
-
-JSON configuration mutation follows these rules
-
-1. parse an existing file before modifying it
-2. require the JSON root to be an object
-3. refuse to continue when existing JSON is malformed
-4. write the updated JSON through a temporary file and rename
-
-The helper does not treat broken configuration as an empty object
-
-That choice is deliberate because preserving user configuration is more important than making an install appear successful
-
-## 4. Project initialization
-
-Command
-
-```bash
-bun ./bin/get-fable.js init
-```
-
-The initializer creates missing project-local targets
+The six canonical skills are:
 
 ```text
-.fable/
-  LEDGER.md
-  PROGRESS.md
-  VERIFIER_PROMPT.md
-
-.agents/
-  skills/fable-mode/SKILL.md
-  rules/fable5-mode.md
-
-docs/
-  SPEC.md
+get-fable
+fable-discover
+fable-plan
+fable-execute
+fable-verify
+fable-recover
 ```
 
-Every target is skip-if-present
+`get-fable` is the entry skill. The other five are specialists with intentionally narrow contracts.
 
-The initializer does not replace an existing workspace skill, rule, ledger, progress file, verifier, or spec
+Historical skills under `assets/skills/` remain available as a library, but they are not installed as the default execution workflow.
 
-## 5. Lifecycle hooks
+## 2. Explainable task routing
 
-Source: [`hooks/`](../hooks)
+Source: `src/core/task-router.ts`
 
-| Hook | Trigger | Responsibility |
-|---|---|---|
-| `fable_profile_inject.py` | `SessionStart` | Reintroduce project state and working context |
-| `fable_spawn_guard.py` | `PreToolUse` | Check prerequisites before selected agent or task actions |
-| `fable_fail_streak.py` | `PostToolUse` | React to repeated command failures |
-| `fable_close_guard.py` | `Stop` | Check unresolved ledger work and evidence before close |
+The router uses deterministic weighted signals from the task and current durable state.
 
-These hooks are process checks, not correctness proofs
+Priority rules prevent common failure modes:
 
-## 6. Asset library
+1. repeated or stale failure selects recovery before another edit
+2. review, proof, or completion requests select verification
+3. unresolved repository or documentation facts select discovery
+4. architecture, migration, and broad refactors select planning
+5. bounded concrete edits select execution
 
-Source: [`assets/`](../assets)
+A routing decision contains:
 
-The library groups reusable material by purpose
+- selected skill
+- confidence
+- concise reasons
+- whether a plan is required
+- allowed next skills
+- raw per-skill scores for diagnostics
+
+The reasons are routing evidence, not hidden chain-of-thought.
+
+## 3. Durable state machine
+
+Source: `src/core/state.ts`
+
+Initialized projects receive `.fable/state.json` with schema version 1.
+
+Phases:
 
 ```text
-assets/agents/
-assets/injected-reminders/
-assets/mcp-servers/
-assets/prompts/
-assets/skills/
-assets/slash-commands/
-assets/starter-components/
+idle
+  -> discovering
+  -> planned
+  -> executing
+  -> verifying
+  -> complete
+
+executing/verifying
+  -> recovering
+  -> discovering | planned | executing | verifying
+
+any active path may become blocked
 ```
 
-Counts come from disk at runtime
+Invalid transitions are rejected.
 
-```bash
-bun ./bin/get-fable.js assets
+For substantial work, a transition from `verifying` to `complete` is rejected unless at least one passing evidence record exists.
+
+Evidence records contain:
+
+- kind
+- command or observation source
+- pass/fail result
+- concrete detail
+- timestamp
+
+A failed evidence record increments the failure streak. Passing evidence resets it.
+
+## 4. Human-readable working state
+
+JSON state provides strict runtime semantics. Markdown remains the working surface for humans and agents:
+
+```text
+docs/SPEC.md          requirements, constraints, decisions
+.fable/LEDGER.md      cards, acceptance checks, evidence
+.fable/PROGRESS.md    compact resumable context
+.fable/state.json     strict phase, routing, failures, evidence
 ```
 
-User-provided skill and agent names are validated before they are converted into local asset paths
+The initializer uses skip-if-present semantics for project-owned files.
 
-Names containing path traversal syntax are rejected
+## 5. Contextual prompt compiler
 
-## 7. Request normalization
+Source: `src/core/prompt-compiler.ts`
 
-Source: [`src/router/provider-translator.ts`](../src/router/provider-translator.ts)
+The request proxy no longer adds the complete historical Fable prompt collection to every request.
 
-The normalizer accepts two documented shapes
+The compiler produces a compact directive containing:
 
-- OpenAI-style `messages`
-- Gemini-style `contents`, including structured `systemInstruction.parts`
+1. a short invariant core contract
+2. the selected workflow skill only
+3. concise routing reasons
+4. relevant project-state counters
 
-Unsupported bodies return a validation error instead of being serialized into an implicit fallback message
+This reduces irrelevant instructions and makes request behavior depend on the actual job.
 
-Context injection returns a new request object and does not mutate the caller's request
+The original user/system request remains present after the Fable directive.
 
-## 8. Local request proxy
+## 6. Request proxy
 
-Source: [`src/router/index.ts`](../src/router/index.ts)
+Source: `src/router/index.ts`
 
-Endpoints
+Supported endpoints:
 
 ```text
 GET  /health
@@ -217,16 +169,19 @@ POST /chat/completions
 POST /v1/chat/completions
 ```
 
-Default request flow
+Request flow:
 
-1. accept JSON on a supported endpoint
-2. enforce the configured body limit
-3. normalize the request
-4. inject Fable context
-5. return preview metadata when no upstream is configured
-6. otherwise forward to one configured HTTP or HTTPS upstream
+```text
+HTTP JSON
+  -> request normalization
+  -> latest user intent
+  -> task routing
+  -> contextual directive compilation
+  -> Fable directive injection
+  -> preview response or configured upstream
+```
 
-Safety defaults
+Safety defaults remain:
 
 ```text
 host                     127.0.0.1
@@ -236,70 +191,105 @@ upstream timeout         30 seconds
 allowed upstream scheme  http / https
 ```
 
-The proxy preserves upstream status, content type, and response bytes rather than assuming every upstream response is JSON
+The proxy does not provide built-in user authentication or authorization. Binding it beyond loopback is an operator decision and requires appropriate external controls.
 
-The proxy still has no built-in user authentication or authorization boundary
+## 7. CLI boundary
 
-Binding it beyond loopback is an explicit operator decision and should be paired with external access controls
+Source: `src/cli.ts`
 
-## 9. Tests and CI
-
-Core tests live under [`test/`](../test)
-
-They cover public behavior around
-
-- JSON merge safety
-- project initialization
-- Antigravity installation and idempotence
-- CLI defaults and port validation
-- request normalization and immutable context injection
-- local proxy HTTP behavior and body limits
-- asset path traversal rejection
-- Fable ledger lint behavior
-
-The existing site contract tests remain under [`site/`](../site)
-
-CI runs
+Core commands:
 
 ```text
-TypeScript typecheck
-full Bun test suite with coverage
-Bun build
-CLI smoke test
-npm package-content dry run
+init
+route <task> [--json]
+doctor [--json]
+status [--json]
+lint
+serve [port]
+router [port]
 ```
 
-## Compatibility policy
+`route` exposes the decision contract without requiring an LLM call.
 
-Documentation uses three separate meanings
+`doctor` validates the registry, plugin manifest, initialized project state, canonical project skills, and Python hook runtime availability.
 
-- automatic support means installer code exists for that target
-- request compatibility means the normalizer handles the documented request shape
-- reusable asset means a file may be consumable manually where another tool accepts that format
+`status --json` provides a machine-readable host/project report for scripts and other tools.
 
-Those meanings are not interchangeable
+Running the CLI without a command remains non-mutating and shows help.
 
-## Dependencies
+## 8. Installation adapters
 
-The package has no runtime npm dependencies
+Source: `src/installer.ts`
 
-The project still depends on external runtimes and tools
+### Project-local
 
-- Bun for the CLI, tests, build, and local server
-- Python 3 for lifecycle hooks
-- Git for source-based setup
+`get-fable init` creates missing state/workflow files and installs the canonical skill pack under `.agents/skills/`.
 
-## Provenance
+### Claude Code
 
-The repository contains original project code plus material adapted or collected from public upstream repositories
+The global installer installs the canonical six-skill pack into Claude skills and retains `fable-mode` as a compatibility alias for older installations. Existing Python hook registration remains idempotent.
 
-See [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) for source and licensing notes
+### Antigravity / Gemini
+
+The plugin and global skill target now receive the canonical six-skill pack. The historical broad asset library is no longer the default workflow payload. The plugin still owns its hook copies so it does not depend on Claude directories.
+
+### Agent Kernel
+
+When an Agent Kernel directory already exists, get-fable installs its rule file. The installer does not create a complete Agent Kernel runtime.
+
+## 9. Compatibility adapters
+
+Files under `.agents/skills/get-fable` and `.claude/skills/get-fable` are thin repository adapters that point to the root canonical graph.
+
+Codex-specific profiles under `.codex/agents/` map to discovery, planning, execution, verification, recovery, review, and documentation roles. They inherit the active Codex model instead of hard-coding a model version.
+
+## 10. Lint and verification
+
+Source: `src/fable-lint.ts`
+
+Lint checks both human and strict state:
+
+- open ledger cards require an explicit acceptance check
+- closed cards require substantive evidence annotation
+- state JSON must parse and match schema 1
+- substantial complete state requires passing evidence
+- repeated failure cannot remain in executing phase
+
+## 11. Test and CI strategy
+
+Core tests cover:
+
+- skill registry integrity
+- routing precedence
+- state transitions
+- evidence-gated completion
+- prompt compilation
+- project initialization
+- Antigravity installation and idempotency
+- proxy routing and HTTP safety
+- CLI machine-readable contracts
+- plugin/package shape
+
+CI tests the declared Bun floor and the current pinned Bun runtime on Ubuntu, plus the current pinned runtime on macOS. The package inspection runs on the primary Linux runtime.
+
+## 12. Trust boundary
+
+The following claims are intentionally separate:
+
+- **workflow support**: canonical skills and routing are present
+- **host installation support**: installer code exists for that target
+- **request compatibility**: the proxy understands the documented request shape
+- **reusable asset**: a historical file can be consumed manually
+
+One category is not evidence for another.
+
+`get-fable` can improve the process around a model. It cannot make one model literally become another model, reproduce private provider infrastructure, expose hidden reasoning, or guarantee equivalent benchmark performance.
 
 ## Related docs
 
-- [README](../README.md)
-- [Usage](./USAGE.md)
-- [ADR-001](./ADR-001-fable-supersystem.md)
-- [Security](../SECURITY.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Third-party notices](../THIRD_PARTY_NOTICES.md)
+- `README.md`
+- `docs/PLUGIN.md`
+- `docs/USAGE.md`
+- `docs/ADR-001-fable-supersystem.md`
+- `SECURITY.md`
+- `THIRD_PARTY_NOTICES.md`

@@ -8,13 +8,22 @@ describe('ContextInjector', () => {
     expect(content?.length ?? 0).toBeGreaterThan(100);
   });
 
+  test('loads canonical skills before the historical asset library', () => {
+    const content = ContextInjector.loadSkill('fable-verify');
+    expect(content).toContain('name: fable-verify');
+    expect(content).toContain('Completion gate');
+  });
+
   test('rejects path traversal names', () => {
     expect(ContextInjector.loadAgent('../../package')).toBeNull();
     expect(ContextInjector.loadSkill('../secret')).toBeNull();
     expect(ContextInjector.loadSkill('..')).toBeNull();
   });
 
-  test('builds a non-empty consolidated system prompt', () => {
-    expect(ContextInjector.getFableSystemPrompt().length).toBeGreaterThan(1000);
+  test('builds a canonical compatibility prompt without historical prompt assets', () => {
+    const prompt = ContextInjector.getFableSystemPrompt();
+    expect(prompt).toContain('Process discipline only');
+    expect(prompt).toContain('name: get-fable');
+    expect(prompt).not.toContain('Claude Fable 5 (Mythos-Class Model Tier)');
   });
 });

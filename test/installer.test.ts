@@ -10,6 +10,14 @@ import {
 
 const tempDirs: string[] = [];
 const previousGeminiDir = process.env.FABLE_GEMINI_CONFIG_DIR;
+const canonicalSkills = [
+  'get-fable',
+  'fable-discover',
+  'fable-plan',
+  'fable-execute',
+  'fable-verify',
+  'fable-recover',
+];
 
 function makeTempDir(prefix: string) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -27,7 +35,7 @@ afterEach(() => {
 });
 
 describe('initProjectFable', () => {
-  test('creates missing workflow files without replacing existing project-owned files', () => {
+  test('creates canonical workflow state without replacing existing project-owned files', () => {
     const target = makeTempDir('get-fable-init-');
     const existingRule = path.join(target, '.agents', 'rules', 'fable5-mode.md');
     fs.mkdirSync(path.dirname(existingRule), { recursive: true });
@@ -36,23 +44,42 @@ describe('initProjectFable', () => {
     initProjectFable(target);
 
     expect(fs.existsSync(path.join(target, '.fable', 'LEDGER.md'))).toBe(true);
+    expect(fs.existsSync(path.join(target, '.fable', 'state.json'))).toBe(true);
     expect(fs.existsSync(path.join(target, 'docs', 'SPEC.md'))).toBe(true);
     expect(fs.existsSync(path.join(target, '.agents', 'skills', 'fable-mode', 'SKILL.md'))).toBe(true);
     expect(fs.readFileSync(existingRule, 'utf-8')).toBe('project-owned rule\n');
+
+    for (const skill of canonicalSkills) {
+      expect(fs.existsSync(path.join(target, '.agents', 'skills', skill, 'SKILL.md'))).toBe(true);
+    }
+
+    const state = JSON.parse(fs.readFileSync(path.join(target, '.fable', 'state.json'), 'utf-8'));
+    expect(state.schemaVersion).toBe(1);
+    expect(state.phase).toBe('idle');
   });
 });
 
 describe('installAntigravityGlobal', () => {
-  test('installs its own hooks and remains idempotent', () => {
+  test('installs canonical skills, owns its hooks, and remains idempotent', () => {
     const target = makeTempDir('get-fable-antigravity-');
     process.env.FABLE_GEMINI_CONFIG_DIR = target;
 
     installAntigravityGlobal();
     installAntigravityGlobal();
 
-    const pluginHooks = path.join(target, 'plugins', 'get-fable', 'hooks');
+    const pluginRoot = path.join(target, 'plugins', 'get-fable');
+    const pluginHooks = path.join(pluginRoot, 'hooks');
     expect(fs.existsSync(path.join(pluginHooks, 'fable_profile_inject.py'))).toBe(true);
     expect(fs.existsSync(path.join(pluginHooks, 'fable_close_guard.py'))).toBe(true);
+
+    for (const skill of canonicalSkills) {
+      expect(fs.existsSync(path.join(pluginRoot, 'skills', skill, 'SKILL.md'))).toBe(true);
+      expect(fs.existsSync(path.join(target, 'skills', skill, 'SKILL.md'))).toBe(true);
+    }
+    expect(fs.existsSync(path.join(pluginRoot, 'skills', 'registry.json'))).toBe(true);
+
+    const pluginManifest = JSON.parse(fs.readFileSync(path.join(pluginRoot, 'plugin.json'), 'utf-8'));
+    expect(pluginManifest.skills).toEqual([...canonicalSkills, 'fable-mode']);
 
     const hooksConfig = JSON.parse(fs.readFileSync(path.join(target, 'hooks.json'), 'utf-8'));
     const fableHooks = hooksConfig.hooks.filter((hook: any) => String(hook.name).startsWith('fable5-'));

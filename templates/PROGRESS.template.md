@@ -1,16 +1,24 @@
-# PROGRESS — <project>
+# get-fable progress
 
-Update in real time, not batched. A fresh context restores the scene by reading
-SPEC.md + this file only.
+Keep this file compact enough to restore the current round without replaying conversation history
 
-## Done (with evidence)
-- <date> card 1 — verified: `<command>` -> <output summary>
+## Current
 
-## In flight
-- card N — <state, next step>
+- Phase: idle
+- Selected skill: none
+- Active card: none
+- Next action: route or plan the next substantial task
 
-## Decisions
-- <date>: <decision + why>
+## Verified
 
-## Gotchas (lessons — write the moment you hit one)
-- <symptom> -> <root cause> -> <what to do instead>
+<Append only meaningful completed outcomes with concrete evidence references>
+
+## Decisions that still matter
+
+<Keep only decisions that constrain the remaining work>
+
+## Recovery notes
+
+<When failure occurs, record symptom, revised diagnosis, evidence, and the next bounded repair>
+
+Strict phase, failure streak, routing, and evidence records live in `.fable/state.json`

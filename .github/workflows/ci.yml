@@ -15,18 +15,34 @@ concurrency:
 
 jobs:
   quality:
-    name: Typecheck, test, build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    name: Quality (${{ matrix.os }}, Bun ${{ matrix.bun }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            bun: 1.3.0
+            coverage: false
+            inspect_package: false
+          - os: ubuntu-latest
+            bun: 1.3.14
+            coverage: true
+            inspect_package: true
+          - os: macos-latest
+            bun: 1.3.14
+            coverage: false
+            inspect_package: false
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.2.0
         with:
-          bun-version: latest
+          bun-version: ${{ matrix.bun }}
 
       - name: Install development dependencies
         run: bun install --ignore-scripts
@@ -34,16 +50,37 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      - name: Test with coverage
+      - name: Test without coverage instrumentation
+        if: ${{ !matrix.coverage }}
+        run: bun test
+
+      - name: Test current runtime with coverage
+        if: matrix.coverage
         run: bun test --coverage
 
       - name: Build
         run: bun run build
 
-      - name: CLI smoke test
+      - name: CLI and maturity smoke tests
+        shell: bash
         run: |
           bun ./bin/get-fable.js --version
           bun ./bin/get-fable.js help >/dev/null
+          bun ./bin/get-fable.js route "review this diff before merge" --json | python3 -m json.tool >/dev/null
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          (
+            cd "$tmp"
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" init >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" route "design a modular migration across several files" --apply --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" state executing --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" state verifying --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" evidence pass test "bun test" "smoke lifecycle passed" --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" state complete --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" doctor --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" status --json | python3 -m json.tool >/dev/null
+          )
 
       - name: Inspect package contents
+        if: matrix.inspect_package
         run: npm pack --dry-run --ignore-scripts

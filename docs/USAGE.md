@@ -1,34 +1,29 @@
-# Usage: `get-fable`
+# Usage: get-fable 1.1
 
 This guide documents behavior implemented in the repository
 
-It does not treat bundled prompts, model names, or community material as proof of vendor affiliation or model equivalence
+Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence
 
 ## Requirements
 
-- Bun 1.1 or newer
-- Python 3 for lifecycle hooks
+- Bun 1.3.0 or newer
+- Python 3 for lifecycle hooks on hosts that use them
 - Git for source-based setup
 
-## 1. Clone and inspect
+## Inspect before installing
 
 ```bash
 git clone https://github.com/imMamdouhaboammar/get-fable.git
 cd get-fable
 
+bun ./bin/get-fable.js help
 bun ./bin/get-fable.js status
-bun ./bin/get-fable.js assets
+bun ./bin/get-fable.js doctor
 ```
 
-Running `get-fable` without a command only shows help
+Running the CLI without a command shows help and does not install anything
 
-Installation is always explicit
-
-```bash
-bun ./bin/get-fable.js install
-```
-
-## 2. Initialize one project
+## Initialize a project
 
 From the project you want to prepare
 
@@ -36,27 +31,242 @@ From the project you want to prepare
 bun /path/to/get-fable/bin/get-fable.js init
 ```
 
-This creates missing targets under
+Missing files are created under
 
 ```text
 .fable/
   LEDGER.md
   PROGRESS.md
   VERIFIER_PROMPT.md
+  state.json
 
 .agents/
-  skills/fable-mode/SKILL.md
   rules/fable5-mode.md
+  skills/
+    registry.json
+    get-fable/SKILL.md
+    fable-discover/SKILL.md
+    fable-plan/SKILL.md
+    fable-execute/SKILL.md
+    fable-verify/SKILL.md
+    fable-recover/SKILL.md
+    fable-mode/SKILL.md       # compatibility alias
 
 docs/
   SPEC.md
 ```
 
-Existing target files are skipped rather than replaced
+Existing project-owned targets are skipped rather than replaced
 
-That rule applies to the project ledger/spec templates as well as the workspace skill and rules
+## Inspect a routing decision
 
-## 3. Global install
+Routing does not require an LLM call
+
+```bash
+bun ./bin/get-fable.js route "Review this diff before merge"
+```
+
+Machine-readable output
+
+```bash
+bun ./bin/get-fable.js route "The same test failed twice" --json
+```
+
+The decision contains
+
+- selected skill
+- confidence
+- concise reasons
+- whether planning is required
+- allowed next skills
+- diagnostic scores
+
+Routing priority
+
+1. repeated or stale failure selects recovery
+2. completion, proof, or review selects verification
+3. unresolved repository or current documentation facts select discovery
+4. architecture and broad decomposition select planning
+5. bounded concrete edits select execution
+
+## Apply routing to durable state
+
+For an initialized project
+
+```bash
+bun ./bin/get-fable.js route "Design a modular migration across several files" --apply
+```
+
+`--apply` persists the decision in `.fable/state.json`, marks broad/recovery/verification work as substantial, and moves the phase to the selected workflow
+
+Use `--json` together with `--apply` for machine output
+
+```bash
+bun ./bin/get-fable.js route "Review this change" --apply --json
+```
+
+## Drive the workflow state
+
+Explicit phase transitions
+
+```bash
+bun ./bin/get-fable.js state executing
+bun ./bin/get-fable.js state verifying
+```
+
+Mark an otherwise small round as substantial when needed
+
+```bash
+bun ./bin/get-fable.js state executing --substantial
+```
+
+Machine output
+
+```bash
+bun ./bin/get-fable.js state verifying --json
+```
+
+Invalid transitions return an error instead of silently rewriting state
+
+For substantial work, `state complete` is rejected until passing evidence exists
+
+## Record evidence
+
+Evidence syntax
+
+```text
+get-fable evidence <pass|fail> <test|build|runtime|review|observation> <source> <detail>
+```
+
+Examples
+
+```bash
+bun ./bin/get-fable.js evidence pass test "bun test" "42 affected tests passed"
+bun ./bin/get-fable.js evidence pass runtime "smoke request" "POST /v1/chat/completions returned 200"
+bun ./bin/get-fable.js evidence fail runtime "smoke request" "request still returns 500"
+```
+
+A passing record resets the failure streak
+
+A failing record increments it
+
+Two consecutive failures move non-complete durable state to
+
+```text
+phase=recovering
+currentSkill=fable-recover
+```
+
+That transition is also performed by the Bash failure lifecycle hook on supported hosts
+
+## Complete a substantial round
+
+A complete lifecycle can be driven explicitly
+
+```bash
+bun ./bin/get-fable.js route "Design a modular migration" --apply
+bun ./bin/get-fable.js state executing
+# perform the bounded implementation
+bun ./bin/get-fable.js state verifying
+# run the affected checks
+bun ./bin/get-fable.js evidence pass test "bun test" "42 affected tests passed"
+bun ./bin/get-fable.js state complete
+```
+
+On hosts with lifecycle hooks, the Stop guard will refuse to close substantial work before both passing state evidence and phase `complete` exist
+
+## Doctor
+
+```bash
+bun ./bin/get-fable.js doctor
+bun ./bin/get-fable.js doctor --json
+```
+
+Checks include
+
+- canonical skill registry and transition targets
+- OpenAI plugin manifest
+- project state schema when `.fable` is active
+- canonical project skill presence
+- Python 3 availability for lifecycle hooks
+
+Warnings do not make the command fail
+
+Error-severity checks return a nonzero exit code
+
+The get-fable source repository validates against root `skills/` while initialized consumer projects validate their `.agents/skills/` copies
+
+## Status
+
+```bash
+bun ./bin/get-fable.js status
+bun ./bin/get-fable.js status --json
+```
+
+Status reports Claude, Antigravity, Agent Kernel, and current project installation state
+
+JSON output contains no ANSI formatting
+
+## Lint task state
+
+```bash
+bun ./bin/get-fable.js lint
+```
+
+Lint checks
+
+- open ledger cards have an explicit acceptance check
+- checked cards have substantive evidence annotations
+- state JSON is valid when present
+- substantial completed work contains passing evidence
+- repeated failure is not left in the executing phase
+
+## Lifecycle hooks
+
+Hosts with hook support can enforce parts of the contract mechanically
+
+### SessionStart
+
+`fable_profile_inject.py` adds compact state context
+
+```text
+phase
+failureStreak
+substantial
+selected canonical skill
+open ledger cards
+```
+
+It does not assign a model tier or rank model names
+
+### PreToolUse
+
+`fable_spawn_guard.py` requires a live open ledger card before a large delegation
+
+Small payloads, forks, and explicitly paused rounds are exempt
+
+### PostToolUse
+
+`fable_fail_streak.py` updates durable failure state after Bash results
+
+At two consecutive failures it selects `fable-recover` and injects the attribution order
+
+```text
+harness -> execution path -> product logic -> violated invariant
+```
+
+### Stop
+
+`fable_close_guard.py` can block
+
+- open cards
+- checked cards without substantive ledger evidence
+- substantial state without passing evidence
+- substantial state whose phase has not reached `complete`
+
+See `hooks/README.md` for the host-level contract
+
+## Global install
 
 ```bash
 bun ./bin/get-fable.js install
@@ -67,46 +277,47 @@ The installer can write to
 ```text
 ~/.claude/
 ~/.gemini/config/
-~/.agent-kernel/   # only when this directory already exists
+~/.agent-kernel/   # only when the directory already exists
 ```
 
 ### Claude Code
 
 The installer
 
-- writes `~/.claude/skills/fable-mode/SKILL.md`
-- copies the lifecycle hooks under that skill directory
-- merges hook registrations into `~/.claude/settings.json`
-- appends the Fable workflow rules to `~/.claude/CLAUDE.md` once
+- installs the canonical six-skill pack under `~/.claude/skills/`
+- retains `fable-mode` as a compatibility skill
+- copies four lifecycle hooks under the compatibility skill
+- merges hook registrations into `settings.json`
+- appends the Fable workflow rules to `CLAUDE.md` once
 
-If `settings.json` exists but is not valid JSON, installation stops instead of replacing it with a new object
+Malformed existing JSON stops installation instead of being replaced
 
-### Antigravity / Gemini config target
+### Antigravity / Gemini target
 
 The installer
 
-- writes `~/.gemini/config/rules/fable5-mode.md`
-- writes `~/.gemini/config/plugins/get-fable/plugin.json`
-- copies bundled skills into the plugin directory
-- copies lifecycle hooks into `~/.gemini/config/plugins/get-fable/hooks/`
-- writes `~/.gemini/config/skills/fable-mode/SKILL.md`
-- registers the plugin-owned hook paths in `~/.gemini/config/hooks.json`
+- installs the canonical skill pack into the get-fable plugin
+- installs the same canonical skills globally under the configured skills directory
+- retains `fable-mode` for compatibility
+- installs the rule file
+- gives the plugin its own hook copies
+- registers those plugin-owned hook paths in `hooks.json`
 
-The Antigravity install no longer depends on Claude Code hook files being present
+The historical broad asset library is not the default workflow payload
+
+Dedicated install
+
+```bash
+bun ./bin/get-fable.js install-antigravity
+```
 
 ### Agent Kernel
 
-If `~/.agent-kernel` already exists, the installer writes
-
-```text
-~/.agent-kernel/rules/fable5-mode.md
-```
+If the configured Agent Kernel directory already exists, the global installer writes the Fable rule under `rules/`
 
 It does not create a complete Agent Kernel installation
 
 ### Test-safe directory overrides
-
-The following environment variables can redirect configuration targets
 
 ```text
 CLAUDE_CONFIG_DIR
@@ -114,52 +325,9 @@ FABLE_GEMINI_CONFIG_DIR
 FABLE_AGENT_KERNEL_DIR
 ```
 
-They are useful for isolated testing and controlled environments
+## Local request proxy
 
-## 4. Dedicated Antigravity install
-
-```bash
-bun ./bin/get-fable.js install-antigravity
-```
-
-This command installs the rule, plugin, skill, hook files, and hook registrations required by the Antigravity / Gemini config target
-
-It does not require a previous Claude Code installation
-
-## 5. Status
-
-```bash
-bun ./bin/get-fable.js status
-```
-
-Current checks include
-
-- Claude Fable skill presence
-- Claude lifecycle hook registration count
-- Antigravity / Gemini rule presence
-- Antigravity plugin presence
-- Antigravity lifecycle hook registration count
-- Agent Kernel rule presence
-- whether the current project has a `.fable` directory
-
-`status` checks installation state, not the correctness of every bundled skill
-
-## 6. Bundled assets
-
-```bash
-bun ./bin/get-fable.js assets
-bun ./bin/get-fable.js prompt
-```
-
-`assets` counts the current repository directories rather than relying on a marketing total
-
-`prompt` prints the bundled prompt file used by the command
-
-See `THIRD_PARTY_NOTICES.md` before redistributing bundled third-party material
-
-## 7. Local request proxy
-
-Start the proxy
+Start in preview mode
 
 ```bash
 bun ./bin/get-fable.js serve 8080
@@ -171,150 +339,114 @@ Alias
 bun ./bin/get-fable.js router 8080
 ```
 
-The port must be an integer from 1 through 65535
+The proxy binds to `127.0.0.1` by default
 
-The server binds to `127.0.0.1` by default
-
-Health endpoints
+Endpoints
 
 ```text
-GET /health
-GET /v1/health
-```
-
-Chat endpoints
-
-```text
+GET  /health
+GET  /v1/health
 POST /chat/completions
 POST /v1/chat/completions
 ```
 
-Requests should use `Content-Type: application/json`
+### Contextual compilation
 
-Malformed JSON and unsupported request shapes return `400`
+For each valid request, the proxy
 
-Unsupported content types return `415`
+1. normalizes the supported request shape
+2. finds the latest user intent when available
+3. routes the task through the canonical skill registry
+4. compiles a short core contract plus only the selected skill
+5. includes compact project state when `.fable/state.json` is available
+6. prepends the compiled directive while preserving the caller's original system context
 
-The default request-body limit is 1 MiB and oversized requests return `413`
+Preview responses expose routing metadata
 
-Oversized chunked requests stop being consumed once the limit is crossed and the response closes the connection
+```json
+{
+  "fableEnriched": true,
+  "previewMode": true,
+  "routing": {
+    "selectedSkill": "fable-verify",
+    "confidence": 0.9,
+    "reasons": ["task explicitly asks for adversarial verification"],
+    "nextSkills": ["fable-recover", "fable-execute"]
+  }
+}
+```
 
-### Preview mode
-
-If `UPSTREAM_OPENAI_URL` is not set, the server does not call a model provider
-
-It returns a synthetic completion-style response with `previewMode: true`, `fableEnriched: true`, and prompt-size metadata
+The reasons explain routing rules and are not private chain-of-thought
 
 ### Forwarding mode
-
-Set one absolute HTTP or HTTPS upstream URL
 
 ```bash
 export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
 bun ./bin/get-fable.js serve 8080
 ```
 
-The proxy forwards the normalized and enriched body and passes through the inbound `Authorization` header when one is present
+The upstream URL must use HTTP or HTTPS
 
-Upstream response status, bytes, and content type are passed through without assuming the body is JSON
+The proxy preserves upstream status, content type, and response bytes
 
-The default upstream timeout is 30 seconds
+The inbound `Authorization` header is forwarded only when an upstream is configured
 
-### Proxy environment variables
+Defaults
 
 ```text
-FABLE_HOST                 default 127.0.0.1
-FABLE_CORS_ORIGIN          no default, CORS is off unless configured
-FABLE_MAX_BODY_BYTES       default 1048576
-FABLE_UPSTREAM_TIMEOUT_MS  default 30000
-UPSTREAM_OPENAI_URL        optional forwarding target
+FABLE_HOST                 127.0.0.1
+FABLE_CORS_ORIGIN          disabled unless set
+FABLE_MAX_BODY_BYTES       1048576
+FABLE_UPSTREAM_TIMEOUT_MS  30000
+UPSTREAM_OPENAI_URL        optional
 ```
 
-If you set `FABLE_HOST` to a non-loopback interface, apply your own network access controls and authentication boundary
+The proxy has no built-in user authentication or authorization boundary
 
-The proxy itself does not provide user authentication or authorization
+If you bind it beyond loopback, add appropriate external controls
 
-## Request shapes normalized today
+## Supported request shapes
 
-### OpenAI-style `messages`
+OpenAI-style messages
 
 ```json
 {
   "model": "example-model",
   "messages": [
-    { "role": "user", "content": "Review this change" }
+    { "role": "user", "content": "Review this change before merge" }
   ]
 }
 ```
 
-### Gemini-style `contents`
+Gemini-style contents remain normalized by `ProviderTranslator`, including structured system instructions
 
-```json
-{
-  "model": "example-model",
-  "systemInstruction": {
-    "parts": [{ "text": "Follow the project rules" }]
-  },
-  "contents": [
-    {
-      "role": "user",
-      "parts": [{ "text": "Review this change" }]
-    }
-  ]
-}
+Request-shape support is not a claim of complete compatibility with every provider API
+
+## Historical assets
+
+```bash
+bun ./bin/get-fable.js assets
+bun ./bin/get-fable.js prompt
 ```
 
-The normalizer converts these supported shapes into the repository's generic chat request format before context injection
+`assets` reports the broader bundled reference library
 
-This is not a complete protocol adapter for every model provider
+Those assets are not automatically part of the canonical execution workflow
 
-## Command reference
+`prompt` prints the compatibility execution prompt and does not assign a synthetic model identity
 
-```text
-install               Install supported global integrations
-install-antigravity   Install the Antigravity / Gemini config target
-init                  Create missing project-local Fable files
-serve [port]          Start the local request proxy, default 8080
-router [port]         Alias for serve
-lint                  Verify the current project ledger
-status                Report selected installation state
-assets                Count bundled asset groups
-prompt                Print the bundled prompt
-version               Print the package version
-help                  Show CLI help
-```
+Review `THIRD_PARTY_NOTICES.md` before redistributing bundled upstream material
 
 ## Development checks
 
-Install development dependencies
-
 ```bash
 bun install
-```
-
-Run all checks
-
-```bash
+bun run typecheck
+bun test
+bun run build
 bun run check
 ```
 
-Individual checks
+CI verifies Bun 1.3.0 as the runtime floor, Bun 1.3.14 with coverage and package inspection on Ubuntu, and Bun 1.3.14 on macOS
 
-```bash
-bun run typecheck
-bun test
-bun test --coverage
-bun run build
-```
-
-CI runs typechecking, the full test suite with coverage, a build, CLI smoke checks, and an npm package-content dry run
-
-## Rollback
-
-There is no automated uninstall command yet
-
-For project initialization, remove only files you have inspected and no longer need
-
-For global integrations, inspect the affected configuration before removing hook entries or files
-
-If an existing JSON configuration is malformed, `get-fable` refuses to rewrite it. Repair or restore that file first
+Each matrix job also exercises the durable CLI lifecycle from `init` through routing, execution, verification, evidence, and `complete`

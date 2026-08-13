@@ -1,38 +1,81 @@
 #!/usr/bin/env python3
-"""fable-mode Close Guard  (Stop hook).
+"""get-fable Stop guard.
 
-Two duties while a `.fable/LEDGER.md` exists (both loop-safe, both off when
-the ledger is PAUSED):
+The guard combines the human ledger contract with strict `.fable/state.json`
+semantics. It blocks stop for open cards, checked cards without substantive
+ledger evidence, substantial work without passing state evidence, or
+substantial work whose durable phase has not reached `complete`.
 
-1. Blocks ending the turn while the ledger still has open `- [ ]` items,
-   so fable-mode can't quietly stop mid-plan (the "early-stopping" failure).
-   Mark items `- [x]` (done+verified) or `- [~] ... -- deferred: reason`.
-2. Evidence-on-close: blocks ending the turn while any `- [x]` item lacks an
-   evidence marker (`-- evidence: ...` / `证据: ...`) — "report evidence, not
-   adjectives" as a hard rule, not prose.
-
-Inert unless a `.fable/LEDGER.md` is found. Loop-safe via stop_hook_active.
-Fail-open on any error.
-
-Exit codes: 0 = allow stop; 2 = block stop (stderr shown to Claude).
+Loop-safe and fail-open on unexpected errors.
 """
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _fable_common import (  # noqa: E402
-    read_hook_input, start_dir, find_fable_dir, ledger_path, parse_ledger,
+    read_hook_input,
+    start_dir,
+    find_fable_dir,
+    ledger_path,
+    parse_ledger,
     closed_without_evidence,
+    read_state,
+    has_passing_state_evidence,
 )
 
 MAX_LIST = 12
 
 
+def block_open_cards(path, open_items):
+    shown = open_items[:MAX_LIST]
+    lines = "\n".join("    " + item for item in shown)
+    if len(open_items) > len(shown):
+        lines += "\n    ... and %d more" % (len(open_items) - len(shown))
+    sys.stderr.write(
+        "[get-fable] BLOCKED stop: %d open ledger card(s) in %s\n%s\n"
+        "Finish and verify each card, defer it with a concrete reason, or pause the round for genuinely unrelated work.\n"
+        % (len(open_items), path, lines)
+    )
+    return 2
+
+
+def block_missing_ledger_evidence(path, bad):
+    shown = bad[:MAX_LIST]
+    lines = "\n".join("    " + item for item in shown)
+    if len(bad) > len(shown):
+        lines += "\n    ... and %d more" % (len(bad) - len(shown))
+    sys.stderr.write(
+        "[get-fable] BLOCKED stop: %d checked card(s) in %s have no substantive ledger evidence:\n%s\n"
+        "Append `-- evidence: <command/result or observation>` or uncheck the card and verify it.\n"
+        % (len(bad), path, lines)
+    )
+    return 2
+
+
+def block_state_if_needed(state):
+    if not isinstance(state, dict) or not state.get("substantial"):
+        return 0
+
+    if not has_passing_state_evidence(state):
+        sys.stderr.write(
+            "[get-fable] BLOCKED stop: substantial work has no passing state evidence in .fable/state.json. "
+            "Record fresh proof with `get-fable evidence pass <kind> <source> <detail>` after verifying the requested behavior.\n"
+        )
+        return 2
+
+    if state.get("phase") != "complete":
+        sys.stderr.write(
+            "[get-fable] BLOCKED stop: substantial work has passing evidence but durable workflow phase is '%s', not 'complete'. "
+            "Finish verification and transition with `get-fable state complete`.\n"
+            % state.get("phase")
+        )
+        return 2
+
+    return 0
+
+
 def main():
     data = read_hook_input()
-
-    # Prevent an infinite stop/continue loop: if we already blocked once and
-    # Claude is stopping again, let it through.
     if data.get("stop_hook_active"):
         return 0
 
@@ -42,52 +85,24 @@ def main():
 
     path = ledger_path(fable_dir)
     if not os.path.isfile(path):
-        return 0  # no ledger -> nothing to enforce
+        return block_state_if_needed(read_state(fable_dir))
 
     open_items, _has_any, paused = parse_ledger(path)
     if paused:
-        return 0  # round paused -> enforcement off
-    if not open_items:
-        # All cards closed -> enforce evidence-on-close before allowing stop.
-        bad = closed_without_evidence(path)
-        if bad:
-            shown = bad[:MAX_LIST]
-            lines = "\n".join("    " + it for it in shown)
-            if len(bad) > len(shown):
-                lines += "\n    ... and %d more" % (len(bad) - len(shown))
-            sys.stderr.write(
-                "[fable-mode] BLOCKED stop: %d checked card(s) in %s carry no "
-                "evidence marker:\n%s\n"
-                "A card is only done when its acceptance actually ran. Append "
-                "`-- evidence: <what proved it>` (a command + its result, a "
-                "test count, a screenshot path) to each `- [x]` line — or "
-                "uncheck the card and verify it now. Adjectives are not "
-                "evidence.\n" % (len(bad), path, lines)
-            )
-            return 2
-        return 0  # all closed, all evidenced -> allow stop
+        return 0
+    if open_items:
+        return block_open_cards(path, open_items)
 
-    shown = open_items[:MAX_LIST]
-    more = len(open_items) - len(shown)
-    lines = "\n".join("    " + it for it in shown)
-    if more > 0:
-        lines += "\n    ... and %d more" % more
-    sys.stderr.write(
-        "[fable-mode] BLOCKED stop: %d open ledger item(s) in %s\n%s\n"
-        "Three legitimate exits: (1) finish each item, verify it (its "
-        "acceptance command), mark `- [x] ... -- evidence: <proof>`; "
-        "(2) genuinely out of scope -> `- [~] ... -- deferred: reason`; "
-        "(3) the user is steering to unrelated work -> add a line "
-        "`PAUSED: reason` to the ledger and continue with what they asked. "
-        "Do NOT invent completion — pick the exit that matches reality.\n"
-        % (len(open_items), path, lines)
-    )
-    return 2
+    bad = closed_without_evidence(path)
+    if bad:
+        return block_missing_ledger_evidence(path, bad)
+
+    return block_state_if_needed(read_state(fable_dir))
 
 
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except Exception as e:  # fail-open: never trap the user in a session
-        sys.stderr.write("[fable-mode] close guard error (ignored): %r\n" % e)
+    except Exception as exc:
+        sys.stderr.write("[get-fable] close guard error (ignored): %r\n" % exc)
         sys.exit(0)

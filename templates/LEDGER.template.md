@@ -1,17 +1,22 @@
-# Ledger — <round name>
+# get-fable ledger
 
-State machine: `- [ ]` open (blocks turn-end) · `- [x]` done AND verified ·
-`- [~] ... -- deferred: reason` consciously out of this round.
-A line `PAUSED: reason` anywhere suspends enforcement (for user-steered work
-unrelated to this round) — the reason is required (bare `PAUSED` is ignored),
-the model ceiling stays active; remove the line to resume. Evidence notes on
-`- [x]` must be concrete (`evidence: ok` counts as missing).
+No active round yet
 
-Only mark `- [x]` after the acceptance command actually ran — the Close Guard
-blocks turn-end for any `- [x]` without an evidence note (`-- evidence:` /
-`verified:` / `证据:`):
+Create cards only when a substantial round is routed or planned
 
-- [ ] 1. <card> — acceptance: `<command>`
-- [ ] 2. <card> — acceptance: `<command>`
-- [x] 0. (example) scaffold -- evidence: `pytest -q` -> 12 passed
-- [~] 9. (example) dark mode -- deferred: not this round
+## Card contract
+
+- `- [ ]` means open and blocks completion
+- `- [x]` means completed and verified, so it needs substantive evidence
+- `- [~]` means intentionally deferred with a reason
+- `PAUSED: <reason>` temporarily suspends lifecycle enforcement for unrelated work
+
+Use concrete acceptance and evidence
+
+```text
+example open:   - [ ] 1. Add request validation -- acceptance: bun test test/router.test.ts
+example done:   - [x] 1. Add request validation -- evidence: bun test test/router.test.ts -> 8 passed
+example defer:  - [~] 2. Redesign error copy -- deferred: outside this round
+```
+
+Strict phase, routing, failure streak, and evidence records live in `.fable/state.json`

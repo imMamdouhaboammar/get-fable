@@ -38,6 +38,7 @@ describe('get-fable request proxy', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('access-control-allow-origin')).toBeNull();
     expect(body.status).toBe('ok');
+    expect(body.routing).toBe('contextual-skill-compiler');
     expect(body.upstreamConfigured).toBe(false);
   });
 
@@ -48,14 +49,14 @@ describe('get-fable request proxy', () => {
     expect(response.headers.get('access-control-allow-origin')).toBe('https://example.com');
   });
 
-  test('returns a preview response for a valid messages request', async () => {
+  test('returns a routed preview response for a valid messages request', async () => {
     const baseUrl = await startServer();
     const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'demo',
-        messages: [{ role: 'user', content: 'Hello' }],
+        messages: [{ role: 'user', content: 'Fix the typo in src/title.ts' }],
       }),
     });
     const body = await response.json();
@@ -64,7 +65,25 @@ describe('get-fable request proxy', () => {
     expect(body.fableEnriched).toBe(true);
     expect(body.previewMode).toBe(true);
     expect(body.model).toBe('demo');
+    expect(body.routing.selectedSkill).toBe('fable-execute');
+    expect(body.routing.confidence).toBeGreaterThan(0.5);
     expect(body.systemPromptBytes).toBeGreaterThan(0);
+  });
+
+  test('routes review requests to verification without changing the requested model', async () => {
+    const baseUrl = await startServer();
+    const response = await fetch(`${baseUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'demo-review',
+        messages: [{ role: 'user', content: 'Review this diff before merge and prove it is safe' }],
+      }),
+    });
+    const body = await response.json();
+
+    expect(body.model).toBe('demo-review');
+    expect(body.routing.selectedSkill).toBe('fable-verify');
   });
 
   test('returns 400 for malformed JSON and unsupported request shapes', async () => {

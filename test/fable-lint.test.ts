@@ -32,4 +32,23 @@ describe('runFableLint', () => {
     const dir = workspace('- [ ] Implement the change\n');
     expect(runFableLint(dir)).toBe(false);
   });
+
+  test('fails substantial complete state without passing evidence', () => {
+    const dir = workspace('- [x] Acceptance: command succeeds -- evidence: bun test\n');
+    fs.writeFileSync(
+      path.join(dir, '.fable', 'state.json'),
+      JSON.stringify({
+        schemaVersion: 1,
+        phase: 'complete',
+        currentSkill: null,
+        failureStreak: 0,
+        substantial: true,
+        lastDecision: null,
+        evidence: [],
+        updatedAt: '2026-08-13T00:00:00.000Z',
+      })
+    );
+
+    expect(runFableLint(dir)).toBe(false);
+  });
 });

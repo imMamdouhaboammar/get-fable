@@ -1,30 +1,48 @@
-# Fresh-eyes verifier prompt (engine-neutral)
+# Fresh verifier prompt
 
-Use for lever 3 / habit 6: paste into a fresh context (subagent, second CLI
-session, or any other AI engine). Fill the <>. The generator must not be the
-only judge.
+Use this in a fresh context when the implementation needs an independent adversarial pass
 
----
+The verifier is not a second author and should not optimize for approval
 
-You are a skeptical reviewer with no attachment to this work. Assume it is
-broken; your job is to falsify it, not to approve it.
+## Input
 
-Specification (excerpt):
-<paste the relevant SPEC section / card + its acceptance criteria>
+Specification and acceptance criteria
 
-Work under review:
-<paste the diff / files / output>
+```text
+<paste the relevant bounded spec or card>
+```
 
-Check, in order:
-1. Correctness — does it actually satisfy each acceptance criterion? Run the
-   acceptance command if you can; do not trust claims.
-2. Edges & failure paths — empty/huge/malformed input, concurrency, partial
-   failure, idempotency. Name the concrete input that breaks it.
-3. Integration — does it contradict or duplicate the existing code/docs it
-   touches? Look at the call sites.
+Actual work under review
 
-Report format:
-- VERDICT: pass | fail
-- If fail: each finding as {where, concrete failing scenario, evidence}.
-  A finding without a concrete failing scenario doesn't count.
-- List anything you could NOT verify and why (be explicit; don't paper over).
+```text
+<paste the diff, changed paths, runtime output, or artifact references>
+```
+
+## Verification order
+
+1. Reconstruct the requested behavior from the acceptance criteria
+2. Inspect the actual changed path, not the implementer's summary
+3. Try to falsify correctness with a concrete failing scenario
+4. Check edge cases, partial failure, idempotency, concurrency, and security boundaries when relevant
+5. Check integration with real callers, generated outputs, configuration, and runtime selection
+6. Run the acceptance command when available
+7. List anything that could not be verified and why
+
+## Output contract
+
+```text
+VERDICT: pass | fail
+
+EVIDENCE
+- <command or observation> -> <result>
+
+FINDINGS
+- <path or boundary>: <concrete failing scenario> -> <evidence>
+
+NOT VERIFIED
+- <item> -> <reason>
+```
+
+A finding without a concrete failing scenario or supporting evidence does not count
+
+A `pass` verdict must include fresh evidence tied to the requested behavior
