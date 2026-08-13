@@ -55,6 +55,6 @@ describe('CLI safety', () => {
   });
 
   test('reads the version from package metadata', () => {
-    expect(getPackageVersion()).toBe('1.0.0');
+    expect(getPackageVersion()).toBe('1.1.0');
   });
 });
