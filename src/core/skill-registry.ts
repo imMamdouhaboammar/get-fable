@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   FABLE_REGISTRY_SCHEMA_VERSION,
+  type FablePhase,
   type FableSkillId,
   type SkillRegistry,
   type SkillRegistryEntry,
@@ -16,6 +17,17 @@ const CANONICAL_SKILLS: FableSkillId[] = [
   'fable-verify',
   'fable-recover',
 ];
+
+const REGISTRY_PHASES = new Set<FablePhase>([
+  'idle',
+  'discovering',
+  'planned',
+  'executing',
+  'verifying',
+  'recovering',
+  'complete',
+  'blocked',
+]);
 
 export function getCoreRepoRoot(): string {
   const currentFile = fileURLToPath(import.meta.url);
@@ -33,11 +45,17 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
   if (!entry) throw new Error(`skills[${index}] must be an object`);
 
   const id = entry.id;
+  const order = entry.order;
+  const phase = entry.phase;
   if (typeof id !== 'string' || !CANONICAL_SKILLS.includes(id as FableSkillId)) {
     throw new Error(`skills[${index}].id is not a canonical Fable skill`);
   }
-  if (!Number.isInteger(entry.order)) throw new Error(`skills[${index}].order must be an integer`);
-  if (typeof entry.phase !== 'string') throw new Error(`skills[${index}].phase must be a string`);
+  if (typeof order !== 'number' || !Number.isInteger(order)) {
+    throw new Error(`skills[${index}].order must be an integer`);
+  }
+  if (typeof phase !== 'string' || !REGISTRY_PHASES.has(phase as FablePhase)) {
+    throw new Error(`skills[${index}].phase is invalid`);
+  }
   if (typeof entry.description !== 'string' || !entry.description.trim()) {
     throw new Error(`skills[${index}].description must be non-empty`);
   }
@@ -48,7 +66,14 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
     throw new Error(`skills[${index}].keywords must be an array of strings`);
   }
 
-  return entry as unknown as SkillRegistryEntry;
+  return {
+    id: id as FableSkillId,
+    order,
+    phase: phase as FablePhase,
+    description: entry.description,
+    next: entry.next as FableSkillId[],
+    keywords: entry.keywords as string[],
+  };
 }
 
 export function loadSkillRegistry(repoRoot: string = getCoreRepoRoot()): SkillRegistry {
