@@ -8,30 +8,28 @@
 
 [![CI](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
-[![Bun](https://img.shields.io/badge/runtime-Bun-FBF0DF?style=flat-square&logo=bun&logoColor=14151A)](https://bun.sh)
+[![Bun](https://img.shields.io/badge/runtime-Bun%201.3%2B-FBF0DF?style=flat-square&logo=bun&logoColor=14151A)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-**Evidence first. Bounded work. Durable state. Verification before done. Recovery before another blind retry.**
+**Evidence first · bounded work · durable state · verification before done · recovery before another blind retry**
 
 </div>
 
 ## The problem is not always the model
 
-Give a coding agent a ten-line task and almost any competent model can look disciplined
+A coding agent can look excellent on a ten-line task and lose discipline on a three-hour refactor
 
-Give it a three-hour refactor and different failures appear
+The original requirement gets buried under tool output
 
-The original requirement gets buried under file reads and tool output
+Architecture starts before important facts are resolved
 
-Architecture starts before the important unknowns are resolved
-
-A narrow test passes and gets mistaken for proof that the product path works
+A narrow test gets mistaken for proof that the product path works
 
 The same broken idea gets retried with slightly different edits
 
-Eventually the agent says `done` because the implementation looks plausible, not because the requested behavior was actually verified
+Then `done` becomes an opinion instead of an evidence state
 
-That is the part `get-fable` targets
+`get-fable` targets that failure mode
 
 It does not replace the model
 
@@ -39,9 +37,7 @@ It changes the execution conditions around the model
 
 ## The aha moment
 
-A long coding task is not one decision
-
-It is a sequence of different jobs
+A substantial task is not one job
 
 ```text
 unknown facts
@@ -54,26 +50,24 @@ implementation
     ↓
 adversarial verification
     ↓
-evidence
+recorded evidence
     ↓
 complete
 
-failure or stale execution
+repeated failure or stale execution
     ↓
 recovery
     ↓
 new diagnosis
     ↓
-execute or plan again
+plan or execute again
 ```
 
-A single giant prompt asks one model to remember all of those jobs at once
+A giant static prompt asks one model to keep every job active at once
 
-`get-fable` 1.1 turns them into explicit workflow contracts with machine-readable routing and durable state
+`get-fable` 1.1 turns those jobs into a small workflow with explicit routing, durable state, lifecycle hooks, and mechanical completion gates
 
-## What changed in 1.1
-
-The project now has a canonical six-skill workflow instead of treating a large prompt and a broad skill archive as the runtime
+## Six canonical skills, one source of truth
 
 ```text
 skills/
@@ -86,32 +80,24 @@ skills/
   fable-recover/
 ```
 
-`skills/registry.json` is the source of truth for ordering and transitions
-
-`get-fable` is the entry point
-
-The specialists have deliberately narrow responsibilities
-
-| Skill | Job |
+| Skill | Responsibility |
 |---|---|
-| `get-fable` | Decide which workflow is actually needed |
-| `fable-discover` | Resolve load-bearing facts before architecture |
-| `fable-plan` | Turn grounded requirements into bounded cards and acceptance criteria |
+| `get-fable` | Entry router and global execution contract |
+| `fable-discover` | Resolve load-bearing repository, runtime, and documentation facts |
+| `fable-plan` | Convert grounded requirements into bounded cards and acceptance criteria |
 | `fable-execute` | Implement one accepted card without scope drift |
 | `fable-verify` | Try to falsify the result and collect fresh evidence |
 | `fable-recover` | Diagnose repeated or stale failure before another edit |
 
-Historical prompts, design skills, agent definitions, and reference material remain available under `assets/`
+`skills/registry.json` defines ordering, phases, allowed next skills, and routing hints
 
-They are no longer the default runtime workflow
+Historical prompts, design skills, agent definitions, and other reference material remain under `assets/`, but they are not the default execution workflow
 
-## Routing you can inspect without an LLM call
+## Explainable routing without an LLM call
 
 ```bash
 get-fable route "Review this diff before merge"
 ```
-
-Example shape
 
 ```text
 Selected skill: fable-verify
@@ -121,29 +107,25 @@ Reasons: task explicitly asks for adversarial verification
 Next skills: fable-recover, fable-execute
 ```
 
-Machine output is available too
+Machine-readable form
 
 ```bash
 get-fable route "The same test failed twice after retrying" --json
 ```
 
-The routing rules are intentionally opinionated
+Routing priority is intentionally strict
 
-Repeated failure selects recovery before another edit
+1. repeated or stale failure selects `fable-recover`
+2. review, proof, and completion checks select `fable-verify`
+3. unknown repository or current documentation facts select `fable-discover`
+4. architecture, migrations, and broad refactors select `fable-plan`
+5. an already bounded concrete change selects `fable-execute`
 
-Review and completion proof select verification
-
-Unknown repository or current documentation facts select discovery
-
-Architecture, migrations, and broad refactors select planning
-
-A bounded concrete edit selects execution
-
-The router exposes reasons and scores for diagnostics
+The router exposes concise routing reasons and scores for diagnostics
 
 It does not expose private chain-of-thought
 
-## Durable state outside the conversation
+## A real durable lifecycle
 
 Initialize a project
 
@@ -151,50 +133,56 @@ Initialize a project
 get-fable init
 ```
 
-The project receives missing workflow files such as
+Then apply a routing decision to durable state
 
-```text
-.fable/
-  state.json
-  LEDGER.md
-  PROGRESS.md
-  VERIFIER_PROMPT.md
-
-.agents/
-  skills/
-    registry.json
-    get-fable/SKILL.md
-    fable-discover/SKILL.md
-    fable-plan/SKILL.md
-    fable-execute/SKILL.md
-    fable-verify/SKILL.md
-    fable-recover/SKILL.md
-    fable-mode/SKILL.md
-  rules/fable5-mode.md
-
-docs/
-  SPEC.md
+```bash
+get-fable route "Design a modular migration across several files" --apply
 ```
 
-Existing project-owned files are skipped rather than replaced
+The normal substantial-work lifecycle is explicit
 
-### `.fable/state.json`
+```bash
+get-fable state executing
+# implement the bounded card
 
-The JSON state is not a transcript
+get-fable state verifying
+# run the real affected checks
 
-It contains the minimum strict state needed for the workflow to know where the task stands
+get-fable evidence pass test "bun test" "42 affected tests passed"
+get-fable state complete
+```
+
+A failed evidence record is also meaningful
+
+```bash
+get-fable evidence fail runtime "smoke test" "request still returns 500"
+```
+
+Repeated failures move durable state to
+
+```text
+phase=recovering
+currentSkill=fable-recover
+```
+
+The recovery workflow then requires a new diagnosis before more product edits
+
+## `.fable/state.json`
+
+The JSON state is intentionally small
 
 ```text
 schema version
 phase
 current skill
 failure streak
+substantial-work flag
 last routing decision
 evidence records
 updated timestamp
 ```
 
-Valid phases include
+Valid phases
 
 ```text
 idle
@@ -209,37 +197,34 @@ blocked
 
 Invalid transitions are rejected
 
-For substantial work, the state machine refuses `complete` unless passing evidence exists
+For substantial work, `complete` is rejected until passing evidence exists
+
+Human-readable working context remains in
+
+```text
+docs/SPEC.md
+.fable/LEDGER.md
+.fable/PROGRESS.md
+```
+
+## Lifecycle hooks make the state matter
+
+Hosts with hook support receive four small Python hooks
+
+| Hook | What it enforces |
+|---|---|
+| `fable_profile_inject.py` | Inject current phase, selected skill, failure streak, and open cards |
+| `fable_spawn_guard.py` | Require a bounded open card before a large delegation |
+| `fable_fail_streak.py` | Update durable failure state and enter recovery after two consecutive failures |
+| `fable_close_guard.py` | Reject stop for unfinished work, missing evidence, or substantial state that is not complete |
+
+The hooks are model-agnostic
+
+There is no Haiku/Sonnet/Opus/Fable ranking, synthetic model tier, or model-name ceiling
 
 ## Evidence is a state transition, not a compliment
 
-The old failure mode is easy to recognize
-
-```text
-implementation looks plausible
-        ↓
-"should work"
-        ↓
-done
-```
-
-The new contract is stricter
-
-```text
-implementation
-    ↓
-focused acceptance check
-    ↓
-adversarial verification
-    ↓
-real affected path
-    ↓
-recorded passing evidence
-    ↓
-complete
-```
-
-`get-fable lint` checks both the human-readable ledger and strict state
+`get-fable lint` checks the human ledger and strict state together
 
 ```bash
 get-fable lint
@@ -248,34 +233,23 @@ get-fable lint
 It can reject
 
 - an open card with no acceptance condition
-- a closed card with no substantive evidence
+- a checked card with no substantive evidence annotation
 - invalid state JSON
 - substantial work marked complete without passing evidence
 - repeated failure left in execution instead of recovery
 
-## Recovery changes the diagnosis before the code
+The Stop hook goes further for armed hosts by refusing to close substantial work until passing state evidence exists and the durable phase reaches `complete`
 
-When an edit fails repeatedly, get-fable checks attribution in this order
+## Contextual prompt compilation
 
-1. Is the harness valid
-2. Is the changed code actually running
-3. Is the product logic wrong
-4. What invariant would prevent this class of failure
-
-That sounds obvious until a long coding session starts patching the same symptom for the fourth time
-
-The recovery workflow exists to make that loop explicit and interruptible
-
-## The proxy no longer injects one giant prompt into every request
-
-The local request proxy now compiles context per task
+The local request proxy no longer injects one historical prompt into every request
 
 ```text
 incoming request
       ↓
 normalize
       ↓
-extract latest user intent
+latest user intent
       ↓
 route task
       ↓
@@ -286,23 +260,21 @@ short core contract
 model request
 ```
 
-A review request gets the verification contract
+A review request receives the verification contract
 
-A broad architecture request gets the planning contract
+A broad architecture request receives the planning contract
 
-A repeated failure gets the recovery contract
+A repeated failure receives the recovery contract
 
-The original system context remains in the request after the Fable directive
+The caller's original system context remains in the request after the Fable directive
 
-Start the proxy in preview mode
+Start preview mode
 
 ```bash
 get-fable serve 8080
 ```
 
 Without an upstream URL, no provider call is made
-
-Preview responses include routing metadata so you can inspect what get-fable would do
 
 Configure one upstream when needed
 
@@ -311,34 +283,21 @@ export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
 get-fable serve 8080
 ```
 
-The proxy binds to `127.0.0.1` by default, limits request bodies, validates upstream schemes, applies an upstream timeout, and does not enable CORS unless configured
+The proxy binds to `127.0.0.1` by default, limits request bodies, validates upstream schemes, applies an upstream timeout, and leaves CORS disabled unless configured
 
 It is development middleware, not an internet-facing authentication gateway
 
-## Doctor
-
-A mature workflow needs to be able to tell you when its own setup is broken
+## Doctor and machine-readable status
 
 ```bash
 get-fable doctor
+gget-fable doctor --json
+get-fable status --json
 ```
 
-Or
+`doctor` validates the canonical registry, transition targets, OpenAI plugin manifest, project state schema, canonical project skills, and Python availability for hosts that use lifecycle hooks
 
-```bash
-get-fable doctor --json
-```
-
-Current checks include
-
-- canonical registry structure
-- dead skill transitions
-- OpenAI plugin manifest presence
-- project state schema
-- canonical project skill installation
-- Python availability for hosts that use lifecycle hooks
-
-`status --json` provides a separate machine-readable installation report for host integrations
+The source repository validates against its root canonical skills while initialized consumer projects validate their `.agents/skills/` copies
 
 ## ChatGPT and Codex plugin
 
@@ -351,7 +310,7 @@ skills/
 
 The universal package deliberately does not declare an MCP server or app companion that the repository does not implement
 
-Codex can additionally use repository-local profiles for exploration, planning, execution, verification, recovery, review, and documentation research
+Codex can additionally use repository-local profiles for discovery, planning, execution, verification, recovery, review, and documentation research
 
 Those profiles inherit the active Codex model instead of pinning a model name that will age out of the repository
 
@@ -365,7 +324,7 @@ Global install
 get-fable install
 ```
 
-The current installer can configure
+Current targets
 
 ```text
 ~/.claude/
@@ -377,7 +336,7 @@ Claude and Antigravity receive the same canonical skill pack
 
 `fable-mode` remains as a compatibility alias for older installations
 
-Antigravity owns its hook copies inside its plugin directory, so it does not depend on Claude paths
+Antigravity owns its hook copies inside the plugin directory so it does not depend on Claude paths
 
 Malformed existing JSON configuration is not silently treated as empty configuration
 
@@ -386,10 +345,12 @@ Malformed existing JSON configuration is not silently treated as empty configura
 ```text
 install               Install supported global integrations
 install-antigravity   Install the Antigravity / Gemini target
-init                  Create missing project state and canonical skills
-route <task>           Explain the selected workflow, optionally --json
-doctor                 Validate runtime and project setup, optionally --json
-status                 Report installation state, optionally --json
+init                  Create missing durable state and canonical project skills
+route <task>           Explain workflow selection; --apply persists it; --json returns machine output
+state <phase>          Transition durable workflow state; optional --substantial and --json
+evidence ...           Record pass/fail evidence with kind, source, and concrete detail
+doctor                 Validate runtime and project setup; optional --json
+status                 Report installation state; optional --json
 lint                   Validate ledger acceptance and strict state
 serve [port]           Start the contextual request proxy
 router [port]          Alias for serve
@@ -403,17 +364,19 @@ Running `get-fable` without a command only shows help
 
 Installation is always explicit
 
-## CI treats the runtime floor as a contract
+## CI treats compatibility as a contract
 
-The project currently tests
+The verified runtime floor is Bun 1.3.0
 
-- Bun 1.1.0 on Ubuntu
-- Bun 1.3.14 on Ubuntu
-- Bun 1.3.14 on macOS
+CI currently runs
 
-The CI gate runs typecheck, coverage tests, build, CLI routing smoke tests, initialized-project doctor/status checks, and npm package inspection
+- Ubuntu with Bun 1.3.0
+- Ubuntu with Bun 1.3.14 plus coverage and npm package inspection
+- macOS with Bun 1.3.14
 
-The workflow actions and current Bun version are pinned intentionally rather than relying on `latest`
+Each matrix job runs typecheck, the test suite, build, and a complete CLI lifecycle smoke test from project initialization through recorded evidence and `complete`
+
+Workflow actions and Bun versions are pinned rather than relying on `latest`
 
 ## What get-fable does not claim
 
@@ -427,13 +390,18 @@ It does not guarantee correct code
 
 It does not guarantee equivalent benchmark performance to a different model
 
-The claim is narrower and testable
+The narrower claim is testable
 
-**A model can behave more reliably on substantial work when important execution behaviors are explicit, stateful, routed, and verified instead of being left to a long conversation and one giant prompt**
+**A model can behave more reliably on substantial work when important execution behaviors are explicit, routed, stateful, recoverable, and mechanically verified instead of being left to a long conversation and one giant prompt**
 
 That is what this repository implements
 
 ## Development
+
+Requirements
+
+- Bun 1.3.0 or newer
+- Python 3 for lifecycle-hook hosts
 
 ```bash
 bun install
@@ -448,6 +416,7 @@ Useful docs
 - [Usage](./docs/USAGE.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Plugin package](./docs/PLUGIN.md)
+- [Lifecycle hooks](./hooks/README.md)
 - [Security](./SECURITY.md)
 - [Releasing](./docs/RELEASING.md)
 - [Third-party notices](./THIRD_PARTY_NOTICES.md)
