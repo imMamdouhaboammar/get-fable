@@ -3,6 +3,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dir, '..');
+const canonicalSkills = [
+  'get-fable',
+  'fable-discover',
+  'fable-plan',
+  'fable-execute',
+  'fable-verify',
+  'fable-recover',
+];
 
 function readJson(relativePath: string) {
   return JSON.parse(fs.readFileSync(path.join(root, relativePath), 'utf-8'));
@@ -46,10 +54,19 @@ describe('OpenAI plugin package', () => {
     expect(manifest.interface.defaultPrompt.length).toBeGreaterThan(0);
   });
 
-  test('all declared routing targets exist as valid skills', () => {
-    const skills = ['get-fable', 'fable-plan', 'fable-execute', 'fable-verify', 'fable-recover'];
+  test('canonical registry and skill files define one ordered workflow graph', () => {
+    const registry = readJson('skills/registry.json');
+    expect(registry.schemaVersion).toBe(1);
+    expect(registry.entry).toBe('get-fable');
+    expect(registry.skills.map((skill: any) => skill.id)).toEqual(canonicalSkills);
 
-    for (const skill of skills) {
+    const ids = new Set(canonicalSkills);
+    for (const entry of registry.skills) {
+      expect(entry.next.every((next: string) => ids.has(next))).toBe(true);
+      expect(Array.isArray(entry.keywords)).toBe(true);
+    }
+
+    for (const skill of canonicalSkills) {
       const skillPath = path.join(root, 'skills', skill, 'SKILL.md');
       expect(fs.existsSync(skillPath)).toBe(true);
       const content = fs.readFileSync(skillPath, 'utf-8');
@@ -85,11 +102,12 @@ describe('OpenAI plugin package', () => {
     }
   });
 
-  test('npm package metadata includes the plugin surface', () => {
+  test('npm package metadata includes the plugin surface and registry', () => {
     const pkg = readJson('package.json');
 
     for (const requiredPath of ['.codex-plugin/', '.codex/', 'AGENTS.md', 'skills/']) {
       expect(pkg.files).toContain(requiredPath);
     }
+    expect(fs.existsSync(path.join(root, 'skills', 'registry.json'))).toBe(true);
   });
 });
