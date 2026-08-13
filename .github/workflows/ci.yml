@@ -23,7 +23,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            bun: 1.1.0
+            bun: 1.3.0
             coverage: false
             inspect_package: false
           - os: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
       - name: Typecheck
         run: bun run typecheck
 
-      - name: Test declared runtime floor
+      - name: Test without coverage instrumentation
         if: ${{ !matrix.coverage }}
         run: bun test
 
@@ -72,6 +72,11 @@ jobs:
           (
             cd "$tmp"
             bun "$GITHUB_WORKSPACE/bin/get-fable.js" init >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" route "design a modular migration across several files" --apply --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" state executing --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" state verifying --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" evidence pass test "bun test" "smoke lifecycle passed" --json | python3 -m json.tool >/dev/null
+            bun "$GITHUB_WORKSPACE/bin/get-fable.js" state complete --json | python3 -m json.tool >/dev/null
             bun "$GITHUB_WORKSPACE/bin/get-fable.js" doctor --json | python3 -m json.tool >/dev/null
             bun "$GITHUB_WORKSPACE/bin/get-fable.js" status --json | python3 -m json.tool >/dev/null
           )
