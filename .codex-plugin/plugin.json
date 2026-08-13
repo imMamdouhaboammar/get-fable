@@ -20,15 +20,23 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "get-fable",
-    "shortDescription": "Make substantial coding work evidence-first, stateful, and verified.",
+    "shortDescription": "Evidence-first coding",
     "longDescription": "Routes substantial software work through discovery, planning, bounded execution, adversarial verification, and recovery while keeping task state and evidence inspectable.",
     "developerName": "Mamdouh Abo Ammar",
-    "category": "Productivity",
-    "capabilities": [],
+    "category": "Developer Tools",
+    "capabilities": [
+      "Plan substantial coding work",
+      "Verify implementation evidence",
+      "Recover repeated failures"
+    ],
+    "websiteURL": "https://github.com/imMamdouhaboammar/get-fable",
+    "supportURL": "https://github.com/imMamdouhaboammar/get-fable/issues",
     "defaultPrompt": [
       "Run this coding task with get-fable and choose the smallest correct workflow.",
       "Inspect unknowns, plan the change, implement it, and verify the real affected path.",
       "Recover this failing task by changing the diagnosis before changing more code."
-    ]
+    ],
+    "composerIcon": "./assets/mascot.svg",
+    "logo": "./assets/mascot.svg"
   }
 }
