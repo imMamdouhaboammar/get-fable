@@ -9,7 +9,7 @@ This is the entry skill. It improves execution discipline and does not claim to 
 
 ## Routing contract
 
-Use the canonical graph in `skills/registry.json` when the host can read repository files. Otherwise apply the same order directly:
+Use the canonical graph in `skills/get-fable/registry.json` when the host can read repository files. Otherwise apply the same order directly:
 
 1. `$fable-recover` when repeated failure, stale execution, or contradictory evidence is already present
 2. `$fable-verify` for review, proof, release readiness, or completion checks
