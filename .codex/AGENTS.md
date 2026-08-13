@@ -1,26 +1,30 @@
-# ECC for Codex CLI
+# get-fable for Codex
 
-This supplements the root `AGENTS.md` with a repo-local ECC baseline.
+This supplements root `AGENTS.md` with Codex-specific execution guidance.
 
-## Repo Skill
+## Source of truth
 
-- Repo-generated Codex skill: `.agents/skills/get-fable/SKILL.md`
-- Claude-facing companion skill: `.claude/skills/get-fable/SKILL.md`
-- Keep user-specific credentials and private MCPs in `~/.codex/config.toml`, not in this repo.
+- Canonical workflow registry: `skills/registry.json`
+- Canonical entry skill: `skills/get-fable/SKILL.md`
+- Specialist skills: `skills/fable-*/SKILL.md`
+- Durable runtime state: `.fable/state.json` when the project is initialized
 
-## MCP Baseline
+`.agents/` and `.claude/` compatibility files are adapters or legacy surfaces. Do not treat them as independent workflow definitions.
 
-Treat `.codex/config.toml` as the default ECC-safe baseline for work in this repository.
-The generated baseline enables GitHub, Context7, Exa, Memory, Playwright, and Sequential Thinking.
+## Codex agents
 
-## Multi-Agent Support
+Use the repo-local profiles in `.codex/config.toml` as execution aids:
 
-- Explorer: read-only evidence gathering
-- Reviewer: correctness, security, and regression review
-- Docs researcher: API and release-note verification
+- Explorer: evidence gathering for `$fable-discover`
+- Planner: bounded decomposition for `$fable-plan`
+- Executor: one accepted card for `$fable-execute`
+- Verifier: adversarial proof for `$fable-verify`
+- Recovery: failure attribution for `$fable-recover`
+- Reviewer: PR correctness and regression review
+- Docs researcher: primary documentation and release verification
 
-## Workflow Files
+Profiles intentionally inherit the active Codex model instead of hard-coding a model ID.
 
-- No dedicated workflow command files were generated for this repo.
+## Configuration boundary
 
-Use these workflow files as reusable task scaffolds when the detected repository workflows recur.
+Keep credentials and private MCP configuration in user-owned Codex configuration, not in this repository. Repo MCP entries are development defaults only and are not part of the universal ChatGPT plugin contract.
