@@ -6,17 +6,27 @@
 
 ```text
 .codex-plugin/plugin.json
+assets/
+  mascot.svg
 skills/
-  registry.json
   get-fable/
+    SKILL.md
+    registry.json
   fable-discover/
+    SKILL.md
   fable-plan/
+    SKILL.md
   fable-execute/
+    SKILL.md
   fable-verify/
+    SKILL.md
   fable-recover/
+    SKILL.md
 ```
 
-`skills/registry.json` is the machine-readable workflow graph. `get-fable` is the only entry skill. The specialist skills have narrow responsibilities:
+Every direct child under `skills/` is an importable skill directory with `SKILL.md`. The machine-readable workflow graph is stored as a resource inside the entry skill at `skills/get-fable/registry.json`.
+
+`get-fable` is the only entry skill. The specialist skills have narrow responsibilities:
 
 1. `fable-discover` resolves load-bearing facts
 2. `fable-plan` turns grounded requirements into bounded cards
@@ -25,6 +35,10 @@ skills/
 5. `fable-recover` diagnoses repeated or stale failure before another edit
 
 The order is semantic, not cosmetic. Recovery has precedence over another blind retry. Verification has precedence over a completion claim. Discovery has precedence over architecture when important facts are still unknown.
+
+## Plugin identity assets
+
+`.codex-plugin/plugin.json` references the packaged square `assets/mascot.svg` for both the composer icon and plugin logo. The asset is part of the published package and remains package-relative.
 
 ## Universal versus host-specific support
 
@@ -65,10 +79,13 @@ For substantial work, the state machine rejects a transition to `complete` until
 
 ## Validation
 
-Repository tests verify:
+`get-fable doctor` and repository tests verify the package-critical contract, including:
 
-- manifest shape and strict semver
-- the complete six-skill registry
+- manifest presence and strict semver coverage in tests
+- required package-relative logo and composer icon assets
+- square SVG branding dimensions
+- direct `skills/` children are directories containing `SKILL.md`
+- the complete six-skill registry under `skills/get-fable/registry.json`
 - no dead skill transitions
 - Codex agent references
 - deterministic routing precedence
