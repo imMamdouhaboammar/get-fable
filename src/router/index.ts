@@ -1,6 +1,6 @@
 import http, { type IncomingMessage, type ServerResponse } from 'node:http';
 import { ProviderTranslator, RequestValidationError } from './provider-translator.js';
-import { ContextInjector } from './context-injector.js';
+import { compileFableDirective, latestUserIntent } from '../core/prompt-compiler.js';
 import { logInfo, logSuccess, logError } from '../utils.js';
 
 const DEFAULT_HOST = '127.0.0.1';
@@ -203,7 +203,6 @@ async function forwardToUpstream(
 
 export function createMythosRouterServer(options: RouterOptions = {}) {
   const resolved = resolveOptions(options);
-  const fablePrompt = ContextInjector.getFableSystemPrompt();
 
   return http.createServer(async (req, res) => {
     applyCors(res, resolved.corsOrigin);
@@ -229,6 +228,7 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
       sendJson(res, 200, {
         status: 'ok',
         mode: 'get-fable request proxy',
+        routing: 'contextual-skill-compiler',
         upstreamConfigured: Boolean(resolved.upstreamUrl),
       });
       return;
@@ -241,9 +241,22 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
       try {
         const body = await readJsonBody(req, resolved.maxBodyBytes);
         const normalized = ProviderTranslator.normalizeRequest(body);
-        const enriched = ProviderTranslator.injectFableSystemPrompt(normalized, fablePrompt);
+        let task = 'continue the current bounded task';
+        try {
+          task = latestUserIntent(normalized.messages);
+        } catch {
+          // Some tool-driven requests have no new user message. Default to bounded execution.
+        }
 
-        logInfo(`[get-fable router] Enriched request for model: ${enriched.model}`);
+        const compiled = compileFableDirective(task, process.cwd());
+        const enriched = ProviderTranslator.injectFableSystemPrompt(
+          normalized,
+          compiled.systemPrompt
+        );
+
+        logInfo(
+          `[get-fable router] ${compiled.decision.selectedSkill} -> model ${enriched.model}`
+        );
 
         if (resolved.upstreamUrl) {
           await forwardToUpstream(
@@ -266,14 +279,20 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
               index: 0,
               message: {
                 role: 'assistant',
-                content: `[get-fable router] Request for model ${enriched.model} enriched successfully. Set UPSTREAM_OPENAI_URL to forward the request to an upstream endpoint.`,
+                content: `[get-fable router] Request for model ${enriched.model} enriched with ${compiled.decision.selectedSkill}. Set UPSTREAM_OPENAI_URL to forward the request to an upstream endpoint.`,
               },
               finish_reason: 'stop',
             },
           ],
           fableEnriched: true,
           previewMode: true,
-          systemPromptBytes: Buffer.byteLength(fablePrompt, 'utf-8'),
+          routing: {
+            selectedSkill: compiled.decision.selectedSkill,
+            confidence: compiled.decision.confidence,
+            reasons: compiled.decision.reasons,
+            nextSkills: compiled.decision.nextSkills,
+          },
+          systemPromptBytes: Buffer.byteLength(compiled.systemPrompt, 'utf-8'),
         });
       } catch (error) {
         if (error instanceof RequestValidationError || error instanceof HttpError) {
