@@ -12,6 +12,10 @@
     "get-fable": "bin/get-fable.js"
   },
   "files": [
+    ".codex-plugin/",
+    ".codex/",
+    "AGENTS.md",
+    "skills/",
     "bin/",
     "src/",
     "assets/",
@@ -34,6 +38,10 @@
     "prepack": "bun run check"
   },
   "keywords": [
+    "codex",
+    "chatgpt",
+    "openai-plugin",
+    "agent-skills",
     "claude-code",
     "fable-mode",
     "ai-agent",
