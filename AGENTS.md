@@ -2,29 +2,38 @@
 
 ## Purpose
 
-This repository provides process controls for substantial AI-assisted coding work. Keep compatibility claims tied to implemented behavior.
+This repository provides inspectable execution discipline for substantial AI-assisted software work. Keep every capability claim tied to implemented behavior and fresh evidence.
 
 ## Working contract
 
-- Inspect before editing. Do not infer behavior from filenames alone.
-- For multi-file or high-risk work, define acceptance criteria before implementation.
-- Keep durable task state in `docs/SPEC.md` and `.fable/LEDGER.md` when those files are active for the task.
-- Treat `- [x]` as verified, not merely implemented. Attach concrete evidence.
-- On repeated failure, diagnose the harness and execution path before changing product code again.
+- Inspect the real execution path before editing.
+- Resolve load-bearing unknowns before architecture; use `$fable-discover` when evidence is missing.
+- For broad or risky work, define bounded cards and acceptance criteria before implementation.
+- Keep durable task state in `docs/SPEC.md`, `.fable/LEDGER.md`, and `.fable/state.json` when the project is armed.
+- Treat completion as an evidence state, not an implementation opinion.
+- On repeated failure, diagnose harness and execution-path problems before another product edit.
 - Preserve existing user-owned configuration. Installation and initialization must remain explicit and idempotent.
-- Do not add credentials, private MCP configuration, local absolute paths, or unsupported vendor claims.
-- Do not describe Markdown assets as automatic integration unless installation/runtime support exists in source.
+- Do not add credentials, private MCP configuration, local absolute paths, or unsupported vendor/model claims.
+- Do not describe reusable Markdown assets as automatic integration unless installer/runtime support exists in source.
 
-## Plugin routing
+## Canonical skill graph
 
-For tasks explicitly using get-fable, use `$get-fable` as the entry point. It routes work to the smallest relevant specialist skill:
+`skills/registry.json` and root `skills/*/SKILL.md` are the source of truth.
 
-- `$fable-plan` for requirements, acceptance criteria, decomposition, and risk
-- `$fable-execute` for bounded implementation against an accepted plan
-- `$fable-verify` for adversarial review and real acceptance evidence
-- `$fable-recover` for repeated failures, drift, or broken execution paths
+- `$get-fable` is the entry router
+- `$fable-discover` gathers load-bearing evidence
+- `$fable-plan` creates bounded cards and acceptance criteria
+- `$fable-execute` implements one accepted card
+- `$fable-verify` falsifies the result and records evidence
+- `$fable-recover` diagnoses repeated or stale failure before another edit
 
-Codex may also use repo-local agents declared in `.codex/config.toml`. Those agents are a Codex-specific execution aid, not a ChatGPT plugin compatibility claim.
+Host-specific files may adapt this graph but must not fork its semantics.
+
+## Runtime semantics
+
+`.fable/state.json` uses schema version 1. Substantial work cannot transition to `complete` without passing evidence. Repeated failure must route through recovery before further execution.
+
+The request proxy compiles a task-specific directive from the short core contract plus the selected canonical skill. Do not restore the old behavior of injecting the full historical prompt pack into every request.
 
 ## Verification
 
@@ -36,9 +45,11 @@ bun test
 bun run build
 ```
 
-For plugin packaging changes, also verify:
+For plugin or routing changes, also verify:
 
 - `.codex-plugin/plugin.json` parses and uses strict semver
-- every declared skill directory contains `SKILL.md`
-- the manifest does not declare absent MCP or app companions
-- skill routing contains no dead targets
+- `skills/registry.json` has no dead skill or transition targets
+- every canonical skill contains valid `SKILL.md` frontmatter
+- Codex agent config references existing profiles
+- `get-fable doctor --json` reports no error-severity checks
+- npm package inspection includes the canonical `skills/` surface
