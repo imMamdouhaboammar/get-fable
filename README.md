@@ -291,7 +291,7 @@ It is development middleware, not an internet-facing authentication gateway
 
 ```bash
 get-fable doctor
-gget-fable doctor --json
+get-fable doctor --json
 get-fable status --json
 ```
 
