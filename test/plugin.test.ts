@@ -18,17 +18,22 @@ function readJson(relativePath: string) {
 
 function assertSquareSvg(relativePath: string) {
   const content = fs.readFileSync(path.join(root, relativePath), 'utf-8');
-  const viewBox = content.match(/viewBox="[^\"]*?([0-9.]+)\s+([0-9.]+)"/);
-  const width = content.match(/width="([0-9.]+)"/);
-  const height = content.match(/height="([0-9.]+)"/);
+  const viewBox = content.match(/viewBox=["']([^"']+)["']/i);
 
   if (viewBox) {
-    expect(Number(viewBox[1])).toBe(Number(viewBox[2]));
+    const values = viewBox[1].trim().split(/[\s,]+/).map(Number);
+    expect(values).toHaveLength(4);
+    expect(values.every(Number.isFinite)).toBe(true);
+    expect(values[2]).toBeGreaterThan(0);
+    expect(values[2]).toBe(values[3]);
     return;
   }
 
+  const width = content.match(/\bwidth=["']([0-9.]+)(?:px)?["']/i);
+  const height = content.match(/\bheight=["']([0-9.]+)(?:px)?["']/i);
   expect(width).not.toBeNull();
   expect(height).not.toBeNull();
+  expect(Number(width?.[1])).toBeGreaterThan(0);
   expect(Number(width?.[1])).toBe(Number(height?.[1]));
 }
 
