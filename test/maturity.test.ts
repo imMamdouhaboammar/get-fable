@@ -71,6 +71,42 @@ describe('frontier execution maturity contract', () => {
     expect(decision.nextSkills).toContain('fable-verify');
   });
 
+  test('applied routing, phase transitions, and evidence form a complete lifecycle', () => {
+    const target = makeTempDir();
+    initProjectFable(target);
+    const previousCwd = process.cwd();
+    process.chdir(target);
+
+    try {
+      const routed = captureConsole(() =>
+        runCli(['route', 'Design a modular migration across several files', '--apply', '--json'])
+      );
+      expect(routed.code).toBe(0);
+
+      let state = JSON.parse(fs.readFileSync(path.join(target, '.fable', 'state.json'), 'utf-8'));
+      expect(state.phase).toBe('planned');
+      expect(state.currentSkill).toBe('fable-plan');
+      expect(state.substantial).toBe(true);
+      expect(state.lastDecision.selectedSkill).toBe('fable-plan');
+
+      expect(captureConsole(() => runCli(['state', 'executing', '--json'])).code).toBe(0);
+      expect(captureConsole(() => runCli(['state', 'verifying', '--json'])).code).toBe(0);
+      expect(
+        captureConsole(() =>
+          runCli(['evidence', 'pass', 'test', 'bun test', 'all affected tests passed', '--json'])
+        ).code
+      ).toBe(0);
+      expect(captureConsole(() => runCli(['state', 'complete', '--json'])).code).toBe(0);
+
+      state = JSON.parse(fs.readFileSync(path.join(target, '.fable', 'state.json'), 'utf-8'));
+      expect(state.phase).toBe('complete');
+      expect(state.evidence).toHaveLength(1);
+      expect(state.evidence[0].result).toBe('pass');
+    } finally {
+      process.chdir(previousCwd);
+    }
+  });
+
   test('doctor exposes a machine-readable package and project report', () => {
     const target = makeTempDir();
     initProjectFable(target);
