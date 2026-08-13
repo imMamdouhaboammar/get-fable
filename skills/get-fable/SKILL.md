@@ -1,56 +1,48 @@
 ---
 name: get-fable
-description: Route substantial software tasks through get-fable's planning, execution, verification, and recovery workflows. Use when the user explicitly asks for get-fable, Fable Mode, rigorous execution with durable task state, or when a repository already contains an active .fable directory for the task.
+description: Route substantial software work through get-fable's evidence, planning, execution, verification, and recovery contracts. Use when the user explicitly requests get-fable or Fable-style rigor, or when the current project has an active .fable directory.
 ---
 
 # get-fable
 
-Use this skill as the entry point. It coordinates process, not model identity.
+This is the entry skill. It improves execution discipline and does not claim to change the underlying model.
 
-## Core rule
+## Routing contract
 
-Choose the smallest workflow that makes the result inspectable. Do not add ceremony to a trivial change.
+Use the canonical graph in `skills/registry.json` when the host can read repository files. Otherwise apply the same order directly:
 
-## Routing graph
+1. `$fable-recover` when repeated failure, stale execution, or contradictory evidence is already present
+2. `$fable-verify` for review, proof, release readiness, or completion checks
+3. `$fable-discover` when load-bearing facts about code, runtime, or current documentation are unknown
+4. `$fable-plan` for architecture, migrations, broad refactors, or multi-file design
+5. `$fable-execute` for an already bounded change with a clear acceptance condition
 
-```text
-request
-  |
-  +-- unclear scope / multi-file design / risky change -> $fable-plan
-  |
-  +-- accepted bounded task --------------------------> $fable-execute
-  |                                                       |
-  |                                                       v
-  +---------------------------------------------------- $fable-verify
-  |                                                       |
-  |                           failure / drift / repeated rejection
-  |                                                       v
-  +---------------------------------------------------- $fable-recover
-                                                          |
-                                                          +--> plan again when assumptions changed
-                                                          +--> execute again when diagnosis is stable
-                                                          +--> verify again after the final fix
-```
-
-This graph is the plugin's routing contract. Do not invent hidden handoffs or pretend that one skill invoked another unless the host actually supports that action. When automatic skill delegation is unavailable, follow the target skill's procedure inline.
+Do not route by task size alone. Route by what information or proof is missing.
 
 ## Durable state
 
-When the task is substantial and the project is initialized for get-fable:
+When `.fable/state.json` exists, treat it as the strict runtime state and the Markdown files as the human-readable working record.
 
-- `docs/SPEC.md` holds requirements, constraints, decisions, and acceptance criteria
-- `.fable/LEDGER.md` holds current task cards and concrete evidence
-- `.fable/PROGRESS.md` holds concise state needed to resume work
+- `docs/SPEC.md` holds requirements and decisions
+- `.fable/LEDGER.md` holds cards and acceptance evidence
+- `.fable/PROGRESS.md` holds concise resumable context
+- `.fable/state.json` holds phase, routing, failure streak, and evidence semantics
 
-Do not overwrite project-owned versions of these files merely to normalize formatting.
+Never overwrite project-owned content just to normalize formatting.
 
-## Completion contract
+## Frontier-like behavior contract
 
-A task is complete only when:
+For substantial work:
 
-1. the requested behavior exists
-2. relevant acceptance checks actually ran
-3. failures are either fixed or reported precisely
-4. final claims match the evidence available in the current run
+- resolve load-bearing unknowns before architecture
+- keep implementation cards bounded
+- run acceptance immediately after each card
+- verify the real affected path before completion
+- after repeated failure, change the diagnosis before changing more code
+- report fresh evidence instead of confidence language
 
-Use `$fable-verify` before a completion claim on non-trivial work.
+## Handoffs
+
+A handoff is a workflow contract, not a claim that the host automatically spawned another agent. If the host cannot invoke another skill, follow that skill inline.
+
+A substantial task is complete only after `$fable-verify` has produced passing evidence or a precise blocker has been reported.
