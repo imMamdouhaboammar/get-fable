@@ -4,13 +4,19 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createInitialState, writeFableState } from '../src/core/state.ts';
+import { initProjectFable } from '../src/installer.ts';
 
 const root = path.resolve(import.meta.dir, '..');
 const tempDirs: string[] = [];
 
-function project() {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'get-fable-hooks-'));
+function freshDir(prefix = 'get-fable-hooks-') {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   tempDirs.push(dir);
+  return dir;
+}
+
+function project() {
+  const dir = freshDir();
   fs.mkdirSync(path.join(dir, '.fable'), { recursive: true });
   fs.writeFileSync(path.join(dir, '.fable', 'LEDGER.md'), '- [x] Acceptance: tests pass -- evidence: bun test 42 passed\n');
   writeFableState(dir, createInitialState('2026-08-13T00:00:00.000Z'));
@@ -30,6 +36,14 @@ afterEach(() => {
 });
 
 describe('lifecycle hooks and durable state', () => {
+  test('a newly initialized idle project can stop before any work round exists', () => {
+    const dir = freshDir('get-fable-init-hooks-');
+    initProjectFable(dir);
+
+    const result = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
+    expect(result.status).toBe(0);
+  });
+
   test('two consecutive command failures move durable state into recovery', () => {
     const dir = project();
     const input = {
