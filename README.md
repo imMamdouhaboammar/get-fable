@@ -4,96 +4,126 @@
 
 # get-fable
 
-### Make the model you already use behave with stricter execution discipline
+### Make capable coding models stay capable when the task gets hard
+
+**A model-agnostic execution runtime for substantial coding work**
+
+Discovery before assumptions · bounded planning · durable state · evidence before done · recovery before another blind retry
 
 [![CI](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 [![Bun](https://img.shields.io/badge/runtime-Bun%201.3%2B-FBF0DF?style=flat-square&logo=bun&logoColor=14151A)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-**Evidence first · bounded work · durable state · verification before done · recovery before another blind retry**
+**Codex · Claude Code · Antigravity / Gemini · generic Agent Skills**
 
 </div>
 
-## The problem is not always the model
+## Good models still lose discipline on long tasks
 
-A coding agent can look excellent on a ten-line task and lose discipline on a three-hour refactor
+A short coding request is easy to hold in context
 
-The original requirement gets buried under tool output
+A substantial change is different
 
-Architecture starts before important facts are resolved
+The agent reads dozens of files, makes architectural choices, changes code, hits failures, revises assumptions, runs partial tests, and carries all of that history inside one conversation
 
-A narrow test gets mistaken for proof that the product path works
+That is where quality starts to drift
 
-The same broken idea gets retried with slightly different edits
+The model may be capable enough to solve the task, but the execution around it becomes unreliable
 
-Then `done` becomes an opinion instead of an evidence state
+- implementation starts before important facts are resolved
+- requirements disappear under tool output
+- one passing test gets mistaken for product-level proof
+- repeated failure produces another edit instead of a new diagnosis
+- context loss turns old assumptions into new facts
+- `done` becomes a judgment instead of an evidence state
 
-`get-fable` targets that failure mode
+`get-fable` adds the missing execution discipline around the model
 
-It does not replace the model
+It does not replace your LLM
 
-It changes the execution conditions around the model
+It makes substantial work harder to do carelessly
 
-## The aha moment
+## The core idea
 
-A substantial task is not one job
+A difficult coding task is not one job
 
 ```text
 unknown facts
     ↓
-discovery
+discover
     ↓
-bounded plan
+plan
     ↓
-implementation
+execute
     ↓
-adversarial verification
+verify
     ↓
-recorded evidence
+record evidence
     ↓
 complete
 
-repeated failure or stale execution
+repeated failure
     ↓
-recovery
+recover
     ↓
-new diagnosis
+change the diagnosis
     ↓
-plan or execute again
+continue from grounded state
 ```
 
-A giant static prompt asks one model to keep every job active at once
+`get-fable` makes those transitions explicit
 
-`get-fable` 1.1 turns those jobs into a small workflow with explicit routing, durable state, lifecycle hooks, and mechanical completion gates
+The model gets the smallest relevant contract for the current job instead of one oversized prompt asking it to remember everything at once
 
-## Six canonical skills, one source of truth
+## What changes when get-fable is active
+
+| Without get-fable | With get-fable |
+|---|---|
+| Start coding from plausible assumptions | Resolve load-bearing unknowns first |
+| Keep the plan in conversation history | Persist the plan and current phase in project files |
+| Treat implementation as one long pass | Work in bounded cards with explicit acceptance |
+| Retry similar fixes after repeated failure | Enter recovery and change the diagnosis |
+| Let the same context implement and approve | Route verification as a separate responsibility |
+| Say `done` when the code looks correct | Require fresh passing evidence for substantial work |
+
+The result is not a smarter model by claim
+
+It is a stricter way for a capable model to work
+
+## Six focused skills
+
+`get-fable` uses one canonical skill graph
 
 ```text
-skills/
-  registry.json
-  get-fable/
-  fable-discover/
-  fable-plan/
-  fable-execute/
-  fable-verify/
-  fable-recover/
+get-fable
+├── fable-discover
+├── fable-plan
+├── fable-execute
+├── fable-verify
+└── fable-recover
 ```
 
 | Skill | Responsibility |
 |---|---|
-| `get-fable` | Entry router and global execution contract |
-| `fable-discover` | Resolve load-bearing repository, runtime, and documentation facts |
-| `fable-plan` | Convert grounded requirements into bounded cards and acceptance criteria |
-| `fable-execute` | Implement one accepted card without scope drift |
+| `get-fable` | Choose the smallest correct workflow for the task |
+| `fable-discover` | Resolve facts that can materially change the implementation |
+| `fable-plan` | Turn grounded requirements into bounded work and acceptance criteria |
+| `fable-execute` | Implement one accepted unit of work without scope drift |
 | `fable-verify` | Try to falsify the result and collect fresh evidence |
-| `fable-recover` | Diagnose repeated or stale failure before another edit |
+| `fable-recover` | Diagnose repeated or stale failure before more edits |
 
-`skills/registry.json` defines ordering, phases, allowed next skills, and routing hints
+The skills are intentionally narrow
 
-Historical prompts, design skills, agent definitions, and other reference material remain under `assets/`, but they are not the default execution workflow
+Planning does not quietly become implementation
 
-## Explainable routing without an LLM call
+Implementation does not certify itself
+
+Recovery does not begin with another patch
+
+## Routing that can explain itself
+
+Ask get-fable what the task needs
 
 ```bash
 get-fable route "Review this diff before merge"
@@ -107,330 +137,269 @@ Reasons: task explicitly asks for adversarial verification
 Next skills: fable-recover, fable-execute
 ```
 
-Machine-readable form
+A repeated failure routes differently
 
 ```bash
 get-fable route "The same test failed twice after retrying" --json
 ```
 
-Routing priority is intentionally strict
+The router gives recovery and verification precedence over blind execution
 
-1. repeated or stale failure selects `fable-recover`
-2. review, proof, and completion checks select `fable-verify`
-3. unknown repository or current documentation facts select `fable-discover`
-4. architecture, migrations, and broad refactors select `fable-plan`
-5. an already bounded concrete change selects `fable-execute`
+Its reasons are compact routing diagnostics, not private chain-of-thought
 
-The router exposes concise routing reasons and scores for diagnostics
+## State survives the conversation
 
-It does not expose private chain-of-thought
-
-## A real durable lifecycle
-
-Initialize a project
+Initialize a repository once
 
 ```bash
 get-fable init
 ```
 
-Then apply a routing decision to durable state
-
-```bash
-get-fable route "Design a modular migration across several files" --apply
-```
-
-The normal substantial-work lifecycle is explicit
-
-```bash
-get-fable state executing
-# implement the bounded card
-
-get-fable state verifying
-# run the real affected checks
-
-get-fable evidence pass test "bun test" "42 affected tests passed"
-get-fable state complete
-```
-
-A failed evidence record is also meaningful
-
-```bash
-get-fable evidence fail runtime "smoke test" "request still returns 500"
-```
-
-Repeated failures move durable state to
+get-fable adds durable project state under `.fable/` and installs the canonical project skills under `.agents/skills/`
 
 ```text
-phase=recovering
-currentSkill=fable-recover
+.fable/
+  state.json
+  LEDGER.md
+  PROGRESS.md
+  VERIFIER_PROMPT.md
+
+.agents/
+  skills/
+    get-fable/
+    fable-discover/
+    fable-plan/
+    fable-execute/
+    fable-verify/
+    fable-recover/
 ```
 
-The recovery workflow then requires a new diagnosis before more product edits
-
-## `.fable/state.json`
-
-The JSON state is intentionally small
+The strict state is deliberately small
 
 ```text
-schema version
 phase
 current skill
 failure streak
 substantial-work flag
 last routing decision
 evidence records
-updated timestamp
 ```
 
-Valid phases
+That gives a fresh context enough information to continue correctly without replaying an entire chat transcript
 
-```text
-idle
-discovering
-planned
-executing
-verifying
-recovering
-complete
-blocked
+## `done` requires evidence
+
+For substantial work, completion is a real state transition
+
+```bash
+get-fable route "Implement the requested migration" --apply
+get-fable state executing
+
+# implement and run the affected checks
+
+get-fable state verifying
+get-fable evidence pass test "bun test" "42 affected tests passed"
+get-fable state complete
 ```
 
-Invalid transitions are rejected
+Without passing evidence, substantial work cannot transition to `complete`
 
-For substantial work, `complete` is rejected until passing evidence exists
+A failure is recorded too
 
-Human-readable working context remains in
-
-```text
-docs/SPEC.md
-.fable/LEDGER.md
-.fable/PROGRESS.md
+```bash
+get-fable evidence fail runtime "smoke test" "request still returns 500"
 ```
 
-## Lifecycle hooks make the state matter
+Repeated failures push the workflow toward `fable-recover` instead of encouraging another near-identical edit
 
-Hosts with hook support receive four small Python hooks
+## Recovery is not another retry
 
-| Hook | What it enforces |
+When the same idea keeps failing, get-fable changes the question
+
+Instead of asking `what should I edit next?`, recovery asks
+
+1. Is the test or harness itself valid
+2. Is the changed code actually running
+3. Is the failure in product logic
+4. What invariant would prevent this class of failure
+
+That distinction matters in long sessions where repeated activity can look like progress
+
+## Lifecycle enforcement for supported hosts
+
+On hosts with hook support, get-fable can enforce parts of the workflow mechanically
+
+| Hook | Behavior |
 |---|---|
-| `fable_profile_inject.py` | Inject current phase, selected skill, failure streak, and open cards |
-| `fable_spawn_guard.py` | Require a bounded open card before a large delegation |
-| `fable_fail_streak.py` | Update durable failure state and enter recovery after two consecutive failures |
-| `fable_close_guard.py` | Reject stop for unfinished work, missing evidence, or substantial state that is not complete |
+| Session start | Restore the current phase, selected skill, failure streak, and open work |
+| Before large delegation | Require a bounded open card for substantial delegated work |
+| After command failure | Update durable failure state and enter recovery after repeated failure |
+| Before stop | Reject unfinished substantial work or completion without passing evidence |
 
 The hooks are model-agnostic
 
-There is no Haiku/Sonnet/Opus/Fable ranking, synthetic model tier, or model-name ceiling
+They do not rank model names or pretend one model has become another
 
-## Evidence is a state transition, not a compliment
+## Contextual request routing
 
-`get-fable lint` checks the human ledger and strict state together
+get-fable also includes an optional local OpenAI-compatible request proxy
 
-```bash
-get-fable lint
-```
-
-It can reject
-
-- an open card with no acceptance condition
-- a checked card with no substantive evidence annotation
-- invalid state JSON
-- substantial work marked complete without passing evidence
-- repeated failure left in execution instead of recovery
-
-The Stop hook goes further for armed hosts by refusing to close substantial work until passing state evidence exists and the durable phase reaches `complete`
-
-## Contextual prompt compilation
-
-The local request proxy no longer injects one historical prompt into every request
+Instead of injecting the same large prompt into every request, it compiles context for the actual task
 
 ```text
-incoming request
-      ↓
-normalize
-      ↓
-latest user intent
-      ↓
+request
+  ↓
+normalize intent
+  ↓
 route task
-      ↓
-short core contract
-+ selected skill only
+  ↓
+core execution contract
++ selected skill
 + compact project state
-      ↓
-model request
+  ↓
+model
 ```
 
-A review request receives the verification contract
+A review request receives verification guidance
 
-A broad architecture request receives the planning contract
+A broad architecture request receives planning guidance
 
-A repeated failure receives the recovery contract
+A repeated failure receives recovery guidance
 
-The caller's original system context remains in the request after the Fable directive
-
-Start preview mode
+Start locally in preview mode
 
 ```bash
 get-fable serve 8080
 ```
 
-Without an upstream URL, no provider call is made
-
-Configure one upstream when needed
+Configure an upstream only when needed
 
 ```bash
 export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
 get-fable serve 8080
 ```
 
-The proxy binds to `127.0.0.1` by default, limits request bodies, validates upstream schemes, applies an upstream timeout, and leaves CORS disabled unless configured
+The proxy binds to `127.0.0.1` by default and is intended for controlled local use
 
-It is development middleware, not an internet-facing authentication gateway
+## Works with the tools you already use
 
-## Doctor and machine-readable status
+### Codex
 
-```bash
-get-fable doctor
-get-fable doctor --json
-get-fable status --json
-```
+The repository ships an OpenAI skill package plus Codex agent profiles for discovery, planning, execution, verification, recovery, review, and documentation research
 
-`doctor` validates the canonical registry, transition targets, OpenAI plugin manifest, project state schema, canonical project skills, and Python availability for hosts that use lifecycle hooks
+### Claude Code
 
-The source repository validates against its root canonical skills while initialized consumer projects validate their `.agents/skills/` copies
+The installer can add the canonical skills and lifecycle hooks to the Claude configuration directory
 
-## ChatGPT and Codex plugin
+### Antigravity / Gemini
 
-The repository ships a skill-only OpenAI plugin package
+The installer can add the same canonical skill pack and its own hook copies to the configured Antigravity / Gemini location
 
-```text
-.codex-plugin/plugin.json
-skills/
-```
+### Generic agent environments
 
-The universal package deliberately does not declare an MCP server or app companion that the repository does not implement
+The root `skills/` directory follows a portable skill-first structure and remains the canonical source for the workflow
 
-Codex can additionally use repository-local profiles for discovery, planning, execution, verification, recovery, review, and documentation research
+No host adapter owns a different version of the core behavior
 
-Those profiles inherit the active Codex model instead of pinning a model name that will age out of the repository
+## Quick start
 
-See [Plugin package](./docs/PLUGIN.md)
-
-## Claude and Antigravity adapters
-
-Global install
+Requires Bun 1.3 or newer
 
 ```bash
-get-fable install
+git clone https://github.com/imMamdouhaboammar/get-fable.git
+cd get-fable
+bun install
 ```
 
-Current targets
+Initialize the current repository
 
-```text
-~/.claude/
-~/.gemini/config/
-~/.agent-kernel/   # only when already present
+```bash
+bun ./bin/get-fable.js init
 ```
 
-Claude and Antigravity receive the same canonical skill pack
+Inspect the task router
 
-`fable-mode` remains as a compatibility alias for older installations
+```bash
+bun ./bin/get-fable.js route "Refactor authentication across several modules"
+```
 
-Antigravity owns its hook copies inside the plugin directory so it does not depend on Claude paths
+Check the current installation and project state
 
-Malformed existing JSON configuration is not silently treated as empty configuration
+```bash
+bun ./bin/get-fable.js doctor
+bun ./bin/get-fable.js status
+```
+
+Install supported global integrations when you want them
+
+```bash
+bun ./bin/get-fable.js install
+```
+
+Installation is explicit
+
+Running get-fable without a command only shows help
 
 ## CLI
 
-```text
-install               Install supported global integrations
-install-antigravity   Install the Antigravity / Gemini target
-init                  Create missing durable state and canonical project skills
-route <task>           Explain workflow selection; --apply persists it; --json returns machine output
-state <phase>          Transition durable workflow state; optional --substantial and --json
-evidence ...           Record pass/fail evidence with kind, source, and concrete detail
-doctor                 Validate runtime and project setup; optional --json
-status                 Report installation state; optional --json
-lint                   Validate ledger acceptance and strict state
-serve [port]           Start the contextual request proxy
-router [port]          Alias for serve
-assets                 Count the broader historical/reference asset library
-prompt                 Print the compatibility execution prompt
-version                Print the package version
-help                   Show CLI help
-```
+| Command | Purpose |
+|---|---|
+| `init` | Prepare the current repository with durable state and canonical skills |
+| `route <task>` | Select and explain the correct workflow |
+| `route <task> --apply` | Route the task and persist the decision |
+| `state <phase>` | Move durable workflow state through a valid transition |
+| `evidence ...` | Record concrete passing or failing evidence |
+| `lint` | Check ledger acceptance and evidence discipline |
+| `doctor` | Validate the active get-fable setup |
+| `status` | Inspect installation and project state |
+| `install` | Install supported global integrations |
+| `install-antigravity` | Install the Antigravity / Gemini integration |
+| `serve [port]` | Start the local contextual request proxy |
+| `assets` | Inspect the optional reference library |
 
-Running `get-fable` without a command only shows help
+Machine-readable output is available for routing, doctor, and status where supported
 
-Installation is always explicit
+## Designed for real repositories
 
-## CI treats compatibility as a contract
+get-fable favors conservative operational behavior
 
-The verified runtime floor is Bun 1.3.0
+- project-owned files are not silently replaced during initialization
+- malformed existing configuration is not treated as empty configuration
+- substantial completion requires recorded passing evidence
+- lifecycle hooks fail open on unexpected hook errors rather than trapping the user
+- the local proxy binds to loopback by default
+- host adapters consume the same canonical skills instead of maintaining divergent copies
+- historical prompts and reference assets remain optional rather than being injected into every task
 
-CI currently runs
+## What get-fable is, and what it is not
 
-- Ubuntu with Bun 1.3.0
-- Ubuntu with Bun 1.3.14 plus coverage and npm package inspection
-- macOS with Bun 1.3.14
+get-fable is execution infrastructure around an LLM
 
-Each matrix job runs typecheck, the test suite, build, and a complete CLI lifecycle smoke test from project initialization through recorded evidence and `complete`
+It can make planning, state retention, verification, recovery, and completion behavior more explicit and repeatable
 
-Workflow actions and Bun versions are pinned rather than relying on `latest`
+It does not change model weights
 
-## What get-fable does not claim
-
-`get-fable` does not make one model literally become another model
-
-It does not reproduce private provider infrastructure
+It does not reproduce a proprietary model
 
 It does not expose hidden reasoning
 
-It does not guarantee correct code
+It does not guarantee correct code or benchmark equivalence with another model
 
-It does not guarantee equivalent benchmark performance to a different model
+The product claim is narrower and more useful
 
-The narrower claim is testable
+**Give a capable model better execution conditions for substantial software work**
 
-**A model can behave more reliably on substantial work when important execution behaviors are explicit, routed, stateful, recoverable, and mechanically verified instead of being left to a long conversation and one giant prompt**
-
-That is what this repository implements
-
-## Development
-
-Requirements
-
-- Bun 1.3.0 or newer
-- Python 3 for lifecycle-hook hosts
-
-```bash
-bun install
-bun run typecheck
-bun test
-bun run build
-bun run check
-```
-
-Useful docs
+## Documentation
 
 - [Usage](./docs/USAGE.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Plugin package](./docs/PLUGIN.md)
 - [Lifecycle hooks](./hooks/README.md)
 - [Security](./SECURITY.md)
-- [Releasing](./docs/RELEASING.md)
 - [Third-party notices](./THIRD_PARTY_NOTICES.md)
-
-## Provenance
-
-`get-fable` includes original code and material adapted or collected from public upstream repositories
-
-See [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md) for attribution and licensing notes
-
-Vendor and model names in historical references do not imply endorsement or affiliation
 
 ## License
 
-Original `get-fable` code is released under the [MIT License](./LICENSE)
+Original get-fable code is released under the [MIT License](./LICENSE)
 
-Third-party material remains subject to its applicable source terms as described in [`THIRD_PARTY_NOTICES.md`](./THIRD_PARTY_NOTICES.md)
+Third-party material remains subject to its applicable source terms as described in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)
