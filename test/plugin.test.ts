@@ -87,18 +87,17 @@ describe('OpenAI plugin package', () => {
     }
   });
 
-  test('Codex agent routing points only to existing profiles', () => {
+  test('Codex agent routing points only to existing unpinned profiles', () => {
     const config = fs.readFileSync(path.join(root, '.codex', 'config.toml'), 'utf-8');
     const refs = [...config.matchAll(/config_file\s*=\s*"([^"]+)"/g)].map((match) => match[1]);
 
     expect(refs.length).toBeGreaterThanOrEqual(7);
     for (const ref of refs) {
-      expect(fs.existsSync(path.join(root, '.codex', ref))).toBe(true);
-    }
-
-    for (const agent of ['planner', 'executor', 'verifier', 'recovery']) {
-      const profile = fs.readFileSync(path.join(root, '.codex', 'agents', `${agent}.toml`), 'utf-8');
+      const profilePath = path.join(root, '.codex', ref);
+      expect(fs.existsSync(profilePath)).toBe(true);
+      const profile = fs.readFileSync(profilePath, 'utf-8');
       expect(profile).not.toMatch(/^model\s*=/m);
+      expect(profile).not.toMatch(/^model_reasoning_effort\s*=/m);
     }
   });
 
