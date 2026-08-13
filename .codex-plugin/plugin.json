@@ -1,0 +1,34 @@
+{
+  "name": "get-fable",
+  "version": "1.0.0",
+  "description": "Process discipline for substantial coding work: durable task state, explicit routing, verification, and recovery.",
+  "author": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "repository": "https://github.com/imMamdouhaboammar/get-fable",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "chatgpt",
+    "coding-agent",
+    "agent-workflow",
+    "verification",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "get-fable",
+    "shortDescription": "Keep long coding tasks planned, stateful, and verified.",
+    "longDescription": "Routes substantial software work through planning, execution, verification, and recovery while keeping task state in inspectable project files.",
+    "developerName": "Mamdouh Abo Ammar",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": [
+      "Run this coding task with get-fable.",
+      "Plan and implement this repo change with verification.",
+      "Recover this failing task and prove the fix."
+    ]
+  }
+}

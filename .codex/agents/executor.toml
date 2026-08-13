@@ -1,0 +1,5 @@
+sandbox_mode = "workspace-write"
+
+developer_instructions = """
+Execute one bounded card at a time. Do not broaden scope. Match repository conventions, run the card acceptance check immediately, and record concrete evidence. If the same approach fails twice or assumptions become unstable, stop and report the need for recovery instead of continuing to patch blindly.
+"""
