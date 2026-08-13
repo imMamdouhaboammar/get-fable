@@ -1,75 +1,82 @@
 # ChatGPT and Codex plugin package
 
-`get-fable` includes a skill-only OpenAI plugin package at the repository root.
+`get-fable` 1.1.0 ships a skill-only OpenAI plugin whose universal surface is the canonical workflow under `skills/`.
 
-## What is universal
-
-The public plugin surface is intentionally small and portable:
+## Canonical workflow
 
 ```text
 .codex-plugin/plugin.json
 skills/
+  registry.json
   get-fable/
+  fable-discover/
   fable-plan/
   fable-execute/
   fable-verify/
   fable-recover/
 ```
 
-These skills contain the workflow contract shared by supported ChatGPT and Codex plugin surfaces.
+`skills/registry.json` is the machine-readable workflow graph. `get-fable` is the only entry skill. The specialist skills have narrow responsibilities:
 
-The package does not declare an MCP server or app because the repository does not currently ship a plugin MCP/app companion. The existing local request-enrichment proxy is a separate developer feature and is not represented as an MCP server.
+1. `fable-discover` resolves load-bearing facts
+2. `fable-plan` turns grounded requirements into bounded cards
+3. `fable-execute` implements one accepted card
+4. `fable-verify` tries to falsify the result and records evidence
+5. `fable-recover` diagnoses repeated or stale failure before another edit
 
-## Routing
+The order is semantic, not cosmetic. Recovery has precedence over another blind retry. Verification has precedence over a completion claim. Discovery has precedence over architecture when important facts are still unknown.
 
-`get-fable` is the entry skill. It routes substantial work by task state:
+## Universal versus host-specific support
 
-```text
-scope unclear -> fable-plan
-scope stable  -> fable-execute -> fable-verify
-failure/drift -> fable-recover -> plan or execute -> verify
-```
+The plugin manifest and root `skills/` are the universal package surface for supported ChatGPT and Codex plugin hosts.
 
-The routing contract is explicit in `skills/get-fable/SKILL.md`. There is no claim of hidden or model-level routing.
+Codex can additionally use repository-local agent profiles in `.codex/agents/`. Those profiles map to the same workflow but are not universal plugin components.
 
-## Codex-specific support
+Claude and Antigravity integrations are adapters installed by the CLI. Their local copies must follow the canonical root skills rather than define a second workflow.
 
-Codex can additionally use repository-local agent profiles from `.codex/config.toml`:
+## No synthetic MCP claim
 
-- explorer
-- planner
-- executor
-- verifier
-- recovery
-- reviewer
-- docs researcher
+The package does not declare an MCP server or ChatGPT app companion because the repository does not currently ship either as part of this plugin.
 
-The specialist profiles intentionally omit hard-coded model IDs so they inherit the active Codex environment instead of aging with a particular model name.
+The local HTTP request proxy is a separate developer feature. It accepts documented request shapes and can optionally forward them upstream. It must not be represented as an MCP server.
 
-These agent profiles are a Codex-specific aid. They are not presented as universal ChatGPT plugin components.
+## Contextual prompt compilation
 
-## Repository rules
+The local proxy no longer injects a large historical prompt pack into every request. It now:
 
-Root `AGENTS.md` defines the repository execution contract and maps get-fable work to the specialist skills. Existing `.fable` files remain the durable project state used by the workflow when active.
+1. normalizes the incoming request
+2. extracts the latest user intent when available
+3. routes the task with the canonical registry
+4. compiles a short core contract plus only the selected specialist skill
+5. adds compact `.fable/state.json` context when present
+6. preserves the caller's existing system message after the Fable directive
+
+Preview responses expose the selected skill, confidence, routing reasons, and allowed next skills. They do not expose private reasoning.
+
+## Durable state and completion
+
+Initialized projects receive `.fable/state.json` schema version 1. It records the workflow phase, current skill, failure streak, last routing decision, and evidence records.
+
+For substantial work, the state machine rejects a transition to `complete` until passing evidence exists. Markdown files remain the human-readable working record:
+
+- `docs/SPEC.md`
+- `.fable/LEDGER.md`
+- `.fable/PROGRESS.md`
 
 ## Validation
 
-Repository tests assert that:
+Repository tests verify:
 
-- the plugin manifest parses and uses strict semver
-- the plugin is skill-only unless real MCP/app companions are added
-- every routing target has a `SKILL.md`
-- no routing reference points at a missing skill
+- manifest shape and strict semver
+- the complete six-skill registry
+- no dead skill transitions
+- Codex agent references
+- deterministic routing precedence
+- state transition validity
+- evidence-gated completion
+- contextual prompt compilation
+- project and Antigravity installation
+- JSON contracts for `route`, `doctor`, and `status`
+- package contents
 
-The repository CI remains the release gate through `bun run typecheck`, `bun test`, build, CLI smoke tests, and package-content inspection.
-
-## Compatibility language
-
-Use these terms precisely:
-
-- **plugin support**: the `.codex-plugin/plugin.json` package and `skills/` are present and validated
-- **Codex agent support**: `.codex/config.toml` and its agent profiles are present
-- **request compatibility**: the local proxy accepts a documented request shape
-- **reusable asset**: a file can be consumed manually but is not automatically installed
-
-Do not use one category as evidence for another.
+The plugin remains deliberately narrow in its claims. It can improve execution discipline around an LLM. It does not change model weights, reproduce a proprietary model, expose hidden reasoning, or guarantee equivalent benchmark performance.
