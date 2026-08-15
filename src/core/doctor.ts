@@ -27,12 +27,36 @@ function isSquareSvg(filePath: string): boolean {
 function validatePluginPackage(repoRoot: string): DoctorCheck[] {
   const checks: DoctorCheck[] = [];
   const pluginManifest = path.join(repoRoot, '.codex-plugin', 'plugin.json');
+  const claudeMarketplaceManifest = path.join(repoRoot, '.claude-plugin', 'marketplace.json');
+  const claudePluginManifest = path.join(repoRoot, '.claude-plugin', 'plugin.json');
 
   if (!fs.existsSync(pluginManifest)) {
-    return [check('plugin-manifest', 'error', '.codex-plugin/plugin.json is missing')];
+    checks.push(check('plugin-manifest', 'error', '.codex-plugin/plugin.json is missing'));
+  } else {
+    checks.push(check('plugin-manifest', 'pass', '.codex-plugin/plugin.json is present'));
   }
 
-  checks.push(check('plugin-manifest', 'pass', '.codex-plugin/plugin.json is present'));
+  if (!fs.existsSync(claudeMarketplaceManifest)) {
+    checks.push(check('claude-marketplace-manifest', 'error', '.claude-plugin/marketplace.json is missing'));
+  } else {
+    try {
+      const marketplace = JSON.parse(fs.readFileSync(claudeMarketplaceManifest, 'utf-8'));
+      if (!marketplace.name || !Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
+        checks.push(check('claude-marketplace-manifest', 'error', '.claude-plugin/marketplace.json is missing name or plugins'));
+      } else {
+        checks.push(check('claude-marketplace-manifest', 'pass', '.claude-plugin/marketplace.json is present and valid'));
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      checks.push(check('claude-marketplace-manifest', 'error', `Invalid marketplace manifest: ${message}`));
+    }
+  }
+
+  if (!fs.existsSync(claudePluginManifest)) {
+    checks.push(check('claude-plugin-manifest', 'error', '.claude-plugin/plugin.json is missing'));
+  } else {
+    checks.push(check('claude-plugin-manifest', 'pass', '.claude-plugin/plugin.json is present'));
+  }
 
   try {
     const manifest = JSON.parse(fs.readFileSync(pluginManifest, 'utf-8')) as Record<string, any>;

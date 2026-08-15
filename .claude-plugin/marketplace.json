@@ -1,0 +1,35 @@
+{
+  "name": "get-fable",
+  "owner": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "metadata": {
+    "description": "Modular frontier-like execution discipline for AI coding agents: evidence-first routing, durable state, verification gates, recovery, skills, hooks, and an optional local request proxy.",
+    "version": "1.1.0"
+  },
+  "plugins": [
+    {
+      "name": "get-fable",
+      "description": "Modular execution discipline for substantial coding work: evidence-first discovery, explicit routing, durable task state, verification, and recovery.",
+      "source": "./",
+      "version": "1.1.0",
+      "author": {
+        "name": "Mamdouh Abo Ammar",
+        "url": "https://github.com/imMamdouhaboammar"
+      },
+      "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+      "repository": "https://github.com/imMamdouhaboammar/get-fable",
+      "license": "MIT",
+      "keywords": [
+        "claude-code",
+        "chatgpt",
+        "codex",
+        "agent-discipline",
+        "agent-skills",
+        "verification",
+        "skills"
+      ]
+    }
+  ]
+}

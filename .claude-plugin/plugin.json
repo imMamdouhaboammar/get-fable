@@ -1,0 +1,23 @@
+{
+  "name": "get-fable",
+  "version": "1.1.0",
+  "description": "Modular execution discipline for substantial coding work: evidence-first discovery, explicit routing, durable task state, verification, and recovery.",
+  "author": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "repository": "https://github.com/imMamdouhaboammar/get-fable",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "chatgpt",
+    "codex",
+    "agent-discipline",
+    "agent-skills",
+    "verification",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}

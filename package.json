@@ -12,6 +12,7 @@
     "get-fable": "bin/get-fable.js"
   },
   "files": [
+    ".claude-plugin/",
     ".codex-plugin/",
     ".codex/",
     "AGENTS.md",

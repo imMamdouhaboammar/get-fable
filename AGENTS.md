@@ -48,6 +48,7 @@ bun run build
 For plugin or routing changes, also verify:
 
 - `.codex-plugin/plugin.json` parses and uses strict semver
+- `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` parse and declare valid plugin metadata
 - `skills/get-fable/registry.json` has no dead skill or transition targets
 - every direct child under `skills/` is a directory containing `SKILL.md`
 - required plugin branding assets exist and are square

@@ -289,7 +289,14 @@ The repository ships an OpenAI skill package plus Codex agent profiles for disco
 
 ### Claude Code
 
-The installer can add the canonical skills and lifecycle hooks to the Claude configuration directory
+Install directly via Claude Code's plugin marketplace or through the get-fable CLI:
+
+```bash
+/plugin marketplace add imMamdouhaboammar/get-fable
+/plugin install get-fable@get-fable
+```
+
+The installer can also add canonical skills and lifecycle hooks to the Claude configuration directory via `get-fable install`.
 
 ### Antigravity / Gemini
 

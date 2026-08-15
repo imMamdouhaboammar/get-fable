@@ -1,13 +1,19 @@
-# ChatGPT and Codex plugin package
+# ChatGPT, Codex, and Claude Code plugin package
 
-`get-fable` 1.1.0 ships a skill-only OpenAI plugin whose universal surface is the canonical workflow under `skills/`.
+`get-fable` 1.1.0 ships a skill-only OpenAI plugin (`.codex-plugin/plugin.json`) and a native Claude Code plugin and marketplace manifest (`.claude-plugin/marketplace.json` & `.claude-plugin/plugin.json`) whose universal surface is the canonical workflow under `skills/`.
 
 ## Canonical workflow
 
 ```text
-.codex-plugin/plugin.json
+.claude-plugin/
+  marketplace.json
+  plugin.json
+.codex-plugin/
+  plugin.json
 assets/
   mascot.svg
+hooks/
+  hooks.json
 skills/
   get-fable/
     SKILL.md
@@ -42,11 +48,17 @@ The order is semantic, not cosmetic. Recovery has precedence over another blind 
 
 ## Universal versus host-specific support
 
-The plugin manifest and root `skills/` are the universal package surface for supported ChatGPT and Codex plugin hosts.
+The plugin manifests (`.codex-plugin/plugin.json` for ChatGPT/Codex, and `.claude-plugin/marketplace.json` / `.claude-plugin/plugin.json` for Claude Code) and root `skills/` are the universal package surface for supported AI plugin hosts.
 
-Codex can additionally use repository-local agent profiles in `.codex/agents/`. Those profiles map to the same workflow but are not universal plugin components.
+Claude Code can install get-fable directly via its marketplace command:
+```bash
+/plugin marketplace add imMamdouhaboammar/get-fable
+/plugin install get-fable@get-fable
+```
 
-Claude and Antigravity integrations are adapters installed by the CLI. Their local copies must follow the canonical root skills rather than define a second workflow.
+Codex can additionally use repository-local agent profiles in `.codex/agents/`. Those profiles map to the same workflow.
+
+Antigravity and CLI-driven Claude integrations can also be installed via `get-fable install`. All host adapters consume the canonical root skills.
 
 ## No synthetic MCP claim
 

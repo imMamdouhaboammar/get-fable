@@ -143,10 +143,36 @@ describe('OpenAI plugin package', () => {
     }
   });
 
+  test('declares a valid Claude Code marketplace manifest', () => {
+    const marketplace = readJson('.claude-plugin/marketplace.json');
+    expect(marketplace.name).toBe('get-fable');
+    expect(marketplace.owner?.name).toBeTruthy();
+    expect(marketplace.owner?.url).toBeTruthy();
+    expect(Array.isArray(marketplace.plugins)).toBe(true);
+    expect(marketplace.plugins.length).toBeGreaterThanOrEqual(1);
+
+    const fablePlugin = marketplace.plugins.find((p: any) => p.name === 'get-fable');
+    expect(fablePlugin).toBeDefined();
+    expect(fablePlugin.source).toBe('./');
+    expect(fablePlugin.version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(fablePlugin.description.length).toBeGreaterThan(0);
+  });
+
+  test('declares a valid Claude Code plugin manifest', () => {
+    const plugin = readJson('.claude-plugin/plugin.json');
+    expect(plugin.name).toBe('get-fable');
+    expect(plugin.version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(plugin.description.length).toBeGreaterThan(0);
+    expect(plugin.author?.name).toBeTruthy();
+    expect(plugin.skills).toBe('./skills/');
+    expect(plugin.hooks).toBe('./hooks/hooks.json');
+    expect(fs.existsSync(path.join(root, 'hooks', 'hooks.json'))).toBe(true);
+  });
+
   test('npm package metadata includes the plugin surface and registry', () => {
     const pkg = readJson('package.json');
 
-    for (const requiredPath of ['.codex-plugin/', '.codex/', 'AGENTS.md', 'skills/', 'assets/']) {
+    for (const requiredPath of ['.claude-plugin/', '.codex-plugin/', '.codex/', 'AGENTS.md', 'skills/', 'assets/']) {
       expect(pkg.files).toContain(requiredPath);
     }
     expect(fs.existsSync(path.join(root, 'skills', 'get-fable', 'registry.json'))).toBe(true);
