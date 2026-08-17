@@ -10,6 +10,18 @@ import {
   type RoutingDecision,
 } from './types.js';
 
+const FABLE_SKILL_IDS: FableSkillId[] = [
+  'get-fable',
+  'fable-discover',
+  'fable-plan',
+  'fable-execute',
+  'fable-verify',
+  'fable-recover',
+];
+
+const EVIDENCE_KINDS = ['test', 'build', 'runtime', 'review', 'observation'] as const;
+const EVIDENCE_RESULTS = ['pass', 'fail'] as const;
+
 const ALLOWED_TRANSITIONS: Record<FablePhase, FablePhase[]> = {
   idle: ['discovering', 'planned', 'executing', 'verifying', 'recovering', 'blocked'],
   discovering: ['planned', 'executing', 'verifying', 'recovering', 'blocked'],
@@ -57,22 +69,76 @@ export function isFablePhase(value: unknown): value is FablePhase {
   );
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
 function isFableSkillId(value: unknown): value is FableSkillId {
-  return (
-    value === 'get-fable' ||
-    value === 'fable-discover' ||
-    value === 'fable-plan' ||
-    value === 'fable-execute' ||
-    value === 'fable-verify' ||
-    value === 'fable-recover'
-  );
+  return typeof value === 'string' && FABLE_SKILL_IDS.includes(value as FableSkillId);
+}
+
+function validateEvidenceRecord(value: unknown, index: number): void {
+  const field = `evidence[${index}]`;
+  if (!isRecord(value)) throw new Error(`Fable state ${field} must be an object`);
+  if (!EVIDENCE_KINDS.includes(value.kind as (typeof EVIDENCE_KINDS)[number])) {
+    throw new Error(`Fable state ${field}.kind is invalid`);
+  }
+  if (!isNonEmptyString(value.source)) throw new Error(`Fable state ${field}.source is required`);
+  if (!EVIDENCE_RESULTS.includes(value.result as (typeof EVIDENCE_RESULTS)[number])) {
+    throw new Error(`Fable state ${field}.result is invalid`);
+  }
+  if (!isNonEmptyString(value.detail)) throw new Error(`Fable state ${field}.detail is required`);
+  if (!isNonEmptyString(value.timestamp)) throw new Error(`Fable state ${field}.timestamp is required`);
+}
+
+function validateRoutingDecision(value: unknown): void {
+  if (!isRecord(value)) throw new Error('Fable state lastDecision must be an object');
+  if (!isFableSkillId(value.selectedSkill)) {
+    throw new Error('Fable state lastDecision.selectedSkill is invalid');
+  }
+  if (
+    typeof value.confidence !== 'number' ||
+    !Number.isFinite(value.confidence) ||
+    value.confidence < 0 ||
+    value.confidence > 1
+  ) {
+    throw new Error('Fable state lastDecision.confidence must be between 0 and 1');
+  }
+  if (
+    !Array.isArray(value.reasons) ||
+    value.reasons.some((reason) => !isNonEmptyString(reason))
+  ) {
+    throw new Error('Fable state lastDecision.reasons must contain only non-empty strings');
+  }
+  if (typeof value.requiresPlan !== 'boolean') {
+    throw new Error('Fable state lastDecision.requiresPlan must be boolean');
+  }
+  if (
+    !Array.isArray(value.nextSkills) ||
+    value.nextSkills.some((skill) => !isFableSkillId(skill))
+  ) {
+    throw new Error('Fable state lastDecision.nextSkills contains an invalid skill');
+  }
+  if (!isRecord(value.scores)) {
+    throw new Error('Fable state lastDecision.scores must be an object');
+  }
+  for (const skill of FABLE_SKILL_IDS) {
+    const score = value.scores[skill];
+    if (typeof score !== 'number' || !Number.isFinite(score)) {
+      throw new Error(`Fable state lastDecision.scores.${skill} must be a finite number`);
+    }
+  }
 }
 
 export function validateFableState(value: unknown): FableState {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+  if (!isRecord(value)) {
     throw new Error('Fable state must be an object');
   }
-  const state = value as Record<string, unknown>;
+  const state = value;
   if (state.schemaVersion !== FABLE_STATE_SCHEMA_VERSION) {
     throw new Error(`Unsupported Fable state schema: ${String(state.schemaVersion)}`);
   }
@@ -85,6 +151,8 @@ export function validateFableState(value: unknown): FableState {
   }
   if (typeof state.substantial !== 'boolean') throw new Error('Fable state substantial must be boolean');
   if (!Array.isArray(state.evidence)) throw new Error('Fable state evidence must be an array');
+  state.evidence.forEach((record, index) => validateEvidenceRecord(record, index));
+  if (state.lastDecision !== null) validateRoutingDecision(state.lastDecision);
   if (typeof state.updatedAt !== 'string' || !state.updatedAt) throw new Error('Fable state updatedAt is required');
   return state as unknown as FableState;
 }
