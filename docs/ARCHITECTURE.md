@@ -17,7 +17,7 @@ user task
 Task Router <---------------- .fable/state.json
    |
    v
-skills/registry.json
+skills/get-fable/registry.json
    |
    +--> fable-discover
    +--> fable-plan
@@ -35,11 +35,11 @@ LLM execution
 evidence + state transition
 ```
 
-The root `skills/` directory and `skills/registry.json` are the canonical workflow source. Host-specific files adapt that workflow but do not own independent semantics.
+The root `skills/` directory and `skills/get-fable/registry.json` are the canonical workflow source. Host-specific files adapt that workflow but do not own independent semantics.
 
 ## 1. Canonical skill registry
 
-Source: `skills/registry.json`
+Source: `skills/get-fable/registry.json`
 
 The registry has schema version 1 and defines:
 
@@ -114,7 +114,7 @@ any active path may become blocked
 
 Invalid transitions are rejected.
 
-For substantial work, a transition from `verifying` to `complete` is rejected unless at least one passing evidence record exists.
+For substantial work, a transition from `verifying` to `complete` is rejected unless the newest evidence record is a substantive pass. A newer failure invalidates an older pass for completion purposes until verification succeeds again.
 
 Evidence records contain:
 
@@ -252,7 +252,7 @@ Lint checks both human and strict state:
 - open ledger cards require an explicit acceptance check
 - closed cards require substantive evidence annotation
 - state JSON must parse and match schema 1
-- substantial complete state requires passing evidence
+- substantial complete state requires fresh passing evidence as the newest evidence record
 - repeated failure cannot remain in executing phase
 
 ## 11. Test and CI strategy
