@@ -51,4 +51,38 @@ describe('runFableLint', () => {
 
     expect(runFableLint(dir)).toBe(false);
   });
+
+  test('fails substantial complete state when the newest evidence is a failure', () => {
+    const dir = workspace('- [x] Acceptance: command succeeds -- evidence: bun test\n');
+    fs.writeFileSync(
+      path.join(dir, '.fable', 'state.json'),
+      JSON.stringify({
+        schemaVersion: 1,
+        phase: 'complete',
+        currentSkill: null,
+        failureStreak: 1,
+        substantial: true,
+        lastDecision: null,
+        evidence: [
+          {
+            kind: 'test',
+            source: 'bun test',
+            result: 'pass',
+            detail: 'targeted test passed',
+            timestamp: '2026-08-13T00:01:00.000Z',
+          },
+          {
+            kind: 'runtime',
+            source: 'smoke test',
+            result: 'fail',
+            detail: 'runtime smoke failed later',
+            timestamp: '2026-08-13T00:02:00.000Z',
+          },
+        ],
+        updatedAt: '2026-08-13T00:02:00.000Z',
+      })
+    );
+
+    expect(runFableLint(dir)).toBe(false);
+  });
 });
