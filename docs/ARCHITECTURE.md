@@ -114,7 +114,7 @@ any active path may become blocked
 
 Invalid transitions are rejected.
 
-For substantial work, a transition from `verifying` to `complete` is rejected unless at least one passing evidence record exists.
+For substantial work, a transition from `verifying` to `complete` is rejected unless the newest evidence record is a substantive pass. A newer failure invalidates an older pass for completion purposes until verification succeeds again.
 
 Evidence records contain:
 
@@ -252,7 +252,7 @@ Lint checks both human and strict state:
 - open ledger cards require an explicit acceptance check
 - closed cards require substantive evidence annotation
 - state JSON must parse and match schema 1
-- substantial complete state requires passing evidence
+- substantial complete state requires fresh passing evidence as the newest evidence record
 - repeated failure cannot remain in executing phase
 
 ## 11. Test and CI strategy
