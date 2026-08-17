@@ -126,6 +126,8 @@ Evidence records contain:
 
 A failed evidence record increments the failure streak. Passing evidence resets it.
 
+Persisted state is treated as untrusted runtime input even when it declares schema version 1. Before a state object is accepted, validation checks the top-level fields and the nested contracts for every evidence record and the last routing decision, including skill IDs, confidence range, reasons, planning flag, next skills, and numeric per-skill scores. Malformed nested state is rejected at the read boundary instead of being cast into a trusted `FableState` and failing later in routing, lint, or resume logic.
+
 ## 4. Human-readable working state
 
 JSON state provides strict runtime semantics. Markdown remains the working surface for humans and agents:
@@ -251,7 +253,7 @@ Lint checks both human and strict state:
 
 - open ledger cards require an explicit acceptance check
 - closed cards require substantive evidence annotation
-- state JSON must parse and match schema 1
+- state JSON must parse and match schema 1, including nested evidence and routing-decision contracts
 - substantial complete state requires fresh passing evidence as the newest evidence record
 - repeated failure cannot remain in executing phase
 
@@ -262,6 +264,7 @@ Core tests cover:
 - skill registry integrity
 - routing precedence
 - state transitions
+- nested persisted-state validation
 - evidence-gated completion
 - prompt compilation
 - project initialization
