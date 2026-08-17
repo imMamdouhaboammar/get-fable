@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { hasPassingEvidence, readFableState } from './core/state.js';
+import { hasFreshPassingEvidence, readFableState } from './core/state.js';
 import { logInfo, logSuccess, logError, logWarn } from './utils.js';
 
 export function runFableLint(targetDir: string = process.cwd()): boolean {
@@ -56,8 +56,8 @@ export function runFableLint(targetDir: string = process.cwd()): boolean {
     try {
       const state = readFableState(targetDir);
       if (!state) throw new Error('.fable/state.json could not be loaded');
-      if (state.phase === 'complete' && state.substantial && !hasPassingEvidence(state)) {
-        logError('state.json: substantial work is complete without passing evidence');
+      if (state.phase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
+        logError('state.json: substantial work is complete without fresh passing evidence');
         hasErrors = true;
       }
       if (state.failureStreak > 1 && state.phase === 'executing') {
