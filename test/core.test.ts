@@ -59,6 +59,37 @@ describe('durable state', () => {
     });
     expect(transitionState(evidenced, 'complete').phase).toBe('complete');
   });
+
+  test('rejects completion when a failure is newer than the last passing evidence', () => {
+    const initial = createInitialState('2026-08-13T00:00:00.000Z');
+    const executing = transitionState({ ...initial, substantial: true }, 'executing');
+    const verifying = transitionState(executing, 'verifying');
+    const passed = addEvidence(verifying, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'targeted test passed',
+      timestamp: '2026-08-13T00:01:00.000Z',
+    });
+    const failedAfterPass = addEvidence(passed, {
+      kind: 'runtime',
+      source: 'smoke test',
+      result: 'fail',
+      detail: 'runtime smoke failed after the test pass',
+      timestamp: '2026-08-13T00:02:00.000Z',
+    });
+
+    expect(() => transitionState(failedAfterPass, 'complete')).toThrow('fresh');
+
+    const reverified = addEvidence(failedAfterPass, {
+      kind: 'runtime',
+      source: 'smoke test',
+      result: 'pass',
+      detail: 'runtime smoke passed after correction',
+      timestamp: '2026-08-13T00:03:00.000Z',
+    });
+    expect(transitionState(reverified, 'complete').phase).toBe('complete');
+  });
 });
 
 describe('prompt compiler', () => {
