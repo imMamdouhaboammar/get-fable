@@ -173,6 +173,11 @@ export function hasPassingEvidence(state: FableState): boolean {
   return state.evidence.some((record) => record.result === 'pass' && record.detail.trim().length > 0);
 }
 
+export function hasFreshPassingEvidence(state: FableState): boolean {
+  const latestEvidence = state.evidence[state.evidence.length - 1];
+  return latestEvidence?.result === 'pass' && latestEvidence.detail.trim().length > 0;
+}
+
 export function transitionState(
   state: FableState,
   nextPhase: FablePhase,
@@ -182,8 +187,8 @@ export function transitionState(
   if (!ALLOWED_TRANSITIONS[state.phase].includes(nextPhase)) {
     throw new Error(`Invalid Fable state transition: ${state.phase} -> ${nextPhase}`);
   }
-  if (nextPhase === 'complete' && state.substantial && !hasPassingEvidence(state)) {
-    throw new Error('Substantial work cannot complete without passing evidence');
+  if (nextPhase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
+    throw new Error('Substantial work cannot complete without passing evidence that is fresh');
   }
 
   return {
