@@ -92,36 +92,51 @@ describe('durable state', () => {
     expect(transitionState(reverified, 'complete').phase).toBe('complete');
   });
 
-  test('rejects malformed nested evidence records', () => {
+  test('rejects malformed nested evidence records field by field', () => {
     const initial = createInitialState('2026-08-13T00:00:00.000Z');
-    const malformed = {
-      ...initial,
-      evidence: [
-        {
-          kind: 'test',
-          source: 'bun test',
-          result: 'success',
-          detail: 'looks successful but uses an invalid result value',
-          timestamp: '2026-08-13T00:01:00.000Z',
-        },
-      ],
+    const validEvidence = {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'targeted tests passed',
+      timestamp: '2026-08-13T00:01:00.000Z',
     };
+    const invalidCases: Array<[string, unknown]> = [
+      ['evidence[0]', null],
+      ['evidence[0].kind', { ...validEvidence, kind: 'compile' }],
+      ['evidence[0].source', { ...validEvidence, source: '' }],
+      ['evidence[0].result', { ...validEvidence, result: 'success' }],
+      ['evidence[0].detail', { ...validEvidence, detail: '' }],
+      ['evidence[0].timestamp', { ...validEvidence, timestamp: '' }],
+    ];
 
-    expect(() => validateFableState(malformed)).toThrow('evidence[0].result');
+    for (const [expectedField, evidence] of invalidCases) {
+      expect(() => validateFableState({ ...initial, evidence: [evidence] })).toThrow(expectedField);
+    }
   });
 
-  test('rejects malformed nested routing decisions', () => {
+  test('rejects malformed nested routing decisions field by field', () => {
     const initial = createInitialState('2026-08-13T00:00:00.000Z');
     const validDecision = routeTask('Review this diff before merge');
-    const malformed = {
-      ...initial,
-      lastDecision: {
-        ...validDecision,
-        selectedSkill: 'fable-improvise',
-      },
-    };
+    const invalidCases: Array<[string, unknown]> = [
+      ['lastDecision', 'fable-verify'],
+      ['lastDecision.selectedSkill', { ...validDecision, selectedSkill: 'fable-improvise' }],
+      ['lastDecision.confidence', { ...validDecision, confidence: 2 }],
+      ['lastDecision.reasons', { ...validDecision, reasons: [''] }],
+      ['lastDecision.requiresPlan', { ...validDecision, requiresPlan: 'no' }],
+      ['lastDecision.nextSkills', { ...validDecision, nextSkills: ['fable-improvise'] }],
+      [
+        'lastDecision.scores.fable-verify',
+        {
+          ...validDecision,
+          scores: { ...validDecision.scores, 'fable-verify': 'high' },
+        },
+      ],
+    ];
 
-    expect(() => validateFableState(malformed)).toThrow('lastDecision.selectedSkill');
+    for (const [expectedField, lastDecision] of invalidCases) {
+      expect(() => validateFableState({ ...initial, lastDecision })).toThrow(expectedField);
+    }
   });
 
   test('accepts fully populated valid nested state', () => {
