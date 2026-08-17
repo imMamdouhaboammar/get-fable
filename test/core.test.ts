@@ -3,6 +3,7 @@ import {
   addEvidence,
   createInitialState,
   transitionState,
+  validateFableState,
 } from '../src/core/state.ts';
 import { loadSkillRegistry } from '../src/core/skill-registry.ts';
 import { routeTask } from '../src/core/task-router.ts';
@@ -89,6 +90,57 @@ describe('durable state', () => {
       timestamp: '2026-08-13T00:03:00.000Z',
     });
     expect(transitionState(reverified, 'complete').phase).toBe('complete');
+  });
+
+  test('rejects malformed nested evidence records', () => {
+    const initial = createInitialState('2026-08-13T00:00:00.000Z');
+    const malformed = {
+      ...initial,
+      evidence: [
+        {
+          kind: 'test',
+          source: 'bun test',
+          result: 'success',
+          detail: 'looks successful but uses an invalid result value',
+          timestamp: '2026-08-13T00:01:00.000Z',
+        },
+      ],
+    };
+
+    expect(() => validateFableState(malformed)).toThrow('evidence[0].result');
+  });
+
+  test('rejects malformed nested routing decisions', () => {
+    const initial = createInitialState('2026-08-13T00:00:00.000Z');
+    const validDecision = routeTask('Review this diff before merge');
+    const malformed = {
+      ...initial,
+      lastDecision: {
+        ...validDecision,
+        selectedSkill: 'fable-improvise',
+      },
+    };
+
+    expect(() => validateFableState(malformed)).toThrow('lastDecision.selectedSkill');
+  });
+
+  test('accepts fully populated valid nested state', () => {
+    const initial = createInitialState('2026-08-13T00:00:00.000Z');
+    const decision = routeTask('Review this diff before merge');
+    const routed = {
+      ...initial,
+      lastDecision: decision,
+      currentSkill: decision.selectedSkill,
+    };
+    const evidenced = addEvidence(routed, {
+      kind: 'review',
+      source: 'checker',
+      result: 'pass',
+      detail: 'independent review found no blocking issue',
+      timestamp: '2026-08-13T00:01:00.000Z',
+    });
+
+    expect(validateFableState(evidenced)).toEqual(evidenced);
   });
 });
 
