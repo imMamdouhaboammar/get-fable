@@ -121,6 +121,33 @@ describe('lifecycle hooks and durable state', () => {
     expect(allowed.status).toBe(0);
   });
 
+  test('close guard rejects non-string or empty latest evidence detail', () => {
+    const invalidDetails: unknown[] = [null, 42, true, undefined, '   '];
+
+    for (const detail of invalidDetails) {
+      const dir = project();
+      const statePath = path.join(dir, '.fable', 'state.json');
+      const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+      state.phase = 'complete';
+      state.currentSkill = null;
+      state.substantial = true;
+      state.evidence = [
+        {
+          kind: 'test',
+          source: 'bun test',
+          result: 'pass',
+          ...(detail === undefined ? {} : { detail }),
+          timestamp: '2026-08-18T00:01:00.000Z',
+        },
+      ];
+      fs.writeFileSync(statePath, JSON.stringify(state));
+
+      const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
+      expect(blocked.status).toBe(2);
+      expect(blocked.stderr).toContain('fresh passing state evidence');
+    }
+  });
+
   test('profile injector reports the durable workflow phase without synthetic model tiers', () => {
     const dir = project();
     const statePath = path.join(dir, '.fable', 'state.json');
