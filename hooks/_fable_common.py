@@ -143,10 +143,12 @@ def has_fresh_passing_state_evidence(state):
     if not isinstance(evidence, list) or not evidence:
         return False
     latest = evidence[-1]
+    detail = latest.get("detail") if isinstance(latest, dict) else None
     return (
         isinstance(latest, dict)
         and latest.get("result") == "pass"
-        and bool(str(latest.get("detail", "")).strip())
+        and isinstance(detail, str)
+        and bool(detail.strip())
     )
 
 
