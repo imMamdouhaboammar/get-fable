@@ -105,6 +105,20 @@ describe('lifecycle hooks and durable state', () => {
     const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
     expect(blocked.status).toBe(2);
     expect(blocked.stderr).toContain('fresh passing state evidence');
+
+    state.evidence.push({
+      kind: 'runtime',
+      source: 'smoke test',
+      result: 'pass',
+      detail: 'runtime smoke passed after correction',
+      timestamp: '2026-08-18T00:03:00.000Z',
+    });
+    state.failureStreak = 0;
+    state.updatedAt = '2026-08-18T00:03:00.000Z';
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const allowed = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
+    expect(allowed.status).toBe(0);
   });
 
   test('profile injector reports the durable workflow phase without synthetic model tiers', () => {
