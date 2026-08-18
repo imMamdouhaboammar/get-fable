@@ -20,7 +20,7 @@ from _fable_common import (  # noqa: E402
     parse_ledger,
     closed_without_evidence,
     read_state,
-    has_passing_state_evidence,
+    has_fresh_passing_state_evidence,
 )
 
 MAX_LIST = 12
@@ -56,9 +56,9 @@ def block_state_if_needed(state):
     if not isinstance(state, dict) or not state.get("substantial"):
         return 0
 
-    if not has_passing_state_evidence(state):
+    if not has_fresh_passing_state_evidence(state):
         sys.stderr.write(
-            "[get-fable] BLOCKED stop: substantial work has no passing state evidence in .fable/state.json. "
+            "[get-fable] BLOCKED stop: substantial work has no fresh passing state evidence in .fable/state.json. "
             "Record fresh proof with `get-fable evidence pass <kind> <source> <detail>` after verifying the requested behavior.\n"
         )
         return 2

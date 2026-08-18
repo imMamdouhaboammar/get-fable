@@ -201,3 +201,28 @@ Why:
 ## Revalidation rule
 
 Do not treat this baseline as tomorrow's truth. Each daily run must inspect current default-branch code, tests, docs, issues/PRs, CI, and recent commits before selecting work.
+
+## 2026-08-18 revalidation
+
+Revalidated against default-branch SHA `78da31229bb2fbf86f3e2cb4731472860f30318b` and package version `1.1.0`. The repository had no open issues or pull requests. The full local repository gate passed with Bun 1.3.14: 69 tests, typecheck, and build.
+
+The previous top two candidates are now implemented in the TypeScript runtime: completion uses the newest evidence record, and nested state records are validated field by field. The revalidation found that the Python Stop hook still accepted any historical pass, so host enforcement could disagree with the core after `pass -> fail`.
+
+### Ranked candidates
+
+| Rank | Candidate | Priority | Evidence |
+|---:|---|---:|---|
+| 1 | Cross-runtime fresh-evidence conformance | **68** | `hooks/_fable_common.py` searched any historical pass while `src/core/state.ts` used the newest record |
+| 2 | Correct Claude failure-hook event registration | **66** | `hooks/hooks.json` registers failure tracking under `PostToolUse`; bundled host guidance distinguishes failure events |
+| 3 | Applied-routing transition conformance | **61** | routing and lifecycle transitions are validated separately, leaving phase/decision combinations weakly covered |
+| 4 | Python hook deep-state validation parity | **60** | hook state reads validate top-level fields but not nested evidence or routing decisions |
+| 5 | Cross-field state invariant validation | **59** | schema-valid fields can still form contradictory phase/current-skill combinations |
+| 6 | Corrupted-state recovery diagnostics | **58** | malformed persisted state is rejected, but repair guidance remains limited |
+| 7 | Mutation generation and evidence provenance | **57** | newest-record freshness does not prove verification followed the latest workspace mutation |
+| 8 | Workspace/worktree identity binding | **55** | copied `.fable/` state is not bound to a repository identity |
+| 9 | Canonical installed-skill drift detection | **54** | initialization preserves existing skill files and doctor validates presence rather than semantic version/content |
+| 10 | Packed-package import smoke test | **52** | CI inspects the tarball but does not install and import the packed artifact |
+
+### Selected initiative
+
+**Cross-runtime fresh-evidence conformance.** It is a reproduced completion-gate bypass, directly strengthens the core mission, requires no schema or dependency change, and can be proved with a focused `pass -> fail -> block -> pass -> allow` hook test.

@@ -202,7 +202,7 @@ get-fable evidence pass test "bun test" "42 affected tests passed"
 get-fable state complete
 ```
 
-Without passing evidence, substantial work cannot transition to `complete`
+Without a substantive passing record as the newest evidence, substantial work cannot transition to `complete`. A later failure makes earlier proof stale until verification passes again.
 
 A failure is recorded too
 
@@ -234,7 +234,7 @@ On hosts with hook support, get-fable can enforce parts of the workflow mechanic
 | Session start | Restore the current phase, selected skill, failure streak, and open work |
 | Before large delegation | Require a bounded open card for substantial delegated work |
 | After command failure | Update durable failure state and enter recovery after repeated failure |
-| Before stop | Reject unfinished substantial work or completion without passing evidence |
+| Before stop | Reject unfinished substantial work or completion without fresh passing evidence |
 
 The hooks are model-agnostic
 

@@ -136,15 +136,20 @@ def write_state(fable_dir, state):
         return False
 
 
-def has_passing_state_evidence(state):
+def has_fresh_passing_state_evidence(state):
     if not isinstance(state, dict):
         return False
-    for record in state.get("evidence", []):
-        if not isinstance(record, dict):
-            continue
-        if record.get("result") == "pass" and str(record.get("detail", "")).strip():
-            return True
-    return False
+    evidence = state.get("evidence", [])
+    if not isinstance(evidence, list) or not evidence:
+        return False
+    latest = evidence[-1]
+    detail = latest.get("detail") if isinstance(latest, dict) else None
+    return (
+        isinstance(latest, dict)
+        and latest.get("result") == "pass"
+        and isinstance(detail, str)
+        and bool(detail.strip())
+    )
 
 
 def record_command_result(fable_dir, failed):
