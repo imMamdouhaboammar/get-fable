@@ -19,7 +19,7 @@ Every hook follows three rules:
 | `fable_profile_inject.py` | `SessionStart` | Inject compact workflow phase, selected skill, failure streak, and open-card context |
 | `fable_spawn_guard.py` | `PreToolUse` on Agent/Task/Workflow | Require a live bounded ledger card before a large delegation |
 | `fable_fail_streak.py` | `PostToolUse` on Bash | Update durable failure state and route two consecutive failures into `fable-recover` |
-| `fable_close_guard.py` | `Stop` | Block unfinished cards, missing ledger evidence, missing state evidence, or substantial work whose durable phase is not `complete` |
+| `fable_close_guard.py` | `Stop` | Block unfinished cards, missing ledger evidence, stale state evidence, or substantial work whose durable phase is not `complete` |
 
 `_fable_common.py` provides shared project discovery, ledger parsing, atomic state writes, evidence checks, and the advisory per-session failure counter.
 
@@ -102,8 +102,10 @@ Checked cards need substantive `evidence:` or `verified:` text.
 
 For substantial work, stop is also blocked unless:
 
-1. `.fable/state.json` contains at least one passing evidence record with concrete detail
+1. the newest `.fable/state.json` evidence record is a pass with concrete detail
 2. durable phase is `complete`
+
+A failure recorded after an earlier pass makes that pass stale. The guard keeps blocking until a newer substantive pass is recorded.
 
 The normal lifecycle is therefore explicit:
 

@@ -114,7 +114,7 @@ any active path may become blocked
 
 Invalid transitions are rejected.
 
-For substantial work, a transition from `verifying` to `complete` is rejected unless the newest evidence record is a substantive pass. A newer failure invalidates an older pass for completion purposes until verification succeeds again.
+For substantial work, a transition from `verifying` to `complete` is rejected unless the newest evidence record is a substantive pass. A newer failure invalidates an older pass for completion purposes until verification succeeds again. The TypeScript state transition, Fable lint, and Python Stop guard enforce this same rule.
 
 Evidence records contain:
 
