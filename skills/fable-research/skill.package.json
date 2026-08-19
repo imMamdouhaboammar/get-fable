@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-research",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/primary-source-hierarchy.md"
+    "references/primary-source-hierarchy.md",
+    "references/source-reconciliation-playbook.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/research-api-specs.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/research-api-specs.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
