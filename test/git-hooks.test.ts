@@ -34,6 +34,33 @@ describe('Universal Git hooks installer', () => {
     expect(fs.existsSync(path.join(hooksDir, 'pre-push'))).toBe(true);
   });
 
+  test('pre-push finds Bun from ~/.bun/bin when PATH does not include Bun', () => {
+    const root = tempRoot();
+    fs.mkdirSync(path.join(root, '.git'), { recursive: true });
+    fs.mkdirSync(path.join(root, '.fable'), { recursive: true });
+    fs.mkdirSync(path.join(root, 'bin'), { recursive: true });
+    fs.writeFileSync(path.join(root, 'bin', 'get-fable.js'), '// test entrypoint\n');
+    installGitHooks(root);
+
+    const home = path.join(root, 'home');
+    const bunDir = path.join(home, '.bun', 'bin');
+    fs.mkdirSync(bunDir, { recursive: true });
+    const marker = path.join(root, 'bun-args.txt');
+    const fakeBun = path.join(bunDir, 'bun');
+    fs.writeFileSync(fakeBun, `#!/bin/sh\nprintf '%s\n' "$*" > "${marker}"\nexit 0\n`);
+    fs.chmodSync(fakeBun, 0o755);
+
+    const result = Bun.spawnSync([path.join(root, '.git', 'hooks', 'pre-push')], {
+      cwd: root,
+      env: { ...process.env, HOME: home, BUN_INSTALL: '', PATH: '/usr/bin:/bin' },
+      stdout: 'pipe',
+      stderr: 'pipe',
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(fs.readFileSync(marker, 'utf8').trim()).toBe('./bin/get-fable.js lint');
+  });
+
   test('skips installation gracefully if .git does not exist', () => {
     const root = tempRoot();
     const result = installGitHooks(root);

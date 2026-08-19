@@ -7,15 +7,25 @@ if [ ! -d ".fable" ]; then
 fi
 
 if command -v get-fable >/dev/null 2>&1; then
-  CMD="get-fable"
+  CMD=("$(command -v get-fable)")
 elif [ -f "./bin/get-fable.js" ]; then
-  CMD="bun ./bin/get-fable.js"
+  if command -v bun >/dev/null 2>&1; then
+    BUN_BIN="$(command -v bun)"
+  elif [ -n "${BUN_INSTALL:-}" ] && [ -x "${BUN_INSTALL}/bin/bun" ]; then
+    BUN_BIN="${BUN_INSTALL}/bin/bun"
+  elif [ -n "${HOME:-}" ] && [ -x "${HOME}/.bun/bin/bun" ]; then
+    BUN_BIN="${HOME}/.bun/bin/bun"
+  else
+    echo "✖ [get-fable] Pre-push verification requires Bun, but Bun was not found in PATH, BUN_INSTALL, or ~/.bun/bin."
+    exit 1
+  fi
+  CMD=("$BUN_BIN" "./bin/get-fable.js")
 else
   exit 0
 fi
 
 echo "ℹ [get-fable] Running pre-push verification..."
-$CMD lint
+"${CMD[@]}" lint
 LINT_EXIT=$?
 
 if [ $LINT_EXIT -ne 0 ]; then
