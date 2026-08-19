@@ -417,7 +417,12 @@ export function statePath(targetDir: string = process.cwd()): string {
 export function readFableState(targetDir: string = process.cwd()): FableState | null {
   const filePath = statePath(targetDir);
   if (!fs.existsSync(filePath)) return null;
-  return validateFableState(JSON.parse(fs.readFileSync(filePath, 'utf-8')), targetDir);
+  const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  const expectedWorkspaceId = workspaceIdForTarget(targetDir);
+  if (isRecord(raw) && raw.schemaVersion === 2 && raw.workspaceId !== expectedWorkspaceId) {
+    raw.workspaceId = expectedWorkspaceId;
+  }
+  return validateFableState(raw, targetDir);
 }
 
 export function writeFableState(targetDir: string, state: FableState): void {
