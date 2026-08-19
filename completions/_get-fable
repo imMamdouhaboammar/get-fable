@@ -1,0 +1,59 @@
+#compdef get-fable
+
+_get_fable() {
+  local -a commands
+  commands=(
+    'install:Install supported global integrations'
+    'install-antigravity:Install the Antigravity / Gemini target'
+    'install-codex:Install the Codex target'
+    'install-cursor:Install the Cursor target'
+    'install-git-hooks:Install universal Git hooks'
+    'init:Create durable project state and canonical project skills'
+    'route:Explain workflow selection'
+    'spark:Predict atomic next move from current state'
+    'state:Transition durable workflow state'
+    'mutation:Record workspace mutation and invalidate older verification'
+    'card:Set or clear the active work card'
+    'evidence:Record typed evidence'
+    'doctor:Validate registry, plugins, state, skills, and hooks'
+    'shell:Print shell integration script'
+    'serve:Start local request-enrichment proxy'
+    'lint:Verify ledger, evidence, and state consistency'
+    'status:Report installation status'
+    'assets:List historical bundled assets'
+    'prompt:Print compatibility execution prompt'
+    'version:Print installed get-fable version'
+    'help:Display help menu'
+  )
+
+  _arguments \
+    '1: :->command' \
+    '*: :->args'
+
+  case $state in
+    command)
+      _describe 'get-fable commands' commands
+      ;;
+    args)
+      case $words[1] in
+        route)
+          _arguments '--apply[Persist routing decision]' '--json[Output JSON]'
+          ;;
+        spark)
+          _arguments '--json[Output JSON]'
+          ;;
+        evidence)
+          _values 'result' pass fail
+          ;;
+        shell)
+          _values 'shell type' zsh bash fish init
+          ;;
+        install)
+          _values 'target' all claude antigravity codex cursor opencode kimi deepseek kiro pi git shell
+          ;;
+      esac
+      ;;
+  esac
+}
+
+_get_fable "$@"

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# get-fable pre-push hook
+# Enforces complete Fable lint and verification before remote push
+
+if [ ! -d ".fable" ]; then
+  exit 0
+fi
+
+if command -v get-fable >/dev/null 2>&1; then
+  CMD="get-fable"
+elif [ -f "./bin/get-fable.js" ]; then
+  CMD="bun ./bin/get-fable.js"
+else
+  exit 0
+fi
+
+echo "ℹ [get-fable] Running pre-push verification..."
+$CMD lint
+LINT_EXIT=$?
+
+if [ $LINT_EXIT -ne 0 ]; then
+  echo "✖ [get-fable] Pre-push gate rejected: open cards or stale verification detected."
+  exit 1
+fi
+
+exit 0

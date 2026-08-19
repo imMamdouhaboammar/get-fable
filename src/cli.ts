@@ -1,9 +1,19 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   installGlobalFable,
+  installClaudeGlobal,
   installAntigravityGlobal,
+  installCodexGlobal,
+  installCursorGlobal,
+  installOpenCodeGlobal,
+  installKimiGlobal,
+  installDeepSeekGlobal,
+  installKiroGlobal,
+  installPiCodeGlobal,
+  installGitHooks,
   initProjectFable,
   checkFableStatus,
   getFableStatus,
@@ -26,7 +36,7 @@ import { routeTask } from './core/task-router.js';
 import { runDoctor } from './core/doctor.js';
 import { evaluateFableSpark } from './core/spark.js';
 import type { EvidenceKind, EvidenceResult } from './core/types.js';
-import { logHeader, logError, colors } from './utils.js';
+import { logHeader, logError, logSuccess, colors } from './utils.js';
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
   'test',
@@ -100,102 +110,93 @@ function runRoute(args: string[]): number {
     }
     const nextState = applyRoutingDecision(currentState, decision);
     writeFableState(process.cwd(), nextState);
-    return printJsonOrSummary(
-      { ...decision, applied: true, phase: nextState.phase },
-      json,
-      () => {
-        logHeader('get-fable routing decision applied');
-        console.log(`Selected skill: ${decision.selectedSkill}`);
-        console.log(`Pack: ${decision.selectedPack}`);
-        console.log(`Task shape: ${decision.taskShape}`);
-        console.log(`Phase: ${nextState.phase}`);
-        console.log(`Confidence: ${decision.confidence}`);
-        console.log(`Reasons: ${decision.reasons.join('; ')}`);
-        console.log(`Required gates: ${decision.requiredGates.join(', ') || 'none'}`);
-        console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
-      }
-    );
   }
 
   return printJsonOrSummary(decision, json, () => {
-    logHeader('get-fable routing decision');
-    console.log(`Selected skill: ${decision.selectedSkill}`);
+    logHeader(`Routing result for: "${task}"`);
+    console.log(`Selected Skill: ${decision.selectedSkill}`);
     console.log(`Pack: ${decision.selectedPack}`);
-    console.log(`Task shape: ${decision.taskShape}`);
-    console.log(`Confidence: ${decision.confidence}`);
-    console.log(`Requires plan: ${decision.requiresPlan ? 'YES' : 'NO'}`);
-    console.log(`Reasons: ${decision.reasons.join('; ')}`);
-    console.log(`Required gates: ${decision.requiredGates.join(', ') || 'none'}`);
-    console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
+    console.log(`Task Shape: ${decision.taskShape}`);
+    console.log(`Confidence: ${Math.round(decision.confidence * 100)}%`);
+    console.log(`Requires Plan: ${decision.requiresPlan ? 'YES' : 'NO'}`);
+    console.log('Reasons:');
+    for (const reason of decision.reasons) console.log(`  - ${reason}`);
+    if (decision.requiredGates.length > 0) {
+      console.log('Required Gates:');
+      for (const gate of decision.requiredGates) console.log(`  - ${gate}`);
+    }
+    if (decision.fallbackSkill) console.log(`Fallback: ${decision.fallbackSkill}`);
+    if (decision.parallelCandidates.length > 0) {
+      console.log(`Parallel Candidates: ${decision.parallelCandidates.join(', ')}`);
+    }
+    if (apply) logSuccess('Applied routing decision to .fable/state.json');
   });
 }
 
 function runStateCommand(args: string[]): number {
-  const requestedPhase = args.find((arg) => !arg.startsWith('--'));
-  if (!isFablePhase(requestedPhase)) {
-    logError('state requires a valid phase: idle, discovering, planned, executing, verifying, recovering, complete, or blocked');
+  const targetPhase = args[0];
+  const substantial = hasFlag(args, '--substantial');
+  if (!targetPhase || !isFablePhase(targetPhase)) {
+    logError(
+      'state requires a valid phase (idle, discovering, planned, executing, verifying, recovering, complete, blocked)'
+    );
     return 1;
   }
 
-  let state = requireState();
-  if (hasFlag(args, '--substantial')) {
-    state = { ...state, substantial: true, updatedAt: new Date().toISOString() };
-  }
-  const nextState = transitionState(state, requestedPhase);
+  const state = requireState();
+  const nextState = transitionState(
+    substantial ? { ...state, substantial: true } : state,
+    targetPhase
+  );
   writeFableState(process.cwd(), nextState);
 
   return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
-    logHeader('get-fable state transition');
+    logHeader(`get-fable state transitioned to ${targetPhase}`);
     console.log(`Phase: ${nextState.phase}`);
     console.log(`Current skill: ${nextState.currentSkill || 'none'}`);
-    console.log(`Failure streak: ${nextState.failureStreak}`);
+    console.log(`Substantial: ${nextState.substantial}`);
     console.log(`Mutation generation: ${nextState.mutationGeneration}`);
     console.log(`Verified generation: ${nextState.verifiedGeneration}`);
-    console.log(`Passing evidence: ${nextState.evidence.filter((item) => item.result === 'pass').length}`);
   });
 }
 
 function runMutationCommand(args: string[]): number {
-  const source = args.filter((arg) => !arg.startsWith('--')).join(' ').trim() || 'workspace mutation';
+  const source = args.filter((arg) => !arg.startsWith('--')).join(' ').trim() || undefined;
   const state = requireState();
   const nextState = recordMutation(state);
   writeFableState(process.cwd(), nextState);
 
-  return printJsonOrSummary(
-    { ...nextState, mutationSource: source },
-    hasJsonFlag(args),
-    () => {
-      logHeader('get-fable workspace mutation recorded');
-      console.log(`Source: ${source}`);
-      console.log(`Mutation generation: ${nextState.mutationGeneration}`);
-      console.log(`Verified generation: ${nextState.verifiedGeneration}`);
-      console.log('Fresh verification is required before substantial completion.');
-    }
-  );
+  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+    logHeader('get-fable workspace mutation recorded');
+    if (source) console.log(`Source: ${source}`);
+    console.log(`Mutation generation: ${nextState.mutationGeneration}`);
+    console.log(`Verified generation: ${nextState.verifiedGeneration}`);
+    console.log(`Substantial: ${nextState.substantial}`);
+  });
 }
 
 function runCardCommand(args: string[]): number {
   const clear = hasFlag(args, '--clear');
-  const card = args.filter((arg) => !arg.startsWith('--')).join(' ').trim();
-  if (!clear && !card) {
+  const cardText = args.filter((arg) => !arg.startsWith('--')).join(' ').trim();
+  if (!clear && !cardText) {
     logError('card requires card text or --clear');
     return 1;
   }
 
   const state = requireState();
-  const nextState = setActiveCard(state, clear ? null : card);
+  const nextState = setActiveCard(state, clear ? null : cardText);
   writeFableState(process.cwd(), nextState);
 
   return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
-    logHeader('get-fable active card updated');
+    logHeader(clear ? 'get-fable active card cleared' : 'get-fable active card updated');
     console.log(`Active card: ${nextState.activeCard || 'none'}`);
   });
 }
 
 function runEvidenceCommand(args: string[]): number {
   const positional = args.filter((arg) => !arg.startsWith('--'));
-  const result = positional[0] as EvidenceResult | undefined;
-  const kind = positional[1] as EvidenceKind | undefined;
+  const result = positional[0] as EvidenceResult;
+  const kind = positional[1] as EvidenceKind;
   const source = positional[2];
   const detail = positional.slice(3).join(' ').trim();
 
@@ -261,23 +262,120 @@ function runSparkCommand(args: string[]): number {
   return 0;
 }
 
+function runShellCommand(args: string[]): number {
+  const shellType = (args[0] || (process.env.SHELL?.includes('zsh') ? 'zsh' : process.env.SHELL?.includes('fish') ? 'fish' : 'bash')).toLowerCase();
+  const repoRoot = getRepoRootDir();
+
+  let scriptFile = 'fable.zsh';
+  if (shellType === 'bash') scriptFile = 'fable.bash';
+  else if (shellType === 'fish') scriptFile = 'fable.fish';
+
+  const scriptPath = path.join(repoRoot, 'shell', scriptFile);
+  if (fs.existsSync(scriptPath)) {
+    console.log(fs.readFileSync(scriptPath, 'utf-8'));
+    return 0;
+  }
+  logError(`Shell integration for ${shellType} not found at ${scriptPath}`);
+  return 1;
+}
+
+function runInstallCommand(args: string[]): number {
+  const target = (args[0] || 'all').toLowerCase();
+
+  switch (target) {
+    case 'all':
+      installGlobalFable();
+      return 0;
+    case 'claude':
+      installClaudeGlobal();
+      return 0;
+    case 'antigravity':
+    case '--antigravity':
+    case '-a':
+      installAntigravityGlobal();
+      return 0;
+    case 'codex':
+    case '--codex':
+      installCodexGlobal();
+      return 0;
+    case 'cursor':
+    case '--cursor':
+      installCursorGlobal();
+      return 0;
+    case 'opencode':
+      installOpenCodeGlobal();
+      return 0;
+    case 'kimi':
+      installKimiGlobal();
+      return 0;
+    case 'deepseek':
+      installDeepSeekGlobal();
+      return 0;
+    case 'kiro':
+      installKiroGlobal();
+      return 0;
+    case 'pi':
+      installPiCodeGlobal();
+      return 0;
+    case 'git':
+    case 'git-hooks':
+      installGitHooks();
+      return 0;
+    case 'shell': {
+      logHeader('Installing get-fable shell integration');
+      const home = os.homedir();
+      const zshrc = path.join(home, '.zshrc');
+      const bashrc = path.join(home, '.bashrc');
+      const line = 'eval "$(get-fable shell init)"';
+      if (fs.existsSync(zshrc)) {
+        const content = fs.readFileSync(zshrc, 'utf-8');
+        if (!content.includes('get-fable shell')) {
+          fs.appendFileSync(zshrc, `\n# get-fable shell integration\n${line}\n`);
+          logSuccess('Added get-fable shell integration to ~/.zshrc');
+        }
+      }
+      if (fs.existsSync(bashrc)) {
+        const content = fs.readFileSync(bashrc, 'utf-8');
+        if (!content.includes('get-fable shell')) {
+          fs.appendFileSync(bashrc, `\n# get-fable shell integration\n${line}\n`);
+          logSuccess('Added get-fable shell integration to ~/.bashrc');
+        }
+      }
+      return 0;
+    }
+    default:
+      logError(
+        `Unknown install target: ${target}. Valid targets: all, claude, antigravity, codex, cursor, opencode, kimi, deepseek, kiro, pi, git, shell`
+      );
+      return 1;
+  }
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number {
   const command = args[0] || 'help';
 
   switch (command) {
     case 'install':
-      if (args[1] === '--antigravity' || args[1] === '-a') {
-        logHeader('Installing get-fable for Antigravity');
-        installAntigravityGlobal();
-      } else {
-        logHeader('Installing get-fable global integrations');
-        installGlobalFable();
-      }
-      return 0;
+      return runInstallCommand(args.slice(1));
 
     case 'install-antigravity':
       logHeader('Installing get-fable for Antigravity');
       installAntigravityGlobal();
+      return 0;
+
+    case 'install-codex':
+      logHeader('Installing get-fable for Codex');
+      installCodexGlobal();
+      return 0;
+
+    case 'install-cursor':
+      logHeader('Installing get-fable for Cursor');
+      installCursorGlobal();
+      return 0;
+
+    case 'install-git-hooks':
+      logHeader('Installing universal get-fable git hooks');
+      installGitHooks();
       return 0;
 
     case 'init':
@@ -302,6 +400,9 @@ export function runCli(args: string[] = process.argv.slice(2)): number {
 
     case 'evidence':
       return runEvidenceCommand(args.slice(1));
+
+    case 'shell':
+      return runShellCommand(args.slice(1));
 
     case 'doctor': {
       const report = runDoctor(process.cwd());
@@ -394,8 +495,11 @@ ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}bun ./bin/get-fable.js${colors.reset} [command]
 
 ${colors.bright}COMMANDS:${colors.reset}
-  ${colors.yellow}install${colors.reset}              Install supported global integrations
+  ${colors.yellow}install [target]${colors.reset}    Install global agent integrations (all, claude, antigravity, codex, cursor, opencode, kimi, deepseek, kiro, pi, git, shell)
   ${colors.yellow}install-antigravity${colors.reset}  Install the Antigravity / Gemini target
+  ${colors.yellow}install-codex${colors.reset}        Install the Codex target
+  ${colors.yellow}install-cursor${colors.reset}       Install the Cursor target
+  ${colors.yellow}install-git-hooks${colors.reset}    Install universal Git pre-commit & post-checkout hooks
   ${colors.yellow}init${colors.reset}                 Create durable project state and canonical project skills
   ${colors.yellow}route <task>${colors.reset}         Explain workflow selection; add --apply to persist it and --json for machine output
   ${colors.yellow}spark [intent]${colors.reset}       Predict the atomic next move from current state; add --json
@@ -403,6 +507,7 @@ ${colors.bright}COMMANDS:${colors.reset}
   ${colors.yellow}mutation [source]${colors.reset}    Record a workspace mutation and invalidate older verification
   ${colors.yellow}card <text>${colors.reset}          Set the active work card; use --clear to remove it
   ${colors.yellow}evidence ...${colors.reset}         Record typed evidence: <result> <kind> <source> <detail>
+  ${colors.yellow}shell [zsh|bash|fish]${colors.reset}Print shell integration script
   ${colors.yellow}doctor${colors.reset}               Validate registry, plugin, project state, skills, and hook runtime; add --json
   ${colors.yellow}serve [port]${colors.reset}         Start the local request-enrichment proxy, default port 8080
   ${colors.yellow}router [port]${colors.reset}        Alias for serve

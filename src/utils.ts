@@ -46,6 +46,34 @@ export function getAgentKernelDir(): string {
   return process.env.FABLE_AGENT_KERNEL_DIR || path.join(os.homedir(), '.agent-kernel');
 }
 
+export function getCodexDir(): string {
+  return process.env.FABLE_CODEX_CONFIG_DIR || path.join(os.homedir(), '.codex');
+}
+
+export function getCursorDir(): string {
+  return process.env.FABLE_CURSOR_CONFIG_DIR || path.join(os.homedir(), '.cursor');
+}
+
+export function getOpenCodeDir(): string {
+  return process.env.FABLE_OPENCODE_CONFIG_DIR || path.join(os.homedir(), '.opencode');
+}
+
+export function getKimiDir(): string {
+  return process.env.FABLE_KIMI_CONFIG_DIR || path.join(os.homedir(), '.kimi');
+}
+
+export function getDeepSeekDir(): string {
+  return process.env.FABLE_DEEPSEEK_CONFIG_DIR || path.join(os.homedir(), '.deepseek');
+}
+
+export function getKiroDir(): string {
+  return process.env.FABLE_KIRO_CONFIG_DIR || path.join(os.homedir(), '.kiro');
+}
+
+export function getPiDir(): string {
+  return process.env.FABLE_PI_CONFIG_DIR || path.join(os.homedir(), '.pi');
+}
+
 export function copyDirSync(src: string, dest: string) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });

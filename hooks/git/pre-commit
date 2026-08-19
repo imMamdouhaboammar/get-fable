@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# get-fable pre-commit hook
+# Validates Fable ledger, acceptance checks, and verification freshness before commit
+
+if [ ! -d ".fable" ]; then
+  exit 0
+fi
+
+# Locate get-fable executable
+if command -v get-fable >/dev/null 2>&1; then
+  CMD="get-fable"
+elif [ -f "./bin/get-fable.js" ]; then
+  CMD="bun ./bin/get-fable.js"
+else
+  exit 0
+fi
+
+echo "ℹ [get-fable] Running pre-commit lifecycle verification..."
+$CMD lint
+LINT_EXIT=$?
+
+if [ $LINT_EXIT -ne 0 ]; then
+  echo "✖ [get-fable] Pre-commit gate failed! Please resolve lint/evidence inconsistencies before committing."
+  exit 1
+fi
+
+exit 0
