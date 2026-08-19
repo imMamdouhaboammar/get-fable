@@ -8,10 +8,12 @@ describe('ContextInjector', () => {
     expect(content?.length ?? 0).toBeGreaterThan(100);
   });
 
-  test('loads canonical skills before the historical asset library', () => {
+  test('loads canonical deep Skill playbooks before the historical asset library', () => {
     const content = ContextInjector.loadSkill('fable-verify');
     expect(content).toContain('name: fable-verify');
-    expect(content).toContain('Completion gate');
+    expect(content).toContain('## Verification Protocol');
+    expect(content).toContain('## Failure Taxonomy');
+    expect(content).toContain('## Anti-Patterns');
   });
 
   test('rejects path traversal names', () => {
