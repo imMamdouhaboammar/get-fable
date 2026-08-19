@@ -109,7 +109,7 @@ evidence[]
 updatedAt
 ```
 
-`workspaceId` is a short digest of the resolved workspace path rather than a stored raw local path.
+`workspaceId` is a short digest of the canonical real workspace path rather than a stored raw local path. Symlink aliases of the same workspace resolve to one identity, while schema-v2 state copied to another workspace is rejected.
 
 Schema-v1 state is migrated in memory for compatibility and is written as v2 after a normal state mutation.
 
@@ -128,16 +128,17 @@ verifiedGeneration = 4
 => previous verification is stale
 ```
 
-Substantial completion requires the newest completion-capable evidence for the current generation to pass.
+Substantial completion requires the newest evidence accepted for the routed claim and current generation to pass.
 
-Completion-capable evidence kinds:
+Generic behavior-completion evidence kinds:
 
 - test
 - build
 - runtime
 - review
 - observation
-- security
+
+Security evidence is completion-capable only when the active routed job is itself a security review. It does not by itself close a normal feature, bug fix, or product repair. After a security repair mutates product behavior, behavior-appropriate verification is required again.
 
 Non-completion evidence:
 
@@ -280,7 +281,7 @@ Repository CI checks:
 - Ubuntu at the declared Bun floor
 - Ubuntu and macOS at the pinned current Bun runtime
 
-Lifecycle-specific tests cover routing ambiguity, schema migration, mutation freshness, evidence boundaries, hook parity, installer idempotency, plugin shape, and holdout-style trap scenarios.
+Lifecycle-specific tests cover routing ambiguity, schema migration, canonical workspace identity, mutation freshness, scoped evidence boundaries, hook parity, installer idempotency, plugin shape, and holdout-style trap scenarios.
 
 ## Related docs
 
