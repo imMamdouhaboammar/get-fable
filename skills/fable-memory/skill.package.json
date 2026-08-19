@@ -3,21 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-memory",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/memory-management-protocol.md"
+    "references/memory-management-protocol.md",
+    "references/durable-fact-lifecycle.md"
   ],
-  "templates": [
-    "templates/memory-fact.template.md"
-  ],
-  "examples": [
-    "examples/recording-user-preference.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "templates": ["templates/memory-fact.template.md"],
+  "examples": ["examples/recording-user-preference.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
