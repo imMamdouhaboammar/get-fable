@@ -115,7 +115,12 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-security', 9, 'task crosses an explicit security or trust boundary');
   }
 
-  if (has(text, /\brelease\b|\bpublish\b|\bmerge\b|\bship\b|\btag\b|ready for pr|pull request readiness/)) {
+  if (
+    has(
+      text,
+      /\brelease\b|\bpublish\b|\bship\b|\btag\b|ready (?:to|for) (?:merge|release|publish)|merge (?:this|now|the pr)|open (?:a )?pr|create (?:a )?pull request|ready for pr|pull request readiness/
+    )
+  ) {
     addSignal(scores, reasons, 'fable-release', 8, 'task asks for delivery or release readiness');
   }
 
@@ -127,7 +132,12 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-eval', 8, 'task evaluates or changes agent-control behavior');
   }
 
-  if (has(text, /code review|review (?:the )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files/)) {
+  if (
+    has(
+      text,
+      /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files/
+    )
+  ) {
     addSignal(scores, reasons, 'fable-review', 8, 'task requests an independent code or diff review');
   }
 
@@ -138,7 +148,7 @@ export function routeTask(
   if (
     has(
       text,
-      /official docs|primary source|current api|current version|latest (?:docs|release|version|behavior)|external documentation|release notes|web research/
+      /official (?:api )?docs|primary source|current api|current version|latest (?:official )?(?:api )?(?:docs|documentation|release|version|behavior)|external documentation|release notes|web research/
     )
   ) {
     addSignal(scores, reasons, 'fable-research', 8, 'task depends on current external facts');
