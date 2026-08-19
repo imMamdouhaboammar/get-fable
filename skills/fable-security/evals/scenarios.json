@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-security-auth-endpoint",
+    "description": "Security review for privileged user credential endpoints",
+    "given": {
+      "intent": "Audit the password reset and session creation handlers for security vulnerabilities"
+    },
+    "expected": {
+      "action": "security-review",
+      "produces": "security-evidence"
+    },
+    "forbidden": {
+      "action": "expose-secrets-in-logs"
+    }
+  }
+]

@@ -6,22 +6,7 @@ import { initProjectFable } from '../src/installer.ts';
 import { runCli } from '../src/cli.ts';
 
 const tempDirs: string[] = [];
-const canonicalSkills = [
-  'get-fable',
-  'fable-discover',
-  'fable-research',
-  'fable-plan',
-  'fable-tdd',
-  'fable-delegate',
-  'fable-execute',
-  'fable-verify',
-  'fable-review',
-  'fable-security',
-  'fable-release',
-  'fable-handoff',
-  'fable-eval',
-  'fable-recover',
-];
+import { canonicalSkillIds } from '../src/core/skill-registry.ts';
 
 function makeTempDir(prefix = 'get-fable-maturity-') {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -66,8 +51,9 @@ describe('coding lifecycle maturity contract', () => {
     expect(typeof state.workspaceId).toBe('string');
     expect(state.workspaceId.length).toBeGreaterThan(0);
 
-    for (const skill of canonicalSkills) {
+    for (const skill of canonicalSkillIds()) {
       expect(fs.existsSync(path.join(target, '.agents', 'skills', skill, 'SKILL.md'))).toBe(true);
+      expect(fs.existsSync(path.join(target, '.agents', 'skills', skill, 'skill.package.json'))).toBe(true);
     }
     expect(fs.existsSync(path.join(target, '.agents', 'skills', 'get-fable', 'registry.json'))).toBe(true);
   });

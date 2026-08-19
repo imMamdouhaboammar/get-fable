@@ -1,25 +1,79 @@
 ---
 name: fable-recover
-description: Diagnose repeated failures, stale execution, context drift, or contradictory evidence before another code edit. Use when retrying the same approach is no longer producing new information.
+description: Diagnose repeated failure, stale execution, or contradictory evidence before another edit. Use when commands fail repeatedly or retrying the same approach produces no progress.
+version: 1.2.0
+pack: core
+inputs:
+  - failure_evidence
+requires:
+  - failure_streak
+produces:
+  - revised_hypothesis
+  - bounded_repair
+gates:
+  - diagnosis_changed
+fallback: fable-discover
+mutatesWorkspace: false
+parallelSafe: false
+neural_links:
+  precursors:
+    - fable-tdd
+    - fable-execute
+    - fable-verify
+  continuations:
+    - fable-discover
+    - fable-plan
+    - fable-execute
+  lateral_peers:
+    - fable-discover
+  recovery: fable-discover
 ---
 
-# Fable Recover
+# fable-recover
 
-Change the diagnosis before changing more code.
+Diagnostic recovery engine and anti-looping specialist.
 
-## Attribution ladder
+## Purpose
+Break repeated failure cycles by stepping through the 4-level attribution ladder to revise the failure diagnosis before editing more code.
 
-1. **Harness**: prove the command, test driver, fixture, expectation, permissions, and environment are valid.
-2. **Execution path**: prove the changed code is the code actually running. Check branch, worktree, build output, generated files, caches, runtime selection, and deployment identity.
-3. **Product logic**: inspect implementation only after the first two sources are supported by evidence.
-4. **Invariant**: restate the failure as a violated general rule and repair that class of failure instead of one visible symptom.
+## When to Use
+- A test, build, or command has failed 2 or more times consecutively (`failureStreak >= 2`).
+- Execution output appears stale, cached, or unaffected by recent edits.
+- Evidence is contradictory or assumptions have been invalidated.
 
-## Contract
+## When NOT to Use
+- First-time minor syntax errors with obvious single-step fixes (use `fable-execute`).
+- Initial task discovery (use `fable-discover`).
 
-- Never repeat an unchanged failed command as if repetition were diagnosis.
-- Record new evidence and the revised hypothesis.
-- If a load-bearing assumption changed, route to `$fable-discover` or `$fable-plan`.
-- If the diagnosis is stable, return exactly one bounded repair to `$fable-execute`.
-- After any repair, route to `$fable-verify` and rerun the complete affected path.
+## Inputs
+- **`failure_evidence`**: Error logs, stack traces, and failing command output.
 
-The purpose of recovery is to reduce blind edit loops, not to add more retries.
+## Expected Outputs
+- **`revised_hypothesis`**: Root-cause diagnosis explaining why prior attempts failed.
+- **`bounded_repair`**: Targeted single-action repair card.
+
+## Procedure
+1. Step 1 (Harness): Prove test driver, fixtures, mock data, and environment are valid.
+2. Step 2 (Execution Path): Prove that running code reflects current workspace edits (check `dist/`, caches, branch).
+3. Step 3 (Product Logic): Inspect algorithm logic only after steps 1 & 2 are validated.
+4. Step 4 (Invariant): Identify violated system invariant and formulate bounded fix.
+
+## Decision Rules
+- Never repeat an unchanged failed command without new diagnostic information.
+- If an assumption is disproved, discard it immediately.
+
+## Tool Policy
+- Inspect logs, check git status/diff, and run clean diagnostic commands.
+
+## Evidence Requirements
+- Clear statement of why previous attempts failed and what changed in the diagnosis.
+
+## Failure Handling
+- If root cause cannot be determined within recovery, escalate to `fable-discover`.
+
+## Completion Criteria
+- Diagnosis revised; single bounded repair issued to `fable-execute`.
+
+## Progressive Resources
+- Ladder: `references/attribution-ladder.md`
+- Example: `examples/recovering-stale-test-cache.md`

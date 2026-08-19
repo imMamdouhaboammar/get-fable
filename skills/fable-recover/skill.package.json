@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-recover",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/attribution-ladder.md"
+  ],
+  "templates": [],
+  "examples": [
+    "examples/recovering-stale-test-cache.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "fable-release-ready-check",
+    "description": "Evaluate repository readiness for publishing or merging",
+    "given": {
+      "intent": "Verify release readiness for v1.3.0 before publishing to npm",
+      "state": {
+        "mutationGeneration": 2,
+        "verifiedGeneration": 2
+      }
+    },
+    "expected": {
+      "action": "check-release-gates",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "publish-with-stale-tests"
+    }
+  }
+]

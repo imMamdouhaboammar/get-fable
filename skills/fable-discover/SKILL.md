@@ -1,25 +1,78 @@
 ---
 name: fable-discover
 description: Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. Use when load-bearing facts are unknown, current behavior must be traced, or external API behavior can change the design.
+version: 1.2.0
+pack: core
+inputs:
+  - exploration_target
+requires:
+  - codebase_access
+produces:
+  - repository_evidence
+  - execution_path
+gates:
+  - load_bearing_unknowns_resolved
+fallback: fable-recover
+mutatesWorkspace: false
+parallelSafe: true
+neural_links:
+  precursors:
+    - get-fable
+  continuations:
+    - fable-research
+    - fable-plan
+    - fable-execute
+  lateral_peers:
+    - fable-memory
+  recovery: fable-recover
 ---
 
-# Fable Discover
+# fable-discover
 
-Resolve the facts that would materially change the implementation before committing to an approach.
+Grounding and evidence discovery engine for unfamiliar codebases and execution paths.
 
-## Contract
+## Purpose
+Resolve load-bearing unknowns and trace real execution paths before committing to architecture or code changes.
 
-1. Read repository instructions and the real execution path before broad search.
-2. List only load-bearing unknowns. Ignore facts that cannot change the solution.
-3. Resolve each unknown with the cheapest reliable evidence source available: code, test, runtime probe, primary documentation, or current source.
-4. Tag conclusions as measured, inferred, or unresolved.
-5. Stop gathering when the architecture no longer depends on an unanswered question.
-6. Hand off to `$fable-plan` when the work is broad or risky, or `$fable-execute` when the target is already bounded and acceptance is obvious.
+## When to Use
+- Starting work on an unfamiliar codebase or repository area.
+- Tracing execution flow from entry points down to database or API boundaries.
+- Resolving environment, dependency, or configuration unknowns.
 
-## Context rule
+## When NOT to Use
+- Making trivial single-line typo fixes with obvious locations (use `fable-execute`).
+- Running existing test suites (use `fable-verify`).
 
-Return a compact evidence packet, not a transcript of exploration. Include paths, commands, outputs, and source references that the next phase actually needs.
+## Inputs
+- **`exploration_target`**: The component, feature, or unknown behavior to investigate.
 
-## Failure rule
+## Expected Outputs
+- **`repository_evidence`**: Concrete, file-located facts tagged as [measured] or [inferred].
+- **`execution_path`**: Step-by-step trace of symbols, call sites, and contracts.
 
-If a probe contradicts the current assumption, replace the assumption. Do not preserve a preferred design by searching for confirming evidence.
+## Procedure
+1. Locate manifests (`package.json`, `Cargo.toml`, `pyproject.toml`) and project instructions (`AGENTS.md`, `README.md`).
+2. Search relevant symbols and follow imports across the call hierarchy.
+3. Classify findings into [measured], [inferred], and [unresolved].
+4. Hand off to `fable-plan` if architecture is needed, or `fable-execute` if bounded.
+
+## Decision Rules
+- Stop gathering as soon as load-bearing architectural questions are answered.
+- If a measured fact contradicts an assumption, immediately discard the assumption.
+
+## Tool Policy
+- Use read-only search tools (`grep_search`, `find_by_name`, `view_file`).
+- Do not modify source files during discovery.
+
+## Evidence Requirements
+- At least one [measured] file path and symbol proof for each load-bearing fact.
+
+## Failure Handling
+- If symbols cannot be located, check for dynamic loading, plugins, or codegen in build scripts.
+
+## Completion Criteria
+- All load-bearing unknowns are resolved and tagged with concrete source citations.
+
+## Progressive Resources
+- Protocol: `references/evidence-gathering-protocol.md`
+- Example: `examples/codebase-inspection.md`

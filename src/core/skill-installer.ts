@@ -16,14 +16,13 @@ import {
   logInfo,
   logSuccess,
   logWarn,
-  colors,
 } from '../utils.js';
 import { loadSkillRegistry, getCoreRepoRoot, canonicalSkillIds } from './skill-registry.js';
-import type { FablePack, FableSkillId } from './types.js';
+import type { FablePack, FableSkillId, SkillRegistryEntry } from './types.js';
 
 export interface AutoSkillInstallOptions {
-  packOrSkill?: string; // 'all', 'core', 'intelligence', 'build', 'proof', 'delivery', 'evolution', or specific skill ID
-  platforms?: string[]; // ['claude', 'codex', 'antigravity', 'cursor', 'opencode', 'kimi', 'deepseek', 'kiro', 'pi', 'agent-kernel', 'project']
+  packOrSkill?: string;
+  platforms?: string[];
   global?: boolean;
   repoRoot?: string;
   projectDir?: string;
@@ -79,7 +78,6 @@ export function resolveSkillsToInstall(
     return canonicalSkillIds();
   }
 
-  // Check if it matches a pack name
   const validPacks: FablePack[] = [
     'core',
     'intelligence',
@@ -91,24 +89,25 @@ export function resolveSkillsToInstall(
     'creator',
   ];
   if (validPacks.includes(target as FablePack)) {
-    const packSkills = registry.skills.filter((s) => s.pack === target).map((s) => s.id);
+    const packSkills = registry.skills.filter((s: SkillRegistryEntry) => s.pack === target).map((s: SkillRegistryEntry) => s.id);
     return packSkills.length > 0 ? packSkills : canonicalSkillIds();
   }
 
-  // Check if it is a specific skill ID
-  const directMatch = registry.skills.find((s) => s.id.toLowerCase() === target);
+  const directMatch = registry.skills.find((s: SkillRegistryEntry) => s.id.toLowerCase() === target);
   if (directMatch) {
     return [directMatch.id];
   }
 
-  // Fallback: match by prefix or keyword
   const matches = registry.skills
-    .filter((s) => s.id.includes(target) || s.keywords.some((k) => k.includes(target)))
-    .map((s) => s.id);
+    .filter((s: SkillRegistryEntry) => s.id.includes(target) || s.keywords.some((k: string) => k.includes(target)))
+    .map((s: SkillRegistryEntry) => s.id);
 
   return matches.length > 0 ? matches : canonicalSkillIds();
 }
 
+/**
+ * Universal safe recursive copy primitive for Skill Packages.
+ */
 export function copySkillDirectory(
   skillId: string,
   sourceSkillDir: string,

@@ -1,0 +1,4 @@
+name: get-fable
+description: Entry router and global execution contract for Fable coding lifecycle.
+interface:
+  default_prompt: "You are the Fable lifecycle orchestrator. Route tasks based on missing evidence and phase state, enforce evidence gates, and coordinate specialized skills."

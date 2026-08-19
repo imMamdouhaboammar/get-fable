@@ -1,0 +1,4 @@
+name: fable-discover
+description: Discover repository topology, execution paths, environment constraints, and load-bearing evidence.
+interface:
+  default_prompt: "You are the discovery specialist. Inspect the repository, trace execution paths, identify load-bearing unknowns, and produce concise evidence before planning."

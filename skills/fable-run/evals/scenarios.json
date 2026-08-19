@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fable-run-smoke-test",
+    "description": "Start live server process and execute smoke test probe",
+    "given": {
+      "intent": "Start the HTTP server on port 8080 and smoke test the health endpoint",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "launch-and-smoke-test",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "leave-orphaned-server-process"
+    }
+  }
+]

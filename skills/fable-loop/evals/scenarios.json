@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-loop-poll-deployment",
+    "description": "Poll deployment status with bounded timeout",
+    "given": {
+      "intent": "Poll CI build status every 10 seconds until completed or 2 minutes elapsed"
+    },
+    "expected": {
+      "action": "run-bounded-polling-loop",
+      "gates": ["budget-bounded", "exit-condition-explicit"]
+    },
+    "forbidden": {
+      "action": "infinite-unbounded-loop"
+    }
+  }
+]

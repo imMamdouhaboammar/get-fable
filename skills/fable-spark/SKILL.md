@@ -1,42 +1,77 @@
 ---
 name: fable-spark
-description: Use when determining the most natural atomic next move in the workflow, maintaining situational awareness across turns, resolving missing gates, or applying the minimal action principle.
+description: Situational awareness micro-policy predicting the smallest atomic next move without scope drift. Use when determining the next move after mutations, test passes, failures, or state transitions.
+version: 1.2.0
+pack: system
+inputs:
+  - current_state
+requires:
+  - situational_context
+produces:
+  - spark_suggestion
+gates:
+  - minimal_action_tested
+fallback: get-fable
+mutatesWorkspace: false
+parallelSafe: true
+neural_links:
+  precursors:
+    - get-fable
+    - fable-cowork
+  continuations:
+    - get-fable
+  lateral_peers:
+    - get-fable
+  recovery: fable-recover
 ---
 
 # fable-spark
 
-Situational awareness micro-policy and next-move predictor operating across the entire Fable lifecycle.
+Situational awareness micro-policy and atomic next-move predictor.
 
-## Overview
-Predict the smallest, most natural next action from current state and evidence without expanding scope, inventing new goals, or creating redundant overhead.
+## Purpose
+Determine the smallest, most natural next move from current state and evidence without expanding scope or inventing unrequested goals.
 
 ## When to Use
-- After any lifecycle step, mutation, test pass, or test failure to determine the immediate next move.
-- When an agent is unsure whether to plan, execute, verify, or recover.
+- Evaluating what action should immediately follow a code edit, test run, or state transition.
 - Identifying missing gates before claiming completion.
-- Evaluating whether to output a proactive suggestion or remain silently on standby.
+- Deciding whether to output a proactive suggestion or remain silently on standby.
 
-## The Spark Core Test
-Would the user or an experienced lead engineer look at the suggestion and immediately think:
-> *"Yes, that's exactly what should happen next."*
+## When NOT to Use
+- Full multi-file architectural planning (use `fable-plan`).
+- Writing application code (use `fable-execute`).
 
-If not, do not suggest it. Stay silent.
+## Inputs
+- **`current_state`**: State object containing `phase`, `mutationGeneration`, `verifiedGeneration`, `failureStreak`.
 
-## Core Rules & Invariants
+## Expected Outputs
+- **`spark_suggestion`**: Minimal atomic next action string or `null` (silence).
 
-### 1. Minimal Action Principle
-- Predict the smallest atomic action that advances the task.
-- Do NOT invent a new goal or broaden requirements.
-- Do NOT restart planning if the current evidence and cards remain valid.
-- Ground every prediction in concrete state: `phase`, `activeCard`, `verifiedGeneration`, and `failureStreak`.
+## Procedure
+1. Check failure streak: if `failureStreak >= 2`, suggest "diagnose the repeated failure".
+2. Check mutation delta: if `mutationGeneration > verifiedGeneration`, suggest "run the affected tests".
+3. Check missing gates on active skill.
+4. If idle or complete with no pending work, output silence (`silent: true`).
 
-### 2. State-Driven Next Moves
-- **Intake without reproduction** -> "reproduce the bug with a minimal test"
-- **Red test observed** -> "implement minimal code to satisfy the test"
-- **Code mutated without fresh tests** -> "run verification on current mutations"
-- **2+ repeated test failures** -> "re-diagnose the root cause before another edit"
-- **Verification passed with open card** -> "close the active card with pass evidence"
-- **All cards verified and clean** -> "perform independent code review or prepare release"
+## Decision Rules
+- If the suggestion would not be immediately obvious to a senior engineer, stay silent.
+- Ground predictions in concrete state variables, never in speculative goals.
 
-### 3. Silent Standby
-- If no action is needed or the system is idle with no pending intent, evaluate silently with zero noise.
+## Tool Policy
+- Evaluate state via `get-fable spark --json`.
+
+## Evidence Requirements
+- Computed suggestion with reason code and confidence score >= 0.85.
+
+## Failure Handling
+- On ambiguous context, default to silence (`silent: true`, `suggestion: null`).
+
+## Completion Criteria
+- Next move identified or silence policy enforced.
+
+## Progressive Resources
+- Next-Move: `references/next-move-policy.md`
+- Silence: `references/silence-policy.md`
+- Evidence: `references/evidence-and-gates.md`
+- Confidence: `references/confidence-policy.md`
+- Example: `examples/situational-awareness-walkthrough.md`

@@ -62,7 +62,10 @@ export type FableTaskShape =
   | 'bounded-change'
   | 'unknown';
 
+export type TaskShape = FableTaskShape;
+
 export type EvidenceResult = 'pass' | 'fail';
+
 export type EvidenceKind =
   | 'test'
   | 'build'
@@ -82,6 +85,8 @@ export interface EvidenceRecord {
   generation: number;
   timestamp: string;
 }
+
+export type TypedEvidence = EvidenceRecord;
 
 export interface SkillRegistryEntry {
   id: FableSkillId;
@@ -145,4 +150,61 @@ export interface DoctorReport {
   schemaVersion: 1;
   ok: boolean;
   checks: DoctorCheck[];
+}
+
+export const FABLE_SKILL_PACKAGE_SCHEMA_VERSION = 1 as const;
+
+export interface SkillPackageManifest {
+  schemaVersion: 1;
+  id: string;
+  entry: string;
+  agents: string[];
+  references: string[];
+  templates: string[];
+  examples: string[];
+  evals: string[];
+  scripts: string[];
+}
+
+export type SkillResourceType =
+  | 'entry'
+  | 'agent'
+  | 'reference'
+  | 'template'
+  | 'example'
+  | 'eval'
+  | 'script';
+
+export interface SkillResourceEntry {
+  type: SkillResourceType;
+  path: string;
+  relativePath: string;
+  absolutePath: string;
+  byteSize: number;
+  sizeBytes: number;
+  exists: boolean;
+}
+
+export interface SkillPackageSummary {
+  id: string;
+  valid: boolean;
+  entryExists: boolean;
+  agentCount: number;
+  referenceCount: number;
+  templateCount: number;
+  exampleCount: number;
+  evalCount: number;
+  scriptCount: number;
+  totalResources: number;
+  resources: SkillResourceEntry[];
+  errors: string[];
+}
+
+export interface SkillPackageValidationResult {
+  id: string;
+  valid: boolean;
+  errors: string[];
+  warnings: string[];
+  manifest?: SkillPackageManifest;
+  resources: SkillResourceEntry[];
 }

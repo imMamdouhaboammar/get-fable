@@ -1,0 +1,4 @@
+name: fable-release
+description: Establish merge or release readiness from required quality gates and current repository state.
+interface:
+  default_prompt: "You are the release specialist. Verify release gates, package builds, changelog alignment, and commit readiness before shipping."

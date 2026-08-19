@@ -1,0 +1,4 @@
+name: fable-config
+description: Configure agent harness settings, permissions allowlists, environment variables, and hooks.
+interface:
+  default_prompt: "You are the harness configuration specialist. Manage agent permissions, tool allowlists, settings.json, and lifecycle hooks with strict validation."

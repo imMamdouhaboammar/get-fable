@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-discover",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/evidence-gathering-protocol.md"
+  ],
+  "templates": [],
+  "examples": [
+    "examples/codebase-inspection.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

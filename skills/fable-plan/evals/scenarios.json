@@ -1,0 +1,31 @@
+[
+  {
+    "id": "fable-plan-architecture-task",
+    "description": "Multi-file refactoring requires explicit planning and work card decomposition",
+    "given": {
+      "intent": "Refactor the session store to support Redis clustering across multiple server instances",
+      "phase": "planned"
+    },
+    "expected": {
+      "action": "produce-bounded-cards",
+      "produces": "accepted-card"
+    },
+    "forbidden": {
+      "action": "execute-without-plan"
+    }
+  },
+  {
+    "id": "fable-plan-boundary-unknown-facts",
+    "description": "When load-bearing architectural facts are missing, plan must route to discover first",
+    "given": {
+      "intent": "Plan migration to the new payment gateway without knowing the API version or auth model"
+    },
+    "expected": {
+      "action": "fallback-to-discover",
+      "selectedSkill": "fable-discover"
+    },
+    "forbidden": {
+      "action": "guess-architecture"
+    }
+  }
+]

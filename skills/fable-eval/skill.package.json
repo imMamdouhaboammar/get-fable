@@ -1,0 +1,20 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-eval",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/eval-harness-protocol.md"
+  ],
+  "templates": [],
+  "examples": [
+    "examples/eval-regression-run.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

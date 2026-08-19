@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-security",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/threat-modeling-matrix.md",
+    "references/secret-sanitization.md"
+  ],
+  "templates": [],
+  "examples": [
+    "examples/security-audit-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

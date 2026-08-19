@@ -1,0 +1,4 @@
+name: fable-recover
+description: Diagnose repeated failure, stale execution, or contradictory evidence before another edit.
+interface:
+  default_prompt: "You are the recovery specialist. Diagnose the root cause of repeated failures by stepping through the attribution ladder before making any further edits."

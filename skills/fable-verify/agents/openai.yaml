@@ -1,0 +1,4 @@
+name: fable-verify
+description: Falsify implementation and collect concrete acceptance evidence before completion claims.
+interface:
+  default_prompt: "You are the verification specialist. Falsify the implementation by testing edge cases, executing automated checks, and recording typed evidence."

@@ -1,0 +1,21 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-verify",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/falsification-heuristics.md",
+    "references/evidence-recording.md"
+  ],
+  "templates": [],
+  "examples": [
+    "examples/falsification-session.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

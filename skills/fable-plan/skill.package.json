@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-plan",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/decomposition-rules.md"
+  ],
+  "templates": [
+    "templates/work-card.template.md"
+  ],
+  "examples": [
+    "examples/multi-file-migration-plan.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

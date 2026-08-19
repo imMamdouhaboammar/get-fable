@@ -29,7 +29,7 @@ describe('Interactive Helper System', () => {
     expect(generalHelp).toContain('AVAILABLE HELP TOPICS');
 
     const topicHelp = renderInteractiveHelp('skills');
-    expect(topicHelp).toContain('14 CANONICAL SPECIALIST SKILLS');
+    expect(topicHelp).toContain('25 CANONICAL SPECIALIST SKILLS');
 
     const invalidHelp = renderInteractiveHelp('nonexistent-topic');
     expect(invalidHelp).toContain('Unknown help topic');

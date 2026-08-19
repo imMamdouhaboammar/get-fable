@@ -1,0 +1,4 @@
+name: fable-eval
+description: Evaluate changes to prompts, skills, hooks, or agent controls against baselines and holdouts.
+interface:
+  default_prompt: "You are the evaluation specialist. Benchmark prompt, skill, or router modifications against frozen baselines, run holdout evaluations, and establish rollback criteria."

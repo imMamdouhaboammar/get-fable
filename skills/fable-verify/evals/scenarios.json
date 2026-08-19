@@ -1,0 +1,35 @@
+[
+  {
+    "id": "fable-verify-stale-evidence-rejection",
+    "description": "Verification cannot claim pass if workspace was mutated after previous test run",
+    "given": {
+      "mutationGeneration": 3,
+      "verifiedGeneration": 2,
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "run-tests-for-current-generation",
+      "reasonCode": "verification-stale-after-mutation"
+    },
+    "forbidden": {
+      "action": "mark-complete-with-stale-evidence"
+    }
+  },
+  {
+    "id": "fable-verify-security-is-not-functional",
+    "description": "Security evidence alone cannot verify functional feature behavior",
+    "given": {
+      "evidence": [
+        { "kind": "security", "result": "pass" }
+      ],
+      "task": "Fix the cart total calculation bug"
+    },
+    "expected": {
+      "action": "require-functional-test-evidence",
+      "reasonCode": "security-does-not-prove-functional-repair"
+    },
+    "forbidden": {
+      "action": "claim-complete"
+    }
+  }
+]

@@ -1,24 +1,78 @@
 ---
 name: fable-artifact
-description: Design guidance, diagramming know-how, inline SVG mechanics, and runtime interactive capabilities for Artifacts.
+description: Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components. Use when creating standalone markdown reports, Mermaid diagrams, or interactive widgets.
+version: 1.2.0
+pack: system
+inputs:
+  - artifact_spec
+requires:
+  - design_requirements
+produces:
+  - artifact_document
+  - interactive_ui
+gates:
+  - hierarchy_clear
+  - theme_adaptive
+fallback: fable-plan
+mutatesWorkspace: true
+parallelSafe: true
+neural_links:
+  precursors:
+    - fable-dataviz
+    - fable-plan
+  continuations:
+    - fable-verify
+    - fable-review
+  lateral_peers:
+    - fable-dataviz
+  recovery: fable-recover
 ---
 
 # fable-artifact
 
-Specialist skill for designing and building rich, readable, and responsive user-facing artifacts and architecture diagrams.
+Structured technical proposals, diagrams, and rich artifact designer.
+
+## Purpose
+Compose clear, visually engaging technical artifacts, Mermaid architecture topologies, and interactive prototypes.
 
 ## When to Use
-- Producing detailed technical proposals, architecture diagrams, data flows, and state machines.
-- Creating interactive artifacts requiring dynamic state, live data, or file exports.
-- Designing inline SVGs and structural layout components.
+- Writing extensive architectural proposals, RFCs, and engineering reports.
+- Rendering complex system graphs, sequence diagrams, and state machines via Mermaid.
+- Building interactive UI mockups or HTML widgets.
 
-## Core Rules & Invariants
-1. **Design & Hierarchy**:
-   - Establish a clear visual hierarchy: prominent title, executive TLDR, structured sections, and concise tables.
-   - Match the artifact depth to user expertise: direct and actionable for seniors, explanatory for newcomers.
-2. **Diagramming Mechanics**:
-   - Choose the simplest diagram form that accurately shows the mechanism (Mermaid, inline SVG, or ASCII).
-   - Ensure light/dark theme readability by using semantic color variables or theme-adaptive styling.
-3. **Interactive Capabilities**:
-   - For interactive HTML/React artifacts, keep state isolated and handle window resize and edge cases gracefully.
-   - Provide explicit copy/download buttons for generated code or exportable data.
+## When NOT to Use
+- Writing one-sentence direct conversational answers (respond directly).
+- Modifying production application logic (use `fable-execute`).
+
+## Inputs
+- **`artifact_spec`**: Content, diagrams, and structural specifications.
+
+## Expected Outputs
+- **`artifact_document`**: Well-formatted markdown artifact in the designated artifact directory.
+- **`interactive_ui`**: Standalone HTML/JS UI component when requested.
+
+## Procedure
+1. Establish visual hierarchy using GitHub-flavored markdown and alerts.
+2. Construct validated Mermaid diagrams (quoting labels with special characters).
+3. Save output to designated artifact path.
+4. Verify rendering and link references.
+
+## Decision Rules
+- Use alert callouts (`[!NOTE]`, `[!IMPORTANT]`) strategically, not consecutively.
+- Keep bullet points concise and avoid deep unnecessary nesting.
+
+## Tool Policy
+- Write to artifact directory; do not clutter project root.
+
+## Evidence Requirements
+- Clean markdown artifact file with valid Mermaid diagram syntax.
+
+## Failure Handling
+- If Mermaid syntax fails to render, check node label escaping and direction keywords.
+
+## Completion Criteria
+- Artifact is created and verified with clear hierarchical readability.
+
+## Progressive Resources
+- Guide: `references/artifact-composition-guide.md`
+- Example: `examples/system-architecture-diagram.md`

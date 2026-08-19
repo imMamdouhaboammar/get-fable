@@ -1,0 +1,96 @@
+[
+  {
+    "id": "spark-code-mutated-verification-stale",
+    "description": "Code mutated, previous verification is stale; predict running tests",
+    "given": {
+      "state": {
+        "phase": "executing",
+        "mutationGeneration": 2,
+        "verifiedGeneration": 1
+      }
+    },
+    "expected": {
+      "suggestion": "run the affected tests",
+      "reasonCode": "verification-stale-after-mutation",
+      "silent": false
+    },
+    "forbidden": {
+      "silent": true,
+      "suggestion": "route the task"
+    }
+  },
+  {
+    "id": "spark-same-failure-repeated",
+    "description": "Same failure repeated; predict diagnosing failure before retry",
+    "given": {
+      "state": {
+        "phase": "executing",
+        "failureStreak": 2
+      }
+    },
+    "expected": {
+      "suggestion": "diagnose the repeated failure",
+      "reasonCode": "failure-loop-diagnose-required",
+      "silent": false
+    },
+    "forbidden": {
+      "suggestion": "run the affected tests"
+    }
+  },
+  {
+    "id": "spark-idle-no-intent-silence",
+    "description": "No pending work or intent while idle; predict silence",
+    "given": {
+      "state": {
+        "phase": "idle"
+      }
+    },
+    "expected": {
+      "suggestion": null,
+      "reasonCode": "idle-no-intent-silent",
+      "silent": true
+    },
+    "forbidden": {
+      "silent": false
+    }
+  },
+  {
+    "id": "spark-scope-complete-silence",
+    "description": "Phase complete; predict silence",
+    "given": {
+      "state": {
+        "phase": "complete"
+      }
+    },
+    "expected": {
+      "suggestion": null,
+      "reasonCode": "scope-complete-silent",
+      "silent": true
+    },
+    "forbidden": {
+      "silent": false
+    }
+  },
+  {
+    "id": "spark-security-evidence-functional-bug",
+    "description": "Security evidence passes but bug fix requires functional verification",
+    "given": {
+      "state": {
+        "currentSkill": "fable-security",
+        "mutationGeneration": 1,
+        "verifiedGeneration": 0,
+        "evidence": [
+          { "kind": "security", "result": "pass" }
+        ]
+      },
+      "userIntent": "Fix the regression bug in login"
+    },
+    "expected": {
+      "suggestion": "verify the repaired behavior",
+      "reasonCode": "security-does-not-prove-functional-repair"
+    },
+    "forbidden": {
+      "suggestion": "check release readiness"
+    }
+  }
+]

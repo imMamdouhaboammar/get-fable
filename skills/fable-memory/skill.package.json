@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-memory",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/memory-management-protocol.md"
+  ],
+  "templates": [
+    "templates/memory-fact.template.md"
+  ],
+  "examples": [
+    "examples/recording-user-preference.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

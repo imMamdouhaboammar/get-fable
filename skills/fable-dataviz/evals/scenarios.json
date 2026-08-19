@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-dataviz-svg-chart",
+    "description": "Generate an accessible data visualization chart",
+    "given": {
+      "intent": "Create a monthly revenue bar chart in SVG"
+    },
+    "expected": {
+      "action": "generate-svg-visualization",
+      "produces": "visualization-artifact"
+    },
+    "forbidden": {
+      "action": "output-unformatted-raw-table"
+    }
+  }
+]

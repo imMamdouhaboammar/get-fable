@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fable-tdd-bug-fix",
+    "description": "Fixing a bug requires reproducing it with a failing test first",
+    "given": {
+      "intent": "Fix the off-by-one error in pagination calculation",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "write-failing-test-first",
+      "gates": ["red-observed", "green-observed"]
+    },
+    "forbidden": {
+      "action": "modify-production-code-without-test"
+    }
+  }
+]

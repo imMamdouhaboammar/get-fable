@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-memory-record-fact",
+    "description": "Store a user feedback preference into durable memory",
+    "given": {
+      "intent": "Remember that we must always use Bun for package management in this repo"
+    },
+    "expected": {
+      "action": "record-memory-fact",
+      "gates": ["single-fact-file", "index-synced"]
+    },
+    "forbidden": {
+      "action": "overwrite-unrelated-memory"
+    }
+  }
+]

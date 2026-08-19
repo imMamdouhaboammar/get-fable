@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-artifact-architecture-proposal",
+    "description": "Create a multi-tier architecture diagram artifact",
+    "given": {
+      "intent": "Generate an architecture design artifact for our multi-region database setup"
+    },
+    "expected": {
+      "action": "create-artifact-document",
+      "produces": "artifact-document"
+    },
+    "forbidden": {
+      "action": "generate-broken-mermaid-syntax"
+    }
+  }
+]

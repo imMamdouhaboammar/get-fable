@@ -1,0 +1,50 @@
+[
+  {
+    "id": "get-fable-route-recovery-precedence",
+    "description": "When the user reports repeated failures, recovery must take precedence over planning or execution",
+    "given": {
+      "intent": "The test suite failed twice in a row after changing the auth token logic",
+      "state": {
+        "failureStreak": 2,
+        "phase": "executing"
+      }
+    },
+    "expected": {
+      "selectedSkill": "fable-recover",
+      "reasonCode": "failure-loop-diagnose-required"
+    },
+    "forbidden": {
+      "selectedSkill": "fable-execute"
+    }
+  },
+  {
+    "id": "get-fable-route-security-precedence",
+    "description": "Explicit security review must route to fable-security",
+    "given": {
+      "intent": "Audit the OAuth callback endpoint for CSRF and open redirect vulnerabilities"
+    },
+    "expected": {
+      "selectedSkill": "fable-security",
+      "pack": "proof"
+    },
+    "forbidden": {
+      "selectedSkill": "fable-execute"
+    }
+  },
+  {
+    "id": "get-fable-route-idle-silence",
+    "description": "When idle with no pending intent, spark remains silent",
+    "given": {
+      "state": {
+        "phase": "idle"
+      }
+    },
+    "expected": {
+      "silent": true,
+      "suggestion": null
+    },
+    "forbidden": {
+      "silent": false
+    }
+  }
+]

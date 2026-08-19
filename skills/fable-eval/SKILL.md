@@ -1,22 +1,78 @@
 ---
 name: fable-eval
-description: Evaluate changes to prompts, skills, hooks, routers, memory, or agent controls against a reproducible baseline, unseen holdouts, regressions, and rollback criteria.
+description: Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions. Use when modifying agent behavior or measuring prompt quality.
+version: 1.2.0
+pack: evolution
+inputs:
+  - candidate_modification
+requires:
+  - reproducible_baseline
+produces:
+  - eval_verdict
+  - regression_evidence
+gates:
+  - baseline_frozen
+  - holdout_tested
+  - rollback_defined
+fallback: fable-plan
+mutatesWorkspace: false
+parallelSafe: true
+neural_links:
+  precursors:
+    - skill-creator
+  continuations:
+    - fable-plan
+    - fable-execute
+  lateral_peers:
+    - fable-verify
+  recovery: fable-recover
 ---
 
-# Fable Eval
+# fable-eval
 
-Treat agent-control changes as software changes around the model.
+Agent evaluation harness and behavioral benchmark runner.
 
-## Contract
+## Purpose
+Systematically measure the impact of prompt, skill, router, and hook modifications against frozen baselines and unseen holdouts.
 
-1. State the observable capability gap and freeze a reproducible baseline before changing the control surface.
-2. Form one causal hypothesis and make one bounded intervention.
-3. Keep model, permissions, timeout, tasks, graders, and environment stable between control and candidate runs when possible.
-4. Include unseen holdouts that were not used to design the intervention.
-5. Reject any candidate with correctness, safety, privacy, compatibility, or rollback regression.
-6. Record only bounded metrics and structured outcomes. Do not retain prompts, source contents, credentials, or raw command output in eval records.
-7. Accept the candidate only when the result is reproducible and the previous state can be restored.
+## When to Use
+- Modifying system prompts, skill instructions, or agent role descriptions.
+- Tuning routing heuristics, confidence thresholds, or task classifiers.
+- Benchmarking skill triggering accuracy and error rates.
 
-## Exit condition
+## When NOT to Use
+- Running ordinary application software unit tests (use `fable-verify`).
+- Authoring initial skill templates from scratch (use `skill-creator`).
 
-The candidate has a baseline comparison, holdout evidence, regression result, accept/reject verdict, limits of the claim, and rollback instructions.
+## Inputs
+- **`candidate_modification`**: Proposed prompt, router, or skill change.
+
+## Expected Outputs
+- **`eval_verdict`**: Quantitative score comparison and accept/reject decision.
+- **`regression_evidence`**: Evidence from holdout scenarios.
+
+## Procedure
+1. Record baseline benchmark scores on unmodified control prompts.
+2. Apply single bounded candidate change.
+3. Run regression scenarios and holdout test cases.
+4. Reject candidate if any regression is observed; accept only on net improvement.
+
+## Decision Rules
+- Never accept a prompt change purely on subjective aesthetic grounds.
+- Holdout evaluation scenarios must remain unseen during candidate prompt drafting.
+
+## Tool Policy
+- Run benchmark runners and eval suites in `eval/` or `skills/<id>/evals/`.
+
+## Evidence Requirements
+- Quantitative score comparison table across baseline, candidate, and holdouts.
+
+## Failure Handling
+- On regression or trigger degradation, revert immediately to baseline.
+
+## Completion Criteria
+- Eval report confirms metric improvement with zero regressions.
+
+## Progressive Resources
+- Protocol: `references/eval-harness-protocol.md`
+- Example: `examples/eval-regression-run.md`

@@ -1,0 +1,23 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "fable-spark",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/next-move-policy.md",
+    "references/silence-policy.md",
+    "references/evidence-and-gates.md",
+    "references/confidence-policy.md"
+  ],
+  "templates": [],
+  "examples": [
+    "examples/situational-awareness-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

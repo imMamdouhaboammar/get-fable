@@ -1,0 +1,32 @@
+[
+  {
+    "id": "fable-execute-bounded-card",
+    "description": "Implement a single card with defined scope and acceptance command",
+    "given": {
+      "card": "Implement helper function formatCurrency in src/utils/format.ts",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "implement-card-and-check",
+      "produces": "implementation-diff"
+    },
+    "forbidden": {
+      "action": "edit-unrelated-files"
+    }
+  },
+  {
+    "id": "fable-execute-repeated-failure-gate",
+    "description": "When an execution edit fails repeatedly, it must route to recovery",
+    "given": {
+      "failureStreak": 2,
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "route-to-recover",
+      "selectedSkill": "fable-recover"
+    },
+    "forbidden": {
+      "action": "retry-same-edit"
+    }
+  }
+]

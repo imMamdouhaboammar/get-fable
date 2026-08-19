@@ -1,0 +1,32 @@
+[
+  {
+    "id": "fable-recover-repeated-failure",
+    "description": "Repeated failure triggers diagnosis through the attribution ladder",
+    "given": {
+      "failureStreak": 2,
+      "lastError": "TypeError: Cannot read properties of undefined (reading 'headers')",
+      "phase": "recovering"
+    },
+    "expected": {
+      "action": "diagnose-root-cause",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "blindly-repeat-same-command"
+    }
+  },
+  {
+    "id": "fable-recover-clean-repair-handoff",
+    "description": "Once diagnosis is revised, hand off one bounded repair to execute",
+    "given": {
+      "diagnosis": "Stale dist directory not re-bundled before running integration tests"
+    },
+    "expected": {
+      "action": "hand-off-to-execute",
+      "selectedSkill": "fable-execute"
+    },
+    "forbidden": {
+      "action": "execute-broad-unrelated-refactoring"
+    }
+  }
+]

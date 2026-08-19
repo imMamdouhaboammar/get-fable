@@ -1,0 +1,32 @@
+[
+  {
+    "id": "<skill-id>-normal-01",
+    "description": "Standard invocation with clear intent and required inputs",
+    "given": {
+      "intent": "<user intent text>",
+      "inputs": {
+        "<key>": "<value>"
+      }
+    },
+    "expected": {
+      "action": "<expected action>",
+      "produces": "<expected output artifact>"
+    },
+    "forbidden": {
+      "action": "<prohibited behavior>"
+    }
+  },
+  {
+    "id": "<skill-id>-boundary-01",
+    "description": "Boundary condition where skill must defer or remain silent",
+    "given": {
+      "intent": "<out-of-scope intent>"
+    },
+    "expected": {
+      "action": "defer-to-fallback"
+    },
+    "forbidden": {
+      "action": "execute-out-of-scope"
+    }
+  }
+]

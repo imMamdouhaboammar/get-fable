@@ -1,0 +1,31 @@
+[
+  {
+    "id": "fable-discover-unknown-architecture",
+    "description": "User asks how an unknown feature is implemented in the repository",
+    "given": {
+      "intent": "How does the plugin registration mechanism work in this repo?",
+      "phase": "discovering"
+    },
+    "expected": {
+      "action": "trace-execution-paths",
+      "produces": "repository-evidence"
+    },
+    "forbidden": {
+      "action": "modify-source-files"
+    }
+  },
+  {
+    "id": "fable-discover-boundary-trivial-edit",
+    "description": "User requests fixing a known typo in a specific file; discover should defer to execute",
+    "given": {
+      "intent": "Fix the typo 'recieve' in README.md line 12"
+    },
+    "expected": {
+      "action": "defer-to-execute",
+      "selectedSkill": "fable-execute"
+    },
+    "forbidden": {
+      "action": "broad-codebase-search"
+    }
+  }
+]

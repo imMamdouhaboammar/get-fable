@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fable-eval-prompt-benchmark",
+    "description": "Benchmark prompt modification against baseline and holdouts",
+    "given": {
+      "intent": "Evaluate a new system prompt variant for task routing accuracy",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "run-eval-suite",
+      "produces": "eval-verdict"
+    },
+    "forbidden": {
+      "action": "accept-change-without-eval"
+    }
+  }
+]

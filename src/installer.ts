@@ -21,7 +21,7 @@ import {
 } from './utils.js';
 import { canonicalSkillIds } from './core/skill-registry.js';
 import { createInitialState, readFableState, writeFableState } from './core/state.js';
-import { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs } from './core/skill-installer.js';
+import { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs, copySkillDirectory } from './core/skill-installer.js';
 
 export { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs };
 
@@ -148,18 +148,9 @@ function installCanonicalSkillPack(
   skipExisting: boolean
 ) {
   for (const skillId of canonicalSkillIds()) {
-    const src = path.join(repoRoot, 'skills', skillId, 'SKILL.md');
-    const dest = path.join(targetSkillsDir, skillId, 'SKILL.md');
-    if (skipExisting && fs.existsSync(dest)) continue;
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.copyFileSync(src, dest);
-  }
-
-  const registrySrc = path.join(repoRoot, 'skills', 'get-fable', 'registry.json');
-  const registryDest = path.join(targetSkillsDir, 'get-fable', 'registry.json');
-  if (!skipExisting || !fs.existsSync(registryDest)) {
-    fs.mkdirSync(path.dirname(registryDest), { recursive: true });
-    fs.copyFileSync(registrySrc, registryDest);
+    const src = path.join(repoRoot, 'skills', skillId);
+    const dest = path.join(targetSkillsDir, skillId);
+    copySkillDirectory(skillId, src, dest, !skipExisting);
   }
 }
 

@@ -1,0 +1,59 @@
+[
+  {
+    "id": "skill-creator-normal-author",
+    "description": "User asks to create a new specialized testing skill with full package structure",
+    "given": {
+      "intent": "Create a new API load testing skill called load-tester with references and eval scenarios",
+      "inputs": {
+        "user_intent": "author load testing skill"
+      }
+    },
+    "expected": {
+      "action": "scaffold-skill-package",
+      "produces": "structured-skill-package",
+      "structure": [
+        "SKILL.md",
+        "skill.package.json",
+        "agents/openai.yaml",
+        "references/load-profiles.md",
+        "evals/scenarios.json"
+      ]
+    },
+    "forbidden": {
+      "action": "create-flat-unvalidated-file",
+      "pattern": "empty-folders-without-files"
+    }
+  },
+  {
+    "id": "skill-creator-boundary-regular-code",
+    "description": "User requests fixing a bug in application code; skill creator must not trigger",
+    "given": {
+      "intent": "Fix the null pointer exception in auth.ts line 42",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "route-to-fable-tdd-or-execute",
+      "selectedSkill": "fable-tdd"
+    },
+    "forbidden": {
+      "action": "author-new-skill"
+    }
+  },
+  {
+    "id": "skill-creator-eval-benchmark-suite",
+    "description": "User requests adding evaluation benchmarks for an existing skill",
+    "given": {
+      "intent": "Generate comprehensive eval benchmarks and test scenarios for fable-verify",
+      "inputs": {
+        "target_skill": "fable-verify"
+      }
+    },
+    "expected": {
+      "action": "generate-eval-scenarios",
+      "produces": "eval_benchmark_suite"
+    },
+    "forbidden": {
+      "action": "modify-core-runtime-code"
+    }
+  }
+]

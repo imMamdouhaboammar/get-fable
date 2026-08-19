@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-review-diff-audit",
+    "description": "Audit an implementation diff for bugs and standards compliance",
+    "given": {
+      "intent": "Review the pull request diff for memory leaks or unhandled promises"
+    },
+    "expected": {
+      "action": "grounded-diff-review",
+      "produces": "review-evidence"
+    },
+    "forbidden": {
+      "action": "rubber-stamp-approval-without-diff"
+    }
+  }
+]

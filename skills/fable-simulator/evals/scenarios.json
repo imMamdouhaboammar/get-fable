@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fable-simulator-oracle-check",
+    "description": "Validate rewritten core algorithm against independent oracle",
+    "given": {
+      "intent": "Verify the rewritten JSON stream parser using an independent golden fixture corpus",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "run-independent-oracle-verification",
+      "produces": "oracle-evidence"
+    },
+    "forbidden": {
+      "action": "self-confirming-tautology-test"
+    }
+  }
+]

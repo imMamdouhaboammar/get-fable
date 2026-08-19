@@ -1,30 +1,78 @@
 ---
 name: fable-security
-description: Route security-sensitive software work to the correct security evidence path. Use for trust-boundary changes, authentication or authorization, untrusted input, secrets, privileged operations, security reviews, or vulnerability work.
+description: Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation. Use for auth, secrets, untrusted inputs, permissions, or vulnerability analysis.
+version: 1.2.0
+pack: proof
+inputs:
+  - security_scope
+requires:
+  - threat_boundary
+produces:
+  - security_evidence
+  - threat_boundary_verdict
+gates:
+  - threat_surface_checked
+  - no_exposed_secrets
+fallback: fable-plan
+mutatesWorkspace: false
+parallelSafe: true
+neural_links:
+  precursors:
+    - fable-verify
+    - fable-review
+  continuations:
+    - fable-release
+  lateral_peers:
+    - fable-review
+  recovery: fable-recover
 ---
 
-# Fable Security
+# fable-security
 
-Choose the security question before choosing the scan.
+Threat modeling, vulnerability assessment, and secret hygiene engine.
 
-## Routing
+## Purpose
+Protect trust boundaries, audit security-critical code paths, and prevent secret exposure across the repository.
 
-- Architecture or new privileged capability: establish or refresh the repository threat model.
-- Pull request, branch, commit, or working-tree change: perform a security diff review.
-- Repository-wide audit request: perform a repository security scan.
-- Existing finding: validate the finding and attack path before repair.
+## When to Use
+- Implementing authentication, authorization, or token validation logic.
+- Handling untrusted user inputs, file uploads, or external webhooks.
+- Performing repository-wide credential scans and vulnerability audits.
 
-When a host exposes Codex Security capabilities, use the matching specialist workflow. Otherwise apply the same scope discipline with repository-native review and tests.
+## When NOT to Use
+- Running functional application unit tests (use `fable-verify`).
+- General non-security code refactoring (use `fable-simplify`).
 
-## Contract
+## Inputs
+- **`security_scope`**: Target subsystem, endpoint, or diff to audit.
 
-1. Identify assets, privileges, trust boundaries, and attacker-controlled inputs relevant to the requested change.
-2. Keep the security scope explicit. Do not turn a diff review into an unrelated repository audit.
-3. Preserve repository `SECURITY.md` guidance when present.
-4. Validate reportable findings before treating them as defects.
-5. Security evidence proves only the security question it actually checked. It does not replace functional verification.
-6. Repairs return to `fable-tdd` or `fable-execute`, followed by fresh functional and security verification.
+## Expected Outputs
+- **`security_evidence`**: Threat model analysis and sanitization report.
+- **`threat_boundary_verdict`**: Pass/fail security attestation.
 
-## Exit condition
+## Procedure
+1. Map trust boundaries, privileged operations, and data flows.
+2. Audit inputs for injection, path traversal, and authorization bypass.
+3. Verify that zero private keys, tokens, or credentials are hardcoded.
+4. Record typed `security` evidence in `.fable/state.json`.
 
-The required security surface has been reviewed, reportable findings are accounted for, and the resulting security evidence is tied to the current affected scope.
+## Decision Rules
+- Never output raw secret keys or tokens in terminal logs or documentation.
+- Security approval does not prove functional correctness.
+
+## Tool Policy
+- Use static analysis and grep search; do not execute unsafe payloads.
+
+## Evidence Requirements
+- Zero high/critical vulnerabilities and clean secret scan report.
+
+## Failure Handling
+- If a vulnerability is found, create an immediate bounded fix card for `fable-execute`.
+
+## Completion Criteria
+- Threat boundaries are verified and all security gates are satisfied.
+
+## Progressive Resources
+- Matrix: `references/threat-modeling-matrix.md`
+- Sanitization: `references/secret-sanitization.md`
+- Example: `examples/security-audit-walkthrough.md`

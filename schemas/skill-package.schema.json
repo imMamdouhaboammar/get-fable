@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableSkillPackageManifest",
+  "description": "Resource inventory and package entry points for a canonical Fable Skill Package.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "entry",
+    "agents",
+    "references",
+    "templates",
+    "examples",
+    "evals",
+    "scripts"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "enum": [1]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "entry": {
+      "type": "string",
+      "enum": ["SKILL.md"]
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^agents/[a-zA-Z0-9._/-]+\\.(yaml|yml|json)$"
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^references/[a-zA-Z0-9._/-]+\\.(md|json|yaml|yml|txt)$"
+      }
+    },
+    "templates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^templates/[a-zA-Z0-9._/-]+\\.(md|json|yaml|yml|ts|js|txt)$"
+      }
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^examples/[a-zA-Z0-9._/-]+\\.(md|json|yaml|yml|ts|js|txt)$"
+      }
+    },
+    "evals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^evals/[a-zA-Z0-9._/-]+\\.(json|yaml|yml)$"
+      }
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^scripts/[a-zA-Z0-9._/-]+\\.(sh|bash|py|js|mjs|ts)$"
+      }
+    }
+  }
+}

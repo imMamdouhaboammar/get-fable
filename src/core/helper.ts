@@ -32,32 +32,51 @@ after the final mutation to bring verifiedGeneration up to mutationGeneration.
 
   skills: {
     id: 'skills',
-    title: '14 Canonical Specialist Skills',
+    title: '25 Canonical Specialist Skills',
     summary: 'Role-specific coding skills with strict inputs, outputs, and gates.',
     content: `
-${colors.bright}${colors.cyan}14 CANONICAL SPECIALIST SKILLS${colors.reset}
+${colors.bright}${colors.cyan}25 CANONICAL SPECIALIST SKILLS${colors.reset}
 --------------------------------------------------
-${colors.yellow}Intelligence Pack:${colors.reset}
+${colors.yellow}Core Pack:${colors.reset}
   - get-fable       : Universal front-door router and orchestrator
   - fable-discover  : Source code grounding and symbol tracing
+  - fable-plan      : Architecture, migration plans, and task decomposition
+  - fable-execute   : Focused implementation within accepted card bounds
+  - fable-verify    : Machine-checked test, build, and runtime evidence
+  - fable-recover   : Deterministic failure diagnosis and loop recovery
+
+${colors.yellow}Intelligence Pack:${colors.reset}
   - fable-research  : Primary source and official documentation lookup
 
 ${colors.cyan}Build Pack:${colors.reset}
-  - fable-plan      : Architecture, migration plans, and task decomposition
   - fable-tdd       : Test-driven development with red-green validation
   - fable-delegate  : Bounded parallel work delegation across subagents
-  - fable-execute   : Focused implementation within accepted card bounds
 
 ${colors.magenta}Proof Pack:${colors.reset}
-  - fable-verify    : Machine-checked test, build, and runtime evidence
   - fable-review    : Independent diff and correctness review
   - fable-security  : Security boundary review and vulnerability checks
 
-${colors.green}Delivery & Evolution Pack:${colors.reset}
+${colors.green}Delivery Pack:${colors.reset}
   - fable-release   : Release verification, semver, and packaging checks
   - fable-handoff   : Session context preservation and structured handoffs
+
+${colors.green}Evolution Pack:${colors.reset}
   - fable-eval      : Holdout evaluation and benchmark scoring
-  - fable-recover   : Deterministic failure diagnosis and loop recovery
+
+${colors.blue}System Pack:${colors.reset}
+  - fable-dataviz   : Accessible data visualizations and charts
+  - fable-artifact  : Structured technical proposals and diagrams
+  - fable-simplify  : Code quality cleanup and altitude refactoring
+  - fable-loop      : Bounded recurring execution and polling loops
+  - fable-run       : Live runtime process execution and smoke testing
+  - fable-memory    : Persistent file-based memory and preference index
+  - fable-config    : Agent harness configuration and permissions
+  - fable-simulator : Independent oracle verification and simulation
+  - fable-cowork    : Autonomous cowork execution and silent tool chaining
+  - fable-spark     : Situational awareness and atomic next-move prediction
+
+${colors.red}Creator Pack:${colors.reset}
+  - skill-creator   : Author, refine, benchmark, and package skills
 `,
   },
 

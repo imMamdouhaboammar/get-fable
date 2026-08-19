@@ -1,0 +1,19 @@
+[
+  {
+    "id": "fable-delegate-independent-tasks",
+    "description": "Two disjoint components can be delegated to parallel workers",
+    "given": {
+      "openCards": [
+        "Card 1: Implement PDF exporter in src/exporters/pdf.ts",
+        "Card 2: Implement CSV exporter in src/exporters/csv.ts"
+      ]
+    },
+    "expected": {
+      "action": "delegate-independent-cards",
+      "gates": ["ownership-explicit", "acceptance-explicit"]
+    },
+    "forbidden": {
+      "action": "delegate-overlapping-files"
+    }
+  }
+]

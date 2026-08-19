@@ -52,6 +52,12 @@ import {
   renderNeuralGraphAscii,
 } from './core/neural-linking.js';
 import { listRecipes, getRecipe, renderRecipeAscii } from './core/recipes.js';
+import {
+  readSkillResource,
+  getSkillPackageSummary,
+  listSkillResources,
+  validateAllSkillPackages,
+} from './core/skill-package.js';
 import type { EvidenceKind, EvidenceResult } from './core/types.js';
 import { logHeader, logInfo, logError, logSuccess, logWarn, colors } from './utils.js';
 
@@ -484,8 +490,10 @@ function runFeedCommand(args: string[]): number {
         logHeader(`get-fable Skill Feed (${feed.length} skills available)`);
         for (const item of feed) {
           const packCol = `[${item.pack}]`.padEnd(16);
+          const matCol = `[${item.maturity}]`.padEnd(6);
+          const resCount = `${item.resourceCounts.total} res`;
           console.log(
-            `  ${colors.green}${item.id.padEnd(16)}${colors.reset} ${colors.yellow}${packCol}${colors.reset} ${item.description}`
+            `  ${colors.green}${item.id.padEnd(16)}${colors.reset} ${colors.cyan}${matCol}${colors.reset} ${colors.yellow}${packCol}${colors.reset} (${resCount}) ${item.description}`
           );
         }
       }
@@ -500,7 +508,7 @@ function runFeedCommand(args: string[]): number {
         logHeader(`Search results for "${query}" (${results.length} skills matched)`);
         for (const item of results) {
           console.log(
-            `  ${colors.green}${item.id.padEnd(16)}${colors.reset} ${colors.yellow}[${item.pack}]${colors.reset} ${item.description}`
+            `  ${colors.green}${item.id.padEnd(16)}${colors.reset} ${colors.cyan}[${item.maturity}]${colors.reset} ${colors.yellow}[${item.pack}]${colors.reset} ${item.description}`
           );
         }
       }
@@ -520,7 +528,7 @@ function runFeedCommand(args: string[]): number {
       if (json) {
         console.log(JSON.stringify(detail, null, 2));
       } else {
-        logHeader(`Skill Detail: ${detail.item.id}`);
+        logHeader(`Skill Detail: ${detail.item.id} [${detail.item.maturity}]`);
         console.log(`Pack: ${detail.item.pack}`);
         console.log(`Description: ${detail.item.description}`);
         console.log(`Intents: ${detail.item.intents.join(', ')}`);
@@ -528,6 +536,11 @@ function runFeedCommand(args: string[]): number {
         console.log(`Gates: ${detail.item.gates.join(', ')}`);
         console.log(`Mutates Workspace: ${detail.item.mutatesWorkspace ? 'YES' : 'NO'}`);
         console.log(`Installed: ${detail.item.isInstalled ? 'YES' : 'NO'}`);
+        console.log(`Package Valid: ${detail.item.packageValid ? 'YES' : 'NO'}`);
+        console.log(`Resources (${detail.resources.length}):`);
+        for (const r of detail.resources) {
+          console.log(`  - [${r.type}] ${r.path} (${r.byteSize} bytes)`);
+        }
       }
       return 0;
     }
@@ -539,6 +552,7 @@ function runFeedCommand(args: string[]): number {
 
 function runSkillsCommand(args: string[]): number {
   const sub = (args[0] || 'list').toLowerCase();
+  const json = hasJsonFlag(args);
 
   switch (sub) {
     case 'install': {
@@ -571,8 +585,57 @@ function runSkillsCommand(args: string[]): number {
     case 'info': {
       return runFeedCommand(['inspect', ...args.slice(1)]);
     }
+    case 'package':
+    case 'packages': {
+      const skillId = args[1] && args[1] !== '--json' ? args[1] : undefined;
+      if (skillId) {
+        const summary = getSkillPackageSummary(skillId);
+        if (json) {
+          console.log(JSON.stringify(summary, null, 2));
+        } else {
+          logHeader(`Skill Package Summary: ${skillId}`);
+          console.log(`Valid: ${summary.valid ? 'YES' : 'NO'}`);
+          console.log(`Agents: ${summary.agentCount}`);
+          console.log(`References: ${summary.referenceCount}`);
+          console.log(`Templates: ${summary.templateCount}`);
+          console.log(`Examples: ${summary.exampleCount}`);
+          console.log(`Evals: ${summary.evalCount}`);
+          console.log(`Scripts: ${summary.scriptCount}`);
+          console.log(`Total Resources: ${summary.totalResources}`);
+        }
+      } else {
+        const results = validateAllSkillPackages();
+        if (json) {
+          console.log(JSON.stringify(results, null, 2));
+        } else {
+          logHeader('All Skill Packages Status');
+          for (const [id, res] of Object.entries(results)) {
+            const statusStr = res.valid ? `${colors.green}VALID${colors.reset}` : `${colors.red}INVALID${colors.reset}`;
+            console.log(`  ${id.padEnd(18)} ${statusStr} (${res.resources.length} resources)`);
+          }
+        }
+      }
+      return 0;
+    }
+    case 'resource': {
+      const skillId = args[1];
+      const resPath = args[2];
+      if (!skillId || !resPath) {
+        logError('skills resource requires <skill-id> <resource-path>');
+        return 1;
+      }
+      try {
+        const content = readSkillResource(skillId, resPath);
+        process.stdout.write(content);
+        return 0;
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        logError(`Failed to read resource: ${msg}`);
+        return 1;
+      }
+    }
     default:
-      logError(`Unknown skills action: ${sub}. Use: install [pack|all], list, inspect <skill-id>`);
+      logError(`Unknown skills action: ${sub}. Use: install [pack|all], list, inspect <skill-id>, package [skill-id], resource <skill-id> <path>`);
       return 1;
   }
 }

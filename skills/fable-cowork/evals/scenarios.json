@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-cowork-autonomous-delivery",
+    "description": "Execute multi-step task autonomously and deliver outcome first",
+    "given": {
+      "intent": "Audit and update the license headers across all source files"
+    },
+    "expected": {
+      "action": "silent-execution-and-report",
+      "gates": ["no-mid-chain-noise", "outcome-first"]
+    },
+    "forbidden": {
+      "action": "narrate-every-tool-step"
+    }
+  }
+]

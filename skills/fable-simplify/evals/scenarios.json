@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fable-simplify-clean-up-duplication",
+    "description": "Refactor and simplify repeated logic while preserving test suite passing",
+    "given": {
+      "intent": "Clean up duplication in the billing calculation module",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "simplify-code-preserve-tests",
+      "produces": "simplified-diff"
+    },
+    "forbidden": {
+      "action": "introduce-breaking-behavioral-changes"
+    }
+  }
+]

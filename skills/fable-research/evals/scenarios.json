@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-research-external-api",
+    "description": "Task requires confirming the current official API signature of an external SDK",
+    "given": {
+      "intent": "Check the current OpenAI SDK Responses API parameters for streaming tool calls"
+    },
+    "expected": {
+      "action": "ground-against-primary-source",
+      "produces": "research-evidence"
+    },
+    "forbidden": {
+      "action": "hallucinate-parameters-without-lookup"
+    }
+  }
+]

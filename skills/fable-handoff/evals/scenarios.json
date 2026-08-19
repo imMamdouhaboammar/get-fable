@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-handoff-compact-session",
+    "description": "Compact conversation state before closing or transferring session",
+    "given": {
+      "intent": "Prepare a concise handoff note for the next agent session"
+    },
+    "expected": {
+      "action": "prepare-handoff",
+      "produces": "continuation-state"
+    },
+    "forbidden": {
+      "action": "dump-entire-chat-transcript"
+    }
+  }
+]

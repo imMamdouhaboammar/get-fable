@@ -1,22 +1,76 @@
 ---
 name: fable-release
-description: Establish merge, release, or publish readiness from current repository evidence. Use after implementation and verification when the user wants to ship, merge, tag, publish, or prepare a pull request.
+description: Establish merge or release readiness from required quality gates and current repository state. Use after implementation and verification when preparing to ship, tag, or publish.
+version: 1.2.0
+pack: delivery
+inputs:
+  - completion_evidence
+requires:
+  - clean_worktree
+produces:
+  - release_readiness
+gates:
+  - required_checks_pass
+  - no_blocking_findings
+fallback: fable-verify
+mutatesWorkspace: false
+parallelSafe: false
+neural_links:
+  precursors:
+    - fable-verify
+    - fable-review
+    - fable-security
+  continuations:
+    - fable-handoff
+  lateral_peers:
+    - fable-handoff
+  recovery: fable-recover
 ---
 
-# Fable Release
+# fable-release
 
-Release readiness is a claim about the current repository state.
+Release gatekeeper and distribution readiness engine.
 
-## Contract
+## Purpose
+Verify that all quality gates, version numbers, package manifests, and test suites are aligned before publishing or merging.
 
-1. Resolve the intended delivery action and the repository's required checks.
-2. Confirm that completion evidence belongs to the current mutation generation.
-3. Account for blocking review and security findings required by the task.
-4. Inspect the actual diff and release metadata that will be delivered.
-5. Run or confirm the repository's release gate after the final mutation.
-6. Keep release notes and compatibility claims proportional to observed changes.
-7. If any delivery fix changes the workspace, invalidate prior readiness and return to verification.
+## When to Use
+- Preparing a package release, npm publish, or git tag.
+- Finalizing a feature branch for merge into master.
+- Verifying distribution tarball contents and semver consistency.
 
-## Exit condition
+## When NOT to Use
+- Iterating on code implementation (use `fable-execute`).
+- Initial feature planning (use `fable-plan`).
 
-Required checks are current, blocking findings are resolved or explicitly deferred, and the exact delivery target is ready for the host's merge, tag, publish, or pull-request operation.
+## Inputs
+- **`completion_evidence`**: Passing test and verification receipts from the current mutation generation.
+
+## Expected Outputs
+- **`release_readiness`**: Final release checklist report and version attestation.
+
+## Procedure
+1. Check that the working tree is clean and aligned with the base branch.
+2. Confirm that all test suites, typechecks, and linters pass.
+3. Validate version numbers across `package.json`, plugin manifests, and `CHANGELOG.md`.
+4. Perform dry-run package bundling (`npm pack --dry-run`).
+
+## Decision Rules
+- Reject release if any test evidence is from an older mutation generation.
+- Ensure all packaged assets exist and are non-empty.
+
+## Tool Policy
+- Execute packaging and version inspection commands (`npm pack --dry-run`, `get-fable doctor`).
+
+## Evidence Requirements
+- Clean `get-fable doctor --json` report and successful dry-run pack.
+
+## Failure Handling
+- If checks fail, halt release and return to `fable-verify` or `fable-execute`.
+
+## Completion Criteria
+- All release gates pass and artifacts are ready for distribution.
+
+## Progressive Resources
+- Gates: `references/release-gates.md`
+- Example: `examples/release-readiness-audit.md`

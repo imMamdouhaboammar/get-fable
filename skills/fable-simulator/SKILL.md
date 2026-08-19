@@ -1,48 +1,77 @@
 ---
 name: fable-simulator
-description: Use when verifying complex code changes, inspecting repository contracts before editing, establishing independent testing oracles, conducting headless browser playthroughs, or enforcing non-destructive workspace safety.
+description: Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety. Use when complex verification requires independent reference models or headless browser checks.
+version: 1.2.0
+pack: system
+inputs:
+  - verification_target
+requires:
+  - independent_oracle
+produces:
+  - oracle_evidence
+  - causal_verification_matrix
+gates:
+  - oracle_independent
+  - untracked_files_preserved
+fallback: fable-verify
+mutatesWorkspace: false
+parallelSafe: false
+neural_links:
+  precursors:
+    - fable-verify
+  continuations:
+    - fable-verify
+    - fable-review
+  lateral_peers:
+    - fable-verify
+  recovery: fable-recover
 ---
 
 # fable-simulator
 
-Specialist skill for rigorous truthfulness, independent verification oracles, contract derivation, headless UI inspection, and non-destructive workspace preservation.
+Independent oracle verification, contract simulation, and UI playthrough specialist.
 
-## Overview
-Ground every claim in executed proof, treat user workspace property as inviolable, and never rely on self-confirming assumptions as verification oracles.
+## Purpose
+Establish independent testing oracles, derive contracts from repository call sites, and conduct headless UI playthroughs with causal evidence.
 
 ## When to Use
-- Before editing code: Deriving the true contract from existing tests, call sites, and caller types across the repository.
-- During verification: Setting up independent test oracles (golden files, repo tests, secondary methods) where assumption checks prove nothing.
-- Verifying UI/interactive deliverables: Conducting headless browser playthroughs with causal evidence rows and pixel-level screenshot inspection.
-- Workspace safety: Guarding untracked user files, preventing unauthorized cleanups, and refusing git history rewrites.
+- Verifying complex algorithmic rewrites against independent reference oracles.
+- Deriving implicit contracts by analyzing caller types and error shapes across the repo.
+- Conducting headless browser UI walkthroughs with pixel and interaction verification.
 
-## Core Invariants & Rules
+## When NOT to Use
+- Running standard unit tests (use `fable-verify`).
+- Writing initial production code (use `fable-execute` or `fable-tdd`).
 
-### 1. Derive Contract from Repository Before Editing
-- Search every call site of the symbol or behavior being changed.
-- Read existing tests, types, and callers to identify exact error/exception types, return shapes, defaults, and sync/async semantics.
-- Match existing codebase API patterns and reuse existing helpers instead of inventing divergent shapes.
-- Enumerate every clause of the requirement: happy path, error handling, edge cases, negative clauses, and platform variants.
+## Inputs
+- **`verification_target`**: Code, API, or UI component under test.
 
-### 2. Independent Verification Oracles
-- A check built from the assumption being tested proves nothing.
-- Re-running the same script or comparing against a similarly-configured reference is not proof.
-- The oracle must be independent: repository test suites, golden fixtures, named external sources, or a second falsifying method.
-- When output diff is nonzero or byte counts differ, the task is NOT done.
+## Expected Outputs
+- **`oracle_evidence`**: Verification matrix comparing candidate output against independent oracle.
+- **`causal_verification_matrix`**: Action -> Observable Outcome -> Causal Evidence trace.
 
-### 3. Headless UI & Interactive Verification
-- Use headless browsers (never visible focus-stealing windows).
-- Build a causal evidence matrix before testing: `public input/action → expected observable outcome → actual causal evidence`.
-- For visual deliverables: Capture screenshots, open them with image-reading tools, and inspect pixels before claiming success.
-- For interactive deliverables: Exercise at least 4 distinct documented controls in a real browser playthrough and measure responsiveness/FPS.
+## Procedure
+1. Derive complete contract from existing caller sites and tests across repository.
+2. Establish independent oracle (golden fixtures, reference model, or secondary method).
+3. Execute candidate and oracle across test corpus; assert 0 diffs.
+4. For UI: execute headless browser playthrough and record evidence rows.
 
-### 4. Non-Destructive Workspace Protection
-- Untracked files not created in the current session are the user's sacred property.
-- NEVER delete, overwrite, or repurpose untracked files (`rm`, `git clean`).
-- Never rewrite git history (`filter-branch`, rebase/amend past commits, `reset --hard`, reflog purge) unless explicitly commanded.
-- Clean up only processes and temporary files created in the current session.
+## Decision Rules
+- An oracle sharing assumptions with the code under test is invalid.
+- Never delete or modify untracked user files during simulation runs.
 
-### 5. Professional Truthfulness
-- Prioritize technical accuracy over false agreement or pleasing the user.
-- Disagree constructively when technical facts contradict an assumption.
-- Ground all claims in observed output (real log lines, exit codes, concrete values). Label unobserved claims as inferred.
+## Tool Policy
+- Use headless browsers and isolated sandbox runners.
+
+## Evidence Requirements
+- Zero-diff comparison against independent oracle across representative inputs.
+
+## Failure Handling
+- If divergence is detected, identify whether candidate or oracle broke contract.
+
+## Completion Criteria
+- Candidate output matches independent oracle with 100% causal proof.
+
+## Progressive Resources
+- Guide: `references/oracle-derivation-guide.md`
+- Example: `examples/independent-oracle-verification.md`

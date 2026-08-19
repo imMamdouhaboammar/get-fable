@@ -1,66 +1,78 @@
 ---
 name: get-fable
 description: Route substantial software work through get-fable's complete coding lifecycle. Use when the user requests Fable-style rigor, when a project has active .fable state, or when the next safe engineering step depends on discovery, research, planning, testing, delegation, verification, review, security, release, handoff, evaluation, or recovery.
+version: 1.2.0
+pack: core
+inputs:
+  - task_description
+  - current_state
+requires:
+  - repo_access
+produces:
+  - routing_decision
+gates:
+  - state_schema_valid
+fallback: null
+mutatesWorkspace: false
+parallelSafe: true
+neural_links:
+  precursors: []
+  continuations:
+    - fable-discover
+    - fable-research
+    - fable-plan
+  lateral_peers:
+    - fable-spark
+  recovery: fable-recover
 ---
 
 # get-fable
 
-This is the entry skill. It changes execution discipline around a model; it does not claim to change model weights or reproduce a proprietary model.
+Universal entry point and lifecycle orchestrator for the Fable coding discipline.
 
-## Routing contract
+## Purpose
+Guide engineering agents through deterministic lifecycle phases, enforcing evidence gates, mutation tracking, and phase-appropriate skill delegation.
 
-Use `registry.json` as the canonical graph when it is available. Route by the missing evidence or decision, not by task size alone.
+## When to Use
+- Starting a new coding task or feature request.
+- Resuming an existing engineering session with `.fable` state.
+- Routing ambiguous work to the correct specialized skill.
 
-Hard precedence:
+## When NOT to Use
+- Implementing narrow, pre-planned code changes without re-routing (use `fable-execute`).
+- Running standalone test commands (use `fable-verify`).
 
-1. `$fable-recover` for repeated failure, stale execution, or contradictory evidence
-2. `$fable-security` for explicit security or trust-boundary work
-3. `$fable-release` for merge, publish, tag, or release readiness
-4. `$fable-handoff` for durable continuation to another session or agent
-5. `$fable-eval` for changes to prompts, skills, hooks, routers, memory, or agent controls
-6. `$fable-review` for independent diff, branch, commit, spec, or standards review
-7. `$fable-verify` for behavior proof and completion claims
-8. `$fable-research` when the decision depends on current external facts or primary sources
-9. `$fable-discover` when repository behavior or execution paths are unknown
-10. `$fable-delegate` for bounded independent work with explicit ownership
-11. `$fable-plan` for architecture, migrations, broad refactors, or multi-file design
-12. `$fable-tdd` for testable feature and bug behavior changes
-13. `$fable-execute` for an already bounded mutation
+## Inputs
+- **`task_description`**: User request or task specification.
+- **`current_state`**: Optional `.fable/state.json` runtime state.
 
-## Durable state
+## Expected Outputs
+- **`routing_decision`**: Selected skill, target pack, required gates, and reasons.
 
-When `.fable/state.json` exists, treat it as strict runtime state.
+## Procedure
+1. Inspect `.fable/state.json` and active work cards.
+2. Evaluate Spark micro-policy and failure streak.
+3. Compute matching scores across canonical skills.
+4. Apply state transitions and dispatch the selected skill.
 
-- `docs/SPEC.md` holds requirements and decisions
-- `.fable/LEDGER.md` holds cards and acceptance evidence
-- `.fable/PROGRESS.md` holds concise resumable context
-- `.fable/state.json` holds phase, routing, mutation generation, verification generation, failure state, and typed evidence
+## Decision Rules
+- If `failureStreak >= 2`, route immediately to `fable-recover`.
+- If task contains explicit security concerns, route to `fable-security`.
+- If workspace mutated and verification is stale, route to `fable-verify`.
 
-Every recognized workspace mutation advances `mutationGeneration`. A previous verification does not prove a newer generation. Substantial completion requires completion-capable passing evidence for the current generation.
+## Tool Policy
+- Read `.fable/state.json` and `skills/get-fable/registry.json`.
+- Execute `get-fable route "<task>" --apply` to persist state.
 
-## Evidence semantics
+## Evidence Requirements
+- Schema version 2 conformity for `.fable/state.json`.
 
-Behavior evidence: test, build, runtime, review, observation, security.
+## Failure Handling
+- On state corruption, run `get-fable doctor --fix` to repair core files.
 
-Decision evidence: research.
+## Completion Criteria
+- Routing decision is produced and matching skill contract is activated.
 
-Execution provenance: receipt.
-
-Continuity evidence: handoff.
-
-Do not use one evidence type to claim something it did not check. An execution receipt is not correctness proof. Research is not runtime proof. A clean security review is not functional verification.
-
-## Execution contract
-
-For substantial work:
-
-- resolve load-bearing unknowns before architecture
-- convert broad work into bounded acceptance cards
-- use red-green behavior checks when the change is meaningfully testable
-- delegate only disjoint work with explicit ownership and acceptance
-- invalidate old verification after later workspace mutations
-- verify the real affected path before completion
-- route repeated failure through diagnosis before another repair
-- preserve a compact handoff when work crosses a context boundary
-
-A substantial task is complete only when the current mutation generation has passing completion evidence and all task-specific gates are accounted for, or when a precise blocker is reported.
+## Progressive Resources
+- Matrix: `references/lifecycle-routing-matrix.md`
+- Example: `examples/lifecycle-walkthrough.md`

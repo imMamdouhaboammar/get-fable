@@ -17,6 +17,7 @@
           "skill": { "type": "string" },
           "gate": { "type": "string" },
           "optional": { "type": "boolean" },
+          "description": { "type": "string" },
           "fallback": { "type": "string" }
         }
       }
