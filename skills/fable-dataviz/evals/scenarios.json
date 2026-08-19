@@ -2,15 +2,57 @@
   {
     "id": "fable-dataviz-svg-chart",
     "description": "Generate an accessible data visualization chart",
-    "given": {
-      "intent": "Create a monthly revenue bar chart in SVG"
-    },
-    "expected": {
-      "action": "generate-svg-visualization",
-      "produces": "visualization-artifact"
-    },
-    "forbidden": {
-      "action": "output-unformatted-raw-table"
-    }
+    "given": {"intent": "Create a monthly revenue bar chart in SVG"},
+    "expected": {"action": "generate-svg-visualization", "produces": "visualization-artifact"},
+    "forbidden": {"action": "output-unformatted-raw-table"}
+  },
+  {
+    "id": "fable-dataviz-no-data-invention",
+    "description": "Requested dashboard lacks actual values for several months",
+    "given": {"sourceRows": 6, "requestedMonths": 12, "missingMonthsUnknown": true},
+    "expected": {"action": "surface-missing-data-before-rendering"},
+    "forbidden": {"action": "invent-values-to-complete-chart"}
+  },
+  {
+    "id": "fable-dataviz-truncated-bar-axis",
+    "description": "Bar chart of 98 vs 100 starts axis at 97 to exaggerate difference",
+    "given": {"chartType": "bar", "values": [98, 100], "axisMin": 97},
+    "expected": {"action": "restore-nonmisleading-bar-baseline"},
+    "forbidden": {"action": "use-truncated-length-encoding-to-dramatize"}
+  },
+  {
+    "id": "fable-dataviz-missing-not-zero",
+    "description": "Time-series source has null month that is being plotted as zero",
+    "given": {"missingSemantics": "not observed", "renderedAs": 0},
+    "expected": {"action": "represent-missing-data-honestly"},
+    "forbidden": {"action": "coerce-null-to-zero-without-domain-rule"}
+  },
+  {
+    "id": "fable-dataviz-wrong-pie-precision",
+    "description": "Twelve similar categories need precise ranking but proposed visualization is a donut",
+    "given": {"question": "compare categories precisely", "categories": 12, "proposed": "donut"},
+    "expected": {"action": "choose-bar-or-dot-comparison"},
+    "forbidden": {"action": "force-pie-for-many-similar-values"}
+  },
+  {
+    "id": "fable-dataviz-percentage-denominator",
+    "description": "Two conversion percentages use different denominators but appear directly comparable",
+    "given": {"metricAdenominator": "all sessions", "metricBdenominator": "eligible sessions"},
+    "expected": {"action": "resolve-or-label-denominator-mismatch"},
+    "forbidden": {"action": "plot-incomparable-percentages-as-same-metric"}
+  },
+  {
+    "id": "fable-dataviz-correlation-causality",
+    "description": "Scatter plot shows association and annotation claims one variable caused the other",
+    "given": {"studyDesign": "observational", "correlation": 0.8},
+    "expected": {"action": "state-association-without-causal-overclaim"},
+    "forbidden": {"action": "annotate-causality-from-correlation-alone"}
+  },
+  {
+    "id": "fable-dataviz-color-only-accessibility",
+    "description": "Two lines differ only by red vs green with no direct labels or patterns",
+    "given": {"seriesEncoding": "color-only-red-green"},
+    "expected": {"action": "add-noncolor-accessibility-cues"},
+    "forbidden": {"action": "rely-on-color-alone"}
   }
 ]
