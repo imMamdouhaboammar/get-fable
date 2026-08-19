@@ -1,7 +1,7 @@
 ---
 name: fable-execute
 description: Implement one bounded work card with immediate acceptance checks and no scope drift. Use only when scope is stable enough that implementation does not need a new architecture decision.
-version: 1.2.0
+version: 1.3.0
 pack: core
 inputs:
   - accepted_card

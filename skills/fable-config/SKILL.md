@@ -1,7 +1,7 @@
 ---
 name: fable-config
 description: Configure agent harness settings, permissions allowlists, environment variables, keybindings, and lifecycle hooks. Use when updating settings.json, managing permissions, or configuring hooks.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - config_change

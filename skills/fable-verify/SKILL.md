@@ -1,7 +1,7 @@
 ---
 name: fable-verify
 description: Falsify a substantial implementation and collect fresh acceptance evidence before completion. Use for test execution, typecheck, linting, regression checking, or post-repair verification.
-version: 1.2.0
+version: 1.3.0
 pack: core
 inputs:
   - implementation_diff

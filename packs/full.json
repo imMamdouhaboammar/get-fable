@@ -1,6 +1,6 @@
 {
   "name": "full",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Complete get-fable skill collection generated from the canonical registry (25 skills across 8 packs).",
   "skills": [
     "get-fable",

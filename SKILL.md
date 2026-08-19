@@ -1,6 +1,6 @@
 ---
 name: get-fable
-description: Portable coding lifecycle and continuous situational awareness for AI agents across 24 specialist skills and 7 canonical packs.
+description: Portable coding lifecycle and continuous situational awareness for AI agents across 25 specialist skills and canonical packs.
 ---
 
 # get-fable

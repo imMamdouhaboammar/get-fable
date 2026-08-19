@@ -1,7 +1,7 @@
 ---
 name: fable-eval
 description: Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions. Use when modifying agent behavior or measuring prompt quality.
-version: 1.2.0
+version: 1.3.0
 pack: evolution
 inputs:
   - candidate_modification

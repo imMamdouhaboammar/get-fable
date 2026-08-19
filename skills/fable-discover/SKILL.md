@@ -1,7 +1,7 @@
 ---
 name: fable-discover
 description: Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. Use when load-bearing facts are unknown, current behavior must be traced, or external API behavior can change the design.
-version: 1.2.0
+version: 1.3.0
 pack: core
 inputs:
   - exploration_target

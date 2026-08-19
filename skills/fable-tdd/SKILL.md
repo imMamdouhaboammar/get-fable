@@ -1,7 +1,7 @@
 ---
 name: fable-tdd
 description: Drive testable behavior changes through red, minimal implementation, green, and focused cleanup. Use for bug fixes, new features, or behavior changes with verifiable assertions.
-version: 1.2.0
+version: 1.3.0
 pack: build
 inputs:
   - behavior_contract

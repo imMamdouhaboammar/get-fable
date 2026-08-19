@@ -56,7 +56,7 @@ describe('CLI safety', () => {
   });
 
   test('reads the version from package metadata', () => {
-    expect(getPackageVersion()).toBe('1.2.0');
+    expect(getPackageVersion()).toBe('1.3.0');
   });
 
   test('runs spark command in text and json mode', () => {

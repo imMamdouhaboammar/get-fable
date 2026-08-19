@@ -4,28 +4,41 @@
 
 # get-fable
 
-### A complete coding lifecycle for AI agents
+### Reusable coding lifecycle discipline and specialist Skills for AI coding agents
 
-**Route the job. Keep the state. Prove the result. Recover when the evidence changes.**
+**Route the job. Track the state. Prove the result. Recover when assumptions break.**
 
 [![CI](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci.yml)
+[![Security](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/security.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/security.yml)
+[![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/get-fable?style=flat-square&color=3178C6)](https://www.npmjs.com/package/get-fable)
 [![Bun](https://img.shields.io/badge/runtime-Bun%201.3%2B-FBF0DF?style=flat-square&logo=bun&logoColor=14151A)](https://bun.sh)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
-**Codex · Claude Code · Antigravity / Gemini · generic Agent Skills**
+**Codex · Claude Code · Antigravity · Gemini CLI · Cursor · OpenCode · Kimi · DeepSeek · Kiro · Pi Code**
 
 </div>
 
-## Why this exists
+---
 
-Capable coding models still make predictable process mistakes on long work
+## Why get-fable
 
-They start from an assumption that should have been checked. They keep a plan only in chat history. They retry the same idea after a failure. They treat one passing test as proof of a wider product path. They say `done` after a later edit has already made the earlier verification stale
+Capable AI coding agents solve isolated programming puzzles quickly, but frequently fail on real-world engineering tasks:
 
-`get-fable` puts an explicit coding lifecycle around the model
+- **Skipping Discovery**: Jumping into code edits before inspecting repository architecture, configuration, or load-bearing contracts.
+- **Lost Context**: Storing plans and decisions only in transient chat context that gets truncated or forgotten across long sessions.
+- **Stale Verification**: Declaring a feature `done` because a test passed earlier, even though subsequent edits modified the codebase.
+- **Retry Loops**: Retrying the same failed command or syntax without diagnosing root causes or updating hypotheses.
+- **Unverified Releases**: Shipping or merging code without verifying build artifacts, package boundaries, or security constraints.
 
-It does not claim to turn one model into another model. It changes the working process around the model
+`get-fable` solves this by wrapping the coding agent in a deterministic, observable software engineering lifecycle backed by specialist Skills, durable state tracking, generation-based verification freshness, and empirical behavioral evidence.
+
+---
+
+## How It Works
+
+The core lifecycle moves through explicit, verifiable phases:
 
 ```text
 INTAKE
@@ -44,418 +57,242 @@ HANDOFF
   ↓
 EVAL
 
-Repeated or contradictory failure
+[On Repeated Failure or Contradictory Evidence]
   ↓
-RECOVER
-  ↓
-change the diagnosis before another edit
+RECOVER (Form new diagnosis before editing code)
 ```
 
-The graph is not a forced wizard. A failed verification can return to recovery. New evidence can send execution back to discovery. A changed assumption can send a card back to planning
+- **Fable Spark**: Provides situational micro-policy guidance, suggesting the exact next atomic move based on current workspace phase, active cards, and mutation generations.
+- **Generational Freshness**: Workspace edits advance `mutationGeneration`. A task cannot transition to `complete` until `verifiedGeneration` matches the current mutation generation with typed evidence.
+- **Narrow Typed Evidence**: Distinguishes `test`, `build`, `runtime`, `review`, `security`, `research`, and `receipt` proof so that research notes or build passes cannot masquerade as functional correctness.
 
-## Canonical Skill catalog
+---
 
-`skills/get-fable/registry.json` is the single authoring source for Skill identity, pack membership, lifecycle phase, routing metadata, and ordering. Generated catalogs are checked in and CI fails when they drift.
+## Installation
 
-The current catalog is generated in [`docs/CANONICAL_SKILLS.md`](docs/CANONICAL_SKILLS.md). It includes lifecycle Skills, system Skills, Spark, and Skill authoring support without repeating the list manually in runtime code.
+### Global CLI
 
-Each registry entry can declare its pack, intents, prerequisites, outputs, gates, fallback, mutation behavior, parallel safety, and valid next Skills.
-
-## Deterministic routing
-
-The router stays explicit and inspectable
+Install globally using your preferred package manager:
 
 ```bash
-get-fable route "Check the latest official API docs before we implement this"
-# fable-research
+# Using npm
+npm install -g get-fable
 
-get-fable route "Fix this regression test-first"
-# fable-tdd
-
-get-fable route "Review this diff before merge"
-# fable-review
-
-get-fable route "Review this authorization change for vulnerabilities"
-# fable-security
-
-get-fable route "The same test still fails after two retries"
-# fable-recover
+# Using Bun
+bun add -g get-fable
 ```
 
-A routing decision includes more than the selected skill
-
-```text
-selected skill
-selected pack
-task shape
-confidence
-reason codes
-required gates
-fallback skill
-parallel candidates
-valid next skills
-```
-
-The goal is not keyword theater. The router answers a more useful question: **what is missing before this work can safely move forward?**
-
-## State survives the conversation
-
-Initialize a repository once
+Run directly without installation:
 
 ```bash
-get-fable init
+# Using npx
+npx get-fable --help
+
+# Using bunx
+bunx get-fable --help
 ```
 
-That creates project-local working state and installs the canonical lifecycle skills
-
-```text
-.fable/
-  state.json
-  LEDGER.md
-  PROGRESS.md
-  VERIFIER_PROMPT.md
-
-docs/
-  SPEC.md
-
-.agents/
-  skills/
-    get-fable/
-    fable-discover/
-    fable-research/
-    fable-plan/
-    fable-tdd/
-    fable-delegate/
-    fable-execute/
-    fable-verify/
-    fable-review/
-    fable-security/
-    fable-release/
-    fable-handoff/
-    fable-eval/
-    fable-recover/
-```
-
-State schema v3 tracks
-
-```text
-workspace identity
-state revision
-phase
-current skill
-active card
-failure streak
-mutation generation
-verified generation
-last routing decision
-typed evidence
-```
-
-The raw local workspace path is not stored as the identity. The runtime hashes the canonical real path instead, so symlink aliases of the same workspace remain one identity while copied state in another workspace is rejected
-
-## Verification belongs to a workspace generation
-
-This is one of the central lifecycle rules
-
-```text
-mutationGeneration = 7
-verifiedGeneration = 7
-=> current proof may close the task
-
-new workspace edit
-mutationGeneration = 8
-verifiedGeneration = 7
-=> earlier proof is stale
-```
-
-The CLI can record the same transition explicitly when a host does not expose a write hook
-
-```bash
-get-fable mutation "updated authentication handler"
-```
-
-Then verify the current generation
-
-```bash
-get-fable state verifying
-get-fable evidence pass test "bun test" "affected tests passed"
-get-fable state complete
-```
-
-Substantial work cannot move to `complete` while `verifiedGeneration` is behind `mutationGeneration`
-
-## Evidence types do not mean the same thing
-
-get-fable keeps proof narrow
-
-Generic behavior-completion evidence:
-
-- `test`
-- `build`
-- `runtime`
-- `review`
-- `observation`
-
-Scoped security evidence:
-
-- `security` can complete a pure security-review job when that is the routed claim
-- `security` does not by itself prove a normal feature, bug fix, or product repair
-
-Decision evidence:
-
-- `research`
-
-Execution provenance:
-
-- `receipt`
-
-Continuity evidence:
-
-- `handoff`
-
-That distinction prevents bad completion shortcuts
-
-A research result can support an implementation decision but cannot prove the implementation works
-
-An execution receipt can support integrity or ordering claims about observed execution but cannot prove code quality or correctness
-
-A security review answers a security question. After a security repair changes product code, the changed behavior still needs behavior-appropriate verification
-
-## Test-first behavior when it is meaningful
-
-A testable feature or bug fix routes to `fable-tdd`
-
-```text
-behavior contract
-  ↓
-red observed
-  ↓
-smallest production change
-  ↓
-green observed
-  ↓
-focused regression check
-  ↓
-full affected-path verification
-```
-
-If a meaningful failing test cannot be produced, the skill routes back to discovery or planning instead of creating a test that only mirrors the implementation
-
-## Delegation without losing ownership
-
-`fable-delegate` permits parallel work only when the work is actually independent
-
-Each worker gets
-
-- one bounded objective
-- owned files or product surface
-- constraints
-- one acceptance condition
-
-The parent agent still owns integration, diff inspection, and the final completion claim
-
-## Security is a route, not a checkbox
-
-`fable-security` first identifies the security question
-
-```text
-new privileged architecture
-  -> threat model
-
-PR / branch / commit / local diff
-  -> security diff review
-
-repository-wide audit
-  -> repository security scan
-
-existing finding
-  -> validate finding and attack path before repair
-```
-
-When Codex Security capabilities are available, the skill can route to the matching specialist workflow. Without them, the same scope discipline still applies through repository-native review and tests
-
-## Recovery changes the diagnosis
-
-After repeated failure, activity is not enough
-
-`fable-recover` checks in this order
-
-1. Is the harness, test, fixture, permission, or environment valid?
-2. Is the changed code actually the code that is running?
-3. Is the failure in product logic?
-4. What invariant would prevent this class of failure?
-
-Another edit is allowed only after the diagnosis has gained new evidence
-
-## Lifecycle hooks
-
-Supported hosts can enforce parts of the policy mechanically
-
-| Hook | Behavior |
-|---|---|
-| Session start | Restore phase, selected specialist, active card, failure state, and generation freshness |
-| Before delegation | Require bounded work before substantial spawning |
-| After command / Bash result | Reset failure streak on success; record failures and enter recovery after two consecutive failures |
-| After write/edit | Advance `mutationGeneration` so older proof becomes stale |
-| Before stop | Reject unfinished or stale substantial completion |
-
-Hooks are advisory or enforcing according to the host capabilities. Host adapters do not own separate lifecycle semantics
-
-## Optional capability adapters
-
-The core does not require external products, but specialist tools can contribute typed evidence
-
-- Riqor can provide ordered run and evidence traces
-- AgentProof can provide execution receipt metadata
-- Codex Security can provide threat-model, diff-scan, repository-scan, and finding-validation workflows
-- current-source search tools can provide external research evidence
-
-Those adapters do not get to widen their claims. A receipt is still a receipt. Research is still research. Security evidence is still scoped security evidence
-
-## Eval the lifecycle itself
-
-Changes to routing, prompts, skills, hooks, or state rules should not be accepted because the wording sounds better
-
-`fable-eval` uses
-
-```text
-capability gap
-  ↓
-reproducible baseline
-  ↓
-one bounded intervention
-  ↓
-known scenarios
-  ↓
-unseen holdouts
-  ↓
-regression and safety checks
-  ↓
-accept or reject
-  ↓
-rollback path
-```
-
-The repository includes lifecycle trap scenarios under `eval/scenarios/`
-
-They cover current-doc routing, review-vs-release ambiguity, TDD, repeated failure, security, delegation, handoff, agent-control evals, stale verification, and invalid evidence shortcuts
-
-## Context stays focused
-
-The request compiler does not inject the entire Skill catalog into every model call
-
-It compiles only
-
-```text
-core runtime contract
-+ selected skill
-+ routing reasons
-+ required gates
-+ compact current state
-```
-
-Everything else remains behind the registry and skill pointers until needed
-
-## Quick start
-
-Requires Bun 1.3 or newer
-
-```bash
-git clone https://github.com/imMamdouhaboammar/get-fable.git
-cd get-fable
-bun install
-bun ./bin/get-fable.js init
-```
-
-Inspect routing
-
-```bash
-bun ./bin/get-fable.js route "Refactor authentication across several modules"
-```
-
-Check the local setup
-
-```bash
-bun ./bin/get-fable.js doctor
-bun ./bin/get-fable.js status
-```
-
-Install supported global integrations only when you want them
-
-```bash
-bun ./bin/get-fable.js install
-```
-
-Running get-fable without a command only shows help
-
-## CLI
-
-| Command | Purpose |
-|---|---|
-| `init` | Create durable project state and canonical project skills |
-| `route <task>` | Select and explain the current lifecycle skill |
-| `route <task> --apply` | Route the task and persist the decision |
-| `spark [intent]` | Predict the atomic next move from current state & evidence (`--json`) |
-| `state <phase>` | Move durable state through a valid coarse phase |
-| `card <text>` | Set the active bounded work card |
-| `mutation [source]` | Record a workspace mutation and stale older verification |
-| `evidence ...` | Record typed passing or failing evidence |
-| `lint` | Check ledger, state, acceptance, and evidence consistency |
-| `doctor` | Validate registry, plugins, project state, skills, and hook runtime |
-| `status` | Inspect installation and project state |
-| `install` | Install supported global integrations |
-| `install-antigravity` | Install the Antigravity / Gemini integration |
-| `serve [port]` | Start the local contextual request proxy |
-| `assets` | Inspect the optional historical reference library |
-
-## Host support
-
-### Codex / ChatGPT
-
-The repository ships the canonical Agent Skills package, Codex plugin metadata, and specialist agent profiles. The root `skills/` graph remains the source of truth
-
-### Claude Code
-
+### Supported Host Integrations
+
+Install get-fable skills and lifecycle rules into your agent environment:
+
+| Agent / Host | Installation Command | Integration Details |
+| :--- | :--- | :--- |
+| **All Hosts** | `get-fable install all` | Installs rules and skills across all detected agent configurations |
+| **Claude Code** | `get-fable install claude` | Installs skills, settings, and lifecycle hooks (`CLAUDE.md`, `settings.json`) |
+| **Antigravity / Gemini** | `get-fable install antigravity` | Configures Antigravity rule (`fable5-mode.md`), plugin manifest, and lifecycle hooks |
+| **Codex / ChatGPT** | `get-fable install codex` | Installs Codex agent profiles, plugin metadata (`.codex-plugin/plugin.json`), and skills |
+| **Cursor** | `get-fable install cursor` | Configures Cursor rules in `~/.cursor/rules/fable-lifecycle.mdc` |
+| **OpenCode** | `get-fable install opencode` | Configures OpenCode agent instructions and canonical skills |
+| **Kimi** | `get-fable install kimi` | Configures Kimi rules in `~/.kimi/rules/fable.md` |
+| **DeepSeek** | `get-fable install deepseek` | Configures DeepSeek rules in `~/.deepseek/rules/fable.md` |
+| **Kiro** | `get-fable install kiro` | Configures Kiro rules and lifecycle hooks |
+| **Pi Code** | `get-fable install pi` | Configures Pi Code rules in `~/.pi/rules/fable.md` |
+
+For Claude Code marketplace integration:
 ```bash
 /plugin marketplace add imMamdouhaboammar/get-fable
 /plugin install get-fable@get-fable
 ```
 
-The plugin includes the canonical skills and lifecycle hook configuration
+---
 
-### Antigravity / Gemini
+## Quick Start
 
-The installer copies the same canonical skill graph, lifecycle hook files, rules, and plugin metadata into the configured Antigravity / Gemini target
+Initialize a repository with durable Fable state and project skills:
 
-### Generic Agent Skills hosts
+```bash
+# 1. Initialize project working state and skills
+get-fable init
 
-Consume the root `skills/` directory. Hosts without lifecycle events can still apply mutation, evidence, and state rules explicitly through the skills and CLI
+# 2. Route an incoming task to the right specialist Skill
+get-fable route "Fix race condition in token refresh and verify with tests"
 
-## Operational boundaries
+# 3. Check situational next action
+get-fable spark
 
-get-fable is intentionally conservative about what it claims and changes
+# 4. Verify system diagnostics
+get-fable doctor
 
-- project-owned initialization targets are not silently replaced
-- malformed existing JSON configuration is not treated as empty configuration
-- substantial completion requires current-generation evidence appropriate to the routed claim
-- schema-v3 runtime state is bound to the canonical real workspace path through a digest, while the tracked repository template remains workspace-neutral and binds during migration
-- unexpected hook runtime errors fail open, while invalid project workflow state can block a completion claim
-- the request proxy binds to `127.0.0.1` by default
-- historical prompt and asset material stays separate from the canonical lifecycle pack
-- no model-weight, hidden-reasoning, proprietary-model-equivalence, or guaranteed-correctness claim is made
+# 5. Inspect available Skill feed and details
+get-fable feed list
+get-fable skills inspect fable-tdd
+
+# 6. Verify evidence freshness and machine-readable output
+get-fable behavior-eval status
+get-fable doctor --json-v1
+```
+
+---
+
+## Canonical Skill Packs
+
+`get-fable` ships **25 canonical Skills** organized into specialized functional packs:
+
+```text
+├── Core Lifecycle
+│   ├── get-fable          # Entry router and global execution contract
+│   ├── fable-discover     # Codebase inspection and execution path tracing
+│   ├── fable-research     # Primary-source documentation grounding
+│   ├── fable-plan         # Architecture design and bounded card decomposition
+│   ├── fable-tdd          # Test-driven development and regression prevention
+│   ├── fable-delegate     # Independent worker delegation with ownership boundaries
+│   ├── fable-execute      # Bounded task implementation
+│   ├── fable-verify       # Empirical falsification and verification
+│   ├── fable-review       # Grounded diff inspection and code review
+│   ├── fable-security     # Threat modeling and security diff auditing
+│   ├── fable-release      # Pre-flight release verification and packaging
+│   ├── fable-handoff      # Compact context compaction for session handoff
+│   └── fable-recover      # Systematic root-cause diagnosis after repeated failures
+├── Intelligence
+│   ├── fable-spark        # Situational next-action predictor
+│   ├── fable-simulator    # Autonomous execution simulator
+│   └── fable-memory       # Durable structured project memory
+├── Build
+│   ├── fable-run          # Bounded runtime process launcher
+│   ├── fable-loop         # Budget-capped autonomous polling loops
+│   └── fable-simplify     # Behavior-preserving refactoring and cleanup
+├── Proof
+│   ├── fable-eval         # Benchmark evaluation and regression suites
+│   ├── fable-dataviz      # Metric visualization and SVG generation
+│   └── fable-artifact     # Structured technical documentation artifacts
+├── Delivery
+│   └── fable-cowork       # Autonomous silent delivery workflows
+├── System
+│   └── fable-config       # Safe permissions and environment configuration
+└── Creator
+    └── skill-creator      # Scaffolding and benchmark generation for new Skills
+```
+
+### Evidence-Backed Maturity (M0–M5)
+
+Skills are classified by observable proof, never by self-assertion:
+- **M0–M2**: Incomplete structure or unintegrated runtime.
+- **M3**: Integrated into runtime task router, awaiting empirical holdout evidence.
+- **M4 (Proven)**: Verified across 5 adversarial categories (`known`, `negative`, `ambiguous`, `adversarial`, `holdout`) with >=90–95% pass rates against independent external LLMs.
+- **M5**: Full enterprise gate sign-off.
+
+*All 25 canonical skills currently hold fresh, verified **M4** maturity proof.*
+
+---
+
+## Behavioral Evidence Pipeline
+
+`get-fable` provides an end-to-end evaluation harness that tests whether AI agents actually follow Skill instructions under adversarial conditions:
+
+1. **Oracle-Free Request Export**:
+   ```bash
+   get-fable behavior-eval export --out /tmp/behavior-requests.json
+   ```
+   Exports blinded evaluation requests containing task instructions and context without leaking expected outputs, forbidden traps, or evaluation category tags.
+
+2. **Independent Provider Execution**:
+   The requests are executed against an independent external model (e.g., Gemini 2.5 Flash, Claude 3.5 Sonnet, GPT-4o) returning action selections and outputs.
+
+3. **Cryptographic Scoring & Verification**:
+   ```bash
+   get-fable behavior-eval score /tmp/provider-responses.json --out evals/results/agent-behavior-v1.json
+   ```
+   Scores responses against the oracle, checks forbidden action violations, binds results to SHA-256 hashes of the exact Skill corpus and oracle definitions, and marks evidence stale if any Skill is modified.
+
+For full technical specifications, see [`docs/BEHAVIOR_EVIDENCE.md`](docs/BEHAVIOR_EVIDENCE.md).
+
+---
+
+## CLI Command Reference
+
+| Command | Description | Machine-Readable Output |
+| :--- | :--- | :--- |
+| `init` | Initialize durable project state (`.fable/`) and canonical skills | `--json` |
+| `route <task>` | Route intent to the optimal specialist Skill | `--json`, `--json-v1` |
+| `spark [intent]` | Predict situational atomic next action from current state | `--json`, `--json-v1` |
+| `state <phase>` | Transition lifecycle phase (`discovering`, `planning`, `executing`, `verifying`, `idle`, `recovering`) | `--json` |
+| `card <text>` | Set the active work card | `--json` |
+| `mutation [source]` | Record workspace edit and stale older verification | `--json` |
+| `evidence ...` | Record typed verification evidence (`pass`/`fail` for `test`, `build`, `runtime`, `review`, `security`) | `--json` |
+| `lint` | Verify consistency across ledger, state, cards, and evidence | `--json` |
+| `doctor` | Run 42 system diagnostics and evidence checks | `--json`, `--json-v1` |
+| `feed list` | Search and list the canonical Skill feed | `--json`, `--json-v1` |
+| `skills inspect <id>` | Inspect full manifest, resources, and evaluation data for a Skill | `--json` |
+| `graph` | View neural links between lifecycle Skills | `--json`, ASCII |
+| `recipes` | View reusable multi-step engineering workflows | `--json`, ASCII |
+| `packs` | Inspect Skill pack collections (`core`, `intelligence`, `build`, `proof`, `delivery`, `full`) | `--json` |
+| `behavior-eval <export\|score\|status>` | Manage blinded behavioral evaluation suites | `--json`, `--json-v1` |
+| `status` | Display current workspace installation and lifecycle state | `--json`, `--json-v1` |
+| `telemetry` | View local usage metrics (opt-in, disabled by default) | `--json` |
+| `serve [port]` | Launch local contextual request proxy (`127.0.0.1:8080`) | N/A |
+
+*Note: `--json` is preserved for legacy backward compatibility; `--json-v1` outputs standardized envelopes validated against `schemas/cli-json-envelope.schema.json`.*
+
+---
+
+## Security and Trust
+
+- **Zero NPM Runtime Dependencies**: The core CLI runtime is built entirely on native Bun/Node APIs with zero third-party production dependencies.
+- **Path Traversal & Symlink Protection**: Strict containment boundary checks prevent path traversal attacks or symlink escapes during skill installation and resource loading.
+- **Transactional State Management**: State transitions and evidence updates execute atomically under file locks.
+- **Safe Network Defaults**: The local request proxy binds to loopback (`127.0.0.1`) by default, sanitizes headers, and enforces request/response byte limits.
+- **Telemetry Privacy**: Local storage only, disabled by default, and never transmits data to external servers without explicit consent.
+- **Supply-Chain Integrity**: All third-party GitHub Actions are pinned to immutable 40-character commit SHAs. Automated workflows run CodeQL analysis, TruffleHog secret scanning, and npm OIDC Trusted Publishing.
+
+---
+
+## CI and Quality Gates
+
+Every commit and pull request must pass exhaustive pre-flight quality gates:
+
+- **Test Suite**: **273 unit and integration tests passed** across 61 test files (**2,152 expectations**, 0 failures).
+- **Cypress E2E Suite**: End-to-end browser smoke verification of the public landing page and interactive terminal simulator.
+- **Doctor Diagnostics**: **41 checks PASS**, 0 warnings, 0 errors.
+- **Zero Drift**: Generated TypeScript catalogs, Python constants, and documentation (`public/llms.txt`) verified for 100% parity.
+
+---
+
+## Distribution
+
+- **npm**: [`get-fable`](https://www.npmjs.com/package/get-fable)
+- **GitHub Releases**: [Latest Release](https://github.com/imMamdouhaboammar/get-fable/releases)
+- **Homebrew**: `Formula/get-fable.rb`
+- **Agent Skill Catalogs**: [`skills.sh.json`](skills.sh.json), `.claude-plugin/`, `.codex-plugin/`, `.gemini-plugin/`, `.cursor-plugin/`, `.opencode-plugin/`, `.kimi-plugin/`, `.deepseek-plugin/`, `.kiro-plugin/`, `.pi-plugin/`.
+
+---
 
 ## Documentation
 
-- [Usage](./docs/USAGE.md)
-- [Architecture](./docs/ARCHITECTURE.md)
-- [Lifecycle v2 specification](./docs/superpowers/specs/2026-08-19-fable-coding-lifecycle-v2.md)
-- [Plugin package](./docs/PLUGIN.md)
-- [Lifecycle hooks](./hooks/README.md)
-- [Security](./SECURITY.md)
-- [Third-party notices](./THIRD_PARTY_NOTICES.md)
+- [Usage Guide](docs/USAGE.md)
+- [Architecture & Design](docs/ARCHITECTURE.md)
+- [Behavioral Evidence Protocol](docs/BEHAVIOR_EVIDENCE.md)
+- [Compatibility Matrix](docs/COMPATIBILITY.md)
+- [Canonical Skills Catalog](docs/CANONICAL_SKILLS.md)
+- [Plugin Distribution](docs/PLUGIN.md)
+- [Release Process](docs/RELEASE.md)
+- [Security Policy](SECURITY.md)
+- [Support Guidelines](SUPPORT.md)
+- [Contributing](CONTRIBUTING.md)
+
+---
 
 ## License
 
-Original get-fable code is released under the [MIT License](./LICENSE)
-
-Third-party material remains subject to its applicable source terms described in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)
+Original `get-fable` code is released under the [MIT License](./LICENSE).
+Third-party notices and terms are documented in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).

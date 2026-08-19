@@ -1,7 +1,7 @@
 ---
 name: fable-simulator
 description: Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety. Use when complex verification requires independent reference models or headless browser checks.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - verification_target

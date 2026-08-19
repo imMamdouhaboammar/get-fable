@@ -1,7 +1,7 @@
 ---
 name: fable-review
 description: Review the actual diff against requested behavior and repository standards independently from implementation. Use for code review, diff audit, standards compliance, or PR readiness.
-version: 1.2.0
+version: 1.3.0
 pack: proof
 inputs:
   - implementation_diff

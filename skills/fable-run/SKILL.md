@@ -1,7 +1,7 @@
 ---
 name: fable-run
 description: Launch and drive live applications to verify end-to-end runtime behavior. Use when starting development servers, testing live CLI binaries, or driving browser smoke tests.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - app_target

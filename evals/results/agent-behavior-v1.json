@@ -22,10 +22,7 @@
       },
       "response": {
         "action": "trace-execution-paths",
-        "produces": "repository-evidence",
-        "gates": [
-          "load-bearing-unknowns-resolved"
-        ]
+        "produces": "repository-evidence"
       }
     },
     {
@@ -43,10 +40,7 @@
       },
       "response": {
         "action": "trace-execution-paths",
-        "produces": "repository-evidence",
-        "gates": [
-          "load-bearing-unknowns-resolved"
-        ]
+        "produces": "repository-evidence"
       }
     },
     {
@@ -64,10 +58,7 @@
       },
       "response": {
         "action": "trace-execution-paths",
-        "produces": "repository-evidence",
-        "gates": [
-          "load-bearing-unknowns-resolved"
-        ]
+        "produces": "repository-evidence"
       }
     },
     {
@@ -85,10 +76,7 @@
       },
       "response": {
         "action": "trace-execution-paths",
-        "produces": "repository-evidence",
-        "gates": [
-          "load-bearing-unknowns-resolved"
-        ]
+        "produces": "repository-evidence"
       }
     },
     {
@@ -106,10 +94,7 @@
       },
       "response": {
         "action": "trace-execution-paths",
-        "produces": "repository-evidence",
-        "gates": [
-          "load-bearing-unknowns-resolved"
-        ]
+        "produces": "repository-evidence"
       }
     },
     {
@@ -127,10 +112,7 @@
       },
       "response": {
         "action": "ground-against-primary-source",
-        "produces": "research-evidence",
-        "gates": [
-          "primary-source-grounding"
-        ]
+        "produces": "research-evidence"
       }
     },
     {
@@ -148,10 +130,7 @@
       },
       "response": {
         "action": "ground-against-primary-source",
-        "produces": "research-evidence",
-        "gates": [
-          "primary-source-grounding"
-        ]
+        "produces": "research-evidence"
       }
     },
     {
@@ -169,10 +148,7 @@
       },
       "response": {
         "action": "ground-against-primary-source",
-        "produces": "research-evidence",
-        "gates": [
-          "primary-source-grounding"
-        ]
+        "produces": "research-evidence"
       }
     },
     {
@@ -190,10 +166,7 @@
       },
       "response": {
         "action": "ground-against-primary-source",
-        "produces": "research-evidence",
-        "gates": [
-          "primary-source-grounding"
-        ]
+        "produces": "research-evidence"
       }
     },
     {
@@ -211,10 +184,7 @@
       },
       "response": {
         "action": "ground-against-primary-source",
-        "produces": "research-evidence",
-        "gates": [
-          "primary-source-grounding"
-        ]
+        "produces": "research-evidence"
       }
     },
     {
@@ -232,11 +202,7 @@
       },
       "response": {
         "action": "produce-bounded-cards",
-        "produces": "accepted-card",
-        "gates": [
-          "bounded-scope",
-          "named-acceptance"
-        ]
+        "produces": "accepted-card"
       }
     },
     {
@@ -254,11 +220,7 @@
       },
       "response": {
         "action": "produce-bounded-cards",
-        "produces": "accepted-card",
-        "gates": [
-          "bounded-scope",
-          "named-acceptance"
-        ]
+        "produces": "accepted-card"
       }
     },
     {
@@ -276,11 +238,7 @@
       },
       "response": {
         "action": "produce-bounded-cards",
-        "produces": "accepted-card",
-        "gates": [
-          "bounded-scope",
-          "named-acceptance"
-        ]
+        "produces": "accepted-card"
       }
     },
     {
@@ -298,11 +256,7 @@
       },
       "response": {
         "action": "produce-bounded-cards",
-        "produces": "accepted-card",
-        "gates": [
-          "bounded-scope",
-          "named-acceptance"
-        ]
+        "produces": "accepted-card"
       }
     },
     {
@@ -320,11 +274,7 @@
       },
       "response": {
         "action": "produce-bounded-cards",
-        "produces": "accepted-card",
-        "gates": [
-          "bounded-scope",
-          "named-acceptance"
-        ]
+        "produces": "accepted-card"
       }
     },
     {
@@ -345,7 +295,6 @@
       },
       "response": {
         "action": "write-failing-test-first",
-        "produces": "regression-test",
         "gates": [
           "red-observed",
           "green-observed"
@@ -370,7 +319,6 @@
       },
       "response": {
         "action": "write-failing-test-first",
-        "produces": "regression-test",
         "gates": [
           "red-observed",
           "green-observed"
@@ -395,7 +343,6 @@
       },
       "response": {
         "action": "write-failing-test-first",
-        "produces": "regression-test",
         "gates": [
           "red-observed",
           "green-observed"
@@ -420,7 +367,6 @@
       },
       "response": {
         "action": "write-failing-test-first",
-        "produces": "regression-test",
         "gates": [
           "red-observed",
           "green-observed"
@@ -445,7 +391,6 @@
       },
       "response": {
         "action": "write-failing-test-first",
-        "produces": "regression-test",
         "gates": [
           "red-observed",
           "green-observed"
@@ -470,7 +415,6 @@
       },
       "response": {
         "action": "delegate-independent-cards",
-        "produces": "delegation-contracts",
         "gates": [
           "ownership-explicit",
           "acceptance-explicit"
@@ -495,7 +439,6 @@
       },
       "response": {
         "action": "delegate-independent-cards",
-        "produces": "delegation-contracts",
         "gates": [
           "ownership-explicit",
           "acceptance-explicit"
@@ -520,7 +463,6 @@
       },
       "response": {
         "action": "delegate-independent-cards",
-        "produces": "delegation-contracts",
         "gates": [
           "ownership-explicit",
           "acceptance-explicit"
@@ -545,7 +487,6 @@
       },
       "response": {
         "action": "delegate-independent-cards",
-        "produces": "delegation-contracts",
         "gates": [
           "ownership-explicit",
           "acceptance-explicit"
@@ -570,7 +511,6 @@
       },
       "response": {
         "action": "delegate-independent-cards",
-        "produces": "delegation-contracts",
         "gates": [
           "ownership-explicit",
           "acceptance-explicit"
@@ -592,11 +532,7 @@
       },
       "response": {
         "action": "implement-card-and-check",
-        "produces": "implementation-diff",
-        "gates": [
-          "invariants-preserved",
-          "acceptance-checked"
-        ]
+        "produces": "implementation-diff"
       }
     },
     {
@@ -614,11 +550,7 @@
       },
       "response": {
         "action": "implement-card-and-check",
-        "produces": "implementation-diff",
-        "gates": [
-          "invariants-preserved",
-          "acceptance-checked"
-        ]
+        "produces": "implementation-diff"
       }
     },
     {
@@ -636,11 +568,7 @@
       },
       "response": {
         "action": "implement-card-and-check",
-        "produces": "implementation-diff",
-        "gates": [
-          "invariants-preserved",
-          "acceptance-checked"
-        ]
+        "produces": "implementation-diff"
       }
     },
     {
@@ -658,11 +586,7 @@
       },
       "response": {
         "action": "implement-card-and-check",
-        "produces": "implementation-diff",
-        "gates": [
-          "invariants-preserved",
-          "acceptance-checked"
-        ]
+        "produces": "implementation-diff"
       }
     },
     {
@@ -680,11 +604,7 @@
       },
       "response": {
         "action": "implement-card-and-check",
-        "produces": "implementation-diff",
-        "gates": [
-          "invariants-preserved",
-          "acceptance-checked"
-        ]
+        "produces": "implementation-diff"
       }
     },
     {
@@ -702,11 +622,7 @@
       },
       "response": {
         "action": "grounded-diff-review",
-        "produces": "review-evidence",
-        "gates": [
-          "grounded-diff-read",
-          "actionable-findings"
-        ]
+        "produces": "review-evidence"
       }
     },
     {
@@ -724,11 +640,7 @@
       },
       "response": {
         "action": "grounded-diff-review",
-        "produces": "review-evidence",
-        "gates": [
-          "grounded-diff-read",
-          "actionable-findings"
-        ]
+        "produces": "review-evidence"
       }
     },
     {
@@ -746,11 +658,7 @@
       },
       "response": {
         "action": "grounded-diff-review",
-        "produces": "review-evidence",
-        "gates": [
-          "grounded-diff-read",
-          "actionable-findings"
-        ]
+        "produces": "review-evidence"
       }
     },
     {
@@ -768,11 +676,7 @@
       },
       "response": {
         "action": "grounded-diff-review",
-        "produces": "review-evidence",
-        "gates": [
-          "grounded-diff-read",
-          "actionable-findings"
-        ]
+        "produces": "review-evidence"
       }
     },
     {
@@ -790,11 +694,7 @@
       },
       "response": {
         "action": "grounded-diff-review",
-        "produces": "review-evidence",
-        "gates": [
-          "grounded-diff-read",
-          "actionable-findings"
-        ]
+        "produces": "review-evidence"
       }
     },
     {
@@ -812,11 +712,7 @@
       },
       "response": {
         "action": "security-review",
-        "produces": "security-evidence",
-        "gates": [
-          "threat-surface-checked",
-          "no-exposed-secrets"
-        ]
+        "produces": "security-evidence"
       }
     },
     {
@@ -834,11 +730,7 @@
       },
       "response": {
         "action": "security-review",
-        "produces": "security-evidence",
-        "gates": [
-          "threat-surface-checked",
-          "no-exposed-secrets"
-        ]
+        "produces": "security-evidence"
       }
     },
     {
@@ -856,11 +748,7 @@
       },
       "response": {
         "action": "security-review",
-        "produces": "security-evidence",
-        "gates": [
-          "threat-surface-checked",
-          "no-exposed-secrets"
-        ]
+        "produces": "security-evidence"
       }
     },
     {
@@ -878,11 +766,7 @@
       },
       "response": {
         "action": "security-review",
-        "produces": "security-evidence",
-        "gates": [
-          "threat-surface-checked",
-          "no-exposed-secrets"
-        ]
+        "produces": "security-evidence"
       }
     },
     {
@@ -900,11 +784,7 @@
       },
       "response": {
         "action": "security-review",
-        "produces": "security-evidence",
-        "gates": [
-          "threat-surface-checked",
-          "no-exposed-secrets"
-        ]
+        "produces": "security-evidence"
       }
     },
     {
@@ -922,11 +802,7 @@
       },
       "response": {
         "action": "check-release-gates",
-        "produces": "release-readiness",
-        "gates": [
-          "required-checks-pass",
-          "no-blocking-findings"
-        ]
+        "produces": "release-readiness"
       }
     },
     {
@@ -944,11 +820,7 @@
       },
       "response": {
         "action": "check-release-gates",
-        "produces": "release-readiness",
-        "gates": [
-          "required-checks-pass",
-          "no-blocking-findings"
-        ]
+        "produces": "release-readiness"
       }
     },
     {
@@ -966,11 +838,7 @@
       },
       "response": {
         "action": "check-release-gates",
-        "produces": "release-readiness",
-        "gates": [
-          "required-checks-pass",
-          "no-blocking-findings"
-        ]
+        "produces": "release-readiness"
       }
     },
     {
@@ -988,11 +856,7 @@
       },
       "response": {
         "action": "check-release-gates",
-        "produces": "release-readiness",
-        "gates": [
-          "required-checks-pass",
-          "no-blocking-findings"
-        ]
+        "produces": "release-readiness"
       }
     },
     {
@@ -1010,11 +874,7 @@
       },
       "response": {
         "action": "check-release-gates",
-        "produces": "release-readiness",
-        "gates": [
-          "required-checks-pass",
-          "no-blocking-findings"
-        ]
+        "produces": "release-readiness"
       }
     },
     {
@@ -1032,10 +892,7 @@
       },
       "response": {
         "action": "prepare-handoff",
-        "produces": "continuation-state",
-        "gates": [
-          "next-action-explicit"
-        ]
+        "produces": "continuation-state"
       }
     },
     {
@@ -1053,10 +910,7 @@
       },
       "response": {
         "action": "prepare-handoff",
-        "produces": "continuation-state",
-        "gates": [
-          "next-action-explicit"
-        ]
+        "produces": "continuation-state"
       }
     },
     {
@@ -1074,10 +928,7 @@
       },
       "response": {
         "action": "prepare-handoff",
-        "produces": "continuation-state",
-        "gates": [
-          "next-action-explicit"
-        ]
+        "produces": "continuation-state"
       }
     },
     {
@@ -1095,10 +946,7 @@
       },
       "response": {
         "action": "prepare-handoff",
-        "produces": "continuation-state",
-        "gates": [
-          "next-action-explicit"
-        ]
+        "produces": "continuation-state"
       }
     },
     {
@@ -1116,10 +964,7 @@
       },
       "response": {
         "action": "prepare-handoff",
-        "produces": "continuation-state",
-        "gates": [
-          "next-action-explicit"
-        ]
+        "produces": "continuation-state"
       }
     },
     {
@@ -1137,12 +982,7 @@
       },
       "response": {
         "action": "run-eval-suite",
-        "produces": "eval-verdict",
-        "gates": [
-          "baseline-frozen",
-          "holdout-tested",
-          "rollback-defined"
-        ]
+        "produces": "eval-verdict"
       }
     },
     {
@@ -1160,12 +1000,7 @@
       },
       "response": {
         "action": "run-eval-suite",
-        "produces": "eval-verdict",
-        "gates": [
-          "baseline-frozen",
-          "holdout-tested",
-          "rollback-defined"
-        ]
+        "produces": "eval-verdict"
       }
     },
     {
@@ -1183,12 +1018,7 @@
       },
       "response": {
         "action": "run-eval-suite",
-        "produces": "eval-verdict",
-        "gates": [
-          "baseline-frozen",
-          "holdout-tested",
-          "rollback-defined"
-        ]
+        "produces": "eval-verdict"
       }
     },
     {
@@ -1206,12 +1036,7 @@
       },
       "response": {
         "action": "run-eval-suite",
-        "produces": "eval-verdict",
-        "gates": [
-          "baseline-frozen",
-          "holdout-tested",
-          "rollback-defined"
-        ]
+        "produces": "eval-verdict"
       }
     },
     {
@@ -1229,12 +1054,7 @@
       },
       "response": {
         "action": "run-eval-suite",
-        "produces": "eval-verdict",
-        "gates": [
-          "baseline-frozen",
-          "holdout-tested",
-          "rollback-defined"
-        ]
+        "produces": "eval-verdict"
       }
     },
     {
@@ -1252,10 +1072,7 @@
       },
       "response": {
         "action": "diagnose-root-cause",
-        "produces": "revised-hypothesis",
-        "gates": [
-          "diagnosis-changed"
-        ]
+        "produces": "revised-hypothesis"
       }
     },
     {
@@ -1273,10 +1090,7 @@
       },
       "response": {
         "action": "diagnose-root-cause",
-        "produces": "revised-hypothesis",
-        "gates": [
-          "diagnosis-changed"
-        ]
+        "produces": "revised-hypothesis"
       }
     },
     {
@@ -1294,10 +1108,7 @@
       },
       "response": {
         "action": "diagnose-root-cause",
-        "produces": "revised-hypothesis",
-        "gates": [
-          "diagnosis-changed"
-        ]
+        "produces": "revised-hypothesis"
       }
     },
     {
@@ -1315,10 +1126,7 @@
       },
       "response": {
         "action": "diagnose-root-cause",
-        "produces": "revised-hypothesis",
-        "gates": [
-          "diagnosis-changed"
-        ]
+        "produces": "revised-hypothesis"
       }
     },
     {
@@ -1336,10 +1144,7 @@
       },
       "response": {
         "action": "diagnose-root-cause",
-        "produces": "revised-hypothesis",
-        "gates": [
-          "diagnosis-changed"
-        ]
+        "produces": "revised-hypothesis"
       }
     },
     {
@@ -1357,11 +1162,7 @@
       },
       "response": {
         "action": "generate-svg-visualization",
-        "produces": "visualization-artifact",
-        "gates": [
-          "theme-contrast-valid",
-          "viewbox-defined"
-        ]
+        "produces": "visualization-artifact"
       }
     },
     {
@@ -1379,11 +1180,7 @@
       },
       "response": {
         "action": "generate-svg-visualization",
-        "produces": "visualization-artifact",
-        "gates": [
-          "theme-contrast-valid",
-          "viewbox-defined"
-        ]
+        "produces": "visualization-artifact"
       }
     },
     {
@@ -1401,11 +1198,7 @@
       },
       "response": {
         "action": "generate-svg-visualization",
-        "produces": "visualization-artifact",
-        "gates": [
-          "theme-contrast-valid",
-          "viewbox-defined"
-        ]
+        "produces": "visualization-artifact"
       }
     },
     {
@@ -1423,11 +1216,7 @@
       },
       "response": {
         "action": "generate-svg-visualization",
-        "produces": "visualization-artifact",
-        "gates": [
-          "theme-contrast-valid",
-          "viewbox-defined"
-        ]
+        "produces": "visualization-artifact"
       }
     },
     {
@@ -1445,11 +1234,7 @@
       },
       "response": {
         "action": "generate-svg-visualization",
-        "produces": "visualization-artifact",
-        "gates": [
-          "theme-contrast-valid",
-          "viewbox-defined"
-        ]
+        "produces": "visualization-artifact"
       }
     },
     {
@@ -1467,11 +1252,7 @@
       },
       "response": {
         "action": "create-artifact-document",
-        "produces": "artifact-document",
-        "gates": [
-          "hierarchy-clear",
-          "theme-adaptive"
-        ]
+        "produces": "artifact-document"
       }
     },
     {
@@ -1489,11 +1270,7 @@
       },
       "response": {
         "action": "create-artifact-document",
-        "produces": "artifact-document",
-        "gates": [
-          "hierarchy-clear",
-          "theme-adaptive"
-        ]
+        "produces": "artifact-document"
       }
     },
     {
@@ -1511,11 +1288,7 @@
       },
       "response": {
         "action": "create-artifact-document",
-        "produces": "artifact-document",
-        "gates": [
-          "hierarchy-clear",
-          "theme-adaptive"
-        ]
+        "produces": "artifact-document"
       }
     },
     {
@@ -1533,11 +1306,7 @@
       },
       "response": {
         "action": "create-artifact-document",
-        "produces": "artifact-document",
-        "gates": [
-          "hierarchy-clear",
-          "theme-adaptive"
-        ]
+        "produces": "artifact-document"
       }
     },
     {
@@ -1555,11 +1324,7 @@
       },
       "response": {
         "action": "create-artifact-document",
-        "produces": "artifact-document",
-        "gates": [
-          "hierarchy-clear",
-          "theme-adaptive"
-        ]
+        "produces": "artifact-document"
       }
     },
     {
@@ -1577,11 +1342,7 @@
       },
       "response": {
         "action": "simplify-code-preserve-tests",
-        "produces": "simplified-diff",
-        "gates": [
-          "behavior-preserved",
-          "tests-pass"
-        ]
+        "produces": "simplified-diff"
       }
     },
     {
@@ -1599,11 +1360,7 @@
       },
       "response": {
         "action": "simplify-code-preserve-tests",
-        "produces": "simplified-diff",
-        "gates": [
-          "behavior-preserved",
-          "tests-pass"
-        ]
+        "produces": "simplified-diff"
       }
     },
     {
@@ -1621,11 +1378,7 @@
       },
       "response": {
         "action": "simplify-code-preserve-tests",
-        "produces": "simplified-diff",
-        "gates": [
-          "behavior-preserved",
-          "tests-pass"
-        ]
+        "produces": "simplified-diff"
       }
     },
     {
@@ -1643,11 +1396,7 @@
       },
       "response": {
         "action": "simplify-code-preserve-tests",
-        "produces": "simplified-diff",
-        "gates": [
-          "behavior-preserved",
-          "tests-pass"
-        ]
+        "produces": "simplified-diff"
       }
     },
     {
@@ -1665,11 +1414,7 @@
       },
       "response": {
         "action": "simplify-code-preserve-tests",
-        "produces": "simplified-diff",
-        "gates": [
-          "behavior-preserved",
-          "tests-pass"
-        ]
+        "produces": "simplified-diff"
       }
     },
     {
@@ -1690,7 +1435,6 @@
       },
       "response": {
         "action": "run-bounded-polling-loop",
-        "produces": "loop-receipt",
         "gates": [
           "budget-bounded",
           "exit-condition-explicit"
@@ -1715,7 +1459,6 @@
       },
       "response": {
         "action": "run-bounded-polling-loop",
-        "produces": "loop-receipt",
         "gates": [
           "budget-bounded",
           "exit-condition-explicit"
@@ -1740,7 +1483,6 @@
       },
       "response": {
         "action": "run-bounded-polling-loop",
-        "produces": "loop-receipt",
         "gates": [
           "budget-bounded",
           "exit-condition-explicit"
@@ -1765,7 +1507,6 @@
       },
       "response": {
         "action": "run-bounded-polling-loop",
-        "produces": "loop-receipt",
         "gates": [
           "budget-bounded",
           "exit-condition-explicit"
@@ -1790,7 +1531,6 @@
       },
       "response": {
         "action": "run-bounded-polling-loop",
-        "produces": "loop-receipt",
         "gates": [
           "budget-bounded",
           "exit-condition-explicit"
@@ -1812,11 +1552,7 @@
       },
       "response": {
         "action": "launch-and-smoke-test",
-        "produces": "runtime-evidence",
-        "gates": [
-          "process-clean-exit",
-          "status-200"
-        ]
+        "produces": "runtime-evidence"
       }
     },
     {
@@ -1834,11 +1570,7 @@
       },
       "response": {
         "action": "launch-and-smoke-test",
-        "produces": "runtime-evidence",
-        "gates": [
-          "process-clean-exit",
-          "status-200"
-        ]
+        "produces": "runtime-evidence"
       }
     },
     {
@@ -1856,11 +1588,7 @@
       },
       "response": {
         "action": "launch-and-smoke-test",
-        "produces": "runtime-evidence",
-        "gates": [
-          "process-clean-exit",
-          "status-200"
-        ]
+        "produces": "runtime-evidence"
       }
     },
     {
@@ -1878,11 +1606,7 @@
       },
       "response": {
         "action": "launch-and-smoke-test",
-        "produces": "runtime-evidence",
-        "gates": [
-          "process-clean-exit",
-          "status-200"
-        ]
+        "produces": "runtime-evidence"
       }
     },
     {
@@ -1900,11 +1624,7 @@
       },
       "response": {
         "action": "launch-and-smoke-test",
-        "produces": "runtime-evidence",
-        "gates": [
-          "process-clean-exit",
-          "status-200"
-        ]
+        "produces": "runtime-evidence"
       }
     },
     {
@@ -1925,7 +1645,6 @@
       },
       "response": {
         "action": "record-memory-fact",
-        "produces": "memory-record",
         "gates": [
           "single-fact-file",
           "index-synced"
@@ -1950,7 +1669,6 @@
       },
       "response": {
         "action": "record-memory-fact",
-        "produces": "memory-record",
         "gates": [
           "single-fact-file",
           "index-synced"
@@ -1975,7 +1693,6 @@
       },
       "response": {
         "action": "record-memory-fact",
-        "produces": "memory-record",
         "gates": [
           "single-fact-file",
           "index-synced"
@@ -2000,7 +1717,6 @@
       },
       "response": {
         "action": "record-memory-fact",
-        "produces": "memory-record",
         "gates": [
           "single-fact-file",
           "index-synced"
@@ -2025,7 +1741,6 @@
       },
       "response": {
         "action": "record-memory-fact",
-        "produces": "memory-record",
         "gates": [
           "single-fact-file",
           "index-synced"
@@ -2050,7 +1765,6 @@
       },
       "response": {
         "action": "update-settings-json",
-        "produces": "settings-diff",
         "gates": [
           "valid-json",
           "safe-permissions"
@@ -2075,7 +1789,6 @@
       },
       "response": {
         "action": "update-settings-json",
-        "produces": "settings-diff",
         "gates": [
           "valid-json",
           "safe-permissions"
@@ -2100,7 +1813,6 @@
       },
       "response": {
         "action": "update-settings-json",
-        "produces": "settings-diff",
         "gates": [
           "valid-json",
           "safe-permissions"
@@ -2125,7 +1837,6 @@
       },
       "response": {
         "action": "update-settings-json",
-        "produces": "settings-diff",
         "gates": [
           "valid-json",
           "safe-permissions"
@@ -2150,7 +1861,6 @@
       },
       "response": {
         "action": "update-settings-json",
-        "produces": "settings-diff",
         "gates": [
           "valid-json",
           "safe-permissions"
@@ -2172,11 +1882,7 @@
       },
       "response": {
         "action": "run-independent-oracle-verification",
-        "produces": "oracle-evidence",
-        "gates": [
-          "oracle-independent",
-          "untracked-files-preserved"
-        ]
+        "produces": "oracle-evidence"
       }
     },
     {
@@ -2194,11 +1900,7 @@
       },
       "response": {
         "action": "run-independent-oracle-verification",
-        "produces": "oracle-evidence",
-        "gates": [
-          "oracle-independent",
-          "untracked-files-preserved"
-        ]
+        "produces": "oracle-evidence"
       }
     },
     {
@@ -2216,11 +1918,7 @@
       },
       "response": {
         "action": "run-independent-oracle-verification",
-        "produces": "oracle-evidence",
-        "gates": [
-          "oracle-independent",
-          "untracked-files-preserved"
-        ]
+        "produces": "oracle-evidence"
       }
     },
     {
@@ -2238,11 +1936,7 @@
       },
       "response": {
         "action": "run-independent-oracle-verification",
-        "produces": "oracle-evidence",
-        "gates": [
-          "oracle-independent",
-          "untracked-files-preserved"
-        ]
+        "produces": "oracle-evidence"
       }
     },
     {
@@ -2260,11 +1954,7 @@
       },
       "response": {
         "action": "run-independent-oracle-verification",
-        "produces": "oracle-evidence",
-        "gates": [
-          "oracle-independent",
-          "untracked-files-preserved"
-        ]
+        "produces": "oracle-evidence"
       }
     },
     {
@@ -2333,7 +2023,6 @@
       },
       "response": {
         "action": "silent-execution-and-report",
-        "produces": "autonomous-deliverable",
         "gates": [
           "no-mid-chain-noise",
           "outcome-first"
@@ -2358,7 +2047,6 @@
       },
       "response": {
         "action": "silent-execution-and-report",
-        "produces": "autonomous-deliverable",
         "gates": [
           "no-mid-chain-noise",
           "outcome-first"
@@ -2383,7 +2071,6 @@
       },
       "response": {
         "action": "silent-execution-and-report",
-        "produces": "autonomous-deliverable",
         "gates": [
           "no-mid-chain-noise",
           "outcome-first"
@@ -2413,10 +2100,6 @@
       "response": {
         "action": "scaffold-skill-package",
         "produces": "structured-skill-package",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ],
         "structure": [
           "SKILL.md",
           "skill.package.json",
@@ -2449,10 +2132,6 @@
       "response": {
         "action": "scaffold-skill-package",
         "produces": "structured-skill-package",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ],
         "structure": [
           "SKILL.md",
           "skill.package.json",
@@ -2485,10 +2164,6 @@
       "response": {
         "action": "scaffold-skill-package",
         "produces": "structured-skill-package",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ],
         "structure": [
           "SKILL.md",
           "skill.package.json",
@@ -2521,10 +2196,6 @@
       "response": {
         "action": "scaffold-skill-package",
         "produces": "structured-skill-package",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ],
         "structure": [
           "SKILL.md",
           "skill.package.json",
@@ -2557,10 +2228,6 @@
       "response": {
         "action": "scaffold-skill-package",
         "produces": "structured-skill-package",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ],
         "structure": [
           "SKILL.md",
           "skill.package.json",
@@ -2585,11 +2252,7 @@
       },
       "response": {
         "action": "generate-eval-scenarios",
-        "produces": "eval_benchmark_suite",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ]
+        "produces": "eval_benchmark_suite"
       }
     },
     {
@@ -2607,11 +2270,7 @@
       },
       "response": {
         "action": "generate-eval-scenarios",
-        "produces": "eval_benchmark_suite",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ]
+        "produces": "eval_benchmark_suite"
       }
     },
     {
@@ -2629,11 +2288,7 @@
       },
       "response": {
         "action": "generate-eval-scenarios",
-        "produces": "eval_benchmark_suite",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ]
+        "produces": "eval_benchmark_suite"
       }
     },
     {
@@ -2651,11 +2306,7 @@
       },
       "response": {
         "action": "generate-eval-scenarios",
-        "produces": "eval_benchmark_suite",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ]
+        "produces": "eval_benchmark_suite"
       }
     },
     {
@@ -2673,15 +2324,11 @@
       },
       "response": {
         "action": "generate-eval-scenarios",
-        "produces": "eval_benchmark_suite",
-        "gates": [
-          "lack-of-surprise",
-          "objective-eval-criteria"
-        ]
+        "produces": "eval_benchmark_suite"
       }
     }
   ],
-  "corpusSha256": "9ecf88b272ddb2fc204cc39d7abe622f382dcc8fccf57a5f2865c236389304d5",
+  "corpusSha256": "af7df1c71f3751457d160e858238ba5e160d360d7e45bdda864e37acedaea6f6",
   "oracleSha256": "fad33ec46b006725d16831b558ea50ac53a06157c5229e4b9f200309c4e15d4b",
-  "capturedAt": "2026-08-19T16:59:31.911Z"
+  "capturedAt": "2026-08-19T17:22:04.802Z"
 }

@@ -1,7 +1,7 @@
 ---
 name: fable-loop
 description: Run bounded recurring task loops, interval polling, or self-paced test cycles with explicit timeouts. Use when monitoring CI jobs, polling deployment status, or executing periodic tasks.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - loop_condition

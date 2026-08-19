@@ -1,7 +1,7 @@
 ---
 name: fable-recover
 description: Diagnose repeated failure, stale execution, or contradictory evidence before another edit. Use when commands fail repeatedly or retrying the same approach produces no progress.
-version: 1.2.0
+version: 1.3.0
 pack: core
 inputs:
   - failure_evidence

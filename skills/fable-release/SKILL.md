@@ -1,7 +1,7 @@
 ---
 name: fable-release
 description: Establish merge or release readiness from required quality gates and current repository state. Use after implementation and verification when preparing to ship, tag, or publish.
-version: 1.2.0
+version: 1.3.0
 pack: delivery
 inputs:
   - completion_evidence

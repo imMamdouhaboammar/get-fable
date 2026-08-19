@@ -1,7 +1,7 @@
 ---
 name: fable-dataviz
 description: Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations across all rendering mediums. Use when generating data dashboards, SVG graphics, or metrics visuals.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - data_source

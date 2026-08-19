@@ -1,7 +1,7 @@
 ---
 name: fable-handoff
 description: Compact decisions, evidence, blockers, and the exact next action into durable continuation state. Use when pausing, transferring context, or ending an engineering session.
-version: 1.2.0
+version: 1.3.0
 pack: delivery
 inputs:
   - current_state

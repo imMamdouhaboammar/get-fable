@@ -1,7 +1,7 @@
 ---
 name: fable-cowork
 description: Autonomous cowork execution with silent tool chaining, outcome-first reporting, and safety boundary enforcement. Use when executing autonomous multi-step background tasks without conversational noise.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - autonomous_task

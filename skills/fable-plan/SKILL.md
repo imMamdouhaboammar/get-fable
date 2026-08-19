@@ -1,7 +1,7 @@
 ---
 name: fable-plan
 description: Convert evidence into bounded work cards with explicit acceptance criteria. Use for architecture, migrations, broad refactors, or multi-file design after load-bearing unknowns are resolved.
-version: 1.2.0
+version: 1.3.0
 pack: core
 inputs:
   - requirements

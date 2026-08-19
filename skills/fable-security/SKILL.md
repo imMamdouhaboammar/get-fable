@@ -1,7 +1,7 @@
 ---
 name: fable-security
 description: Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation. Use for auth, secrets, untrusted inputs, permissions, or vulnerability analysis.
-version: 1.2.0
+version: 1.3.0
 pack: proof
 inputs:
   - security_scope

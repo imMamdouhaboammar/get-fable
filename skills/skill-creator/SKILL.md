@@ -1,7 +1,7 @@
 ---
 name: skill-creator
 description: Create new skills, modify and improve existing skills, optimize skill descriptions for triggering accuracy, and measure skill performance with evaluation benchmarks. Use whenever creating a skill from scratch, editing or refining a skill, generating test suites for skills, or packaging multi-agent capabilities.
-version: 1.2.0
+version: 1.3.0
 pack: creator
 inputs:
   - user_intent

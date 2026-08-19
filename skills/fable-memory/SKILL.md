@@ -1,7 +1,7 @@
 ---
 name: fable-memory
 description: Manage persistent file-based memory, indexing cross-session user preferences, feedback, and project constraints. Use when storing durable facts or recalling user instructions across sessions.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - memory_fact

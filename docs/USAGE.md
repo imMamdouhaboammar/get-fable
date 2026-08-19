@@ -1,4 +1,4 @@
-# Usage: get-fable 1.2
+# Usage: get-fable 1.3
 
 This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
 
@@ -27,7 +27,7 @@ bun /path/to/get-fable/bin/get-fable.js init
 
 Initialization creates missing working files and installs the canonical lifecycle skills under `.agents/skills/`. Existing project-owned targets are preserved.
 
-The initial state uses schema v2 with `mutationGeneration=0` and `verifiedGeneration=-1`. Workspace identity is derived from the canonical real project path, so path aliases of the same workspace do not create separate identities.
+The initial state uses schema v3 with `mutationGeneration=1` and `verifiedGeneration=-1`. Workspace identity is derived from the canonical real project path, so path aliases of the same workspace do not create separate identities.
 
 ## Route work
 

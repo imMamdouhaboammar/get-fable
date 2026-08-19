@@ -1,7 +1,7 @@
 ---
 name: fable-artifact
 description: Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components. Use when creating standalone markdown reports, Mermaid diagrams, or interactive widgets.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - artifact_spec

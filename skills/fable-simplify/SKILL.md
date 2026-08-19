@@ -1,7 +1,7 @@
 ---
 name: fable-simplify
 description: Clean up code quality, simplify logic, remove dead code, and improve altitude without changing runtime behavior. Use when refactoring complex functions, flattening nested branches, or deleting unused code.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - target_module

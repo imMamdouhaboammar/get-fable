@@ -1,7 +1,7 @@
 ---
 name: get-fable
 description: Route substantial software work through get-fable's complete coding lifecycle. Use when the user requests Fable-style rigor, when a project has active .fable state, or when the next safe engineering step depends on discovery, research, planning, testing, delegation, verification, review, security, release, handoff, evaluation, or recovery.
-version: 1.2.0
+version: 1.3.0
 pack: core
 inputs:
   - task_description

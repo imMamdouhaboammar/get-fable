@@ -229,7 +229,7 @@ describe('Fable Spark situational awareness micro-policy', () => {
 
       const spark = evaluateFableSpark({
         state,
-        userIntent: 'prepare v1.2.0 release and verify package artifact',
+        userIntent: 'prepare v1.3.0 release and verify package artifact',
       });
       expect(spark.suggestion).toBe('check release readiness');
     });

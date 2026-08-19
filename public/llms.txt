@@ -19,7 +19,7 @@
 - [Multi-Host Platform Matrix (August 19, 2026)](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/HOSTS.md): - **Anthropic Claude**: `claude-opus-5`, `claude-sonnet-5`, `claude-fable-5`, `claude-mythos-5`, `claude-haiku-4-5`
 - [External Integrations Guide](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/INTEGRATIONS.md): - **GitHub**: Automatic PR reviews, branch status checks, issue triage.
 - [Fable Coding Lifecycle v2](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/LIFECYCLE.md): │ (route task / intent)
-- [ChatGPT, Codex, and Claude Code plugin package](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/PLUGIN.md): `get-fable` 1.2.0 ships a skill-only OpenAI plugin (`.codex-plugin/plugin.json`) plus a native Claude Code plugin and marketplace manifest (`.claude-plugin/marketplace.json` and `.
+- [ChatGPT, Codex, and Claude Code plugin package](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/PLUGIN.md): `get-fable` 1.3.0 ships a skill-only OpenAI plugin (`.codex-plugin/plugin.json`) plus a native Claude Code plugin and marketplace manifest (`.claude-plugin/marketplace.json` and `.
 - [Release policy](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/RELEASE.md): Releases must start from a reviewed commit with fresh CI evidence after the last mutation.
 - [Releasing `get-fable`](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/RELEASING.md): This repository should not publish from an unverified working tree
 - [Repository hygiene inventory](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/REPOSITORY_HYGIENE.md): Root historical/reference material is retained deliberately unless provenance and replacement are clear. It is excluded from npm by the package whitelist.
@@ -28,4 +28,4 @@
 - [Skill Authoring Standard](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SKILL-AUTHORING.md): Every Fable skill must adhere to the 12-section standard:
 - [SPEC — <project / round name>](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SPEC.md): <One paragraph: what must exist when this round is done, and for whom.>
 - [Tool Capabilities & Schema Binding](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/TOOLS.md): 1. `filesystem-operations`: Workspace file read/write/edit.
-- [Usage: get-fable 1.2](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/USAGE.md): This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
+- [Usage: get-fable 1.3](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/USAGE.md): This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.

@@ -1,7 +1,7 @@
 ---
 name: fable-spark
 description: Situational awareness micro-policy predicting the smallest atomic next move without scope drift. Use when determining the next move after mutations, test passes, failures, or state transitions.
-version: 1.2.0
+version: 1.3.0
 pack: system
 inputs:
   - current_state

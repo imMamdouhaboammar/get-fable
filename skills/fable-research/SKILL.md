@@ -1,7 +1,7 @@
 ---
 name: fable-research
 description: Resolve current external facts against primary sources before they influence design or implementation. Use when API signatures, documentation, library versions, or external behaviors are uncertain.
-version: 1.2.0
+version: 1.3.0
 pack: intelligence
 inputs:
   - research_query
