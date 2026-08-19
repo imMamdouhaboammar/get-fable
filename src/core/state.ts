@@ -123,7 +123,9 @@ const SKILL_PACK: Record<FableSkillId, FablePack> = {
 };
 
 export function workspaceIdForTarget(targetDir: string = process.cwd()): string {
-  return createHash('sha256').update(path.resolve(targetDir)).digest('hex').slice(0, 24);
+  const resolved = path.resolve(targetDir);
+  const canonical = fs.existsSync(resolved) ? fs.realpathSync.native(resolved) : resolved;
+  return createHash('sha256').update(canonical).digest('hex').slice(0, 24);
 }
 
 export function createInitialState(
