@@ -82,6 +82,23 @@ describe('installGlobalFable', () => {
     expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
     expect(getFableStatus(root).claude.registeredHooks).toBe(5);
   });
+
+  test('status rejects a Claude hook wired to the wrong script or matcher', () => {
+    const root = makeTempDir('get-fable-global-status-');
+    const claude = path.join(root, 'claude');
+    process.env.CLAUDE_CONFIG_DIR = claude;
+    process.env.FABLE_GEMINI_CONFIG_DIR = path.join(root, 'gemini');
+    process.env.FABLE_AGENT_KERNEL_DIR = path.join(root, 'missing-kernel');
+
+    installGlobalFable();
+    const settingsPath = path.join(claude, 'settings.json');
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+    settings.hooks.PostToolUseFailure[0].hooks[0].command = 'python3 fable_close_guard.py';
+    settings.hooks.PostToolUse[0].matcher = 'Write';
+    fs.writeFileSync(settingsPath, JSON.stringify(settings));
+
+    expect(getFableStatus(root).claude.registeredHooks).toBe(3);
+  });
 });
 
 describe('initProjectFable', () => {

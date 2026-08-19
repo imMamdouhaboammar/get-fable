@@ -303,13 +303,22 @@ function countClaudeHookRegistrations(settingsPath: string): number {
   try {
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
     const hooks = settings.hooks || {};
+    const expected = [
+      { event: 'SessionStart', script: 'fable_profile_inject.py' },
+      { event: 'PreToolUse', script: 'fable_spawn_guard.py', matcher: 'Agent|Task|Workflow' },
+      { event: 'PostToolUse', script: 'fable_fail_streak.py', matcher: 'Bash' },
+      { event: 'PostToolUseFailure', script: 'fable_fail_streak.py', matcher: 'Bash' },
+      { event: 'Stop', script: 'fable_close_guard.py' },
+    ];
     let count = 0;
-    for (const event of ['SessionStart', 'PreToolUse', 'PostToolUse', 'PostToolUseFailure', 'Stop']) {
+    for (const requirement of expected) {
+      const { event, script, matcher } = requirement;
       const list = Array.isArray(hooks[event]) ? hooks[event] : [];
       const found = list.some((entry: any) => {
+        if (matcher && entry?.matcher !== matcher) return false;
         const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
         return subHooks.some(
-          (hook: any) => typeof hook?.command === 'string' && hook.command.includes('fable_')
+          (hook: any) => typeof hook?.command === 'string' && hook.command.includes(script)
         );
       });
       if (found) count++;
