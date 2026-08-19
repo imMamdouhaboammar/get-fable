@@ -1,6 +1,36 @@
 # Behavioral evidence
 
-get-fable keeps deterministic runtime checks separate from real agent behavior proof. The 22 action Skills that are still M3 can earn M4 only after an independent provider executes the blinded enterprise behavior bundle and the scored evidence meets every category threshold.
+get-fable keeps deterministic package/runtime checks separate from real agent behavior proof.
+
+A checked-in Skill file can be structurally valid and still produce weak behavior. Conversely, an old provider run does not remain proof after the Skill instructions, semantic scenarios, oracle, or scoring corpus changes.
+
+## Deep Skill Playbooks V2 freshness rule
+
+The Deep Skill Playbooks V2 upgrade materially changes the canonical Skill instructions and expands each non-trivial Skill from a small baseline scenario into multiple semantically distinct decision families.
+
+That means behavioral evidence captured against the previous corpus is **historical evidence, not fresh V2 evidence**.
+
+This is intentional.
+
+The evidence loader binds scored results to hashes of the exact Skill/request corpus and private oracle metadata. After a V2 Skill/eval change, `get-fable doctor` should report behavioral maturity as `NOT_CHECKED` for affected Skills until a fresh external-provider run is captured. Do not weaken freshness checks or thresholds to keep an old M4 label.
+
+## What V2 is trying to prove
+
+The V2 corpus tests more than the happy-path slogan of each Skill. Semantic families cover decisions such as:
+
+- activation vs refusal/defer boundaries;
+- competing next actions under ambiguity;
+- failure classification and recovery;
+- stale or contradictory evidence;
+- unsafe shortcuts under adversarial pressure;
+- legacy/constrained environments;
+- incorrect-but-tempting tool choices;
+- cross-Skill handoff decisions;
+- holdout behavior not used to author the Skill.
+
+The enterprise harness then evaluates those semantic families across `known`, `negative`, `ambiguous`, `adversarial`, and `holdout` conditions.
+
+Because the corpus is generated from the current Skill packages, **do not hard-code a request count in documentation**. Export the current bundle and inspect its `requests.length` and corpus hashes.
 
 ## Export the blinded requests
 
@@ -9,13 +39,19 @@ bun ./bin/get-fable.js behavior-eval export \
   --out /tmp/get-fable-agent-behavior-requests.json
 ```
 
-The current bundle contains 115 requests across the 22 M3 action Skills. Provider-facing case IDs are opaque and the bundle contains no `expected`, `forbidden`, or evaluation-category fields.
+The provider-facing bundle is oracle-free. It contains opaque case IDs and the task context/action vocabulary needed for execution, but must not expose:
 
-The provider must receive only each request's `skillId`, opaque `caseId`, `instruction`, `given`, and `actionVocabulary`. Do not give the provider repository eval files, scoring code, expected outputs, or forbidden outputs.
+- `expected` answers;
+- `forbidden` answers;
+- evaluation category names;
+- holdout identity;
+- scoring code or oracle files.
+
+The provider must receive only the public request contract. Do not provide repository eval files, expected outputs, forbidden outputs, or hidden scoring metadata.
 
 ## Execute with an independent provider
 
-For every request, return one structured response:
+For every request, return one structured response such as:
 
 ```json
 {
@@ -26,20 +62,21 @@ For every request, return one structured response:
   "structure": ["optional-path"]
 }
 ```
+
 Wrap all responses in the public response bundle contract:
 
 ```json
 {
   "schemaVersion": 1,
   "metric": "agent-behavior-responses",
-  "providerId": "your-provider-and-model-id",
+  "providerId": "provider-and-model-id",
   "responses": [
     { "caseId": "case-...", "response": { "action": "..." } }
   ]
 }
 ```
 
-A missing, duplicate, unknown, or malformed case fails closed. Provider errors must be represented as missing/failed cases rather than filled from the oracle.
+A missing, duplicate, unknown, malformed, or timed-out case fails closed or remains explicitly incomplete according to the scorer contract. Never fill a missing provider response from the private oracle.
 
 ## Score and persist evidence
 
@@ -52,10 +89,11 @@ bun ./bin/get-fable.js behavior-eval status
 bun ./bin/get-fable.js doctor --json-v1
 ```
 
-Scoring happens only after provider execution. The evidence snapshot is bound to SHA-256 hashes of the current request corpus and private oracle metadata. Validation also recomputes every case verdict from the recorded provider response, so editing pass flags or aggregate counts cannot manufacture fresh evidence.
+Scoring happens only after provider execution. Validation recomputes case verdicts from the recorded provider responses, so editing pass flags or aggregate counts cannot manufacture valid fresh evidence.
+
 ## M4 thresholds
 
-Each Skill must have executed evidence in all five categories:
+Each covered Skill must have executed evidence in all five enterprise categories:
 
 - known: pass rate >= 90%
 - negative: pass rate >= 95%
@@ -63,7 +101,19 @@ Each Skill must have executed evidence in all five categories:
 - adversarial: pass rate >= 95%
 - holdout: pass rate >= 90%
 
-`get-fable`, `fable-spark`, and `fable-verify` already use their dedicated deterministic enterprise corpora and frozen holdout evidence. The provider bundle intentionally excludes those three Skills.
+Forbidden-action violations remain disqualifying according to the maturity contract.
+
+`get-fable`, `fable-spark`, and `fable-verify` use dedicated deterministic enterprise/holdout paths rather than the provider action bundle. Their evidence is also subject to freshness rules when the relevant implementation/corpus changes.
+
+## Evidence status vocabulary
+
+Use these states precisely:
+
+- **PASS** — fresh evidence for the current corpus meets the required thresholds.
+- **FAIL** — fresh executed evidence exists and does not meet a required threshold.
+- **NOT_CHECKED** — required evidence has not been executed for the current corpus, is stale, or cannot be validated.
+
+`NOT_CHECKED` is not a softer spelling of PASS. It is the correct state after material Skill/corpus changes and before a fresh provider run.
 
 ## Public schemas
 
