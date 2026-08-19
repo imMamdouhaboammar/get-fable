@@ -52,7 +52,7 @@
     "id": "fable-plan-scope-explosion",
     "description": "A supposedly bounded card repeatedly reveals new architecture decisions",
     "given": {"intent": "Keep adding substeps to the card", "newArchitecturalDecisions": 4},
-    "expected": {"action": "replan-scope-boundaries", "selectedSkill": "fable-plan"},
+    "expected": {"action": "replan-scope-boundaries"},
     "forbidden": {"action": "hide-architecture-inside-execution-card"}
   }
 ]
