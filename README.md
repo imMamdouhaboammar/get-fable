@@ -123,7 +123,7 @@ Initialize a repository once
 get-fable init
 ```
 
-That creates project-local working state and installs the canonical skill pack
+That creates project-local working state and installs the canonical lifecycle skills
 
 ```text
 .fable/
@@ -167,7 +167,7 @@ last routing decision
 typed evidence
 ```
 
-The raw local workspace path is not stored as the identity. The runtime uses a short digest instead
+The raw local workspace path is not stored as the identity. The runtime hashes the canonical real path instead, so symlink aliases of the same workspace remain one identity while copied state in another workspace is rejected
 
 ## Verification belongs to a workspace generation
 
@@ -204,14 +204,18 @@ Substantial work cannot move to `complete` while `verifiedGeneration` is behind 
 
 get-fable keeps proof narrow
 
-Completion-capable evidence:
+Generic behavior-completion evidence:
 
 - `test`
 - `build`
 - `runtime`
 - `review`
 - `observation`
-- `security`
+
+Scoped security evidence:
+
+- `security` can complete a pure security-review job when that is the routed claim
+- `security` does not by itself prove a normal feature, bug fix, or product repair
 
 Decision evidence:
 
@@ -231,7 +235,7 @@ A research result can support an implementation decision but cannot prove the im
 
 An execution receipt can support integrity or ordering claims about observed execution but cannot prove code quality or correctness
 
-A security review answers a security question but does not replace product-level runtime verification
+A security review answers a security question. After a security repair changes product code, the changed behavior still needs behavior-appropriate verification
 
 ## Test-first behavior when it is meaningful
 
@@ -448,7 +452,8 @@ get-fable is intentionally conservative about what it claims and changes
 
 - project-owned initialization targets are not silently replaced
 - malformed existing JSON configuration is not treated as empty configuration
-- substantial completion requires current-generation evidence
+- substantial completion requires current-generation evidence appropriate to the routed claim
+- schema-v2 state is bound to the canonical real workspace path through a digest, not a persisted raw path
 - unexpected hook runtime errors fail open, while invalid project workflow state can block a completion claim
 - the request proxy binds to `127.0.0.1` by default
 - historical prompt and asset material stays separate from the canonical lifecycle pack
