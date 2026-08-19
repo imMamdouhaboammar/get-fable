@@ -115,7 +115,7 @@ evidence[]
 updatedAt
 ```
 
-`workspaceId` is a content-safe digest of the resolved workspace path; raw local paths are not persisted.
+`workspaceId` is a content-safe digest of the resolved workspace path; raw local paths are not persisted. Schema-v2 state is accepted only when the persisted digest matches the current workspace, so copied state cannot silently inherit another worktree's completion claims.
 
 Every workspace mutation increments `mutationGeneration`. Passing completion evidence records the current generation as `verifiedGeneration`. Completion requires fresh completion evidence for the current generation.
 
@@ -135,7 +135,9 @@ Evidence kinds become:
 - `receipt`
 - `handoff`
 
-Only completion-capable kinds may advance `verifiedGeneration`: test, build, runtime, review, observation, security.
+Generic software behavior can advance `verifiedGeneration` through test, build, runtime, review, or observation evidence.
+
+Security evidence may advance `verifiedGeneration` when the active routed job is itself a security review. It cannot by itself prove a normal feature or bug repair. After a security repair mutates product code, the repair must still receive behavior-appropriate verification.
 
 Research evidence supports decisions but cannot prove implementation correctness. Execution receipts support provenance/integrity claims but cannot prove correctness, quality, or security. Handoff evidence supports continuity only.
 
@@ -171,9 +173,10 @@ Other skills remain behind routing pointers rather than being injected every tur
 
 Substantial work cannot reach `complete` unless:
 
-- current generation has passing completion evidence
-- the latest completion evidence for that generation is passing
+- current generation has passing evidence appropriate to the routed claim
+- the latest accepted completion evidence for that generation is passing
 - no newer mutation exists
+- persisted workspace identity matches the current workspace
 - the state is internally valid
 
 Security, release, and review gates are task-dependent and come from registry/routing metadata rather than one universal checklist.
@@ -192,8 +195,10 @@ The change is accepted only when CI proves:
 - registry v2 integrity across all canonical skills
 - deterministic routing for research, TDD, delegation, security, release, handoff, and eval cases
 - schema-v1 state migration
+- schema-v2 workspace identity binding
 - mutation invalidates prior verification
 - fresh verification restores completion eligibility
-- non-completion evidence cannot close the completion gate
+- research, receipt, handoff, and out-of-scope security evidence cannot close the wrong completion gate
+- pure security work can close with scoped current-generation security evidence
 - prompt compilation remains compact and selected-skill-only
 - installer, plugins, CLI, lint, hooks, package inspection, and current tests do not regress
