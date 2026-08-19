@@ -6,9 +6,17 @@ const root = path.resolve(import.meta.dir, '..');
 const canonicalSkills = [
   'get-fable',
   'fable-discover',
+  'fable-research',
   'fable-plan',
+  'fable-tdd',
+  'fable-delegate',
   'fable-execute',
   'fable-verify',
+  'fable-review',
+  'fable-security',
+  'fable-release',
+  'fable-handoff',
+  'fable-eval',
   'fable-recover',
 ];
 
@@ -96,15 +104,23 @@ describe('OpenAI plugin package', () => {
     }
   });
 
-  test('canonical registry and skill files define one ordered workflow graph', () => {
+  test('canonical registry and skill files define the ordered lifecycle graph', () => {
     const registry = readJson('skills/get-fable/registry.json');
-    expect(registry.schemaVersion).toBe(1);
+    expect(registry.schemaVersion).toBe(2);
     expect(registry.entry).toBe('get-fable');
     expect(registry.skills.map((skill: any) => skill.id)).toEqual(canonicalSkills);
 
     const ids = new Set(canonicalSkills);
     for (const entry of registry.skills) {
       expect(entry.next.every((next: string) => ids.has(next))).toBe(true);
+      expect(entry.fallback === null || ids.has(entry.fallback)).toBe(true);
+      expect(['core', 'intelligence', 'build', 'proof', 'delivery', 'evolution']).toContain(entry.pack);
+      expect(Array.isArray(entry.intents)).toBe(true);
+      expect(Array.isArray(entry.requires)).toBe(true);
+      expect(Array.isArray(entry.produces)).toBe(true);
+      expect(Array.isArray(entry.gates)).toBe(true);
+      expect(typeof entry.mutatesWorkspace).toBe('boolean');
+      expect(typeof entry.parallelSafe).toBe('boolean');
       expect(Array.isArray(entry.keywords)).toBe(true);
     }
 
@@ -127,6 +143,15 @@ describe('OpenAI plugin package', () => {
     for (const ref of uniqueRefs) {
       expect(fs.existsSync(path.join(root, 'skills', ref, 'SKILL.md'))).toBe(true);
     }
+  });
+
+  test('Claude lifecycle hooks include mutation tracking and completion enforcement', () => {
+    const hooks = readJson('hooks/hooks.json').hooks;
+    const postToolUse = hooks.PostToolUse || [];
+    const commands = JSON.stringify(postToolUse);
+    expect(commands).toContain('fable_fail_streak.py');
+    expect(commands).toContain('fable_mutation.py');
+    expect(commands).toContain('Edit|Write|MultiEdit|NotebookEdit');
   });
 
   test('Codex agent routing points only to existing unpinned profiles', () => {
