@@ -115,7 +115,7 @@ def now_iso():
 
 
 def workspace_id(fable_dir):
-    project_dir = os.path.abspath(os.path.dirname(fable_dir))
+    project_dir = os.path.realpath(os.path.abspath(os.path.dirname(fable_dir)))
     return hashlib.sha256(project_dir.encode("utf-8", errors="surrogatepass")).hexdigest()[:24]
 
 
