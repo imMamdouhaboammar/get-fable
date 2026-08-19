@@ -1,0 +1,33 @@
+{
+  "name": "get-fable",
+  "owner": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "metadata": {
+    "description": "Codex AI coding lifecycle governance and situational awareness.",
+    "version": "1.2.0"
+  },
+  "plugins": [
+    {
+      "name": "get-fable",
+      "description": "Full lifecycle skill suite for OpenAI Codex.",
+      "source": "./",
+      "version": "1.2.0",
+      "author": {
+        "name": "Mamdouh Abo Ammar",
+        "url": "https://github.com/imMamdouhaboammar"
+      },
+      "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+      "repository": "https://github.com/imMamdouhaboammar/get-fable",
+      "license": "MIT",
+      "keywords": [
+        "codex",
+        "openai",
+        "agent-discipline",
+        "coding-lifecycle",
+        "skills"
+      ]
+    }
+  ]
+}

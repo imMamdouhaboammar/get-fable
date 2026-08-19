@@ -1,0 +1,86 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "get-fable API Proxy",
+    "description": "Coding lifecycle governance, routing, state tracking, and spark next-move prediction.",
+    "version": "1.2.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/v1/route": {
+      "post": {
+        "summary": "Route a task into the Fable lifecycle",
+        "operationId": "routeTask",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "task": { "type": "string" },
+                  "apply": { "type": "boolean" }
+                },
+                "required": ["task"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Routing decision",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "selectedSkill": { "type": "string" },
+                    "confidence": { "type": "number" },
+                    "reasons": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark": {
+      "get": {
+        "summary": "Predict the atomic next move from current state",
+        "operationId": "predictSpark",
+        "parameters": [
+          {
+            "name": "intent",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Spark prediction result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "suggestion": { "type": "string", "nullable": true },
+                    "reasonCode": { "type": "string" },
+                    "confidence": { "type": "number" },
+                    "source": { "type": "string" },
+                    "silent": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

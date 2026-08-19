@@ -210,9 +210,70 @@ describe('OpenAI plugin package', () => {
   test('npm package metadata includes the plugin surface and registry', () => {
     const pkg = readJson('package.json');
 
-    for (const requiredPath of ['.claude-plugin/', '.codex-plugin/', '.codex/', 'AGENTS.md', 'skills/', 'assets/']) {
+    for (const requiredPath of [
+      '.claude-plugin/',
+      '.codex-plugin/',
+      '.chatgpt-plugin/',
+      '.gemini-plugin/',
+      '.cursor-plugin/',
+      '.kimi-plugin/',
+      '.opencode-plugin/',
+      '.deepseek-plugin/',
+      '.kiro-plugin/',
+      '.pi-plugin/',
+      '.codex/',
+      'AGENTS.md',
+      'SKILL.md',
+      'skills.sh.json',
+      'skills/',
+      'assets/',
+    ]) {
       expect(pkg.files).toContain(requiredPath);
     }
     expect(fs.existsSync(path.join(root, 'skills', 'get-fable', 'registry.json'))).toBe(true);
   });
+
+  test('declares valid plugin and marketplace manifests for all 10 AI platforms', () => {
+    const pluginTargets = [
+      '.claude-plugin',
+      '.codex-plugin',
+      '.chatgpt-plugin',
+      '.gemini-plugin',
+      '.cursor-plugin',
+      '.kimi-plugin',
+      '.opencode-plugin',
+      '.deepseek-plugin',
+      '.kiro-plugin',
+      '.pi-plugin',
+    ];
+
+    for (const target of pluginTargets) {
+      const marketplacePath = path.join(root, target, 'marketplace.json');
+      expect(fs.existsSync(marketplacePath)).toBe(true);
+      const marketplace = readJson(`${target}/marketplace.json`);
+      expect(marketplace.name).toBe('get-fable');
+      expect(Array.isArray(marketplace.plugins)).toBe(true);
+
+      const pluginManifestFile = target === '.chatgpt-plugin' ? 'ai-plugin.json' : 'plugin.json';
+      const pluginPath = path.join(root, target, pluginManifestFile);
+      expect(fs.existsSync(pluginPath)).toBe(true);
+      const plugin = readJson(`${target}/${pluginManifestFile}`);
+      expect(plugin).toBeDefined();
+    }
+  });
+
+  test('declares valid Skills.sh catalog and root SKILL.md', () => {
+    const skillMd = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf-8');
+    expect(skillMd.startsWith('---\n')).toBe(true);
+    expect(skillMd).toContain('name: get-fable');
+
+    const skillsCatalog = readJson('skills.sh.json');
+    expect(skillsCatalog.name).toBe('get-fable');
+    expect(Array.isArray(skillsCatalog.skills)).toBe(true);
+    expect(skillsCatalog.skills.length).toBe(14);
+    for (const skill of skillsCatalog.skills) {
+      expect(fs.existsSync(path.join(root, skill.path))).toBe(true);
+    }
+  });
 });
+

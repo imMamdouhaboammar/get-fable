@@ -1,0 +1,26 @@
+{
+  "name": "get-fable",
+  "owner": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "metadata": {
+    "description": "Pi Code marketplace catalog listing for get-fable.",
+    "version": "1.2.0"
+  },
+  "plugins": [
+    {
+      "name": "get-fable",
+      "description": "Coding lifecycle governance and skills for Pi Code.",
+      "source": "./",
+      "version": "1.2.0",
+      "author": {
+        "name": "Mamdouh Abo Ammar",
+        "url": "https://github.com/imMamdouhaboammar"
+      },
+      "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+      "repository": "https://github.com/imMamdouhaboammar/get-fable",
+      "license": "MIT"
+    }
+  ]
+}

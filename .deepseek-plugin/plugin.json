@@ -1,0 +1,13 @@
+{
+  "name": "get-fable",
+  "version": "1.2.0",
+  "description": "DeepSeek Coder lifecycle governance and skill plugin.",
+  "author": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "repository": "https://github.com/imMamdouhaboammar/get-fable",
+  "license": "MIT",
+  "skills": "./skills/"
+}

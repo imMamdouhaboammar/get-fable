@@ -1,0 +1,26 @@
+{
+  "name": "get-fable",
+  "owner": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "metadata": {
+    "description": "Antigravity plugin marketplace catalog for get-fable coding lifecycle.",
+    "version": "1.2.0"
+  },
+  "plugins": [
+    {
+      "name": "get-fable",
+      "description": "Deterministic lifecycle skills and situational awareness for Antigravity.",
+      "source": "./",
+      "version": "1.2.0",
+      "author": {
+        "name": "Mamdouh Abo Ammar",
+        "url": "https://github.com/imMamdouhaboammar"
+      },
+      "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+      "repository": "https://github.com/imMamdouhaboammar/get-fable",
+      "license": "MIT"
+    }
+  ]
+}

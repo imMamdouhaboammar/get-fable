@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "get-fable",
+  "name_for_model": "get_fable",
+  "description_for_human": "AI coding lifecycle governance, deterministic routing, and spark situational prediction.",
+  "description_for_model": "Lifecycle governance kernel: route tasks across 14 specialist skills, track mutation state, collect typed evidence, and predict atomic next moves with spark.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:8080/openapi.json"
+  },
+  "logo_url": "http://localhost:8080/assets/mascot.svg",
+  "contact_email": "support@get-fable.dev",
+  "legal_info_url": "https://github.com/imMamdouhaboammar/get-fable/blob/master/LICENSE"
+}

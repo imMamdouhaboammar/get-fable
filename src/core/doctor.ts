@@ -59,6 +59,29 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
     checks.push(check('claude-plugin-manifest', 'pass', '.claude-plugin/plugin.json is present'));
   }
 
+  const platforms = [
+    { id: 'chatgpt', dir: '.chatgpt-plugin' },
+    { id: 'gemini', dir: '.gemini-plugin' },
+    { id: 'cursor', dir: '.cursor-plugin' },
+    { id: 'kimi', dir: '.kimi-plugin' },
+    { id: 'opencode', dir: '.opencode-plugin' },
+    { id: 'deepseek', dir: '.deepseek-plugin' },
+    { id: 'kiro', dir: '.kiro-plugin' },
+    { id: 'pi', dir: '.pi-plugin' },
+  ];
+
+  for (const platform of platforms) {
+    const marketPath = path.join(repoRoot, platform.dir, 'marketplace.json');
+    if (fs.existsSync(marketPath)) {
+      checks.push(check(`${platform.id}-marketplace`, 'pass', `${platform.dir}/marketplace.json is present`));
+    }
+  }
+
+  const skillsShPath = path.join(repoRoot, 'skills.sh.json');
+  if (fs.existsSync(skillsShPath)) {
+    checks.push(check('skills-sh-catalog', 'pass', 'skills.sh.json catalog is present'));
+  }
+
   try {
     const manifest = JSON.parse(fs.readFileSync(pluginManifest, 'utf-8')) as Record<string, any>;
     const requiredAssets = ['logo', 'composerIcon'] as const;

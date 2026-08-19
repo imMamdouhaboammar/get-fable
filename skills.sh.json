@@ -1,0 +1,84 @@
+{
+  "$schema": "https://skills.sh/schema/v1.json",
+  "name": "get-fable",
+  "version": "1.2.0",
+  "description": "Portable coding lifecycle discipline and situational awareness for AI agents.",
+  "author": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "repository": "https://github.com/imMamdouhaboammar/get-fable",
+  "skills": [
+    {
+      "id": "get-fable",
+      "path": "skills/get-fable/SKILL.md",
+      "description": "Front-door routing and coding lifecycle orchestrator."
+    },
+    {
+      "id": "fable-discover",
+      "path": "skills/fable-discover/SKILL.md",
+      "description": "Ground assumptions in source code and execution paths."
+    },
+    {
+      "id": "fable-research",
+      "path": "skills/fable-research/SKILL.md",
+      "description": "Inspect official documentation and primary external sources."
+    },
+    {
+      "id": "fable-plan",
+      "path": "skills/fable-plan/SKILL.md",
+      "description": "Design modular architectures and task specifications."
+    },
+    {
+      "id": "fable-tdd",
+      "path": "skills/fable-tdd/SKILL.md",
+      "description": "Test-driven development with red-observed invariants."
+    },
+    {
+      "id": "fable-delegate",
+      "path": "skills/fable-delegate/SKILL.md",
+      "description": "Decompose tasks into independent subagent work."
+    },
+    {
+      "id": "fable-execute",
+      "path": "skills/fable-execute/SKILL.md",
+      "description": "Bounded implementation against accepted cards."
+    },
+    {
+      "id": "fable-verify",
+      "path": "skills/fable-verify/SKILL.md",
+      "description": "Collect machine-checked test and build evidence."
+    },
+    {
+      "id": "fable-review",
+      "path": "skills/fable-review/SKILL.md",
+      "description": "Independent diff review and bug finding."
+    },
+    {
+      "id": "fable-security",
+      "path": "skills/fable-security/SKILL.md",
+      "description": "Security boundary review and vulnerability checks."
+    },
+    {
+      "id": "fable-release",
+      "path": "skills/fable-release/SKILL.md",
+      "description": "Release verification, semver, and packaging checks."
+    },
+    {
+      "id": "fable-handoff",
+      "path": "skills/fable-handoff/SKILL.md",
+      "description": "Session context preservation and structured handoffs."
+    },
+    {
+      "id": "fable-eval",
+      "path": "skills/fable-eval/SKILL.md",
+      "description": "Holdout case evaluation and benchmark scoring."
+    },
+    {
+      "id": "fable-recover",
+      "path": "skills/fable-recover/SKILL.md",
+      "description": "Deterministic failure diagnosis and anti-loop recovery."
+    }
+  ]
+}
