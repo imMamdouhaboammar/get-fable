@@ -2,8 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getCoreRepoRoot, getSkillEntry, loadSkillRegistry } from './skill-registry.js';
 import { getSkillManifestPath, validateSkillPackage } from './skill-package.js';
-import { loadFrozenRoutingHoldoutEvidence, runEnterpriseRoutingBenchmark, runSkillKnownCases, runSparkBenchmark } from './eval-runner.js';
+import { loadFrozenRoutingHoldoutEvidence, loadFrozenSparkHoldoutEvidence, runEnterpriseRoutingBenchmark, runEnterpriseSparkBenchmark, runSkillKnownCases, runSparkBenchmark } from './eval-runner.js';
 import { routeTask } from './task-router.js';
+import { loadFrozenVerificationHoldoutEvidence, runEnterpriseVerificationBenchmark } from './verification-eval.js';
 import type { FableSkillId } from './types.js';
 
 export type SkillMaturity = 'M0' | 'M1' | 'M2' | 'M3' | 'M4' | 'M5';
@@ -92,7 +93,11 @@ export function evaluateSkillMaturity(
   const known = packageValid ? runSkillKnownCases(id, repoRoot) : null;
   const spark = id === 'fable-spark' && packageValid ? runSparkBenchmark(repoRoot) : null;
   const enterpriseRouting = id === 'get-fable' && packageValid ? runEnterpriseRoutingBenchmark(repoRoot) : null;
+  const enterpriseSpark = id === 'fable-spark' && packageValid ? runEnterpriseSparkBenchmark(repoRoot) : null;
   const frozenHoldout = id === 'get-fable' && packageValid ? loadFrozenRoutingHoldoutEvidence(repoRoot) : null;
+  const frozenSparkHoldout = id === 'fable-spark' && packageValid ? loadFrozenSparkHoldoutEvidence(repoRoot) : null;
+  const enterpriseVerification = id === 'fable-verify' && packageValid ? runEnterpriseVerificationBenchmark(repoRoot) : null;
+  const frozenVerificationHoldout = id === 'fable-verify' && packageValid ? loadFrozenVerificationHoldoutEvidence(repoRoot) : null;
   const knownTotal = spark ? spark.total : known?.executable || 0;
   const knownPassed = spark ? spark.passed : known?.passed || 0;
   const runtimeIntegrated = Boolean(registryEntry && proveRuntimeIntegration(id, repoRoot, packageValid));
@@ -103,6 +108,22 @@ export function evaluateSkillMaturity(
     adversarial: slice(enterpriseRouting.categories.adversarial.total, enterpriseRouting.categories.adversarial.passed, 0.95),
     holdout: frozenHoldout?.fresh && frozenHoldout.snapshot
       ? slice(frozenHoldout.snapshot.total, frozenHoldout.snapshot.passed, 0.9)
+      : slice(0, 0),
+  } : enterpriseSpark ? {
+    known: slice(enterpriseSpark.categories.known.total, enterpriseSpark.categories.known.passed, 0.9),
+    negative: slice(enterpriseSpark.categories.negative.total, enterpriseSpark.categories.negative.passed, 0.95),
+    ambiguous: slice(enterpriseSpark.categories.ambiguous.total, enterpriseSpark.categories.ambiguous.passed, 0.9),
+    adversarial: slice(enterpriseSpark.categories.adversarial.total, enterpriseSpark.categories.adversarial.passed, 0.95),
+    holdout: frozenSparkHoldout?.fresh && frozenSparkHoldout.snapshot
+      ? slice(frozenSparkHoldout.snapshot.total, frozenSparkHoldout.snapshot.passed, 0.9)
+      : slice(0, 0),
+  } : enterpriseVerification ? {
+    known: slice(enterpriseVerification.categories.known.total, enterpriseVerification.categories.known.passed, 0.9),
+    negative: slice(enterpriseVerification.categories.negative.total, enterpriseVerification.categories.negative.passed, 0.95),
+    ambiguous: slice(enterpriseVerification.categories.ambiguous.total, enterpriseVerification.categories.ambiguous.passed, 0.9),
+    adversarial: slice(enterpriseVerification.categories.adversarial.total, enterpriseVerification.categories.adversarial.passed, 0.95),
+    holdout: frozenVerificationHoldout?.fresh && frozenVerificationHoldout.snapshot
+      ? slice(frozenVerificationHoldout.snapshot.total, frozenVerificationHoldout.snapshot.passed, 0.9)
       : slice(0, 0),
   } : {
     known: slice(knownTotal, knownPassed),

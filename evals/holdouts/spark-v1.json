@@ -1,0 +1,371 @@
+{
+  "schemaVersion": 1,
+  "suite": "enterprise-spark-holdout-v1",
+  "cases": [
+    {
+      "id": "spark-holdout-migration-failure",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "failureStreak": 2
+        },
+        "latestError": "migration failed for the second time"
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated migration failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-generic-failure",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "failureStreak": 3
+        }
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-css-build",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "mutationGeneration": 4,
+          "verifiedGeneration": 3
+        },
+        "latestMutationSource": "styles.css"
+      },
+      "expected": {
+        "suggestion": "run the build",
+        "reasonCode": "build-verification-stale",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-normal-mutation",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "mutationGeneration": 4,
+          "verifiedGeneration": 3
+        }
+      },
+      "expected": {
+        "suggestion": "run the affected tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-tdd-red",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-tdd",
+          "mutationGeneration": 0,
+          "verifiedGeneration": -1,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "suggestion": "write the failing test",
+        "reasonCode": "tdd-missing-failing-test",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-review-needed",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-review",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "suggestion": "review the diff",
+        "reasonCode": "diff-unreviewed",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-research",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "discovering",
+          "currentSkill": "fable-research"
+        }
+      },
+      "expected": {
+        "suggestion": "check the current official docs",
+        "reasonCode": "external-research-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-delegate",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-delegate"
+        },
+        "openCards": [
+          "api",
+          "ui",
+          "docs"
+        ]
+      },
+      "expected": {
+        "suggestion": "delegate the independent cards",
+        "reasonCode": "independent-cards-delegation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-release",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-release",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2
+        }
+      },
+      "expected": {
+        "suggestion": "check release readiness",
+        "reasonCode": "release-verification-ready",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-complete-handoff",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "complete",
+          "currentSkill": "fable-handoff",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2
+        }
+      },
+      "expected": {
+        "suggestion": "prepare the handoff",
+        "reasonCode": "continuity-handoff-ready",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-idle-regression",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Investigate a regression in checkout"
+      },
+      "expected": {
+        "suggestion": "reproduce the bug",
+        "reasonCode": "intake-reproduce-bug",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-idle-docs",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Confirm documentation for the API"
+      },
+      "expected": {
+        "suggestion": "check the official docs",
+        "reasonCode": "intake-check-docs",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-idle-generic",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Add a small button"
+      },
+      "expected": {
+        "suggestion": "route the task",
+        "reasonCode": "intake-route-task",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-complete-review-stale",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "complete",
+          "currentSkill": "fable-review",
+          "mutationGeneration": 3,
+          "verifiedGeneration": 3
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "scope-complete-silent",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "review the diff"
+      }
+    },
+    {
+      "id": "spark-holdout-review-typo-done",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-review",
+          "mutationGeneration": 1,
+          "verifiedGeneration": 1,
+          "activeCard": "fix documentation typo",
+          "evidence": [
+            {
+              "kind": "review",
+              "result": "pass"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "fix the review finding"
+      }
+    },
+    {
+      "id": "spark-holdout-recover-beats-handoff",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "recovering",
+          "currentSkill": "fable-handoff",
+          "failureStreak": 0
+        }
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "prepare the handoff"
+      }
+    },
+    {
+      "id": "spark-holdout-security-functional",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "mutationGeneration": 5,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass"
+            }
+          ]
+        },
+        "userIntent": "Repair the functional bug"
+      },
+      "expected": {
+        "suggestion": "verify the repaired behavior",
+        "reasonCode": "security-does-not-prove-functional-repair",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "check release readiness"
+      }
+    },
+    {
+      "id": "spark-holdout-refresh",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "mutationGeneration": 7,
+          "verifiedGeneration": 6
+        },
+        "userIntent": "refresh regression"
+      },
+      "expected": {
+        "suggestion": "run the affected refresh tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-research-discovering",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "discovering",
+          "currentSkill": "fable-research"
+        },
+        "userIntent": "Need current upstream behavior"
+      },
+      "expected": {
+        "suggestion": "check the current official docs",
+        "reasonCode": "external-research-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-holdout-executing-no-signal",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "mutationGeneration": 0,
+          "verifiedGeneration": -1
+        },
+        "userIntent": "Check API docs later"
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "route the task"
+      }
+    }
+  ]
+}

@@ -27,4 +27,28 @@ describe('evidence-backed maturity', () => {
     expect(evidence.maturity).toBe('M4');
     expect(evidence.enterpriseReady).toBe(false);
   });
+
+  test('Spark earns M4 only from fresh deterministic behavioral evidence', () => {
+    const evidence = evaluateSkillMaturity('fable-spark');
+    expect(evidence.maturity).toBe('M4');
+    expect(evidence.behavior.known.status).toBe('PASS');
+    expect(evidence.behavior.negative.status).toBe('PASS');
+    expect(evidence.behavior.ambiguous.status).toBe('PASS');
+    expect(evidence.behavior.adversarial.status).toBe('PASS');
+    expect(evidence.behavior.holdout.status).toBe('PASS');
+    expect(evidence.enterpriseReady).toBe(false);
+  });
+
+
+  test('Verify earns M4 from executable freshness and completion policy evidence', () => {
+    const evidence = evaluateSkillMaturity('fable-verify');
+    expect(evidence.maturity).toBe('M4');
+    expect(evidence.behavior.known.status).toBe('PASS');
+    expect(evidence.behavior.negative.status).toBe('PASS');
+    expect(evidence.behavior.ambiguous.status).toBe('PASS');
+    expect(evidence.behavior.adversarial.status).toBe('PASS');
+    expect(evidence.behavior.holdout.status).toBe('PASS');
+    expect(evidence.enterpriseReady).toBe(false);
+  });
+
 });

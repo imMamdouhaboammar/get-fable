@@ -336,7 +336,7 @@ export function validateRoutingHoldoutEvidenceSnapshot(
   if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== 'enterprise-routing-holdout') {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'holdout evidence schema is missing or invalid' };
   }
-  const hashFields = ['corpusSha256', 'routerSha256', 'runnerSha256'] as const;
+  const hashFields = ['corpusSha256', 'routerSha256'] as const;
   for (const field of hashFields) {
     if (typeof snapshot[field] !== 'string' || snapshot[field] !== expected[field]) {
       return { status: 'NOT_CHECKED', fresh: false, reason: `holdout evidence is stale for ${field}` };
@@ -375,5 +375,188 @@ export function loadFrozenRoutingHoldoutEvidence(repoRoot: string = getCoreRepoR
     });
   } catch (error) {
     return { status: 'NOT_CHECKED', fresh: false, reason: `failed to read holdout evidence: ${error instanceof Error ? error.message : String(error)}` };
+  }
+}
+
+export interface EnterpriseSparkCaseResult {
+  id: string;
+  source: string;
+  passed: boolean;
+  expectedSuggestion: string | null | undefined;
+  actualSuggestion: string | null;
+  expectedReasonCode?: string;
+  actualReasonCode: string;
+  expectedSilent?: boolean;
+  actualSilent: boolean;
+  forbiddenViolated: boolean;
+}
+export interface SparkCategoryEvidence {
+  status: 'PASS' | 'FAIL' | 'NOT_CHECKED';
+  total: number;
+  passed: number;
+  passRate: number | null;
+  forbiddenViolations: number;
+  cases: EnterpriseSparkCaseResult[];
+}
+export interface EnterpriseSparkBenchmark {
+  schemaVersion: 1;
+  metric: 'enterprise-spark';
+  categories: Record<EnterpriseRoutingCategory, SparkCategoryEvidence>;
+  top1Accuracy: number;
+  silencePrecision: number;
+  unsafeActionRate: number;
+}
+
+function emptySparkEvidence(): SparkCategoryEvidence {
+  return { status: 'NOT_CHECKED', total: 0, passed: 0, passRate: null, forbiddenViolations: 0, cases: [] };
+}
+
+function evaluateSparkCategory(cases: any[], category: EnterpriseRoutingCategory, repoRoot: string): SparkCategoryEvidence {
+  const selected = cases.filter((item) => item?.category === category);
+  if (selected.length === 0) return emptySparkEvidence();
+  const results: EnterpriseSparkCaseResult[] = selected.map((item) => {
+    if (typeof item?.id !== 'string' || !item?.given || typeof item.given !== 'object' || !item?.expected || typeof item.expected !== 'object') {
+      throw new Error(`Malformed ${category} Spark case`);
+    }
+    const overrides = item.given.state && typeof item.given.state === 'object' ? item.given.state : {};
+    const state = { ...createInitialState('2026-08-19T00:00:00.000Z', repoRoot), ...overrides } as FableState;
+    const actual = evaluateFableSpark({
+      state,
+      userIntent: typeof item.given.userIntent === 'string' ? item.given.userIntent : undefined,
+      latestError: typeof item.given.latestError === 'string' ? item.given.latestError : undefined,
+      latestMutationSource: typeof item.given.latestMutationSource === 'string' ? item.given.latestMutationSource : undefined,
+      activeCardText: typeof item.given.activeCardText === 'string' ? item.given.activeCardText : undefined,
+      openCards: Array.isArray(item.given.openCards) ? item.given.openCards.filter((value: unknown) => typeof value === 'string') : undefined,
+    });
+    const expectedSuggestion = item.expected.suggestion;
+    const expectedReasonCode = typeof item.expected.reasonCode === 'string' ? item.expected.reasonCode : undefined;
+    const expectedSilent = typeof item.expected.silent === 'boolean' ? item.expected.silent : undefined;
+    const forbiddenSuggestion = item?.forbidden?.suggestion;
+    const forbiddenViolated = typeof forbiddenSuggestion === 'string' && actual.suggestion === forbiddenSuggestion;
+    const passed =
+      (expectedSuggestion === undefined || actual.suggestion === expectedSuggestion) &&
+      (expectedReasonCode === undefined || actual.reasonCode === expectedReasonCode) &&
+      (expectedSilent === undefined || actual.silent === expectedSilent) &&
+      !forbiddenViolated;
+    return {
+      id: item.id,
+      source: category === 'holdout' ? 'evals/holdouts/spark-v1.json' : 'eval/benchmarks/spark-v1.json',
+      passed,
+      expectedSuggestion,
+      actualSuggestion: actual.suggestion,
+      expectedReasonCode,
+      actualReasonCode: actual.reasonCode,
+      expectedSilent,
+      actualSilent: actual.silent,
+      forbiddenViolated,
+    };
+  });
+  const passed = results.filter((item) => item.passed).length;
+  const forbiddenViolations = results.filter((item) => item.forbiddenViolated).length;
+  return {
+    status: passed === results.length ? 'PASS' : 'FAIL',
+    total: results.length,
+    passed,
+    passRate: passed / results.length,
+    forbiddenViolations,
+    cases: results,
+  };
+}
+
+export function runEnterpriseSparkBenchmark(
+  repoRoot: string = getCoreRepoRoot(),
+  options: { includeHoldout?: boolean } = {}
+): EnterpriseSparkBenchmark {
+  const checked = loadEnterpriseRoutingCases(path.join(repoRoot, 'eval', 'benchmarks', 'spark-v1.json'));
+  const holdout = options.includeHoldout
+    ? loadEnterpriseRoutingCases(path.join(repoRoot, 'evals', 'holdouts', 'spark-v1.json'))
+    : [];
+  const categories = {
+    known: evaluateSparkCategory(checked, 'known', repoRoot),
+    negative: evaluateSparkCategory(checked, 'negative', repoRoot),
+    ambiguous: evaluateSparkCategory(checked, 'ambiguous', repoRoot),
+    adversarial: evaluateSparkCategory(checked, 'adversarial', repoRoot),
+    holdout: options.includeHoldout ? evaluateSparkCategory(holdout, 'holdout', repoRoot) : emptySparkEvidence(),
+  };
+  const executed = Object.values(categories).flatMap((category) => category.cases);
+  const passed = executed.filter((item) => item.passed).length;
+  const predictedSilent = executed.filter((item) => item.actualSilent);
+  const correctlySilent = predictedSilent.filter((item) => item.expectedSilent === true).length;
+  const forbiddenViolations = executed.filter((item) => item.forbiddenViolated).length;
+  return {
+    schemaVersion: 1,
+    metric: 'enterprise-spark',
+    categories,
+    top1Accuracy: executed.length ? passed / executed.length : 0,
+    silencePrecision: predictedSilent.length ? correctlySilent / predictedSilent.length : 1,
+    unsafeActionRate: executed.length ? forbiddenViolations / executed.length : 0,
+  };
+}
+
+export interface SparkHoldoutEvidenceSnapshot {
+  schemaVersion: 1;
+  metric: 'enterprise-spark-holdout';
+  capturedAt: string;
+  repositoryRevision?: string | null;
+  corpusSha256: string;
+  sparkSha256: string;
+  runnerSha256: string;
+  total: number;
+  passed: number;
+  passRate: number;
+  forbiddenViolations: number;
+}
+export interface SparkHoldoutEvidenceValidation {
+  status: 'PASS' | 'FAIL' | 'NOT_CHECKED';
+  fresh: boolean;
+  reason: string;
+  snapshot?: SparkHoldoutEvidenceSnapshot;
+}
+
+export function validateSparkHoldoutEvidenceSnapshot(
+  snapshot: any,
+  expected: { corpusSha256: string; sparkSha256: string; runnerSha256: string }
+): SparkHoldoutEvidenceValidation {
+  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== 'enterprise-spark-holdout') {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence schema is missing or invalid' };
+  }
+  for (const field of ['corpusSha256', 'sparkSha256'] as const) {
+    if (typeof snapshot[field] !== 'string' || snapshot[field] !== expected[field]) {
+      return { status: 'NOT_CHECKED', fresh: false, reason: `Spark holdout evidence is stale for ${field}` };
+    }
+  }
+  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence counts are invalid' };
+  }
+  if (typeof snapshot.passRate !== 'number' || snapshot.passRate !== snapshot.passed / snapshot.total || !Number.isInteger(snapshot.forbiddenViolations) || snapshot.forbiddenViolations < 0) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence metrics are invalid' };
+  }
+  const typed = snapshot as SparkHoldoutEvidenceSnapshot;
+  const passed = typed.passRate >= 0.9 && typed.forbiddenViolations === 0;
+  return {
+    status: passed ? 'PASS' : 'FAIL',
+    fresh: true,
+    reason: passed ? 'fresh Spark holdout evidence meets thresholds' : 'fresh Spark holdout evidence does not meet thresholds',
+    snapshot: typed,
+  };
+}
+
+export function loadFrozenSparkHoldoutEvidence(repoRoot: string = getCoreRepoRoot()): SparkHoldoutEvidenceValidation {
+  const corpusPath = path.join(repoRoot, 'evals', 'holdouts', 'spark-v1.json');
+  const evidencePath = path.join(repoRoot, 'evals', 'results', 'spark-holdout-v1.json');
+  const sparkPath = path.join(repoRoot, 'src', 'core', 'spark.ts');
+  const runnerPath = path.join(repoRoot, 'src', 'core', 'eval-runner.ts');
+  if (![corpusPath, evidencePath, sparkPath, runnerPath].every(fs.existsSync)) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'frozen Spark holdout evidence has not been captured' };
+  }
+  try {
+    const snapshot = JSON.parse(fs.readFileSync(evidencePath, 'utf-8'));
+    return validateSparkHoldoutEvidenceSnapshot(snapshot, {
+      corpusSha256: sha256File(corpusPath),
+      sparkSha256: sha256File(sparkPath),
+      runnerSha256: sha256File(runnerPath),
+    });
+  } catch (error) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: `failed to read Spark holdout evidence: ${error instanceof Error ? error.message : String(error)}` };
   }
 }

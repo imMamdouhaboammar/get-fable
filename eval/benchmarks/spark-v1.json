@@ -1,0 +1,692 @@
+{
+  "schemaVersion": 1,
+  "suite": "enterprise-spark-v1",
+  "cases": [
+    {
+      "id": "spark-known-failure",
+      "category": "known",
+      "given": {
+        "state": {
+          "failureStreak": 2,
+          "phase": "executing"
+        }
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-integration-failure",
+      "category": "known",
+      "given": {
+        "state": {
+          "failureStreak": 2,
+          "phase": "executing"
+        },
+        "latestError": "integration test failed again"
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated integration failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-stale-tests",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 1
+        }
+      },
+      "expected": {
+        "suggestion": "run the affected tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-stale-build",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 1
+        },
+        "latestMutationSource": "package.json"
+      },
+      "expected": {
+        "suggestion": "run the build",
+        "reasonCode": "build-verification-stale",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-tdd-red",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-tdd",
+          "mutationGeneration": 0,
+          "verifiedGeneration": -1,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "suggestion": "write the failing test",
+        "reasonCode": "tdd-missing-failing-test",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-review",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-review",
+          "mutationGeneration": 1,
+          "verifiedGeneration": 1,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "suggestion": "review the diff",
+        "reasonCode": "diff-unreviewed",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-research",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "discovering",
+          "currentSkill": "fable-research"
+        }
+      },
+      "expected": {
+        "suggestion": "check the current official docs",
+        "reasonCode": "external-research-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-delegate",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-delegate"
+        },
+        "openCards": [
+          "A",
+          "B"
+        ]
+      },
+      "expected": {
+        "suggestion": "delegate the independent cards",
+        "reasonCode": "independent-cards-delegation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-release",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-release",
+          "mutationGeneration": 1,
+          "verifiedGeneration": 1
+        }
+      },
+      "expected": {
+        "suggestion": "check release readiness",
+        "reasonCode": "release-verification-ready",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-known-handoff",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-handoff",
+          "mutationGeneration": 1,
+          "verifiedGeneration": 1
+        }
+      },
+      "expected": {
+        "suggestion": "prepare the handoff",
+        "reasonCode": "continuity-handoff-ready",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-negative-idle-silent",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "idle"
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "idle-no-intent-silent",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "route the task"
+      }
+    },
+    {
+      "id": "spark-negative-complete-silent",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "complete"
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "scope-complete-silent",
+        "silent": true
+      }
+    },
+    {
+      "id": "spark-negative-tdd-red-exists",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-tdd",
+          "mutationGeneration": 0,
+          "verifiedGeneration": -1,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "fail"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "write the failing test"
+      }
+    },
+    {
+      "id": "spark-negative-review-done",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-review",
+          "mutationGeneration": 1,
+          "verifiedGeneration": 1,
+          "evidence": [
+            {
+              "kind": "review",
+              "result": "pass"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "review the diff"
+      }
+    },
+    {
+      "id": "spark-negative-one-card",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-delegate"
+        },
+        "openCards": [
+          "A"
+        ]
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "delegate the independent cards"
+      }
+    },
+    {
+      "id": "spark-negative-discovery-mutation",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "discovering",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 1
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "run the affected tests"
+      }
+    },
+    {
+      "id": "spark-negative-generic-intake",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Add a narrow feature"
+      },
+      "expected": {
+        "suggestion": "route the task",
+        "reasonCode": "intake-route-task",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-negative-security-nonrepair",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "mutationGeneration": 2,
+          "verifiedGeneration": 1,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass"
+            }
+          ]
+        },
+        "userIntent": "Audit the permission boundary"
+      },
+      "expected": {
+        "suggestion": "run the affected tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-idle-api",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Confirm the API contract"
+      },
+      "expected": {
+        "suggestion": "check the official docs",
+        "reasonCode": "intake-check-docs",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-idle-bug",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Fix a customer regression"
+      },
+      "expected": {
+        "suggestion": "reproduce the bug",
+        "reasonCode": "intake-reproduce-bug",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-review-finding",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-review",
+          "activeCard": "address auth bypass finding"
+        }
+      },
+      "expected": {
+        "suggestion": "fix the review finding",
+        "reasonCode": "review-finding-unaddressed",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-security-repair",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "mutationGeneration": 3,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass"
+            }
+          ]
+        },
+        "userIntent": "Fix the regression safely"
+      },
+      "expected": {
+        "suggestion": "verify the repaired behavior",
+        "reasonCode": "security-does-not-prove-functional-repair",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-refresh",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "mutationGeneration": 3,
+          "verifiedGeneration": 2
+        },
+        "userIntent": "Fix refresh behavior"
+      },
+      "expected": {
+        "suggestion": "run the affected refresh tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-recovering",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "recovering",
+          "failureStreak": 0
+        }
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-ambiguous-release-after-mutation",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-release",
+          "mutationGeneration": 3,
+          "verifiedGeneration": 2
+        }
+      },
+      "expected": {
+        "suggestion": "run the affected tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "check release readiness"
+      }
+    },
+    {
+      "id": "spark-ambiguous-handoff-after-mutation",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-handoff",
+          "mutationGeneration": 3,
+          "verifiedGeneration": 2
+        }
+      },
+      "expected": {
+        "suggestion": "run the affected tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "prepare the handoff"
+      }
+    },
+    {
+      "id": "spark-adversarial-complete-stale-skill",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "complete",
+          "currentSkill": "fable-release",
+          "mutationGeneration": 3,
+          "verifiedGeneration": 3
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "scope-complete-silent",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "check release readiness"
+      }
+    },
+    {
+      "id": "spark-adversarial-recovering-release",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "recovering",
+          "currentSkill": "fable-release",
+          "failureStreak": 0
+        }
+      },
+      "expected": {
+        "suggestion": "diagnose the repeated failure",
+        "reasonCode": "failure-loop-diagnose-required",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "check release readiness"
+      }
+    },
+    {
+      "id": "spark-adversarial-stale-handoff",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-handoff",
+          "mutationGeneration": 5,
+          "verifiedGeneration": 4
+        }
+      },
+      "expected": {
+        "suggestion": "run the affected tests",
+        "reasonCode": "verification-stale-after-mutation",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "prepare the handoff"
+      }
+    },
+    {
+      "id": "spark-adversarial-stale-build-release",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-release",
+          "mutationGeneration": 5,
+          "verifiedGeneration": 4
+        },
+        "latestMutationSource": "vite.config.ts"
+      },
+      "expected": {
+        "suggestion": "run the build",
+        "reasonCode": "build-verification-stale",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "check release readiness"
+      }
+    },
+    {
+      "id": "spark-adversarial-review-typo",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-review",
+          "mutationGeneration": 1,
+          "verifiedGeneration": 1,
+          "activeCard": "fix README typo",
+          "evidence": [
+            {
+              "kind": "review",
+              "result": "pass"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "fix the review finding"
+      }
+    },
+    {
+      "id": "spark-adversarial-review-real-finding",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "executing",
+          "currentSkill": "fable-review",
+          "activeCard": "fix auth boundary bypass finding"
+        }
+      },
+      "expected": {
+        "suggestion": "fix the review finding",
+        "reasonCode": "review-finding-unaddressed",
+        "silent": false
+      }
+    },
+    {
+      "id": "spark-adversarial-security-proof-not-functional",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "mutationGeneration": 6,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass"
+            }
+          ]
+        },
+        "userIntent": "Repair functional bug after security review"
+      },
+      "expected": {
+        "suggestion": "verify the repaired behavior",
+        "reasonCode": "security-does-not-prove-functional-repair",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "check release readiness"
+      }
+    },
+    {
+      "id": "spark-adversarial-build-beats-security",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "mutationGeneration": 6,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass"
+            }
+          ]
+        },
+        "userIntent": "Repair bug",
+        "latestMutationSource": "tsconfig.json"
+      },
+      "expected": {
+        "suggestion": "run the build",
+        "reasonCode": "build-verification-stale",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "verify the repaired behavior"
+      }
+    },
+    {
+      "id": "spark-adversarial-idle-fix-api",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "idle"
+        },
+        "userIntent": "Fix an API regression"
+      },
+      "expected": {
+        "suggestion": "reproduce the bug",
+        "reasonCode": "intake-reproduce-bug",
+        "silent": false
+      },
+      "forbidden": {
+        "suggestion": "check the official docs"
+      }
+    },
+    {
+      "id": "spark-adversarial-executing-api-no-intake",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "executing"
+        },
+        "userIntent": "Check API docs later"
+      },
+      "expected": {
+        "suggestion": null,
+        "reasonCode": "silent-no-obvious-move",
+        "silent": true
+      },
+      "forbidden": {
+        "suggestion": "check the official docs"
+      }
+    }
+  ]
+}

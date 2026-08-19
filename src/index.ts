@@ -13,3 +13,5 @@ export * from './core/prompt-compiler.js';
 export * from './core/doctor.js';
 export * from './core/spark.js';
 
+export * from './integrations/providers.js';
+export * from './core/agent-behavior-eval.js';

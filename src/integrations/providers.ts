@@ -37,3 +37,22 @@ export interface BrowserEvidenceProvider {
     title?: string;
   }>;
 }
+
+export interface SkillBehaviorRequest {
+  skillId: string;
+  caseId: string;
+  instruction: string;
+  given: Record<string, unknown>;
+  actionVocabulary: string[];
+}
+export interface SkillBehaviorResponse {
+  action: string;
+  selectedSkill?: string;
+  produces?: string;
+  gates?: string[];
+  structure?: string[];
+}
+export interface SkillBehaviorProvider {
+  id: string;
+  executeSkill(request: SkillBehaviorRequest): Promise<SkillBehaviorResponse>;
+}

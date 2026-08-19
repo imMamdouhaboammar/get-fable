@@ -1,0 +1,733 @@
+{
+  "schemaVersion": 1,
+  "suite": "enterprise-verification-v1",
+  "cases": [
+    {
+      "id": "verify-known-test",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-known-build",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "build",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-known-runtime",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "runtime",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-known-review",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "review",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-known-observation",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "observation",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-known-stale",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 1,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 1,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-known-latest-fail",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-known-nonsubstantial",
+      "category": "known",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": false,
+          "mutationGeneration": 0,
+          "verifiedGeneration": -1,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-negative-research",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "research",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-negative-receipt",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "receipt",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-negative-handoff",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "handoff",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-negative-security-generic",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-negative-old-pass-current-counter",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 1,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-negative-empty-detail",
+      "category": "negative",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 2,
+              "detail": ""
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-ambiguous-fail-then-pass",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 2,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-ambiguous-pass-then-fail",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-ambiguous-pass-then-research",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            },
+            {
+              "kind": "research",
+              "result": "fail",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-ambiguous-security-task-pass",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-ambiguous-security-task-fail",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "substantial": true,
+          "mutationGeneration": 2,
+          "verifiedGeneration": 2,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "fail",
+              "generation": 2,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-ambiguous-behavior-after-security",
+      "category": "ambiguous",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 3,
+          "verifiedGeneration": 3,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 2,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 3,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-adversarial-forged-counter",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-adversarial-current-research-forged",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "research",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-adversarial-stale-pass-current-receipt",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 4,
+              "detail": "evidence"
+            },
+            {
+              "kind": "receipt",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-adversarial-current-pass-old-fail",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 4,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-adversarial-current-pass-current-fail",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "build",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-adversarial-current-fail-current-pass",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 5,
+              "detail": "evidence"
+            },
+            {
+              "kind": "runtime",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-adversarial-security-generic-plus-test",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            },
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-adversarial-security-scope-only",
+      "category": "adversarial",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "substantial": true,
+          "mutationGeneration": 5,
+          "verifiedGeneration": 5,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 5,
+              "detail": "evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    }
+  ]
+}

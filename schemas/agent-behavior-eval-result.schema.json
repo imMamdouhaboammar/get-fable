@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableAgentBehaviorEvalResultV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "metric", "providerId", "total", "passed", "passRate", "forbiddenViolations", "cases"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "metric": { "const": "agent-behavior" },
+    "providerId": { "type": "string", "minLength": 1 },
+    "total": { "type": "integer", "minimum": 0 },
+    "passed": { "type": "integer", "minimum": 0 },
+    "passRate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "forbiddenViolations": { "type": "integer", "minimum": 0 },
+    "cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skillId", "caseId", "passed", "forbiddenViolated", "expected"],
+        "properties": {
+          "skillId": { "type": "string", "minLength": 1 },
+          "caseId": { "type": "string", "minLength": 1 },
+          "passed": { "type": "boolean" },
+          "forbiddenViolated": { "type": "boolean" },
+          "expected": { "$ref": "#/definitions/oracle" },
+          "forbidden": { "$ref": "#/definitions/partialOracle" },
+          "response": { "$ref": "#/definitions/response" },
+          "error": { "type": "string" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "oracle": {
+      "type": "object",
+      "required": ["action"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "selectedSkill": { "type": "string" },
+        "produces": { "type": "string" },
+        "gates": { "type": "array", "items": { "type": "string" } },
+        "structure": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "partialOracle": {
+      "type": "object",
+      "properties": {
+        "action": { "type": "string" },
+        "selectedSkill": { "type": "string" },
+        "produces": { "type": "string" },
+        "gates": { "type": "array", "items": { "type": "string" } },
+        "structure": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "response": {
+      "type": "object",
+      "required": ["action"],
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "selectedSkill": { "type": "string" },
+        "produces": { "type": "string" },
+        "gates": { "type": "array", "items": { "type": "string" } },
+        "structure": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

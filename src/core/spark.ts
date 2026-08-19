@@ -39,6 +39,17 @@ function cleanSuggestion(text: string | null): string | null {
 export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
   const { state, userIntent, latestError, latestMutationSource, activeCardText, openCards } = context;
 
+  // Completion is terminal for next-move prediction even if a stale specialist remains selected.
+  if (state.phase === 'complete' && state.currentSkill !== 'fable-handoff') {
+    return {
+      suggestion: null,
+      reasonCode: 'scope-complete-silent',
+      confidence: 0.0,
+      source: 'none',
+      silent: true,
+    };
+  }
+
   // 1. Rule 1 & Rule 9: Failure Loop Detection
   if (state.failureStreak >= 2 || state.phase === 'recovering') {
     const errorStr = (latestError || '').toLowerCase();
@@ -152,7 +163,7 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
 
   if (state.currentSkill === 'fable-review') {
     const activeLower = (activeCardText || state.activeCard || '').toLowerCase();
-    if (activeLower.includes('finding') || activeLower.includes('fix')) {
+    if (activeLower.includes('finding')) {
       const suggestion = cleanSuggestion('fix the review finding');
       return {
         suggestion,
@@ -222,16 +233,6 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
   }
 
   // 4. Rule 3 & Rule 8: Lifecycle Phase Constraints
-  if (state.phase === 'complete') {
-    return {
-      suggestion: null,
-      reasonCode: 'scope-complete-silent',
-      confidence: 0.0,
-      source: 'none',
-      silent: true,
-    };
-  }
-
   if (state.phase === 'idle') {
     if (userIntent && userIntent.trim()) {
       const intentLower = userIntent.toLowerCase();

@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 1,
+  "suite": "enterprise-verification-holdout-v1",
+  "cases": [
+    {
+      "id": "verify-holdout-test-pass",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-runtime-pass",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "runtime",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-stale-build",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 3,
+          "evidence": [
+            {
+              "kind": "build",
+              "result": "pass",
+              "generation": 3,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-forged-counter",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-research-only",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "research",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-receipt-only",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "receipt",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-security-generic",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-verify",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-security-scoped",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-security-fail",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "currentSkill": "fable-security",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "security",
+              "result": "fail",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-fail-then-pass",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 4,
+              "detail": "holdout evidence"
+            },
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-pass-then-fail",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            },
+            {
+              "kind": "test",
+              "result": "fail",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-pass-research-fail",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            },
+            {
+              "kind": "research",
+              "result": "fail",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-stale-plus-handoff",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 3,
+              "detail": "holdout evidence"
+            },
+            {
+              "kind": "handoff",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-nonsubstantial",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": false,
+          "mutationGeneration": 0,
+          "verifiedGeneration": -1,
+          "evidence": []
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-observation",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "observation",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-review",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "review",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-build-receipt-fail",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "build",
+              "result": "pass",
+              "generation": 4,
+              "detail": "holdout evidence"
+            },
+            {
+              "kind": "receipt",
+              "result": "fail",
+              "generation": 4,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-whitespace-detail",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 4,
+          "verifiedGeneration": 4,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 4,
+              "detail": "   "
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    },
+    {
+      "id": "verify-holdout-generation-zero",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 0,
+          "verifiedGeneration": 0,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 0,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": true,
+        "completionAllowed": true
+      }
+    },
+    {
+      "id": "verify-holdout-unadvanced-counter",
+      "category": "holdout",
+      "given": {
+        "state": {
+          "phase": "verifying",
+          "substantial": true,
+          "mutationGeneration": 1,
+          "verifiedGeneration": -1,
+          "evidence": [
+            {
+              "kind": "test",
+              "result": "pass",
+              "generation": 1,
+              "detail": "holdout evidence"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "fresh": false,
+        "completionAllowed": false
+      }
+    }
+  ]
+}

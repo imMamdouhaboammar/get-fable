@@ -19,14 +19,13 @@ describe('Skill Feed evidence semantics', () => {
 
   test('awards M4 only where fresh behavioral holdout evidence exists', () => {
     const feed = loadSkillFeed();
-    const router = feed.find((item) => item.id === 'get-fable');
-    const specialists = feed.filter((item) => item.id !== 'get-fable');
-    expect(router?.maturity).toBe('M4');
-    expect(router?.behaviorallyProven).toBe(true);
-    expect(router?.holdout.status).toBe('PASS');
-    expect(specialists.every((item) => item.maturity === 'M3')).toBe(true);
-    expect(specialists.every((item) => item.behaviorallyProven === false)).toBe(true);
+    const proven = feed.filter((item) => item.behaviorallyProven);
+    const unproven = feed.filter((item) => !item.behaviorallyProven);
+    expect(proven.map((item) => item.id).sort()).toEqual(['fable-spark', 'fable-verify', 'get-fable']);
+    expect(proven.every((item) => item.maturity === 'M4')).toBe(true);
+    expect(proven.every((item) => item.holdout.status === 'PASS')).toBe(true);
+    expect(unproven.every((item) => item.maturity === 'M3')).toBe(true);
+    expect(unproven.every((item) => item.holdout.status === 'NOT_CHECKED')).toBe(true);
     expect(feed.every((item) => item.enterpriseReady === false)).toBe(true);
-    expect(specialists.every((item) => item.holdout.status === 'NOT_CHECKED')).toBe(true);
   });
 });
