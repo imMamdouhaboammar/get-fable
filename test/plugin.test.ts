@@ -169,6 +169,19 @@ describe('OpenAI plugin package', () => {
     expect(fs.existsSync(path.join(root, 'hooks', 'hooks.json'))).toBe(true);
   });
 
+  test('registers Claude Bash success and failure lifecycle events', () => {
+    const config = readJson('hooks/hooks.json');
+    const hasFailureTracker = (event: string) =>
+      config.hooks[event]?.some(
+        (entry: any) =>
+          entry.matcher === 'Bash' &&
+          entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
+      );
+
+    expect(hasFailureTracker('PostToolUse')).toBe(true);
+    expect(hasFailureTracker('PostToolUseFailure')).toBe(true);
+  });
+
   test('npm package metadata includes the plugin surface and registry', () => {
     const pkg = readJson('package.json');
 
