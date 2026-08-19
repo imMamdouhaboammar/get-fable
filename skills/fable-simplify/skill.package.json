@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-simplify",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/refactoring-patterns.md"
+    "references/refactoring-patterns.md",
+    "references/behavior-preserving-refactor-strategy.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/flatten-nested-logic.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/flatten-nested-logic.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
