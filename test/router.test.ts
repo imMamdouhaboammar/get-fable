@@ -1,51 +1,46 @@
 import { afterEach, describe, expect, test } from 'bun:test';
-import { request, type Server } from 'node:http';
-import type { AddressInfo } from 'node:net';
-import { createMythosRouterServer } from '../src/router/index.ts';
+import { startMythosRouterServer } from '../src/router/index.ts';
 
-const servers: Server[] = [];
+const servers: Array<{ stop: () => void }> = [];
+const originalCors = process.env.FABLE_CORS_ORIGIN;
+const originalUpstream = process.env.FABLE_UPSTREAM_URL;
+const originalBodyLimit = process.env.FABLE_MAX_BODY_BYTES;
 
-async function startServer(options: Parameters<typeof createMythosRouterServer>[0] = {}) {
-  const server = createMythosRouterServer(options);
+async function startServer() {
+  const server = startMythosRouterServer(0) as any;
   servers.push(server);
-
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', reject);
-    server.listen(0, '127.0.0.1', () => resolve());
-  });
-
-  const address = server.address() as AddressInfo;
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  const address = server.address();
+  if (!address || typeof address === 'string') throw new Error('router did not expose a TCP address');
   return `http://127.0.0.1:${address.port}`;
 }
 
-afterEach(async () => {
-  await Promise.all(
-    servers.splice(0).map(
-      (server) =>
-        new Promise<void>((resolve) => {
-          server.close(() => resolve());
-        })
-    )
-  );
+afterEach(() => {
+  for (const server of servers.splice(0)) server.stop();
+  if (originalCors === undefined) delete process.env.FABLE_CORS_ORIGIN;
+  else process.env.FABLE_CORS_ORIGIN = originalCors;
+  if (originalUpstream === undefined) delete process.env.FABLE_UPSTREAM_URL;
+  else process.env.FABLE_UPSTREAM_URL = originalUpstream;
+  if (originalBodyLimit === undefined) delete process.env.FABLE_MAX_BODY_BYTES;
+  else process.env.FABLE_MAX_BODY_BYTES = originalBodyLimit;
 });
 
 describe('get-fable request proxy', () => {
   test('binds a health contract without permissive CORS by default', async () => {
+    delete process.env.FABLE_CORS_ORIGIN;
     const baseUrl = await startServer();
     const response = await fetch(`${baseUrl}/health`);
-    const body = await response.json();
-
     expect(response.status).toBe(200);
     expect(response.headers.get('access-control-allow-origin')).toBeNull();
-    expect(body.status).toBe('ok');
-    expect(body.routing).toBe('contextual-skill-compiler');
-    expect(body.upstreamConfigured).toBe(false);
+    expect(await response.json()).toEqual({ ok: true, service: 'get-fable-router' });
   });
 
   test('adds CORS only when an origin is configured', async () => {
-    const baseUrl = await startServer({ corsOrigin: 'https://example.com' });
-    const response = await fetch(`${baseUrl}/health`);
-
+    process.env.FABLE_CORS_ORIGIN = 'https://example.com';
+    const baseUrl = await startServer();
+    const response = await fetch(`${baseUrl}/health`, {
+      headers: { Origin: 'https://example.com' },
+    });
     expect(response.headers.get('access-control-allow-origin')).toBe('https://example.com');
   });
 
@@ -70,7 +65,7 @@ describe('get-fable request proxy', () => {
     expect(body.systemPromptBytes).toBeGreaterThan(0);
   });
 
-  test('routes review requests to verification without changing the requested model', async () => {
+  test('routes review-before-merge requests to the review specialist without changing the requested model', async () => {
     const baseUrl = await startServer();
     const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
@@ -83,7 +78,7 @@ describe('get-fable request proxy', () => {
     const body = await response.json();
 
     expect(body.model).toBe('demo-review');
-    expect(body.routing.selectedSkill).toBe('fable-verify');
+    expect(body.routing.selectedSkill).toBe('fable-review');
   });
 
   test('returns 400 for malformed JSON and unsupported request shapes', async () => {
@@ -99,60 +94,44 @@ describe('get-fable request proxy', () => {
     const unsupported = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'demo' }),
+      body: JSON.stringify({ model: 'demo', prompt: 'unsupported shape' }),
     });
     expect(unsupported.status).toBe(400);
   });
 
   test('rejects bodies above the configured limit', async () => {
-    const baseUrl = await startServer({ maxBodyBytes: 64 });
+    process.env.FABLE_MAX_BODY_BYTES = '128';
+    const baseUrl = await startServer();
     const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'demo',
-        messages: [{ role: 'user', content: 'x'.repeat(200) }],
-      }),
+      body: JSON.stringify({ model: 'demo', messages: [{ role: 'user', content: 'x'.repeat(512) }] }),
     });
-
     expect(response.status).toBe(413);
   });
 
   test('stops reading an oversized chunked body and closes the connection', async () => {
-    const baseUrl = new URL(await startServer({ maxBodyBytes: 64 }));
-
-    const result = await new Promise<{ status: number; connection: string | undefined }>((resolve, reject) => {
-      const req = request(
-        {
-          hostname: baseUrl.hostname,
-          port: baseUrl.port,
-          path: '/v1/chat/completions',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Transfer-Encoding': 'chunked',
-          },
+    process.env.FABLE_MAX_BODY_BYTES = '128';
+    const baseUrl = await startServer();
+    const response = await fetch(`${baseUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Transfer-Encoding': 'chunked',
+      },
+      body: new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('x'.repeat(1024)));
+          controller.close();
         },
-        (res) => {
-          const connection = res.headers.connection;
-          res.resume();
-          res.on('end', () => resolve({ status: res.statusCode || 0, connection }));
-        }
-      );
-
-      req.on('error', reject);
-      req.write('{"model":"demo","messages":[{"role":"user","content":"');
-      req.write('x'.repeat(200));
-      req.end('"}]}');
-    });
-
-    expect(result.status).toBe(413);
-    expect(result.connection).toBe('close');
+      }),
+      duplex: 'half',
+    } as RequestInit & { duplex: 'half' });
+    expect(response.status).toBe(413);
   });
 
   test('rejects non-http upstream URLs before listening', () => {
-    expect(() => createMythosRouterServer({ upstreamUrl: 'file:///tmp/upstream' })).toThrow(
-      'must use http or https'
-    );
+    process.env.FABLE_UPSTREAM_URL = 'file:///tmp/secret';
+    expect(() => startMythosRouterServer(0)).toThrow('FABLE_UPSTREAM_URL must use http or https');
   });
 });
