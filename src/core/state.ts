@@ -29,9 +29,27 @@ const FABLE_SKILL_IDS: FableSkillId[] = [
   'fable-handoff',
   'fable-eval',
   'fable-recover',
+  'fable-dataviz',
+  'fable-artifact',
+  'fable-simplify',
+  'fable-loop',
+  'fable-run',
+  'fable-memory',
+  'fable-config',
+  'fable-simulator',
+  'fable-cowork',
+  'fable-spark',
 ];
 
-const FABLE_PACKS: FablePack[] = ['core', 'intelligence', 'build', 'proof', 'delivery', 'evolution'];
+const FABLE_PACKS: FablePack[] = [
+  'core',
+  'intelligence',
+  'build',
+  'proof',
+  'delivery',
+  'evolution',
+  'system',
+];
 const TASK_SHAPES: FableTaskShape[] = [
   'research',
   'architecture',
@@ -103,6 +121,16 @@ const SKILL_PHASE: Record<Exclude<FableSkillId, 'get-fable'>, FablePhase> = {
   'fable-handoff': 'verifying',
   'fable-eval': 'verifying',
   'fable-recover': 'recovering',
+  'fable-dataviz': 'executing',
+  'fable-artifact': 'executing',
+  'fable-simplify': 'executing',
+  'fable-loop': 'executing',
+  'fable-run': 'verifying',
+  'fable-memory': 'discovering',
+  'fable-config': 'planned',
+  'fable-simulator': 'verifying',
+  'fable-cowork': 'executing',
+  'fable-spark': 'idle',
 };
 
 const SKILL_PACK: Record<FableSkillId, FablePack> = {
@@ -120,6 +148,16 @@ const SKILL_PACK: Record<FableSkillId, FablePack> = {
   'fable-handoff': 'delivery',
   'fable-eval': 'evolution',
   'fable-recover': 'core',
+  'fable-dataviz': 'system',
+  'fable-artifact': 'system',
+  'fable-simplify': 'system',
+  'fable-loop': 'system',
+  'fable-run': 'system',
+  'fable-memory': 'system',
+  'fable-config': 'system',
+  'fable-simulator': 'system',
+  'fable-cowork': 'system',
+  'fable-spark': 'system',
 };
 
 export function workspaceIdForTarget(targetDir: string = process.cwd()): string {

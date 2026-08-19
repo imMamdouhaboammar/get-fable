@@ -80,7 +80,15 @@ export function resolveSkillsToInstall(
   }
 
   // Check if it matches a pack name
-  const validPacks: FablePack[] = ['core', 'intelligence', 'build', 'proof', 'delivery', 'evolution'];
+  const validPacks: FablePack[] = [
+    'core',
+    'intelligence',
+    'build',
+    'proof',
+    'delivery',
+    'evolution',
+    'system',
+  ];
   if (validPacks.includes(target as FablePack)) {
     const packSkills = registry.skills.filter((s) => s.pack === target).map((s) => s.id);
     return packSkills.length > 0 ? packSkills : canonicalSkillIds();

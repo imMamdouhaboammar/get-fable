@@ -4,9 +4,15 @@ import { routeTask } from './task-router.js';
 import { evaluateFableSpark } from './spark.js';
 import type { FableState, RoutingDecision } from './types.js';
 
-const CORE_CONTRACT = `# get-fable runtime contract
+const CORE_CONTRACT = `# get-fable runtime contract & harness discipline
 - Improve execution discipline; do not claim the underlying model changed.
 - Ground load-bearing decisions in code, tools, tests, or primary sources.
+- Lead with the outcome: state the direct answer or TLDR first before supporting reasoning.
+- Readable over compressed: write in complete sentences with technical terms spelled out.
+- Code comments: write comments only to state constraints the code itself cannot show.
+- Neutral pronoun default: use they/them unless stated.
+- Destructive confirmation: confirm before irreversible or outward-facing actions.
+- Autonomous execution: when having enough info, act; do not ask permission mid-task for reversible actions; check the final paragraph to ensure promises are executed via tool calls.
 - Keep work bounded and preserve user-owned files and constraints.
 - Treat workspace mutations as invalidating older verification.
 - Do not call substantial work complete without current-generation verification evidence.

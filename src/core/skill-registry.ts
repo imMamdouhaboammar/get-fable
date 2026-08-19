@@ -25,6 +25,16 @@ const CANONICAL_SKILLS: FableSkillId[] = [
   'fable-handoff',
   'fable-eval',
   'fable-recover',
+  'fable-dataviz',
+  'fable-artifact',
+  'fable-simplify',
+  'fable-loop',
+  'fable-run',
+  'fable-memory',
+  'fable-config',
+  'fable-simulator',
+  'fable-cowork',
+  'fable-spark',
 ];
 
 const REGISTRY_PHASES = new Set<FablePhase>([
@@ -45,6 +55,7 @@ const REGISTRY_PACKS = new Set<FablePack>([
   'proof',
   'delivery',
   'evolution',
+  'system',
 ]);
 
 export function getCoreRepoRoot(): string {

@@ -41,8 +41,20 @@ describe('Auto Skills Installer', () => {
     expect(proofSkills).toContain('fable-review');
     expect(proofSkills).toContain('fable-security');
 
+    const systemSkills = resolveSkillsToInstall('system');
+    expect(systemSkills).toContain('fable-dataviz');
+    expect(systemSkills).toContain('fable-artifact');
+    expect(systemSkills).toContain('fable-simplify');
+    expect(systemSkills).toContain('fable-loop');
+    expect(systemSkills).toContain('fable-run');
+    expect(systemSkills).toContain('fable-memory');
+    expect(systemSkills).toContain('fable-config');
+    expect(systemSkills).toContain('fable-simulator');
+    expect(systemSkills).toContain('fable-cowork');
+    expect(systemSkills).toContain('fable-spark');
+
     const allSkills = resolveSkillsToInstall('all');
-    expect(allSkills.length).toBe(14);
+    expect(allSkills.length).toBe(24);
   });
 
   test('auto-installs a specific pack to isolated destination directories', () => {

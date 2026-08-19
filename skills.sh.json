@@ -79,6 +79,56 @@
       "id": "fable-recover",
       "path": "skills/fable-recover/SKILL.md",
       "description": "Deterministic failure diagnosis and anti-loop recovery."
+    },
+    {
+      "id": "fable-dataviz",
+      "path": "skills/fable-dataviz/SKILL.md",
+      "description": "Accessible and cohesive data visualizations, charts, plots, and dashboards."
+    },
+    {
+      "id": "fable-artifact",
+      "path": "skills/fable-artifact/SKILL.md",
+      "description": "Structured technical proposals, responsive artifacts, and architecture diagrams."
+    },
+    {
+      "id": "fable-simplify",
+      "path": "skills/fable-simplify/SKILL.md",
+      "description": "Code quality cleanup, simplification, and altitude refactoring."
+    },
+    {
+      "id": "fable-loop",
+      "path": "skills/fable-loop/SKILL.md",
+      "description": "Bounded recurring task loops, interval polling, and test cycles."
+    },
+    {
+      "id": "fable-run",
+      "path": "skills/fable-run/SKILL.md",
+      "description": "Launch and drive live applications to verify end-to-end runtime behavior."
+    },
+    {
+      "id": "fable-memory",
+      "path": "skills/fable-memory/SKILL.md",
+      "description": "Persistent file-based memory system and cross-session knowledge indexing."
+    },
+    {
+      "id": "fable-config",
+      "path": "skills/fable-config/SKILL.md",
+      "description": "Configure agent harness parameters, permissions, keybindings, and hooks."
+    },
+    {
+      "id": "fable-simulator",
+      "path": "skills/fable-simulator/SKILL.md",
+      "description": "Rigorous truthfulness, independent verification oracles, and contract derivation."
+    },
+    {
+      "id": "fable-cowork",
+      "path": "skills/fable-cowork/SKILL.md",
+      "description": "Autonomous cowork execution, silent tool chaining, and safety boundary enforcement."
+    },
+    {
+      "id": "fable-spark",
+      "path": "skills/fable-spark/SKILL.md",
+      "description": "Situational awareness micro-policy predicting atomic next moves without scope drift."
     }
   ]
 }

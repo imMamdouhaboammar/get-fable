@@ -15,7 +15,17 @@ export type FableSkillId =
   | 'fable-release'
   | 'fable-handoff'
   | 'fable-eval'
-  | 'fable-recover';
+  | 'fable-recover'
+  | 'fable-dataviz'
+  | 'fable-artifact'
+  | 'fable-simplify'
+  | 'fable-loop'
+  | 'fable-run'
+  | 'fable-memory'
+  | 'fable-config'
+  | 'fable-simulator'
+  | 'fable-cowork'
+  | 'fable-spark';
 
 export type FablePack =
   | 'core'
@@ -23,7 +33,8 @@ export type FablePack =
   | 'build'
   | 'proof'
   | 'delivery'
-  | 'evolution';
+  | 'evolution'
+  | 'system';
 
 export type FablePhase =
   | 'idle'

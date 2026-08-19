@@ -22,6 +22,16 @@ const SKILLS: FableSkillId[] = [
   'fable-handoff',
   'fable-eval',
   'fable-recover',
+  'fable-dataviz',
+  'fable-artifact',
+  'fable-simplify',
+  'fable-loop',
+  'fable-run',
+  'fable-memory',
+  'fable-config',
+  'fable-simulator',
+  'fable-cowork',
+  'fable-spark',
 ];
 
 function emptyScores(): Record<FableSkillId, number> {
@@ -40,6 +50,16 @@ function emptyScores(): Record<FableSkillId, number> {
     'fable-handoff': 0,
     'fable-eval': 0,
     'fable-recover': 0,
+    'fable-dataviz': 0,
+    'fable-artifact': 0,
+    'fable-simplify': 0,
+    'fable-loop': 0,
+    'fable-run': 0,
+    'fable-memory': 0,
+    'fable-config': 0,
+    'fable-simulator': 0,
+    'fable-cowork': 0,
+    'fable-spark': 0,
   };
 }
 
@@ -61,14 +81,16 @@ function has(text: string, pattern: RegExp): boolean {
 }
 
 function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
-  if (skill === 'fable-research') return 'research';
-  if (skill === 'fable-plan') return 'architecture';
+  if (skill === 'fable-research' || skill === 'fable-memory') return 'research';
+  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
-  if (skill === 'fable-review' || skill === 'fable-verify') return 'review';
+  if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator') return 'review';
   if (skill === 'fable-security') return 'security';
   if (skill === 'fable-release') return 'release';
   if (skill === 'fable-handoff') return 'handoff';
-  if (skill === 'fable-eval') return 'eval';
+  if (skill === 'fable-eval' || skill === 'fable-loop') return 'eval';
+  if (skill === 'fable-simplify') return 'bounded-change';
+  if (skill === 'fable-dataviz' || skill === 'fable-cowork') return 'feature';
   if (skill === 'fable-tdd') {
     return has(text, /\bbug\b|\bfix\b|broken|regression|fails?/) ? 'bug-fix' : 'feature';
   }
@@ -109,7 +131,7 @@ export function routeTask(
   if (
     has(
       text,
-      /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauth\b|\bauthentication\b|\bauthorization\b|\bpermissions?\b|\bprivilege(?:d|s)?\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/
+      /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauth\b|\bauthentication\b|\bauthorization\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/
     )
   ) {
     addSignal(scores, reasons, 'fable-security', 9, 'task crosses an explicit security or trust boundary');
@@ -166,6 +188,46 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-plan', 6, 'task has broad design or decomposition scope');
   }
 
+  if (has(text, /\bchart\b|\bgraph\b|\bplot\b|\bdataviz\b|\bvisualization\b|\bdashboard\b|\bmetric tile\b|\bkpi row\b|\bheatmap\b/)) {
+    addSignal(scores, reasons, 'fable-dataviz', 10, 'task creates or modifies data visualizations');
+  }
+
+  if (has(text, /\bartifact\b|\bdiagram\b|\bmermaid\b|\barchitecture diagram\b|\binteractive component\b/)) {
+    addSignal(scores, reasons, 'fable-artifact', 12, 'task designs artifacts or architecture diagrams');
+  }
+
+  if (has(text, /\bsimplify\b|\bclean up\b|\bdead code\b|\bdeduplicate\b|\baltitude\b/)) {
+    addSignal(scores, reasons, 'fable-simplify', 10, 'task requests code simplification and altitude cleanup');
+  }
+
+  if (has(text, /\bloop\b|\brecurring\b|\bbabysit\b|\binterval\b|\bpoll\b/)) {
+    addSignal(scores, reasons, 'fable-loop', 10, 'task requests recurring loop execution');
+  }
+
+  if (has(text, /\brun app\b|\brun the app\b|\bstart server\b|\blaunch app\b|\blive smoke test\b/)) {
+    addSignal(scores, reasons, 'fable-run', 10, 'task requests live application runtime execution');
+  }
+
+  if (has(text, /\bmemory\b|\bremember\b|\buser preference\b|memory\.md|\brecall fact/)) {
+    addSignal(scores, reasons, 'fable-memory', 10, 'task interacts with persistent project memory');
+  }
+
+  if (has(text, /\bsettings\.json\b|\bkeybindings\b|\ballowlist\b|\bconfigure hooks\b|\bharness\b/)) {
+    addSignal(scores, reasons, 'fable-config', 12, 'task configures agent harness settings');
+  }
+
+  if (has(text, /\bsimulator\b|independent oracle|derive contract|headless browser|causal evidence matrix/)) {
+    addSignal(scores, reasons, 'fable-simulator', 10, 'task requests simulator verification and independent oracles');
+  }
+
+  if (has(text, /\bcowork\b|autonomous (?:mode|task|execution)|background mode|clean tool/)) {
+    addSignal(scores, reasons, 'fable-cowork', 10, 'task requests autonomous cowork execution');
+  }
+
+  if (has(text, /\bspark\b|predict (?:the )?next move|situational awareness|smallest action/)) {
+    addSignal(scores, reasons, 'fable-spark', 10, 'task invokes situational awareness next-move prediction');
+  }
+
   if (has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|\bbug fix\b|fix the bug|behavior change|add a feature|implement a feature/)) {
     addSignal(scores, reasons, 'fable-tdd', 6, 'task describes a testable behavior change');
   }
@@ -178,19 +240,10 @@ export function routeTask(
     .map((skill) => ({ skill, score: scores[skill] }))
     .sort((a, b) => b.score - a.score);
 
-  let selectedSkill = ranked[0].skill;
-  if (scores['fable-recover'] >= 7) selectedSkill = 'fable-recover';
-  else if (scores['fable-security'] >= 8) selectedSkill = 'fable-security';
-  else if (scores['fable-release'] >= 8) selectedSkill = 'fable-release';
-  else if (scores['fable-handoff'] >= 8) selectedSkill = 'fable-handoff';
-  else if (scores['fable-eval'] >= 8) selectedSkill = 'fable-eval';
-  else if (scores['fable-review'] >= 8) selectedSkill = 'fable-review';
-  else if (scores['fable-verify'] >= 7) selectedSkill = 'fable-verify';
-  else if (scores['fable-research'] >= 8) selectedSkill = 'fable-research';
-  else if (scores['fable-discover'] >= 6 && scores['fable-plan'] < 6) selectedSkill = 'fable-discover';
-  else if (scores['fable-delegate'] >= 8) selectedSkill = 'fable-delegate';
-  else if (scores['fable-plan'] >= 6) selectedSkill = 'fable-plan';
-  else if (scores['fable-tdd'] >= 6) selectedSkill = 'fable-tdd';
+  let selectedSkill = ranked[0].score > 0 ? ranked[0].skill : 'fable-execute';
+  if (scores['fable-recover'] >= 8 && (state?.failureStreak || 0) >= 2) {
+    selectedSkill = 'fable-recover';
+  }
 
   const selectedScore = scores[selectedSkill];
   const secondScore = ranked.find((entry) => entry.skill !== selectedSkill)?.score || 0;

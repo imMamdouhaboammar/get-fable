@@ -30,6 +30,16 @@ describe('canonical skill registry', () => {
       'fable-handoff',
       'fable-eval',
       'fable-recover',
+      'fable-dataviz',
+      'fable-artifact',
+      'fable-simplify',
+      'fable-loop',
+      'fable-run',
+      'fable-memory',
+      'fable-config',
+      'fable-simulator',
+      'fable-cowork',
+      'fable-spark',
     ]);
     expect(registry.skills.find((skill) => skill.id === 'fable-security')?.pack).toBe('proof');
     expect(registry.skills.find((skill) => skill.id === 'fable-tdd')?.gates).toContain('red-observed');
@@ -256,7 +266,7 @@ describe('prompt compiler', () => {
     expect(compiled.decision.selectedSkill).toBe('fable-review');
     expect(compiled.systemPrompt).toContain('# Fable Review');
     expect(compiled.systemPrompt).not.toContain('# Fable Plan');
-    expect(compiled.systemPrompt).toContain('findings-accounted');
+    expect(compiled.systemPrompt).toContain('actionable-findings');
     expect(compiled.systemPrompt).toContain('do not claim the underlying model changed');
   });
 });

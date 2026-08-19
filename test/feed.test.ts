@@ -2,15 +2,25 @@ import { describe, expect, test } from 'bun:test';
 import { loadSkillFeed, searchSkillFeed, inspectSkillDetail } from '../src/core/feed.ts';
 
 describe('Skill Feed Engine', () => {
-  test('loads complete skill feed containing all 14 canonical skills', () => {
+  test('loads complete skill feed containing all canonical skills', () => {
     const feed = loadSkillFeed();
-    expect(feed.length).toBe(14);
+    expect(feed.length).toBe(24);
     const ids = feed.map((s) => s.id);
     expect(ids).toContain('get-fable');
     expect(ids).toContain('fable-discover');
     expect(ids).toContain('fable-tdd');
     expect(ids).toContain('fable-verify');
     expect(ids).toContain('fable-security');
+    expect(ids).toContain('fable-dataviz');
+    expect(ids).toContain('fable-artifact');
+    expect(ids).toContain('fable-simplify');
+    expect(ids).toContain('fable-loop');
+    expect(ids).toContain('fable-run');
+    expect(ids).toContain('fable-memory');
+    expect(ids).toContain('fable-config');
+    expect(ids).toContain('fable-simulator');
+    expect(ids).toContain('fable-cowork');
+    expect(ids).toContain('fable-spark');
   });
 
   test('searches feed by keyword, pack, and gate', () => {
