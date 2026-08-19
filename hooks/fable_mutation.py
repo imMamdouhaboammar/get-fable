@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Advance get-fable mutation generation after successful write-oriented tools.
 
-The host matcher should limit this hook to write/edit tools. The hook is fail-open
-and acts only when a project-local `.fable` directory is present.
+Hosts may provide a matcher before invoking this hook, but the hook also checks
+known tool names itself so adapters with broader PostToolUse events do not mark
+read-only or command activity as workspace mutations.
 """
 import os
 import sys
@@ -15,6 +16,15 @@ from _fable_common import (  # noqa: E402
     start_dir,
 )
 
+MUTATING_TOOLS = {
+    "edit",
+    "write",
+    "multiedit",
+    "notebookedit",
+    "apply_patch",
+    "applypatch",
+}
+
 
 def response_failed(data):
     response = data.get("tool_response")
@@ -26,9 +36,18 @@ def response_failed(data):
     return isinstance(exit_code, int) and exit_code != 0
 
 
+def mutating_tool(data):
+    name = data.get("tool_name") or data.get("toolName") or data.get("tool")
+    if name is None:
+        return True
+    return str(name).replace("-", "").replace("_", "").lower() in {
+        item.replace("_", "") for item in MUTATING_TOOLS
+    }
+
+
 def main():
     data = read_hook_input()
-    if response_failed(data):
+    if not mutating_tool(data) or response_failed(data):
         return 0
 
     fable_dir = find_fable_dir(start_dir(data))
