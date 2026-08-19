@@ -109,7 +109,7 @@ export function routeTask(
   if (
     has(
       text,
-      /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|auth(?:entication|orization)?|permission|privilege|secret|untrusted input|injection|xss|csrf|ssrf/
+      /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauth\b|\bauthentication\b|\bauthorization\b|\bpermissions?\b|\bprivilege(?:d|s)?\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/
     )
   ) {
     addSignal(scores, reasons, 'fable-security', 9, 'task crosses an explicit security or trust boundary');
