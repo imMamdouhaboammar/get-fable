@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableStateSchema",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "workspaceId",
+    "phase",
+    "currentSkill",
+    "failureStreak",
+    "substantial",
+    "mutationGeneration",
+    "verifiedGeneration",
+    "activeCard",
+    "evidence",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer", "enum": [2] },
+    "workspaceId": { "type": "string", "minLength": 8 },
+    "phase": {
+      "type": "string",
+      "enum": ["idle", "discovering", "planned", "executing", "verifying", "recovering", "complete", "blocked"]
+    },
+    "currentSkill": { "type": ["string", "null"] },
+    "failureStreak": { "type": "integer", "minimum": 0 },
+    "substantial": { "type": "boolean" },
+    "mutationGeneration": { "type": "integer", "minimum": 0 },
+    "verifiedGeneration": { "type": "integer", "minimum": -1 },
+    "activeCard": { "type": ["string", "null"] },
+    "lastDecision": { "type": ["object", "null"] },
+    "evidence": { "type": "array" },
+    "updatedAt": { "type": "string" }
+  }
+}

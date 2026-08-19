@@ -1,0 +1,21 @@
+name: review-pr
+version: 1.2.0
+description: Independent code review workflow for PRs, branches, and multi-file diffs.
+targetShape: review
+steps:
+  - skill: fable-discover
+    gate: load-bearing-unknowns-resolved
+    description: Ground original requirements and locate changed files
+  - skill: fable-review
+    gate: grounded-diff-read
+    description: Inspect diff lines, edge cases, and architectural alignment
+  - skill: fable-security
+    gate: threat-surface-checked
+    optional: true
+    description: Audit security vulnerabilities and secret exposures
+  - skill: fable-verify
+    gate: machine-checked
+    description: Verify test pass and build stability
+  - skill: fable-release
+    gate: no-blocking-findings
+    description: Issue clean approval or itemized change requests

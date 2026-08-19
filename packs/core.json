@@ -1,0 +1,13 @@
+{
+  "name": "core",
+  "version": "1.2.0",
+  "description": "Essential front-door routing, discovery, planning, execution, verification, and recovery skills.",
+  "skills": [
+    "get-fable",
+    "fable-discover",
+    "fable-plan",
+    "fable-execute",
+    "fable-verify",
+    "fable-recover"
+  ]
+}

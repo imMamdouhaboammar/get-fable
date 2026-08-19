@@ -88,6 +88,7 @@ export function resolveSkillsToInstall(
     'delivery',
     'evolution',
     'system',
+    'creator',
   ];
   if (validPacks.includes(target as FablePack)) {
     const packSkills = registry.skills.filter((s) => s.pack === target).map((s) => s.id);

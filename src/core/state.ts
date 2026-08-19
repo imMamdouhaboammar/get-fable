@@ -39,6 +39,7 @@ const FABLE_SKILL_IDS: FableSkillId[] = [
   'fable-simulator',
   'fable-cowork',
   'fable-spark',
+  'skill-creator',
 ];
 
 const FABLE_PACKS: FablePack[] = [
@@ -49,6 +50,7 @@ const FABLE_PACKS: FablePack[] = [
   'delivery',
   'evolution',
   'system',
+  'creator',
 ];
 const TASK_SHAPES: FableTaskShape[] = [
   'research',
@@ -131,6 +133,7 @@ const SKILL_PHASE: Record<Exclude<FableSkillId, 'get-fable'>, FablePhase> = {
   'fable-simulator': 'verifying',
   'fable-cowork': 'executing',
   'fable-spark': 'idle',
+  'skill-creator': 'executing',
 };
 
 const SKILL_PACK: Record<FableSkillId, FablePack> = {
@@ -158,6 +161,7 @@ const SKILL_PACK: Record<FableSkillId, FablePack> = {
   'fable-simulator': 'system',
   'fable-cowork': 'system',
   'fable-spark': 'system',
+  'skill-creator': 'creator',
 };
 
 export function workspaceIdForTarget(targetDir: string = process.cwd()): string {

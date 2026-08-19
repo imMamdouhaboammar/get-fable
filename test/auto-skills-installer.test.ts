@@ -51,10 +51,11 @@ describe('Auto Skills Installer', () => {
     expect(systemSkills).toContain('fable-config');
     expect(systemSkills).toContain('fable-simulator');
     expect(systemSkills).toContain('fable-cowork');
-    expect(systemSkills).toContain('fable-spark');
+    const creatorSkills = resolveSkillsToInstall('creator');
+    expect(creatorSkills).toContain('skill-creator');
 
     const allSkills = resolveSkillsToInstall('all');
-    expect(allSkills.length).toBe(24);
+    expect(allSkills.length).toBe(25);
   });
 
   test('auto-installs a specific pack to isolated destination directories', () => {

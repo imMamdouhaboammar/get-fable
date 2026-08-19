@@ -25,7 +25,8 @@ export type FableSkillId =
   | 'fable-config'
   | 'fable-simulator'
   | 'fable-cowork'
-  | 'fable-spark';
+  | 'fable-spark'
+  | 'skill-creator';
 
 export type FablePack =
   | 'core'
@@ -34,7 +35,8 @@ export type FablePack =
   | 'proof'
   | 'delivery'
   | 'evolution'
-  | 'system';
+  | 'system'
+  | 'creator';
 
 export type FablePhase =
   | 'idle'

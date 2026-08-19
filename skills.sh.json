@@ -129,6 +129,11 @@
       "id": "fable-spark",
       "path": "skills/fable-spark/SKILL.md",
       "description": "Situational awareness micro-policy predicting atomic next moves without scope drift."
+    },
+    {
+      "id": "skill-creator",
+      "path": "skills/skill-creator/SKILL.md",
+      "description": "Author, refine, benchmark, and package autonomous skills with evaluation suites."
     }
   ]
 }

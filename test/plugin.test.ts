@@ -28,6 +28,7 @@ const canonicalSkills = [
   'fable-simulator',
   'fable-cowork',
   'fable-spark',
+  'skill-creator',
 ];
 
 function readJson(relativePath: string) {
@@ -124,7 +125,7 @@ describe('OpenAI plugin package', () => {
     for (const entry of registry.skills) {
       expect(entry.next.every((next: string) => ids.has(next))).toBe(true);
       expect(entry.fallback === null || ids.has(entry.fallback)).toBe(true);
-      expect(['core', 'intelligence', 'build', 'proof', 'delivery', 'evolution', 'system']).toContain(entry.pack);
+      expect(['core', 'intelligence', 'build', 'proof', 'delivery', 'evolution', 'system', 'creator']).toContain(entry.pack);
       expect(Array.isArray(entry.intents)).toBe(true);
       expect(Array.isArray(entry.requires)).toBe(true);
       expect(Array.isArray(entry.produces)).toBe(true);
@@ -280,7 +281,7 @@ describe('OpenAI plugin package', () => {
     const skillsCatalog = readJson('skills.sh.json');
     expect(skillsCatalog.name).toBe('get-fable');
     expect(Array.isArray(skillsCatalog.skills)).toBe(true);
-    expect(skillsCatalog.skills.length).toBe(24);
+    expect(skillsCatalog.skills.length).toBe(25);
     for (const skill of skillsCatalog.skills) {
       expect(fs.existsSync(path.join(root, skill.path))).toBe(true);
     }

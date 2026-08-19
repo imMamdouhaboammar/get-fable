@@ -32,6 +32,7 @@ const SKILLS: FableSkillId[] = [
   'fable-simulator',
   'fable-cowork',
   'fable-spark',
+  'skill-creator',
 ];
 
 function emptyScores(): Record<FableSkillId, number> {
@@ -60,6 +61,7 @@ function emptyScores(): Record<FableSkillId, number> {
     'fable-simulator': 0,
     'fable-cowork': 0,
     'fable-spark': 0,
+    'skill-creator': 0,
   };
 }
 
@@ -90,7 +92,7 @@ function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-handoff') return 'handoff';
   if (skill === 'fable-eval' || skill === 'fable-loop') return 'eval';
   if (skill === 'fable-simplify') return 'bounded-change';
-  if (skill === 'fable-dataviz' || skill === 'fable-cowork') return 'feature';
+  if (skill === 'fable-dataviz' || skill === 'fable-cowork' || skill === 'skill-creator') return 'feature';
   if (skill === 'fable-tdd') {
     return has(text, /\bbug\b|\bfix\b|broken|regression|fails?/) ? 'bug-fix' : 'feature';
   }
@@ -226,6 +228,10 @@ export function routeTask(
 
   if (has(text, /\bspark\b|predict (?:the )?next move|situational awareness|smallest action/)) {
     addSignal(scores, reasons, 'fable-spark', 10, 'task invokes situational awareness next-move prediction');
+  }
+
+  if (has(text, /\bskill-creator\b|create (?:a )?skill|author skill|benchmark skill|optimize skill description|eval suite/)) {
+    addSignal(scores, reasons, 'skill-creator', 12, 'task creates or optimizes an autonomous skill package');
   }
 
   if (has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|\bbug fix\b|fix the bug|behavior change|add a feature|implement a feature/)) {

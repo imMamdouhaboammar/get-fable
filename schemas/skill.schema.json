@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableSkillDefinition",
+  "type": "object",
+  "required": ["name", "description", "version", "pack", "inputs", "requires", "produces"],
+  "properties": {
+    "name": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "description": { "type": "string", "minLength": 10 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "pack": {
+      "type": "string",
+      "enum": ["core", "intelligence", "build", "proof", "delivery", "evolution", "system", "creator"]
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "requires": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "produces": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "gates": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "fallback": {
+      "type": ["string", "null"]
+    },
+    "mutatesWorkspace": { "type": "boolean" },
+    "parallelSafe": { "type": "boolean" },
+    "neural_links": {
+      "type": "object",
+      "properties": {
+        "precursors": { "type": "array", "items": { "type": "string" } },
+        "continuations": { "type": "array", "items": { "type": "string" } },
+        "lateral_peers": { "type": "array", "items": { "type": "string" } },
+        "recovery": { "type": "string" }
+      }
+    }
+  }
+}

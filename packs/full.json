@@ -1,0 +1,32 @@
+{
+  "name": "full",
+  "version": "1.2.0",
+  "description": "Complete get-fable skill system containing all 25 canonical skills across all 8 packs.",
+  "skills": [
+    "get-fable",
+    "fable-discover",
+    "fable-research",
+    "fable-plan",
+    "fable-tdd",
+    "fable-delegate",
+    "fable-execute",
+    "fable-verify",
+    "fable-review",
+    "fable-security",
+    "fable-release",
+    "fable-handoff",
+    "fable-eval",
+    "fable-recover",
+    "fable-dataviz",
+    "fable-artifact",
+    "fable-simplify",
+    "fable-loop",
+    "fable-run",
+    "fable-memory",
+    "fable-config",
+    "fable-simulator",
+    "fable-cowork",
+    "fable-spark",
+    "skill-creator"
+  ]
+}

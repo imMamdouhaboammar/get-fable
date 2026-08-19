@@ -1,0 +1,20 @@
+name: create-skill
+version: 1.2.0
+description: End-to-end authoring, evaluation, and packaging workflow for a new autonomous skill.
+targetShape: feature
+steps:
+  - skill: fable-discover
+    gate: load-bearing-unknowns-resolved
+    description: Inspect domain requirements and capture workflow intent
+  - skill: skill-creator
+    gate: lack_of_surprise
+    description: Author structured SKILL.md, bundled resources, and YAML frontmatter
+  - skill: fable-eval
+    gate: holdout-tested
+    description: Run qualitative and quantitative benchmark suites
+  - skill: fable-verify
+    gate: machine-checked
+    description: Validate skill frontmatter against JSON schema
+  - skill: fable-review
+    gate: grounded-diff-read
+    description: Audit skill instructions and trigger boundaries

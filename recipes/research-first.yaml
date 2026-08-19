@@ -1,0 +1,20 @@
+name: research-first
+version: 1.2.0
+description: Evidence-grounded workflow when task depends on third-party APIs, external docs, or library upgrades.
+targetShape: research
+steps:
+  - skill: fable-research
+    gate: primary-source-grounding
+    description: Inspect official release notes, docs, and API contracts
+  - skill: fable-discover
+    gate: load-bearing-unknowns-resolved
+    description: Ground external facts in the repository's existing architecture
+  - skill: fable-plan
+    gate: bounded-scope
+    description: Draft migration or integration contract cards
+  - skill: fable-execute
+    gate: acceptance-checked
+    description: Implement integration or API changes
+  - skill: fable-verify
+    gate: machine-checked
+    description: Validate with test assertions and runtime calls

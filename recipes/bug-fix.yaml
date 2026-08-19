@@ -1,0 +1,24 @@
+name: bug-fix
+version: 1.2.0
+description: Standard workflow for reproducing, fixing, and verifying bug fixes with zero regressions.
+targetShape: bug-fix
+steps:
+  - skill: fable-discover
+    gate: load-bearing-unknowns-resolved
+    description: Ground error behavior and trace call sites in source code
+  - skill: fable-tdd
+    gate: red-observed
+    description: Write reproduction test and observe explicit failure
+  - skill: fable-execute
+    gate: acceptance-checked
+    description: Implement minimal fix to satisfy the failing test
+  - skill: fable-verify
+    gate: fresh-mutation-covered
+    description: Run full test suite and confirm green pass
+  - skill: fable-review
+    gate: grounded-diff-read
+    optional: true
+    description: Independent pass to ensure no unintended collateral changes
+  - skill: fable-handoff
+    gate: next-action-explicit
+    description: Record pass evidence and summary in session ledger

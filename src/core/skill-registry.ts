@@ -35,6 +35,7 @@ const CANONICAL_SKILLS: FableSkillId[] = [
   'fable-simulator',
   'fable-cowork',
   'fable-spark',
+  'skill-creator',
 ];
 
 const REGISTRY_PHASES = new Set<FablePhase>([
@@ -56,6 +57,7 @@ const REGISTRY_PACKS = new Set<FablePack>([
   'delivery',
   'evolution',
   'system',
+  'creator',
 ]);
 
 export function getCoreRepoRoot(): string {

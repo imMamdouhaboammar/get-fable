@@ -1,0 +1,14 @@
+{
+  "version": "1.2.0",
+  "recipes": [
+    { "id": "bug-fix", "path": "recipes/bug-fix.yaml", "targetShape": "bug-fix" },
+    { "id": "build-feature", "path": "recipes/build-feature.yaml", "targetShape": "feature" },
+    { "id": "research-first", "path": "recipes/research-first.yaml", "targetShape": "research" },
+    { "id": "review-pr", "path": "recipes/review-pr.yaml", "targetShape": "review" },
+    { "id": "security-review", "path": "recipes/security-review.yaml", "targetShape": "security" },
+    { "id": "release", "path": "recipes/release.yaml", "targetShape": "release" },
+    { "id": "cowork-session", "path": "recipes/cowork-session.yaml", "targetShape": "feature" },
+    { "id": "dataviz-dashboard", "path": "recipes/dataviz-dashboard.yaml", "targetShape": "feature" },
+    { "id": "create-skill", "path": "recipes/create-skill.yaml", "targetShape": "feature" }
+  ]
+}

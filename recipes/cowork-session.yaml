@@ -1,0 +1,20 @@
+name: cowork-session
+version: 1.2.0
+description: Autonomous background execution workflow with quiet tool chaining.
+targetShape: feature
+steps:
+  - skill: fable-cowork
+    gate: outcome-first
+    description: Initialize autonomous execution with clean tool chaining
+  - skill: fable-execute
+    gate: acceptance-checked
+    description: Implement multi-step task without mid-chain chatter
+  - skill: fable-verify
+    gate: machine-checked
+    description: Falsify and verify behavior with automated tests
+  - skill: fable-spark
+    gate: minimal-action-tested
+    description: Predict the atomic next move or stand by silently
+  - skill: fable-handoff
+    gate: next-action-explicit
+    description: Summarize completed outcome in 1-2 readable sentences

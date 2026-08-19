@@ -1,0 +1,8 @@
+{
+  "name": "creator",
+  "version": "1.2.0",
+  "description": "Skill creation, iterative benchmarking, eval suites, description optimization, and packaging.",
+  "skills": [
+    "skill-creator"
+  ]
+}

@@ -1,0 +1,20 @@
+name: release
+version: 1.2.0
+description: Pre-release verification and packaging checklist workflow.
+targetShape: release
+steps:
+  - skill: fable-verify
+    gate: fresh-mutation-covered
+    description: Confirm 100% passing test suites and builds
+  - skill: fable-review
+    gate: grounded-diff-read
+    description: Check semver consistency and changelog entries
+  - skill: fable-security
+    gate: no-exposed-secrets
+    description: Validate zero exposed credentials or dangerous permissions
+  - skill: fable-release
+    gate: required-checks-pass
+    description: Tag version, package assets, and verify release readiness
+  - skill: fable-handoff
+    gate: next-action-explicit
+    description: Output clean release notes and handoff summary

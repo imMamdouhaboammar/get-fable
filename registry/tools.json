@@ -1,0 +1,35 @@
+{
+  "version": "1.2.0",
+  "capabilities": [
+    {
+      "id": "file-operations",
+      "capability": "filesystem",
+      "description": "Read, write, edit, and list files and directories in the active workspace.",
+      "adapters": ["native-filesystem", "mcp-filesystem", "node-fs"]
+    },
+    {
+      "id": "terminal-execution",
+      "capability": "shell",
+      "description": "Execute shell commands, test runners, build pipelines, and scripts.",
+      "adapters": ["bun-spawn", "child-process", "bash-tool"]
+    },
+    {
+      "id": "current-source-search",
+      "capability": "web-search",
+      "description": "Query official documentation, release notes, and authoritative primary sources.",
+      "adapters": ["tavily", "brave-search", "google-search", "mcp-search"]
+    },
+    {
+      "id": "headless-browser",
+      "capability": "browser-inspection",
+      "description": "Execute headless browser playthroughs, take screenshots, and inspect DOM/pixel states.",
+      "adapters": ["playwright", "puppeteer", "mcp-devtools"]
+    },
+    {
+      "id": "git-version-control",
+      "capability": "git",
+      "description": "Inspect commits, diffs, branch status, and enforce non-destructive history preservation.",
+      "adapters": ["simple-git", "cli-git"]
+    }
+  ]
+}

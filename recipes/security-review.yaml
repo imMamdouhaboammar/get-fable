@@ -1,0 +1,17 @@
+name: security-review
+version: 1.2.0
+description: Focused security audit and threat modeling workflow.
+targetShape: security
+steps:
+  - skill: fable-discover
+    gate: load-bearing-unknowns-resolved
+    description: Map authentication endpoints, data boundaries, and secrets
+  - skill: fable-security
+    gate: threat-surface-checked
+    description: Audit attack vectors, inputs, headers, and authorization logic
+  - skill: fable-review
+    gate: grounded-diff-read
+    description: Confirm audit findings with concrete file locations
+  - skill: fable-verify
+    gate: machine-checked
+    description: Run security scanners and unit tests

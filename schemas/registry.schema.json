@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableRegistrySchema",
+  "type": "object",
+  "required": ["schemaVersion", "entry", "skills"],
+  "properties": {
+    "schemaVersion": { "type": "integer" },
+    "entry": { "type": "string" },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "phase", "pack", "description", "intents", "requires", "produces", "gates", "fallback", "mutatesWorkspace", "parallelSafe", "next", "keywords"],
+        "properties": {
+          "id": { "type": "string" },
+          "order": { "type": "integer" },
+          "phase": { "type": "string" },
+          "pack": { "type": "string" },
+          "description": { "type": "string" },
+          "intents": { "type": "array", "items": { "type": "string" } },
+          "requires": { "type": "array", "items": { "type": "string" } },
+          "produces": { "type": "array", "items": { "type": "string" } },
+          "gates": { "type": "array", "items": { "type": "string" } },
+          "fallback": { "type": ["string", "null"] },
+          "mutatesWorkspace": { "type": "boolean" },
+          "parallelSafe": { "type": "boolean" },
+          "next": { "type": "array", "items": { "type": "string" } },
+          "keywords": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

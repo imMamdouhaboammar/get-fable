@@ -40,3 +40,6 @@ A complete coding lifecycle governance kernel for AI agents.
 - `fable-simulator`: Rigorous truthfulness, independent verification oracles, and contract derivation
 - `fable-cowork`: Autonomous cowork execution, silent tool chaining, and safety boundaries
 - `fable-spark`: Situational awareness micro-policy predicting atomic next moves
+
+### Creator Pack (`creator`)
+- `skill-creator`: Author, refine, benchmark, and package autonomous skills with evaluation suites

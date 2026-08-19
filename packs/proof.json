@@ -1,0 +1,9 @@
+{
+  "name": "proof",
+  "version": "1.2.0",
+  "description": "Independent diff review, code quality audit, and security boundary evaluation.",
+  "skills": [
+    "fable-review",
+    "fable-security"
+  ]
+}

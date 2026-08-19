@@ -1,0 +1,17 @@
+name: dataviz-dashboard
+version: 1.2.0
+description: Data visualization and responsive artifact design workflow.
+targetShape: feature
+steps:
+  - skill: fable-dataviz
+    gate: theme-contrast-valid
+    description: Generate WCAG AA light/dark palette and responsive SVG charts
+  - skill: fable-artifact
+    gate: hierarchy-clear
+    description: Structure interactive UI or dashboard layout
+  - skill: fable-run
+    gate: process-clean-exit
+    description: Launch runtime preview and smoke test rendering
+  - skill: fable-verify
+    gate: machine-checked
+    description: Confirm visual and interaction correctness

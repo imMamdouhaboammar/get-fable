@@ -1,0 +1,49 @@
+{
+  "version": "1.2.0",
+  "hooks": {
+    "SessionStart": [
+      {
+        "name": "restore-fable-state",
+        "description": "Restore state and verify active card on session startup",
+        "command": "python3 hooks/session_start.py"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit",
+        "name": "safety-routing-guard",
+        "description": "Enforce non-destructive write rules and contract boundaries",
+        "command": "python3 hooks/pre_tool.py"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "name": "mutation-tracker",
+        "description": "Record workspace mutations and invalidate outdated verification",
+        "command": "python3 hooks/fable_mutation.py"
+      },
+      {
+        "matcher": "Bash",
+        "name": "failure-tracker",
+        "description": "Track consecutive test command failures and trigger recovery loop",
+        "command": "python3 hooks/fable_fail_streak.py"
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "name": "failure-event-tracker",
+        "description": "Record tool failure events directly into failure streak counter",
+        "command": "python3 hooks/fable_fail_streak.py"
+      }
+    ],
+    "Stop": [
+      {
+        "name": "completion-evidence-guard",
+        "description": "Block stop event if substantial changes lack fresh passing verification",
+        "command": "python3 hooks/fable_stop_guard.py"
+      }
+    ]
+  }
+}

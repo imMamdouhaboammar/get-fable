@@ -1,0 +1,77 @@
+{
+  "version": "1.2.0",
+  "agents": [
+    {
+      "id": "orchestrator",
+      "name": "Orchestrator",
+      "role": "Autonomous Pipeline Manager & Task Delegator",
+      "autonomy_level": "high",
+      "primary_skills": ["get-fable", "fable-spark", "fable-delegate", "fable-handoff"],
+      "supporting_skills": ["fable-discover", "fable-plan", "fable-recover"]
+    },
+    {
+      "id": "researcher",
+      "name": "Researcher",
+      "role": "Primary Source Investigator & Facts Grounder",
+      "autonomy_level": "read-only",
+      "primary_skills": ["fable-research", "fable-discover", "fable-memory"],
+      "supporting_skills": ["fable-artifact", "fable-config"]
+    },
+    {
+      "id": "architect",
+      "name": "Architect",
+      "role": "System Designer & Work Card Decomposer",
+      "autonomy_level": "supervised",
+      "primary_skills": ["fable-plan", "fable-artifact", "fable-dataviz"],
+      "supporting_skills": ["fable-discover", "fable-config"]
+    },
+    {
+      "id": "executor",
+      "name": "Executor",
+      "role": "Bounded TDD & Code Implementer",
+      "autonomy_level": "bounded",
+      "primary_skills": ["fable-execute", "fable-tdd", "fable-cowork", "fable-simplify"],
+      "supporting_skills": ["fable-loop", "fable-recover"]
+    },
+    {
+      "id": "verifier",
+      "name": "Verifier",
+      "role": "Independent Test Runner & Causal Proof Validator",
+      "autonomy_level": "bounded",
+      "primary_skills": ["fable-verify", "fable-run", "fable-release"],
+      "supporting_skills": ["fable-recover", "fable-eval"]
+    },
+    {
+      "id": "reviewer",
+      "name": "Reviewer",
+      "role": "Independent Diff & Standards Auditor",
+      "autonomy_level": "read-only",
+      "primary_skills": ["fable-review", "fable-eval"],
+      "supporting_skills": ["fable-security", "fable-discover"]
+    },
+    {
+      "id": "security-auditor",
+      "name": "Security Auditor",
+      "role": "Threat Modeler & Vulnerability Analyst",
+      "autonomy_level": "bounded",
+      "primary_skills": ["fable-security", "fable-review"],
+      "supporting_skills": ["fable-discover", "fable-config"]
+    },
+    {
+      "id": "simulator",
+      "name": "Simulator",
+      "role": "Headless Browser Inspector & Truthfulness Validator",
+      "autonomy_level": "bounded",
+      "primary_skills": ["fable-simulator", "fable-verify", "fable-run"],
+      "supporting_skills": ["fable-recover", "fable-artifact"]
+    },
+    {
+      "id": "author",
+      "name": "Author",
+      "role": "Skill Engineer & Prompt Optimizer",
+      "autonomy_level": "bounded",
+      "primary_skills": ["skill-creator", "fable-eval", "fable-verify"],
+      "supporting_skills": ["fable-artifact", "fable-config"]
+    }
+  ]
+}

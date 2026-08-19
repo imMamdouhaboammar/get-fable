@@ -46,6 +46,12 @@ import {
   clearTelemetryLogs,
 } from './core/telemetry.js';
 import { loadSkillFeed, searchSkillFeed, inspectSkillDetail } from './core/feed.js';
+import {
+  loadNeuralGraph,
+  getNeuralConnections,
+  renderNeuralGraphAscii,
+} from './core/neural-linking.js';
+import { listRecipes, getRecipe, renderRecipeAscii } from './core/recipes.js';
 import type { EvidenceKind, EvidenceResult } from './core/types.js';
 import { logHeader, logInfo, logError, logSuccess, logWarn, colors } from './utils.js';
 
@@ -571,10 +577,156 @@ function runSkillsCommand(args: string[]): number {
   }
 }
 
+function runGraphCommand(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const targetSkill = args.find((a) => a !== '--json');
+
+  try {
+    const graph = loadNeuralGraph();
+    if (json) {
+      if (targetSkill) {
+        const conn = getNeuralConnections(targetSkill, graph);
+        console.log(JSON.stringify(conn, null, 2));
+      } else {
+        console.log(JSON.stringify(graph, null, 2));
+      }
+    } else {
+      console.log(renderNeuralGraphAscii(targetSkill, graph));
+    }
+    return 0;
+  } catch (error) {
+    logError(error instanceof Error ? error.message : String(error));
+    return 1;
+  }
+}
+
+function runRecipesCommand(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const sub = (args[0] || 'list').toLowerCase();
+
+  switch (sub) {
+    case 'list': {
+      const recipes = listRecipes();
+      if (json) {
+        console.log(JSON.stringify(recipes, null, 2));
+      } else {
+        logHeader(`Fable Lifecycle Recipes (${recipes.length} available)`);
+        for (const r of recipes) {
+          console.log(
+            `  ${colors.green}${r.id.padEnd(20)}${colors.reset} ${colors.yellow}[${(r.targetShape || 'general').padEnd(12)}]${colors.reset} ${r.description}`
+          );
+        }
+      }
+      return 0;
+    }
+    case 'run':
+    case 'inspect': {
+      const id = args[1];
+      if (!id) {
+        logError('Recipe command requires a recipe ID (e.g. bug-fix, build-feature)');
+        return 1;
+      }
+      try {
+        if (json) {
+          const recipe = getRecipe(id);
+          if (!recipe) {
+            logError(`Recipe '${id}' not found`);
+            return 1;
+          }
+          console.log(JSON.stringify(recipe, null, 2));
+        } else {
+          console.log(renderRecipeAscii(id));
+        }
+        return 0;
+      } catch (error) {
+        logError(error instanceof Error ? error.message : String(error));
+        return 1;
+      }
+    }
+    default:
+      logError(`Unknown recipes action: ${sub}. Use: list, inspect <recipe-id>`);
+      return 1;
+  }
+}
+
+function runPacksCommand(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const sub = (args[0] || 'list').toLowerCase();
+  const repoRoot = getRepoRootDir();
+  const packsDir = path.join(repoRoot, 'packs');
+
+  if (!fs.existsSync(packsDir)) {
+    logError('Packs directory not found');
+    return 1;
+  }
+
+  switch (sub) {
+    case 'list': {
+      const files = fs.readdirSync(packsDir).filter((f) => f.endsWith('.json'));
+      const packs = files.map((f) => {
+        const content = JSON.parse(fs.readFileSync(path.join(packsDir, f), 'utf-8'));
+        return {
+          name: content.name,
+          version: content.version,
+          description: content.description,
+          skillCount: content.skills?.length || 0,
+        };
+      });
+
+      if (json) {
+        console.log(JSON.stringify(packs, null, 2));
+      } else {
+        logHeader(`Fable Skill Packs (${packs.length} available)`);
+        for (const p of packs) {
+          console.log(
+            `  ${colors.green}${p.name.padEnd(16)}${colors.reset} ${colors.yellow}(${p.skillCount} skills)${colors.reset} ${p.description}`
+          );
+        }
+      }
+      return 0;
+    }
+    case 'inspect': {
+      const name = args[1];
+      if (!name) {
+        logError('packs inspect requires a pack name (e.g. core, build, creator)');
+        return 1;
+      }
+      const packFile = path.join(packsDir, `${name}.json`);
+      if (!fs.existsSync(packFile)) {
+        logError(`Pack '${name}' not found at ${packFile}`);
+        return 1;
+      }
+      const content = JSON.parse(fs.readFileSync(packFile, 'utf-8'));
+      if (json) {
+        console.log(JSON.stringify(content, null, 2));
+      } else {
+        logHeader(`Pack: ${content.name} (v${content.version})`);
+        console.log(`Description: ${content.description}`);
+        console.log(`Skills: ${content.skills?.join(', ')}`);
+      }
+      return 0;
+    }
+    default:
+      logError(`Unknown packs action: ${sub}. Use: list, inspect <pack-name>`);
+      return 1;
+  }
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number | Promise<number> {
   const command = args[0] || 'help';
 
   switch (command) {
+    case 'graph':
+      return runGraphCommand(args.slice(1));
+
+    case 'recipes':
+    case 'recipe':
+      return runRecipesCommand(args.slice(1));
+
+    case 'packs':
+    case 'pack':
+      return runPacksCommand(args.slice(1));
+
     case 'install':
       return runInstallCommand(args.slice(1));
 
@@ -758,6 +910,9 @@ ${colors.bright}CORE WORKFLOW COMMANDS:${colors.reset}
   ${colors.yellow}doctor [--fix]${colors.reset}       Validate and auto-repair installation, registry, state, and hooks
 
 ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
+  ${colors.yellow}graph [skill-id]${colors.reset}     Inspect neural linking and knowledge graph topology; add --json
+  ${colors.yellow}recipes [list|inspect]${colors.reset}List and view lifecycle workflow recipes; add --json
+  ${colors.yellow}packs [list|inspect]${colors.reset}  List and view grouped skill packs; add --json
   ${colors.yellow}install [target]${colors.reset}    Install global agent integrations (all, claude, antigravity, codex, cursor, opencode, kimi, deepseek, kiro, pi, git, shell)
   ${colors.yellow}feed [list|search]${colors.reset}  Discover, search, and inspect available skills in the catalog
   ${colors.yellow}shell [zsh|bash|fish]${colors.reset}Print shell integration script for your terminal

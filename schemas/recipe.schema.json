@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableRecipe",
+  "type": "object",
+  "required": ["name", "description", "version", "steps"],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "targetShape": { "type": "string" },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill"],
+        "properties": {
+          "skill": { "type": "string" },
+          "gate": { "type": "string" },
+          "optional": { "type": "boolean" },
+          "fallback": { "type": "string" }
+        }
+      }
+    }
+  }
+}

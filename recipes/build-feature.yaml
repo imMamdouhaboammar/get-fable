@@ -1,0 +1,30 @@
+name: build-feature
+version: 1.2.0
+description: End-to-end workflow for designing, implementing, verifying, and securing a new feature.
+targetShape: feature
+steps:
+  - skill: fable-discover
+    gate: load-bearing-unknowns-resolved
+    description: Inspect repository conventions, existing components, and data types
+  - skill: fable-plan
+    gate: bounded-scope
+    description: Break feature requirements into atomic work cards
+  - skill: fable-tdd
+    gate: red-observed
+    description: Write initial unit/integration test specifications
+  - skill: fable-execute
+    gate: invariants-preserved
+    description: Implement feature logic card by card
+  - skill: fable-verify
+    gate: machine-checked
+    description: Execute full verification and typecheck suite
+  - skill: fable-review
+    gate: grounded-diff-read
+    description: Audit diff for maintainability and standard conformance
+  - skill: fable-security
+    gate: threat-surface-checked
+    optional: true
+    description: Mitigate security risks and check input boundaries
+  - skill: fable-release
+    gate: required-checks-pass
+    description: Confirm feature readiness for PR merge
