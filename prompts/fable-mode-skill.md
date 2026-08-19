@@ -1,6 +1,6 @@
 ---
 name: fable-mode
-description: Compatibility alias for the modular get-fable workflow. Use when a user explicitly asks for fable mode or when the current project is already armed with .fable state. The canonical workflow lives in the get-fable and fable-* skills.
+description: Compatibility alias for the canonical get-fable coding lifecycle. Use when the user explicitly asks for Fable mode or when an existing installation invokes this legacy skill name.
 triggers:
   - "fable mode"
   - "fable-mode"
@@ -15,28 +15,21 @@ triggers:
 
 # fable-mode compatibility adapter
 
-`fable-mode` is retained for existing installations. New workflow behavior is defined by the canonical skill pack installed beside this file.
+`fable-mode` is a legacy entry name. New behavior belongs to the canonical `get-fable` skill pack and `skills/get-fable/registry.json`.
 
-## Canonical route
+When the canonical pack is reachable, route there instead of maintaining a second workflow here.
 
-Use `get-fable` as the entry skill. Its ordered specialists are:
+If the host cannot invoke canonical skills directly, preserve these invariants inline:
 
-1. `fable-discover` for load-bearing evidence and current facts
-2. `fable-plan` for bounded decomposition and acceptance criteria
-3. `fable-execute` for one accepted implementation card
-4. `fable-verify` for adversarial proof and fresh evidence
-5. `fable-recover` for repeated failure, stale execution, or contradictory evidence
+- route by missing evidence or decision
+- resolve repository unknowns and current external facts before they influence architecture
+- use bounded plans for broad work and red-green checks for testable behavior changes
+- delegate only disjoint work with explicit ownership and acceptance
+- treat review, security, release, handoff, evaluation, and recovery as distinct jobs
+- advance mutation state after workspace changes
+- require fresh current-generation completion evidence after the final mutation
+- change the diagnosis before another repair after repeated failure
 
-Recovery takes precedence over another blind retry. Verification takes precedence over a completion claim. Discovery takes precedence over architecture when important facts remain unknown.
+Evidence types stay narrow: research supports decisions, receipts support execution provenance, handoffs support continuity, and none of them substitutes for behavior verification.
 
-## Durable state
-
-When `.fable/state.json` exists, follow its phase and failure state. Keep human-readable task context in `docs/SPEC.md`, `.fable/LEDGER.md`, and `.fable/PROGRESS.md` without replacing unrelated user-owned content.
-
-## Completion rule
-
-For substantial work, do not claim completion until the affected behavior has fresh passing evidence. If the host cannot invoke the canonical skills directly, follow their contracts inline.
-
-## Capability boundary
-
-This workflow can improve planning, context hygiene, verification, and recovery behavior. It does not change model weights, reproduce a proprietary model, expose hidden reasoning, or guarantee equivalent benchmark performance.
+This workflow changes process around a model. It does not change model weights, reproduce a proprietary model, expose hidden reasoning, or guarantee equivalent capability.
