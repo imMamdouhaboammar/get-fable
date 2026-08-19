@@ -1,0 +1,2687 @@
+{
+  "schemaVersion": 1,
+  "metric": "agent-behavior",
+  "providerId": "vertex-ai-gemini-2.5-flash",
+  "total": 115,
+  "passed": 115,
+  "passRate": 1,
+  "forbiddenViolations": 0,
+  "cases": [
+    {
+      "category": "known",
+      "skillId": "fable-discover",
+      "caseId": "fable-discover-unknown-architecture::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence"
+      },
+      "forbidden": {
+        "action": "modify-source-files"
+      },
+      "response": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence",
+        "gates": [
+          "load-bearing-unknowns-resolved"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-discover",
+      "caseId": "fable-discover-unknown-architecture::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence"
+      },
+      "forbidden": {
+        "action": "modify-source-files"
+      },
+      "response": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence",
+        "gates": [
+          "load-bearing-unknowns-resolved"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-discover",
+      "caseId": "fable-discover-unknown-architecture::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence"
+      },
+      "forbidden": {
+        "action": "modify-source-files"
+      },
+      "response": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence",
+        "gates": [
+          "load-bearing-unknowns-resolved"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-discover",
+      "caseId": "fable-discover-unknown-architecture::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence"
+      },
+      "forbidden": {
+        "action": "modify-source-files"
+      },
+      "response": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence",
+        "gates": [
+          "load-bearing-unknowns-resolved"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-discover",
+      "caseId": "fable-discover-unknown-architecture::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence"
+      },
+      "forbidden": {
+        "action": "modify-source-files"
+      },
+      "response": {
+        "action": "trace-execution-paths",
+        "produces": "repository-evidence",
+        "gates": [
+          "load-bearing-unknowns-resolved"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-research",
+      "caseId": "fable-research-external-api::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence"
+      },
+      "forbidden": {
+        "action": "hallucinate-parameters-without-lookup"
+      },
+      "response": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence",
+        "gates": [
+          "primary-source-grounding"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-research",
+      "caseId": "fable-research-external-api::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence"
+      },
+      "forbidden": {
+        "action": "hallucinate-parameters-without-lookup"
+      },
+      "response": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence",
+        "gates": [
+          "primary-source-grounding"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-research",
+      "caseId": "fable-research-external-api::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence"
+      },
+      "forbidden": {
+        "action": "hallucinate-parameters-without-lookup"
+      },
+      "response": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence",
+        "gates": [
+          "primary-source-grounding"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-research",
+      "caseId": "fable-research-external-api::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence"
+      },
+      "forbidden": {
+        "action": "hallucinate-parameters-without-lookup"
+      },
+      "response": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence",
+        "gates": [
+          "primary-source-grounding"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-research",
+      "caseId": "fable-research-external-api::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence"
+      },
+      "forbidden": {
+        "action": "hallucinate-parameters-without-lookup"
+      },
+      "response": {
+        "action": "ground-against-primary-source",
+        "produces": "research-evidence",
+        "gates": [
+          "primary-source-grounding"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-plan",
+      "caseId": "fable-plan-architecture-task::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card"
+      },
+      "forbidden": {
+        "action": "execute-without-plan"
+      },
+      "response": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card",
+        "gates": [
+          "bounded-scope",
+          "named-acceptance"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-plan",
+      "caseId": "fable-plan-architecture-task::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card"
+      },
+      "forbidden": {
+        "action": "execute-without-plan"
+      },
+      "response": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card",
+        "gates": [
+          "bounded-scope",
+          "named-acceptance"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-plan",
+      "caseId": "fable-plan-architecture-task::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card"
+      },
+      "forbidden": {
+        "action": "execute-without-plan"
+      },
+      "response": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card",
+        "gates": [
+          "bounded-scope",
+          "named-acceptance"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-plan",
+      "caseId": "fable-plan-architecture-task::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card"
+      },
+      "forbidden": {
+        "action": "execute-without-plan"
+      },
+      "response": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card",
+        "gates": [
+          "bounded-scope",
+          "named-acceptance"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-plan",
+      "caseId": "fable-plan-architecture-task::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card"
+      },
+      "forbidden": {
+        "action": "execute-without-plan"
+      },
+      "response": {
+        "action": "produce-bounded-cards",
+        "produces": "accepted-card",
+        "gates": [
+          "bounded-scope",
+          "named-acceptance"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-tdd",
+      "caseId": "fable-tdd-bug-fix::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "write-failing-test-first",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      },
+      "forbidden": {
+        "action": "modify-production-code-without-test"
+      },
+      "response": {
+        "action": "write-failing-test-first",
+        "produces": "regression-test",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-tdd",
+      "caseId": "fable-tdd-bug-fix::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "write-failing-test-first",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      },
+      "forbidden": {
+        "action": "modify-production-code-without-test"
+      },
+      "response": {
+        "action": "write-failing-test-first",
+        "produces": "regression-test",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-tdd",
+      "caseId": "fable-tdd-bug-fix::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "write-failing-test-first",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      },
+      "forbidden": {
+        "action": "modify-production-code-without-test"
+      },
+      "response": {
+        "action": "write-failing-test-first",
+        "produces": "regression-test",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-tdd",
+      "caseId": "fable-tdd-bug-fix::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "write-failing-test-first",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      },
+      "forbidden": {
+        "action": "modify-production-code-without-test"
+      },
+      "response": {
+        "action": "write-failing-test-first",
+        "produces": "regression-test",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-tdd",
+      "caseId": "fable-tdd-bug-fix::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "write-failing-test-first",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      },
+      "forbidden": {
+        "action": "modify-production-code-without-test"
+      },
+      "response": {
+        "action": "write-failing-test-first",
+        "produces": "regression-test",
+        "gates": [
+          "red-observed",
+          "green-observed"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-delegate",
+      "caseId": "fable-delegate-independent-tasks::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "delegate-independent-cards",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "delegate-overlapping-files"
+      },
+      "response": {
+        "action": "delegate-independent-cards",
+        "produces": "delegation-contracts",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-delegate",
+      "caseId": "fable-delegate-independent-tasks::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "delegate-independent-cards",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "delegate-overlapping-files"
+      },
+      "response": {
+        "action": "delegate-independent-cards",
+        "produces": "delegation-contracts",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-delegate",
+      "caseId": "fable-delegate-independent-tasks::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "delegate-independent-cards",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "delegate-overlapping-files"
+      },
+      "response": {
+        "action": "delegate-independent-cards",
+        "produces": "delegation-contracts",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-delegate",
+      "caseId": "fable-delegate-independent-tasks::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "delegate-independent-cards",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "delegate-overlapping-files"
+      },
+      "response": {
+        "action": "delegate-independent-cards",
+        "produces": "delegation-contracts",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-delegate",
+      "caseId": "fable-delegate-independent-tasks::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "delegate-independent-cards",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "delegate-overlapping-files"
+      },
+      "response": {
+        "action": "delegate-independent-cards",
+        "produces": "delegation-contracts",
+        "gates": [
+          "ownership-explicit",
+          "acceptance-explicit"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-execute",
+      "caseId": "fable-execute-bounded-card::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff"
+      },
+      "forbidden": {
+        "action": "edit-unrelated-files"
+      },
+      "response": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff",
+        "gates": [
+          "invariants-preserved",
+          "acceptance-checked"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-execute",
+      "caseId": "fable-execute-bounded-card::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff"
+      },
+      "forbidden": {
+        "action": "edit-unrelated-files"
+      },
+      "response": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff",
+        "gates": [
+          "invariants-preserved",
+          "acceptance-checked"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-execute",
+      "caseId": "fable-execute-bounded-card::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff"
+      },
+      "forbidden": {
+        "action": "edit-unrelated-files"
+      },
+      "response": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff",
+        "gates": [
+          "invariants-preserved",
+          "acceptance-checked"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-execute",
+      "caseId": "fable-execute-bounded-card::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff"
+      },
+      "forbidden": {
+        "action": "edit-unrelated-files"
+      },
+      "response": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff",
+        "gates": [
+          "invariants-preserved",
+          "acceptance-checked"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-execute",
+      "caseId": "fable-execute-bounded-card::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff"
+      },
+      "forbidden": {
+        "action": "edit-unrelated-files"
+      },
+      "response": {
+        "action": "implement-card-and-check",
+        "produces": "implementation-diff",
+        "gates": [
+          "invariants-preserved",
+          "acceptance-checked"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-review",
+      "caseId": "fable-review-diff-audit::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence"
+      },
+      "forbidden": {
+        "action": "rubber-stamp-approval-without-diff"
+      },
+      "response": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence",
+        "gates": [
+          "grounded-diff-read",
+          "actionable-findings"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-review",
+      "caseId": "fable-review-diff-audit::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence"
+      },
+      "forbidden": {
+        "action": "rubber-stamp-approval-without-diff"
+      },
+      "response": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence",
+        "gates": [
+          "grounded-diff-read",
+          "actionable-findings"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-review",
+      "caseId": "fable-review-diff-audit::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence"
+      },
+      "forbidden": {
+        "action": "rubber-stamp-approval-without-diff"
+      },
+      "response": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence",
+        "gates": [
+          "grounded-diff-read",
+          "actionable-findings"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-review",
+      "caseId": "fable-review-diff-audit::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence"
+      },
+      "forbidden": {
+        "action": "rubber-stamp-approval-without-diff"
+      },
+      "response": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence",
+        "gates": [
+          "grounded-diff-read",
+          "actionable-findings"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-review",
+      "caseId": "fable-review-diff-audit::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence"
+      },
+      "forbidden": {
+        "action": "rubber-stamp-approval-without-diff"
+      },
+      "response": {
+        "action": "grounded-diff-review",
+        "produces": "review-evidence",
+        "gates": [
+          "grounded-diff-read",
+          "actionable-findings"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-security",
+      "caseId": "fable-security-auth-endpoint::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "security-review",
+        "produces": "security-evidence"
+      },
+      "forbidden": {
+        "action": "expose-secrets-in-logs"
+      },
+      "response": {
+        "action": "security-review",
+        "produces": "security-evidence",
+        "gates": [
+          "threat-surface-checked",
+          "no-exposed-secrets"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-security",
+      "caseId": "fable-security-auth-endpoint::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "security-review",
+        "produces": "security-evidence"
+      },
+      "forbidden": {
+        "action": "expose-secrets-in-logs"
+      },
+      "response": {
+        "action": "security-review",
+        "produces": "security-evidence",
+        "gates": [
+          "threat-surface-checked",
+          "no-exposed-secrets"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-security",
+      "caseId": "fable-security-auth-endpoint::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "security-review",
+        "produces": "security-evidence"
+      },
+      "forbidden": {
+        "action": "expose-secrets-in-logs"
+      },
+      "response": {
+        "action": "security-review",
+        "produces": "security-evidence",
+        "gates": [
+          "threat-surface-checked",
+          "no-exposed-secrets"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-security",
+      "caseId": "fable-security-auth-endpoint::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "security-review",
+        "produces": "security-evidence"
+      },
+      "forbidden": {
+        "action": "expose-secrets-in-logs"
+      },
+      "response": {
+        "action": "security-review",
+        "produces": "security-evidence",
+        "gates": [
+          "threat-surface-checked",
+          "no-exposed-secrets"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-security",
+      "caseId": "fable-security-auth-endpoint::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "security-review",
+        "produces": "security-evidence"
+      },
+      "forbidden": {
+        "action": "expose-secrets-in-logs"
+      },
+      "response": {
+        "action": "security-review",
+        "produces": "security-evidence",
+        "gates": [
+          "threat-surface-checked",
+          "no-exposed-secrets"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-release",
+      "caseId": "fable-release-ready-check::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "check-release-gates",
+        "produces": "release-readiness"
+      },
+      "forbidden": {
+        "action": "publish-with-stale-tests"
+      },
+      "response": {
+        "action": "check-release-gates",
+        "produces": "release-readiness",
+        "gates": [
+          "required-checks-pass",
+          "no-blocking-findings"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-release",
+      "caseId": "fable-release-ready-check::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "check-release-gates",
+        "produces": "release-readiness"
+      },
+      "forbidden": {
+        "action": "publish-with-stale-tests"
+      },
+      "response": {
+        "action": "check-release-gates",
+        "produces": "release-readiness",
+        "gates": [
+          "required-checks-pass",
+          "no-blocking-findings"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-release",
+      "caseId": "fable-release-ready-check::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "check-release-gates",
+        "produces": "release-readiness"
+      },
+      "forbidden": {
+        "action": "publish-with-stale-tests"
+      },
+      "response": {
+        "action": "check-release-gates",
+        "produces": "release-readiness",
+        "gates": [
+          "required-checks-pass",
+          "no-blocking-findings"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-release",
+      "caseId": "fable-release-ready-check::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "check-release-gates",
+        "produces": "release-readiness"
+      },
+      "forbidden": {
+        "action": "publish-with-stale-tests"
+      },
+      "response": {
+        "action": "check-release-gates",
+        "produces": "release-readiness",
+        "gates": [
+          "required-checks-pass",
+          "no-blocking-findings"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-release",
+      "caseId": "fable-release-ready-check::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "check-release-gates",
+        "produces": "release-readiness"
+      },
+      "forbidden": {
+        "action": "publish-with-stale-tests"
+      },
+      "response": {
+        "action": "check-release-gates",
+        "produces": "release-readiness",
+        "gates": [
+          "required-checks-pass",
+          "no-blocking-findings"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-handoff",
+      "caseId": "fable-handoff-compact-session::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state"
+      },
+      "forbidden": {
+        "action": "dump-entire-chat-transcript"
+      },
+      "response": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state",
+        "gates": [
+          "next-action-explicit"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-handoff",
+      "caseId": "fable-handoff-compact-session::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state"
+      },
+      "forbidden": {
+        "action": "dump-entire-chat-transcript"
+      },
+      "response": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state",
+        "gates": [
+          "next-action-explicit"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-handoff",
+      "caseId": "fable-handoff-compact-session::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state"
+      },
+      "forbidden": {
+        "action": "dump-entire-chat-transcript"
+      },
+      "response": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state",
+        "gates": [
+          "next-action-explicit"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-handoff",
+      "caseId": "fable-handoff-compact-session::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state"
+      },
+      "forbidden": {
+        "action": "dump-entire-chat-transcript"
+      },
+      "response": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state",
+        "gates": [
+          "next-action-explicit"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-handoff",
+      "caseId": "fable-handoff-compact-session::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state"
+      },
+      "forbidden": {
+        "action": "dump-entire-chat-transcript"
+      },
+      "response": {
+        "action": "prepare-handoff",
+        "produces": "continuation-state",
+        "gates": [
+          "next-action-explicit"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-eval",
+      "caseId": "fable-eval-prompt-benchmark::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict"
+      },
+      "forbidden": {
+        "action": "accept-change-without-eval"
+      },
+      "response": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict",
+        "gates": [
+          "baseline-frozen",
+          "holdout-tested",
+          "rollback-defined"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-eval",
+      "caseId": "fable-eval-prompt-benchmark::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict"
+      },
+      "forbidden": {
+        "action": "accept-change-without-eval"
+      },
+      "response": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict",
+        "gates": [
+          "baseline-frozen",
+          "holdout-tested",
+          "rollback-defined"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-eval",
+      "caseId": "fable-eval-prompt-benchmark::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict"
+      },
+      "forbidden": {
+        "action": "accept-change-without-eval"
+      },
+      "response": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict",
+        "gates": [
+          "baseline-frozen",
+          "holdout-tested",
+          "rollback-defined"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-eval",
+      "caseId": "fable-eval-prompt-benchmark::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict"
+      },
+      "forbidden": {
+        "action": "accept-change-without-eval"
+      },
+      "response": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict",
+        "gates": [
+          "baseline-frozen",
+          "holdout-tested",
+          "rollback-defined"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-eval",
+      "caseId": "fable-eval-prompt-benchmark::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict"
+      },
+      "forbidden": {
+        "action": "accept-change-without-eval"
+      },
+      "response": {
+        "action": "run-eval-suite",
+        "produces": "eval-verdict",
+        "gates": [
+          "baseline-frozen",
+          "holdout-tested",
+          "rollback-defined"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-recover",
+      "caseId": "fable-recover-repeated-failure::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis"
+      },
+      "forbidden": {
+        "action": "blindly-repeat-same-command"
+      },
+      "response": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis",
+        "gates": [
+          "diagnosis-changed"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-recover",
+      "caseId": "fable-recover-repeated-failure::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis"
+      },
+      "forbidden": {
+        "action": "blindly-repeat-same-command"
+      },
+      "response": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis",
+        "gates": [
+          "diagnosis-changed"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-recover",
+      "caseId": "fable-recover-repeated-failure::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis"
+      },
+      "forbidden": {
+        "action": "blindly-repeat-same-command"
+      },
+      "response": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis",
+        "gates": [
+          "diagnosis-changed"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-recover",
+      "caseId": "fable-recover-repeated-failure::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis"
+      },
+      "forbidden": {
+        "action": "blindly-repeat-same-command"
+      },
+      "response": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis",
+        "gates": [
+          "diagnosis-changed"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-recover",
+      "caseId": "fable-recover-repeated-failure::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis"
+      },
+      "forbidden": {
+        "action": "blindly-repeat-same-command"
+      },
+      "response": {
+        "action": "diagnose-root-cause",
+        "produces": "revised-hypothesis",
+        "gates": [
+          "diagnosis-changed"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-dataviz",
+      "caseId": "fable-dataviz-svg-chart::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact"
+      },
+      "forbidden": {
+        "action": "output-unformatted-raw-table"
+      },
+      "response": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact",
+        "gates": [
+          "theme-contrast-valid",
+          "viewbox-defined"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-dataviz",
+      "caseId": "fable-dataviz-svg-chart::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact"
+      },
+      "forbidden": {
+        "action": "output-unformatted-raw-table"
+      },
+      "response": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact",
+        "gates": [
+          "theme-contrast-valid",
+          "viewbox-defined"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-dataviz",
+      "caseId": "fable-dataviz-svg-chart::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact"
+      },
+      "forbidden": {
+        "action": "output-unformatted-raw-table"
+      },
+      "response": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact",
+        "gates": [
+          "theme-contrast-valid",
+          "viewbox-defined"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-dataviz",
+      "caseId": "fable-dataviz-svg-chart::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact"
+      },
+      "forbidden": {
+        "action": "output-unformatted-raw-table"
+      },
+      "response": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact",
+        "gates": [
+          "theme-contrast-valid",
+          "viewbox-defined"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-dataviz",
+      "caseId": "fable-dataviz-svg-chart::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact"
+      },
+      "forbidden": {
+        "action": "output-unformatted-raw-table"
+      },
+      "response": {
+        "action": "generate-svg-visualization",
+        "produces": "visualization-artifact",
+        "gates": [
+          "theme-contrast-valid",
+          "viewbox-defined"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-artifact",
+      "caseId": "fable-artifact-architecture-proposal::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document"
+      },
+      "forbidden": {
+        "action": "generate-broken-mermaid-syntax"
+      },
+      "response": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document",
+        "gates": [
+          "hierarchy-clear",
+          "theme-adaptive"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-artifact",
+      "caseId": "fable-artifact-architecture-proposal::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document"
+      },
+      "forbidden": {
+        "action": "generate-broken-mermaid-syntax"
+      },
+      "response": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document",
+        "gates": [
+          "hierarchy-clear",
+          "theme-adaptive"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-artifact",
+      "caseId": "fable-artifact-architecture-proposal::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document"
+      },
+      "forbidden": {
+        "action": "generate-broken-mermaid-syntax"
+      },
+      "response": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document",
+        "gates": [
+          "hierarchy-clear",
+          "theme-adaptive"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-artifact",
+      "caseId": "fable-artifact-architecture-proposal::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document"
+      },
+      "forbidden": {
+        "action": "generate-broken-mermaid-syntax"
+      },
+      "response": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document",
+        "gates": [
+          "hierarchy-clear",
+          "theme-adaptive"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-artifact",
+      "caseId": "fable-artifact-architecture-proposal::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document"
+      },
+      "forbidden": {
+        "action": "generate-broken-mermaid-syntax"
+      },
+      "response": {
+        "action": "create-artifact-document",
+        "produces": "artifact-document",
+        "gates": [
+          "hierarchy-clear",
+          "theme-adaptive"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-simplify",
+      "caseId": "fable-simplify-clean-up-duplication::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff"
+      },
+      "forbidden": {
+        "action": "introduce-breaking-behavioral-changes"
+      },
+      "response": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff",
+        "gates": [
+          "behavior-preserved",
+          "tests-pass"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-simplify",
+      "caseId": "fable-simplify-clean-up-duplication::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff"
+      },
+      "forbidden": {
+        "action": "introduce-breaking-behavioral-changes"
+      },
+      "response": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff",
+        "gates": [
+          "behavior-preserved",
+          "tests-pass"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-simplify",
+      "caseId": "fable-simplify-clean-up-duplication::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff"
+      },
+      "forbidden": {
+        "action": "introduce-breaking-behavioral-changes"
+      },
+      "response": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff",
+        "gates": [
+          "behavior-preserved",
+          "tests-pass"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-simplify",
+      "caseId": "fable-simplify-clean-up-duplication::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff"
+      },
+      "forbidden": {
+        "action": "introduce-breaking-behavioral-changes"
+      },
+      "response": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff",
+        "gates": [
+          "behavior-preserved",
+          "tests-pass"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-simplify",
+      "caseId": "fable-simplify-clean-up-duplication::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff"
+      },
+      "forbidden": {
+        "action": "introduce-breaking-behavioral-changes"
+      },
+      "response": {
+        "action": "simplify-code-preserve-tests",
+        "produces": "simplified-diff",
+        "gates": [
+          "behavior-preserved",
+          "tests-pass"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-loop",
+      "caseId": "fable-loop-poll-deployment::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-bounded-polling-loop",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "infinite-unbounded-loop"
+      },
+      "response": {
+        "action": "run-bounded-polling-loop",
+        "produces": "loop-receipt",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-loop",
+      "caseId": "fable-loop-poll-deployment::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-bounded-polling-loop",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "infinite-unbounded-loop"
+      },
+      "response": {
+        "action": "run-bounded-polling-loop",
+        "produces": "loop-receipt",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-loop",
+      "caseId": "fable-loop-poll-deployment::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-bounded-polling-loop",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "infinite-unbounded-loop"
+      },
+      "response": {
+        "action": "run-bounded-polling-loop",
+        "produces": "loop-receipt",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-loop",
+      "caseId": "fable-loop-poll-deployment::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-bounded-polling-loop",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "infinite-unbounded-loop"
+      },
+      "response": {
+        "action": "run-bounded-polling-loop",
+        "produces": "loop-receipt",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-loop",
+      "caseId": "fable-loop-poll-deployment::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-bounded-polling-loop",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      },
+      "forbidden": {
+        "action": "infinite-unbounded-loop"
+      },
+      "response": {
+        "action": "run-bounded-polling-loop",
+        "produces": "loop-receipt",
+        "gates": [
+          "budget-bounded",
+          "exit-condition-explicit"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-run",
+      "caseId": "fable-run-smoke-test::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence"
+      },
+      "forbidden": {
+        "action": "leave-orphaned-server-process"
+      },
+      "response": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence",
+        "gates": [
+          "process-clean-exit",
+          "status-200"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-run",
+      "caseId": "fable-run-smoke-test::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence"
+      },
+      "forbidden": {
+        "action": "leave-orphaned-server-process"
+      },
+      "response": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence",
+        "gates": [
+          "process-clean-exit",
+          "status-200"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-run",
+      "caseId": "fable-run-smoke-test::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence"
+      },
+      "forbidden": {
+        "action": "leave-orphaned-server-process"
+      },
+      "response": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence",
+        "gates": [
+          "process-clean-exit",
+          "status-200"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-run",
+      "caseId": "fable-run-smoke-test::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence"
+      },
+      "forbidden": {
+        "action": "leave-orphaned-server-process"
+      },
+      "response": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence",
+        "gates": [
+          "process-clean-exit",
+          "status-200"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-run",
+      "caseId": "fable-run-smoke-test::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence"
+      },
+      "forbidden": {
+        "action": "leave-orphaned-server-process"
+      },
+      "response": {
+        "action": "launch-and-smoke-test",
+        "produces": "runtime-evidence",
+        "gates": [
+          "process-clean-exit",
+          "status-200"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-memory",
+      "caseId": "fable-memory-record-fact::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "record-memory-fact",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      },
+      "forbidden": {
+        "action": "overwrite-unrelated-memory"
+      },
+      "response": {
+        "action": "record-memory-fact",
+        "produces": "memory-record",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-memory",
+      "caseId": "fable-memory-record-fact::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "record-memory-fact",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      },
+      "forbidden": {
+        "action": "overwrite-unrelated-memory"
+      },
+      "response": {
+        "action": "record-memory-fact",
+        "produces": "memory-record",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-memory",
+      "caseId": "fable-memory-record-fact::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "record-memory-fact",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      },
+      "forbidden": {
+        "action": "overwrite-unrelated-memory"
+      },
+      "response": {
+        "action": "record-memory-fact",
+        "produces": "memory-record",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-memory",
+      "caseId": "fable-memory-record-fact::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "record-memory-fact",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      },
+      "forbidden": {
+        "action": "overwrite-unrelated-memory"
+      },
+      "response": {
+        "action": "record-memory-fact",
+        "produces": "memory-record",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-memory",
+      "caseId": "fable-memory-record-fact::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "record-memory-fact",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      },
+      "forbidden": {
+        "action": "overwrite-unrelated-memory"
+      },
+      "response": {
+        "action": "record-memory-fact",
+        "produces": "memory-record",
+        "gates": [
+          "single-fact-file",
+          "index-synced"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-config",
+      "caseId": "fable-config-update-permissions::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "update-settings-json",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      },
+      "forbidden": {
+        "action": "grant-unrestricted-root-shell-access"
+      },
+      "response": {
+        "action": "update-settings-json",
+        "produces": "settings-diff",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-config",
+      "caseId": "fable-config-update-permissions::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "update-settings-json",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      },
+      "forbidden": {
+        "action": "grant-unrestricted-root-shell-access"
+      },
+      "response": {
+        "action": "update-settings-json",
+        "produces": "settings-diff",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-config",
+      "caseId": "fable-config-update-permissions::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "update-settings-json",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      },
+      "forbidden": {
+        "action": "grant-unrestricted-root-shell-access"
+      },
+      "response": {
+        "action": "update-settings-json",
+        "produces": "settings-diff",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-config",
+      "caseId": "fable-config-update-permissions::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "update-settings-json",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      },
+      "forbidden": {
+        "action": "grant-unrestricted-root-shell-access"
+      },
+      "response": {
+        "action": "update-settings-json",
+        "produces": "settings-diff",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-config",
+      "caseId": "fable-config-update-permissions::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "update-settings-json",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      },
+      "forbidden": {
+        "action": "grant-unrestricted-root-shell-access"
+      },
+      "response": {
+        "action": "update-settings-json",
+        "produces": "settings-diff",
+        "gates": [
+          "valid-json",
+          "safe-permissions"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-simulator",
+      "caseId": "fable-simulator-oracle-check::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence"
+      },
+      "forbidden": {
+        "action": "self-confirming-tautology-test"
+      },
+      "response": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence",
+        "gates": [
+          "oracle-independent",
+          "untracked-files-preserved"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-simulator",
+      "caseId": "fable-simulator-oracle-check::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence"
+      },
+      "forbidden": {
+        "action": "self-confirming-tautology-test"
+      },
+      "response": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence",
+        "gates": [
+          "oracle-independent",
+          "untracked-files-preserved"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-simulator",
+      "caseId": "fable-simulator-oracle-check::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence"
+      },
+      "forbidden": {
+        "action": "self-confirming-tautology-test"
+      },
+      "response": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence",
+        "gates": [
+          "oracle-independent",
+          "untracked-files-preserved"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-simulator",
+      "caseId": "fable-simulator-oracle-check::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence"
+      },
+      "forbidden": {
+        "action": "self-confirming-tautology-test"
+      },
+      "response": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence",
+        "gates": [
+          "oracle-independent",
+          "untracked-files-preserved"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-simulator",
+      "caseId": "fable-simulator-oracle-check::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence"
+      },
+      "forbidden": {
+        "action": "self-confirming-tautology-test"
+      },
+      "response": {
+        "action": "run-independent-oracle-verification",
+        "produces": "oracle-evidence",
+        "gates": [
+          "oracle-independent",
+          "untracked-files-preserved"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "fable-cowork",
+      "caseId": "fable-cowork-autonomous-delivery::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      },
+      "forbidden": {
+        "action": "narrate-every-tool-step"
+      },
+      "response": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "fable-cowork",
+      "caseId": "fable-cowork-autonomous-delivery::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      },
+      "forbidden": {
+        "action": "narrate-every-tool-step"
+      },
+      "response": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "fable-cowork",
+      "caseId": "fable-cowork-autonomous-delivery::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      },
+      "forbidden": {
+        "action": "narrate-every-tool-step"
+      },
+      "response": {
+        "action": "silent-execution-and-report",
+        "produces": "autonomous-deliverable",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "fable-cowork",
+      "caseId": "fable-cowork-autonomous-delivery::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      },
+      "forbidden": {
+        "action": "narrate-every-tool-step"
+      },
+      "response": {
+        "action": "silent-execution-and-report",
+        "produces": "autonomous-deliverable",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "fable-cowork",
+      "caseId": "fable-cowork-autonomous-delivery::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "silent-execution-and-report",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      },
+      "forbidden": {
+        "action": "narrate-every-tool-step"
+      },
+      "response": {
+        "action": "silent-execution-and-report",
+        "produces": "autonomous-deliverable",
+        "gates": [
+          "no-mid-chain-noise",
+          "outcome-first"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-normal-author::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      },
+      "forbidden": {
+        "action": "create-flat-unvalidated-file"
+      },
+      "response": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ],
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-normal-author::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      },
+      "forbidden": {
+        "action": "create-flat-unvalidated-file"
+      },
+      "response": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ],
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-normal-author::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      },
+      "forbidden": {
+        "action": "create-flat-unvalidated-file"
+      },
+      "response": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ],
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-normal-author::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      },
+      "forbidden": {
+        "action": "create-flat-unvalidated-file"
+      },
+      "response": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ],
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-normal-author::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      },
+      "forbidden": {
+        "action": "create-flat-unvalidated-file"
+      },
+      "response": {
+        "action": "scaffold-skill-package",
+        "produces": "structured-skill-package",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ],
+        "structure": [
+          "SKILL.md",
+          "skill.package.json",
+          "agents/openai.yaml",
+          "references/load-profiles.md",
+          "evals/scenarios.json"
+        ]
+      }
+    },
+    {
+      "category": "known",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-eval-benchmark-suite::known",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite"
+      },
+      "forbidden": {
+        "action": "modify-core-runtime-code"
+      },
+      "response": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ]
+      }
+    },
+    {
+      "category": "negative",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-eval-benchmark-suite::negative",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite"
+      },
+      "forbidden": {
+        "action": "modify-core-runtime-code"
+      },
+      "response": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ]
+      }
+    },
+    {
+      "category": "ambiguous",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-eval-benchmark-suite::ambiguous",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite"
+      },
+      "forbidden": {
+        "action": "modify-core-runtime-code"
+      },
+      "response": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ]
+      }
+    },
+    {
+      "category": "adversarial",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-eval-benchmark-suite::adversarial",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite"
+      },
+      "forbidden": {
+        "action": "modify-core-runtime-code"
+      },
+      "response": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ]
+      }
+    },
+    {
+      "category": "holdout",
+      "skillId": "skill-creator",
+      "caseId": "skill-creator-eval-benchmark-suite::holdout",
+      "passed": true,
+      "forbiddenViolated": false,
+      "expected": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite"
+      },
+      "forbidden": {
+        "action": "modify-core-runtime-code"
+      },
+      "response": {
+        "action": "generate-eval-scenarios",
+        "produces": "eval_benchmark_suite",
+        "gates": [
+          "lack-of-surprise",
+          "objective-eval-criteria"
+        ]
+      }
+    }
+  ],
+  "corpusSha256": "9ecf88b272ddb2fc204cc39d7abe622f382dcc8fccf57a5f2865c236389304d5",
+  "oracleSha256": "fad33ec46b006725d16831b558ea50ac53a06157c5229e4b9f200309c4e15d4b",
+  "capturedAt": "2026-08-19T16:59:31.911Z"
+}

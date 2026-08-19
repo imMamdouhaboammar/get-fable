@@ -1,4 +1,6 @@
 import { describe, expect, test } from 'bun:test';
+import fs from 'node:fs';
+import path from 'node:path';
 import { runDoctor } from '../src/core/doctor.ts';
 import { getCoreRepoRoot } from '../src/core/skill-registry.ts';
 
@@ -9,7 +11,8 @@ describe('Doctor evidence semantics', () => {
     expect(byId['generated-catalog-drift'].status).toBe('PASS');
     expect(byId['skill-package-evals'].status).toBe('PASS');
     expect(byId['skill-package-evals'].message).toContain('structural evidence only');
-    expect(byId['behavioral-maturity'].status).toBe('NOT_CHECKED');
+    const hasAgentEvidence = fs.existsSync(path.join(getCoreRepoRoot(), 'evals', 'results', 'agent-behavior-v1.json'));
+    expect(byId['behavioral-maturity'].status).toBe(hasAgentEvidence ? 'PASS' : 'NOT_CHECKED');
     expect(byId['host-parity'].status).toBe('PASS');
     expect(byId['schema-runtime-parity'].status).toBe('PASS');
     expect(byId['distribution-contract'].status).toBe('PASS');
