@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
-  "version": "1.1.0",
-  "description": "Modular execution discipline for substantial coding work: evidence-first discovery, explicit routing, durable task state, verification, and recovery.",
+  "version": "1.2.0",
+  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
   "author": {
     "name": "Mamdouh Abo Ammar",
     "url": "https://github.com/imMamdouhaboammar"
@@ -15,6 +15,7 @@
     "codex",
     "agent-discipline",
     "agent-skills",
+    "coding-lifecycle",
     "verification",
     "skills"
   ],
