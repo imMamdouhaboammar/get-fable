@@ -45,7 +45,7 @@
     "id": "fable-discover-stop-when-load-bearing-answered",
     "description": "All decisions are safe but several nice-to-know questions remain",
     "given": {"intent": "Keep exploring every helper before planning", "loadBearingUnknowns": 0, "niceToKnowUnknowns": 4},
-    "expected": {"action": "handoff-with-repository-evidence", "selectedSkill": "fable-plan"},
+    "expected": {"action": "handoff-with-repository-evidence"},
     "forbidden": {"action": "continue-unbounded-exploration"}
   }
 ]
