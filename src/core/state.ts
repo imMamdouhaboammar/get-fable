@@ -1,25 +1,70 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { atomicWriteFileSync } from '../utils.js';
 import {
   FABLE_STATE_SCHEMA_VERSION,
+  type EvidenceKind,
   type EvidenceRecord,
+  type FablePack,
   type FablePhase,
   type FableSkillId,
   type FableState,
+  type FableTaskShape,
   type RoutingDecision,
 } from './types.js';
 
 const FABLE_SKILL_IDS: FableSkillId[] = [
   'get-fable',
   'fable-discover',
+  'fable-research',
   'fable-plan',
+  'fable-tdd',
+  'fable-delegate',
   'fable-execute',
   'fable-verify',
+  'fable-review',
+  'fable-security',
+  'fable-release',
+  'fable-handoff',
+  'fable-eval',
   'fable-recover',
 ];
 
-const EVIDENCE_KINDS = ['test', 'build', 'runtime', 'review', 'observation'] as const;
+const FABLE_PACKS: FablePack[] = ['core', 'intelligence', 'build', 'proof', 'delivery', 'evolution'];
+const TASK_SHAPES: FableTaskShape[] = [
+  'research',
+  'architecture',
+  'bug-fix',
+  'feature',
+  'delegation',
+  'review',
+  'security',
+  'release',
+  'handoff',
+  'eval',
+  'bounded-change',
+  'unknown',
+];
+const EVIDENCE_KINDS: EvidenceKind[] = [
+  'test',
+  'build',
+  'runtime',
+  'review',
+  'observation',
+  'security',
+  'research',
+  'receipt',
+  'handoff',
+];
+const COMPLETION_EVIDENCE_KINDS: EvidenceKind[] = [
+  'test',
+  'build',
+  'runtime',
+  'review',
+  'observation',
+  'security',
+];
 const EVIDENCE_RESULTS = ['pass', 'fail'] as const;
 
 const ALLOWED_TRANSITIONS: Record<FablePhase, FablePhase[]> = {
@@ -43,19 +88,55 @@ const PHASE_SKILL: Partial<Record<FablePhase, FableSkillId>> = {
 
 const SKILL_PHASE: Record<Exclude<FableSkillId, 'get-fable'>, FablePhase> = {
   'fable-discover': 'discovering',
+  'fable-research': 'discovering',
   'fable-plan': 'planned',
+  'fable-tdd': 'executing',
+  'fable-delegate': 'executing',
   'fable-execute': 'executing',
   'fable-verify': 'verifying',
+  'fable-review': 'verifying',
+  'fable-security': 'verifying',
+  'fable-release': 'verifying',
+  'fable-handoff': 'verifying',
+  'fable-eval': 'verifying',
   'fable-recover': 'recovering',
 };
 
-export function createInitialState(now: string = new Date().toISOString()): FableState {
+const SKILL_PACK: Record<FableSkillId, FablePack> = {
+  'get-fable': 'core',
+  'fable-discover': 'core',
+  'fable-research': 'intelligence',
+  'fable-plan': 'core',
+  'fable-tdd': 'build',
+  'fable-delegate': 'build',
+  'fable-execute': 'core',
+  'fable-verify': 'core',
+  'fable-review': 'proof',
+  'fable-security': 'proof',
+  'fable-release': 'delivery',
+  'fable-handoff': 'delivery',
+  'fable-eval': 'evolution',
+  'fable-recover': 'core',
+};
+
+export function workspaceIdForTarget(targetDir: string = process.cwd()): string {
+  return createHash('sha256').update(path.resolve(targetDir)).digest('hex').slice(0, 24);
+}
+
+export function createInitialState(
+  now: string = new Date().toISOString(),
+  targetDir: string = process.cwd()
+): FableState {
   return {
     schemaVersion: FABLE_STATE_SCHEMA_VERSION,
+    workspaceId: workspaceIdForTarget(targetDir),
     phase: 'idle',
     currentSkill: null,
     failureStreak: 0,
     substantial: false,
+    mutationGeneration: 0,
+    verifiedGeneration: -1,
+    activeCard: null,
     lastDecision: null,
     evidence: [],
     updatedAt: now,
@@ -77,21 +158,30 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => isNonEmptyString(item));
+}
+
 function isFableSkillId(value: unknown): value is FableSkillId {
   return typeof value === 'string' && FABLE_SKILL_IDS.includes(value as FableSkillId);
+}
+
+function isEvidenceKind(value: unknown): value is EvidenceKind {
+  return typeof value === 'string' && EVIDENCE_KINDS.includes(value as EvidenceKind);
 }
 
 function validateEvidenceRecord(value: unknown, index: number): void {
   const field = `evidence[${index}]`;
   if (!isRecord(value)) throw new Error(`Fable state ${field} must be an object`);
-  if (!EVIDENCE_KINDS.includes(value.kind as (typeof EVIDENCE_KINDS)[number])) {
-    throw new Error(`Fable state ${field}.kind is invalid`);
-  }
+  if (!isEvidenceKind(value.kind)) throw new Error(`Fable state ${field}.kind is invalid`);
   if (!isNonEmptyString(value.source)) throw new Error(`Fable state ${field}.source is required`);
   if (!EVIDENCE_RESULTS.includes(value.result as (typeof EVIDENCE_RESULTS)[number])) {
     throw new Error(`Fable state ${field}.result is invalid`);
   }
   if (!isNonEmptyString(value.detail)) throw new Error(`Fable state ${field}.detail is required`);
+  if (typeof value.generation !== 'number' || !Number.isInteger(value.generation) || value.generation < 0) {
+    throw new Error(`Fable state ${field}.generation must be a non-negative integer`);
+  }
   if (!isNonEmptyString(value.timestamp)) throw new Error(`Fable state ${field}.timestamp is required`);
 }
 
@@ -99,6 +189,12 @@ function validateRoutingDecision(value: unknown): void {
   if (!isRecord(value)) throw new Error('Fable state lastDecision must be an object');
   if (!isFableSkillId(value.selectedSkill)) {
     throw new Error('Fable state lastDecision.selectedSkill is invalid');
+  }
+  if (typeof value.selectedPack !== 'string' || !FABLE_PACKS.includes(value.selectedPack as FablePack)) {
+    throw new Error('Fable state lastDecision.selectedPack is invalid');
+  }
+  if (typeof value.taskShape !== 'string' || !TASK_SHAPES.includes(value.taskShape as FableTaskShape)) {
+    throw new Error('Fable state lastDecision.taskShape is invalid');
   }
   if (
     typeof value.confidence !== 'number' ||
@@ -108,19 +204,22 @@ function validateRoutingDecision(value: unknown): void {
   ) {
     throw new Error('Fable state lastDecision.confidence must be between 0 and 1');
   }
-  if (
-    !Array.isArray(value.reasons) ||
-    value.reasons.some((reason) => !isNonEmptyString(reason))
-  ) {
+  if (!isStringArray(value.reasons)) {
     throw new Error('Fable state lastDecision.reasons must contain only non-empty strings');
   }
   if (typeof value.requiresPlan !== 'boolean') {
     throw new Error('Fable state lastDecision.requiresPlan must be boolean');
   }
-  if (
-    !Array.isArray(value.nextSkills) ||
-    value.nextSkills.some((skill) => !isFableSkillId(skill))
-  ) {
+  if (!isStringArray(value.requiredGates)) {
+    throw new Error('Fable state lastDecision.requiredGates must contain only non-empty strings');
+  }
+  if (value.fallbackSkill !== null && !isFableSkillId(value.fallbackSkill)) {
+    throw new Error('Fable state lastDecision.fallbackSkill is invalid');
+  }
+  if (!Array.isArray(value.parallelCandidates) || value.parallelCandidates.some((skill) => !isFableSkillId(skill))) {
+    throw new Error('Fable state lastDecision.parallelCandidates contains an invalid skill');
+  }
+  if (!Array.isArray(value.nextSkills) || value.nextSkills.some((skill) => !isFableSkillId(skill))) {
     throw new Error('Fable state lastDecision.nextSkills contains an invalid skill');
   }
   if (!isRecord(value.scores)) {
@@ -134,14 +233,76 @@ function validateRoutingDecision(value: unknown): void {
   }
 }
 
-export function validateFableState(value: unknown): FableState {
+function migrateRoutingDecision(value: unknown): RoutingDecision | null {
+  if (!isRecord(value) || !isFableSkillId(value.selectedSkill)) return null;
+  const selectedSkill = value.selectedSkill;
+  const scores = Object.fromEntries(
+    FABLE_SKILL_IDS.map((skill) => [skill, isRecord(value.scores) && typeof value.scores[skill] === 'number' ? value.scores[skill] : 0])
+  ) as Record<FableSkillId, number>;
+
+  return {
+    selectedSkill,
+    selectedPack: SKILL_PACK[selectedSkill],
+    taskShape: 'unknown',
+    confidence: typeof value.confidence === 'number' ? value.confidence : 0.51,
+    reasons: isStringArray(value.reasons) ? value.reasons : ['migrated schema-v1 routing decision'],
+    requiresPlan: value.requiresPlan === true,
+    requiredGates: [],
+    fallbackSkill: null,
+    parallelCandidates: [],
+    nextSkills: Array.isArray(value.nextSkills)
+      ? value.nextSkills.filter(isFableSkillId)
+      : [],
+    scores,
+  };
+}
+
+function migrateV1State(value: Record<string, unknown>, targetDir: string): FableState {
+  const rawEvidence = Array.isArray(value.evidence) ? value.evidence : [];
+  const evidence: EvidenceRecord[] = rawEvidence.map((record, index) => {
+    if (!isRecord(record)) throw new Error(`Fable state evidence[${index}] must be an object`);
+    return {
+      kind: record.kind as EvidenceKind,
+      source: String(record.source ?? ''),
+      result: record.result as 'pass' | 'fail',
+      detail: String(record.detail ?? ''),
+      generation: 0,
+      timestamp: String(record.timestamp ?? ''),
+    };
+  });
+  evidence.forEach((record, index) => validateEvidenceRecord(record, index));
+
+  const latestCompletion = [...evidence]
+    .reverse()
+    .find((record) => COMPLETION_EVIDENCE_KINDS.includes(record.kind));
+
+  return {
+    schemaVersion: 2,
+    workspaceId: workspaceIdForTarget(targetDir),
+    phase: value.phase as FablePhase,
+    currentSkill: value.currentSkill === null ? null : (value.currentSkill as FableSkillId),
+    failureStreak: Number(value.failureStreak ?? 0),
+    substantial: value.substantial === true,
+    mutationGeneration: 0,
+    verifiedGeneration: latestCompletion?.result === 'pass' ? 0 : -1,
+    activeCard: null,
+    lastDecision: migrateRoutingDecision(value.lastDecision),
+    evidence,
+    updatedAt: String(value.updatedAt ?? new Date().toISOString()),
+  };
+}
+
+export function validateFableState(value: unknown, targetDir: string = process.cwd()): FableState {
   if (!isRecord(value)) {
     throw new Error('Fable state must be an object');
   }
-  const state = value;
-  if (state.schemaVersion !== FABLE_STATE_SCHEMA_VERSION) {
-    throw new Error(`Unsupported Fable state schema: ${String(state.schemaVersion)}`);
+
+  const migrated = value.schemaVersion === 1 ? migrateV1State(value, targetDir) : value;
+  if (!isRecord(migrated) || migrated.schemaVersion !== FABLE_STATE_SCHEMA_VERSION) {
+    throw new Error(`Unsupported Fable state schema: ${String(value.schemaVersion)}`);
   }
+  const state = migrated;
+  if (!isNonEmptyString(state.workspaceId)) throw new Error('Fable state workspaceId is required');
   if (!isFablePhase(state.phase)) throw new Error('Fable state phase is invalid');
   if (state.currentSkill !== null && !isFableSkillId(state.currentSkill)) {
     throw new Error('Fable state currentSkill is invalid');
@@ -150,10 +311,25 @@ export function validateFableState(value: unknown): FableState {
     throw new Error('Fable state failureStreak must be a non-negative integer');
   }
   if (typeof state.substantial !== 'boolean') throw new Error('Fable state substantial must be boolean');
+  if (typeof state.mutationGeneration !== 'number' || !Number.isInteger(state.mutationGeneration) || state.mutationGeneration < 0) {
+    throw new Error('Fable state mutationGeneration must be a non-negative integer');
+  }
+  if (typeof state.verifiedGeneration !== 'number' || !Number.isInteger(state.verifiedGeneration) || state.verifiedGeneration < -1) {
+    throw new Error('Fable state verifiedGeneration must be an integer greater than or equal to -1');
+  }
+  if (state.verifiedGeneration > state.mutationGeneration) {
+    throw new Error('Fable state verifiedGeneration cannot exceed mutationGeneration');
+  }
+  if (state.activeCard !== null && !isNonEmptyString(state.activeCard)) {
+    throw new Error('Fable state activeCard must be null or a non-empty string');
+  }
   if (!Array.isArray(state.evidence)) throw new Error('Fable state evidence must be an array');
   state.evidence.forEach((record, index) => validateEvidenceRecord(record, index));
+  if (state.evidence.some((record) => (record as EvidenceRecord).generation > state.mutationGeneration)) {
+    throw new Error('Fable state evidence generation cannot exceed mutationGeneration');
+  }
   if (state.lastDecision !== null) validateRoutingDecision(state.lastDecision);
-  if (typeof state.updatedAt !== 'string' || !state.updatedAt) throw new Error('Fable state updatedAt is required');
+  if (!isNonEmptyString(state.updatedAt)) throw new Error('Fable state updatedAt is required');
   return state as unknown as FableState;
 }
 
@@ -164,13 +340,13 @@ export function statePath(targetDir: string = process.cwd()): string {
 export function readFableState(targetDir: string = process.cwd()): FableState | null {
   const filePath = statePath(targetDir);
   if (!fs.existsSync(filePath)) return null;
-  return validateFableState(JSON.parse(fs.readFileSync(filePath, 'utf-8')));
+  return validateFableState(JSON.parse(fs.readFileSync(filePath, 'utf-8')), targetDir);
 }
 
 export function writeFableState(targetDir: string, state: FableState): void {
   const filePath = statePath(targetDir);
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  atomicWriteFileSync(filePath, `${JSON.stringify(validateFableState(state), null, 2)}\n`);
+  atomicWriteFileSync(filePath, `${JSON.stringify(validateFableState(state, targetDir), null, 2)}\n`);
 }
 
 export function phaseForSkill(skill: FableSkillId): FablePhase {
@@ -201,17 +377,51 @@ export function applyRoutingDecision(
     state.substantial ||
     decision.requiresPlan ||
     decision.selectedSkill === 'fable-recover' ||
-    decision.selectedSkill === 'fable-verify';
+    decision.selectedSkill === 'fable-verify' ||
+    decision.selectedSkill === 'fable-review' ||
+    decision.selectedSkill === 'fable-security' ||
+    decision.selectedSkill === 'fable-release';
   const routed = setRoutingDecision(state, decision, substantial, now);
   return transitionState(routed, phaseForSkill(decision.selectedSkill), now);
 }
 
+export function recordMutation(
+  state: FableState,
+  now: string = new Date().toISOString()
+): FableState {
+  return {
+    ...state,
+    substantial: true,
+    mutationGeneration: state.mutationGeneration + 1,
+    updatedAt: now,
+  };
+}
+
+export function setActiveCard(
+  state: FableState,
+  activeCard: string | null,
+  now: string = new Date().toISOString()
+): FableState {
+  if (activeCard !== null && !activeCard.trim()) throw new Error('Active card must be non-empty when provided');
+  return { ...state, activeCard, updatedAt: now };
+}
+
 export function addEvidence(
   state: FableState,
-  evidence: Omit<EvidenceRecord, 'timestamp'> & { timestamp?: string }
+  evidence: Omit<EvidenceRecord, 'timestamp' | 'generation'> & { timestamp?: string; generation?: number }
 ): FableState {
   const timestamp = evidence.timestamp || new Date().toISOString();
-  const nextFailureStreak = evidence.result === 'fail' ? state.failureStreak + 1 : 0;
+  const generation = evidence.generation ?? state.mutationGeneration;
+  if (!Number.isInteger(generation) || generation < 0 || generation > state.mutationGeneration) {
+    throw new Error('Evidence generation must refer to the current or an earlier workspace generation');
+  }
+
+  const countsTowardFailure = COMPLETION_EVIDENCE_KINDS.includes(evidence.kind);
+  const nextFailureStreak = countsTowardFailure
+    ? evidence.result === 'fail'
+      ? state.failureStreak + 1
+      : 0
+    : state.failureStreak;
   let phase = state.phase;
   let currentSkill = state.currentSkill;
 
@@ -220,15 +430,24 @@ export function addEvidence(
     currentSkill = 'fable-recover';
   }
 
+  const advancesVerification =
+    evidence.result === 'pass' &&
+    COMPLETION_EVIDENCE_KINDS.includes(evidence.kind) &&
+    generation === state.mutationGeneration;
+
   return {
     ...state,
     phase,
     currentSkill,
-    substantial: state.substantial || evidence.result === 'fail',
+    substantial: state.substantial || (countsTowardFailure && evidence.result === 'fail'),
+    verifiedGeneration: advancesVerification
+      ? Math.max(state.verifiedGeneration, generation)
+      : state.verifiedGeneration,
     evidence: [
       ...state.evidence,
       {
         ...evidence,
+        generation,
         timestamp,
       },
     ],
@@ -242,8 +461,19 @@ export function hasPassingEvidence(state: FableState): boolean {
 }
 
 export function hasFreshPassingEvidence(state: FableState): boolean {
-  const latestEvidence = state.evidence[state.evidence.length - 1];
-  return latestEvidence?.result === 'pass' && latestEvidence.detail.trim().length > 0;
+  if (state.verifiedGeneration < state.mutationGeneration) return false;
+  const latestCurrentCompletion = [...state.evidence]
+    .reverse()
+    .find(
+      (record) =>
+        record.generation === state.mutationGeneration &&
+        COMPLETION_EVIDENCE_KINDS.includes(record.kind)
+    );
+  return latestCurrentCompletion?.result === 'pass' && latestCurrentCompletion.detail.trim().length > 0;
+}
+
+function skillMatchesPhase(skill: FableSkillId | null, phase: FablePhase): boolean {
+  return Boolean(skill && phaseForSkill(skill) === phase);
 }
 
 export function transitionState(
@@ -251,18 +481,31 @@ export function transitionState(
   nextPhase: FablePhase,
   now: string = new Date().toISOString()
 ): FableState {
-  if (nextPhase === state.phase) return { ...state, currentSkill: PHASE_SKILL[nextPhase] || state.currentSkill, updatedAt: now };
+  if (nextPhase === state.phase) {
+    return {
+      ...state,
+      currentSkill: skillMatchesPhase(state.currentSkill, nextPhase)
+        ? state.currentSkill
+        : PHASE_SKILL[nextPhase] || state.currentSkill,
+      updatedAt: now,
+    };
+  }
   if (!ALLOWED_TRANSITIONS[state.phase].includes(nextPhase)) {
     throw new Error(`Invalid Fable state transition: ${state.phase} -> ${nextPhase}`);
   }
   if (nextPhase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
-    throw new Error('Substantial work cannot complete without passing evidence that is fresh');
+    throw new Error('Substantial work cannot complete without passing evidence for the current mutation generation');
   }
 
   return {
     ...state,
     phase: nextPhase,
-    currentSkill: PHASE_SKILL[nextPhase] || null,
+    currentSkill:
+      nextPhase === 'complete' || nextPhase === 'idle' || nextPhase === 'blocked'
+        ? null
+        : skillMatchesPhase(state.currentSkill, nextPhase)
+          ? state.currentSkill
+          : PHASE_SKILL[nextPhase] || null,
     failureStreak: nextPhase === 'complete' ? 0 : state.failureStreak,
     updatedAt: now,
   };
