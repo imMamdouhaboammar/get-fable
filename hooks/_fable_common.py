@@ -52,13 +52,12 @@ EVIDENCE_KINDS = {
     "receipt",
     "handoff",
 }
-COMPLETION_EVIDENCE_KINDS = {
+BEHAVIOR_COMPLETION_EVIDENCE_KINDS = {
     "test",
     "build",
     "runtime",
     "review",
     "observation",
-    "security",
 }
 
 
@@ -141,6 +140,27 @@ def _valid_evidence(record, max_generation):
     return isinstance(generation, int) and 0 <= generation <= max_generation
 
 
+def _security_task(state):
+    if not isinstance(state, dict):
+        return False
+    if state.get("currentSkill") == "fable-security":
+        return True
+    decision = state.get("lastDecision")
+    if not isinstance(decision, dict):
+        return False
+    return (
+        decision.get("selectedSkill") == "fable-security"
+        or decision.get("taskShape") == "security"
+    )
+
+
+def completion_evidence_kinds(state):
+    kinds = set(BEHAVIOR_COMPLETION_EVIDENCE_KINDS)
+    if _security_task(state):
+        kinds.add("security")
+    return kinds
+
+
 def _migrate_v1_state(fable_dir, state):
     evidence = state.get("evidence")
     if not isinstance(evidence, list):
@@ -156,7 +176,7 @@ def _migrate_v1_state(fable_dir, state):
 
     latest_completion = None
     for record in reversed(migrated_evidence):
-        if record.get("kind") in COMPLETION_EVIDENCE_KINDS:
+        if record.get("kind") in BEHAVIOR_COMPLETION_EVIDENCE_KINDS:
             latest_completion = record
             break
 
@@ -184,6 +204,8 @@ def read_state(fable_dir):
         if state.get("schemaVersion") != STATE_SCHEMA_VERSION:
             return None
         if not _valid_nonempty_string(state.get("workspaceId")):
+            return None
+        if state.get("workspaceId") != workspace_id(fable_dir):
             return None
         if state.get("phase") not in PHASES:
             return None
@@ -252,12 +274,13 @@ def has_fresh_passing_state_evidence(state):
     evidence = state.get("evidence", [])
     if not isinstance(evidence, list):
         return False
+    accepted_kinds = completion_evidence_kinds(state)
     latest = None
     for record in reversed(evidence):
         if (
             isinstance(record, dict)
             and record.get("generation") == mutation_generation
-            and record.get("kind") in COMPLETION_EVIDENCE_KINDS
+            and record.get("kind") in accepted_kinds
         ):
             latest = record
             break
@@ -376,7 +399,7 @@ def parse_ledger(path):
             for line in handle:
                 text = line.strip()
                 if text.upper().startswith("PAUSED"):
-                    reason = text[len("PAUSED"):].strip(" \t:：-–—")
+                    reason = text[len("PAUSED"):].strip(" \t:：-–")
                     if len(reason.strip()) >= 3:
                         paused = True
                     continue
