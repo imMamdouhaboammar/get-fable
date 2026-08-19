@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Markdown Docs
-        uses: ldeluigi/markdown-docs@01d0562f5d6aa4ca4af7ded0c98f239417d5976b # v0.6.0
+        uses: ldeluigi/markdown-docs@f897890c70fd9f58f6d9600b6f97cfc4f8cb5859 # v0.7.1
         with:
           src: docs
           dst: .generated/markdown-docs
