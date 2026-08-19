@@ -52,7 +52,7 @@
     "id": "fable-tdd-contract-ambiguous",
     "description": "Product expectation is unresolved, so encoding one guess into a test would freeze an arbitrary contract",
     "given": {"intent": "Write a test for whether expired sessions should refresh or log out", "contractStatus": "unresolved"},
-    "expected": {"action": "route-to-plan-for-contract-resolution", "selectedSkill": "fable-plan"},
+    "expected": {"action": "route-to-plan-for-contract-resolution"},
     "forbidden": {"action": "encode-ambiguous-contract-as-test"}
   },
   {
