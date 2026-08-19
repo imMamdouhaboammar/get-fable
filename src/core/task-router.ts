@@ -1,4 +1,4 @@
-import { getSkillEntry, loadSkillRegistry } from './skill-registry.js';
+import { canonicalSkillIds, getSkillEntry, loadSkillRegistry } from './skill-registry.js';
 import type {
   FableSkillId,
   FableState,
@@ -7,62 +7,11 @@ import type {
   SkillRegistry,
 } from './types.js';
 
-const SKILLS: FableSkillId[] = [
-  'get-fable',
-  'fable-discover',
-  'fable-research',
-  'fable-plan',
-  'fable-tdd',
-  'fable-delegate',
-  'fable-execute',
-  'fable-verify',
-  'fable-review',
-  'fable-security',
-  'fable-release',
-  'fable-handoff',
-  'fable-eval',
-  'fable-recover',
-  'fable-dataviz',
-  'fable-artifact',
-  'fable-simplify',
-  'fable-loop',
-  'fable-run',
-  'fable-memory',
-  'fable-config',
-  'fable-simulator',
-  'fable-cowork',
-  'fable-spark',
-  'skill-creator',
-];
 
 function emptyScores(): Record<FableSkillId, number> {
-  return {
-    'get-fable': 0,
-    'fable-discover': 0,
-    'fable-research': 0,
-    'fable-plan': 0,
-    'fable-tdd': 0,
-    'fable-delegate': 0,
-    'fable-execute': 1,
-    'fable-verify': 0,
-    'fable-review': 0,
-    'fable-security': 0,
-    'fable-release': 0,
-    'fable-handoff': 0,
-    'fable-eval': 0,
-    'fable-recover': 0,
-    'fable-dataviz': 0,
-    'fable-artifact': 0,
-    'fable-simplify': 0,
-    'fable-loop': 0,
-    'fable-run': 0,
-    'fable-memory': 0,
-    'fable-config': 0,
-    'fable-simulator': 0,
-    'fable-cowork': 0,
-    'fable-spark': 0,
-    'skill-creator': 0,
-  };
+  return Object.fromEntries(
+    canonicalSkillIds().map((skill) => [skill, skill === 'fable-execute' ? 1 : 0])
+  ) as Record<FableSkillId, number>;
 }
 
 function addSignal(
@@ -107,6 +56,10 @@ export function routeTask(
 ): RoutingDecision {
   const text = task.trim().toLowerCase();
   if (!text) throw new Error('Task text must not be empty');
+  const suppressExternalResearch = /(?:external|web) research (?:is )?not needed|do not (?:use|do|perform) (?:external|web) research|no (?:external|web) research/.test(text);
+  const suppressRelease = /do not (?:ship|publish|release|tag)|don't (?:ship|publish|release|tag)|not ready to (?:ship|publish|release)|(?:ship|publish|release) (?:is )?out of scope/.test(text);
+  const suppressSecurity = /no security (?:behavior|boundary|logic|change)s?|security (?:work|review) (?:is )?not (?:needed|required)|not (?:a )?security (?:change|task|review)/.test(text);
+  const suppressTdd = /no [^.]{0,40}behavior changes?|without (?:changing|a change to) behavior|not (?:a )?behavior change/.test(text);
 
   const scores = emptyScores();
   const reasons = new Map<FableSkillId, string[]>();
@@ -131,15 +84,17 @@ export function routeTask(
   }
 
   if (
+    !suppressSecurity &&
     has(
       text,
-      /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauth\b|\bauthentication\b|\bauthorization\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/
+      /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauthentication\b|\bauthorization\b|\boauth\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/
     )
   ) {
     addSignal(scores, reasons, 'fable-security', 9, 'task crosses an explicit security or trust boundary');
   }
 
   if (
+    !suppressRelease &&
     has(
       text,
       /\brelease\b|\bpublish\b|\bship\b|\btag\b|ready (?:to|for) (?:merge|release|publish)|merge (?:this|now|the pr)|open (?:a )?pr|create (?:a )?pull request|ready for pr|pull request readiness/
@@ -149,17 +104,17 @@ export function routeTask(
   }
 
   if (has(text, /\bhandoff\b|continue later|next session|resume later|context transfer|pass this to another agent/)) {
-    addSignal(scores, reasons, 'fable-handoff', 8, 'task asks for durable continuation state');
+    addSignal(scores, reasons, 'fable-handoff', 12, 'task asks for durable continuation state');
   }
 
-  if (has(text, /\beval\b|\bbenchmark\b|holdout|self[- ]improv|prompt quality|skill quality|agent control|regression suite for (?:prompt|skill|agent)/)) {
+  if (has(text, /\beval\b|\bevaluate\b|\bbenchmark\b|holdout|self[- ]improv|prompt quality|skill quality|agent control|regression suite for (?:prompt|skill|agent)/)) {
     addSignal(scores, reasons, 'fable-eval', 8, 'task evaluates or changes agent-control behavior');
   }
 
   if (
     has(
       text,
-      /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files/
+      /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files|independently critique|critique (?:the )?changed files/
     )
   ) {
     addSignal(scores, reasons, 'fable-review', 8, 'task requests an independent code or diff review');
@@ -170,19 +125,21 @@ export function routeTask(
   }
 
   if (
+    !suppressExternalResearch &&
     has(
       text,
-      /official (?:api )?docs|primary source|current api|current version|latest (?:official )?(?:api )?(?:docs|documentation|release|version|behavior)|external documentation|release notes|web research/
+      /official (?:api )?docs|primary source|current api|current version|current official behavior[^.]{0,80}(?:external )?api|official behavior[^.]{0,80}api|latest (?:official )?(?:api )?(?:docs|documentation|release|version|behavior)|external documentation|release notes|web research/
     )
   ) {
     addSignal(scores, reasons, 'fable-research', 8, 'task depends on current external facts');
   }
 
-  if (has(text, /\binspect\b|\bexplore\b|\btrace\b|find where|understand the repo|unknown|repository behavior|execution path/)) {
-    addSignal(scores, reasons, 'fable-discover', 6, 'task depends on repository discovery or execution-path evidence');
+  if (has(text, /\binspect\b|\bexplore\b|\btrace\b|find where|understand the repo|understand (?:why|how)[^.]{0,100}repository|current repository (?:behavior|behaves)|unknown|without knowing|not knowing|repository behavior|execution path/)) {
+    const discoveryWeight = /inspect (?:this |the |a )?(?:local )?repository|trace[^.]{0,80}repository|execution path|understand (?:why|how)[^.]{0,100}repository/.test(text) ? 10 : 6;
+    addSignal(scores, reasons, 'fable-discover', discoveryWeight, 'task depends on repository discovery or execution-path evidence');
   }
 
-  if (has(text, /\bdelegate\b|\bsubagents?\b|parallel agents|parallel workers|multi[- ]agent|independent tasks|split across agents/)) {
+  if (has(text, /\bdelegate\b|\bsubagents?\b|parallel agents|parallel workers|multi[- ]agent|independent tasks|independent work items|disjoint ownership|proceed in parallel|split across agents/)) {
     addSignal(scores, reasons, 'fable-delegate', 8, 'task explicitly requests bounded parallel work');
   }
 
@@ -234,20 +191,20 @@ export function routeTask(
     addSignal(scores, reasons, 'skill-creator', 12, 'task creates or optimizes an autonomous skill package');
   }
 
-  if (has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|\bbug fix\b|fix the bug|behavior change|add a feature|implement a feature/)) {
-    addSignal(scores, reasons, 'fable-tdd', 6, 'task describes a testable behavior change');
+  if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
+    addSignal(scores, reasons, 'fable-tdd', 10, 'task describes a testable behavior change');
   }
 
   if (has(text, /\bimplement\b|\bfix\b|\badd\b|\bupdate\b|\bchange\b|\bbuild\b|\bremove\b|\brename\b/)) {
     addSignal(scores, reasons, 'fable-execute', 3, 'task requests a concrete code change');
   }
 
-  const ranked = SKILLS.filter((skill) => skill !== 'get-fable')
+  const ranked = canonicalSkillIds().filter((skill) => skill !== 'get-fable')
     .map((skill) => ({ skill, score: scores[skill] }))
     .sort((a, b) => b.score - a.score);
 
   let selectedSkill = ranked[0].score > 0 ? ranked[0].skill : 'fable-execute';
-  if (scores['fable-recover'] >= 8 && (state?.failureStreak || 0) >= 2) {
+  if (scores['fable-recover'] >= 8) {
     selectedSkill = 'fable-recover';
   }
 

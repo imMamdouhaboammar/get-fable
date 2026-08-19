@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableEvaluationResultV1",
+  "type": "object",
+  "required": ["schemaVersion", "metric", "total", "passed"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "metric": { "enum": ["routing", "spark"] },
+    "total": { "type": "integer", "minimum": 0 },
+    "passed": { "type": "integer", "minimum": 0 }
+  }
+}

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CANONICAL_SKILLS, FABLE_PACKS } from '../generated/skill-catalog.js';
 import {
   FABLE_REGISTRY_SCHEMA_VERSION,
   type FablePack,
@@ -10,33 +11,6 @@ import {
   type SkillRegistryEntry,
 } from './types.js';
 
-const CANONICAL_SKILLS: FableSkillId[] = [
-  'get-fable',
-  'fable-discover',
-  'fable-research',
-  'fable-plan',
-  'fable-tdd',
-  'fable-delegate',
-  'fable-execute',
-  'fable-verify',
-  'fable-review',
-  'fable-security',
-  'fable-release',
-  'fable-handoff',
-  'fable-eval',
-  'fable-recover',
-  'fable-dataviz',
-  'fable-artifact',
-  'fable-simplify',
-  'fable-loop',
-  'fable-run',
-  'fable-memory',
-  'fable-config',
-  'fable-simulator',
-  'fable-cowork',
-  'fable-spark',
-  'skill-creator',
-];
 
 const REGISTRY_PHASES = new Set<FablePhase>([
   'idle',
@@ -49,16 +23,7 @@ const REGISTRY_PHASES = new Set<FablePhase>([
   'blocked',
 ]);
 
-const REGISTRY_PACKS = new Set<FablePack>([
-  'core',
-  'intelligence',
-  'build',
-  'proof',
-  'delivery',
-  'evolution',
-  'system',
-  'creator',
-]);
+const REGISTRY_PACKS = new Set<FablePack>(FABLE_PACKS);
 
 export function getCoreRepoRoot(): string {
   const currentFile = fileURLToPath(import.meta.url);
@@ -89,7 +54,7 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
   const pack = entry.pack;
   const fallback = entry.fallback;
 
-  if (typeof id !== 'string' || !CANONICAL_SKILLS.includes(id as FableSkillId)) {
+  if (typeof id !== 'string' || !(CANONICAL_SKILLS as readonly string[]).includes(id)) {
     throw new Error(`skills[${index}].id is not a canonical Fable skill`);
   }
   if (typeof order !== 'number' || !Number.isInteger(order)) {
@@ -104,7 +69,7 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
   if (typeof entry.description !== 'string' || !entry.description.trim()) {
     throw new Error(`skills[${index}].description must be non-empty`);
   }
-  if (fallback !== null && (typeof fallback !== 'string' || !CANONICAL_SKILLS.includes(fallback as FableSkillId))) {
+  if (fallback !== null && (typeof fallback !== 'string' || !(CANONICAL_SKILLS as readonly string[]).includes(fallback))) {
     throw new Error(`skills[${index}].fallback is invalid`);
   }
   if (typeof entry.mutatesWorkspace !== 'boolean') {

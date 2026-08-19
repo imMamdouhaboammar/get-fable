@@ -29,6 +29,6 @@ describe('Doctor Auto-Repair Engine', () => {
     expect(fs.existsSync(path.join(root, '.fable', 'PROGRESS.md'))).toBe(true);
 
     const report = runDoctor(root);
-    expect(report.checks.some((c) => c.id === 'project-state' && c.status === 'pass')).toBe(true);
+    expect(report.checks.some((c) => c.id === 'project-state' && c.status === 'PASS')).toBe(true);
   });
 });

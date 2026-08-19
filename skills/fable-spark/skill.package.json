@@ -1,6 +1,6 @@
 {
   "$schema": "../../schemas/skill-package.schema.json",
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "fable-spark",
   "entry": "SKILL.md",
   "agents": [
@@ -19,5 +19,6 @@
   "evals": [
     "evals/scenarios.json"
   ],
-  "scripts": []
+  "scripts": [],
+  "scriptPolicy": "data-only"
 }

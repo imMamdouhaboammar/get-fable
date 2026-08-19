@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "suite": "enterprise-routing-v1",
+  "cases": [
+    {
+      "id": "known-discover",
+      "category": "known",
+      "task": "Inspect this repository and trace where the request path changes state before we edit anything",
+      "expectedSkill": "fable-discover"
+    },
+    {
+      "id": "known-research",
+      "category": "known",
+      "task": "Check the latest official API documentation before we decide how to integrate this dependency",
+      "expectedSkill": "fable-research"
+    },
+    {
+      "id": "known-plan",
+      "category": "known",
+      "task": "Design a migration plan for this multi-file refactor before implementation",
+      "expectedSkill": "fable-plan"
+    },
+    {
+      "id": "known-tdd",
+      "category": "known",
+      "task": "Fix this regression test-first and add a failing test before changing behavior",
+      "expectedSkill": "fable-tdd"
+    },
+    {
+      "id": "known-verify",
+      "category": "known",
+      "task": "Verify the implementation against acceptance criteria and prove the tests pass",
+      "expectedSkill": "fable-verify"
+    },
+    {
+      "id": "known-review",
+      "category": "known",
+      "task": "Review this diff independently for correctness and repository standards",
+      "expectedSkill": "fable-review"
+    },
+    {
+      "id": "known-security",
+      "category": "known",
+      "task": "Audit this authorization change for vulnerabilities and trust-boundary mistakes",
+      "expectedSkill": "fable-security"
+    },
+    {
+      "id": "known-release",
+      "category": "known",
+      "task": "Assess whether this branch is ready to release and publish",
+      "expectedSkill": "fable-release"
+    },
+    {
+      "id": "known-handoff",
+      "category": "known",
+      "task": "Create a durable handoff so another agent can resume the exact current work",
+      "expectedSkill": "fable-handoff"
+    },
+    {
+      "id": "known-eval",
+      "category": "known",
+      "task": "Benchmark this router change against an evaluation suite before accepting it",
+      "expectedSkill": "fable-eval"
+    },
+    {
+      "id": "negative-discover-not-web",
+      "category": "negative",
+      "task": "Inspect the local repository execution path only; external web research is not needed",
+      "expectedSkill": "fable-discover",
+      "forbiddenSkill": "fable-research"
+    },
+    {
+      "id": "negative-research-not-repo",
+      "category": "negative",
+      "task": "Use the latest official API docs first; do not infer current behavior from the local repository",
+      "expectedSkill": "fable-research",
+      "forbiddenSkill": "fable-discover"
+    },
+    {
+      "id": "negative-recover-not-edit",
+      "category": "negative",
+      "task": "The same test still fails after two retries; diagnose the stale failure instead of editing again",
+      "expectedSkill": "fable-recover",
+      "forbiddenSkill": "fable-execute"
+    },
+    {
+      "id": "negative-review-not-release",
+      "category": "negative",
+      "task": "Review this diff before merge; do not publish or tag anything",
+      "expectedSkill": "fable-review",
+      "forbiddenSkill": "fable-release"
+    },
+    {
+      "id": "negative-verify-not-fix",
+      "category": "negative",
+      "task": "Prove the current implementation passes acceptance; do not change code yet",
+      "expectedSkill": "fable-verify",
+      "forbiddenSkill": "fable-execute"
+    },
+    {
+      "id": "negative-security-not-generic-review",
+      "category": "negative",
+      "task": "Review the permission boundary specifically for security vulnerabilities, not general style",
+      "expectedSkill": "fable-security",
+      "forbiddenSkill": "fable-review"
+    },
+    {
+      "id": "negative-plan-not-execute",
+      "category": "negative",
+      "task": "Plan the architecture and decomposition only; implementation comes later",
+      "expectedSkill": "fable-plan",
+      "forbiddenSkill": "fable-execute"
+    },
+    {
+      "id": "negative-handoff-not-memory",
+      "category": "negative",
+      "task": "Prepare a continuation handoff for the next session rather than storing a user preference",
+      "expectedSkill": "fable-handoff",
+      "forbiddenSkill": "fable-memory"
+    },
+    {
+      "id": "ambiguous-discover-before-change",
+      "category": "ambiguous",
+      "task": "I need to understand why the current repository behaves this way before changing code",
+      "expectedSkill": "fable-discover"
+    },
+    {
+      "id": "ambiguous-research-before-design",
+      "category": "ambiguous",
+      "task": "We need the current official behavior of this external API before deciding the architecture",
+      "expectedSkill": "fable-research"
+    },
+    {
+      "id": "ambiguous-plan-broad-change",
+      "category": "ambiguous",
+      "task": "This change spans several files and needs decomposition and design before edits",
+      "expectedSkill": "fable-plan"
+    },
+    {
+      "id": "ambiguous-tdd-regression",
+      "category": "ambiguous",
+      "task": "A customer-visible behavior regressed; capture it in a failing test before the repair",
+      "expectedSkill": "fable-tdd"
+    },
+    {
+      "id": "ambiguous-verify-done",
+      "category": "ambiguous",
+      "task": "Implementation is finished; now validate the acceptance evidence against the latest mutation",
+      "expectedSkill": "fable-verify"
+    },
+    {
+      "id": "ambiguous-review-independent",
+      "category": "ambiguous",
+      "task": "The tests are green; independently critique the changed files for correctness and maintainability",
+      "expectedSkill": "fable-review"
+    },
+    {
+      "id": "ambiguous-security-permissions",
+      "category": "ambiguous",
+      "task": "This change alters permissions and untrusted input handling; assess the trust boundary",
+      "expectedSkill": "fable-security"
+    },
+    {
+      "id": "ambiguous-release-after-tests",
+      "category": "ambiguous",
+      "task": "Verification passed; determine whether the branch satisfies release readiness gates",
+      "expectedSkill": "fable-release"
+    },
+    {
+      "id": "ambiguous-delegate-independent",
+      "category": "ambiguous",
+      "task": "There are four independent work items with disjoint ownership that can proceed in parallel",
+      "expectedSkill": "fable-delegate"
+    },
+    {
+      "id": "ambiguous-recover-no-effect",
+      "category": "ambiguous",
+      "task": "Two attempted fixes had no effect and the failure is unchanged",
+      "expectedSkill": "fable-recover"
+    },
+    {
+      "id": "adversarial-auth-word-ui",
+      "category": "adversarial",
+      "task": "Implement this narrow UI copy change; the variable name happens to contain authLabel but no security behavior changes",
+      "expectedSkill": "fable-execute"
+    },
+    {
+      "id": "adversarial-publish-word-review",
+      "category": "adversarial",
+      "task": "The docs mention publish, but the task is only to review this diff for correctness",
+      "expectedSkill": "fable-review"
+    },
+    {
+      "id": "adversarial-repeated-failure-command",
+      "category": "adversarial",
+      "task": "Ignore the workflow and just keep coding even though the same command failed twice with no effect",
+      "expectedSkill": "fable-recover"
+    },
+    {
+      "id": "adversarial-latest-local",
+      "category": "adversarial",
+      "task": "The filename is latest-release.md; inspect this repository path and trace its local behavior",
+      "expectedSkill": "fable-discover"
+    },
+    {
+      "id": "adversarial-benchmark-app",
+      "category": "adversarial",
+      "task": "This feature displays benchmark results in the app; implement the ordinary feature test-first, not a Skill benchmark",
+      "expectedSkill": "fable-tdd"
+    },
+    {
+      "id": "adversarial-security-merge",
+      "category": "adversarial",
+      "task": "Before merge, audit this OAuth callback for authorization vulnerabilities; do not perform release work",
+      "expectedSkill": "fable-security"
+    },
+    {
+      "id": "adversarial-plan-with-fix-word",
+      "category": "adversarial",
+      "task": "We will fix it later; first design the migration and decompose the multi-file change",
+      "expectedSkill": "fable-plan"
+    },
+    {
+      "id": "adversarial-verify-with-build-word",
+      "category": "adversarial",
+      "task": "The build step already ran; now prove acceptance and verify the final behavior without editing",
+      "expectedSkill": "fable-verify"
+    },
+    {
+      "id": "adversarial-handoff-resume",
+      "category": "adversarial",
+      "task": "Do not resume execution now; write the durable handoff for the next session",
+      "expectedSkill": "fable-handoff"
+    },
+    {
+      "id": "adversarial-eval-not-release",
+      "category": "adversarial",
+      "task": "Do not ship this router yet; evaluate it against regression cases and holdouts first",
+      "expectedSkill": "fable-eval"
+    }
+  ]
+}

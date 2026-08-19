@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "metric": "enterprise-routing-holdout",
+  "capturedAt": "2026-08-19T13:10:51.764Z",
+  "repositoryRevision": "2d96b3d8275c79b70b5f30f33571b57a085feca4",
+  "corpusSha256": "58c8745aa6cc1ec76c69a530e6f143563320294452a7f46c420ecf8cfdf467fb",
+  "routerSha256": "c197ced562bd13dc94c2eb89430243a1eb2ea8867ebdfb23b41ba840f2a1f2a2",
+  "runnerSha256": "d05fb589bb734f29133325a5470c3587614635ab158e77ce2800923719a65cdf",
+  "total": 24,
+  "passed": 23,
+  "passRate": 0.9583333333333334,
+  "forbiddenViolations": 0
+}

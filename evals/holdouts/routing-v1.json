@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "suite": "enterprise-routing-holdout-v1",
+  "cases": [
+    {
+      "id": "holdout-discover",
+      "category": "holdout",
+      "task": "Trace the repository execution path that writes the persisted state before proposing a code change",
+      "expectedSkill": "fable-discover"
+    },
+    {
+      "id": "holdout-research",
+      "category": "holdout",
+      "task": "Confirm the current API behavior from a primary source before using that dependency",
+      "expectedSkill": "fable-research"
+    },
+    {
+      "id": "holdout-plan",
+      "category": "holdout",
+      "task": "Design how to restructure this multi-file migration before any implementation",
+      "expectedSkill": "fable-plan"
+    },
+    {
+      "id": "holdout-tdd",
+      "category": "holdout",
+      "task": "The behavior regressed in production; reproduce it with a failing test first and then repair it",
+      "expectedSkill": "fable-tdd"
+    },
+    {
+      "id": "holdout-delegate",
+      "category": "holdout",
+      "task": "Split these independent tasks across subagents with disjoint ownership and acceptance checks",
+      "expectedSkill": "fable-delegate"
+    },
+    {
+      "id": "holdout-execute",
+      "category": "holdout",
+      "task": "Rename this helper and update its single import without changing behavior",
+      "expectedSkill": "fable-execute"
+    },
+    {
+      "id": "holdout-verify",
+      "category": "holdout",
+      "task": "Validate the final implementation against acceptance checks and prove the latest mutation is covered",
+      "expectedSkill": "fable-verify"
+    },
+    {
+      "id": "holdout-review",
+      "category": "holdout",
+      "task": "Independently critique the changed files for correctness before the pull request is opened",
+      "expectedSkill": "fable-review"
+    },
+    {
+      "id": "holdout-security",
+      "category": "holdout",
+      "task": "Threat model this OAuth callback and its untrusted input boundary before merge",
+      "expectedSkill": "fable-security"
+    },
+    {
+      "id": "holdout-release",
+      "category": "holdout",
+      "task": "Determine release readiness before creating the version tag",
+      "expectedSkill": "fable-release"
+    },
+    {
+      "id": "holdout-handoff",
+      "category": "holdout",
+      "task": "Write a durable handoff for the next session with the exact continuation state",
+      "expectedSkill": "fable-handoff"
+    },
+    {
+      "id": "holdout-eval",
+      "category": "holdout",
+      "task": "Evaluate the router against holdout and regression cases before accepting the agent-control change",
+      "expectedSkill": "fable-eval"
+    },
+    {
+      "id": "holdout-recover",
+      "category": "holdout",
+      "task": "The same command still fails after two retries and the previous fix had no effect",
+      "expectedSkill": "fable-recover"
+    },
+    {
+      "id": "holdout-dataviz",
+      "category": "holdout",
+      "task": "Create a heatmap visualization for these conversion metrics",
+      "expectedSkill": "fable-dataviz"
+    },
+    {
+      "id": "holdout-artifact",
+      "category": "holdout",
+      "task": "Create a Mermaid architecture diagram for the request lifecycle",
+      "expectedSkill": "fable-artifact"
+    },
+    {
+      "id": "holdout-simplify",
+      "category": "holdout",
+      "task": "Deduplicate this dead code and simplify the repeated branches without changing behavior",
+      "expectedSkill": "fable-simplify"
+    },
+    {
+      "id": "holdout-loop",
+      "category": "holdout",
+      "task": "Poll CI on a recurring interval until the requested check changes state",
+      "expectedSkill": "fable-loop"
+    },
+    {
+      "id": "holdout-run",
+      "category": "holdout",
+      "task": "Start the server and perform a live smoke test against the health endpoint",
+      "expectedSkill": "fable-run"
+    },
+    {
+      "id": "holdout-memory",
+      "category": "holdout",
+      "task": "Remember this user preference in persistent project memory for future sessions",
+      "expectedSkill": "fable-memory"
+    },
+    {
+      "id": "holdout-config",
+      "category": "holdout",
+      "task": "Update settings.json and configure hooks for this agent harness",
+      "expectedSkill": "fable-config"
+    },
+    {
+      "id": "holdout-simulator",
+      "category": "holdout",
+      "task": "Use a headless browser as an independent oracle to verify the rendered behavior",
+      "expectedSkill": "fable-simulator"
+    },
+    {
+      "id": "holdout-cowork",
+      "category": "holdout",
+      "task": "Use cowork autonomous mode for this bounded background task",
+      "expectedSkill": "fable-cowork"
+    },
+    {
+      "id": "holdout-spark",
+      "category": "holdout",
+      "task": "Use situational awareness to predict the smallest next move from the current state",
+      "expectedSkill": "fable-spark"
+    },
+    {
+      "id": "holdout-skill-creator",
+      "category": "holdout",
+      "task": "Create a reusable Skill package and benchmark its routing description",
+      "expectedSkill": "skill-creator"
+    }
+  ]
+}

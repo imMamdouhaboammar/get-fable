@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible get-fable defect
+title: "[bug] "
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include exact commands and the smallest reproducible case.
+    validations:
+      required: true
+  - type: input
+    id: bun
+    attributes:
+      label: Bun version
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Host and OS
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true

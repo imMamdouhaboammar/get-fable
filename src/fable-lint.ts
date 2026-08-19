@@ -3,6 +3,7 @@ import path from 'node:path';
 import { hasFreshPassingEvidence, readFableState } from './core/state.js';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './core/skill-registry.js';
 import { validateAllSkillPackages, getSkillPackageDir } from './core/skill-package.js';
+import { checkCatalogArtifacts } from './core/catalog-generator.js';
 import { validateAllRecipes } from './core/recipes.js';
 import { logInfo, logSuccess, logError, logWarn } from './utils.js';
 
@@ -31,19 +32,36 @@ export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): Skill
       }
     }
 
-    // 2. Inspect SKILL.md sections
+    // 2. Inspect the authoring contract without demanding meaningless boilerplate.
     const skillPath = path.join(getSkillPackageDir(id, repoRoot), 'SKILL.md');
     if (fs.existsSync(skillPath)) {
       const content = fs.readFileSync(skillPath, 'utf-8');
-      const requiredSections = [
-        'Purpose',
-        'When to Use',
-        'When NOT to Use',
+      const headings = new Set(
+        content.split('\n')
+          .map((line) => line.match(/^##\s+(.+?)\s*$/)?.[1]?.trim().toLowerCase())
+          .filter((heading): heading is string => Boolean(heading))
+      );
+      const requiredSections: Array<{ label: string; alternatives?: string[] }> = [
+        { label: 'Purpose' },
+        { label: 'When to Use' },
+        { label: 'When NOT to Use' },
+        { label: 'Inputs' },
+        { label: 'Expected Outputs', alternatives: ['Outputs'] },
+        { label: 'Procedure' },
+        { label: 'Decision Rules' },
+        { label: 'Tool Policy' },
+        { label: 'Evidence Requirements' },
+        { label: 'Failure Handling' },
+        { label: 'Completion Criteria' },
       ];
-      for (const sec of requiredSections) {
-        if (!content.toLowerCase().includes(sec.toLowerCase())) {
-          warnings.push(`Skill ${id}: SKILL.md is missing "## ${sec}" section`);
+      for (const section of requiredSections) {
+        const accepted = [section.label, ...(section.alternatives || [])].map((value) => value.toLowerCase());
+        if (!accepted.some((value) => headings.has(value))) {
+          warnings.push(`Skill ${id}: missing required authoring section "## ${section.label}"`);
         }
+      }
+      if (!headings.has('constraints') && !headings.has('decision rules') && !headings.has('tool policy')) {
+        warnings.push(`Skill ${id}: constraints are not explicit through Constraints, Decision Rules, or Tool Policy`);
       }
     }
 
@@ -63,15 +81,26 @@ export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): Skill
 
       const checkSubdir = (sub: string) => {
         const subPath = path.join(skillDir, sub);
-        if (fs.existsSync(subPath) && fs.statSync(subPath).isDirectory()) {
-          const files = fs.readdirSync(subPath);
-          for (const file of files) {
-            const rel = `${sub}/${file}`;
-            if (!declaredPaths.has(rel) && !file.startsWith('.')) {
-              errors.push(`Skill ${id}: Orphan file not declared in skill.package.json: ${rel}`);
+        if (!fs.existsSync(subPath) || !fs.statSync(subPath).isDirectory()) return;
+        const walk = (dir: string) => {
+          for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+            if (entry.name.startsWith('.')) continue;
+            const absolute = path.join(dir, entry.name);
+            const rel = path.relative(skillDir, absolute).split(path.sep).join('/');
+            if (entry.isSymbolicLink()) {
+              errors.push(`Skill ${id}: Symlink resource is not allowed: ${rel}`);
+            } else if (entry.isDirectory()) {
+              walk(absolute);
+            } else if (entry.isFile()) {
+              if (!declaredPaths.has(rel)) {
+                errors.push(`Skill ${id}: Orphan file not declared in skill.package.json: ${rel}`);
+              }
+            } else {
+              errors.push(`Skill ${id}: Special resource is not allowed: ${rel}`);
             }
           }
-        }
+        };
+        walk(subPath);
       };
 
       for (const sub of ['agents', 'references', 'templates', 'examples', 'evals', 'scripts']) {
@@ -86,13 +115,10 @@ export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): Skill
     for (const err of recipeVal.errors) errors.push(`Recipe error: ${err}`);
   }
 
-  // 5. Validate registry parity
-  const canonicalReg = path.join(repoRoot, 'skills', 'get-fable', 'registry.json');
-  const mirroredReg = path.join(repoRoot, 'registry', 'skills.json');
-  if (fs.existsSync(canonicalReg) && fs.existsSync(mirroredReg)) {
-    if (fs.readFileSync(canonicalReg, 'utf-8') !== fs.readFileSync(mirroredReg, 'utf-8')) {
-      errors.push('Registry mismatch: skills/get-fable/registry.json does not match registry/skills.json');
-    }
+  // 5. Validate every generated compatibility artifact against the canonical registry.
+  const generated = checkCatalogArtifacts(repoRoot);
+  if (!generated.ok) {
+    errors.push(`Generated catalog drift: ${generated.drift.join(', ')}`);
   }
 
   return {

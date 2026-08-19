@@ -25,7 +25,7 @@ describe('Skill Package Architecture & Containment', () => {
       const pkg = all[id];
       expect(pkg).not.toBeNull();
       expect(pkg.id).toBe(id);
-      expect(pkg.schemaVersion).toBe(1);
+      expect(pkg.schemaVersion).toBe(2);
       expect(pkg.entry).toBe('SKILL.md');
       expect(pkg.agents.length).toBeGreaterThan(0);
       expect(pkg.evals.length).toBeGreaterThan(0);
@@ -100,7 +100,7 @@ describe('Skill Package Architecture & Containment', () => {
       fs.writeFileSync(
         path.join(fakeSkillDir, 'skill.package.json'),
         JSON.stringify({
-          schemaVersion: '1.0.0',
+          schemaVersion: 2,
           id: 'fake-skill',
           entry: 'SKILL.md',
           agents: [],
@@ -109,6 +109,7 @@ describe('Skill Package Architecture & Containment', () => {
           examples: [],
           evals: [],
           scripts: [],
+          scriptPolicy: 'data-only',
         })
       );
 
@@ -133,7 +134,7 @@ describe('Skill Package Architecture & Containment', () => {
       fs.writeFileSync(
         path.join(fakeSkillDir, 'skill.package.json'),
         JSON.stringify({
-          schemaVersion: '1.0.0',
+          schemaVersion: 2,
           id: 'bad-agent-skill',
           entry: 'SKILL.md',
           agents: ['agents/openai.yaml'],
@@ -142,6 +143,7 @@ describe('Skill Package Architecture & Containment', () => {
           examples: [],
           evals: [],
           scripts: [],
+          scriptPolicy: 'data-only',
         })
       );
 

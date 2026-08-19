@@ -1,0 +1,5 @@
+docs/superpowers/
+evals/
+test/
+coverage/
+*.log

@@ -88,7 +88,7 @@ scores
 
 The router does not expose hidden chain-of-thought. Reasons are concise routing evidence.
 
-## State schema v2
+## State schema v3
 
 Source: `src/core/state.ts`
 
@@ -96,6 +96,7 @@ Initialized projects receive `.fable/state.json` with:
 
 ```text
 schemaVersion
+stateRevision
 workspaceId
 phase
 currentSkill
@@ -109,9 +110,9 @@ evidence[]
 updatedAt
 ```
 
-`workspaceId` is a short digest of the canonical real workspace path rather than a stored raw local path. Symlink aliases of the same workspace resolve to one identity, while schema-v2 state copied to another workspace is rejected.
+`workspaceId` is a short digest of the canonical real workspace path rather than a stored raw local path. Symlink aliases of the same workspace resolve to one identity, while schema-v2 or schema-v3 runtime state copied to another workspace is rejected.
 
-Schema-v1 state is migrated in memory for compatibility and is written as v2 after a normal state mutation.
+The tracked repository template stays schema v1 and workspace-neutral. Schema-v1 state binds to the current workspace during migration, schema-v2 runtime state migrates explicitly, and the next state mutation writes schema v3 with a monotonically increasing `stateRevision`.
 
 ## Mutation-aware verification
 

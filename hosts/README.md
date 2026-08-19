@@ -1,16 +1,19 @@
-# Host Platform Adapters
+# Host capability contract
 
-## Supported AI Coding Platforms & Latest Model Lineup (August 19, 2026)
+Support level is based on what the current installer writes and registers. It is not a claim that every host exposes identical extension APIs.
 
-| Host Platform | Config Surface | Primary Target Models (Aug 2026) | Capabilities |
-|---|---|---|---|
-| **Claude Code** | `.claude-plugin/`, `settings.json`, `CLAUDE.md` | `claude-opus-5`, `claude-sonnet-5`, `claude-fable-5`, `claude-mythos-5`, `claude-haiku-4-5` | Adaptive thinking, 1M context, tool use, non-destructive hooks |
-| **OpenAI Codex / ChatGPT** | `.codex-plugin/`, `.chatgpt-plugin/`, `instructions.md` | `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `o3`, `o3-mini`, `o1` | Multi-tiered reasoning (Sol / Terra / Luna), structured outputs |
-| **Google Antigravity / Gemini CLI** | `.gemini-plugin/`, `hooks.json`, `fable5-mode.md` | `gemini-3.7-flash`, `gemini-3.1-pro`, `gemini-2.5-pro` | Multimodal token context, AGY agent routing, ultra-fast latency |
-| **Cursor** | `.cursor-plugin/`, `.cursor/rules/fable-lifecycle.mdc` | `claude-sonnet-5`, `gpt-5.6-sol`, `gemini-3.7-flash` | Fast composer completions, semantic code indexing |
-| **OpenCode** | `.opencode-plugin/`, skills directory | `deepseek-r1`, `deepseek-v3`, `claude-sonnet-5` | Local open-source model execution |
-| **Moonshot Kimi** | `.kimi-plugin/`, `rules/fable.md` | `kimi-k1.5`, `kimi-chat` | Long-context document retrieval |
-| **DeepSeek** | `.deepseek-plugin/`, `rules/fable.md` | `deepseek-r1`, `deepseek-v3` | Math & code reasoning, chain-of-thought verification |
-| **Kiro** | `.kiro-plugin/`, hooks & rules | `claude-opus-5`, `gpt-5.6-terra` | Terminal-first autonomous workflow |
-| **Pi Code** | `.pi-plugin/`, `rules/fable.md` | `claude-sonnet-5`, `gemini-3.7-flash` | Minimalist single-turn and interactive loops |
-| **Generic** | Standard MCP & filesystem | Multi-provider fallback | Unified tool translation |
+| Host | Level | Skill Packages | Rules | Hooks registered | Mutation detection | Completion guard | CLI/Spark fallback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Claude Code | FULL | Yes | Yes | Yes | Yes | Yes | Yes |
+| Antigravity | FULL | Yes | Yes | Yes | Yes | Yes | Yes |
+| Codex | PARTIAL | Yes | Yes | No | No | No | Yes |
+| OpenCode | PARTIAL | Yes | Yes | No | No | No | Yes |
+| Kiro | ADVISORY | No | Yes | No | No | No | Yes |
+| Cursor | ADVISORY | No | Yes | No | No | No | Yes |
+| Kimi | ADVISORY | No | Yes | No | No | No | Yes |
+| DeepSeek | ADVISORY | No | Yes | No | No | No | Yes |
+| Pi Code | ADVISORY | No | Yes | No | No | No | Yes |
+
+`FULL` means the installer currently delivers canonical Skill Packages plus registered lifecycle hooks for state mutation and completion enforcement. `PARTIAL` means package/rule installation exists but lifecycle hooks are not registered. `ADVISORY` means the host receives rules only, or copied hook files without a proven host registration path.
+
+The machine-readable source is `src/core/host-contract.ts`. Installer fixtures must be used for verification; tests must not write into real user host directories.

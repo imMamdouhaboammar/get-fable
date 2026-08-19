@@ -1,4 +1,7 @@
 import http, { type IncomingMessage, type ServerResponse } from 'node:http';
+import { lookup } from 'node:dns/promises';
+import { isIP } from 'node:net';
+import { timingSafeEqual } from 'node:crypto';
 import { ProviderTranslator, RequestValidationError } from './provider-translator.js';
 import { compileFableDirective, latestUserIntent } from '../core/prompt-compiler.js';
 import { logInfo, logSuccess, logError } from '../utils.js';
@@ -6,6 +9,9 @@ import { logInfo, logSuccess, logError } from '../utils.js';
 const DEFAULT_HOST = '127.0.0.1';
 const DEFAULT_MAX_BODY_BYTES = 1024 * 1024;
 const DEFAULT_UPSTREAM_TIMEOUT_MS = 30_000;
+const DEFAULT_MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
+const DEFAULT_MAX_CONCURRENT_REQUESTS = 32;
+const DEFAULT_RATE_LIMIT_PER_MINUTE = 120;
 
 export interface RouterOptions {
   host?: string;
@@ -13,6 +19,11 @@ export interface RouterOptions {
   upstreamUrl?: string;
   upstreamTimeoutMs?: number;
   corsOrigin?: string;
+  allowPrivateUpstream?: boolean;
+  maxResponseBytes?: number;
+  maxConcurrentRequests?: number;
+  proxyAuthToken?: string;
+  rateLimitPerMinute?: number;
 }
 
 type ResolvedRouterOptions = {
@@ -21,6 +32,11 @@ type ResolvedRouterOptions = {
   upstreamUrl?: string;
   upstreamTimeoutMs: number;
   corsOrigin?: string;
+  allowPrivateUpstream: boolean;
+  maxResponseBytes: number;
+  maxConcurrentRequests: number;
+  proxyAuthToken?: string;
+  rateLimitPerMinute: number;
 };
 
 class HttpError extends Error {
@@ -44,7 +60,51 @@ function envPositiveInteger(name: string, fallback: number): number {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
 
-function validateUpstreamUrl(value: string | undefined): string | undefined {
+function isLoopbackHost(host: string): boolean {
+  const value = host.toLowerCase().replace(/^\[|\]$/g, '');
+  return value === 'localhost' || value === '::1' || value === '127.0.0.1' || value.startsWith('127.');
+}
+
+function isPrivateIp(address: string): boolean {
+  const value = address.toLowerCase().replace(/^::ffff:/, '');
+  if (value === '::1' || value === '0.0.0.0' || value === '::') return true;
+  if (value.startsWith('fc') || value.startsWith('fd') || value.startsWith('fe80:')) return true;
+  const parts = value.split('.').map(Number);
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
+  const [a, b] = parts;
+  return a === 10 || a === 127 || a === 0 ||
+    (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127);
+}
+
+function explicitPrivateUpstream(url: URL): boolean {
+  const host = url.hostname.toLowerCase();
+  return host === 'localhost' || (isIP(host) !== 0 && isPrivateIp(host));
+}
+
+async function assertPublicUpstream(urlValue: string, allowPrivate: boolean): Promise<void> {
+  if (allowPrivate) return;
+  const url = new URL(urlValue);
+  if (explicitPrivateUpstream(url)) throw new HttpError(502, 'Upstream target resolves to a private or loopback address');
+  try {
+    const records = await lookup(url.hostname, { all: true, verbatim: true });
+    if (records.length === 0 || records.some((record) => isPrivateIp(record.address))) {
+      throw new HttpError(502, 'Upstream target resolves to a private or loopback address');
+    }
+  } catch (error) {
+    if (error instanceof HttpError) throw error;
+    throw new HttpError(502, 'Unable to resolve upstream host safely');
+  }
+}
+
+function tokenMatches(header: string | undefined, expected: string | undefined): boolean {
+  if (!expected || !header?.startsWith('Bearer ')) return false;
+  const actual = Buffer.from(header.slice(7));
+  const wanted = Buffer.from(expected);
+  return actual.length === wanted.length && timingSafeEqual(actual, wanted);
+}
+
+function validateUpstreamUrl(value: string | undefined, allowPrivate: boolean): string | undefined {
   if (!value) return undefined;
 
   let url: URL;
@@ -57,23 +117,30 @@ function validateUpstreamUrl(value: string | undefined): string | undefined {
   if (url.protocol !== 'http:' && url.protocol !== 'https:') {
     throw new Error('UPSTREAM_OPENAI_URL must use http or https');
   }
-
+  if (!allowPrivate && explicitPrivateUpstream(url)) {
+    throw new Error('UPSTREAM_OPENAI_URL must not target private or loopback addresses unless explicitly allowed');
+  }
   return url.toString();
 }
 
 function resolveOptions(options: RouterOptions = {}): ResolvedRouterOptions {
+  const host = options.host || process.env.FABLE_HOST || DEFAULT_HOST;
+  const allowPrivateUpstream = options.allowPrivateUpstream === true || process.env.FABLE_ALLOW_PRIVATE_UPSTREAM === '1';
+  const proxyAuthToken = options.proxyAuthToken ?? process.env.FABLE_PROXY_AUTH_TOKEN ?? undefined;
+  if (!isLoopbackHost(host) && !proxyAuthToken) {
+    throw new Error('Non-loopback proxy binding requires authentication via proxyAuthToken or FABLE_PROXY_AUTH_TOKEN');
+  }
   return {
-    host: options.host || process.env.FABLE_HOST || DEFAULT_HOST,
-    maxBodyBytes: positiveInteger(
-      options.maxBodyBytes,
-      envPositiveInteger('FABLE_MAX_BODY_BYTES', DEFAULT_MAX_BODY_BYTES)
-    ),
-    upstreamUrl: validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL),
-    upstreamTimeoutMs: positiveInteger(
-      options.upstreamTimeoutMs,
-      envPositiveInteger('FABLE_UPSTREAM_TIMEOUT_MS', DEFAULT_UPSTREAM_TIMEOUT_MS)
-    ),
+    host,
+    maxBodyBytes: positiveInteger(options.maxBodyBytes, envPositiveInteger('FABLE_MAX_BODY_BYTES', DEFAULT_MAX_BODY_BYTES)),
+    upstreamUrl: validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL, allowPrivateUpstream),
+    upstreamTimeoutMs: positiveInteger(options.upstreamTimeoutMs, envPositiveInteger('FABLE_UPSTREAM_TIMEOUT_MS', DEFAULT_UPSTREAM_TIMEOUT_MS)),
     corsOrigin: options.corsOrigin ?? process.env.FABLE_CORS_ORIGIN ?? undefined,
+    allowPrivateUpstream,
+    maxResponseBytes: positiveInteger(options.maxResponseBytes, envPositiveInteger('FABLE_MAX_RESPONSE_BYTES', DEFAULT_MAX_RESPONSE_BYTES)),
+    maxConcurrentRequests: positiveInteger(options.maxConcurrentRequests, envPositiveInteger('FABLE_MAX_CONCURRENT_REQUESTS', DEFAULT_MAX_CONCURRENT_REQUESTS)),
+    proxyAuthToken,
+    rateLimitPerMinute: positiveInteger(options.rateLimitPerMinute, envPositiveInteger('FABLE_RATE_LIMIT_PER_MINUTE', DEFAULT_RATE_LIMIT_PER_MINUTE)),
   };
 }
 
@@ -173,7 +240,9 @@ async function forwardToUpstream(
   res: ServerResponse,
   upstreamUrl: string,
   upstreamTimeoutMs: number,
-  body: unknown
+  body: unknown,
+  allowPrivateUpstream: boolean,
+  maxResponseBytes: number
 ) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (typeof req.headers.authorization === 'string' && req.headers.authorization) {
@@ -181,19 +250,41 @@ async function forwardToUpstream(
   }
 
   try {
+    await assertPublicUpstream(upstreamUrl, allowPrivateUpstream);
     const upstreamRes = await fetch(upstreamUrl, {
       method: 'POST',
       headers,
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(upstreamTimeoutMs),
+      redirect: 'manual',
     });
 
-    const payload = Buffer.from(await upstreamRes.arrayBuffer());
+    const declaredLength = Number(upstreamRes.headers.get('content-length'));
+    if (Number.isFinite(declaredLength) && declaredLength > maxResponseBytes) {
+      throw new HttpError(502, `Upstream response exceeds ${maxResponseBytes} bytes`);
+    }
+    const chunks: Buffer[] = [];
+    let total = 0;
+    if (upstreamRes.body) {
+      const reader = upstreamRes.body.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        total += value.byteLength;
+        if (total > maxResponseBytes) {
+          await reader.cancel();
+          throw new HttpError(502, `Upstream response exceeds ${maxResponseBytes} bytes`);
+        }
+        chunks.push(Buffer.from(value));
+      }
+    }
+    const payload = Buffer.concat(chunks);
     res.writeHead(upstreamRes.status, {
       'Content-Type': upstreamRes.headers.get('content-type') || 'application/octet-stream',
     });
     res.end(payload);
   } catch (error) {
+    if (error instanceof HttpError) throw error;
     if (error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
       throw new HttpError(504, 'Upstream request timed out');
     }
@@ -203,9 +294,15 @@ async function forwardToUpstream(
 
 export function createMythosRouterServer(options: RouterOptions = {}) {
   const resolved = resolveOptions(options);
+  let activeRequests = 0;
+  const rateWindows = new Map<string, { windowStartedAt: number; count: number }>();
 
   return http.createServer(async (req, res) => {
     applyCors(res, resolved.corsOrigin);
+    if (!isLoopbackHost(resolved.host) && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
+      sendJson(res, 401, { error: 'Proxy authentication required' });
+      return;
+    }
 
     let pathname: string;
     try {
@@ -238,6 +335,23 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
       req.method === 'POST' &&
       (pathname === '/v1/chat/completions' || pathname === '/chat/completions')
     ) {
+      const clientKey = req.socket.remoteAddress || 'unknown';
+      const now = Date.now();
+      const currentWindow = rateWindows.get(clientKey);
+      if (!currentWindow || now - currentWindow.windowStartedAt >= 60_000) {
+        rateWindows.set(clientKey, { windowStartedAt: now, count: 1 });
+      } else if (currentWindow.count >= resolved.rateLimitPerMinute) {
+        res.setHeader('Retry-After', '60');
+        sendJson(res, 429, { error: 'Proxy request rate limit exceeded' });
+        return;
+      } else {
+        currentWindow.count += 1;
+      }
+      if (activeRequests >= resolved.maxConcurrentRequests) {
+        sendJson(res, 429, { error: 'Too many concurrent proxy requests' });
+        return;
+      }
+      activeRequests += 1;
       try {
         const body = await readJsonBody(req, resolved.maxBodyBytes);
         const normalized = ProviderTranslator.normalizeRequest(body);
@@ -264,7 +378,9 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
             res,
             resolved.upstreamUrl,
             resolved.upstreamTimeoutMs,
-            enriched
+            enriched,
+            resolved.allowPrivateUpstream,
+            resolved.maxResponseBytes
           );
           return;
         }
@@ -307,6 +423,8 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
         const message = error instanceof Error ? error.message : String(error);
         logError(`Router Error: ${message}`);
         sendJson(res, 500, { error: 'Internal router error' });
+      } finally {
+        activeRequests -= 1;
       }
       return;
     }

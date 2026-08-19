@@ -44,7 +44,7 @@ describe('coding lifecycle maturity contract', () => {
     if (!fs.existsSync(statePath)) return;
 
     const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
-    expect(state.schemaVersion).toBe(2);
+    expect(state.schemaVersion).toBe(3);
     expect(state.phase).toBe('idle');
     expect(state.mutationGeneration).toBe(0);
     expect(state.verifiedGeneration).toBe(-1);
@@ -149,16 +149,16 @@ describe('coding lifecycle maturity contract', () => {
       expect(report.ok).toBe(true);
       expect(report.schemaVersion).toBe(1);
       expect(Array.isArray(report.checks)).toBe(true);
-      expect(report.checks.some((check: any) => check.id === 'skill-registry' && check.status === 'pass')).toBe(true);
-      expect(report.checks.some((check: any) => check.id === 'plugin-branding' && check.status === 'pass')).toBe(true);
-      expect(report.checks.some((check: any) => check.id === 'plugin-skills-root' && check.status === 'pass')).toBe(true);
+      expect(report.checks.some((check: any) => check.id === 'skill-registry' && check.status === 'PASS')).toBe(true);
+      expect(report.checks.some((check: any) => check.id === 'plugin-branding' && check.status === 'PASS')).toBe(true);
+      expect(report.checks.some((check: any) => check.id === 'plugin-skills-root' && check.status === 'PASS')).toBe(true);
       expect(report.checks.some((check: any) => check.id === 'project-state')).toBe(true);
     } finally {
       process.chdir(previousCwd);
     }
   });
 
-  test('status json reports schema v2 for an active initialized project', () => {
+  test('status json reports schema v3 for an active initialized project', () => {
     const target = makeTempDir();
     initProjectFable(target);
 
@@ -169,7 +169,7 @@ describe('coding lifecycle maturity contract', () => {
       expect(result.code).toBe(0);
       const status = JSON.parse(result.output);
       expect(status.project.active).toBe(true);
-      expect(status.project.stateSchemaVersion).toBe(2);
+      expect(status.project.stateSchemaVersion).toBe(3);
     } finally {
       process.chdir(previousCwd);
     }

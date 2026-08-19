@@ -14,23 +14,8 @@ import sys
 import tempfile
 import time
 
-STATE_SCHEMA_VERSION = 2
-CANONICAL_SKILLS = {
-    "get-fable",
-    "fable-discover",
-    "fable-research",
-    "fable-plan",
-    "fable-tdd",
-    "fable-delegate",
-    "fable-execute",
-    "fable-verify",
-    "fable-review",
-    "fable-security",
-    "fable-release",
-    "fable-handoff",
-    "fable-eval",
-    "fable-recover",
-}
+STATE_SCHEMA_VERSION = 3
+from _fable_catalog import CANONICAL_SKILLS
 PHASES = {
     "idle",
     "discovering",
@@ -182,6 +167,7 @@ def _migrate_v1_state(fable_dir, state):
 
     migrated = dict(state)
     migrated["schemaVersion"] = STATE_SCHEMA_VERSION
+    migrated["stateRevision"] = 0
     migrated["workspaceId"] = workspace_id(fable_dir)
     migrated["mutationGeneration"] = 0
     migrated["verifiedGeneration"] = 0 if latest_completion and latest_completion.get("result") == "pass" else -1
@@ -190,8 +176,17 @@ def _migrate_v1_state(fable_dir, state):
     return migrated
 
 
+def _migrate_v2_state(fable_dir, state):
+    if state.get("workspaceId") != workspace_id(fable_dir):
+        return None
+    migrated = dict(state)
+    migrated["schemaVersion"] = STATE_SCHEMA_VERSION
+    migrated["stateRevision"] = 0
+    return migrated
+
+
 def read_state(fable_dir):
-    """Read a valid schema-v2 state object, migrating schema v1 in memory."""
+    """Read valid schema-v3 runtime state, migrating schema v1/v2 in memory."""
     try:
         with open(state_path(fable_dir), encoding="utf-8") as handle:
             state = json.load(handle)
@@ -201,7 +196,14 @@ def read_state(fable_dir):
             state = _migrate_v1_state(fable_dir, state)
             if state is None:
                 return None
+        elif state.get("schemaVersion") == 2:
+            state = _migrate_v2_state(fable_dir, state)
+            if state is None:
+                return None
         if state.get("schemaVersion") != STATE_SCHEMA_VERSION:
+            return None
+        state_revision = state.get("stateRevision")
+        if not isinstance(state_revision, int) or state_revision < 0:
             return None
         if not _valid_nonempty_string(state.get("workspaceId")):
             return None
@@ -293,36 +295,117 @@ def has_fresh_passing_state_evidence(state):
     )
 
 
-def record_workspace_mutation(fable_dir):
-    """Advance the mutation generation and leave prior verification stale."""
-    state = read_state(fable_dir)
-    if state is None:
+STATE_LOCK_TIMEOUT_SECONDS = 2.0
+STATE_LOCK_STALE_SECONDS = 30.0
+
+
+def _lock_path(fable_dir):
+    return os.path.join(fable_dir, "state.lock")
+
+
+def _pid_alive(pid):
+    if not isinstance(pid, int) or pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+        return True
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+
+
+def _stale_lock_can_be_removed(path):
+    try:
+        stat = os.stat(path)
+        if time.time() - stat.st_mtime < STATE_LOCK_STALE_SECONDS:
+            return False
+        try:
+            with open(path, encoding="utf-8") as handle:
+                data = json.load(handle)
+            if _pid_alive(data.get("pid")):
+                return False
+        except Exception:
+            pass
+        return True
+    except OSError:
+        return False
+
+
+def _acquire_state_lock(fable_dir):
+    os.makedirs(fable_dir, exist_ok=True)
+    path = _lock_path(fable_dir)
+    deadline = time.monotonic() + STATE_LOCK_TIMEOUT_SECONDS
+    while True:
+        try:
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                json.dump({"pid": os.getpid(), "createdAt": now_iso()}, handle)
+                handle.flush()
+                os.fsync(handle.fileno())
+            return path
+        except FileExistsError:
+            if _stale_lock_can_be_removed(path):
+                try:
+                    os.remove(path)
+                    continue
+                except OSError:
+                    pass
+            if time.monotonic() >= deadline:
+                return None
+            time.sleep(0.01)
+
+
+def _with_state_transaction(fable_dir, mutator):
+    lock = _acquire_state_lock(fable_dir)
+    if lock is None:
         return None
-    state["mutationGeneration"] = int(state.get("mutationGeneration", 0)) + 1
-    state["substantial"] = True
-    state["updatedAt"] = now_iso()
-    write_state(fable_dir, state)
-    return state
+    try:
+        state = read_state(fable_dir)
+        if state is None:
+            return None
+        current_revision = int(state.get("stateRevision", 0))
+        updated = mutator(dict(state))
+        if not isinstance(updated, dict):
+            return None
+        updated["schemaVersion"] = STATE_SCHEMA_VERSION
+        updated["workspaceId"] = state["workspaceId"]
+        updated["stateRevision"] = current_revision + 1
+        if not write_state(fable_dir, updated):
+            return None
+        return updated
+    finally:
+        try:
+            os.remove(lock)
+        except OSError:
+            pass
+
+
+def record_workspace_mutation(fable_dir):
+    """Advance the mutation generation transactionally and stale prior verification."""
+    def mutate(state):
+        state["mutationGeneration"] = int(state.get("mutationGeneration", 0)) + 1
+        state["substantial"] = True
+        state["updatedAt"] = now_iso()
+        return state
+    return _with_state_transaction(fable_dir, mutate)
 
 
 def record_command_result(fable_dir, failed):
-    """Update durable failure state after a command result."""
-    state = read_state(fable_dir)
-    if state is None:
-        return None
+    """Update durable failure state transactionally after a command result."""
+    def mutate(state):
+        if failed:
+            state["failureStreak"] = int(state.get("failureStreak", 0)) + 1
+            if state["failureStreak"] >= 2 and state.get("phase") != "complete":
+                state["phase"] = "recovering"
+                state["currentSkill"] = "fable-recover"
+                state["substantial"] = True
+        else:
+            state["failureStreak"] = 0
+        state["updatedAt"] = now_iso()
+        return state
+    return _with_state_transaction(fable_dir, mutate)
 
-    if failed:
-        state["failureStreak"] = int(state.get("failureStreak", 0)) + 1
-        if state["failureStreak"] >= 2 and state.get("phase") != "complete":
-            state["phase"] = "recovering"
-            state["currentSkill"] = "fable-recover"
-            state["substantial"] = True
-    else:
-        state["failureStreak"] = 0
-
-    state["updatedAt"] = now_iso()
-    write_state(fable_dir, state)
-    return state
 
 
 EVIDENCE_RE = re.compile(r"(evidence|verified|证据|凭证|验证)\s*[:：]", re.IGNORECASE)

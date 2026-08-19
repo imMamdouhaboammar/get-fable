@@ -7,7 +7,7 @@ The hooks turn selected lifecycle invariants into mechanical host behavior. They
 - opt in: no `.fable/` directory means no project enforcement
 - project local: durable workflow state lives in `.fable/state.json`
 - bounded state: do not persist prompts, source contents, command output, credentials, or raw local paths as evidence metadata
-- workspace identity: schema-v2 state is bound to a digest of the canonical real project path
+- workspace identity: schema-v3 runtime state is bound to a digest of the canonical real project path; the tracked repository template remains workspace-neutral
 - unexpected hook runtime failures remain fail-open so a broken helper does not brick the host
 - an existing but invalid `.fable/state.json` is a workflow error and may block a substantial completion claim
 

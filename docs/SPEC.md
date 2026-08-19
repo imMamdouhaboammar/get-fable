@@ -1,3 +1,5 @@
+[not-shown] This file is the repository spec template; replace placeholders with measured or inferred claims for an active work round.
+
 # SPEC — <project / round name>
 
 ## Goal

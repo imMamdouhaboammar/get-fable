@@ -86,7 +86,7 @@ describe('task routing', () => {
 describe('durable state', () => {
   test('rejects invalid phase jumps and evidence-free substantial completion', () => {
     const initial = createInitialState('2026-08-13T00:00:00.000Z');
-    expect(initial.schemaVersion).toBe(2);
+    expect(initial.schemaVersion).toBe(3);
     expect(initial.mutationGeneration).toBe(0);
     expect(initial.verifiedGeneration).toBe(-1);
     expect(() => transitionState(initial, 'complete')).toThrow('Invalid Fable state transition');
@@ -182,7 +182,7 @@ describe('durable state', () => {
     }
   });
 
-  test('migrates schema-v1 state into mutation-aware schema-v2 state', () => {
+  test('migrates schema-v1 state into revision-aware schema-v3 state', () => {
     const migrated = validateFableState({
       schemaVersion: 1,
       phase: 'verifying',
@@ -202,7 +202,7 @@ describe('durable state', () => {
       updatedAt: '2026-08-13T00:01:00.000Z',
     });
 
-    expect(migrated.schemaVersion).toBe(2);
+    expect(migrated.schemaVersion).toBe(3);
     expect(migrated.mutationGeneration).toBe(0);
     expect(migrated.verifiedGeneration).toBe(0);
     expect(migrated.evidence[0].generation).toBe(0);

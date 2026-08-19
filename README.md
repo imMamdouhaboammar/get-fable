@@ -53,30 +53,13 @@ change the diagnosis before another edit
 
 The graph is not a forced wizard. A failed verification can return to recovery. New evidence can send execution back to discovery. A changed assumption can send a card back to planning
 
-## 14 focused lifecycle skills
+## Canonical Skill catalog
 
-The root `skills/` directory is the canonical source of behavior
+`skills/get-fable/registry.json` is the single authoring source for Skill identity, pack membership, lifecycle phase, routing metadata, and ordering. Generated catalogs are checked in and CI fails when they drift.
 
-| Pack | Skill | Job |
-|---|---|---|
-| Core | `get-fable` | Route the task from the evidence that is currently missing |
-| Core | `fable-discover` | Trace repository behavior, environment, and execution paths |
-| Intelligence | `fable-research` | Resolve current external facts from primary sources |
-| Core | `fable-plan` | Convert grounded requirements into bounded cards and acceptance conditions |
-| Build | `fable-tdd` | Drive testable behavior changes through red and green evidence |
-| Build | `fable-delegate` | Split independent work with explicit ownership and acceptance |
-| Core | `fable-execute` | Make one bounded workspace change without scope drift |
-| Core | `fable-verify` | Falsify the affected behavior and collect completion evidence |
-| Proof | `fable-review` | Review the actual diff against the request and repository standards |
-| Proof | `fable-security` | Route trust-boundary work to the right security evidence path |
-| Delivery | `fable-release` | Establish merge, publish, or release readiness from current evidence |
-| Delivery | `fable-handoff` | Preserve the minimum durable context another session needs |
-| Evolution | `fable-eval` | Test changes to skills, prompts, hooks, and routing against baselines and holdouts |
-| Core | `fable-recover` | Diagnose repeated, stale, or contradictory failure before another repair |
+The current catalog is generated in [`docs/CANONICAL_SKILLS.md`](docs/CANONICAL_SKILLS.md). It includes lifecycle Skills, system Skills, Spark, and Skill authoring support without repeating the list manually in runtime code.
 
-The registry stores the lifecycle metadata that should not be duplicated inside every skill
-
-Each entry can declare its pack, intents, prerequisites, outputs, gates, fallback, mutation behavior, parallel safety, and valid next skills
+Each registry entry can declare its pack, intents, prerequisites, outputs, gates, fallback, mutation behavior, parallel safety, and valid next Skills.
 
 ## Deterministic routing
 
@@ -153,10 +136,11 @@ docs/
     fable-recover/
 ```
 
-State schema v2 tracks
+State schema v3 tracks
 
 ```text
 workspace identity
+state revision
 phase
 current skill
 active card
@@ -358,7 +342,7 @@ They cover current-doc routing, review-vs-release ambiguity, TDD, repeated failu
 
 ## Context stays focused
 
-The request compiler does not inject all 14 skills into every model call
+The request compiler does not inject the entire Skill catalog into every model call
 
 It compiles only
 
@@ -454,7 +438,7 @@ get-fable is intentionally conservative about what it claims and changes
 - project-owned initialization targets are not silently replaced
 - malformed existing JSON configuration is not treated as empty configuration
 - substantial completion requires current-generation evidence appropriate to the routed claim
-- schema-v2 state is bound to the canonical real workspace path through a digest, not a persisted raw path
+- schema-v3 runtime state is bound to the canonical real workspace path through a digest, while the tracked repository template remains workspace-neutral and binds during migration
 - unexpected hook runtime errors fail open, while invalid project workflow state can block a completion claim
 - the request proxy binds to `127.0.0.1` by default
 - historical prompt and asset material stays separate from the canonical lifecycle pack

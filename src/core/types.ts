@@ -1,42 +1,10 @@
-export const FABLE_STATE_SCHEMA_VERSION = 2 as const;
+export const FABLE_STATE_SCHEMA_VERSION = 3 as const;
 export const FABLE_REGISTRY_SCHEMA_VERSION = 2 as const;
 
-export type FableSkillId =
-  | 'get-fable'
-  | 'fable-discover'
-  | 'fable-research'
-  | 'fable-plan'
-  | 'fable-tdd'
-  | 'fable-delegate'
-  | 'fable-execute'
-  | 'fable-verify'
-  | 'fable-review'
-  | 'fable-security'
-  | 'fable-release'
-  | 'fable-handoff'
-  | 'fable-eval'
-  | 'fable-recover'
-  | 'fable-dataviz'
-  | 'fable-artifact'
-  | 'fable-simplify'
-  | 'fable-loop'
-  | 'fable-run'
-  | 'fable-memory'
-  | 'fable-config'
-  | 'fable-simulator'
-  | 'fable-cowork'
-  | 'fable-spark'
-  | 'skill-creator';
+import type { FablePack as CatalogFablePack, FableSkillId as CatalogFableSkillId } from '../generated/skill-catalog.js';
 
-export type FablePack =
-  | 'core'
-  | 'intelligence'
-  | 'build'
-  | 'proof'
-  | 'delivery'
-  | 'evolution'
-  | 'system'
-  | 'creator';
+export type FableSkillId = CatalogFableSkillId;
+export type FablePack = CatalogFablePack;
 
 export type FablePhase =
   | 'idle'
@@ -84,6 +52,11 @@ export interface EvidenceRecord {
   detail: string;
   generation: number;
   timestamp: string;
+  workspaceId?: string;
+  repositoryRevision?: string;
+  commandCategory?: string;
+  scope?: string;
+  receiptId?: string;
 }
 
 export type TypedEvidence = EvidenceRecord;
@@ -126,7 +99,8 @@ export interface RoutingDecision {
 }
 
 export interface FableState {
-  schemaVersion: 2;
+  schemaVersion: 3;
+  stateRevision: number;
   workspaceId: string;
   phase: FablePhase;
   currentSkill: FableSkillId | null;
@@ -142,7 +116,7 @@ export interface FableState {
 
 export interface DoctorCheck {
   id: string;
-  status: 'pass' | 'warn' | 'error';
+  status: 'PASS' | 'WARN' | 'ERROR' | 'NOT_APPLICABLE' | 'NOT_CHECKED';
   message: string;
 }
 
@@ -152,10 +126,10 @@ export interface DoctorReport {
   checks: DoctorCheck[];
 }
 
-export const FABLE_SKILL_PACKAGE_SCHEMA_VERSION = 1 as const;
+export const FABLE_SKILL_PACKAGE_SCHEMA_VERSION = 2 as const;
 
 export interface SkillPackageManifest {
-  schemaVersion: 1;
+  schemaVersion: 2;
   id: string;
   entry: string;
   agents: string[];
@@ -164,6 +138,7 @@ export interface SkillPackageManifest {
   examples: string[];
   evals: string[];
   scripts: string[];
+  scriptPolicy: 'data-only';
 }
 
 export type SkillResourceType =

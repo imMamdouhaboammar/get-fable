@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { atomicWriteFileSync } from '../utils.js';
+import { CANONICAL_SKILLS, FABLE_PACKS, SKILL_PACK, SKILL_PHASE } from '../generated/skill-catalog.js';
 import {
   FABLE_STATE_SCHEMA_VERSION,
   type EvidenceKind,
@@ -14,44 +16,7 @@ import {
   type RoutingDecision,
 } from './types.js';
 
-const FABLE_SKILL_IDS: FableSkillId[] = [
-  'get-fable',
-  'fable-discover',
-  'fable-research',
-  'fable-plan',
-  'fable-tdd',
-  'fable-delegate',
-  'fable-execute',
-  'fable-verify',
-  'fable-review',
-  'fable-security',
-  'fable-release',
-  'fable-handoff',
-  'fable-eval',
-  'fable-recover',
-  'fable-dataviz',
-  'fable-artifact',
-  'fable-simplify',
-  'fable-loop',
-  'fable-run',
-  'fable-memory',
-  'fable-config',
-  'fable-simulator',
-  'fable-cowork',
-  'fable-spark',
-  'skill-creator',
-];
 
-const FABLE_PACKS: FablePack[] = [
-  'core',
-  'intelligence',
-  'build',
-  'proof',
-  'delivery',
-  'evolution',
-  'system',
-  'creator',
-];
 const TASK_SHAPES: FableTaskShape[] = [
   'research',
   'architecture',
@@ -109,60 +74,7 @@ const PHASE_SKILL: Partial<Record<FablePhase, FableSkillId>> = {
   recovering: 'fable-recover',
 };
 
-const SKILL_PHASE: Record<Exclude<FableSkillId, 'get-fable'>, FablePhase> = {
-  'fable-discover': 'discovering',
-  'fable-research': 'discovering',
-  'fable-plan': 'planned',
-  'fable-tdd': 'executing',
-  'fable-delegate': 'executing',
-  'fable-execute': 'executing',
-  'fable-verify': 'verifying',
-  'fable-review': 'verifying',
-  'fable-security': 'verifying',
-  'fable-release': 'verifying',
-  'fable-handoff': 'verifying',
-  'fable-eval': 'verifying',
-  'fable-recover': 'recovering',
-  'fable-dataviz': 'executing',
-  'fable-artifact': 'executing',
-  'fable-simplify': 'executing',
-  'fable-loop': 'executing',
-  'fable-run': 'verifying',
-  'fable-memory': 'discovering',
-  'fable-config': 'planned',
-  'fable-simulator': 'verifying',
-  'fable-cowork': 'executing',
-  'fable-spark': 'idle',
-  'skill-creator': 'executing',
-};
 
-const SKILL_PACK: Record<FableSkillId, FablePack> = {
-  'get-fable': 'core',
-  'fable-discover': 'core',
-  'fable-research': 'intelligence',
-  'fable-plan': 'core',
-  'fable-tdd': 'build',
-  'fable-delegate': 'build',
-  'fable-execute': 'core',
-  'fable-verify': 'core',
-  'fable-review': 'proof',
-  'fable-security': 'proof',
-  'fable-release': 'delivery',
-  'fable-handoff': 'delivery',
-  'fable-eval': 'evolution',
-  'fable-recover': 'core',
-  'fable-dataviz': 'system',
-  'fable-artifact': 'system',
-  'fable-simplify': 'system',
-  'fable-loop': 'system',
-  'fable-run': 'system',
-  'fable-memory': 'system',
-  'fable-config': 'system',
-  'fable-simulator': 'system',
-  'fable-cowork': 'system',
-  'fable-spark': 'system',
-  'skill-creator': 'creator',
-};
 
 export function workspaceIdForTarget(targetDir: string = process.cwd()): string {
   const resolved = path.resolve(targetDir);
@@ -176,6 +88,7 @@ export function createInitialState(
 ): FableState {
   return {
     schemaVersion: FABLE_STATE_SCHEMA_VERSION,
+    stateRevision: 0,
     workspaceId: workspaceIdForTarget(targetDir),
     phase: 'idle',
     currentSkill: null,
@@ -210,7 +123,7 @@ function isStringArray(value: unknown): value is string[] {
 }
 
 function isFableSkillId(value: unknown): value is FableSkillId {
-  return typeof value === 'string' && FABLE_SKILL_IDS.includes(value as FableSkillId);
+  return typeof value === 'string' && (CANONICAL_SKILLS as readonly string[]).includes(value);
 }
 
 function isEvidenceKind(value: unknown): value is EvidenceKind {
@@ -246,6 +159,11 @@ function validateEvidenceRecord(value: unknown, index: number): void {
     throw new Error(`Fable state ${field}.generation must be a non-negative integer`);
   }
   if (!isNonEmptyString(value.timestamp)) throw new Error(`Fable state ${field}.timestamp is required`);
+  for (const key of ['workspaceId', 'repositoryRevision', 'commandCategory', 'scope', 'receiptId'] as const) {
+    if (value[key] !== undefined && !isNonEmptyString(value[key])) {
+      throw new Error(`Fable state ${field}.${key} must be a non-empty string when provided`);
+    }
+  }
 }
 
 function validateRoutingDecision(value: unknown): void {
@@ -253,7 +171,7 @@ function validateRoutingDecision(value: unknown): void {
   if (!isFableSkillId(value.selectedSkill)) {
     throw new Error('Fable state lastDecision.selectedSkill is invalid');
   }
-  if (typeof value.selectedPack !== 'string' || !FABLE_PACKS.includes(value.selectedPack as FablePack)) {
+  if (typeof value.selectedPack !== 'string' || !(FABLE_PACKS as readonly string[]).includes(value.selectedPack)) {
     throw new Error('Fable state lastDecision.selectedPack is invalid');
   }
   if (typeof value.taskShape !== 'string' || !TASK_SHAPES.includes(value.taskShape as FableTaskShape)) {
@@ -288,7 +206,7 @@ function validateRoutingDecision(value: unknown): void {
   if (!isRecord(value.scores)) {
     throw new Error('Fable state lastDecision.scores must be an object');
   }
-  for (const skill of FABLE_SKILL_IDS) {
+  for (const skill of CANONICAL_SKILLS) {
     const score = value.scores[skill];
     if (typeof score !== 'number' || !Number.isFinite(score)) {
       throw new Error(`Fable state lastDecision.scores.${skill} must be a finite number`);
@@ -300,7 +218,7 @@ function migrateRoutingDecision(value: unknown): RoutingDecision | null {
   if (!isRecord(value) || !isFableSkillId(value.selectedSkill)) return null;
   const selectedSkill = value.selectedSkill;
   const scores = Object.fromEntries(
-    FABLE_SKILL_IDS.map((skill) => [
+    CANONICAL_SKILLS.map((skill) => [
       skill,
       isRecord(value.scores) && typeof value.scores[skill] === 'number' ? value.scores[skill] : 0,
     ])
@@ -346,6 +264,7 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
       detail: record.detail,
       generation: 0,
       timestamp: record.timestamp,
+      workspaceId: workspaceIdForTarget(targetDir),
     };
   });
 
@@ -354,7 +273,8 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
     .find((record) => BEHAVIOR_COMPLETION_EVIDENCE_KINDS.includes(record.kind));
 
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
+    stateRevision: 0,
     workspaceId: workspaceIdForTarget(targetDir),
     phase: value.phase,
     currentSkill: value.currentSkill as FableSkillId | null,
@@ -369,15 +289,31 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
   };
 }
 
+function migrateV2State(value: Record<string, unknown>, targetDir: string): FableState {
+  const expectedWorkspaceId = workspaceIdForTarget(targetDir);
+  if (!isNonEmptyString(value.workspaceId) || value.workspaceId !== expectedWorkspaceId) {
+    throw new Error('Fable state workspaceId does not match the current workspace');
+  }
+  const migrated = { ...value, schemaVersion: 3, stateRevision: 0 };
+  return validateFableState(migrated, targetDir);
+}
+
 export function validateFableState(value: unknown, targetDir: string = process.cwd()): FableState {
   if (!isRecord(value)) throw new Error('Fable state must be an object');
 
-  const migrated = value.schemaVersion === 1 ? migrateV1State(value, targetDir) : value;
+  const migrated = value.schemaVersion === 1
+    ? migrateV1State(value, targetDir)
+    : value.schemaVersion === 2
+      ? migrateV2State(value, targetDir)
+      : value;
   if (!isRecord(migrated) || migrated.schemaVersion !== FABLE_STATE_SCHEMA_VERSION) {
     throw new Error(`Unsupported Fable state schema: ${String(value.schemaVersion)}`);
   }
 
   const state = migrated;
+  if (typeof state.stateRevision !== 'number' || !Number.isInteger(state.stateRevision) || state.stateRevision < 0) {
+    throw new Error('Fable state stateRevision must be a non-negative integer');
+  }
   if (!isNonEmptyString(state.workspaceId)) throw new Error('Fable state workspaceId is required');
   const expectedWorkspaceId = workspaceIdForTarget(targetDir);
   if (state.workspaceId !== expectedWorkspaceId) {
@@ -414,6 +350,15 @@ export function validateFableState(value: unknown, targetDir: string = process.c
   return state as unknown as FableState;
 }
 
+export function getRepositoryRevision(targetDir: string = process.cwd()): string | null {
+  try {
+    const value = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: targetDir, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    return /^[0-9a-f]{40}$/i.test(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
 export function statePath(targetDir: string = process.cwd()): string {
   return path.join(targetDir, '.fable', 'state.json');
 }
@@ -422,11 +367,83 @@ export function readFableState(targetDir: string = process.cwd()): FableState | 
   const filePath = statePath(targetDir);
   if (!fs.existsSync(filePath)) return null;
   const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  const expectedWorkspaceId = workspaceIdForTarget(targetDir);
-  if (isRecord(raw) && raw.schemaVersion === 2 && raw.workspaceId !== expectedWorkspaceId) {
-    raw.workspaceId = expectedWorkspaceId;
-  }
   return validateFableState(raw, targetDir);
+}
+
+const STATE_LOCK_TIMEOUT_MS = 2000;
+const STATE_LOCK_STALE_MS = 30_000;
+
+function sleepSync(milliseconds: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
+}
+
+function lockPath(targetDir: string): string {
+  return path.join(targetDir, '.fable', 'state.lock');
+}
+
+function staleLockCanBeRemoved(filePath: string): boolean {
+  try {
+    const stat = fs.statSync(filePath);
+    if (Date.now() - stat.mtimeMs < STATE_LOCK_STALE_MS) return false;
+    try {
+      const value = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      if (Number.isInteger(value?.pid) && value.pid > 0) {
+        try { process.kill(value.pid, 0); return false; }
+        catch (error) {
+          const code = (error as NodeJS.ErrnoException).code;
+          if (code === 'EPERM') return false;
+        }
+      }
+    } catch {}
+    return true;
+  } catch { return false; }
+}
+
+function acquireStateLock(targetDir: string): () => void {
+  const fableDir = path.join(targetDir, '.fable');
+  fs.mkdirSync(fableDir, { recursive: true });
+  const filePath = lockPath(targetDir);
+  const deadline = Date.now() + STATE_LOCK_TIMEOUT_MS;
+  while (true) {
+    try {
+      const fd = fs.openSync(filePath, 'wx', 0o600);
+      fs.writeFileSync(fd, JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString() }));
+      fs.closeSync(fd);
+      return () => {
+        try { fs.unlinkSync(filePath); } catch {}
+      };
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== 'EEXIST') throw error;
+      if (staleLockCanBeRemoved(filePath)) {
+        try { fs.unlinkSync(filePath); continue; } catch {}
+      }
+      if (Date.now() >= deadline) throw new Error('Timed out waiting for Fable state lock');
+      sleepSync(10);
+    }
+  }
+}
+
+export function withFableStateTransaction(
+  targetDir: string,
+  mutator: (state: FableState) => FableState
+): FableState {
+  const release = acquireStateLock(targetDir);
+  try {
+    const current = readFableState(targetDir);
+    if (!current) throw new Error('No .fable/state.json found. Run get-fable init first.');
+    const proposed = mutator(current);
+    const next = validateFableState({
+      ...proposed,
+      schemaVersion: FABLE_STATE_SCHEMA_VERSION,
+      workspaceId: current.workspaceId,
+      stateRevision: current.stateRevision + 1,
+    }, targetDir);
+    writeFableState(targetDir, next);
+    return next;
+  } finally {
+    release();
+  }
 }
 
 export function writeFableState(targetDir: string, state: FableState): void {
@@ -535,6 +552,7 @@ export function addEvidence(
         ...evidence,
         generation,
         timestamp,
+        workspaceId: evidence.workspaceId || state.workspaceId,
       },
     ],
     failureStreak: nextFailureStreak,

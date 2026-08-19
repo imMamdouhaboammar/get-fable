@@ -11,9 +11,12 @@ import {
 } from '../src/installer.ts';
 
 const tempDirs: string[] = [];
-const previousGeminiDir = process.env.FABLE_GEMINI_CONFIG_DIR;
-const previousClaudeDir = process.env.CLAUDE_CONFIG_DIR;
-const previousKernelDir = process.env.FABLE_AGENT_KERNEL_DIR;
+const hostEnvKeys = [
+  'CLAUDE_CONFIG_DIR', 'FABLE_GEMINI_CONFIG_DIR', 'FABLE_AGENT_KERNEL_DIR', 'FABLE_CODEX_CONFIG_DIR',
+  'FABLE_CURSOR_CONFIG_DIR', 'FABLE_OPENCODE_CONFIG_DIR', 'FABLE_KIMI_CONFIG_DIR', 'FABLE_DEEPSEEK_CONFIG_DIR',
+  'FABLE_KIRO_CONFIG_DIR', 'FABLE_PI_CONFIG_DIR',
+] as const;
+const previousHostEnv = Object.fromEntries(hostEnvKeys.map((key) => [key, process.env[key]]));
 const canonicalSkills = [
   'get-fable',
   'fable-discover',
@@ -37,16 +40,25 @@ function makeTempDir(prefix: string) {
   return dir;
 }
 
+function isolateAllHostDirs(root: string) {
+  process.env.CLAUDE_CONFIG_DIR = path.join(root, 'claude');
+  process.env.FABLE_GEMINI_CONFIG_DIR = path.join(root, 'gemini');
+  process.env.FABLE_AGENT_KERNEL_DIR = path.join(root, 'missing-kernel');
+  process.env.FABLE_CODEX_CONFIG_DIR = path.join(root, 'codex');
+  process.env.FABLE_CURSOR_CONFIG_DIR = path.join(root, 'cursor');
+  process.env.FABLE_OPENCODE_CONFIG_DIR = path.join(root, 'opencode');
+  process.env.FABLE_KIMI_CONFIG_DIR = path.join(root, 'kimi');
+  process.env.FABLE_DEEPSEEK_CONFIG_DIR = path.join(root, 'deepseek');
+  process.env.FABLE_KIRO_CONFIG_DIR = path.join(root, 'kiro');
+  process.env.FABLE_PI_CONFIG_DIR = path.join(root, 'pi');
+}
+
 afterEach(() => {
-  if (previousClaudeDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
-  else process.env.CLAUDE_CONFIG_DIR = previousClaudeDir;
-
-  if (previousGeminiDir === undefined) delete process.env.FABLE_GEMINI_CONFIG_DIR;
-  else process.env.FABLE_GEMINI_CONFIG_DIR = previousGeminiDir;
-
-  if (previousKernelDir === undefined) delete process.env.FABLE_AGENT_KERNEL_DIR;
-  else process.env.FABLE_AGENT_KERNEL_DIR = previousKernelDir;
-
+  for (const key of hostEnvKeys) {
+    const previous = previousHostEnv[key];
+    if (previous === undefined) delete process.env[key];
+    else process.env[key] = previous;
+  }
   for (const dir of tempDirs.splice(0)) {
     fs.rmSync(dir, { recursive: true, force: true });
   }
@@ -55,10 +67,8 @@ afterEach(() => {
 describe('installGlobalFable', () => {
   test('installs both Claude Bash result events idempotently and preserves unrelated hooks', () => {
     const root = makeTempDir('get-fable-global-');
+    isolateAllHostDirs(root);
     const claude = path.join(root, 'claude');
-    process.env.CLAUDE_CONFIG_DIR = claude;
-    process.env.FABLE_GEMINI_CONFIG_DIR = path.join(root, 'gemini');
-    process.env.FABLE_AGENT_KERNEL_DIR = path.join(root, 'missing-kernel');
     fs.mkdirSync(claude, { recursive: true });
     fs.writeFileSync(
       path.join(claude, 'settings.json'),
@@ -93,10 +103,8 @@ describe('installGlobalFable', () => {
 
   test('status rejects a Claude hook wired to the wrong script or matcher', () => {
     const root = makeTempDir('get-fable-global-status-');
+    isolateAllHostDirs(root);
     const claude = path.join(root, 'claude');
-    process.env.CLAUDE_CONFIG_DIR = claude;
-    process.env.FABLE_GEMINI_CONFIG_DIR = path.join(root, 'gemini');
-    process.env.FABLE_AGENT_KERNEL_DIR = path.join(root, 'missing-kernel');
 
     installGlobalFable();
     const settingsPath = path.join(claude, 'settings.json');
@@ -131,7 +139,7 @@ describe('initProjectFable', () => {
     expect(fs.existsSync(path.join(target, '.agents', 'skills', 'registry.json'))).toBe(false);
 
     const state = JSON.parse(fs.readFileSync(path.join(target, '.fable', 'state.json'), 'utf-8'));
-    expect(state.schemaVersion).toBe(2);
+    expect(state.schemaVersion).toBe(3);
     expect(state.phase).toBe('idle');
     expect(state.mutationGeneration).toBe(0);
     expect(state.verifiedGeneration).toBe(-1);

@@ -1,4 +1,7 @@
-import { describe, expect, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import {
   loadTelemetryConfig,
   recordTelemetry,
@@ -7,14 +10,19 @@ import {
   saveTelemetryConfig,
 } from '../src/core/telemetry.ts';
 
+let telemetryDir = '';
+beforeEach(() => { telemetryDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fable-telemetry-test-')); process.env.FABLE_TELEMETRY_DIR = telemetryDir; });
+afterEach(() => { delete process.env.FABLE_TELEMETRY_DIR; fs.rmSync(telemetryDir, { recursive: true, force: true }); });
+
 describe('Local-First Telemetry Engine', () => {
   test('initializes and saves telemetry configuration', () => {
     const config = loadTelemetryConfig();
     expect(config.anonymousId).toStartWith('fable-');
-    expect(config.enabled).toBe(true);
+    expect(config.enabled).toBe(false);
   });
 
   test('records events safely without leaking sensitive information', () => {
+    const config = loadTelemetryConfig(); config.enabled = true; saveTelemetryConfig(config);
     clearTelemetryLogs();
     recordTelemetry({
       eventType: 'command',
@@ -46,7 +54,5 @@ describe('Local-First Telemetry Engine', () => {
     const summary = getTelemetrySummary();
     expect(summary.recentEvents.length).toBe(0);
 
-    config.enabled = true;
-    saveTelemetryConfig(config);
   });
 });

@@ -18,6 +18,7 @@ import {
   logWarn,
 } from '../utils.js';
 import { loadSkillRegistry, getCoreRepoRoot, canonicalSkillIds } from './skill-registry.js';
+import { FABLE_PACKS } from '../generated/skill-catalog.js';
 import type { FablePack, FableSkillId, SkillRegistryEntry } from './types.js';
 
 export interface AutoSkillInstallOptions {
@@ -78,16 +79,7 @@ export function resolveSkillsToInstall(
     return canonicalSkillIds();
   }
 
-  const validPacks: FablePack[] = [
-    'core',
-    'intelligence',
-    'build',
-    'proof',
-    'delivery',
-    'evolution',
-    'system',
-    'creator',
-  ];
+  const validPacks: readonly FablePack[] = FABLE_PACKS;
   if (validPacks.includes(target as FablePack)) {
     const packSkills = registry.skills.filter((s: SkillRegistryEntry) => s.pack === target).map((s: SkillRegistryEntry) => s.id);
     return packSkills.length > 0 ? packSkills : canonicalSkillIds();
@@ -102,7 +94,20 @@ export function resolveSkillsToInstall(
     .filter((s: SkillRegistryEntry) => s.id.includes(target) || s.keywords.some((k: string) => k.includes(target)))
     .map((s: SkillRegistryEntry) => s.id);
 
-  return matches.length > 0 ? matches : canonicalSkillIds();
+  if (matches.length > 0) return matches;
+  throw new Error(`Unknown skill or pack: ${packOrSkill}`);
+}
+
+
+function rejectSymlinkPath(filePath: string, label: string) {
+  try {
+    if (fs.lstatSync(filePath).isSymbolicLink()) {
+      throw new Error(`Refusing ${label}: ${filePath}`);
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') return;
+    throw error;
+  }
 }
 
 /**
@@ -115,6 +120,8 @@ export function copySkillDirectory(
   overwrite: boolean = true
 ): boolean {
   if (!fs.existsSync(sourceSkillDir)) return false;
+  rejectSymlinkPath(sourceSkillDir, `source symlink from skill package ${skillId}`);
+  rejectSymlinkPath(destSkillDir, `destination symlink for skill package ${skillId}`);
   if (!fs.existsSync(destSkillDir)) {
     fs.mkdirSync(destSkillDir, { recursive: true });
   }
@@ -123,15 +130,65 @@ export function copySkillDirectory(
   for (const entry of entries) {
     const srcPath = path.join(sourceSkillDir, entry.name);
     const destPath = path.join(destSkillDir, entry.name);
+    rejectSymlinkPath(destPath, `destination symlink for skill package ${skillId}`);
 
+    if (entry.isSymbolicLink()) {
+      throw new Error(`Refusing to install symlink from skill package ${skillId}: ${srcPath}`);
+    }
     if (entry.isDirectory()) {
       copySkillDirectory(skillId, srcPath, destPath, overwrite);
     } else if (entry.isFile()) {
       if (!overwrite && fs.existsSync(destPath)) continue;
-      atomicWriteFileSync(destPath, fs.readFileSync(srcPath, 'utf-8'));
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+      fs.copyFileSync(srcPath, destPath);
+      const mode = fs.statSync(srcPath).mode & 0o777;
+      fs.chmodSync(destPath, mode & ~0o022);
+    } else {
+      throw new Error(`Refusing to install special file from skill package ${skillId}: ${srcPath}`);
     }
   }
   return true;
+}
+
+export function installSkillDirectoryAtomic(
+  skillId: string,
+  sourceSkillDir: string,
+  destSkillDir: string,
+  overwrite: boolean = true
+): boolean {
+  if (!fs.existsSync(sourceSkillDir)) return false;
+  rejectSymlinkPath(sourceSkillDir, `source symlink from skill package ${skillId}`);
+  rejectSymlinkPath(destSkillDir, `destination symlink for skill package ${skillId}`);
+  const parent = path.dirname(destSkillDir);
+  fs.mkdirSync(parent, { recursive: true });
+  if (!overwrite && fs.existsSync(destSkillDir)) return false;
+
+  const nonce = `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const staging = path.join(parent, `.${path.basename(destSkillDir)}.staging-${nonce}`);
+  const backup = path.join(parent, `.${path.basename(destSkillDir)}.backup-${nonce}`);
+  let movedExisting = false;
+  try {
+    copySkillDirectory(skillId, sourceSkillDir, staging, true);
+    if (fs.existsSync(destSkillDir)) {
+      fs.renameSync(destSkillDir, backup);
+      movedExisting = true;
+    }
+    fs.renameSync(staging, destSkillDir);
+    if (movedExisting) fs.rmSync(backup, { recursive: true, force: true });
+    return true;
+  } catch (error) {
+    fs.rmSync(staging, { recursive: true, force: true });
+    if (movedExisting) {
+      try {
+        if (fs.existsSync(destSkillDir)) fs.rmSync(destSkillDir, { recursive: true, force: true });
+        fs.renameSync(backup, destSkillDir);
+      } catch (rollbackError) {
+        throw new Error(`Skill install failed and rollback also failed for ${skillId}: ${rollbackError instanceof Error ? rollbackError.message : String(rollbackError)}`, { cause: error });
+      }
+    }
+    fs.rmSync(backup, { recursive: true, force: true });
+    throw error;
+  }
 }
 
 export function autoInstallSkills(options: AutoSkillInstallOptions = {}): SkillInstallResult {
@@ -157,7 +214,7 @@ export function autoInstallSkills(options: AutoSkillInstallOptions = {}): SkillI
       const srcSkillDir = path.join(repoRoot, 'skills', skillId);
       const destSkillDir = path.join(destDir, skillId);
 
-      const success = copySkillDirectory(skillId, srcSkillDir, destSkillDir, overwrite);
+      const success = installSkillDirectoryAtomic(skillId, srcSkillDir, destSkillDir, overwrite);
       if (success) {
         if (!installedSkills.includes(skillId)) installedSkills.push(skillId);
         targetPaths.push(destSkillDir);

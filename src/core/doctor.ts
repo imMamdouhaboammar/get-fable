@@ -6,10 +6,14 @@ import { readFableState, createInitialState, writeFableState } from './state.js'
 import { evaluateFableSpark } from './spark.js';
 import { loadTelemetryConfig } from './telemetry.js';
 import { loadSkillFeed } from './feed.js';
-import { validateAllSkillPackages, getSkillManifestPath, getSkillPackageSummary } from './skill-package.js';
+import { validateAllSkillPackages, getSkillManifestPath, getSkillPackageSummary, FABLE_SKILL_PACKAGE_SCHEMA_VERSION } from './skill-package.js';
 import { validateAllRecipes } from './recipes.js';
 import { loadNeuralGraph } from './neural-linking.js';
-import type { DoctorCheck, DoctorReport, FablePack } from './types.js';
+import { checkCatalogArtifacts } from './catalog-generator.js';
+import { evaluateSkillMaturity } from './maturity.js';
+import { HOST_CONTRACTS } from './host-contract.js';
+import { evaluateHostInstallerParity } from './host-evidence.js';
+import { FABLE_STATE_SCHEMA_VERSION, type DoctorCheck, type DoctorReport, type FablePack } from './types.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -60,26 +64,26 @@ function validateSkillPackages(repoRoot: string): DoctorCheck[] {
 
   checks.push(
     manifestFailures.length === 0
-      ? check('skill-package-manifest', 'pass', `All ${canonical.length} canonical skills have valid skill.package.json manifests`)
-      : check('skill-package-manifest', 'error', `Missing manifests for: ${manifestFailures.join(', ')}`)
+      ? check('skill-package-manifest', 'PASS', `All ${canonical.length} canonical skills have valid skill.package.json manifests`)
+      : check('skill-package-manifest', 'ERROR', `Missing manifests for: ${manifestFailures.join(', ')}`)
   );
 
   checks.push(
     resourceFailures.length === 0
-      ? check('skill-package-resources', 'pass', 'All package-referenced resources exist, are non-empty, and adhere to containment boundaries')
-      : check('skill-package-resources', 'error', `Package resource errors in: ${resourceFailures.join(' | ')}`)
+      ? check('skill-package-resources', 'PASS', 'All package-referenced resources exist, are non-empty, and adhere to containment boundaries')
+      : check('skill-package-resources', 'ERROR', `Package resource errors in: ${resourceFailures.join(' | ')}`)
   );
 
   checks.push(
     agentFailures.length === 0
-      ? check('skill-package-agents', 'pass', `All ${canonical.length} skills have valid agent definitions`)
-      : check('skill-package-agents', 'error', `Missing agent metadata in: ${agentFailures.join(', ')}`)
+      ? check('skill-package-agents', 'PASS', `All ${canonical.length} skills have valid agent definitions`)
+      : check('skill-package-agents', 'ERROR', `Missing agent metadata in: ${agentFailures.join(', ')}`)
   );
 
   checks.push(
     evalFailures.length === 0
-      ? check('skill-package-evals', 'pass', `All ${canonical.length} skills have structured behavioral eval benchmark scenarios`)
-      : check('skill-package-evals', 'error', `Missing eval suites in: ${evalFailures.join(', ')}`)
+      ? check('skill-package-evals', 'PASS', `All ${canonical.length} skills declare one or more eval resources; this is structural evidence only`)
+      : check('skill-package-evals', 'ERROR', `Missing eval suites in: ${evalFailures.join(', ')}`)
   );
 
   return checks;
@@ -99,14 +103,14 @@ function validateRegistriesAndPacks(repoRoot: string): DoctorCheck[] {
       const isMatch = JSON.stringify(parsedCanonical) === JSON.stringify(parsedMirrored);
       checks.push(
         isMatch
-          ? check('skill-registry-parity', 'pass', 'Canonical skills/get-fable/registry.json and registry/skills.json are in exact parity')
-          : check('skill-registry-parity', 'error', 'skills/get-fable/registry.json and registry/skills.json have drifted')
+          ? check('skill-registry-parity', 'PASS', 'Canonical skills/get-fable/registry.json and registry/skills.json are in exact parity')
+          : check('skill-registry-parity', 'ERROR', 'skills/get-fable/registry.json and registry/skills.json have drifted')
       );
     } catch (e) {
-      checks.push(check('skill-registry-parity', 'error', `Failed to parse registry files: ${e}`));
+      checks.push(check('skill-registry-parity', 'ERROR', `Failed to parse registry files: ${e}`));
     }
   } else {
-    checks.push(check('skill-registry-parity', 'error', 'One or both skill registry files are missing'));
+    checks.push(check('skill-registry-parity', 'ERROR', 'One or both skill registry files are missing'));
   }
 
   // Packs parity check
@@ -157,19 +161,19 @@ function validateRegistriesAndPacks(repoRoot: string): DoctorCheck[] {
 
     checks.push(
       packFailures.length === 0
-        ? check('skill-pack-parity', 'pass', 'All pack files in packs/*.json match registry definitions with 100% parity')
-        : check('skill-pack-parity', 'error', `Pack parity issues: ${packFailures.join(', ')}`)
+        ? check('skill-pack-parity', 'PASS', 'All pack files in packs/*.json match registry definitions with 100% parity')
+        : check('skill-pack-parity', 'ERROR', `Pack parity issues: ${packFailures.join(', ')}`)
     );
   } catch (e) {
-    checks.push(check('skill-pack-parity', 'error', `Pack validation error: ${e}`));
+    checks.push(check('skill-pack-parity', 'ERROR', `Pack validation error: ${e}`));
   }
 
   // Recipe integrity check
   const recipeVal = validateAllRecipes(repoRoot);
   checks.push(
     recipeVal.valid
-      ? check('recipe-integrity', 'pass', `Validated ${recipeVal.recipes.length} lifecycle recipes`)
-      : check('recipe-integrity', 'error', `Recipe errors: ${recipeVal.errors.join('; ')}`)
+      ? check('recipe-integrity', 'PASS', `Validated ${recipeVal.recipes.length} lifecycle recipes`)
+      : check('recipe-integrity', 'ERROR', `Recipe errors: ${recipeVal.errors.join('; ')}`)
   );
 
   // Neural graph integrity check
@@ -180,14 +184,14 @@ function validateRegistriesAndPacks(repoRoot: string): DoctorCheck[] {
     const badEdges = graph.edges.filter((e) => !nodeIds.has(e.source as any) || !nodeIds.has(e.target as any));
 
     if (missingNodes.length > 0) {
-      checks.push(check('neural-graph-integrity', 'error', `Neural graph missing nodes: ${missingNodes.join(', ')}`));
+      checks.push(check('neural-graph-integrity', 'ERROR', `Neural graph missing nodes: ${missingNodes.join(', ')}`));
     } else if (badEdges.length > 0) {
-      checks.push(check('neural-graph-integrity', 'error', `Neural graph has dangling edges: ${badEdges.length}`));
+      checks.push(check('neural-graph-integrity', 'ERROR', `Neural graph has dangling edges: ${badEdges.length}`));
     } else {
-      checks.push(check('neural-graph-integrity', 'pass', `Neural graph verified with ${graph.nodes.length} nodes and ${graph.edges.length} edges`));
+      checks.push(check('neural-graph-integrity', 'PASS', `Neural graph verified with ${graph.nodes.length} nodes and ${graph.edges.length} edges`));
     }
   } catch (e) {
-    checks.push(check('neural-graph-integrity', 'error', `Neural graph error: ${e}`));
+    checks.push(check('neural-graph-integrity', 'ERROR', `Neural graph error: ${e}`));
   }
 
   // Hook registry integrity check
@@ -212,11 +216,11 @@ function validateRegistriesAndPacks(repoRoot: string): DoctorCheck[] {
       }
       checks.push(
         hookErrors.length === 0
-          ? check('hook-registry-integrity', 'pass', 'All registered hooks point to existing scripts')
-          : check('hook-registry-integrity', 'error', hookErrors.join('; '))
+          ? check('hook-registry-integrity', 'PASS', 'All registered hooks point to existing scripts')
+          : check('hook-registry-integrity', 'ERROR', hookErrors.join('; '))
       );
     } catch (e) {
-      checks.push(check('hook-registry-integrity', 'error', `Hook registry parse error: ${e}`));
+      checks.push(check('hook-registry-integrity', 'ERROR', `Hook registry parse error: ${e}`));
     }
   }
 
@@ -230,31 +234,31 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
   const claudePluginManifest = path.join(repoRoot, '.claude-plugin', 'plugin.json');
 
   if (!fs.existsSync(pluginManifest)) {
-    checks.push(check('plugin-manifest', 'error', '.codex-plugin/plugin.json is missing'));
+    checks.push(check('plugin-manifest', 'ERROR', '.codex-plugin/plugin.json is missing'));
   } else {
-    checks.push(check('plugin-manifest', 'pass', '.codex-plugin/plugin.json is present'));
+    checks.push(check('plugin-manifest', 'PASS', '.codex-plugin/plugin.json is present'));
   }
 
   if (!fs.existsSync(claudeMarketplaceManifest)) {
-    checks.push(check('claude-marketplace-manifest', 'error', '.claude-plugin/marketplace.json is missing'));
+    checks.push(check('claude-marketplace-manifest', 'ERROR', '.claude-plugin/marketplace.json is missing'));
   } else {
     try {
       const marketplace = JSON.parse(fs.readFileSync(claudeMarketplaceManifest, 'utf-8'));
       if (!marketplace.name || !Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
-        checks.push(check('claude-marketplace-manifest', 'error', '.claude-plugin/marketplace.json is missing name or plugins'));
+        checks.push(check('claude-marketplace-manifest', 'ERROR', '.claude-plugin/marketplace.json is missing name or plugins'));
       } else {
-        checks.push(check('claude-marketplace-manifest', 'pass', '.claude-plugin/marketplace.json is present and valid'));
+        checks.push(check('claude-marketplace-manifest', 'PASS', '.claude-plugin/marketplace.json is present and valid'));
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      checks.push(check('claude-marketplace-manifest', 'error', `Invalid marketplace manifest: ${message}`));
+      checks.push(check('claude-marketplace-manifest', 'ERROR', `Invalid marketplace manifest: ${message}`));
     }
   }
 
   if (!fs.existsSync(claudePluginManifest)) {
-    checks.push(check('claude-plugin-manifest', 'error', '.claude-plugin/plugin.json is missing'));
+    checks.push(check('claude-plugin-manifest', 'ERROR', '.claude-plugin/plugin.json is missing'));
   } else {
-    checks.push(check('claude-plugin-manifest', 'pass', '.claude-plugin/plugin.json is present'));
+    checks.push(check('claude-plugin-manifest', 'PASS', '.claude-plugin/plugin.json is present'));
   }
 
   const platforms = [
@@ -271,13 +275,13 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
   for (const platform of platforms) {
     const marketPath = path.join(repoRoot, platform.dir, 'marketplace.json');
     if (fs.existsSync(marketPath)) {
-      checks.push(check(`${platform.id}-marketplace`, 'pass', `${platform.dir}/marketplace.json is present`));
+      checks.push(check(`${platform.id}-marketplace`, 'PASS', `${platform.dir}/marketplace.json is present`));
     }
   }
 
   const skillsShPath = path.join(repoRoot, 'skills.sh.json');
   if (fs.existsSync(skillsShPath)) {
-    checks.push(check('skills-sh-catalog', 'pass', 'skills.sh.json catalog is present'));
+    checks.push(check('skills-sh-catalog', 'PASS', 'skills.sh.json catalog is present'));
   }
 
   try {
@@ -312,17 +316,17 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
 
     checks.push(
       failures.length === 0
-        ? check('plugin-branding', 'pass', 'Required plugin logo and composer icon assets are present')
-        : check('plugin-branding', 'error', failures.join('; '))
+        ? check('plugin-branding', 'PASS', 'Required plugin logo and composer icon assets are present')
+        : check('plugin-branding', 'ERROR', failures.join('; '))
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    checks.push(check('plugin-branding', 'error', `Invalid plugin manifest: ${message}`));
+    checks.push(check('plugin-branding', 'ERROR', `Invalid plugin manifest: ${message}`));
   }
 
   const skillsRoot = path.join(repoRoot, 'skills');
   if (!fs.existsSync(skillsRoot)) {
-    checks.push(check('plugin-skills-root', 'error', 'skills/ is missing'));
+    checks.push(check('plugin-skills-root', 'ERROR', 'skills/ is missing'));
     return checks;
   }
 
@@ -333,10 +337,10 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
 
   checks.push(
     invalidEntries.length === 0
-      ? check('plugin-skills-root', 'pass', 'Every direct skills/ child is an importable skill directory')
+      ? check('plugin-skills-root', 'PASS', 'Every direct skills/ child is an importable skill directory')
       : check(
           'plugin-skills-root',
-          'error',
+          'ERROR',
           `Invalid direct skills/ entries: ${invalidEntries.join(', ')}`
         )
   );
@@ -408,6 +412,56 @@ export function runDoctorFix(
   return { repaired, errors };
 }
 
+function validateEnterpriseConfiguration(repoRoot: string): DoctorCheck[] {
+  const checks: DoctorCheck[] = [];
+  try {
+    const stateSchema = JSON.parse(fs.readFileSync(path.join(repoRoot, 'schemas', 'state.schema.json'), 'utf-8'));
+    const packageSchema = JSON.parse(fs.readFileSync(path.join(repoRoot, 'schemas', 'skill-package.schema.json'), 'utf-8'));
+    const stateVersions = stateSchema?.properties?.schemaVersion?.enum;
+    const packageVersions = packageSchema?.properties?.schemaVersion?.enum;
+    const parity = Array.isArray(stateVersions) && stateVersions.length === 1 && stateVersions[0] === FABLE_STATE_SCHEMA_VERSION &&
+      Array.isArray(packageVersions) && packageVersions.length === 1 && packageVersions[0] === FABLE_SKILL_PACKAGE_SCHEMA_VERSION;
+    checks.push(parity
+      ? check('schema-runtime-parity', 'PASS', `State schema v${FABLE_STATE_SCHEMA_VERSION} and Skill Package schema v${FABLE_SKILL_PACKAGE_SCHEMA_VERSION} match runtime validators`)
+      : check('schema-runtime-parity', 'ERROR', 'Runtime and JSON schema version contracts have drifted'));
+  } catch (error) {
+    checks.push(check('schema-runtime-parity', 'ERROR', `Schema parity check failed: ${error instanceof Error ? error.message : String(error)}`));
+  }
+
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf-8'));
+    const files = Array.isArray(pkg.files) ? pkg.files : [];
+    const intentional = files.includes('eval/') && !files.includes('evals/') && !files.includes('docs/') && files.includes('docs/*.md');
+    checks.push(intentional
+      ? check('distribution-contract', 'PASS', 'npm whitelist keeps runtime eval material and public docs while excluding root holdouts and internal Superpowers plans')
+      : check('distribution-contract', 'ERROR', 'npm package whitelist does not match the documented distribution boundary'));
+  } catch (error) {
+    checks.push(check('distribution-contract', 'ERROR', `Distribution contract check failed: ${error instanceof Error ? error.message : String(error)}`));
+  }
+
+  const workflowPaths = ['.github/workflows/ci.yml', '.github/workflows/security.yml', '.github/workflows/release.yml'];
+  try {
+    const workflows = workflowPaths.map((relative) => ({ relative, text: fs.readFileSync(path.join(repoRoot, relative), 'utf-8') }));
+    const actionRefs = workflows.flatMap(({ text }) => [...text.matchAll(/uses:\s+[^@\s]+@([^\s#]+)/g)].map((match) => match[1]));
+    const pinned = actionRefs.length > 0 && actionRefs.every((ref) => /^[0-9a-f]{40}$/.test(ref));
+    const ci = workflows.find((item) => item.relative.endsWith('/ci.yml'))!.text;
+    const security = workflows.find((item) => item.relative.endsWith('/security.yml'))!.text;
+    const release = workflows.find((item) => item.relative.endsWith('/release.yml'))!.text;
+    const supplyChain = pinned && ci.includes('bun install --frozen-lockfile') && release.includes('id-token: write') &&
+      release.includes('environment: npm') && !/NPM_TOKEN|NODE_AUTH_TOKEN/.test(release);
+    checks.push(supplyChain
+      ? check('supply-chain-config', 'PASS', `All ${actionRefs.length} third-party Action references are full commit SHAs; CI uses frozen Bun resolution and release uses OIDC Trusted Publishing configuration`)
+      : check('supply-chain-config', 'ERROR', 'CI/release supply-chain configuration is incomplete or mutable'));
+    checks.push(security.includes('github/codeql-action') && security.includes('actions/dependency-review-action')
+      ? check('security-ci-config', 'PASS', 'Security workflow configures CodeQL and dependency review with scoped permissions')
+      : check('security-ci-config', 'ERROR', 'Security CI is missing CodeQL or dependency review'));
+    checks.push(check('release-runtime-evidence', 'NOT_CHECKED', 'Release workflow is configured but has not been executed for the current working revision'));
+  } catch (error) {
+    checks.push(check('supply-chain-config', 'ERROR', `Workflow configuration check failed: ${error instanceof Error ? error.message : String(error)}`));
+  }
+  return checks;
+}
+
 export function runDoctor(
   targetDir: string = process.cwd(),
   repoRoot: string = getCoreRepoRoot()
@@ -417,23 +471,54 @@ export function runDoctor(
   try {
     const registry = loadSkillRegistry(repoRoot);
     checks.push(
-      check('skill-registry', 'pass', `Validated ${registry.skills.length} canonical skills and transition targets`)
+      check('skill-registry', 'PASS', `Validated ${registry.skills.length} canonical skills and transition targets`)
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    checks.push(check('skill-registry', 'error', message));
+    checks.push(check('skill-registry', 'ERROR', message));
   }
 
   checks.push(...validatePluginPackage(repoRoot));
   checks.push(...validateSkillPackages(repoRoot));
   checks.push(...validateRegistriesAndPacks(repoRoot));
+  checks.push(...validateEnterpriseConfiguration(repoRoot));
+
+  const generated = checkCatalogArtifacts(repoRoot);
+  checks.push(
+    generated.ok
+      ? check('generated-catalog-drift', 'PASS', 'Generated TypeScript, Python, registry, catalog, and pack artifacts match the canonical registry')
+      : check('generated-catalog-drift', 'ERROR', `Generated artifact drift: ${generated.drift.join(', ')}`)
+  );
+
+  try {
+    const maturity = canonicalSkillIds().map((id) => evaluateSkillMaturity(id, repoRoot));
+    const counts = Object.fromEntries(['M0','M1','M2','M3','M4','M5'].map((level) => [level, maturity.filter((item) => item.maturity === level).length]));
+    const uncheckedHoldouts = maturity.filter((item) => item.behavior.holdout.status === 'NOT_CHECKED').length;
+    checks.push(
+      uncheckedHoldouts > 0
+        ? check('behavioral-maturity', 'NOT_CHECKED', `Evidence maturity: ${JSON.stringify(counts)}; holdout evidence is NOT_CHECKED for ${uncheckedHoldouts}/${maturity.length} skills, so Doctor does not award behavioral proof`)
+        : check('behavioral-maturity', 'PASS', `Evidence maturity evaluated with current holdout evidence: ${JSON.stringify(counts)}`)
+    );
+  } catch (error) {
+    checks.push(check('behavioral-maturity', 'ERROR', `Maturity evaluation failed: ${error instanceof Error ? error.message : String(error)}`));
+  }
+
+  try {
+    const hostParity = evaluateHostInstallerParity();
+    const failures = hostParity.results.filter((item) => !item.passed);
+    checks.push(failures.length === 0
+      ? check('host-parity', 'PASS', `Isolated installer parity passed for all ${hostParity.total} declared hosts (${HOST_CONTRACTS.filter((host) => host.level === 'FULL').length} FULL)`)
+      : check('host-parity', 'ERROR', `Host parity failed: ${failures.map((item) => `${item.id}: ${item.failures.join(', ')}`).join(' | ')}`));
+  } catch (error) {
+    checks.push(check('host-parity', 'ERROR', `Host parity evaluation failed: ${error instanceof Error ? error.message : String(error)}`));
+  }
 
   try {
     const feed = loadSkillFeed(repoRoot, targetDir);
-    checks.push(check('feed-engine', 'pass', `Feed engine loaded with ${feed.length} skills`));
+    checks.push(check('feed-engine', 'PASS', `Feed engine loaded with ${feed.length} skills`));
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    checks.push(check('feed-engine', 'error', `Feed engine error: ${message}`));
+    checks.push(check('feed-engine', 'ERROR', `Feed engine error: ${message}`));
   }
 
   try {
@@ -441,35 +526,35 @@ export function runDoctor(
     checks.push(
       check(
         'telemetry-health',
-        'pass',
+        'PASS',
         `Telemetry local storage ready (${telemetry.enabled ? 'enabled' : 'disabled'})`
       )
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    checks.push(check('telemetry-health', 'error', `Telemetry error: ${message}`));
+    checks.push(check('telemetry-health', 'ERROR', `Telemetry error: ${message}`));
   }
 
   const activeProject = fs.existsSync(path.join(targetDir, '.fable'));
   if (!activeProject) {
-    checks.push(check('project-state', 'warn', 'No active .fable directory in the current project'));
-    checks.push(check('project-skills', 'warn', 'Project-local canonical skills are not required until get-fable is initialized'));
+    checks.push(check('project-state', 'WARN', 'No active .fable directory in the current project'));
+    checks.push(check('project-skills', 'WARN', 'Project-local canonical skills are not required until get-fable is initialized'));
   } else {
     try {
       const state = readFableState(targetDir);
       if (!state) throw new Error('.fable/state.json is missing');
-      checks.push(check('project-state', 'pass', `State schema ${state.schemaVersion}, phase ${state.phase}`));
+      checks.push(check('project-state', 'PASS', `State schema ${state.schemaVersion}, phase ${state.phase}`));
       const spark = evaluateFableSpark({ state });
       checks.push(
         check(
           'fable-spark',
-          'pass',
+          'PASS',
           spark.silent ? 'Spark micro-policy standing by (silent)' : `Next move: ${spark.suggestion}`
         )
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      checks.push(check('project-state', 'error', message));
+      checks.push(check('project-state', 'ERROR', message));
     }
 
     const isSourceRepo = path.resolve(targetDir) === path.resolve(repoRoot);
@@ -483,12 +568,12 @@ export function runDoctor(
       missing.length === 0
         ? check(
             'project-skills',
-            'pass',
+            'PASS',
             isSourceRepo
               ? 'Source repository canonical skills are present'
               : 'All canonical project skills are installed'
           )
-        : check('project-skills', 'error', `Missing project skills: ${missing.join(', ')}`)
+        : check('project-skills', 'ERROR', `Missing project skills: ${missing.join(', ')}`)
     );
   }
 
@@ -497,21 +582,21 @@ export function runDoctor(
     const preCommitHook = path.join(gitDir, 'hooks', 'pre-commit');
     checks.push(
       fs.existsSync(preCommitHook)
-        ? check('git-hooks', 'pass', 'Git pre-commit and lifecycle hooks are installed')
-        : check('git-hooks', 'warn', 'Git hooks not installed in .git/hooks (run get-fable install git-hooks or get-fable doctor --fix)')
+        ? check('git-hooks', 'PASS', 'Git pre-commit and lifecycle hooks are installed')
+        : check('git-hooks', 'WARN', 'Git hooks not installed in .git/hooks (run get-fable install git-hooks or get-fable doctor --fix)')
     );
   }
 
   const python = spawnSync('python3', ['--version'], { encoding: 'utf-8' });
   checks.push(
     python.status === 0
-      ? check('python-runtime', 'pass', (python.stdout || python.stderr || 'python3 available').trim())
-      : check('python-runtime', 'warn', 'python3 was not found; lifecycle hooks cannot run on hosts that require them')
+      ? check('python-runtime', 'PASS', (python.stdout || python.stderr || 'python3 available').trim())
+      : check('python-runtime', 'WARN', 'python3 was not found; lifecycle hooks cannot run on hosts that require them')
   );
 
   return {
     schemaVersion: 1,
-    ok: checks.every((item) => item.status !== 'error'),
+    ok: checks.every((item) => item.status !== 'ERROR'),
     checks,
   };
 }

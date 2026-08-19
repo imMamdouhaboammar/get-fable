@@ -83,9 +83,10 @@ Preview responses expose routing metadata, not private chain-of-thought.
 
 ## Durable state and evidence
 
-Initialized projects receive `.fable/state.json` schema version 2. It records:
+Initialized projects receive `.fable/state.json` schema version 3. It records:
 
 ```text
+stateRevision
 workspaceId
 phase
 currentSkill
@@ -99,7 +100,7 @@ evidence[]
 updatedAt
 ```
 
-The workspace identity is a short digest of the resolved project path. Schema-v2 state copied to another workspace is rejected instead of being trusted as current state.
+The workspace identity is a short digest of the resolved project path. Schema-v2 and schema-v3 runtime state copied to another workspace is rejected instead of being trusted as current state. The repository itself keeps a workspace-neutral schema-v1 template so clones and CI can bind locally during migration.
 
 Every recognized workspace mutation advances `mutationGeneration`. Previous verification remains historical evidence but becomes stale for completion.
 
@@ -120,7 +121,7 @@ This prevents a security scan, research result, or execution receipt from being 
 - strict semver plugin metadata
 - required package-relative square branding assets
 - every direct `skills/` child contains `SKILL.md`
-- all 14 canonical skills exist
+- all canonical Skills exist and match the generated catalog
 - registry v2 pack, gate, fallback, transition, and parallel metadata is valid
 - no dead next or fallback targets
 - deterministic routing across research, TDD, delegation, review, security, release, handoff, eval, and recovery

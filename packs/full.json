@@ -1,7 +1,7 @@
 {
   "name": "full",
   "version": "1.2.0",
-  "description": "Complete get-fable skill system containing all 25 canonical skills across all 8 packs.",
+  "description": "Complete get-fable skill collection generated from the canonical registry (25 skills across 8 packs).",
   "skills": [
     "get-fable",
     "fable-discover",

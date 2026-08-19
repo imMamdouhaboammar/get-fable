@@ -26,11 +26,13 @@ import {
   addEvidence,
   applyRoutingDecision,
   createInitialState,
+  getRepositoryRevision,
   isFablePhase,
   readFableState,
   recordMutation,
   setActiveCard,
   transitionState,
+  withFableStateTransaction,
   writeFableState,
 } from './core/state.js';
 import { routeTask } from './core/task-router.js';
@@ -124,15 +126,16 @@ function runRoute(args: string[]): number {
   }
 
   const currentState = readFableState(process.cwd());
-  const decision = routeTask(task, currentState || undefined);
-
+  if (apply && !currentState) {
+    logError('route --apply requires an initialized project. Run get-fable init first.');
+    return 1;
+  }
+  let decision = routeTask(task, currentState || undefined);
   if (apply) {
-    if (!currentState) {
-      logError('route --apply requires an initialized project. Run get-fable init first.');
-      return 1;
-    }
-    const nextState = applyRoutingDecision(currentState, decision);
-    writeFableState(process.cwd(), nextState);
+    withFableStateTransaction(process.cwd(), (state) => {
+      decision = routeTask(task, state);
+      return applyRoutingDecision(state, decision);
+    });
   }
 
   recordTelemetry({
@@ -172,12 +175,10 @@ function runStateCommand(args: string[]): number {
     return 1;
   }
 
-  const state = requireState();
-  const nextState = transitionState(
-    substantial ? { ...state, substantial: true } : state,
-    targetPhase
+  requireState();
+  const nextState = withFableStateTransaction(process.cwd(), (state) =>
+    transitionState(substantial ? { ...state, substantial: true } : state, targetPhase)
   );
-  writeFableState(process.cwd(), nextState);
 
   recordTelemetry({
     eventType: 'command',
@@ -198,9 +199,8 @@ function runStateCommand(args: string[]): number {
 
 function runMutationCommand(args: string[]): number {
   const source = args.filter((arg) => !arg.startsWith('--')).join(' ').trim() || undefined;
-  const state = requireState();
-  const nextState = recordMutation(state);
-  writeFableState(process.cwd(), nextState);
+  requireState();
+  const nextState = withFableStateTransaction(process.cwd(), (state) => recordMutation(state));
 
   recordTelemetry({
     eventType: 'command',
@@ -226,9 +226,10 @@ function runCardCommand(args: string[]): number {
     return 1;
   }
 
-  const state = requireState();
-  const nextState = setActiveCard(state, clear ? null : cardText);
-  writeFableState(process.cwd(), nextState);
+  requireState();
+  const nextState = withFableStateTransaction(process.cwd(), (state) =>
+    setActiveCard(state, clear ? null : cardText)
+  );
 
   return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
     logHeader(clear ? 'get-fable active card cleared' : 'get-fable active card updated');
@@ -256,9 +257,16 @@ function runEvidenceCommand(args: string[]): number {
     return 1;
   }
 
-  const state = requireState();
-  const nextState = addEvidence(state, { kind, source, result, detail });
-  writeFableState(process.cwd(), nextState);
+  requireState();
+  const revision = getRepositoryRevision(process.cwd());
+  const nextState = withFableStateTransaction(process.cwd(), (state) =>
+    addEvidence(state, {
+      kind, source, result, detail,
+      repositoryRevision: revision || undefined,
+      commandCategory: kind,
+      scope: state.activeCard || state.currentSkill || 'workspace',
+    })
+  );
 
   recordTelemetry({
     eventType: 'evidence_added',
