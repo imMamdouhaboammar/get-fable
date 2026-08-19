@@ -325,7 +325,8 @@ export function validateFableState(value: unknown, targetDir: string = process.c
   }
   if (!Array.isArray(state.evidence)) throw new Error('Fable state evidence must be an array');
   state.evidence.forEach((record, index) => validateEvidenceRecord(record, index));
-  if (state.evidence.some((record) => (record as EvidenceRecord).generation > state.mutationGeneration)) {
+  const mutationGeneration = Number(state.mutationGeneration);
+  if (state.evidence.some((record) => (record as EvidenceRecord).generation > mutationGeneration)) {
     throw new Error('Fable state evidence generation cannot exceed mutationGeneration');
   }
   if (state.lastDecision !== null) validateRoutingDecision(state.lastDecision);
