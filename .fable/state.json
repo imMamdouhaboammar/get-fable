@@ -1,14 +1,10 @@
 {
-  "schemaVersion": 2,
-  "workspaceId": "fcee80e94942031953452d16",
+  "schemaVersion": 1,
   "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
-  "substantial": true,
-  "mutationGeneration": 1,
-  "verifiedGeneration": -1,
-  "activeCard": null,
+  "substantial": false,
   "lastDecision": null,
   "evidence": [],
-  "updatedAt": "2026-08-19T09:19:24.886Z"
+  "updatedAt": "2026-08-13T10:00:00.000Z"
 }
