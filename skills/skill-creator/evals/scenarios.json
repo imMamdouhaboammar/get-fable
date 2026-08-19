@@ -1,32 +1,21 @@
 [
   {
     "id": "skill-creator-normal-author",
-    "description": "User asks to create a new specialized testing skill with full package structure",
+    "description": "Create a complete specialized skill package rather than a flat prompt file",
     "given": {
-      "intent": "Create a new API load testing skill called load-tester with references and eval scenarios",
-      "inputs": {
-        "user_intent": "author load testing skill"
-      }
+      "intent": "Create a new API load testing skill called load-tester with references and eval scenarios"
     },
     "expected": {
       "action": "scaffold-skill-package",
-      "produces": "structured-skill-package",
-      "structure": [
-        "SKILL.md",
-        "skill.package.json",
-        "agents/openai.yaml",
-        "references/load-profiles.md",
-        "evals/scenarios.json"
-      ]
+      "produces": "structured-skill-package"
     },
     "forbidden": {
-      "action": "create-flat-unvalidated-file",
-      "pattern": "empty-folders-without-files"
+      "action": "create-flat-unvalidated-file"
     }
   },
   {
     "id": "skill-creator-boundary-regular-code",
-    "description": "User requests fixing a bug in application code; skill creator must not trigger",
+    "description": "Ordinary application bug fixing must route to an engineering Skill rather than author a new Skill",
     "given": {
       "intent": "Fix the null pointer exception in auth.ts line 42",
       "phase": "executing"
@@ -41,12 +30,9 @@
   },
   {
     "id": "skill-creator-eval-benchmark-suite",
-    "description": "User requests adding evaluation benchmarks for an existing skill",
+    "description": "Strengthening an existing Skill requires semantic eval families, not only structure validation",
     "given": {
-      "intent": "Generate comprehensive eval benchmarks and test scenarios for fable-verify",
-      "inputs": {
-        "target_skill": "fable-verify"
-      }
+      "intent": "Generate comprehensive eval benchmarks and test scenarios for fable-verify"
     },
     "expected": {
       "action": "generate-eval-scenarios",
@@ -54,6 +40,77 @@
     },
     "forbidden": {
       "action": "modify-core-runtime-code"
+    }
+  },
+  {
+    "id": "skill-creator-reject-happy-path-checklist",
+    "description": "A proposed diagnostic Skill is only a short linear checklist with no branching or failure taxonomy",
+    "given": {
+      "intent": "Approve this debugging skill: inspect logs, try a fix, rerun tests, done",
+      "capabilityClass": "diagnostic"
+    },
+    "expected": {
+      "action": "deepen-skill-contract",
+      "produces": "structured-skill-package"
+    },
+    "forbidden": {
+      "action": "approve-shallow-checklist"
+    }
+  },
+  {
+    "id": "skill-creator-reject-duplicate-reference",
+    "description": "A reference file that merely paraphrases SKILL.md does not satisfy progressive disclosure",
+    "given": {
+      "intent": "Review a Skill whose only reference repeats the same four procedure steps"
+    },
+    "expected": {
+      "action": "replace-shallow-reference",
+      "produces": "structured-skill-package"
+    },
+    "forbidden": {
+      "action": "count-duplicate-reference-as-depth"
+    }
+  },
+  {
+    "id": "skill-creator-semantic-breadth",
+    "description": "Five wording variants of one scenario must not be treated as five independent behavioral families",
+    "given": {
+      "intent": "Mark this Skill mature because five eval prompts all ask it to fix the same pagination bug with different wording"
+    },
+    "expected": {
+      "action": "require-semantic-eval-breadth",
+      "produces": "eval_benchmark_suite"
+    },
+    "forbidden": {
+      "action": "accept-surface-variants-as-breadth"
+    }
+  },
+  {
+    "id": "skill-creator-neighbor-collision",
+    "description": "Two Skills trigger on the same ordinary request and need sharper activation boundaries before release",
+    "given": {
+      "intent": "Both api-research and codebase-discover currently trigger on 'figure out how this SDK integration works'"
+    },
+    "expected": {
+      "action": "sharpen-trigger-boundaries",
+      "produces": "structured-skill-package"
+    },
+    "forbidden": {
+      "action": "add-more-overlapping-keywords"
+    }
+  },
+  {
+    "id": "skill-creator-maturity-after-corpus-change",
+    "description": "Changing Skill instructions and eval corpus invalidates prior provider evidence",
+    "given": {
+      "intent": "Keep the old M4 badge after rewriting the Skill and adding new scenario families without rerunning provider evals"
+    },
+    "expected": {
+      "action": "require-fresh-behavioral-evidence",
+      "produces": "eval_benchmark_suite"
+    },
+    "forbidden": {
+      "action": "preserve-stale-maturity-claim"
     }
   }
 ]
