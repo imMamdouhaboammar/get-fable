@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-config",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/harness-configuration-rules.md"
+    "references/harness-configuration-rules.md",
+    "references/config-precedence-permissions-and-hooks.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/configure-allowlist.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/configure-allowlist.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
