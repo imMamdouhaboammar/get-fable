@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { hasFreshPassingEvidence, readFableState } from './core/state.js';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './core/skill-registry.js';
-import { validateAllSkillPackages, getSkillPackageDir } from './core/skill-package.js';
+import { validateAllSkillPackages, getSkillPackageDir, readSkillResource } from './core/skill-package.js';
 import { checkCatalogArtifacts } from './core/catalog-generator.js';
 import { validateAllRecipes } from './core/recipes.js';
 import { logInfo, logSuccess, logError, logWarn } from './utils.js';
@@ -11,6 +11,18 @@ export interface SkillPackageLintReport {
   valid: boolean;
   errors: string[];
   warnings: string[];
+}
+
+function hasHeading(headings: Set<string>, ...alternatives: string[]): boolean {
+  return alternatives.some((value) => headings.has(value.toLowerCase()));
+}
+
+function hasHeadingContaining(headings: Set<string>, ...fragments: string[]): boolean {
+  return [...headings].some((heading) => fragments.some((fragment) => heading.includes(fragment.toLowerCase())));
+}
+
+function scenarioArray(value: any): any[] {
+  return Array.isArray(value) ? value : Array.isArray(value?.scenarios) ? value.scenarios : [];
 }
 
 export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): SkillPackageLintReport {
@@ -32,7 +44,7 @@ export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): Skill
       }
     }
 
-    // 2. Inspect the authoring contract without demanding meaningless boilerplate.
+    // 2. Inspect the authoring contract without forcing V1 boilerplate onto V2 playbooks.
     const skillPath = path.join(getSkillPackageDir(id, repoRoot), 'SKILL.md');
     if (fs.existsSync(skillPath)) {
       const content = fs.readFileSync(skillPath, 'utf-8');
@@ -41,27 +53,68 @@ export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): Skill
           .map((line) => line.match(/^##\s+(.+?)\s*$/)?.[1]?.trim().toLowerCase())
           .filter((heading): heading is string => Boolean(heading))
       );
-      const requiredSections: Array<{ label: string; alternatives?: string[] }> = [
-        { label: 'Purpose' },
-        { label: 'When to Use' },
-        { label: 'When NOT to Use' },
-        { label: 'Inputs' },
-        { label: 'Expected Outputs', alternatives: ['Outputs'] },
-        { label: 'Procedure' },
-        { label: 'Decision Rules' },
-        { label: 'Tool Policy' },
-        { label: 'Evidence Requirements' },
-        { label: 'Failure Handling' },
-        { label: 'Completion Criteria' },
-      ];
-      for (const section of requiredSections) {
-        const accepted = [section.label, ...(section.alternatives || [])].map((value) => value.toLowerCase());
-        if (!accepted.some((value) => headings.has(value))) {
-          warnings.push(`Skill ${id}: missing required authoring section "## ${section.label}"`);
+      const isDeepPlaybook = hasHeading(headings, 'Mission') && hasHeading(headings, 'Anti-Patterns') && hasHeading(headings, 'Invariants');
+
+      if (isDeepPlaybook) {
+        const v2Requirements: Array<{ label: string; present: boolean }> = [
+          { label: 'Mission', present: hasHeading(headings, 'Mission') },
+          { label: 'Activation contract', present: hasHeading(headings, 'Activate When', 'Activation Contract') || hasHeadingContaining(headings, 'activation') },
+          { label: 'Situation classification', present: hasHeadingContaining(headings, 'classification') },
+          { label: 'Protocol', present: hasHeadingContaining(headings, 'protocol', 'procedure') },
+          { label: 'Decision Rules', present: hasHeading(headings, 'Decision Rules') },
+          { label: 'Invariants', present: hasHeading(headings, 'Invariants') },
+          { label: 'Failure Taxonomy', present: hasHeadingContaining(headings, 'failure taxonomy') },
+          { label: 'Anti-Patterns', present: hasHeading(headings, 'Anti-Patterns') },
+          { label: 'Completion Criteria', present: hasHeading(headings, 'Completion Criteria') },
+          { label: 'Progressive Resources', present: hasHeading(headings, 'Progressive Resources') },
+        ];
+        for (const requirement of v2Requirements) {
+          if (!requirement.present) warnings.push(`Skill ${id}: missing V2 authoring section "${requirement.label}"`);
         }
-      }
-      if (!headings.has('constraints') && !headings.has('decision rules') && !headings.has('tool policy')) {
-        warnings.push(`Skill ${id}: constraints are not explicit through Constraints, Decision Rules, or Tool Policy`);
+
+        // Deep Skills need semantic evaluation breadth, not one scenario multiplied by category variants.
+        if (res.manifest) {
+          const scenarios = res.manifest.evals.flatMap((resource) => {
+            if (!resource.endsWith('.json')) return [];
+            try { return scenarioArray(JSON.parse(readSkillResource(id, resource, repoRoot))); }
+            catch { return []; }
+          });
+          if (scenarios.length < 6) {
+            errors.push(`Skill ${id}: Deep Playbook V2 requires at least 6 semantic eval scenarios; found ${scenarios.length}`);
+          }
+
+          // Progressive disclosure must include at least one substantial reference rather than only summary stubs.
+          const substantialReference = res.manifest.references.some((resource) => {
+            try { return Buffer.byteLength(readSkillResource(id, resource, repoRoot), 'utf8') >= 1000; }
+            catch { return false; }
+          });
+          if (!substantialReference) {
+            errors.push(`Skill ${id}: Deep Playbook V2 requires at least one substantial progressive reference (>=1000 bytes)`);
+          }
+        }
+      } else {
+        const requiredSections: Array<{ label: string; alternatives?: string[] }> = [
+          { label: 'Purpose' },
+          { label: 'When to Use' },
+          { label: 'When NOT to Use' },
+          { label: 'Inputs' },
+          { label: 'Expected Outputs', alternatives: ['Outputs'] },
+          { label: 'Procedure' },
+          { label: 'Decision Rules' },
+          { label: 'Tool Policy' },
+          { label: 'Evidence Requirements' },
+          { label: 'Failure Handling' },
+          { label: 'Completion Criteria' },
+        ];
+        for (const section of requiredSections) {
+          const accepted = [section.label, ...(section.alternatives || [])].map((value) => value.toLowerCase());
+          if (!accepted.some((value) => headings.has(value))) {
+            warnings.push(`Skill ${id}: missing required authoring section "## ${section.label}"`);
+          }
+        }
+        if (!headings.has('constraints') && !headings.has('decision rules') && !headings.has('tool policy')) {
+          warnings.push(`Skill ${id}: constraints are not explicit through Constraints, Decision Rules, or Tool Policy`);
+        }
       }
     }
 
