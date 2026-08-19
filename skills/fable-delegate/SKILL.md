@@ -27,52 +27,162 @@ neural_links:
   recovery: fable-recover
 ---
 
-# fable-delegate
+# Fable Delegate
 
-Parallel subagent coordinator and delegation contract manager.
+Use parallel workers when independence is real, not merely because there are multiple tasks.
 
-## Purpose
-Safely partition independent tasks across concurrent subagents with disjoint file ownership boundaries.
+## Mission
+Delegation should reduce latency without multiplying ambiguity. The parent remains responsible for decomposition, contract stability, integration, and final proof.
 
-## When to Use
-- Executing 2 or more independent work cards simultaneously.
-- Generating parallel test suites or isolated adapters.
-- Delegating distinct documentation and code tasks.
+A worker is not a place to dump context. It receives one bounded responsibility with enough evidence to act independently and a return contract that makes integration reviewable.
 
-## When NOT to Use
-- Executing tasks with shared mutable dependencies or shared files (use `fable-execute`).
-- High-level architectural planning (use `fable-plan`).
+## Activate When
+- two or more cards can proceed without waiting for each other's decisions;
+- specialist perspectives can investigate independent hypotheses in parallel;
+- separate components have stable interfaces and independent acceptance checks;
+- independent review/research can be parallelized without shared mutation.
 
-## Inputs
-- **`bounded_cards`**: Independent work cards from the planning phase.
+## Do Not Activate When
+- workers would change the same unstable contract or invariant;
+- one card's design result changes another card's requirements;
+- a tiny task costs more to explain/integrate than to execute;
+- the parent has not established enough context to write precise worker contracts;
+- all workers depend on one unresolved architectural decision.
 
-## Expected Outputs
-- **`delegation_contracts`**: Structured worker briefs specifying owned paths.
-- **`worker_results`**: Verification receipts and diffs from completed workers.
+## Independence Classification
+For each candidate pair, classify coupling:
 
-## Procedure
-1. Verify that worker task scopes do not overlap in file paths.
-2. Issue explicit delegation contracts to subagents.
-3. Collect worker outputs and inspect combined diffs.
-4. Run integration verification on the merged workspace.
+| Coupling | Parallel? | Why |
+| --- | --- | --- |
+| Different files + different contracts | usually yes | low semantic overlap |
+| Different files + shared unstable contract | no | semantic conflict despite path separation |
+| Same integration file + separate components | maybe, but serialize integration | component work may parallelize; integration does not |
+| Shared read-only evidence | yes | no ownership conflict |
+| Same database schema/invariant | usually no | one worker can invalidate another's assumptions |
+| Independent research hypotheses | yes | merge conclusions, not source edits |
+| Parent decision required by both | no | resolve decision first |
+
+## Delegation Protocol
+
+### Stage 1 — Prove independence
+Check:
+- write ownership;
+- shared contracts/invariants;
+- dependency order;
+- generated artifacts;
+- migration/state coupling;
+- integration hotspot;
+- whether one worker failure changes another worker's assumptions.
+
+If independence cannot be explained in one short paragraph, do not parallelize yet.
+
+### Stage 2 — Write a worker contract
+Each contract includes:
+- objective;
+- context/evidence already established;
+- owned paths or semantic area;
+- forbidden scope;
+- dependencies assumed stable;
+- acceptance evidence to produce;
+- expected return packet;
+- stop/escalation conditions.
+
+Do not ask a worker to "handle X" with an entire repository and no boundary.
+
+### Stage 3 — Decide mutation ownership
+Prefer one writer per semantic area. Multiple read-only investigators may inspect overlapping files; multiple writers should not independently redefine the same contract.
+
+For a shared integration file, assign integration to the parent or one named worker after component work converges.
+
+### Stage 4 — Dispatch and supervise by exception
+Do not micromanage every command. Intervene when:
+- worker discovers a load-bearing unknown;
+- owned scope must expand;
+- acceptance cannot be satisfied;
+- contract assumption is false;
+- worker stalls/repeats failure.
+
+### Stage 5 — Inspect returns, not summaries alone
+Require concrete artifacts: diff/paths, commands/results, evidence, unresolved risk. A prose "done" is not integration evidence.
+
+### Stage 6 — Integrate centrally
+The parent checks:
+- combined diff;
+- contract compatibility;
+- cross-worker behavior;
+- generated artifacts;
+- integration tests;
+- whether worker-local evidence is still fresh after merge/integration mutations.
 
 ## Decision Rules
-- Reject delegation if two workers must edit the same file.
-- The parent orchestrator retains ultimate responsibility for integration verification.
+- Different files are neither necessary nor sufficient for independence.
+- Stable contract + isolated implementation can parallelize; unstable contract + separate files should not.
+- If workers produce competing approaches, keep them read-only until the parent chooses; do not merge both experiments blindly.
+- If a worker needs to cross ownership boundaries, pause that worker and renegotiate the contract instead of silently expanding scope.
+- A failed/hung worker does not automatically justify rerunning the same prompt; classify failure and route the card to `fable-recover` or execute locally.
+- Parent integration verification is mandatory whenever delegated work affects one user-visible behavior.
 
-## Tool Policy
-- Spawn subagents using available host delegation tools (`invoke_subagent`).
+## Invariants
+- Every mutable surface has clear ownership.
+- Workers receive only the context needed to make their bounded decisions.
+- Worker completion never equals global completion.
+- Shared contract changes have one integration owner.
+- Combined workspace is verified after all integration mutations.
 
-## Evidence Requirements
-- Passing acceptance checks from each worker plus parent integration pass.
+## Failure Taxonomy
+### Ownership collision
+Two workers need the same mutable contract/file. Stop parallel mutation and replan ownership.
 
-## Failure Handling
-- If a worker fails or hangs, terminate the worker and re-route the card to `fable-execute`.
+### Semantic collision
+Files differ but both change one invariant/schema. Treat as coupled work.
+
+### Context starvation
+Worker repeatedly asks questions the parent should have resolved. Improve contract or route back to discovery/plan.
+
+### Scope escape
+Worker finds necessary work outside ownership. Pause, evaluate, then expand/replan explicitly.
+
+### Worker-local green / integration red
+Local checks pass but combined behavior fails. Parent owns diagnosis; do not bounce workers blindly.
+
+### Worker stall
+No meaningful progress or repeated failure. Terminate/recover rather than consuming unbounded budget.
+
+## Anti-Patterns
+- "two tasks = two agents";
+- path-disjointness as the only parallelism test;
+- giving every worker the entire broad task;
+- allowing each worker to update shared manifests/routes independently;
+- accepting prose summaries without diffs/evidence;
+- merging worker outputs before inspecting assumptions;
+- assuming subagents transfer responsibility away from the parent;
+- delegating a decision the parent has not made simply to avoid making it.
+
+## Delegation Contract
+
+```text
+Worker objective:
+Why independent:
+Evidence/context:
+Owns:
+Must not change:
+Stable dependencies assumed:
+Acceptance evidence:
+Stop/escalate if:
+Return packet:
+Integration owner:
+```
 
 ## Completion Criteria
-- All delegated tasks completed, verified, and integrated into workspace.
+Delegation is complete when:
+- every worker contract had explicit ownership and acceptance;
+- returned artifacts/evidence were inspected;
+- ownership/contract conflicts are resolved;
+- combined diff passes integration verification on the current workspace;
+- residual failures are routed explicitly rather than hidden in worker summaries.
 
 ## Progressive Resources
-- Contract: `references/subagent-contracts.md`
+- Deep guide: `references/parallelism-and-integration.md`
+- Existing contract guide: `references/subagent-contracts.md`
 - Template: `templates/delegation-contract.template.md`
 - Example: `examples/parallel-workers-walkthrough.md`
