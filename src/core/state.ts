@@ -325,8 +325,7 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
   if (typeof value.failureStreak !== 'number' || !Number.isInteger(value.failureStreak) || value.failureStreak < 0) {
     throw new Error('Fable state failureStreak must be a non-negative integer');
   }
-  if (typeof value.substantial !== 'boolean') throw new Error('Fable state substantial must be boolean');
-  if (!isNonEmptyString(value.updatedAt)) throw new Error('Fable state updatedAt is required');
+  const updatedAt = isNonEmptyString(value.updatedAt) ? value.updatedAt : new Date().toISOString();
 
   const rawEvidence = Array.isArray(value.evidence) ? value.evidence : [];
   const evidence: EvidenceRecord[] = rawEvidence.map((record, index) => {
@@ -356,13 +355,13 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
     phase: value.phase,
     currentSkill: value.currentSkill as FableSkillId | null,
     failureStreak: value.failureStreak,
-    substantial: value.substantial,
+    substantial: typeof value.substantial === 'boolean' ? value.substantial : true,
     mutationGeneration: 0,
     verifiedGeneration: latestCompletion?.result === 'pass' ? 0 : -1,
     activeCard: null,
     lastDecision: migrateRoutingDecision(value.lastDecision),
     evidence,
-    updatedAt: value.updatedAt,
+    updatedAt,
   };
 }
 
