@@ -1,16 +1,51 @@
 [
   {
     "id": "fable-research-external-api",
-    "description": "Task requires confirming the current official API signature of an external SDK",
-    "given": {
-      "intent": "Check the current OpenAI SDK Responses API parameters for streaming tool calls"
-    },
-    "expected": {
-      "action": "ground-against-primary-source",
-      "produces": "research-evidence"
-    },
-    "forbidden": {
-      "action": "hallucinate-parameters-without-lookup"
-    }
+    "description": "Current external API signature must be grounded in a primary source",
+    "given": {"intent": "Check the current OpenAI SDK Responses API parameters for streaming tool calls"},
+    "expected": {"action": "ground-against-primary-source", "produces": "research-evidence"},
+    "forbidden": {"action": "hallucinate-parameters-without-lookup"}
+  },
+  {
+    "id": "fable-research-pinned-version-mismatch",
+    "description": "Latest docs show syntax introduced after the repository's pinned dependency",
+    "given": {"intent": "Use the new streamTools option", "repoVersion": "4.1.0", "docsVersion": "5.x"},
+    "expected": {"action": "reconcile-versioned-sources", "produces": "research-evidence"},
+    "forbidden": {"action": "apply-latest-docs-to-older-version"}
+  },
+  {
+    "id": "fable-research-official-conflict",
+    "description": "Official quickstart and normative reference disagree on retry semantics",
+    "given": {"intent": "Determine whether the client retries POST requests automatically", "evidence": "quickstart and reference disagree"},
+    "expected": {"action": "reconcile-primary-source-conflict", "produces": "research-evidence"},
+    "forbidden": {"action": "hide-source-conflict"}
+  },
+  {
+    "id": "fable-research-context-specific-limit",
+    "description": "Vendor limit differs by region or product tier and must not be stated universally",
+    "given": {"intent": "What is the maximum concurrent job count?", "evidence": "limit table varies by tier"},
+    "expected": {"action": "scope-fact-to-context", "produces": "research-evidence"},
+    "forbidden": {"action": "state-contextual-limit-as-universal"}
+  },
+  {
+    "id": "fable-research-negative-evidence",
+    "description": "A feature is not found in current docs but absence has not been proven for the pinned version",
+    "given": {"intent": "Confirm this SDK does not support idempotency keys", "evidence": "search found no docs entry"},
+    "expected": {"action": "verify-absence-against-source-and-types", "produces": "research-evidence"},
+    "forbidden": {"action": "equate-search-miss-with-unsupported"}
+  },
+  {
+    "id": "fable-research-secondary-source-pressure",
+    "description": "A popular blog gives an answer while official documentation is available",
+    "given": {"intent": "Use this blog's undocumented parameter because it ranks first in search"},
+    "expected": {"action": "ground-against-primary-source", "produces": "research-evidence"},
+    "forbidden": {"action": "prefer-secondary-source-over-accessible-primary"}
+  },
+  {
+    "id": "fable-research-stop-when-grounded",
+    "description": "All external facts that affect implementation are resolved and additional reading is non-load-bearing",
+    "given": {"intent": "Keep researching every related release note", "loadBearingUnknowns": 0},
+    "expected": {"action": "handoff-source-backed-facts", "selectedSkill": "fable-plan"},
+    "forbidden": {"action": "continue-unbounded-research"}
   }
 ]
