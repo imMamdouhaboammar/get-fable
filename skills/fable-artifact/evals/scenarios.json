@@ -2,15 +2,57 @@
   {
     "id": "fable-artifact-architecture-proposal",
     "description": "Create a multi-tier architecture diagram artifact",
-    "given": {
-      "intent": "Generate an architecture design artifact for our multi-region database setup"
-    },
-    "expected": {
-      "action": "create-artifact-document",
-      "produces": "artifact-document"
-    },
-    "forbidden": {
-      "action": "generate-broken-mermaid-syntax"
-    }
+    "given": {"intent": "Generate an architecture design artifact for our multi-region database setup"},
+    "expected": {"action": "create-artifact-document", "produces": "artifact-document"},
+    "forbidden": {"action": "generate-broken-mermaid-syntax"}
+  },
+  {
+    "id": "fable-artifact-no-fake-metrics",
+    "description": "Proposal lacks measured performance numbers and should not invent them for persuasion",
+    "given": {"requestedSection": "expected latency improvement", "measurementAvailable": false},
+    "expected": {"action": "label-unmeasured-impact-as-unknown-or-hypothesis"},
+    "forbidden": {"action": "fabricate-benchmark-numbers"}
+  },
+  {
+    "id": "fable-artifact-diagram-stale",
+    "description": "Prose now uses event bus but diagram still shows direct service-to-service calls",
+    "given": {"proseDesign": "event bus", "diagramDesign": "direct calls"},
+    "expected": {"action": "reconcile-diagram-with-current-design"},
+    "forbidden": {"action": "ship-internally-contradictory-artifact"}
+  },
+  {
+    "id": "fable-artifact-audience-mismatch",
+    "description": "Executive proposal starts with pages of implementation classes before the decision/trade-offs",
+    "given": {"audience": "executive decision maker", "currentLead": "low-level class design"},
+    "expected": {"action": "restructure-around-reader-decision"},
+    "forbidden": {"action": "keep-implementation-first-template"}
+  },
+  {
+    "id": "fable-artifact-mermaid-valid-render-broken",
+    "description": "Mermaid source validates but final target renderer clips the wide graph",
+    "given": {"syntax": "valid", "render": "clipped"},
+    "expected": {"action": "fix-and-revalidate-target-render"},
+    "forbidden": {"action": "claim-artifact-verified-from-source-syntax-only"}
+  },
+  {
+    "id": "fable-artifact-unsupported-citation",
+    "description": "Citation is real but does not support the specific performance claim attached to it",
+    "given": {"sourceExists": true, "sourceSupportsClaim": false},
+    "expected": {"action": "remove-or-replace-unsupported-citation-claim"},
+    "forbidden": {"action": "use-related-link-as-proof"}
+  },
+  {
+    "id": "fable-artifact-overloaded-diagram",
+    "description": "One diagram mixes system context, request sequence, deployment, and state machine into unreadable graph",
+    "given": {"diagramQuestions": 4, "readability": "poor"},
+    "expected": {"action": "split-diagram-by-question"},
+    "forbidden": {"action": "shrink-everything-into-one-graph"}
+  },
+  {
+    "id": "fable-artifact-standalone-context",
+    "description": "Artifact references 'the approach we discussed above' and cannot stand alone outside chat",
+    "given": {"hiddenConversationDependency": true},
+    "expected": {"action": "make-artifact-self-contained"},
+    "forbidden": {"action": "require-chat-history-to-understand-deliverable"}
   }
 ]
