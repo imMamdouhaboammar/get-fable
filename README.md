@@ -233,7 +233,7 @@ On hosts with hook support, get-fable can enforce parts of the workflow mechanic
 |---|---|
 | Session start | Restore the current phase, selected skill, failure streak, and open work |
 | Before large delegation | Require a bounded open card for substantial delegated work |
-| After command failure | Update durable failure state and enter recovery after repeated failure |
+| After a Bash result | Reset the failure streak on success; record failures and enter recovery after two consecutive failures |
 | Before stop | Reject unfinished substantial work or completion without fresh passing evidence |
 
 The hooks are model-agnostic

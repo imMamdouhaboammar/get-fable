@@ -226,3 +226,45 @@ The previous top two candidates are now implemented in the TypeScript runtime: c
 ### Selected initiative
 
 **Cross-runtime fresh-evidence conformance.** It is a reproduced completion-gate bypass, directly strengthens the core mission, requires no schema or dependency change, and can be proved with a focused `pass -> fail -> block -> pass -> allow` hook test.
+
+## 2026-08-19 revalidation
+
+Revalidated against default-branch SHA `be9a9b4b56cb2dc7c90a7a4b125c40574714f37c`
+and package version `1.1.0`. GitHub exposed no open issues or pull requests, and
+the latest default-branch CI run passed on Ubuntu with Bun 1.3.0 and 1.3.14 and
+on macOS with Bun 1.3.14. The previous fresh-evidence initiative was merged as
+PR #10, so it was excluded from today's scope.
+
+The revalidation reproduced a Claude integration gap: both the packaged plugin
+and global installer registered failure tracking only for `PostToolUse`, while
+Claude reports failed tool executions through `PostToolUseFailure` with a
+top-level `error`. The hook therefore reset rather than incremented its streak
+when given the documented failure payload.
+
+### Ranked candidates
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Claude failure-event conformance with success reset | 9 | 8 | 10 | 10 | 8 | 7 | 10 | 10 | 3 | 2 | **66** |
+| 2 | Applied-routing transition conformance | 8 | 8 | 10 | 9 | 8 | 7 | 8 | 10 | 4 | 3 | **61** |
+| 3 | Python hook deep-state validation parity | 8 | 8 | 9 | 10 | 7 | 6 | 8 | 10 | 3 | 3 | **60** |
+| 4 | Registry/runtime semantic conformance | 8 | 9 | 10 | 8 | 8 | 7 | 8 | 9 | 4 | 4 | **59** |
+| 5 | Cross-field state invariant validation | 8 | 7 | 10 | 9 | 7 | 6 | 8 | 10 | 3 | 3 | **59** |
+| 6 | Corrupted-state recovery diagnostics | 8 | 8 | 9 | 9 | 8 | 6 | 8 | 9 | 4 | 3 | **58** |
+| 7 | Mutation generation and evidence provenance | 9 | 10 | 9 | 10 | 6 | 9 | 6 | 8 | 7 | 6 | **57** |
+| 8 | Workspace/worktree identity binding | 8 | 9 | 9 | 9 | 6 | 8 | 7 | 8 | 5 | 5 | **55** |
+| 9 | Canonical installed-skill drift detection | 8 | 7 | 9 | 8 | 9 | 5 | 8 | 9 | 5 | 4 | **54** |
+| 10 | Packed-package install/import smoke | 7 | 7 | 8 | 8 | 8 | 4 | 9 | 10 | 3 | 4 | **52** |
+
+The scoring inputs were user value, learning value, architectural fit,
+reliability impact, developer experience, differentiation, implementation
+confidence, testability, maintenance cost, and regression risk. Priority used
+the documented formula; confidence was recorded separately and not added to it.
+
+### Selected initiative
+
+**Claude failure-event conformance with success reset.** It restores an
+advertised recovery transition using the host's documented event boundary,
+requires no state migration or dependency, preserves unrelated hooks, and is
+directly testable with `failure -> success -> failure` and `failure -> failure`
+sequences.

@@ -245,9 +245,12 @@ It does not assign a model tier or rank model names
 
 Small payloads, forks, and explicitly paused rounds are exempt
 
-### PostToolUse
+### PostToolUse and PostToolUseFailure
 
-`fable_fail_streak.py` updates durable failure state after Bash results
+`fable_fail_streak.py` handles both Claude Bash result events. `PostToolUse`
+resets the consecutive-failure streak after success. `PostToolUseFailure`
+records a failure from Claude's top-level failure event, including failures that
+do not expose a process exit code.
 
 At two consecutive failures it selects `fable-recover` and injects the attribution order
 
