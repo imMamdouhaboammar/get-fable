@@ -54,6 +54,7 @@ function registerClaudeHooks(settingsPath: string, hooksDest: string) {
   const pyProfileInject = path.join(hooksDest, 'fable_profile_inject.py');
   const pySpawnGuard = path.join(hooksDest, 'fable_spawn_guard.py');
   const pyFailStreak = path.join(hooksDest, 'fable_fail_streak.py');
+  const pyMutation = path.join(hooksDest, 'fable_mutation.py');
   const pyCloseGuard = path.join(hooksDest, 'fable_close_guard.py');
 
   mergeJsonFile(settingsPath, (existing) => {
@@ -84,6 +85,12 @@ function registerClaudeHooks(settingsPath: string, hooksDest: string) {
     registerOrUpdate('SessionStart', pyProfileInject, 'fable_profile_inject');
     registerOrUpdate('PreToolUse', pySpawnGuard, 'fable_spawn_guard', 'Agent|Task|Workflow');
     registerOrUpdate('PostToolUse', pyFailStreak, 'fable_fail_streak', 'Bash');
+    registerOrUpdate(
+      'PostToolUse',
+      pyMutation,
+      'fable_mutation',
+      'Edit|Write|MultiEdit|NotebookEdit'
+    );
     registerOrUpdate('Stop', pyCloseGuard, 'fable_close_guard');
 
     config.hooks = hooks;
@@ -133,7 +140,7 @@ export function installGlobalFable() {
 
   const settingsPath = path.join(claudeDir, 'settings.json');
   registerClaudeHooks(settingsPath, hooksDest);
-  logSuccess('Claude Code hooks registered in settings.json');
+  logSuccess('Claude Code lifecycle hooks registered in settings.json');
 
   const claudeMdPath = path.join(claudeDir, 'CLAUDE.md');
   const fableRuleText = fs.readFileSync(path.join(repoRoot, 'prompts', 'fable5-rules.md'), 'utf-8');
@@ -229,6 +236,11 @@ export function installAntigravityGlobal() {
         command: `python3 ${path.join(pluginHooksDir, 'fable_fail_streak.py')}`,
       },
       {
+        name: 'fable5-mutation',
+        events: ['PostToolUse'],
+        command: `python3 ${path.join(pluginHooksDir, 'fable_mutation.py')}`,
+      },
+      {
         name: 'fable5-close-guard',
         events: ['Stop', 'SessionEnd'],
         command: `python3 ${path.join(pluginHooksDir, 'fable_close_guard.py')}`,
@@ -244,7 +256,7 @@ export function installAntigravityGlobal() {
     config.hooks = hooksList;
     return config;
   });
-  logSuccess('Registered Antigravity hooks in hooks.json');
+  logSuccess('Registered Antigravity lifecycle hooks in hooks.json');
 }
 
 function copyIfMissing(src: string, dest: string, targetDir: string) {
@@ -288,7 +300,7 @@ export function initProjectFable(targetDir: string = process.cwd()) {
 
   const projectStatePath = path.join(fableDir, 'state.json');
   if (!fs.existsSync(projectStatePath)) {
-    writeFableState(targetDir, createInitialState());
+    writeFableState(targetDir, createInitialState(new Date().toISOString(), targetDir));
     logSuccess('Created .fable/state.json');
   } else {
     logWarn('Skipped existing file .fable/state.json');
@@ -297,26 +309,32 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }
 
-function countClaudeHookRegistrations(settingsPath: string): number {
-  if (!fs.existsSync(settingsPath)) return 0;
+function hookCommandPresent(settingsPath: string, event: string, file: string): boolean {
+  if (!fs.existsSync(settingsPath)) return false;
   try {
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
     const hooks = settings.hooks || {};
-    let count = 0;
-    for (const event of ['SessionStart', 'PreToolUse', 'PostToolUse', 'Stop']) {
-      const list = Array.isArray(hooks[event]) ? hooks[event] : [];
-      const found = list.some((entry: any) => {
-        const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
-        return subHooks.some(
-          (hook: any) => typeof hook?.command === 'string' && hook.command.includes('fable_')
-        );
-      });
-      if (found) count++;
-    }
-    return count;
+    const list = Array.isArray(hooks[event]) ? hooks[event] : [];
+    return list.some((entry: any) => {
+      const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
+      return subHooks.some(
+        (hook: any) => typeof hook?.command === 'string' && hook.command.includes(file)
+      );
+    });
   } catch {
-    return 0;
+    return false;
   }
+}
+
+function countClaudeHookRegistrations(settingsPath: string): number {
+  const expected = [
+    ['SessionStart', 'fable_profile_inject.py'],
+    ['PreToolUse', 'fable_spawn_guard.py'],
+    ['PostToolUse', 'fable_fail_streak.py'],
+    ['PostToolUse', 'fable_mutation.py'],
+    ['Stop', 'fable_close_guard.py'],
+  ] as const;
+  return expected.filter(([event, file]) => hookCommandPresent(settingsPath, event, file)).length;
 }
 
 function countAntigravityHookRegistrations(hooksJsonPath: string): number {
@@ -328,6 +346,7 @@ function countAntigravityHookRegistrations(hooksJsonPath: string): number {
       { name: 'fable5-profile-inject', file: 'fable_profile_inject.py' },
       { name: 'fable5-spawn-guard', file: 'fable_spawn_guard.py' },
       { name: 'fable5-fail-streak', file: 'fable_fail_streak.py' },
+      { name: 'fable5-mutation', file: 'fable_mutation.py' },
       { name: 'fable5-close-guard', file: 'fable_close_guard.py' },
     ];
     return expected.filter(({ name, file }) =>
@@ -396,10 +415,10 @@ export function checkFableStatus(targetDir: string = process.cwd()) {
   console.log(`Claude Config Dir: ${status.claude.configDir}`);
   console.log(`Skill Installed: ${status.claude.legacySkillInstalled ? 'YES' : 'NO'}`);
   console.log(`Canonical Skill Installed: ${status.claude.canonicalSkillInstalled ? 'YES' : 'NO'}`);
-  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 4`);
+  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 5`);
   console.log(`Antigravity/Gemini Rule Installed: ${status.antigravity.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`Antigravity Plugin Installed: ${status.antigravity.pluginInstalled ? 'YES' : 'NO'}`);
-  console.log(`Antigravity Registered Hooks: ${status.antigravity.registeredHooks} / 4`);
+  console.log(`Antigravity Registered Hooks: ${status.antigravity.registeredHooks} / 5`);
   console.log(`Agent Kernel Rule Installed: ${status.agentKernel.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`Current Project (.fable active): ${status.project.active ? 'YES' : 'NO'}`);
   if (status.project.active) {
