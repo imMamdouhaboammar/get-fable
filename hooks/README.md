@@ -11,15 +11,15 @@ The hooks turn selected lifecycle invariants into mechanical host behavior. They
 - unexpected hook runtime failures remain fail-open so a broken helper does not brick the host
 - an existing but invalid `.fable/state.json` is a workflow error and may block a substantial completion claim
 
-## Five hooks
+## Five lifecycle scripts
 
 | Hook | Typical event | Responsibility |
 |---|---|---|
-| `fable_profile_inject.py` | SessionStart | Restore phase, specialist skill, failure streak, active card, mutation generation, and verification freshness |
-| `fable_spawn_guard.py` | PreToolUse on Agent/Task/Workflow | Require bounded delegated work before substantial spawning |
-| `fable_fail_streak.py` | PostToolUse on Bash/command | Track repeated command failure and route sustained failure into `fable-recover` |
-| `fable_mutation.py` | PostToolUse on write/edit tools | Advance `mutationGeneration` after a successful workspace mutation |
-| `fable_close_guard.py` | Stop / SessionEnd where supported | Block unfinished cards, invalid state, stale proof, or substantial work that has not reached a valid complete state |
+| `fable_profile_inject.py` | `SessionStart` | Restore phase, specialist skill, failure streak, active card, mutation generation, and verification freshness |
+| `fable_spawn_guard.py` | `PreToolUse` on Agent/Task/Workflow | Require bounded delegated work before substantial spawning |
+| `fable_fail_streak.py` | `PostToolUse` and `PostToolUseFailure` on Bash | Reset on success, record failures, and route two consecutive failures into `fable-recover` |
+| `fable_mutation.py` | `PostToolUse` on write/edit tools | Advance `mutationGeneration` after a successful workspace mutation |
+| `fable_close_guard.py` | `Stop` / `SessionEnd` where supported | Block unfinished cards, invalid state, stale proof, or substantial work that has not reached a valid complete state |
 
 `_fable_common.py` provides shared state validation, schema-v1 migration, canonical workspace discovery, ledger parsing, atomic state writes, mutation tracking, and evidence-freshness rules.
 

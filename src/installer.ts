@@ -85,6 +85,7 @@ function registerClaudeHooks(settingsPath: string, hooksDest: string) {
     registerOrUpdate('SessionStart', pyProfileInject, 'fable_profile_inject');
     registerOrUpdate('PreToolUse', pySpawnGuard, 'fable_spawn_guard', 'Agent|Task|Workflow');
     registerOrUpdate('PostToolUse', pyFailStreak, 'fable_fail_streak', 'Bash');
+    registerOrUpdate('PostToolUseFailure', pyFailStreak, 'fable_fail_streak', 'Bash');
     registerOrUpdate(
       'PostToolUse',
       pyMutation,
@@ -309,16 +310,22 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }
 
-function hookCommandPresent(settingsPath: string, event: string, file: string): boolean {
+function hookCommandPresent(
+  settingsPath: string,
+  event: string,
+  script: string,
+  matcher?: string
+): boolean {
   if (!fs.existsSync(settingsPath)) return false;
   try {
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
     const hooks = settings.hooks || {};
     const list = Array.isArray(hooks[event]) ? hooks[event] : [];
     return list.some((entry: any) => {
+      if (matcher && entry?.matcher !== matcher) return false;
       const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
       return subHooks.some(
-        (hook: any) => typeof hook?.command === 'string' && hook.command.includes(file)
+        (hook: any) => typeof hook?.command === 'string' && hook.command.includes(script)
       );
     });
   } catch {
@@ -328,13 +335,20 @@ function hookCommandPresent(settingsPath: string, event: string, file: string): 
 
 function countClaudeHookRegistrations(settingsPath: string): number {
   const expected = [
-    ['SessionStart', 'fable_profile_inject.py'],
-    ['PreToolUse', 'fable_spawn_guard.py'],
-    ['PostToolUse', 'fable_fail_streak.py'],
-    ['PostToolUse', 'fable_mutation.py'],
-    ['Stop', 'fable_close_guard.py'],
-  ] as const;
-  return expected.filter(([event, file]) => hookCommandPresent(settingsPath, event, file)).length;
+    { event: 'SessionStart', script: 'fable_profile_inject.py' },
+    { event: 'PreToolUse', script: 'fable_spawn_guard.py', matcher: 'Agent|Task|Workflow' },
+    { event: 'PostToolUse', script: 'fable_fail_streak.py', matcher: 'Bash' },
+    { event: 'PostToolUseFailure', script: 'fable_fail_streak.py', matcher: 'Bash' },
+    {
+      event: 'PostToolUse',
+      script: 'fable_mutation.py',
+      matcher: 'Edit|Write|MultiEdit|NotebookEdit',
+    },
+    { event: 'Stop', script: 'fable_close_guard.py' },
+  ];
+  return expected.filter(({ event, script, matcher }) =>
+    hookCommandPresent(settingsPath, event, script, matcher)
+  ).length;
 }
 
 function countAntigravityHookRegistrations(hooksJsonPath: string): number {

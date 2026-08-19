@@ -311,7 +311,7 @@ Supported hosts can enforce parts of the policy mechanically
 |---|---|
 | Session start | Restore phase, selected specialist, active card, failure state, and generation freshness |
 | Before delegation | Require bounded work before substantial spawning |
-| After command failure | Track repeated failure and enter recovery when needed |
+| After command / Bash result | Reset failure streak on success; record failures and enter recovery after two consecutive failures |
 | After write/edit | Advance `mutationGeneration` so older proof becomes stale |
 | Before stop | Reject unfinished or stale substantial completion |
 
