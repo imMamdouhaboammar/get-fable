@@ -7,7 +7,9 @@ const CORE_CONTRACT = `# get-fable runtime contract
 - Improve execution discipline; do not claim the underlying model changed.
 - Ground load-bearing decisions in code, tools, tests, or primary sources.
 - Keep work bounded and preserve user-owned files and constraints.
-- Do not call substantial work complete without fresh verification evidence.
+- Treat workspace mutations as invalidating older verification.
+- Do not call substantial work complete without current-generation verification evidence.
+- Keep evidence types narrow: research, receipts, security, and behavior checks prove different things.
 - After repeated failure, change the diagnosis before changing more code.
 - Keep progress claims factual and distinguish verified facts from assumptions.`;
 
@@ -23,8 +25,12 @@ function compactState(state: FableState | null): string {
   const evidenceFailures = state.evidence.filter((item) => item.result === 'fail').length;
   return [
     `Project state: phase=${state.phase}`,
+    `skill=${state.currentSkill || 'none'}`,
     `failureStreak=${state.failureStreak}`,
     `substantial=${state.substantial}`,
+    `mutationGeneration=${state.mutationGeneration}`,
+    `verifiedGeneration=${state.verifiedGeneration}`,
+    `activeCard=${state.activeCard || 'none'}`,
     `evidencePasses=${evidencePasses}`,
     `evidenceFailures=${evidenceFailures}`,
   ].join('; ');
@@ -39,11 +45,15 @@ export function compileFableDirective(
   const decision = routeTask(task, state || undefined);
   const skillBody = readSkillBody(decision.selectedSkill, repoRoot);
   const routingSummary = decision.reasons.map((reason) => `- ${reason}`).join('\n');
+  const gates = decision.requiredGates.length
+    ? decision.requiredGates.map((gate) => `- ${gate}`).join('\n')
+    : '- none beyond the selected skill contract';
 
   const systemPrompt = [
     CORE_CONTRACT,
-    `\n## Selected workflow\n${decision.selectedSkill}`,
+    `\n## Selected workflow\n${decision.selectedSkill} (${decision.selectedPack}; task=${decision.taskShape})`,
     `\n## Routing evidence\n${routingSummary}`,
+    `\n## Required gates\n${gates}`,
     `\n## Runtime state\n${compactState(state)}`,
     `\n## Selected skill contract\n${skillBody}`,
   ]

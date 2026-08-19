@@ -2,8 +2,8 @@
 """get-fable SessionStart context injector.
 
 When a project has opted in with `.fable/`, inject a compact summary of the
-canonical workflow, durable phase, failure streak, and open cards. The hook is
-model-agnostic: it never assigns a model tier or synthetic model identity.
+canonical workflow, durable phase, mutation/verification generations, failure
+streak, active card, and open cards. The hook is model-agnostic.
 
 Advisory and fail-open. Exit 0 on every unexpected error.
 """
@@ -55,37 +55,49 @@ def build_context(state, open_items, paused):
     phase = state.get("phase", "legacy") if isinstance(state, dict) else "legacy"
     streak = int(state.get("failureStreak", 0)) if isinstance(state, dict) else 0
     substantial = bool(state.get("substantial", False)) if isinstance(state, dict) else False
+    mutation_generation = int(state.get("mutationGeneration", 0)) if isinstance(state, dict) else 0
+    verified_generation = int(state.get("verifiedGeneration", -1)) if isinstance(state, dict) else -1
+    active_card = state.get("activeCard") if isinstance(state, dict) else None
     selected = select_skill(state, open_items)
 
     lines = [
-        "[get-fable] Canonical workflow active.",
-        "Runtime state: phase=%s; failureStreak=%d; substantial=%s; selected=%s."
-        % (phase, streak, str(substantial).lower(), selected),
-        "Routing priority: recover repeated or stale failure; verify completion or review; "
-        "discover load-bearing unknowns; plan broad work; execute a bounded accepted card.",
-        "Completion rule: substantial work requires fresh passing evidence tied to the requested behavior.",
+        "[get-fable] Canonical coding lifecycle active.",
+        "Runtime state: phase=%s; failureStreak=%d; substantial=%s; selected=%s; mutationGeneration=%d; verifiedGeneration=%d."
+        % (
+            phase,
+            streak,
+            str(substantial).lower(),
+            selected,
+            mutation_generation,
+            verified_generation,
+        ),
+        "Routing priority: recover repeated failure; route explicit trust-boundary work; prove delivery claims; "
+        "research current external facts; discover repository unknowns; plan broad work; use test-first behavior changes; execute bounded cards.",
+        "Completion rule: a newer workspace mutation makes older verification stale; substantial work requires passing completion evidence for the current generation.",
     ]
+
+    if isinstance(active_card, str) and active_card.strip():
+        lines.append("Active card: %s" % active_card.strip())
 
     if selected == "fable-recover":
         lines.append(
-            "Recovery rule: change the diagnosis before more code. Check harness, then the actual execution path, "
-            "then product logic, then state the violated invariant."
+            "Recovery rule: change the diagnosis before more code. Check harness, then actual execution path, then product logic, then the violated invariant."
         )
-    elif selected == "fable-verify":
+    elif selected in ("fable-verify", "fable-review", "fable-security", "fable-release"):
         lines.append(
-            "Verification rule: inspect the real affected path, try to falsify it, and record fresh evidence before completion."
+            "Proof rule: inspect the real current state, try to falsify the relevant claim, and record only evidence that proves that specific gate."
         )
-    elif selected == "fable-discover":
+    elif selected in ("fable-discover", "fable-research"):
         lines.append(
-            "Discovery rule: resolve only facts that can change the implementation and distinguish measured facts from inference."
+            "Evidence rule: resolve only facts that can change the next decision and distinguish observed facts from inference."
         )
     elif selected == "fable-plan":
         lines.append(
             "Planning rule: create bounded cards with explicit acceptance conditions before implementation."
         )
-    elif selected == "fable-execute":
+    elif selected in ("fable-execute", "fable-tdd", "fable-delegate"):
         lines.append(
-            "Execution rule: implement one accepted card, run its acceptance immediately, and avoid unrelated scope."
+            "Build rule: keep ownership and scope bounded, record workspace mutation generations, and verify after the final mutation."
         )
 
     if open_items:

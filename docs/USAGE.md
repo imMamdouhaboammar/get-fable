@@ -1,8 +1,6 @@
-# Usage: get-fable 1.1
+# Usage: get-fable 1.2
 
-This guide documents behavior implemented in the repository
-
-Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence
+This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
 
 ## Requirements
 
@@ -10,204 +8,180 @@ Model names and historical prompt assets are not evidence of vendor affiliation 
 - Python 3 for lifecycle hooks on hosts that use them
 - Git for source-based setup
 
-## Inspect before installing
+## Inspect first
 
 ```bash
 git clone https://github.com/imMamdouhaboammar/get-fable.git
 cd get-fable
-
 bun ./bin/get-fable.js help
-bun ./bin/get-fable.js status
 bun ./bin/get-fable.js doctor
 ```
 
-Running the CLI without a command shows help and does not install anything
+Running the CLI without a command is non-mutating.
 
 ## Initialize a project
-
-From the project you want to prepare
 
 ```bash
 bun /path/to/get-fable/bin/get-fable.js init
 ```
 
-Missing files are created under
+Initialization creates missing working files and installs the canonical lifecycle skills under `.agents/skills/`. Existing project-owned targets are preserved.
 
-```text
-.fable/
-  LEDGER.md
-  PROGRESS.md
-  VERIFIER_PROMPT.md
-  state.json
+The initial state uses schema v2 with `mutationGeneration=0` and `verifiedGeneration=-1`. Workspace identity is derived from the canonical real project path, so path aliases of the same workspace do not create separate identities.
 
-.agents/
-  rules/fable5-mode.md
-  skills/
-    registry.json
-    get-fable/SKILL.md
-    fable-discover/SKILL.md
-    fable-plan/SKILL.md
-    fable-execute/SKILL.md
-    fable-verify/SKILL.md
-    fable-recover/SKILL.md
-    fable-mode/SKILL.md       # compatibility alias
-
-docs/
-  SPEC.md
-```
-
-Existing project-owned targets are skipped rather than replaced
-
-## Inspect a routing decision
-
-Routing does not require an LLM call
+## Route work
 
 ```bash
-bun ./bin/get-fable.js route "Review this diff before merge"
+get-fable route "Check the latest official API docs before implementation"
+get-fable route "Fix this regression test-first"
+get-fable route "Review this diff before merge"
+get-fable route "Review this authorization change for vulnerabilities"
 ```
 
-Machine-readable output
+Persist a routing decision when you want the durable state to follow it:
 
 ```bash
-bun ./bin/get-fable.js route "The same test failed twice" --json
+get-fable route "Design the migration" --apply --json
 ```
 
-The decision contains
+## Work cards
 
-- selected skill
-- confidence
-- concise reasons
-- whether planning is required
-- allowed next skills
-- diagnostic scores
-
-Routing priority
-
-1. repeated or stale failure selects recovery
-2. completion, proof, or review selects verification
-3. unresolved repository or current documentation facts select discovery
-4. architecture and broad decomposition select planning
-5. bounded concrete edits select execution
-
-## Apply routing to durable state
-
-For an initialized project
+Set the current bounded unit of work:
 
 ```bash
-bun ./bin/get-fable.js route "Design a modular migration across several files" --apply
+get-fable card "Add migration reader and prove legacy compatibility"
 ```
 
-`--apply` persists the decision in `.fable/state.json`, marks broad/recovery/verification work as substantial, and moves the phase to the selected workflow
-
-Use `--json` together with `--apply` for machine output
+Clear it when no card is active:
 
 ```bash
-bun ./bin/get-fable.js route "Review this change" --apply --json
+get-fable card --clear
 ```
 
-## Drive the workflow state
+## Record mutations
 
-Explicit phase transitions
+Hosts with write hooks do this automatically. On a host without mutation events, record the workspace change explicitly:
 
 ```bash
-bun ./bin/get-fable.js state executing
-bun ./bin/get-fable.js state verifying
+get-fable mutation "updated migration reader"
 ```
 
-Mark an otherwise small round as substantial when needed
-
-```bash
-bun ./bin/get-fable.js state executing --substantial
-```
-
-Machine output
-
-```bash
-bun ./bin/get-fable.js state verifying --json
-```
-
-Invalid transitions return an error instead of silently rewriting state
-
-For substantial work, `state complete` is rejected until passing evidence exists
+A mutation advances `mutationGeneration`. Earlier verification remains recorded but becomes stale for completion.
 
 ## Record evidence
 
-Evidence syntax
+```bash
+get-fable evidence pass test "bun test" "affected tests passed"
+get-fable evidence fail runtime "smoke" "integration path still fails"
+get-fable evidence pass security "diff review" "no reportable finding in changed trust boundary"
+get-fable evidence pass research "official docs" "API contract confirmed"
+```
+
+Evidence kinds:
 
 ```text
-get-fable evidence <pass|fail> <test|build|runtime|review|observation> <source> <detail>
+test
+build
+runtime
+review
+observation
+security
+research
+receipt
+handoff
 ```
 
-Examples
+For normal implementation work, test, build, runtime, review, and observation can advance `verifiedGeneration`.
+
+Security can advance `verifiedGeneration` when the routed job is itself a security review. A security pass alone does not prove a normal feature or bug repair. If a security repair changes product code, verify the changed behavior again with behavior-appropriate evidence.
+
+Research supports decisions. Receipt supports execution provenance. Handoff supports continuity. None of those three proves behavior correctness.
+
+## Complete substantial work
+
+Typical explicit CLI flow:
 
 ```bash
-bun ./bin/get-fable.js evidence pass test "bun test" "42 affected tests passed"
-bun ./bin/get-fable.js evidence pass runtime "smoke request" "POST /v1/chat/completions returned 200"
-bun ./bin/get-fable.js evidence fail runtime "smoke request" "request still returns 500"
+get-fable state executing --substantial
+get-fable mutation "implemented accepted card"
+get-fable state verifying
+get-fable evidence pass test "bun test" "all affected tests passed"
+get-fable state complete
 ```
 
-A passing record resets the failure streak
+Completion is rejected when the current mutation generation has no fresh passing evidence appropriate to the routed claim.
 
-A failing record increments it
+## Repeated failure
 
-Two consecutive failures move non-complete durable state to
+Two consecutive failure-relevant evidence records move active work into `recovering` and select `fable-recover`.
+
+Recovery checks harness and environment first, actual execution path second, product logic third, and the violated invariant last.
+
+## Lifecycle skills
 
 ```text
-phase=recovering
-currentSkill=fable-recover
+Core
+  get-fable
+  fable-discover
+  fable-plan
+  fable-execute
+  fable-verify
+  fable-recover
+
+Intelligence
+  fable-research
+
+Build
+  fable-tdd
+  fable-delegate
+
+Proof
+  fable-review
+  fable-security
+
+Delivery
+  fable-release
+  fable-handoff
+
+Evolution
+  fable-eval
 ```
 
-That transition is also performed by the Bash failure lifecycle hook on supported hosts
+The registry decides which specialist is needed. Do not load the whole pack into context for every task.
 
-## Complete a substantial round
-
-A complete lifecycle can be driven explicitly
+## Install host integrations
 
 ```bash
-bun ./bin/get-fable.js route "Design a modular migration" --apply
-bun ./bin/get-fable.js state executing
-# perform the bounded implementation
-bun ./bin/get-fable.js state verifying
-# run the affected checks
-bun ./bin/get-fable.js evidence pass test "bun test" "42 affected tests passed"
-bun ./bin/get-fable.js state complete
+get-fable install
 ```
 
-On hosts with lifecycle hooks, the Stop guard will refuse to close substantial work before both passing state evidence and phase `complete` exist
+Supported installation paths include Claude Code and the repository's Antigravity / Gemini target. Agent Kernel rules are copied only when an existing Agent Kernel directory is detected.
 
-## Doctor
+The Claude and Antigravity adapters use the same Python hook implementations for session context, delegation guard, failure recovery, mutation tracking, canonical workspace identity, and close enforcement.
+
+## Request proxy
 
 ```bash
-bun ./bin/get-fable.js doctor
-bun ./bin/get-fable.js doctor --json
+get-fable serve 8080
 ```
 
-Checks include
+The proxy binds to loopback by default, does not enable permissive CORS by default, limits request bodies, accepts only HTTP/HTTPS upstream URLs, and does not provide its own authentication boundary.
 
-- canonical skill registry and transition targets
-- OpenAI plugin manifest
-- project state schema when `.fable` is active
-- canonical project skill presence
-- Python 3 availability for lifecycle hooks
-
-Warnings do not make the command fail
-
-Error-severity checks return a nonzero exit code
-
-The get-fable source repository validates against root `skills/` while initialized consumer projects validate their `.agents/skills/` copies
-
-## Status
+## Diagnostics
 
 ```bash
-bun ./bin/get-fable.js status
-bun ./bin/get-fable.js status --json
+get-fable status
+get-fable status --json
+get-fable doctor
+get-fable doctor --json
+get-fable lint
 ```
 
-Status reports Claude, Antigravity, Agent Kernel, and current project installation state
+`lint` checks human ledger contracts together with durable-state completion semantics.
 
-JSON output contains no ANSI formatting
+## Repository gate
 
-## Lint task state
+For changes to get-fable itself:
 
 ```bash
 bun ./bin/get-fable.js lint
@@ -444,12 +418,10 @@ Review `THIRD_PARTY_NOTICES.md` before redistributing bundled upstream material
 
 ```bash
 bun install
+>>>>>>> origin/master
 bun run typecheck
 bun test
 bun run build
-bun run check
 ```
 
-CI verifies Bun 1.3.0 as the runtime floor, Bun 1.3.14 with coverage and package inspection on Ubuntu, and Bun 1.3.14 on macOS
-
-Each matrix job also exercises the durable CLI lifecycle from `init` through routing, execution, verification, evidence, and `complete`
+CI additionally runs the declared Bun floor, the pinned current Bun runtime on Linux and macOS, coverage, lifecycle smoke tests, and package inspection.

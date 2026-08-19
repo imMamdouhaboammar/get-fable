@@ -17,9 +17,17 @@ const previousKernelDir = process.env.FABLE_AGENT_KERNEL_DIR;
 const canonicalSkills = [
   'get-fable',
   'fable-discover',
+  'fable-research',
   'fable-plan',
+  'fable-tdd',
+  'fable-delegate',
   'fable-execute',
   'fable-verify',
+  'fable-review',
+  'fable-security',
+  'fable-release',
+  'fable-handoff',
+  'fable-eval',
   'fable-recover',
 ];
 
@@ -80,7 +88,7 @@ describe('installGlobalFable', () => {
     expect(fableEntries('PostToolUse')).toHaveLength(1);
     expect(fableEntries('PostToolUseFailure')).toHaveLength(1);
     expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
-    expect(getFableStatus(root).claude.registeredHooks).toBe(5);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(6);
   });
 
   test('status rejects a Claude hook wired to the wrong script or matcher', () => {
@@ -97,12 +105,12 @@ describe('installGlobalFable', () => {
     settings.hooks.PostToolUse[0].matcher = 'Write';
     fs.writeFileSync(settingsPath, JSON.stringify(settings));
 
-    expect(getFableStatus(root).claude.registeredHooks).toBe(3);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(4);
   });
 });
 
 describe('initProjectFable', () => {
-  test('creates canonical workflow state without replacing existing project-owned files', () => {
+  test('creates canonical lifecycle state without replacing existing project-owned files', () => {
     const target = makeTempDir('get-fable-init-');
     const existingRule = path.join(target, '.agents', 'rules', 'fable5-mode.md');
     fs.mkdirSync(path.dirname(existingRule), { recursive: true });
@@ -123,13 +131,17 @@ describe('initProjectFable', () => {
     expect(fs.existsSync(path.join(target, '.agents', 'skills', 'registry.json'))).toBe(false);
 
     const state = JSON.parse(fs.readFileSync(path.join(target, '.fable', 'state.json'), 'utf-8'));
-    expect(state.schemaVersion).toBe(1);
+    expect(state.schemaVersion).toBe(2);
     expect(state.phase).toBe('idle');
+    expect(state.mutationGeneration).toBe(0);
+    expect(state.verifiedGeneration).toBe(-1);
+    expect(typeof state.workspaceId).toBe('string');
+    expect(state.workspaceId.length).toBeGreaterThan(0);
   });
 });
 
 describe('installAntigravityGlobal', () => {
-  test('installs canonical skills, owns its hooks, and remains idempotent', () => {
+  test('installs canonical skills, owns lifecycle hooks, and remains idempotent', () => {
     const target = makeTempDir('get-fable-antigravity-');
     process.env.FABLE_GEMINI_CONFIG_DIR = target;
 
@@ -139,6 +151,7 @@ describe('installAntigravityGlobal', () => {
     const pluginRoot = path.join(target, 'plugins', 'get-fable');
     const pluginHooks = path.join(pluginRoot, 'hooks');
     expect(fs.existsSync(path.join(pluginHooks, 'fable_profile_inject.py'))).toBe(true);
+    expect(fs.existsSync(path.join(pluginHooks, 'fable_mutation.py'))).toBe(true);
     expect(fs.existsSync(path.join(pluginHooks, 'fable_close_guard.py'))).toBe(true);
 
     for (const skill of canonicalSkills) {
@@ -155,7 +168,8 @@ describe('installAntigravityGlobal', () => {
 
     const hooksConfig = JSON.parse(fs.readFileSync(path.join(target, 'hooks.json'), 'utf-8'));
     const fableHooks = hooksConfig.hooks.filter((hook: any) => String(hook.name).startsWith('fable5-'));
-    expect(fableHooks).toHaveLength(4);
+    expect(fableHooks).toHaveLength(5);
+    expect(fableHooks.some((hook: any) => hook.name === 'fable5-mutation')).toBe(true);
     expect(fableHooks.every((hook: any) => hook.command.includes(pluginHooks))).toBe(true);
   });
 
@@ -177,6 +191,6 @@ describe('installAntigravityGlobal', () => {
       console.log = originalLog;
     }
 
-    expect(messages.some((message) => message.includes('Antigravity Registered Hooks: 0 / 4'))).toBe(true);
+    expect(messages.some((message) => message.includes('Antigravity Registered Hooks: 0 / 5'))).toBe(true);
   });
 });

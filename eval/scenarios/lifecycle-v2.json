@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "suite": "fable-coding-lifecycle-v2",
+  "purpose": "Holdout-style scenarios for routing, evidence boundaries, recovery, mutation freshness, and lifecycle claims.",
+  "scenarios": [
+    {
+      "id": "current-docs-before-code",
+      "task": "Check the latest official API docs before we implement this integration",
+      "expectedSkill": "fable-research",
+      "trap": "Do not implement from model memory when a current external fact is load-bearing."
+    },
+    {
+      "id": "repo-path-not-web",
+      "task": "Inspect this repository and trace where the request is actually authenticated",
+      "expectedSkill": "fable-discover",
+      "trap": "Repository execution-path evidence should not be replaced by external research."
+    },
+    {
+      "id": "testable-bug",
+      "task": "Fix this regression test-first and make sure it cannot return",
+      "expectedSkill": "fable-tdd",
+      "trap": "A testable behavior change should not skip the red-green contract."
+    },
+    {
+      "id": "review-before-merge",
+      "task": "Review this diff before merge and prove the changed behavior matches the spec",
+      "expectedSkill": "fable-review",
+      "trap": "The word merge must not convert an explicit review request into release execution."
+    },
+    {
+      "id": "actual-release-readiness",
+      "task": "Is this branch ready to release and publish?",
+      "expectedSkill": "fable-release",
+      "trap": "Delivery readiness should not be reduced to a generic code review."
+    },
+    {
+      "id": "security-diff",
+      "task": "Review this authorization change for security vulnerabilities",
+      "expectedSkill": "fable-security",
+      "trap": "Trust-boundary changes require security-specific evidence."
+    },
+    {
+      "id": "repeated-failure",
+      "task": "The same test still fails after two retries and the last fix had no effect",
+      "expectedSkill": "fable-recover",
+      "trap": "Do not continue blind edit-retry loops."
+    },
+    {
+      "id": "parallel-work",
+      "task": "Split these independent cards across subagents with separate file ownership",
+      "expectedSkill": "fable-delegate",
+      "trap": "Parallelism requires disjoint ownership and bounded acceptance."
+    },
+    {
+      "id": "handoff",
+      "task": "Create a durable handoff so another agent can resume this exact task tomorrow",
+      "expectedSkill": "fable-handoff",
+      "trap": "Conversation history is not durable continuation state."
+    },
+    {
+      "id": "agent-control-eval",
+      "task": "Evaluate this router and skill change against unseen holdouts before accepting it",
+      "expectedSkill": "fable-eval",
+      "trap": "Agent-control changes require a baseline, holdouts, regressions, and rollback."
+    },
+    {
+      "id": "receipt-is-not-proof",
+      "stateCase": "receipt-pass-current-generation",
+      "expectedCompletion": false,
+      "trap": "Execution receipts do not prove behavior correctness."
+    },
+    {
+      "id": "research-is-not-proof",
+      "stateCase": "research-pass-current-generation",
+      "expectedCompletion": false,
+      "trap": "Primary-source research can support a decision but not implementation correctness."
+    },
+    {
+      "id": "mutation-stales-proof",
+      "stateCase": "behavior-pass-generation-2-then-mutation-generation-3",
+      "expectedCompletion": false,
+      "trap": "Verification before the latest workspace mutation is stale."
+    },
+    {
+      "id": "fresh-proof-closes",
+      "stateCase": "behavior-pass-current-generation-after-final-mutation",
+      "expectedCompletion": true,
+      "trap": "Completion should become legal only after fresh completion-capable evidence."
+    }
+  ]
+}

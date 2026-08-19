@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   FABLE_REGISTRY_SCHEMA_VERSION,
+  type FablePack,
   type FablePhase,
   type FableSkillId,
   type SkillRegistry,
@@ -12,9 +13,17 @@ import {
 const CANONICAL_SKILLS: FableSkillId[] = [
   'get-fable',
   'fable-discover',
+  'fable-research',
   'fable-plan',
+  'fable-tdd',
+  'fable-delegate',
   'fable-execute',
   'fable-verify',
+  'fable-review',
+  'fable-security',
+  'fable-release',
+  'fable-handoff',
+  'fable-eval',
   'fable-recover',
 ];
 
@@ -29,6 +38,15 @@ const REGISTRY_PHASES = new Set<FablePhase>([
   'blocked',
 ]);
 
+const REGISTRY_PACKS = new Set<FablePack>([
+  'core',
+  'intelligence',
+  'build',
+  'proof',
+  'delivery',
+  'evolution',
+]);
+
 export function getCoreRepoRoot(): string {
   const currentFile = fileURLToPath(import.meta.url);
   return path.resolve(path.dirname(currentFile), '..', '..');
@@ -40,6 +58,14 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
+function stringArray(entry: Record<string, unknown>, field: string, index: number): string[] {
+  const value = entry[field];
+  if (!Array.isArray(value) || !value.every((item) => typeof item === 'string' && item.trim())) {
+    throw new Error(`skills[${index}].${field} must be an array of non-empty strings`);
+  }
+  return value as string[];
+}
+
 function parseEntry(value: unknown, index: number): SkillRegistryEntry {
   const entry = asRecord(value);
   if (!entry) throw new Error(`skills[${index}] must be an object`);
@@ -47,6 +73,9 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
   const id = entry.id;
   const order = entry.order;
   const phase = entry.phase;
+  const pack = entry.pack;
+  const fallback = entry.fallback;
+
   if (typeof id !== 'string' || !CANONICAL_SKILLS.includes(id as FableSkillId)) {
     throw new Error(`skills[${index}].id is not a canonical Fable skill`);
   }
@@ -56,23 +85,37 @@ function parseEntry(value: unknown, index: number): SkillRegistryEntry {
   if (typeof phase !== 'string' || !REGISTRY_PHASES.has(phase as FablePhase)) {
     throw new Error(`skills[${index}].phase is invalid`);
   }
+  if (typeof pack !== 'string' || !REGISTRY_PACKS.has(pack as FablePack)) {
+    throw new Error(`skills[${index}].pack is invalid`);
+  }
   if (typeof entry.description !== 'string' || !entry.description.trim()) {
     throw new Error(`skills[${index}].description must be non-empty`);
   }
-  if (!Array.isArray(entry.next) || !entry.next.every((item) => typeof item === 'string')) {
-    throw new Error(`skills[${index}].next must be an array of skill ids`);
+  if (fallback !== null && (typeof fallback !== 'string' || !CANONICAL_SKILLS.includes(fallback as FableSkillId))) {
+    throw new Error(`skills[${index}].fallback is invalid`);
   }
-  if (!Array.isArray(entry.keywords) || !entry.keywords.every((item) => typeof item === 'string')) {
-    throw new Error(`skills[${index}].keywords must be an array of strings`);
+  if (typeof entry.mutatesWorkspace !== 'boolean') {
+    throw new Error(`skills[${index}].mutatesWorkspace must be boolean`);
+  }
+  if (typeof entry.parallelSafe !== 'boolean') {
+    throw new Error(`skills[${index}].parallelSafe must be boolean`);
   }
 
   return {
     id: id as FableSkillId,
     order,
     phase: phase as FablePhase,
+    pack: pack as FablePack,
     description: entry.description,
-    next: entry.next as FableSkillId[],
-    keywords: entry.keywords as string[],
+    intents: stringArray(entry, 'intents', index),
+    requires: stringArray(entry, 'requires', index),
+    produces: stringArray(entry, 'produces', index),
+    gates: stringArray(entry, 'gates', index),
+    fallback: fallback as FableSkillId | null,
+    mutatesWorkspace: entry.mutatesWorkspace,
+    parallelSafe: entry.parallelSafe,
+    next: stringArray(entry, 'next', index) as FableSkillId[],
+    keywords: stringArray(entry, 'keywords', index),
   };
 }
 
@@ -101,13 +144,16 @@ export function loadSkillRegistry(repoRoot: string = getCoreRepoRoot()): SkillRe
     for (const next of skill.next) {
       if (!ids.includes(next)) throw new Error(`${skill.id} references missing next skill ${next}`);
     }
+    if (skill.fallback && !ids.includes(skill.fallback)) {
+      throw new Error(`${skill.id} references missing fallback skill ${skill.fallback}`);
+    }
   }
 
   if (!ids.includes(payload.entry as FableSkillId)) throw new Error('Skill registry entry does not exist');
 
   const sorted = [...skills].sort((a, b) => a.order - b.order);
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     entry: payload.entry as FableSkillId,
     skills: sorted,
   };

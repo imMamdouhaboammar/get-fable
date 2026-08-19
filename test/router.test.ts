@@ -70,7 +70,7 @@ describe('get-fable request proxy', () => {
     expect(body.systemPromptBytes).toBeGreaterThan(0);
   });
 
-  test('routes review requests to verification without changing the requested model', async () => {
+  test('routes review-before-merge requests to the review specialist without changing the requested model', async () => {
     const baseUrl = await startServer();
     const response = await fetch(`${baseUrl}/v1/chat/completions`, {
       method: 'POST',
@@ -83,7 +83,7 @@ describe('get-fable request proxy', () => {
     const body = await response.json();
 
     expect(body.model).toBe('demo-review');
-    expect(body.routing.selectedSkill).toBe('fable-verify');
+    expect(body.routing.selectedSkill).toBe('fable-review');
   });
 
   test('returns 400 for malformed JSON and unsupported request shapes', async () => {

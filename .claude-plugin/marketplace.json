@@ -5,15 +5,15 @@
     "url": "https://github.com/imMamdouhaboammar"
   },
   "metadata": {
-    "description": "Modular frontier-like execution discipline for AI coding agents: evidence-first routing, durable state, verification gates, recovery, skills, hooks, and an optional local request proxy.",
-    "version": "1.1.0"
+    "description": "Portable coding lifecycle for AI agents with deterministic routing, durable mutation-aware state, specialist skills, lifecycle hooks, and evidence gates.",
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "get-fable",
-      "description": "Modular execution discipline for substantial coding work: evidence-first discovery, explicit routing, durable task state, verification, and recovery.",
+      "description": "Routes software work through research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
       "source": "./",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"
@@ -27,6 +27,7 @@
         "codex",
         "agent-discipline",
         "agent-skills",
+        "coding-lifecycle",
         "verification",
         "skills"
       ]

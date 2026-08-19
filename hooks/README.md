@@ -1,39 +1,64 @@
 # get-fable lifecycle hooks
 
-The hooks turn a small part of get-fable's workflow contract into mechanical host behavior.
-
-They are deliberately model-agnostic. They do not rank model names, assign synthetic capability tiers, or prevent a host from using a model because of its name.
+The hooks turn selected lifecycle invariants into mechanical host behavior. They are model-agnostic and operate only inside projects that have opted in with `.fable/`.
 
 ## Safety contract
 
-Every hook follows three rules:
+- opt in: no `.fable/` directory means no project enforcement
+- project local: durable workflow state lives in `.fable/state.json`
+- bounded state: do not persist prompts, source contents, command output, credentials, or raw local paths as evidence metadata
+- workspace identity: schema-v2 state is bound to a digest of the canonical real project path
+- unexpected hook runtime failures remain fail-open so a broken helper does not brick the host
+- an existing but invalid `.fable/state.json` is a workflow error and may block a substantial completion claim
 
-- **opt in**: no `.fable/` directory means no get-fable enforcement
-- **project local**: durable workflow state lives in the current project's `.fable/state.json`
-- **fail open**: an unexpected hook error must not brick the host session
+## Five lifecycle scripts
 
-## Four lifecycle scripts
-
-| Hook | Event | Responsibility |
+| Hook | Typical event | Responsibility |
 |---|---|---|
-| `fable_profile_inject.py` | `SessionStart` | Inject compact workflow phase, selected skill, failure streak, and open-card context |
-| `fable_spawn_guard.py` | `PreToolUse` on Agent/Task/Workflow | Require a live bounded ledger card before a large delegation |
+| `fable_profile_inject.py` | `SessionStart` | Restore phase, specialist skill, failure streak, active card, mutation generation, and verification freshness |
+| `fable_spawn_guard.py` | `PreToolUse` on Agent/Task/Workflow | Require bounded delegated work before substantial spawning |
 | `fable_fail_streak.py` | `PostToolUse` and `PostToolUseFailure` on Bash | Reset on success, record failures, and route two consecutive failures into `fable-recover` |
-| `fable_close_guard.py` | `Stop` | Block unfinished cards, missing ledger evidence, stale state evidence, or substantial work whose durable phase is not `complete` |
+| `fable_mutation.py` | `PostToolUse` on write/edit tools | Advance `mutationGeneration` after a successful workspace mutation |
+| `fable_close_guard.py` | `Stop` / `SessionEnd` where supported | Block unfinished cards, invalid state, stale proof, or substantial work that has not reached a valid complete state |
 
-`_fable_common.py` provides shared project discovery, ledger parsing, atomic state writes, evidence checks, and the advisory per-session failure counter.
+`_fable_common.py` provides shared state validation, schema-v1 migration, canonical workspace discovery, ledger parsing, atomic state writes, mutation tracking, and evidence-freshness rules.
 
-## Durable failure recovery
+## Mutation freshness
 
-When `fable_fail_streak.py` observes a Claude Bash result it updates `.fable/state.json`.
-Claude emits successful results through `PostToolUse` and failed executions
-through `PostToolUseFailure`, so both registrations are required.
+A successful recognized write advances the durable generation:
 
-A success resets the durable `failureStreak` to zero but does not silently leave an active recovery phase.
+```text
+before write
+mutationGeneration = 6
+verifiedGeneration = 6
 
-A failure increments `failureStreak`.
+after write
+mutationGeneration = 7
+verifiedGeneration = 6
+```
 
-At two consecutive failures the hook sets:
+The previous proof remains historical evidence but can no longer close substantial work.
+
+`fable_mutation.py` contains its own write-tool allowlist in addition to host matchers so a host with broad PostToolUse semantics does not mark read-only commands as mutations.
+
+## Evidence freshness
+
+The close guard accepts completion evidence only when:
+
+1. `verifiedGeneration >= mutationGeneration`
+2. the newest evidence accepted for the routed claim and current generation exists
+3. that evidence passes and contains substantive detail
+4. substantial durable state is actually in phase `complete`
+
+For normal implementation work, accepted completion kinds are test, build, runtime, review, and observation.
+
+Security evidence can close a pure security-review job when the durable routing decision identifies that job as security work. It does not by itself close a normal feature or bug repair. If security work leads to a product mutation, the changed behavior needs fresh behavior-appropriate verification.
+
+Research, receipt, and handoff evidence do not close the behavior-completion gate.
+
+## Failure recovery
+
+A failure-relevant evidence record increments `failureStreak`. Two consecutive failures move active state to:
 
 ```json
 {
@@ -43,110 +68,36 @@ At two consecutive failures the hook sets:
 }
 ```
 
-It also injects the attribution order:
+Recovery changes the diagnosis before another repair:
 
 ```text
-harness
-  -> actual execution path
-  -> product logic
-  -> violated invariant
+harness and environment
+-> actual execution path
+-> product logic
+-> violated invariant
 ```
 
-The purpose is to stop repeated edits from masquerading as diagnosis.
+A later successful failure-relevant evidence record resets the failure streak. It does not erase the recorded history.
 
-## Session start context
+## Session context
 
-`fable_profile_inject.py` reads the durable state and produces compact public workflow context such as:
+The profile injector supplies compact state only:
 
 ```text
-phase=recovering
-failureStreak=2
-substantial=true
-selected=fable-recover
+phase
+selected specialist
+failureStreak
+substantial
+mutationGeneration
+verifiedGeneration
+activeCard
+open ledger cards
 ```
 
-The selected workflow comes from state first, then a small legacy fallback when an old project has `.fable/` but no state file yet.
+It does not assign model tiers or claim that the active model changed capability.
 
-No model name is used to choose the workflow.
+## Host adapters
 
-## Delegation gate
+`hooks/hooks.json` is the Claude Code plugin declaration. `src/installer.ts` registers equivalent hook files for the repository's Antigravity / Gemini target.
 
-`fable_spawn_guard.py` does one job: keep a large delegation attached to a bounded work card.
-
-A detailed Agent/Task/Workflow payload requires at least one open `- [ ]` ledger card.
-
-Exemptions:
-
-- small payloads below `FABLE_SPAWN_MIN_CHARS`, default `1500`
-- forks, because they inherit the parent context
-- a round explicitly paused with `PAUSED: <reason>`
-
-There is no model ceiling or model-name ranking.
-
-## Stop gate
-
-The close guard checks two related sources of truth.
-
-### Human ledger
-
-```text
-- [ ] open card
-- [x] completed card -- evidence: bun test 42 passed
-- [~] deferred card -- deferred: outside this round
-PAUSED: unrelated user request
-```
-
-Open cards block stop.
-
-Checked cards need substantive `evidence:` or `verified:` text.
-
-### Strict state
-
-For substantial work, stop is also blocked unless:
-
-1. the newest `.fable/state.json` evidence record is a pass with concrete detail
-2. durable phase is `complete`
-
-A failure recorded after an earlier pass makes that pass stale. The guard keeps blocking until a newer substantive pass is recorded.
-
-The normal lifecycle is therefore explicit:
-
-```bash
-get-fable route "<task>" --apply
-get-fable state executing
-# perform the bounded work
-get-fable state verifying
-# run the real acceptance checks
-get-fable evidence pass test "bun test" "42 affected tests passed"
-get-fable state complete
-```
-
-A failed evidence record increments the durable failure streak and repeated failures move the state into recovery.
-
-## Pause behavior
-
-A line beginning with `PAUSED:` and a real reason suspends lifecycle enforcement for unrelated work.
-
-A bare `PAUSED` is ignored.
-
-State is preserved while the round is paused.
-
-## Installation
-
-The TypeScript installer copies these hooks into host-specific locations and registers them idempotently where that host supports lifecycle hooks.
-
-Claude Code stores the compatibility hook copies below its `fable-mode` skill.
-
-The Antigravity target stores hook copies inside the get-fable plugin so it does not depend on Claude paths.
-
-Python 3 standard library is sufficient. No Python package installation is required.
-
-## Testing
-
-The Bun suite invokes the Python hooks directly for cross-language contract tests:
-
-```bash
-bun test test/hooks-state.test.ts
-```
-
-The test verifies durable recovery after repeated failure, evidence-gated stop, and model-agnostic session context.
+Host event names and matchers may differ, but the Python state semantics are shared. Adapter behavior should be tested whenever canonical state or evidence rules change.

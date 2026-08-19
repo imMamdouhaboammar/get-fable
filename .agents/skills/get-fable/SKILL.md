@@ -1,28 +1,19 @@
 ---
 name: get-fable
-description: Repository-local adapter to the canonical get-fable workflow for evidence, planning, bounded execution, verification, and recovery.
+description: Repository-local adapter to the canonical get-fable coding lifecycle. Use the root skill pack and registry as the semantic source of truth.
 ---
 
 # get-fable repository adapter
 
-The canonical workflow lives in the root `skills/` directory. Do not maintain a second independent workflow definition here.
+Do not maintain an independent workflow here.
 
-## Source of truth
+Canonical sources:
 
-- `skills/get-fable/registry.json`
 - `skills/get-fable/SKILL.md`
-- `skills/fable-discover/SKILL.md`
-- `skills/fable-plan/SKILL.md`
-- `skills/fable-execute/SKILL.md`
-- `skills/fable-verify/SKILL.md`
-- `skills/fable-recover/SKILL.md`
+- `skills/get-fable/registry.json`
+- root `skills/fable-*/SKILL.md`
+- root `AGENTS.md`
 
-When this host cannot follow those files directly, apply the same routing order:
+When direct canonical skill loading is unavailable, preserve the registry-v2 rules: route by missing evidence, keep broad work bounded, use test-first checks for testable behavior, keep delegation ownership explicit, distinguish review/security/release/handoff/eval jobs, record mutation freshness, and diagnose repeated failure before another repair.
 
-1. recovery for repeated or stale failure
-2. verification for review or completion proof
-3. discovery for load-bearing unknowns
-4. planning for broad architecture or decomposition
-5. execution for an already bounded change
-
-Use Bun for this repository's TypeScript tests. Follow root `AGENTS.md` for repository rules and capability boundaries.
+Substantial completion requires passing completion-capable evidence for the current mutation generation. Research, receipts, and handoff records cannot substitute for behavior verification.

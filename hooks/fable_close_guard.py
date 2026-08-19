@@ -3,10 +3,11 @@
 
 The guard combines the human ledger contract with strict `.fable/state.json`
 semantics. It blocks stop for open cards, checked cards without substantive
-ledger evidence, substantial work without passing state evidence, or
-substantial work whose durable phase has not reached `complete`.
+ledger evidence, malformed durable state, stale current-generation evidence,
+or substantial work whose durable phase has not reached `complete`.
 
-Loop-safe and fail-open on unexpected errors.
+Unexpected host/runtime errors remain fail-open. Invalid project state is an
+explicit workflow condition and therefore blocks substantial completion.
 """
 import os
 import sys
@@ -17,6 +18,7 @@ from _fable_common import (  # noqa: E402
     start_dir,
     find_fable_dir,
     ledger_path,
+    state_path,
     parse_ledger,
     closed_without_evidence,
     read_state,
@@ -52,26 +54,45 @@ def block_missing_ledger_evidence(path, bad):
     return 2
 
 
+def block_invalid_state(path):
+    sys.stderr.write(
+        "[get-fable] BLOCKED stop: %s is present but invalid for the current lifecycle schema. "
+        "Run `get-fable doctor` and repair or migrate durable state before claiming completion.\n"
+        % path
+    )
+    return 2
+
+
 def block_state_if_needed(state):
     if not isinstance(state, dict) or not state.get("substantial"):
         return 0
 
     if not has_fresh_passing_state_evidence(state):
         sys.stderr.write(
-            "[get-fable] BLOCKED stop: substantial work has no fresh passing state evidence in .fable/state.json. "
-            "Record fresh proof with `get-fable evidence pass <kind> <source> <detail>` after verifying the requested behavior.\n"
+            "[get-fable] BLOCKED stop: substantial work has no fresh passing completion evidence for the current mutation generation. "
+            "Record proof with `get-fable evidence pass <kind> <source> <detail>` after verifying the requested behavior.\n"
         )
         return 2
 
     if state.get("phase") != "complete":
         sys.stderr.write(
-            "[get-fable] BLOCKED stop: substantial work has passing evidence but durable workflow phase is '%s', not 'complete'. "
+            "[get-fable] BLOCKED stop: substantial work has current verification evidence but durable workflow phase is '%s', not 'complete'. "
             "Finish verification and transition with `get-fable state complete`.\n"
             % state.get("phase")
         )
         return 2
 
     return 0
+
+
+def validated_state_or_block(fable_dir):
+    path = state_path(fable_dir)
+    if not os.path.isfile(path):
+        return None, None
+    state = read_state(fable_dir)
+    if state is None:
+        return None, block_invalid_state(path)
+    return state, None
 
 
 def main():
@@ -83,9 +104,13 @@ def main():
     if not fable_dir:
         return 0
 
+    state, blocked = validated_state_or_block(fable_dir)
+    if blocked is not None:
+        return blocked
+
     path = ledger_path(fable_dir)
     if not os.path.isfile(path):
-        return block_state_if_needed(read_state(fable_dir))
+        return block_state_if_needed(state)
 
     open_items, _has_any, paused = parse_ledger(path)
     if paused:
@@ -97,7 +122,7 @@ def main():
     if bad:
         return block_missing_ledger_evidence(path, bad)
 
-    return block_state_if_needed(read_state(fable_dir))
+    return block_state_if_needed(state)
 
 
 if __name__ == "__main__":
