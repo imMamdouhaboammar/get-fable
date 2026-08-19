@@ -30,6 +30,7 @@ afterEach(() => {
   }
 });
 
+
 describe('CLI safety', () => {
   test('running without a command shows help instead of installing files', () => {
     const root = tempRoot();
@@ -63,5 +64,60 @@ describe('CLI safety', () => {
     expect(runCli(['spark', '--json'])).toBe(0);
     expect(runCli(['spark', 'fix token refresh bug', '--json'])).toBe(0);
   });
-});
 
+  test('exports oracle-free behavior requests and scores offline provider responses', async () => {
+    const root = tempRoot();
+    const requestsPath = path.join(root, 'requests.json');
+    const responsesPath = path.join(root, 'responses.json');
+    const evidencePath = path.join(root, 'evidence.json');
+    expect(runCli(['behavior-eval', 'export', '--out', requestsPath])).toBe(0);
+    const requests = JSON.parse(fs.readFileSync(requestsPath, 'utf-8'));
+    expect(requests.metric).toBe('agent-behavior-requests');
+    expect(requests.requests.some((item: any) => Object.prototype.hasOwnProperty.call(item, 'expected') || Object.prototype.hasOwnProperty.call(item, 'forbidden'))).toBe(false);
+    const agentEval: any = await import('../src/core/agent-behavior-eval.ts');
+    const plan = agentEval.buildEnterpriseAgentBehaviorEvalPlan();
+    fs.writeFileSync(responsesPath, JSON.stringify({
+      schemaVersion: 1,
+      metric: 'agent-behavior-responses',
+      providerId: 'fixture-provider',
+      responses: requests.requests.map((request: any, index: number) => ({ caseId: request.caseId, response: { ...plan[index].expected } })),
+    }));
+    expect(runCli(['behavior-eval', 'score', responsesPath, '--out', evidencePath])).toBe(0);
+    const evidence = JSON.parse(fs.readFileSync(evidencePath, 'utf-8'));
+    expect(evidence.providerId).toBe('fixture-provider');
+    expect(evidence.passed).toBe(evidence.total);
+    expect(evidence.corpusSha256).toMatch(/^[a-f0-9]{64}$/);
+  });
+
+
+  test('offers additive schema-v1 JSON envelopes without changing legacy --json', () => {
+    const originalLog = console.log;
+    const capture = (args: string[]) => {
+      const lines: string[] = [];
+      console.log = (...items: unknown[]) => lines.push(items.map(String).join(' '));
+      try { expect(runCli(args)).toBe(0); }
+      finally { console.log = originalLog; }
+      return JSON.parse(lines.at(-1) || '{}');
+    };
+
+    const legacy = capture(['route', 'fix token refresh bug', '--json']);
+    expect(legacy.schemaVersion).toBeUndefined();
+    expect(legacy.selectedSkill).toBeTruthy();
+
+    const route = capture(['route', 'fix token refresh bug', '--json-v1']);
+    expect(route.schemaVersion).toBe(1);
+    expect(route.command).toBe('route');
+    expect(route.data.selectedSkill).toBe(legacy.selectedSkill);
+
+    const feed = capture(['feed', 'list', '--json-v1']);
+    expect(feed.schemaVersion).toBe(1);
+    expect(feed.command).toBe('feed:list');
+    expect(Array.isArray(feed.data)).toBe(true);
+
+    const doctor = capture(['doctor', '--json-v1']);
+    expect(doctor.schemaVersion).toBe(1);
+    expect(doctor.command).toBe('doctor');
+    expect(Array.isArray(doctor.data.checks)).toBe(true);
+  });
+
+});

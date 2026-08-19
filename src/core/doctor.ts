@@ -431,30 +431,60 @@ function validateEnterpriseConfiguration(repoRoot: string): DoctorCheck[] {
   try {
     const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf-8'));
     const files = Array.isArray(pkg.files) ? pkg.files : [];
-    const intentional = files.includes('eval/') && !files.includes('evals/') && !files.includes('docs/') && files.includes('docs/*.md');
+    const intentional = files.includes('eval/') && !files.includes('evals/') && !files.includes('docs/') && files.includes('docs/*.md') && files.includes('public/');
     checks.push(intentional
-      ? check('distribution-contract', 'PASS', 'npm whitelist keeps runtime eval material and public docs while excluding root holdouts and internal Superpowers plans')
+      ? check('distribution-contract', 'PASS', 'npm whitelist keeps runtime eval material, public docs/site assets, and excludes root holdouts and internal Superpowers plans')
       : check('distribution-contract', 'ERROR', 'npm package whitelist does not match the documented distribution boundary'));
   } catch (error) {
     checks.push(check('distribution-contract', 'ERROR', `Distribution contract check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
 
-  const workflowPaths = ['.github/workflows/ci.yml', '.github/workflows/security.yml', '.github/workflows/release.yml'];
+  const workflowsDir = path.join(repoRoot, '.github', 'workflows');
   try {
+    const workflowPaths = fs.readdirSync(workflowsDir)
+      .filter((name) => /\.ya?ml$/.test(name))
+      .sort()
+      .map((name) => `.github/workflows/${name}`);
     const workflows = workflowPaths.map((relative) => ({ relative, text: fs.readFileSync(path.join(repoRoot, relative), 'utf-8') }));
     const actionRefs = workflows.flatMap(({ text }) => [...text.matchAll(/uses:\s+[^@\s]+@([^\s#]+)/g)].map((match) => match[1]));
     const pinned = actionRefs.length > 0 && actionRefs.every((ref) => /^[0-9a-f]{40}$/.test(ref));
-    const ci = workflows.find((item) => item.relative.endsWith('/ci.yml'))!.text;
-    const security = workflows.find((item) => item.relative.endsWith('/security.yml'))!.text;
-    const release = workflows.find((item) => item.relative.endsWith('/release.yml'))!.text;
+    const workflow = (name: string) => workflows.find((item) => item.relative.endsWith(`/${name}`))?.text || '';
+    const ci = workflow('ci.yml');
+    const security = workflow('security.yml');
+    const release = workflow('release.yml');
+    const e2e = workflow('e2e.yml');
+    const githubRelease = workflow('github-release.yml');
+    const docsPreview = workflow('docs-preview.yml');
     const supplyChain = pinned && ci.includes('bun install --frozen-lockfile') && release.includes('id-token: write') &&
       release.includes('environment: npm') && !/NPM_TOKEN|NODE_AUTH_TOKEN/.test(release);
     checks.push(supplyChain
-      ? check('supply-chain-config', 'PASS', `All ${actionRefs.length} third-party Action references are full commit SHAs; CI uses frozen Bun resolution and release uses OIDC Trusted Publishing configuration`)
+      ? check('supply-chain-config', 'PASS', `All ${actionRefs.length} third-party Action references across ${workflows.length} workflows are full commit SHAs; CI uses frozen Bun resolution and npm publishing uses OIDC`)
       : check('supply-chain-config', 'ERROR', 'CI/release supply-chain configuration is incomplete or mutable'));
-    checks.push(security.includes('github/codeql-action') && security.includes('actions/dependency-review-action')
-      ? check('security-ci-config', 'PASS', 'Security workflow configures CodeQL and dependency review with scoped permissions')
-      : check('security-ci-config', 'ERROR', 'Security CI is missing CodeQL or dependency review'));
+
+    const securityReady = security.includes('github/codeql-action') && security.includes('actions/dependency-review-action') &&
+      security.includes('trufflesecurity/trufflehog') && security.includes('version: 3.97.0');
+    checks.push(securityReady
+      ? check('security-ci-config', 'PASS', 'Security workflow configures CodeQL, dependency review, and TruffleHog OSS with scoped permissions')
+      : check('security-ci-config', 'ERROR', 'Security CI is missing CodeQL, dependency review, or TruffleHog secret scanning'));
+
+    const e2eReady = e2e.includes('cypress-io/github-action') && e2e.includes('bun install --frozen-lockfile') &&
+      e2e.includes('start: bun run serve:web') && e2e.includes('wait-on: http://127.0.0.1:3000') && e2e.includes('cypress/e2e/site.cy.ts');
+    checks.push(e2eReady
+      ? check('e2e-ci-config', 'PASS', 'Cypress E2E workflow runs the pinned site smoke suite against a bounded local server')
+      : check('e2e-ci-config', 'ERROR', 'Cypress E2E workflow is missing or incomplete'));
+
+    const draftReleaseReady = githubRelease.includes('softprops/action-gh-release') && githubRelease.includes('draft: true') &&
+      githubRelease.includes('generate_release_notes: true') && githubRelease.includes('contents: write');
+    checks.push(draftReleaseReady
+      ? check('github-release-config', 'PASS', 'Version tags create a draft GitHub Release; npm publish still requires an explicit Release publication')
+      : check('github-release-config', 'ERROR', 'GitHub Release workflow must create drafts without implicitly triggering npm publication'));
+
+    const docsPreviewReady = docsPreview.includes('workflow_dispatch:') && docsPreview.includes('ldeluigi/markdown-docs') &&
+      docsPreview.includes('src: docs') && docsPreview.includes('dst: .generated/markdown-docs') && !docsPreview.includes('pull_request:') && !docsPreview.includes('push:');
+    checks.push(docsPreviewReady
+      ? check('docs-preview-config', 'PASS', 'Markdown Docs is isolated to a manual non-gating preview workflow')
+      : check('docs-preview-config', 'ERROR', 'Markdown Docs preview must remain manual and isolated from required CI'));
+
     checks.push(check('release-runtime-evidence', 'NOT_CHECKED', 'Release workflow is configured but has not been executed for the current working revision'));
   } catch (error) {
     checks.push(check('supply-chain-config', 'ERROR', `Workflow configuration check failed: ${error instanceof Error ? error.message : String(error)}`));

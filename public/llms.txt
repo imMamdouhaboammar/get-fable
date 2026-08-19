@@ -1,0 +1,31 @@
+# get-fable
+
+> Evidence-driven coding lifecycle discipline and reusable Skills for AI coding agents.
+
+## Documentation
+
+- [get-fable](https://github.com/imMamdouhaboammar/get-fable/blob/master/README.md): <div align="center">
+- [Security Policy](https://github.com/imMamdouhaboammar/get-fable/blob/master/SECURITY.md): `get-fable` changes local agent configuration, installs lifecycle hooks, reads bundled prompt and skill assets, and can run a local HTTP request-enrichment proxy
+- [Contributing](https://github.com/imMamdouhaboammar/get-fable/blob/master/CONTRIBUTING.md): Contributions are welcome when they make `get-fable` safer, easier to inspect, or more reliable on real agent work
+- [Support policy](https://github.com/imMamdouhaboammar/get-fable/blob/master/SUPPORT.md): Use GitHub Issues for reproducible defects and bounded feature requests. Include the get-fable version, Bun version, operating system, host, exact command, and a minimal reproducti
+- [ADR-001: Portable process controls for AI coding agents](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/ADR-001-fable-supersystem.md): Accepted
+- [Multi-Agent Architecture](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/AGENTS.md): Agent (Role & Autonomy Owner)
+- [Architecture: get-fable 1.2](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/ARCHITECTURE.md): `get-fable` is a local-first coding lifecycle for AI-assisted software work. It makes high-value process behavior inspectable: evidence gathering, current-source research, bounded
+- [Behavioral evidence](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/BEHAVIOR_EVIDENCE.md): get-fable keeps deterministic runtime checks separate from real agent behavior proof. The 22 action Skills that are still M3 can earn M4 only after an independent provider executes
+- [Canonical Skill Catalog](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/CANONICAL_SKILLS.md): Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. Do not edit by hand.
+- [Compatibility contract](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/COMPATIBILITY.md): The published package is deliberately Bun-first. `package.json` declares `bun >=1.3.0`, the public entry point is TypeScript, and the build target is Bun. Node.js compatibility is
+- [Evidence & Proof Semantics](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/EVIDENCE.md): - **Freshness**: `verifiedGeneration === mutationGeneration`.
+- [Lifecycle Hooks Specification](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/HOOKS.md): - **`SessionStart`**: Restore state and verify active card.
+- [Multi-Host Platform Matrix (August 19, 2026)](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/HOSTS.md): - **Anthropic Claude**: `claude-opus-5`, `claude-sonnet-5`, `claude-fable-5`, `claude-mythos-5`, `claude-haiku-4-5`
+- [External Integrations Guide](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/INTEGRATIONS.md): - **GitHub**: Automatic PR reviews, branch status checks, issue triage.
+- [Fable Coding Lifecycle v2](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/LIFECYCLE.md): │ (route task / intent)
+- [ChatGPT, Codex, and Claude Code plugin package](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/PLUGIN.md): `get-fable` 1.2.0 ships a skill-only OpenAI plugin (`.codex-plugin/plugin.json`) plus a native Claude Code plugin and marketplace manifest (`.claude-plugin/marketplace.json` and `.
+- [Release policy](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/RELEASE.md): Releases must start from a reviewed commit with fresh CI evidence after the last mutation.
+- [Releasing `get-fable`](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/RELEASING.md): This repository should not publish from an unverified working tree
+- [Repository hygiene inventory](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/REPOSITORY_HYGIENE.md): Root historical/reference material is retained deliberately unless provenance and replacement are clear. It is excluded from npm by the package whitelist.
+- [Repository settings checklist](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/REPOSITORY_SETTINGS.md): The repository files can prove workflow configuration, but they cannot prove organization or repository settings that live only in GitHub administration. Those items are marked **N
+- [Task Routing & Selection Engine](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/ROUTING.md): 1. **Keyword Scoring**: Evaluates prompt tokens and intent signals across all 25 canonical skills.
+- [Skill Authoring Standard](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SKILL-AUTHORING.md): Every Fable skill must adhere to the 12-section standard:
+- [SPEC — <project / round name>](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SPEC.md): <One paragraph: what must exist when this round is done, and for whom.>
+- [Tool Capabilities & Schema Binding](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/TOOLS.md): 1. `filesystem-operations`: Workspace file read/write/edit.
+- [Usage: get-fable 1.2](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/USAGE.md): This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.

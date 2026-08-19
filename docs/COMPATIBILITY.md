@@ -11,6 +11,8 @@ Reference CI covers Linux and macOS. Windows runtime support is **NOT CHECKED** 
 - Durable state: schema v3. Readers migrate v1 and v2 explicitly and reject foreign workspace IDs.
 - Skill Package manifest: schema v2. Runtime validation is strict; v1 has an explicit migration helper but is not silently accepted.
 - Evaluation result: schema v1.
+- Agent behavior request, response, and scored evidence bundles: schema v1.
+- CLI machine envelope: additive `--json-v1` schema v1; legacy `--json` output remains unchanged.
 - Doctor report: schema v1 with `PASS`, `WARN`, `ERROR`, `NOT_APPLICABLE`, and `NOT_CHECKED` statuses.
 
 ## Hosts

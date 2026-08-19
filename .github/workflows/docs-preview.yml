@@ -1,0 +1,28 @@
+name: Markdown docs preview
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    name: Build Markdown docs preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Markdown Docs
+        uses: ldeluigi/markdown-docs@01d0562f5d6aa4ca4af7ded0c98f239417d5976b # v0.6.0
+        with:
+          src: docs
+          dst: .generated/markdown-docs
+          title: get-fable documentation
+
+      - name: Verify generated HTML
+        run: test -n "$(find .generated/markdown-docs -type f -name '*.html' -print -quit)"

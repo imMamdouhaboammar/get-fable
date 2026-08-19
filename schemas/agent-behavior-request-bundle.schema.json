@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableAgentBehaviorRequestBundleV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "metric",
+    "corpusSha256",
+    "oracleSha256",
+    "total",
+    "requests"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "metric": {
+      "const": "agent-behavior-requests"
+    },
+    "corpusSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "oracleSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "requests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/request"
+      }
+    }
+  },
+  "definitions": {
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "skillId",
+        "caseId",
+        "instruction",
+        "given",
+        "actionVocabulary"
+      ],
+      "properties": {
+        "skillId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "caseId": {
+          "type": "string",
+          "pattern": "^case-[a-f0-9]{24}$"
+        },
+        "instruction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "given": {
+          "type": "object"
+        },
+        "actionVocabulary": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

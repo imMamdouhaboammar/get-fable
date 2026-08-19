@@ -17,6 +17,7 @@ describe('npm distribution contract', () => {
     expect(packageJson.files).not.toContain('docs/');
     expect(packageJson.files).toContain('eval/');
     expect(packageJson.files).toContain('docs/*.md');
+    expect(packageJson.files).toContain('public/');
     expect(fs.existsSync(path.join(root, 'docs', 'COMPATIBILITY.md'))).toBe(true);
   });
 });

@@ -15,6 +15,11 @@ describe('Doctor evidence semantics', () => {
     expect(byId['distribution-contract'].status).toBe('PASS');
     expect(byId['supply-chain-config'].status).toBe('PASS');
     expect(byId['security-ci-config'].status).toBe('PASS');
+    expect(byId['security-ci-config'].message).toContain('TruffleHog');
+    expect(byId['e2e-ci-config'].status).toBe('PASS');
+    expect(byId['github-release-config'].status).toBe('PASS');
+    expect(byId['github-release-config'].message).toContain('draft');
+    expect(byId['docs-preview-config'].status).toBe('PASS');
     expect(byId['release-runtime-evidence'].status).toBe('NOT_CHECKED');
     expect(report.ok).toBe(true);
   });

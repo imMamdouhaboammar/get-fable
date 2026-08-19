@@ -8,6 +8,7 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect(plan.length).toBeGreaterThanOrEqual(20);
     expect(plan.some((item) => item.skillId === 'fable-tdd' && item.expected.action === 'write-failing-test-first')).toBe(true);
     expect(plan.some((item) => item.caseId === 'fable-plan-boundary-unknown-facts')).toBe(false);
+    expect(plan.every((item) => (item as any).category === 'known')).toBe(true);
   });
 
   test('evaluates structured provider outputs and forbidden actions independently', async () => {
@@ -89,6 +90,101 @@ describe('provider-neutral agent behavior evaluation', () => {
     };
     const result = await runAgentBehaviorEvalPlan(provider, [item]);
     expect(result.passed).toBe(1);
+  });
+
+
+  test('builds five enterprise behavior categories per executable action case', async () => {
+    const mod: any = await import('../src/core/agent-behavior-eval.ts');
+    expect(typeof mod.buildEnterpriseAgentBehaviorEvalPlan).toBe('function');
+    const plan = mod.buildEnterpriseAgentBehaviorEvalPlan();
+    const tdd = plan.filter((item: any) => item.skillId === 'fable-tdd');
+    expect(new Set(tdd.map((item: any) => item.category))).toEqual(new Set(['known', 'negative', 'ambiguous', 'adversarial', 'holdout']));
+    expect(tdd.every((item: any) => item.caseId.startsWith('fable-tdd-bug-fix::'))).toBe(true);
+    expect(tdd.find((item: any) => item.category === 'adversarial').given.__fableEval.untrustedInstruction).toContain('modify-production-code-without-test');
+  });
+
+
+  test('exports oracle-free deterministic request bundles and scores offline responses', async () => {
+    const mod: any = await import('../src/core/agent-behavior-eval.ts');
+    expect(typeof mod.buildAgentBehaviorRequestBundle).toBe('function');
+    expect(typeof mod.scoreAgentBehaviorResponseBundle).toBe('function');
+    const plan = mod.buildEnterpriseAgentBehaviorEvalPlan().slice(0, 5);
+    const bundle = mod.buildAgentBehaviorRequestBundle(plan);
+    expect(bundle.metric).toBe('agent-behavior-requests');
+    expect(bundle.requests).toHaveLength(5);
+    expect(bundle.corpusSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(bundle.oracleSha256).toMatch(/^[a-f0-9]{64}$/);
+    const serialized = JSON.stringify(bundle.requests);
+    expect(serialized.includes('expected')).toBe(false);
+    expect(serialized.includes('forbidden')).toBe(false);
+    const responses = {
+      schemaVersion: 1,
+      metric: 'agent-behavior-responses',
+      providerId: 'offline-fixture',
+      responses: bundle.requests.map((request: any, index: number) => ({ caseId: request.caseId, response: { ...plan[index].expected } })),
+    };
+    const scored = mod.scoreAgentBehaviorResponseBundle(responses, plan);
+    expect(scored.providerId).toBe('offline-fixture');
+    expect(scored.passed).toBe(5);
+    expect(scored.cases.every((item: any) => item.category)).toBe(true);
+    expect(scored.corpusSha256).toBe(bundle.corpusSha256);
+    expect(scored.oracleSha256).toBe(bundle.oracleSha256);
+  });
+
+
+  test('loads scored evidence from the repository and rejects stale Skill corpora', async () => {
+    const fs = await import('node:fs');
+    const os = await import('node:os');
+    const path = await import('node:path');
+    const mod: any = await import('../src/core/agent-behavior-eval.ts');
+    expect(typeof mod.loadAgentBehaviorEvidenceSnapshot).toBe('function');
+    const plan = mod.buildEnterpriseAgentBehaviorEvalPlan().slice(0, 5);
+    const requestBundle = mod.buildAgentBehaviorRequestBundle(plan);
+    const scored = mod.scoreAgentBehaviorResponseBundle({
+      schemaVersion: 1, metric: 'agent-behavior-responses', providerId: 'offline-fixture',
+      responses: requestBundle.requests.map((request: any, index: number) => ({ caseId: request.caseId, response: { ...plan[index].expected } })),
+    }, plan);
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'fable-agent-evidence-'));
+    fs.mkdirSync(path.join(root, 'evals', 'results'), { recursive: true });
+    fs.writeFileSync(path.join(root, 'evals', 'results', 'agent-behavior-v1.json'), JSON.stringify(scored));
+    const loaded = mod.loadAgentBehaviorEvidenceSnapshot(root, plan);
+    expect(loaded.fresh).toBe(true);
+    const stalePlan = plan.map((item: any, index: number) => index === 0 ? { ...item, instruction: `${item.instruction} changed` } : item);
+    const stale = mod.loadAgentBehaviorEvidenceSnapshot(root, stalePlan);
+    expect(stale.fresh).toBe(false);
+    expect(stale.reason).toContain('stale');
+  });
+
+
+  test('provider request bundles blind evaluation categories behind opaque case IDs', async () => {
+    const mod: any = await import('../src/core/agent-behavior-eval.ts');
+    const plan = mod.buildEnterpriseAgentBehaviorEvalPlan();
+    const bundle = mod.buildAgentBehaviorRequestBundle(plan);
+    expect(bundle.requests.length).toBeGreaterThan(100);
+    expect(bundle.requests.every((item: any) => /^case-[a-f0-9]{24}$/.test(item.caseId))).toBe(true);
+    expect(JSON.stringify(bundle.requests).includes('::holdout')).toBe(false);
+    expect(JSON.stringify(bundle.requests).includes('"category"')).toBe(false);
+    expect(plan.some((item: any) => item.skillId === 'fable-verify')).toBe(false);
+  });
+
+  test('rejects tampered evidence even when aggregate pass counts were forged consistently', async () => {
+    const mod: any = await import('../src/core/agent-behavior-eval.ts');
+    const plan = mod.buildEnterpriseAgentBehaviorEvalPlan().slice(0, 5);
+    const requests = mod.buildAgentBehaviorRequestBundle(plan);
+    const scored = mod.scoreAgentBehaviorResponseBundle({
+      schemaVersion: 1,
+      metric: 'agent-behavior-responses',
+      providerId: 'fixture-provider',
+      responses: requests.requests.map((request: any, index: number) => ({
+        caseId: request.caseId,
+        response: { ...plan[index].expected },
+      })),
+    }, plan);
+    scored.cases[0].response = { action: 'definitely-wrong-action' };
+    scored.cases[0].passed = true;
+    const validation = mod.validateAgentBehaviorEvidenceSnapshot(scored, plan);
+    expect(validation.fresh).toBe(false);
+    expect(validation.reason).toContain('case verdict');
   });
 
 });

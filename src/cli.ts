@@ -61,6 +61,14 @@ import {
   validateAllSkillPackages,
 } from './core/skill-package.js';
 import type { EvidenceKind, EvidenceResult } from './core/types.js';
+import {
+  AGENT_BEHAVIOR_EVIDENCE_PATH,
+  buildAgentBehaviorRequestBundle,
+  buildEnterpriseAgentBehaviorEvalPlan,
+  loadAgentBehaviorEvidenceSnapshot,
+  scoreAgentBehaviorResponseBundle,
+  type AgentBehaviorResponseBundle,
+} from './core/agent-behavior-eval.js';
 import { logHeader, logInfo, logError, logSuccess, logWarn, colors } from './utils.js';
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
@@ -101,7 +109,20 @@ function hasFlag(args: string[], flag: string): boolean {
 }
 
 function hasJsonFlag(args: string[]): boolean {
-  return hasFlag(args, '--json');
+  return hasFlag(args, '--json') || hasFlag(args, '--json-v1');
+}
+
+function isJsonV1(args: string[]): boolean {
+  return hasFlag(args, '--json-v1');
+}
+
+function stripJsonFlags(args: string[]): string[] {
+  return args.filter((arg) => arg !== '--json' && arg !== '--json-v1');
+}
+
+function printMachineJson(args: string[], command: string, payload: unknown, pretty: boolean = false): void {
+  const value = isJsonV1(args) ? { schemaVersion: 1, command, data: payload } : payload;
+  console.log(JSON.stringify(value, null, pretty ? 2 : undefined));
 }
 
 function requireState() {
@@ -110,8 +131,8 @@ function requireState() {
   return state;
 }
 
-function printJsonOrSummary(payload: unknown, json: boolean, summary: () => void): number {
-  if (json) console.log(JSON.stringify(payload));
+function printJsonOrSummary(payload: unknown, args: string[], command: string, summary: () => void): number {
+  if (hasJsonFlag(args)) printMachineJson(args, command, payload);
   else summary();
   return 0;
 }
@@ -119,7 +140,7 @@ function printJsonOrSummary(payload: unknown, json: boolean, summary: () => void
 function runRoute(args: string[]): number {
   const json = hasJsonFlag(args);
   const apply = hasFlag(args, '--apply');
-  const task = args.filter((arg) => arg !== '--json' && arg !== '--apply').join(' ').trim();
+  const task = stripJsonFlags(args).filter((arg) => arg !== '--apply').join(' ').trim();
   if (!task) {
     logError('route requires task text');
     return 1;
@@ -144,7 +165,7 @@ function runRoute(args: string[]): number {
     success: true,
   });
 
-  return printJsonOrSummary(decision, json, () => {
+  return printJsonOrSummary(decision, args, 'route', () => {
     logHeader(`Routing result for: "${task}"`);
     console.log(`Selected Skill: ${decision.selectedSkill}`);
     console.log(`Pack: ${decision.selectedPack}`);
@@ -187,7 +208,7 @@ function runStateCommand(args: string[]): number {
     success: true,
   });
 
-  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+  return printJsonOrSummary(nextState, args, 'state', () => {
     logHeader(`get-fable state transitioned to ${targetPhase}`);
     console.log(`Phase: ${nextState.phase}`);
     console.log(`Current skill: ${nextState.currentSkill || 'none'}`);
@@ -209,7 +230,7 @@ function runMutationCommand(args: string[]): number {
     success: true,
   });
 
-  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+  return printJsonOrSummary(nextState, args, 'mutation', () => {
     logHeader('get-fable workspace mutation recorded');
     if (source) console.log(`Source: ${source}`);
     console.log(`Mutation generation: ${nextState.mutationGeneration}`);
@@ -231,7 +252,7 @@ function runCardCommand(args: string[]): number {
     setActiveCard(state, clear ? null : cardText)
   );
 
-  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+  return printJsonOrSummary(nextState, args, 'card', () => {
     logHeader(clear ? 'get-fable active card cleared' : 'get-fable active card updated');
     console.log(`Active card: ${nextState.activeCard || 'none'}`);
   });
@@ -275,7 +296,7 @@ function runEvidenceCommand(args: string[]): number {
   });
 
   const latest = nextState.evidence[nextState.evidence.length - 1];
-  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+  return printJsonOrSummary(nextState, args, 'evidence', () => {
     logHeader('get-fable evidence recorded');
     console.log(`Result: ${result}`);
     console.log(`Kind: ${kind}`);
@@ -290,7 +311,7 @@ function runEvidenceCommand(args: string[]): number {
 function runSparkCommand(args: string[]): number {
   const json = hasJsonFlag(args);
   const userIntent =
-    args.filter((arg) => arg !== '--json').join(' ').trim() || undefined;
+    stripJsonFlags(args).join(' ').trim() || undefined;
   const state =
     readFableState(process.cwd()) ||
     createInitialState(new Date().toISOString(), process.cwd());
@@ -318,7 +339,7 @@ function runSparkCommand(args: string[]): number {
   });
 
   if (json) {
-    console.log(JSON.stringify(result, null, 2));
+    printMachineJson(args, 'spark', result, true);
   } else if (result.suggestion) {
     console.log(result.suggestion);
   }
@@ -493,7 +514,7 @@ function runFeedCommand(args: string[]): number {
     case 'list': {
       const feed = loadSkillFeed();
       if (json) {
-        console.log(JSON.stringify(feed, null, 2));
+        printMachineJson(args, 'feed:list', feed, true);
       } else {
         logHeader(`get-fable Skill Feed (${feed.length} skills available)`);
         for (const item of feed) {
@@ -508,10 +529,10 @@ function runFeedCommand(args: string[]): number {
       return 0;
     }
     case 'search': {
-      const query = args.filter((a) => a !== '--json' && a !== 'search').join(' ').trim();
+      const query = stripJsonFlags(args).filter((a) => a !== 'search').join(' ').trim();
       const results = searchSkillFeed(query);
       if (json) {
-        console.log(JSON.stringify(results, null, 2));
+        printMachineJson(args, 'feed:search', results, true);
       } else {
         logHeader(`Search results for "${query}" (${results.length} skills matched)`);
         for (const item of results) {
@@ -534,7 +555,7 @@ function runFeedCommand(args: string[]): number {
         return 1;
       }
       if (json) {
-        console.log(JSON.stringify(detail, null, 2));
+        printMachineJson(args, 'feed:inspect', detail, true);
       } else {
         logHeader(`Skill Detail: ${detail.item.id} [${detail.item.maturity}]`);
         console.log(`Pack: ${detail.item.pack}`);
@@ -595,11 +616,11 @@ function runSkillsCommand(args: string[]): number {
     }
     case 'package':
     case 'packages': {
-      const skillId = args[1] && args[1] !== '--json' ? args[1] : undefined;
+      const skillId = args[1] && !['--json', '--json-v1'].includes(args[1]) ? args[1] : undefined;
       if (skillId) {
         const summary = getSkillPackageSummary(skillId);
         if (json) {
-          console.log(JSON.stringify(summary, null, 2));
+          printMachineJson(args, 'skills:package', summary, true);
         } else {
           logHeader(`Skill Package Summary: ${skillId}`);
           console.log(`Valid: ${summary.valid ? 'YES' : 'NO'}`);
@@ -614,7 +635,7 @@ function runSkillsCommand(args: string[]): number {
       } else {
         const results = validateAllSkillPackages();
         if (json) {
-          console.log(JSON.stringify(results, null, 2));
+          printMachineJson(args, 'skills:package', results, true);
         } else {
           logHeader('All Skill Packages Status');
           for (const [id, res] of Object.entries(results)) {
@@ -650,16 +671,16 @@ function runSkillsCommand(args: string[]): number {
 
 function runGraphCommand(args: string[]): number {
   const json = hasJsonFlag(args);
-  const targetSkill = args.find((a) => a !== '--json');
+  const targetSkill = stripJsonFlags(args)[0];
 
   try {
     const graph = loadNeuralGraph();
     if (json) {
       if (targetSkill) {
         const conn = getNeuralConnections(targetSkill, graph);
-        console.log(JSON.stringify(conn, null, 2));
+        printMachineJson(args, 'graph', conn, true);
       } else {
-        console.log(JSON.stringify(graph, null, 2));
+        printMachineJson(args, 'graph', graph, true);
       }
     } else {
       console.log(renderNeuralGraphAscii(targetSkill, graph));
@@ -679,7 +700,7 @@ function runRecipesCommand(args: string[]): number {
     case 'list': {
       const recipes = listRecipes();
       if (json) {
-        console.log(JSON.stringify(recipes, null, 2));
+        printMachineJson(args, 'recipes:list', recipes, true);
       } else {
         logHeader(`Fable Lifecycle Recipes (${recipes.length} available)`);
         for (const r of recipes) {
@@ -704,7 +725,7 @@ function runRecipesCommand(args: string[]): number {
             logError(`Recipe '${id}' not found`);
             return 1;
           }
-          console.log(JSON.stringify(recipe, null, 2));
+          printMachineJson(args, 'recipes:inspect', recipe, true);
         } else {
           console.log(renderRecipeAscii(id));
         }
@@ -745,7 +766,7 @@ function runPacksCommand(args: string[]): number {
       });
 
       if (json) {
-        console.log(JSON.stringify(packs, null, 2));
+        printMachineJson(args, 'packs:list', packs, true);
       } else {
         logHeader(`Fable Skill Packs (${packs.length} available)`);
         for (const p of packs) {
@@ -769,7 +790,7 @@ function runPacksCommand(args: string[]): number {
       }
       const content = JSON.parse(fs.readFileSync(packFile, 'utf-8'));
       if (json) {
-        console.log(JSON.stringify(content, null, 2));
+        printMachineJson(args, 'packs:inspect', content, true);
       } else {
         logHeader(`Pack: ${content.name} (v${content.version})`);
         console.log(`Description: ${content.description}`);
@@ -783,10 +804,67 @@ function runPacksCommand(args: string[]): number {
   }
 }
 
+
+function optionValue(args: string[], flag: string): string | undefined {
+  const index = args.indexOf(flag);
+  if (index < 0) return undefined;
+  const value = args[index + 1];
+  if (!value || value.startsWith('--')) throw new Error(`${flag} requires a value`);
+  return value;
+}
+
+function writeJsonFile(filePath: string, payload: unknown): void {
+  const resolved = path.resolve(process.cwd(), filePath);
+  fs.mkdirSync(path.dirname(resolved), { recursive: true });
+  fs.writeFileSync(resolved, `${JSON.stringify(payload, null, 2)}\n`, 'utf-8');
+}
+
+function runBehaviorEvalCommand(args: string[]): number {
+  const sub = (args[0] || 'status').toLowerCase();
+  const plan = buildEnterpriseAgentBehaviorEvalPlan(getRepoRootDir());
+  if (sub === 'export') {
+    const bundle = buildAgentBehaviorRequestBundle(plan);
+    const out = optionValue(args, '--out');
+    if (out) {
+      writeJsonFile(out, bundle);
+      logSuccess(`Wrote oracle-free behavior requests to ${path.resolve(process.cwd(), out)}`);
+    } else {
+      printMachineJson(args, 'behavior-eval:export', bundle, true);
+    }
+    return 0;
+  }
+  if (sub === 'score') {
+    const responsePath = args[1];
+    if (!responsePath || responsePath.startsWith('--')) {
+      logError('behavior-eval score requires a response bundle path');
+      return 1;
+    }
+    const responses = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), responsePath), 'utf-8')) as AgentBehaviorResponseBundle;
+    const scored = scoreAgentBehaviorResponseBundle(responses, plan);
+    const out = optionValue(args, '--out') || AGENT_BEHAVIOR_EVIDENCE_PATH;
+    writeJsonFile(out, scored);
+    logSuccess(`Scored ${scored.passed}/${scored.total} behavior cases for ${scored.providerId}`);
+    console.log(`Evidence: ${path.resolve(process.cwd(), out)}`);
+    return 0;
+  }
+  if (sub === 'status') {
+    const validation = loadAgentBehaviorEvidenceSnapshot(process.cwd(), plan);
+    if (hasJsonFlag(args)) printMachineJson(args, 'behavior-eval:status', validation);
+    else console.log(`${validation.status} ${validation.reason}`);
+    return validation.fresh ? 0 : 1;
+  }
+  logError('Unknown behavior-eval action. Use: export, score <responses.json>, status');
+  return 1;
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number | Promise<number> {
   const command = args[0] || 'help';
 
   switch (command) {
+    case 'behavior-eval':
+    case 'behavior':
+      return runBehaviorEvalCommand(args.slice(1));
+
     case 'graph':
       return runGraphCommand(args.slice(1));
 
@@ -888,7 +966,7 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
       });
 
       if (hasJsonFlag(args)) {
-        console.log(JSON.stringify(report));
+        printMachineJson(args, 'doctor', report);
       } else {
         logHeader('get-fable doctor');
         for (const item of report.checks) {
@@ -904,7 +982,7 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     }
 
     case 'status':
-      if (hasJsonFlag(args)) console.log(JSON.stringify(getFableStatus(process.cwd())));
+      if (hasJsonFlag(args)) printMachineJson(args, 'status', getFableStatus(process.cwd()));
       else {
         logHeader('get-fable installation status');
         checkFableStatus(process.cwd());
@@ -969,6 +1047,8 @@ ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}get-fable${colors.reset} [command]
   $ ${colors.green}bun ./bin/get-fable.js${colors.reset} [command]
 
+Machine output: existing --json remains backward compatible; --json-v1 wraps data in a schema-v1 envelope.
+
 ${colors.bright}CORE WORKFLOW COMMANDS:${colors.reset}
   ${colors.yellow}init${colors.reset}                 Create durable project state and canonical project skills
   ${colors.yellow}route <task>${colors.reset}         Explain workflow selection; add --apply to persist it and --json for machine output
@@ -990,6 +1070,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}update [--check]${colors.reset}     Check and apply automatic updates
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
+  ${colors.yellow}behavior-eval${colors.reset}        Export oracle-free cases, score provider responses, and inspect evidence
 
 ${colors.bright}HELP & GUIDANCE:${colors.reset}
   ${colors.yellow}help [topic]${colors.reset}         Display interactive help on: lifecycle, skills, spark, evidence, platforms, hooks, commands

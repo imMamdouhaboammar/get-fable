@@ -5,6 +5,7 @@ import { getSkillManifestPath, validateSkillPackage } from './skill-package.js';
 import { loadFrozenRoutingHoldoutEvidence, loadFrozenSparkHoldoutEvidence, runEnterpriseRoutingBenchmark, runEnterpriseSparkBenchmark, runSkillKnownCases, runSparkBenchmark } from './eval-runner.js';
 import { routeTask } from './task-router.js';
 import { loadFrozenVerificationHoldoutEvidence, runEnterpriseVerificationBenchmark } from './verification-eval.js';
+import { buildEnterpriseAgentBehaviorEvalPlan, loadAgentBehaviorEvidenceSnapshot, validateAgentBehaviorEvidenceSnapshot, type AgentBehaviorEvalResult } from './agent-behavior-eval.js';
 import type { FableSkillId } from './types.js';
 
 export type SkillMaturity = 'M0' | 'M1' | 'M2' | 'M3' | 'M4' | 'M5';
@@ -83,7 +84,8 @@ function proveRuntimeIntegration(id: FableSkillId, repoRoot: string, packageVali
 
 export function evaluateSkillMaturity(
   id: FableSkillId,
-  repoRoot: string = getCoreRepoRoot()
+  repoRoot: string = getCoreRepoRoot(),
+  options: { agentBehaviorEvidence?: AgentBehaviorEvalResult | null } = {}
 ): SkillMaturityEvidence {
   const sourceAvailable = fs.existsSync(path.join(repoRoot, 'skills', id, 'SKILL.md'));
   const structured = fs.existsSync(getSkillManifestPath(id, repoRoot));
@@ -98,6 +100,18 @@ export function evaluateSkillMaturity(
   const frozenSparkHoldout = id === 'fable-spark' && packageValid ? loadFrozenSparkHoldoutEvidence(repoRoot) : null;
   const enterpriseVerification = id === 'fable-verify' && packageValid ? runEnterpriseVerificationBenchmark(repoRoot) : null;
   const frozenVerificationHoldout = id === 'fable-verify' && packageValid ? loadFrozenVerificationHoldoutEvidence(repoRoot) : null;
+  const agentBehaviorPlan = packageValid && id !== 'get-fable' && id !== 'fable-spark' && id !== 'fable-verify'
+    ? buildEnterpriseAgentBehaviorEvalPlan(repoRoot)
+    : [];
+  const hasInjectedAgentEvidence = Object.prototype.hasOwnProperty.call(options, 'agentBehaviorEvidence');
+  const agentBehaviorValidation = agentBehaviorPlan.length > 0
+    ? hasInjectedAgentEvidence
+      ? validateAgentBehaviorEvidenceSnapshot(options.agentBehaviorEvidence, agentBehaviorPlan)
+      : loadAgentBehaviorEvidenceSnapshot(repoRoot, agentBehaviorPlan)
+    : null;
+  const agentBehaviorCases = agentBehaviorValidation?.fresh && agentBehaviorValidation.snapshot
+    ? agentBehaviorValidation.snapshot.cases.filter((item) => item.skillId === id)
+    : [];
   const knownTotal = spark ? spark.total : known?.executable || 0;
   const knownPassed = spark ? spark.passed : known?.passed || 0;
   const runtimeIntegrated = Boolean(registryEntry && proveRuntimeIntegration(id, repoRoot, packageValid));
@@ -125,6 +139,12 @@ export function evaluateSkillMaturity(
     holdout: frozenVerificationHoldout?.fresh && frozenVerificationHoldout.snapshot
       ? slice(frozenVerificationHoldout.snapshot.total, frozenVerificationHoldout.snapshot.passed, 0.9)
       : slice(0, 0),
+  } : agentBehaviorCases.length > 0 ? {
+    known: slice(agentBehaviorCases.filter((item) => item.category === 'known').length, agentBehaviorCases.filter((item) => item.category === 'known' && item.passed).length, 0.9),
+    negative: slice(agentBehaviorCases.filter((item) => item.category === 'negative').length, agentBehaviorCases.filter((item) => item.category === 'negative' && item.passed).length, 0.95),
+    ambiguous: slice(agentBehaviorCases.filter((item) => item.category === 'ambiguous').length, agentBehaviorCases.filter((item) => item.category === 'ambiguous' && item.passed).length, 0.9),
+    adversarial: slice(agentBehaviorCases.filter((item) => item.category === 'adversarial').length, agentBehaviorCases.filter((item) => item.category === 'adversarial' && item.passed).length, 0.95),
+    holdout: slice(agentBehaviorCases.filter((item) => item.category === 'holdout').length, agentBehaviorCases.filter((item) => item.category === 'holdout' && item.passed).length, 0.9),
   } : {
     known: slice(knownTotal, knownPassed),
     negative: slice(known?.negativeCases || 0, known?.negativePassed || 0),

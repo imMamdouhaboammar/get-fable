@@ -3,29 +3,108 @@
   "title": "FableAgentBehaviorEvalResultV1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "metric", "providerId", "total", "passed", "passRate", "forbiddenViolations", "cases"],
+  "required": [
+    "schemaVersion",
+    "metric",
+    "providerId",
+    "total",
+    "passed",
+    "passRate",
+    "forbiddenViolations",
+    "cases",
+    "corpusSha256",
+    "oracleSha256",
+    "capturedAt"
+  ],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "metric": { "const": "agent-behavior" },
-    "providerId": { "type": "string", "minLength": 1 },
-    "total": { "type": "integer", "minimum": 0 },
-    "passed": { "type": "integer", "minimum": 0 },
-    "passRate": { "type": "number", "minimum": 0, "maximum": 1 },
-    "forbiddenViolations": { "type": "integer", "minimum": 0 },
+    "schemaVersion": {
+      "const": 1
+    },
+    "metric": {
+      "const": "agent-behavior"
+    },
+    "providerId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "passed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "passRate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "forbiddenViolations": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "corpusSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "oracleSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
     "cases": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["skillId", "caseId", "passed", "forbiddenViolated", "expected"],
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "skillId",
+          "caseId",
+          "passed",
+          "forbiddenViolated",
+          "expected"
+        ],
         "properties": {
-          "skillId": { "type": "string", "minLength": 1 },
-          "caseId": { "type": "string", "minLength": 1 },
-          "passed": { "type": "boolean" },
-          "forbiddenViolated": { "type": "boolean" },
-          "expected": { "$ref": "#/definitions/oracle" },
-          "forbidden": { "$ref": "#/definitions/partialOracle" },
-          "response": { "$ref": "#/definitions/response" },
-          "error": { "type": "string" }
+          "category": {
+            "enum": [
+              "known",
+              "negative",
+              "ambiguous",
+              "adversarial",
+              "holdout"
+            ]
+          },
+          "skillId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caseId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "forbiddenViolated": {
+            "type": "boolean"
+          },
+          "expected": {
+            "$ref": "#/definitions/oracle"
+          },
+          "forbidden": {
+            "$ref": "#/definitions/partialOracle"
+          },
+          "response": {
+            "$ref": "#/definitions/response"
+          },
+          "error": {
+            "type": "string"
+          }
         }
       }
     }
@@ -33,34 +112,104 @@
   "definitions": {
     "oracle": {
       "type": "object",
-      "required": ["action"],
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
       "properties": {
-        "action": { "type": "string", "minLength": 1 },
-        "selectedSkill": { "type": "string" },
-        "produces": { "type": "string" },
-        "gates": { "type": "array", "items": { "type": "string" } },
-        "structure": { "type": "array", "items": { "type": "string" } }
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selectedSkill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "produces": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "structure": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "partialOracle": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "action": { "type": "string" },
-        "selectedSkill": { "type": "string" },
-        "produces": { "type": "string" },
-        "gates": { "type": "array", "items": { "type": "string" } },
-        "structure": { "type": "array", "items": { "type": "string" } }
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selectedSkill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "produces": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "structure": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "response": {
       "type": "object",
-      "required": ["action"],
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
       "properties": {
-        "action": { "type": "string", "minLength": 1 },
-        "selectedSkill": { "type": "string" },
-        "produces": { "type": "string" },
-        "gates": { "type": "array", "items": { "type": "string" } },
-        "structure": { "type": "array", "items": { "type": "string" } }
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selectedSkill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "produces": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "structure": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     }
   }

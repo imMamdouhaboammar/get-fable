@@ -51,4 +51,24 @@ describe('evidence-backed maturity', () => {
     expect(evidence.enterpriseReady).toBe(false);
   });
 
+
+  test('provider-scored enterprise behavior evidence can lift action Skills to M4', async () => {
+    const agentEval: any = await import('../src/core/agent-behavior-eval.ts');
+    const plan = agentEval.buildEnterpriseAgentBehaviorEvalPlan();
+    const requestBundle = agentEval.buildAgentBehaviorRequestBundle(plan);
+    const scored = agentEval.scoreAgentBehaviorResponseBundle({
+      schemaVersion: 1,
+      metric: 'agent-behavior-responses',
+      providerId: 'fixture-provider',
+      responses: requestBundle.requests.map((request: any, index: number) => ({ caseId: request.caseId, response: { ...plan[index].expected } })),
+    }, plan);
+    const evidence = (evaluateSkillMaturity as any)('fable-tdd', undefined, { agentBehaviorEvidence: scored });
+    expect(evidence.maturity).toBe('M4');
+    expect(evidence.behavior.known.status).toBe('PASS');
+    expect(evidence.behavior.negative.status).toBe('PASS');
+    expect(evidence.behavior.ambiguous.status).toBe('PASS');
+    expect(evidence.behavior.adversarial.status).toBe('PASS');
+    expect(evidence.behavior.holdout.status).toBe('PASS');
+  });
+
 });
