@@ -16,6 +16,8 @@ import {
   applyRoutingDecision,
   isFablePhase,
   readFableState,
+  recordMutation,
+  setActiveCard,
   transitionState,
   writeFableState,
 } from './core/state.js';
@@ -24,7 +26,17 @@ import { runDoctor } from './core/doctor.js';
 import type { EvidenceKind, EvidenceResult } from './core/types.js';
 import { logHeader, logError, colors } from './utils.js';
 
-const EVIDENCE_KINDS: EvidenceKind[] = ['test', 'build', 'runtime', 'review', 'observation'];
+const EVIDENCE_KINDS: EvidenceKind[] = [
+  'test',
+  'build',
+  'runtime',
+  'review',
+  'observation',
+  'security',
+  'research',
+  'receipt',
+  'handoff',
+];
 
 export function getPackageVersion(): string {
   try {
@@ -92,9 +104,12 @@ function runRoute(args: string[]): number {
       () => {
         logHeader('get-fable routing decision applied');
         console.log(`Selected skill: ${decision.selectedSkill}`);
+        console.log(`Pack: ${decision.selectedPack}`);
+        console.log(`Task shape: ${decision.taskShape}`);
         console.log(`Phase: ${nextState.phase}`);
         console.log(`Confidence: ${decision.confidence}`);
         console.log(`Reasons: ${decision.reasons.join('; ')}`);
+        console.log(`Required gates: ${decision.requiredGates.join(', ') || 'none'}`);
         console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
       }
     );
@@ -103,9 +118,12 @@ function runRoute(args: string[]): number {
   return printJsonOrSummary(decision, json, () => {
     logHeader('get-fable routing decision');
     console.log(`Selected skill: ${decision.selectedSkill}`);
+    console.log(`Pack: ${decision.selectedPack}`);
+    console.log(`Task shape: ${decision.taskShape}`);
     console.log(`Confidence: ${decision.confidence}`);
     console.log(`Requires plan: ${decision.requiresPlan ? 'YES' : 'NO'}`);
     console.log(`Reasons: ${decision.reasons.join('; ')}`);
+    console.log(`Required gates: ${decision.requiredGates.join(', ') || 'none'}`);
     console.log(`Next skills: ${decision.nextSkills.join(', ')}`);
   });
 }
@@ -129,7 +147,46 @@ function runStateCommand(args: string[]): number {
     console.log(`Phase: ${nextState.phase}`);
     console.log(`Current skill: ${nextState.currentSkill || 'none'}`);
     console.log(`Failure streak: ${nextState.failureStreak}`);
+    console.log(`Mutation generation: ${nextState.mutationGeneration}`);
+    console.log(`Verified generation: ${nextState.verifiedGeneration}`);
     console.log(`Passing evidence: ${nextState.evidence.filter((item) => item.result === 'pass').length}`);
+  });
+}
+
+function runMutationCommand(args: string[]): number {
+  const source = args.filter((arg) => !arg.startsWith('--')).join(' ').trim() || 'workspace mutation';
+  const state = requireState();
+  const nextState = recordMutation(state);
+  writeFableState(process.cwd(), nextState);
+
+  return printJsonOrSummary(
+    { ...nextState, mutationSource: source },
+    hasJsonFlag(args),
+    () => {
+      logHeader('get-fable workspace mutation recorded');
+      console.log(`Source: ${source}`);
+      console.log(`Mutation generation: ${nextState.mutationGeneration}`);
+      console.log(`Verified generation: ${nextState.verifiedGeneration}`);
+      console.log('Fresh verification is required before substantial completion.');
+    }
+  );
+}
+
+function runCardCommand(args: string[]): number {
+  const clear = hasFlag(args, '--clear');
+  const card = args.filter((arg) => !arg.startsWith('--')).join(' ').trim();
+  if (!clear && !card) {
+    logError('card requires card text or --clear');
+    return 1;
+  }
+
+  const state = requireState();
+  const nextState = setActiveCard(state, clear ? null : card);
+  writeFableState(process.cwd(), nextState);
+
+  return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
+    logHeader('get-fable active card updated');
+    console.log(`Active card: ${nextState.activeCard || 'none'}`);
   });
 }
 
@@ -157,13 +214,16 @@ function runEvidenceCommand(args: string[]): number {
   const nextState = addEvidence(state, { kind, source, result, detail });
   writeFableState(process.cwd(), nextState);
 
+  const latest = nextState.evidence[nextState.evidence.length - 1];
   return printJsonOrSummary(nextState, hasJsonFlag(args), () => {
     logHeader('get-fable evidence recorded');
     console.log(`Result: ${result}`);
     console.log(`Kind: ${kind}`);
     console.log(`Source: ${source}`);
+    console.log(`Generation: ${latest.generation}`);
     console.log(`Phase: ${nextState.phase}`);
     console.log(`Failure streak: ${nextState.failureStreak}`);
+    console.log(`Verified generation: ${nextState.verifiedGeneration}`);
   });
 }
 
@@ -196,6 +256,12 @@ export function runCli(args: string[] = process.argv.slice(2)): number {
 
     case 'state':
       return runStateCommand(args.slice(1));
+
+    case 'mutation':
+      return runMutationCommand(args.slice(1));
+
+    case 'card':
+      return runCardCommand(args.slice(1));
 
     case 'evidence':
       return runEvidenceCommand(args.slice(1));
@@ -284,7 +350,7 @@ function listAssets() {
 
 export function showHelp() {
   console.log(`
-${colors.bright}${colors.cyan}get-fable v${getPackageVersion()}${colors.reset} | Frontier-like execution discipline for AI coding agents
+${colors.bright}${colors.cyan}get-fable v${getPackageVersion()}${colors.reset} | Coding lifecycle discipline for AI agents
 
 ${colors.bright}USAGE:${colors.reset}
   $ ${colors.green}get-fable${colors.reset} [command]
@@ -296,7 +362,9 @@ ${colors.bright}COMMANDS:${colors.reset}
   ${colors.yellow}init${colors.reset}                 Create durable project state and canonical project skills
   ${colors.yellow}route <task>${colors.reset}         Explain workflow selection; add --apply to persist it and --json for machine output
   ${colors.yellow}state <phase>${colors.reset}        Transition durable workflow state; add --substantial and/or --json
-  ${colors.yellow}evidence ...${colors.reset}         Record pass/fail evidence: <result> <kind> <source> <detail>
+  ${colors.yellow}mutation [source]${colors.reset}    Record a workspace mutation and invalidate older verification
+  ${colors.yellow}card <text>${colors.reset}          Set the active work card; use --clear to remove it
+  ${colors.yellow}evidence ...${colors.reset}         Record typed evidence: <result> <kind> <source> <detail>
   ${colors.yellow}doctor${colors.reset}               Validate registry, plugin, project state, skills, and hook runtime; add --json
   ${colors.yellow}serve [port]${colors.reset}         Start the local request-enrichment proxy, default port 8080
   ${colors.yellow}router [port]${colors.reset}        Alias for serve
@@ -306,6 +374,8 @@ ${colors.bright}COMMANDS:${colors.reset}
   ${colors.yellow}prompt${colors.reset}               Print the compatibility execution prompt
   ${colors.yellow}version${colors.reset}              Print the installed get-fable version
   ${colors.yellow}help${colors.reset}                 Display this help menu
+
+Evidence kinds: ${EVIDENCE_KINDS.join(', ')}
 
 Running get-fable without a command shows this help. Installation is always explicit.
 `);
