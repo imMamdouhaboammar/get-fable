@@ -1,6 +1,7 @@
 import { readFableState } from './state.js';
 import { getCoreRepoRoot, readSkillBody } from './skill-registry.js';
 import { routeTask } from './task-router.js';
+import { evaluateFableSpark } from './spark.js';
 import type { FableState, RoutingDecision } from './types.js';
 
 const CORE_CONTRACT = `# get-fable runtime contract
@@ -19,10 +20,12 @@ export interface CompiledDirective {
   state: FableState | null;
 }
 
-function compactState(state: FableState | null): string {
+function compactState(state: FableState | null, task?: string): string {
   if (!state) return 'Project state: no active .fable/state.json was found.';
   const evidencePasses = state.evidence.filter((item) => item.result === 'pass').length;
   const evidenceFailures = state.evidence.filter((item) => item.result === 'fail').length;
+  const spark = evaluateFableSpark({ state, userIntent: task });
+  const sparkSnippet = spark.suggestion ? `; sparkNextMove=${spark.suggestion}` : '';
   return [
     `Project state: phase=${state.phase}`,
     `skill=${state.currentSkill || 'none'}`,
@@ -33,7 +36,7 @@ function compactState(state: FableState | null): string {
     `activeCard=${state.activeCard || 'none'}`,
     `evidencePasses=${evidencePasses}`,
     `evidenceFailures=${evidenceFailures}`,
-  ].join('; ');
+  ].join('; ') + sparkSnippet;
 }
 
 export function compileFableDirective(
@@ -54,7 +57,7 @@ export function compileFableDirective(
     `\n## Selected workflow\n${decision.selectedSkill} (${decision.selectedPack}; task=${decision.taskShape})`,
     `\n## Routing evidence\n${routingSummary}`,
     `\n## Required gates\n${gates}`,
-    `\n## Runtime state\n${compactState(state)}`,
+    `\n## Runtime state\n${compactState(state, task)}`,
     `\n## Selected skill contract\n${skillBody}`,
   ]
     .join('\n')

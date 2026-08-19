@@ -14,6 +14,7 @@ import { startMythosRouterServer } from './router/index.js';
 import {
   addEvidence,
   applyRoutingDecision,
+  createInitialState,
   isFablePhase,
   readFableState,
   recordMutation,
@@ -23,6 +24,7 @@ import {
 } from './core/state.js';
 import { routeTask } from './core/task-router.js';
 import { runDoctor } from './core/doctor.js';
+import { evaluateFableSpark } from './core/spark.js';
 import type { EvidenceKind, EvidenceResult } from './core/types.js';
 import { logHeader, logError, colors } from './utils.js';
 
@@ -227,6 +229,38 @@ function runEvidenceCommand(args: string[]): number {
   });
 }
 
+function runSparkCommand(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const userIntent =
+    args.filter((arg) => arg !== '--json').join(' ').trim() || undefined;
+  const state =
+    readFableState(process.cwd()) ||
+    createInitialState(new Date().toISOString(), process.cwd());
+
+  let openCards: string[] = [];
+  const ledgerPath = path.join(process.cwd(), '.fable', 'LEDGER.md');
+  if (fs.existsSync(ledgerPath)) {
+    const text = fs.readFileSync(ledgerPath, 'utf-8');
+    openCards = text
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith('- [ ]'));
+  }
+
+  const result = evaluateFableSpark({
+    state,
+    userIntent,
+    openCards,
+  });
+
+  if (json) {
+    console.log(JSON.stringify(result, null, 2));
+  } else if (result.suggestion) {
+    console.log(result.suggestion);
+  }
+  return 0;
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number {
   const command = args[0] || 'help';
 
@@ -253,6 +287,9 @@ export function runCli(args: string[] = process.argv.slice(2)): number {
 
     case 'route':
       return runRoute(args.slice(1));
+
+    case 'spark':
+      return runSparkCommand(args.slice(1));
 
     case 'state':
       return runStateCommand(args.slice(1));
@@ -361,6 +398,7 @@ ${colors.bright}COMMANDS:${colors.reset}
   ${colors.yellow}install-antigravity${colors.reset}  Install the Antigravity / Gemini target
   ${colors.yellow}init${colors.reset}                 Create durable project state and canonical project skills
   ${colors.yellow}route <task>${colors.reset}         Explain workflow selection; add --apply to persist it and --json for machine output
+  ${colors.yellow}spark [intent]${colors.reset}       Predict the atomic next move from current state; add --json
   ${colors.yellow}state <phase>${colors.reset}        Transition durable workflow state; add --substantial and/or --json
   ${colors.yellow}mutation [source]${colors.reset}    Record a workspace mutation and invalidate older verification
   ${colors.yellow}card <text>${colors.reset}          Set the active work card; use --clear to remove it

@@ -44,6 +44,30 @@ Persist a routing decision when you want the durable state to follow it:
 get-fable route "Design the migration" --apply --json
 ```
 
+## Spark next move prediction
+
+`fable-spark` is a situational awareness micro-policy running continuously over the lifecycle. It predicts the single most natural atomic next action based on 6 core signals (`USER INTENT`, `ACTIVE CARD`, `CURRENT SKILL`, `MISSING GATES`, `MUTATION DELTA`, `LATEST EVIDENCE / FAILS`):
+
+```bash
+# Print next move for agent or human
+get-fable spark
+
+# Structured machine output
+get-fable spark "fix token refresh bug" --json
+```
+
+Output object format:
+```json
+{
+  "suggestion": "run the affected refresh tests",
+  "reasonCode": "verification-stale-after-mutation",
+  "confidence": 0.93,
+  "source": "mutation-delta",
+  "silent": false
+}
+```
+
+
 ## Work cards
 
 Set the current bounded unit of work:

@@ -411,6 +411,7 @@ Running get-fable without a command only shows help
 | `init` | Create durable project state and canonical project skills |
 | `route <task>` | Select and explain the current lifecycle skill |
 | `route <task> --apply` | Route the task and persist the decision |
+| `spark [intent]` | Predict the atomic next move from current state & evidence (`--json`) |
 | `state <phase>` | Move durable state through a valid coarse phase |
 | `card <text>` | Set the active bounded work card |
 | `mutation [source]` | Record a workspace mutation and stale older verification |

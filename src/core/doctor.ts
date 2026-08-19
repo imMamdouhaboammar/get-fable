@@ -3,6 +3,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './skill-registry.js';
 import { readFableState } from './state.js';
+import { evaluateFableSpark } from './spark.js';
 import type { DoctorCheck, DoctorReport } from './types.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
@@ -149,6 +150,14 @@ export function runDoctor(
       const state = readFableState(targetDir);
       if (!state) throw new Error('.fable/state.json is missing');
       checks.push(check('project-state', 'pass', `State schema ${state.schemaVersion}, phase ${state.phase}`));
+      const spark = evaluateFableSpark({ state });
+      checks.push(
+        check(
+          'fable-spark',
+          'pass',
+          spark.silent ? 'Spark micro-policy standing by (silent)' : `Next move: ${spark.suggestion}`
+        )
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       checks.push(check('project-state', 'error', message));

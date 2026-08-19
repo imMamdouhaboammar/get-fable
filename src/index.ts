@@ -11,3 +11,5 @@ export * from './core/task-router.js';
 export * from './core/state.js';
 export * from './core/prompt-compiler.js';
 export * from './core/doctor.js';
+export * from './core/spark.js';
+
