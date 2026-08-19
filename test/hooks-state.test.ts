@@ -62,6 +62,45 @@ describe('lifecycle hooks and durable state', () => {
     expect(state.substantial).toBe(true);
   });
 
+  test('official Claude failure events increment recovery state and success resets it', () => {
+    const dir = project();
+    const failure = {
+      hook_event_name: 'PostToolUseFailure',
+      tool_name: 'Bash',
+      tool_input: { command: 'bun test' },
+      session_id: 'claude-event-session',
+      cwd: dir,
+      error: 'Exit code 1\nTests failed',
+      is_interrupt: false,
+      duration_ms: 42,
+    };
+    const success = {
+      hook_event_name: 'PostToolUse',
+      tool_name: 'Bash',
+      tool_input: { command: 'bun test' },
+      tool_response: { stdout: 'all tests passed', stderr: '' },
+      session_id: 'claude-event-session',
+      cwd: dir,
+    };
+
+    expect(runHook('fable_fail_streak.py', failure).status).toBe(0);
+    expect(runHook('fable_fail_streak.py', success).status).toBe(0);
+    expect(runHook('fable_fail_streak.py', failure).status).toBe(0);
+
+    let state = JSON.parse(fs.readFileSync(path.join(dir, '.fable', 'state.json'), 'utf-8'));
+    expect(state.failureStreak).toBe(1);
+    expect(state.phase).not.toBe('recovering');
+
+    const recovering = runHook('fable_fail_streak.py', failure);
+    expect(recovering.status).toBe(0);
+    expect(JSON.parse(recovering.stdout).hookSpecificOutput.hookEventName).toBe('PostToolUseFailure');
+
+    state = JSON.parse(fs.readFileSync(path.join(dir, '.fable', 'state.json'), 'utf-8'));
+    expect(state.failureStreak).toBe(2);
+    expect(state.phase).toBe('recovering');
+    expect(state.currentSkill).toBe('fable-recover');
+  });
+
   test('close guard blocks substantial work that has no passing state evidence', () => {
     const dir = project();
     const statePath = path.join(dir, '.fable', 'state.json');

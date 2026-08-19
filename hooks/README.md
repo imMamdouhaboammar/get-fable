@@ -12,20 +12,22 @@ Every hook follows three rules:
 - **project local**: durable workflow state lives in the current project's `.fable/state.json`
 - **fail open**: an unexpected hook error must not brick the host session
 
-## Four hooks
+## Four lifecycle scripts
 
 | Hook | Event | Responsibility |
 |---|---|---|
 | `fable_profile_inject.py` | `SessionStart` | Inject compact workflow phase, selected skill, failure streak, and open-card context |
 | `fable_spawn_guard.py` | `PreToolUse` on Agent/Task/Workflow | Require a live bounded ledger card before a large delegation |
-| `fable_fail_streak.py` | `PostToolUse` on Bash | Update durable failure state and route two consecutive failures into `fable-recover` |
+| `fable_fail_streak.py` | `PostToolUse` and `PostToolUseFailure` on Bash | Reset on success, record failures, and route two consecutive failures into `fable-recover` |
 | `fable_close_guard.py` | `Stop` | Block unfinished cards, missing ledger evidence, stale state evidence, or substantial work whose durable phase is not `complete` |
 
 `_fable_common.py` provides shared project discovery, ledger parsing, atomic state writes, evidence checks, and the advisory per-session failure counter.
 
 ## Durable failure recovery
 
-When `fable_fail_streak.py` observes a command result it updates `.fable/state.json`.
+When `fable_fail_streak.py` observes a Claude Bash result it updates `.fable/state.json`.
+Claude emits successful results through `PostToolUse` and failed executions
+through `PostToolUseFailure`, so both registrations are required.
 
 A success resets the durable `failureStreak` to zero but does not silently leave an active recovery phase.
 

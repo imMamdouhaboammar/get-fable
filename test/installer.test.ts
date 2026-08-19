@@ -4,12 +4,16 @@ import os from 'node:os';
 import path from 'node:path';
 import {
   checkFableStatus,
+  getFableStatus,
   initProjectFable,
+  installGlobalFable,
   installAntigravityGlobal,
 } from '../src/installer.ts';
 
 const tempDirs: string[] = [];
 const previousGeminiDir = process.env.FABLE_GEMINI_CONFIG_DIR;
+const previousClaudeDir = process.env.CLAUDE_CONFIG_DIR;
+const previousKernelDir = process.env.FABLE_AGENT_KERNEL_DIR;
 const canonicalSkills = [
   'get-fable',
   'fable-discover',
@@ -26,12 +30,75 @@ function makeTempDir(prefix: string) {
 }
 
 afterEach(() => {
+  if (previousClaudeDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
+  else process.env.CLAUDE_CONFIG_DIR = previousClaudeDir;
+
   if (previousGeminiDir === undefined) delete process.env.FABLE_GEMINI_CONFIG_DIR;
   else process.env.FABLE_GEMINI_CONFIG_DIR = previousGeminiDir;
+
+  if (previousKernelDir === undefined) delete process.env.FABLE_AGENT_KERNEL_DIR;
+  else process.env.FABLE_AGENT_KERNEL_DIR = previousKernelDir;
 
   for (const dir of tempDirs.splice(0)) {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+describe('installGlobalFable', () => {
+  test('installs both Claude Bash result events idempotently and preserves unrelated hooks', () => {
+    const root = makeTempDir('get-fable-global-');
+    const claude = path.join(root, 'claude');
+    process.env.CLAUDE_CONFIG_DIR = claude;
+    process.env.FABLE_GEMINI_CONFIG_DIR = path.join(root, 'gemini');
+    process.env.FABLE_AGENT_KERNEL_DIR = path.join(root, 'missing-kernel');
+    fs.mkdirSync(claude, { recursive: true });
+    fs.writeFileSync(
+      path.join(claude, 'settings.json'),
+      JSON.stringify({
+        hooks: {
+          PostToolUse: [
+            {
+              matcher: 'Write',
+              hooks: [{ type: 'command', command: 'echo unrelated' }],
+            },
+          ],
+        },
+      })
+    );
+
+    installGlobalFable();
+    const first = fs.readFileSync(path.join(claude, 'settings.json'), 'utf-8');
+    installGlobalFable();
+    const second = fs.readFileSync(path.join(claude, 'settings.json'), 'utf-8');
+
+    expect(second).toBe(first);
+    const settings = JSON.parse(second);
+    const fableEntries = (event: string) =>
+      settings.hooks[event].filter((entry: any) =>
+        entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
+      );
+    expect(fableEntries('PostToolUse')).toHaveLength(1);
+    expect(fableEntries('PostToolUseFailure')).toHaveLength(1);
+    expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(5);
+  });
+
+  test('status rejects a Claude hook wired to the wrong script or matcher', () => {
+    const root = makeTempDir('get-fable-global-status-');
+    const claude = path.join(root, 'claude');
+    process.env.CLAUDE_CONFIG_DIR = claude;
+    process.env.FABLE_GEMINI_CONFIG_DIR = path.join(root, 'gemini');
+    process.env.FABLE_AGENT_KERNEL_DIR = path.join(root, 'missing-kernel');
+
+    installGlobalFable();
+    const settingsPath = path.join(claude, 'settings.json');
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+    settings.hooks.PostToolUseFailure[0].hooks[0].command = 'python3 fable_close_guard.py';
+    settings.hooks.PostToolUse[0].matcher = 'Write';
+    fs.writeFileSync(settingsPath, JSON.stringify(settings));
+
+    expect(getFableStatus(root).claude.registeredHooks).toBe(3);
+  });
 });
 
 describe('initProjectFable', () => {
