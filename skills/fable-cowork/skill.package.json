@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-cowork",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/silent-execution-discipline.md"
+    "references/silent-execution-discipline.md",
+    "references/autonomy-boundaries-and-checkpoints.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/silent-refactor-session.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/silent-refactor-session.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
