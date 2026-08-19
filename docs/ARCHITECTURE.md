@@ -1,209 +1,198 @@
-# Architecture: get-fable 1.1
+# Architecture: get-fable 1.2
 
 ## Purpose
 
-`get-fable` is a local-first execution-discipline framework for AI-assisted software work.
+`get-fable` is a local-first coding lifecycle for AI-assisted software work. It makes high-value process behavior inspectable: evidence gathering, current-source research, bounded planning, test-first changes, delegation, verification, review, security checks, release readiness, handoff, evaluation, and failure recovery.
 
-Its goal is narrow and testable: make high-value behaviors such as evidence gathering, bounded planning, verification, recovery, and durable context harder to skip.
+It changes process around a model. It does not modify model weights or claim proprietary-model equivalence.
 
-It does not modify model weights or claim model equivalence.
-
-## Core architecture
+## Core flow
 
 ```text
 user task
-   |
-   v
-Task Router <---------------- .fable/state.json
-   |
-   v
-skills/get-fable/registry.json
-   |
-   +--> fable-discover
-   +--> fable-plan
-   +--> fable-execute
-   +--> fable-verify
-   +--> fable-recover
-   |
-   v
-Prompt Compiler / host adapter
-   |
-   v
-LLM execution
-   |
-   v
-evidence + state transition
+  -> deterministic task router
+  -> canonical registry v2
+  -> selected skill contract
+  -> compact prompt compiler / host adapter
+  -> execution
+  -> mutation-aware durable state
+  -> typed evidence
+  -> verification / review / security / release
+  -> handoff or completion
+
+repeated failure -> recovery -> new diagnosis -> next safe skill
 ```
 
-The root `skills/` directory and `skills/get-fable/registry.json` are the canonical workflow source. Host-specific files adapt that workflow but do not own independent semantics.
+The root `skills/` directory and `skills/get-fable/registry.json` are the semantic source of truth. Host-specific files are adapters only.
 
-## 1. Canonical skill registry
+## Canonical packs
 
-Source: `skills/get-fable/registry.json`
+Core: `get-fable`, `fable-discover`, `fable-plan`, `fable-execute`, `fable-verify`, `fable-recover`
 
-The registry has schema version 1 and defines:
+Intelligence: `fable-research`
 
-- stable skill IDs
-- display order
-- phase ownership
-- allowed next skills
-- routing hints
+Build: `fable-tdd`, `fable-delegate`
 
-The six canonical skills are:
+Proof: `fable-review`, `fable-security`
+
+Delivery: `fable-release`, `fable-handoff`
+
+Evolution: `fable-eval`
+
+Historical material under `assets/` remains an optional reference library and is not the canonical lifecycle.
+
+## Registry v2
+
+Each skill entry declares:
 
 ```text
-get-fable
-fable-discover
-fable-plan
-fable-execute
-fable-verify
-fable-recover
+id
+order
+phase
+pack
+description
+intents
+requires
+produces
+gates
+fallback
+mutatesWorkspace
+parallelSafe
+next
+keywords
 ```
 
-`get-fable` is the entry skill. The other five are specialists with intentionally narrow contracts.
+The registry validates every canonical skill file and all `next` and `fallback` references at load time.
 
-Historical skills under `assets/skills/` remain available as a library, but they are not installed as the default execution workflow.
-
-## 2. Explainable task routing
+## Deterministic routing
 
 Source: `src/core/task-router.ts`
 
-The router uses deterministic weighted signals from the task and current durable state.
+Routing stays deterministic and explainable. Hard signals cover repeated failure, explicit security work, release readiness, handoff, evaluation, code review, behavior verification, current external research, repository discovery, delegation, architecture, testable behavior changes, and bounded execution.
 
-Priority rules prevent common failure modes:
+A routing decision records:
 
-1. repeated or stale failure selects recovery before another edit
-2. review, proof, or completion requests select verification
-3. unresolved repository or documentation facts select discovery
-4. architecture, migration, and broad refactors select planning
-5. bounded concrete edits select execution
+```text
+selectedSkill
+selectedPack
+taskShape
+confidence
+reasons
+requiresPlan
+requiredGates
+fallbackSkill
+parallelCandidates
+nextSkills
+scores
+```
 
-A routing decision contains:
+The router does not expose hidden chain-of-thought. Reasons are concise routing evidence.
 
-- selected skill
-- confidence
-- concise reasons
-- whether a plan is required
-- allowed next skills
-- raw per-skill scores for diagnostics
-
-The reasons are routing evidence, not hidden chain-of-thought.
-
-## 3. Durable state machine
+## State schema v2
 
 Source: `src/core/state.ts`
 
-Initialized projects receive `.fable/state.json` with schema version 1.
+Initialized projects receive `.fable/state.json` with:
 
-Phases:
+```text
+schemaVersion
+workspaceId
+phase
+currentSkill
+failureStreak
+substantial
+mutationGeneration
+verifiedGeneration
+activeCard
+lastDecision
+evidence[]
+updatedAt
+```
+
+`workspaceId` is a short digest of the resolved workspace path rather than a stored raw local path.
+
+Schema-v1 state is migrated in memory for compatibility and is written as v2 after a normal state mutation.
+
+## Mutation-aware verification
+
+Every recognized workspace mutation advances `mutationGeneration`.
+
+```text
+mutationGeneration = 4
+verifiedGeneration = 4
+=> verification can be current
+
+new mutation
+mutationGeneration = 5
+verifiedGeneration = 4
+=> previous verification is stale
+```
+
+Substantial completion requires the newest completion-capable evidence for the current generation to pass.
+
+Completion-capable evidence kinds:
+
+- test
+- build
+- runtime
+- review
+- observation
+- security
+
+Non-completion evidence:
+
+- research: supports decisions
+- receipt: supports execution provenance
+- handoff: supports continuity
+
+One evidence type cannot be widened into a claim it did not check.
+
+## Coarse phases, specialist skills
+
+The durable phase vocabulary remains intentionally small for host compatibility:
 
 ```text
 idle
-  -> discovering
-  -> planned
-  -> executing
-  -> verifying
-  -> complete
-
-executing/verifying
-  -> recovering
-  -> discovering | planned | executing | verifying
-
-any active path may become blocked
+discovering
+planned
+executing
+verifying
+recovering
+complete
+blocked
 ```
 
-Invalid transitions are rejected.
+Several specialist skills can share one coarse phase. For example TDD and delegation execute, while review, security, release, handoff, and eval use the verifying phase. `currentSkill` preserves the specialist identity.
 
-For substantial work, a transition from `verifying` to `complete` is rejected unless the newest evidence record is a substantive pass. A newer failure invalidates an older pass for completion purposes until verification succeeds again. The TypeScript state transition, Fable lint, and Python Stop guard enforce this same rule.
-
-Evidence records contain:
-
-- kind
-- command or observation source
-- pass/fail result
-- concrete detail
-- timestamp
-
-A failed evidence record increments the failure streak. Passing evidence resets it.
-
-Persisted state is treated as untrusted runtime input even when it declares schema version 1. Before a state object is accepted, validation checks the top-level fields and the nested contracts for every evidence record and the last routing decision, including skill IDs, confidence range, reasons, planning flag, next skills, and numeric per-skill scores. Malformed nested state is rejected at the read boundary instead of being cast into a trusted `FableState` and failing later in routing, lint, or resume logic.
-
-## 4. Human-readable working state
-
-JSON state provides strict runtime semantics. Markdown remains the working surface for humans and agents:
-
-```text
-docs/SPEC.md          requirements, constraints, decisions
-.fable/LEDGER.md      cards, acceptance checks, evidence
-.fable/PROGRESS.md    compact resumable context
-.fable/state.json     strict phase, routing, failures, evidence
-```
-
-The initializer uses skip-if-present semantics for project-owned files.
-
-## 5. Contextual prompt compiler
+## Context compiler
 
 Source: `src/core/prompt-compiler.ts`
 
-The request proxy no longer adds the complete historical Fable prompt collection to every request.
-
-The compiler produces a compact directive containing:
-
-1. a short invariant core contract
-2. the selected workflow skill only
-3. concise routing reasons
-4. relevant project-state counters
-
-This reduces irrelevant instructions and makes request behavior depend on the actual job.
-
-The original user/system request remains present after the Fable directive.
-
-## 6. Request proxy
-
-Source: `src/router/index.ts`
-
-Supported endpoints:
+The compiler injects only:
 
 ```text
-GET  /health
-GET  /v1/health
-POST /chat/completions
-POST /v1/chat/completions
+short runtime contract
+selected skill body
+routing reasons
+required gates
+compact current state
 ```
 
-Request flow:
+It does not inject all skills or the historical prompt library on every request.
 
-```text
-HTTP JSON
-  -> request normalization
-  -> latest user intent
-  -> task routing
-  -> contextual directive compilation
-  -> Fable directive injection
-  -> preview response or configured upstream
-```
-
-Safety defaults remain:
-
-```text
-host                     127.0.0.1
-CORS                     disabled unless configured
-max request body         1 MiB
-upstream timeout         30 seconds
-allowed upstream scheme  http / https
-```
-
-The proxy does not provide built-in user authentication or authorization. Binding it beyond loopback is an operator decision and requires appropriate external controls.
-
-## 7. CLI boundary
+## CLI
 
 Source: `src/cli.ts`
 
-Core commands:
+Lifecycle commands include:
 
 ```text
 init
-route <task> [--json]
+route <task> [--apply] [--json]
+state <phase> [--substantial] [--json]
+card <text> [--clear] [--json]
+mutation [source] [--json]
+evidence <pass|fail> <kind> <source> <detail> [--json]
 doctor [--json]
 status [--json]
 lint
@@ -211,88 +200,94 @@ serve [port]
 router [port]
 ```
 
-`route` exposes the decision contract without requiring an LLM call.
+Running without a command remains non-mutating.
 
-`doctor` validates the registry, plugin manifest, initialized project state, canonical project skills, and Python hook runtime availability.
-
-`status --json` provides a machine-readable host/project report for scripts and other tools.
-
-Running the CLI without a command remains non-mutating and shows help.
-
-## 8. Installation adapters
-
-Source: `src/installer.ts`
-
-### Project-local
-
-`get-fable init` creates missing state/workflow files and installs the canonical skill pack under `.agents/skills/`.
+## Host enforcement
 
 ### Claude Code
 
-The global installer installs the canonical six-skill pack into Claude skills and retains `fable-mode` as a compatibility alias for older installations. Existing Python hook registration remains idempotent.
+Lifecycle hooks restore state at session start, guard broad delegation, track command failure, advance mutation generations after successful write-oriented tools, and block stale substantial completion.
 
 ### Antigravity / Gemini
 
-The plugin and global skill target now receive the canonical six-skill pack. The historical broad asset library is no longer the default workflow payload. The plugin still owns its hook copies so it does not depend on Claude directories.
+The installer copies the same canonical skills and hook implementations. The mutation hook includes an internal write-tool allowlist because host event matching can be broader than Claude's matcher semantics.
 
-### Agent Kernel
+### Codex / ChatGPT
 
-When an Agent Kernel directory already exists, get-fable installs its rule file. The installer does not create a complete Agent Kernel runtime.
+The package exposes the canonical skills and Codex plugin metadata. Repo-local Codex profiles remain optional execution aids and inherit the active model.
 
-## 9. Compatibility adapters
+### Generic Agent Skills hosts
 
-Files under `.agents/skills/get-fable` and `.claude/skills/get-fable` are thin repository adapters that point to the root canonical graph.
+Hosts can consume root `skills/`. Without lifecycle hooks, mutation and evidence transitions can be applied explicitly through the CLI and skill contracts.
 
-Codex-specific profiles under `.codex/agents/` map to discovery, planning, execution, verification, recovery, review, and documentation roles. They inherit the active Codex model instead of hard-coding a model version.
+## Recovery
 
-## 10. Lint and verification
+Repeated failure routes to `fable-recover` before another blind repair. Diagnosis follows this order:
 
-Source: `src/fable-lint.ts`
+1. harness, command, fixture, permission, environment
+2. actual execution path, branch, build, cache, generated output, runtime identity
+3. product logic
+4. violated invariant
 
-Lint checks both human and strict state:
+A retry should add evidence or change the diagnosis.
 
-- open ledger cards require an explicit acceptance check
-- closed cards require substantive evidence annotation
-- state JSON must parse and match schema 1, including nested evidence and routing-decision contracts
-- substantial complete state requires fresh passing evidence as the newest evidence record
-- repeated failure cannot remain in executing phase
+## Optional evidence adapters
 
-## 11. Test and CI strategy
+External capabilities are optional providers, not dependencies:
 
-Core tests cover:
+- Riqor: ordered run/evidence traces
+- AgentProof: execution receipt metadata
+- Codex Security: threat modeling, diff scans, repository scans, finding validation
+- current-source search: external research evidence
 
-- skill registry integrity
-- routing precedence
-- state transitions
-- nested persisted-state validation
-- evidence-gated completion
-- prompt compilation
-- project initialization
-- Antigravity installation and idempotency
-- proxy routing and HTTP safety
-- CLI machine-readable contracts
-- plugin/package shape
+Their evidence remains scoped to what they actually observe.
 
-CI tests the declared Bun floor and the current pinned Bun runtime on Ubuntu, plus the current pinned runtime on macOS. The package inspection runs on the primary Linux runtime.
+## Evaluation
 
-## 12. Trust boundary
+`fable-eval` applies a software-change discipline to prompts, skills, hooks, routers, memory, and other agent controls:
 
-The following claims are intentionally separate:
+```text
+capability gap
+-> reproducible baseline
+-> one bounded intervention
+-> known scenarios
+-> unseen holdouts
+-> regression and safety checks
+-> accept or reject
+-> rollback
+```
 
-- **workflow support**: canonical skills and routing are present
-- **host installation support**: installer code exists for that target
-- **request compatibility**: the proxy understands the documented request shape
-- **reusable asset**: a historical file can be consumed manually
+Repository trap scenarios live under `eval/scenarios/` and are executable through `test/eval.test.ts`.
 
-One category is not evidence for another.
+## Request proxy trust boundary
 
-`get-fable` can improve the process around a model. It cannot make one model literally become another model, reproduce private provider infrastructure, expose hidden reasoning, or guarantee equivalent benchmark performance.
+Source: `src/router/index.ts`
+
+The proxy accepts documented OpenAI-style and supported translated request shapes, compiles contextual Fable guidance, and returns a preview or forwards to one explicitly configured HTTP/HTTPS upstream.
+
+Safety defaults remain loopback binding, no permissive CORS by default, bounded body size, bounded upstream timeout, and HTTP/HTTPS upstream schemes only. The proxy does not provide its own authentication boundary.
+
+## Verification strategy
+
+Repository CI checks:
+
+- typecheck
+- full tests
+- coverage on the primary runtime
+- build
+- CLI and maturity smoke
+- package inspection
+- Ubuntu at the declared Bun floor
+- Ubuntu and macOS at the pinned current Bun runtime
+
+Lifecycle-specific tests cover routing ambiguity, schema migration, mutation freshness, evidence boundaries, hook parity, installer idempotency, plugin shape, and holdout-style trap scenarios.
 
 ## Related docs
 
 - `README.md`
-- `docs/PLUGIN.md`
 - `docs/USAGE.md`
-- `docs/ADR-001-fable-supersystem.md`
+- `docs/PLUGIN.md`
+- `docs/superpowers/specs/2026-08-19-fable-coding-lifecycle-v2.md`
+- `hooks/README.md`
 - `SECURITY.md`
 - `THIRD_PARTY_NOTICES.md`
