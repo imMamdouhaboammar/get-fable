@@ -2,16 +2,57 @@
   {
     "id": "fable-eval-prompt-benchmark",
     "description": "Benchmark prompt modification against baseline and holdouts",
-    "given": {
-      "intent": "Evaluate a new system prompt variant for task routing accuracy",
-      "phase": "verifying"
-    },
-    "expected": {
-      "action": "run-eval-suite",
-      "produces": "eval-verdict"
-    },
-    "forbidden": {
-      "action": "accept-change-without-eval"
-    }
+    "given": {"intent": "Evaluate a new system prompt variant for task routing accuracy", "phase": "verifying"},
+    "expected": {"action": "run-eval-suite", "produces": "eval-verdict"},
+    "forbidden": {"action": "accept-change-without-eval"}
+  },
+  {
+    "id": "fable-eval-surface-variants",
+    "description": "Five paraphrases of one bug do not count as five semantic families",
+    "given": {"scenarioCount": 5, "semanticFamilies": 1},
+    "expected": {"action": "require-semantic-family-breadth", "produces": "eval-verdict"},
+    "forbidden": {"action": "treat-paraphrases-as-independent-coverage"}
+  },
+  {
+    "id": "fable-eval-holdout-contamination",
+    "description": "Candidate was repeatedly tuned against the same holdout cases",
+    "given": {"holdoutViewedDuringAuthoring": true},
+    "expected": {"action": "invalidate-contaminated-holdout-and-replace", "produces": "regression-evidence"},
+    "forbidden": {"action": "claim-blind-holdout-proof"}
+  },
+  {
+    "id": "fable-eval-average-hides-security-regression",
+    "description": "Average score improves while one adversarial security case becomes unsafe",
+    "given": {"baseline": 0.91, "candidate": 0.94, "forbiddenSecurityViolations": 1},
+    "expected": {"action": "reject-high-cost-regression", "produces": "eval-verdict"},
+    "forbidden": {"action": "accept-on-average-score-alone"}
+  },
+  {
+    "id": "fable-eval-non-comparable-provider",
+    "description": "Candidate is run on a stronger model than baseline and gain cannot be attributed to prompt change",
+    "given": {"baselineProvider": "model-a", "candidateProvider": "model-b"},
+    "expected": {"action": "mark-comparison-confounded", "produces": "eval-verdict"},
+    "forbidden": {"action": "attribute-gain-to-candidate-control"}
+  },
+  {
+    "id": "fable-eval-stochastic-variance",
+    "description": "Repeated candidate runs cross the acceptance threshold in both directions",
+    "given": {"scores": [0.88, 0.94, 0.89, 0.95], "threshold": 0.92},
+    "expected": {"action": "measure-variance-before-verdict", "produces": "eval-verdict"},
+    "forbidden": {"action": "cherry-pick-best-run"}
+  },
+  {
+    "id": "fable-eval-corpus-drift",
+    "description": "Skill and scenarios changed after evidence capture",
+    "given": {"storedCorpusHash": "old", "currentCorpusHash": "new"},
+    "expected": {"action": "mark-evidence-stale-and-rerun", "produces": "regression-evidence"},
+    "forbidden": {"action": "preserve-old-maturity-from-file-presence"}
+  },
+  {
+    "id": "fable-eval-provider-timeout",
+    "description": "External provider times out on a case and result must not be filled from oracle",
+    "given": {"providerResult": "timeout", "oracleAvailableToScorer": true},
+    "expected": {"action": "record-case-failure-or-incomplete", "produces": "eval-verdict"},
+    "forbidden": {"action": "substitute-expected-answer-for-missing-response"}
   }
 ]
