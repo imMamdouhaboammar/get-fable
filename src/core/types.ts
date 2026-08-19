@@ -1,13 +1,29 @@
-export const FABLE_STATE_SCHEMA_VERSION = 1 as const;
-export const FABLE_REGISTRY_SCHEMA_VERSION = 1 as const;
+export const FABLE_STATE_SCHEMA_VERSION = 2 as const;
+export const FABLE_REGISTRY_SCHEMA_VERSION = 2 as const;
 
 export type FableSkillId =
   | 'get-fable'
   | 'fable-discover'
+  | 'fable-research'
   | 'fable-plan'
+  | 'fable-tdd'
+  | 'fable-delegate'
   | 'fable-execute'
   | 'fable-verify'
+  | 'fable-review'
+  | 'fable-security'
+  | 'fable-release'
+  | 'fable-handoff'
+  | 'fable-eval'
   | 'fable-recover';
+
+export type FablePack =
+  | 'core'
+  | 'intelligence'
+  | 'build'
+  | 'proof'
+  | 'delivery'
+  | 'evolution';
 
 export type FablePhase =
   | 'idle'
@@ -19,14 +35,38 @@ export type FablePhase =
   | 'complete'
   | 'blocked';
 
+export type FableTaskShape =
+  | 'research'
+  | 'architecture'
+  | 'bug-fix'
+  | 'feature'
+  | 'delegation'
+  | 'review'
+  | 'security'
+  | 'release'
+  | 'handoff'
+  | 'eval'
+  | 'bounded-change'
+  | 'unknown';
+
 export type EvidenceResult = 'pass' | 'fail';
-export type EvidenceKind = 'test' | 'build' | 'runtime' | 'review' | 'observation';
+export type EvidenceKind =
+  | 'test'
+  | 'build'
+  | 'runtime'
+  | 'review'
+  | 'observation'
+  | 'security'
+  | 'research'
+  | 'receipt'
+  | 'handoff';
 
 export interface EvidenceRecord {
   kind: EvidenceKind;
   source: string;
   result: EvidenceResult;
   detail: string;
+  generation: number;
   timestamp: string;
 }
 
@@ -34,32 +74,49 @@ export interface SkillRegistryEntry {
   id: FableSkillId;
   order: number;
   phase: FablePhase;
+  pack: FablePack;
   description: string;
+  intents: string[];
+  requires: string[];
+  produces: string[];
+  gates: string[];
+  fallback: FableSkillId | null;
+  mutatesWorkspace: boolean;
+  parallelSafe: boolean;
   next: FableSkillId[];
   keywords: string[];
 }
 
 export interface SkillRegistry {
-  schemaVersion: 1;
+  schemaVersion: 2;
   entry: FableSkillId;
   skills: SkillRegistryEntry[];
 }
 
 export interface RoutingDecision {
   selectedSkill: FableSkillId;
+  selectedPack: FablePack;
+  taskShape: FableTaskShape;
   confidence: number;
   reasons: string[];
   requiresPlan: boolean;
+  requiredGates: string[];
+  fallbackSkill: FableSkillId | null;
+  parallelCandidates: FableSkillId[];
   nextSkills: FableSkillId[];
   scores: Record<FableSkillId, number>;
 }
 
 export interface FableState {
-  schemaVersion: 1;
+  schemaVersion: 2;
+  workspaceId: string;
   phase: FablePhase;
   currentSkill: FableSkillId | null;
   failureStreak: number;
   substantial: boolean;
+  mutationGeneration: number;
+  verifiedGeneration: number;
+  activeCard: string | null;
   lastDecision: RoutingDecision | null;
   evidence: EvidenceRecord[];
   updatedAt: string;
