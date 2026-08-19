@@ -1,20 +1,22 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 1,
   "workspaces": {
     "": {
       "name": "get-fable",
-      "devDependencies": {
+      "dependencies": {
         "@types/node": "^22.0.0",
-        "typescript": "^5.7.0",
+        "typescript": "^5.7.0"
       },
-    },
+      "devDependencies": {},
+      "optionalDependencies": {},
+      "peerDependencies": {}
+    }
   },
   "packages": {
-    "@types/node": ["@types/node@22.20.1", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-EANqOCF9QFyra+4pfxUcX9STKJpCLjMbObVzljIJomAWSnuSIEAvyzEU53GaajbXJEgdh0iEcPL+DGvpUd4k1Q=="],
+    "@types/node": ["@types/node@22.19.5", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-sBCTvlelt1oXHDSzAI8iVroOBgQxV2+DjF3EKRoh1UsmtWxPaEwmQrYJGCsJOgIeAKQxJ4VJpvaag1Gn2lVwLg=="],
 
-    "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
+    "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdyszvzc6C96PXbzHCDt1NNBF4k68gfVBrCCeJbdbl5KeiVsrW3bg=="],
 
-    "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
+    "undici-types": ["undici-types@6.21.0", "", {}, "sha512-X+7TsF1E8gE4R/oxRwlE6N0qye1/WIm6EGo9qxyg1kq9RQ8zTG1OIfQCl77nu+Q6v6nKfsLlZzncIG2uhcmYEQ=="]
   }
 }
