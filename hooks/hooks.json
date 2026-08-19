@@ -32,6 +32,17 @@
         ]
       }
     ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_fail_streak.py\""
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

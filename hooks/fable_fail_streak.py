@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""get-fable PostToolUse failure attribution hook.
+"""get-fable Bash result attribution hook.
 
-Each Bash result updates `.fable/state.json` when the project is initialized.
+PostToolUse success and PostToolUseFailure events update `.fable/state.json`
+when the project is initialized.
 Two consecutive failures move the durable workflow to `recovering` and select
 `fable-recover`. The hook remains advisory and fail-open.
 """
@@ -55,6 +56,16 @@ def command_failed(tool_response):
     return bool(match and match.group(1) != "0")
 
 
+def event_failed(data):
+    """Classify official Claude events first, retaining legacy payload support."""
+    event_name = data.get("hook_event_name")
+    if event_name == "PostToolUseFailure":
+        return True
+    if event_name == "PostToolUse":
+        return False
+    return command_failed(data.get("tool_response"))
+
+
 def main():
     data = read_hook_input()
     fable_dir = find_fable_dir(start_dir(data))
@@ -65,7 +76,7 @@ def main():
     if paused:
         return 0
 
-    failed = command_failed(data.get("tool_response"))
+    failed = event_failed(data)
     durable = record_command_result(fable_dir, failed)
 
     session_id = data.get("session_id")
@@ -80,9 +91,12 @@ def main():
 
     streak = int(durable.get("failureStreak", 0)) if isinstance(durable, dict) else load_fail_streak(session_id)
     if streak >= 2:
+        event_name = data.get("hook_event_name")
+        if event_name not in ("PostToolUse", "PostToolUseFailure"):
+            event_name = "PostToolUseFailure"
         print(json.dumps({
             "hookSpecificOutput": {
-                "hookEventName": "PostToolUse",
+                "hookEventName": event_name,
                 "additionalContext": RECOVERY_CONTEXT + " failureStreak=%d." % streak,
             }
         }, ensure_ascii=False))

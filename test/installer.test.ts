@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {
   checkFableStatus,
+  getFableStatus,
   initProjectFable,
   installGlobalFable,
   installAntigravityGlobal,
@@ -79,6 +80,7 @@ describe('installGlobalFable', () => {
     expect(fableEntries('PostToolUse')).toHaveLength(1);
     expect(fableEntries('PostToolUseFailure')).toHaveLength(1);
     expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(5);
   });
 });
 
