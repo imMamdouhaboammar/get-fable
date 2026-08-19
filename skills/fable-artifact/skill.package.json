@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-artifact",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/artifact-composition-guide.md"
+    "references/artifact-composition-guide.md",
+    "references/source-grounded-artifact-design.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/system-architecture-diagram.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/system-architecture-diagram.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
