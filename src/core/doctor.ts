@@ -2,8 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './skill-registry.js';
-import { readFableState } from './state.js';
+import { readFableState, createInitialState, writeFableState } from './state.js';
 import { evaluateFableSpark } from './spark.js';
+import { loadTelemetryConfig } from './telemetry.js';
+import { loadSkillFeed } from './feed.js';
 import type { DoctorCheck, DoctorReport } from './types.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
@@ -146,6 +148,70 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
   return checks;
 }
 
+export function runDoctorFix(
+  targetDir: string = process.cwd(),
+  repoRoot: string = getCoreRepoRoot()
+): { repaired: string[]; errors: string[] } {
+  const repaired: string[] = [];
+  const errors: string[] = [];
+
+  const fableDir = path.join(targetDir, '.fable');
+  if (!fs.existsSync(fableDir)) {
+    fs.mkdirSync(fableDir, { recursive: true });
+    repaired.push('Created .fable/ directory');
+  }
+
+  const statePath = path.join(fableDir, 'state.json');
+  if (!fs.existsSync(statePath)) {
+    try {
+      const state = createInitialState(new Date().toISOString(), targetDir);
+      writeFableState(targetDir, state);
+      repaired.push('Repaired initial .fable/state.json');
+    } catch (e) {
+      errors.push(`Failed to repair state.json: ${e}`);
+    }
+  }
+
+  const ledgerPath = path.join(fableDir, 'LEDGER.md');
+  if (!fs.existsSync(ledgerPath)) {
+    fs.writeFileSync(
+      ledgerPath,
+      `# Project Ledger\n\n## Active Cards\n\n## Acceptance Criteria\n- [measured] Primary verification passes\n`,
+      'utf-8'
+    );
+    repaired.push('Created .fable/LEDGER.md');
+  }
+
+  const progressPath = path.join(fableDir, 'PROGRESS.md');
+  if (!fs.existsSync(progressPath)) {
+    fs.writeFileSync(progressPath, `# Project Progress\n\n- Project initialized.\n`, 'utf-8');
+    repaired.push('Created .fable/PROGRESS.md');
+  }
+
+  const gitDir = path.join(targetDir, '.git');
+  if (fs.existsSync(gitDir)) {
+    const hooksSourceDir = path.join(repoRoot, 'hooks', 'git');
+    const hooksDestDir = path.join(gitDir, 'hooks');
+    if (fs.existsSync(hooksSourceDir)) {
+      if (!fs.existsSync(hooksDestDir)) fs.mkdirSync(hooksDestDir, { recursive: true });
+      for (const hookFile of fs.readdirSync(hooksSourceDir)) {
+        const destFile = path.join(hooksDestDir, hookFile);
+        if (!fs.existsSync(destFile)) {
+          fs.copyFileSync(path.join(hooksSourceDir, hookFile), destFile);
+          try {
+            fs.chmodSync(destFile, 0o755);
+          } catch {
+            // ignore chmod on non-posix
+          }
+          repaired.push(`Installed missing git hook: ${hookFile}`);
+        }
+      }
+    }
+  }
+
+  return { repaired, errors };
+}
+
 export function runDoctor(
   targetDir: string = process.cwd(),
   repoRoot: string = getCoreRepoRoot()
@@ -163,6 +229,28 @@ export function runDoctor(
   }
 
   checks.push(...validatePluginPackage(repoRoot));
+
+  try {
+    const feed = loadSkillFeed(repoRoot, targetDir);
+    checks.push(check('feed-engine', 'pass', `Feed engine loaded with ${feed.length} skills`));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    checks.push(check('feed-engine', 'error', `Feed engine error: ${message}`));
+  }
+
+  try {
+    const telemetry = loadTelemetryConfig();
+    checks.push(
+      check(
+        'telemetry-health',
+        'pass',
+        `Telemetry local storage ready (${telemetry.enabled ? 'enabled' : 'disabled'})`
+      )
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    checks.push(check('telemetry-health', 'error', `Telemetry error: ${message}`));
+  }
 
   const activeProject = fs.existsSync(path.join(targetDir, '.fable'));
   if (!activeProject) {
@@ -203,6 +291,16 @@ export function runDoctor(
               : 'All canonical project skills are installed'
           )
         : check('project-skills', 'error', `Missing project skills: ${missing.join(', ')}`)
+    );
+  }
+
+  const gitDir = path.join(targetDir, '.git');
+  if (fs.existsSync(gitDir)) {
+    const preCommitHook = path.join(gitDir, 'hooks', 'pre-commit');
+    checks.push(
+      fs.existsSync(preCommitHook)
+        ? check('git-hooks', 'pass', 'Git pre-commit and lifecycle hooks are installed')
+        : check('git-hooks', 'warn', 'Git hooks not installed in .git/hooks (run get-fable install git-hooks or get-fable doctor --fix)')
     );
   }
 
