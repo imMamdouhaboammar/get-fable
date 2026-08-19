@@ -21,6 +21,9 @@ import {
 } from './utils.js';
 import { canonicalSkillIds } from './core/skill-registry.js';
 import { createInitialState, readFableState, writeFableState } from './core/state.js';
+import { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs } from './core/skill-installer.js';
+
+export { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs };
 
 export function getRepoRootDir(): string {
   const currentFile = fileURLToPath(import.meta.url);

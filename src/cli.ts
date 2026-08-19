@@ -15,6 +15,7 @@ import {
   installPiCodeGlobal,
   installGitHooks,
   initProjectFable,
+  autoInstallSkills,
   checkFableStatus,
   getFableStatus,
   getRepoRootDir,
@@ -530,12 +531,55 @@ function runFeedCommand(args: string[]): number {
   }
 }
 
+function runSkillsCommand(args: string[]): number {
+  const sub = (args[0] || 'list').toLowerCase();
+
+  switch (sub) {
+    case 'install': {
+      const packOrSkill = args[1] || 'all';
+      const isGlobal = !hasFlag(args, '--project');
+      const force = hasFlag(args, '--force');
+      logHeader(`Auto-installing Fable skills (${packOrSkill})`);
+      const result = autoInstallSkills({
+        packOrSkill,
+        global: isGlobal,
+        overwrite: force,
+      });
+
+      if (result.success) {
+        logSuccess(
+          `Installed ${result.totalInstalled} skills (${result.installedSkills.join(', ')}) across ${
+            result.targetPaths.length
+          } target directories.`
+        );
+        return 0;
+      } else {
+        logError('Failed to install skills.');
+        return 1;
+      }
+    }
+    case 'list': {
+      return runFeedCommand(['list', ...args.slice(1)]);
+    }
+    case 'inspect':
+    case 'info': {
+      return runFeedCommand(['inspect', ...args.slice(1)]);
+    }
+    default:
+      logError(`Unknown skills action: ${sub}. Use: install [pack|all], list, inspect <skill-id>`);
+      return 1;
+  }
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number | Promise<number> {
   const command = args[0] || 'help';
 
   switch (command) {
     case 'install':
       return runInstallCommand(args.slice(1));
+
+    case 'skills':
+      return runSkillsCommand(args.slice(1));
 
     case 'install-antigravity':
       logHeader('Installing get-fable for Antigravity');
