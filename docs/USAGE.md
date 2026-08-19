@@ -27,7 +27,7 @@ bun /path/to/get-fable/bin/get-fable.js init
 
 Initialization creates missing working files and installs the canonical lifecycle skills under `.agents/skills/`. Existing project-owned targets are preserved.
 
-The initial state uses schema v2 with `mutationGeneration=0` and `verifiedGeneration=-1`.
+The initial state uses schema v2 with `mutationGeneration=0` and `verifiedGeneration=-1`. Workspace identity is derived from the canonical real project path, so path aliases of the same workspace do not create separate identities.
 
 ## Route work
 
@@ -91,7 +91,9 @@ receipt
 handoff
 ```
 
-Only test, build, runtime, review, observation, and security can advance `verifiedGeneration`.
+For normal implementation work, test, build, runtime, review, and observation can advance `verifiedGeneration`.
+
+Security can advance `verifiedGeneration` when the routed job is itself a security review. A security pass alone does not prove a normal feature or bug repair. If a security repair changes product code, verify the changed behavior again with behavior-appropriate evidence.
 
 Research supports decisions. Receipt supports execution provenance. Handoff supports continuity. None of those three proves behavior correctness.
 
@@ -107,11 +109,11 @@ get-fable evidence pass test "bun test" "all affected tests passed"
 get-fable state complete
 ```
 
-Completion is rejected when the current mutation generation has no fresh passing completion-capable evidence.
+Completion is rejected when the current mutation generation has no fresh passing evidence appropriate to the routed claim.
 
 ## Repeated failure
 
-Two consecutive completion-evidence failures move active work into `recovering` and select `fable-recover`.
+Two consecutive failure-relevant evidence records move active work into `recovering` and select `fable-recover`.
 
 Recovery checks harness and environment first, actual execution path second, product logic third, and the violated invariant last.
 
@@ -155,7 +157,7 @@ get-fable install
 
 Supported installation paths include Claude Code and the repository's Antigravity / Gemini target. Agent Kernel rules are copied only when an existing Agent Kernel directory is detected.
 
-The Claude and Antigravity adapters use the same Python hook implementations for session context, delegation guard, failure recovery, mutation tracking, and close enforcement.
+The Claude and Antigravity adapters use the same Python hook implementations for session context, delegation guard, failure recovery, mutation tracking, canonical workspace identity, and close enforcement.
 
 ## Request proxy
 
