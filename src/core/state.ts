@@ -57,12 +57,15 @@ const EVIDENCE_KINDS: EvidenceKind[] = [
   'receipt',
   'handoff',
 ];
-const COMPLETION_EVIDENCE_KINDS: EvidenceKind[] = [
+const BEHAVIOR_COMPLETION_EVIDENCE_KINDS: EvidenceKind[] = [
   'test',
   'build',
   'runtime',
   'review',
   'observation',
+];
+const FAILURE_RELEVANT_EVIDENCE_KINDS: EvidenceKind[] = [
+  ...BEHAVIOR_COMPLETION_EVIDENCE_KINDS,
   'security',
 ];
 const EVIDENCE_RESULTS = ['pass', 'fail'] as const;
@@ -170,14 +173,30 @@ function isEvidenceKind(value: unknown): value is EvidenceKind {
   return typeof value === 'string' && EVIDENCE_KINDS.includes(value as EvidenceKind);
 }
 
+function isEvidenceResult(value: unknown): value is 'pass' | 'fail' {
+  return typeof value === 'string' && EVIDENCE_RESULTS.includes(value as 'pass' | 'fail');
+}
+
+function isSecurityTask(state: Pick<FableState, 'currentSkill' | 'lastDecision'>): boolean {
+  return (
+    state.currentSkill === 'fable-security' ||
+    state.lastDecision?.selectedSkill === 'fable-security' ||
+    state.lastDecision?.taskShape === 'security'
+  );
+}
+
+function completionEvidenceKinds(state: Pick<FableState, 'currentSkill' | 'lastDecision'>): EvidenceKind[] {
+  return isSecurityTask(state)
+    ? [...BEHAVIOR_COMPLETION_EVIDENCE_KINDS, 'security']
+    : BEHAVIOR_COMPLETION_EVIDENCE_KINDS;
+}
+
 function validateEvidenceRecord(value: unknown, index: number): void {
   const field = `evidence[${index}]`;
   if (!isRecord(value)) throw new Error(`Fable state ${field} must be an object`);
   if (!isEvidenceKind(value.kind)) throw new Error(`Fable state ${field}.kind is invalid`);
   if (!isNonEmptyString(value.source)) throw new Error(`Fable state ${field}.source is required`);
-  if (!EVIDENCE_RESULTS.includes(value.result as (typeof EVIDENCE_RESULTS)[number])) {
-    throw new Error(`Fable state ${field}.result is invalid`);
-  }
+  if (!isEvidenceResult(value.result)) throw new Error(`Fable state ${field}.result is invalid`);
   if (!isNonEmptyString(value.detail)) throw new Error(`Fable state ${field}.detail is required`);
   if (typeof value.generation !== 'number' || !Number.isInteger(value.generation) || value.generation < 0) {
     throw new Error(`Fable state ${field}.generation must be a non-negative integer`);
@@ -237,7 +256,10 @@ function migrateRoutingDecision(value: unknown): RoutingDecision | null {
   if (!isRecord(value) || !isFableSkillId(value.selectedSkill)) return null;
   const selectedSkill = value.selectedSkill;
   const scores = Object.fromEntries(
-    FABLE_SKILL_IDS.map((skill) => [skill, isRecord(value.scores) && typeof value.scores[skill] === 'number' ? value.scores[skill] : 0])
+    FABLE_SKILL_IDS.map((skill) => [
+      skill,
+      isRecord(value.scores) && typeof value.scores[skill] === 'number' ? value.scores[skill] : 0,
+    ])
   ) as Record<FableSkillId, number>;
 
   return {
@@ -250,59 +272,74 @@ function migrateRoutingDecision(value: unknown): RoutingDecision | null {
     requiredGates: [],
     fallbackSkill: null,
     parallelCandidates: [],
-    nextSkills: Array.isArray(value.nextSkills)
-      ? value.nextSkills.filter(isFableSkillId)
-      : [],
+    nextSkills: Array.isArray(value.nextSkills) ? value.nextSkills.filter(isFableSkillId) : [],
     scores,
   };
 }
 
 function migrateV1State(value: Record<string, unknown>, targetDir: string): FableState {
+  if (!isFablePhase(value.phase)) throw new Error('Fable state phase is invalid');
+  if (value.currentSkill !== null && !isFableSkillId(value.currentSkill)) {
+    throw new Error('Fable state currentSkill is invalid');
+  }
+  if (typeof value.failureStreak !== 'number' || !Number.isInteger(value.failureStreak) || value.failureStreak < 0) {
+    throw new Error('Fable state failureStreak must be a non-negative integer');
+  }
+  if (typeof value.substantial !== 'boolean') throw new Error('Fable state substantial must be boolean');
+  if (!isNonEmptyString(value.updatedAt)) throw new Error('Fable state updatedAt is required');
+
   const rawEvidence = Array.isArray(value.evidence) ? value.evidence : [];
   const evidence: EvidenceRecord[] = rawEvidence.map((record, index) => {
     if (!isRecord(record)) throw new Error(`Fable state evidence[${index}] must be an object`);
+    if (!isEvidenceKind(record.kind)) throw new Error(`Fable state evidence[${index}].kind is invalid`);
+    if (!isNonEmptyString(record.source)) throw new Error(`Fable state evidence[${index}].source is required`);
+    if (!isEvidenceResult(record.result)) throw new Error(`Fable state evidence[${index}].result is invalid`);
+    if (!isNonEmptyString(record.detail)) throw new Error(`Fable state evidence[${index}].detail is required`);
+    if (!isNonEmptyString(record.timestamp)) throw new Error(`Fable state evidence[${index}].timestamp is required`);
     return {
-      kind: record.kind as EvidenceKind,
-      source: String(record.source ?? ''),
-      result: record.result as 'pass' | 'fail',
-      detail: String(record.detail ?? ''),
+      kind: record.kind,
+      source: record.source,
+      result: record.result,
+      detail: record.detail,
       generation: 0,
-      timestamp: String(record.timestamp ?? ''),
+      timestamp: record.timestamp,
     };
   });
-  evidence.forEach((record, index) => validateEvidenceRecord(record, index));
 
   const latestCompletion = [...evidence]
     .reverse()
-    .find((record) => COMPLETION_EVIDENCE_KINDS.includes(record.kind));
+    .find((record) => BEHAVIOR_COMPLETION_EVIDENCE_KINDS.includes(record.kind));
 
   return {
     schemaVersion: 2,
     workspaceId: workspaceIdForTarget(targetDir),
-    phase: value.phase as FablePhase,
-    currentSkill: value.currentSkill === null ? null : (value.currentSkill as FableSkillId),
-    failureStreak: Number(value.failureStreak ?? 0),
-    substantial: value.substantial === true,
+    phase: value.phase,
+    currentSkill: value.currentSkill as FableSkillId | null,
+    failureStreak: value.failureStreak,
+    substantial: value.substantial,
     mutationGeneration: 0,
     verifiedGeneration: latestCompletion?.result === 'pass' ? 0 : -1,
     activeCard: null,
     lastDecision: migrateRoutingDecision(value.lastDecision),
     evidence,
-    updatedAt: String(value.updatedAt ?? new Date().toISOString()),
+    updatedAt: value.updatedAt,
   };
 }
 
 export function validateFableState(value: unknown, targetDir: string = process.cwd()): FableState {
-  if (!isRecord(value)) {
-    throw new Error('Fable state must be an object');
-  }
+  if (!isRecord(value)) throw new Error('Fable state must be an object');
 
   const migrated = value.schemaVersion === 1 ? migrateV1State(value, targetDir) : value;
   if (!isRecord(migrated) || migrated.schemaVersion !== FABLE_STATE_SCHEMA_VERSION) {
     throw new Error(`Unsupported Fable state schema: ${String(value.schemaVersion)}`);
   }
+
   const state = migrated;
   if (!isNonEmptyString(state.workspaceId)) throw new Error('Fable state workspaceId is required');
+  const expectedWorkspaceId = workspaceIdForTarget(targetDir);
+  if (state.workspaceId !== expectedWorkspaceId) {
+    throw new Error('Fable state workspaceId does not match the current workspace');
+  }
   if (!isFablePhase(state.phase)) throw new Error('Fable state phase is invalid');
   if (state.currentSkill !== null && !isFableSkillId(state.currentSkill)) {
     throw new Error('Fable state currentSkill is invalid');
@@ -417,7 +454,7 @@ export function addEvidence(
     throw new Error('Evidence generation must refer to the current or an earlier workspace generation');
   }
 
-  const countsTowardFailure = COMPLETION_EVIDENCE_KINDS.includes(evidence.kind);
+  const countsTowardFailure = FAILURE_RELEVANT_EVIDENCE_KINDS.includes(evidence.kind);
   const nextFailureStreak = countsTowardFailure
     ? evidence.result === 'fail'
       ? state.failureStreak + 1
@@ -433,7 +470,7 @@ export function addEvidence(
 
   const advancesVerification =
     evidence.result === 'pass' &&
-    COMPLETION_EVIDENCE_KINDS.includes(evidence.kind) &&
+    completionEvidenceKinds(state).includes(evidence.kind) &&
     generation === state.mutationGeneration;
 
   return {
@@ -463,12 +500,13 @@ export function hasPassingEvidence(state: FableState): boolean {
 
 export function hasFreshPassingEvidence(state: FableState): boolean {
   if (state.verifiedGeneration < state.mutationGeneration) return false;
+  const acceptedKinds = completionEvidenceKinds(state);
   const latestCurrentCompletion = [...state.evidence]
     .reverse()
     .find(
       (record) =>
         record.generation === state.mutationGeneration &&
-        COMPLETION_EVIDENCE_KINDS.includes(record.kind)
+        acceptedKinds.includes(record.kind)
     );
   return latestCurrentCompletion?.result === 'pass' && latestCurrentCompletion.detail.trim().length > 0;
 }
