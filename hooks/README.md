@@ -7,6 +7,7 @@ The hooks turn selected lifecycle invariants into mechanical host behavior. They
 - opt in: no `.fable/` directory means no project enforcement
 - project local: durable workflow state lives in `.fable/state.json`
 - bounded state: do not persist prompts, source contents, command output, credentials, or raw local paths as evidence metadata
+- workspace identity: schema-v2 state is bound to a digest of the canonical real project path
 - unexpected hook runtime failures remain fail-open so a broken helper does not brick the host
 - an existing but invalid `.fable/state.json` is a workflow error and may block a substantial completion claim
 
@@ -20,7 +21,7 @@ The hooks turn selected lifecycle invariants into mechanical host behavior. They
 | `fable_mutation.py` | PostToolUse on write/edit tools | Advance `mutationGeneration` after a successful workspace mutation |
 | `fable_close_guard.py` | Stop / SessionEnd where supported | Block unfinished cards, invalid state, stale proof, or substantial work that has not reached a valid complete state |
 
-`_fable_common.py` provides shared state validation, schema-v1 migration, project discovery, ledger parsing, atomic state writes, mutation tracking, and evidence-freshness rules.
+`_fable_common.py` provides shared state validation, schema-v1 migration, canonical workspace discovery, ledger parsing, atomic state writes, mutation tracking, and evidence-freshness rules.
 
 ## Mutation freshness
 
@@ -45,17 +46,19 @@ The previous proof remains historical evidence but can no longer close substanti
 The close guard accepts completion evidence only when:
 
 1. `verifiedGeneration >= mutationGeneration`
-2. the newest completion-capable evidence for the current generation exists
+2. the newest evidence accepted for the routed claim and current generation exists
 3. that evidence passes and contains substantive detail
 4. substantial durable state is actually in phase `complete`
 
-Completion-capable evidence kinds are test, build, runtime, review, observation, and security.
+For normal implementation work, accepted completion kinds are test, build, runtime, review, and observation.
+
+Security evidence can close a pure security-review job when the durable routing decision identifies that job as security work. It does not by itself close a normal feature or bug repair. If security work leads to a product mutation, the changed behavior needs fresh behavior-appropriate verification.
 
 Research, receipt, and handoff evidence do not close the behavior-completion gate.
 
 ## Failure recovery
 
-A completion-relevant failure increments `failureStreak`. Two consecutive failures move active state to:
+A failure-relevant evidence record increments `failureStreak`. Two consecutive failures move active state to:
 
 ```json
 {
@@ -74,7 +77,7 @@ harness and environment
 -> violated invariant
 ```
 
-A later successful completion-capable evidence record resets the failure streak. It does not erase the recorded history.
+A later successful failure-relevant evidence record resets the failure streak. It does not erase the recorded history.
 
 ## Session context
 
