@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
-  "version": "1.1.0",
-  "description": "Modular execution discipline for substantial coding work: evidence-first discovery, explicit routing, durable task state, verification, and recovery.",
+  "version": "1.2.0",
+  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
   "author": {
     "name": "Mamdouh Abo Ammar",
     "url": "https://github.com/imMamdouhaboammar"
@@ -14,27 +14,28 @@
     "chatgpt",
     "coding-agent",
     "agent-workflow",
+    "coding-lifecycle",
     "verification",
     "skills"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "get-fable",
-    "shortDescription": "Evidence-first coding",
-    "longDescription": "Routes substantial software work through discovery, planning, bounded execution, adversarial verification, and recovery while keeping task state and evidence inspectable.",
+    "shortDescription": "AI coding lifecycle",
+    "longDescription": "Routes software work through focused lifecycle skills, keeps durable mutation-aware state, and requires evidence appropriate to the claim before completion.",
     "developerName": "Mamdouh Abo Ammar",
     "category": "Developer Tools",
     "capabilities": [
-      "Plan substantial coding work",
-      "Verify implementation evidence",
-      "Recover repeated failures"
+      "Route coding work by lifecycle stage",
+      "Track mutation-aware verification",
+      "Use specialized review and recovery skills"
     ],
     "websiteURL": "https://github.com/imMamdouhaboammar/get-fable",
     "supportURL": "https://github.com/imMamdouhaboammar/get-fable/issues",
     "defaultPrompt": [
-      "Run this coding task with get-fable and choose the smallest correct workflow.",
-      "Inspect unknowns, plan the change, implement it, and verify the real affected path.",
-      "Recover this failing task by changing the diagnosis before changing more code."
+      "Run this software task with get-fable and choose the next lifecycle skill from current evidence.",
+      "Use the smallest relevant skill pack, keep workspace state current, and verify after the final mutation.",
+      "For failures, reviews, security, releases, handoffs, or agent-control changes, route to the matching specialist before completion."
     ],
     "composerIcon": "./assets/mascot.svg",
     "logo": "./assets/mascot.svg"
