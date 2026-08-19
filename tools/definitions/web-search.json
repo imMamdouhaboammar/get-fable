@@ -1,0 +1,13 @@
+{
+  "name": "current-source-search",
+  "capability": "web-search",
+  "description": "Execute queries against authoritative online documentation and verified primary sources.",
+  "parameters": {
+    "type": "object",
+    "required": ["query"],
+    "properties": {
+      "query": { "type": "string", "description": "Search query keywords" },
+      "domains": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}

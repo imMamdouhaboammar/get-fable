@@ -1,0 +1,12 @@
+{
+  "name": "git-inspection",
+  "capability": "git",
+  "description": "Inspect git status, diffs, commits, and branch topology non-destructively.",
+  "parameters": {
+    "type": "object",
+    "required": ["action"],
+    "properties": {
+      "action": { "type": "string", "enum": ["status", "diff", "log", "branch"] }
+    }
+  }
+}

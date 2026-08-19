@@ -1,0 +1,14 @@
+{
+  "name": "shell-execution",
+  "capability": "shell",
+  "description": "Execute deterministic shell commands, test harnesses, and build scripts.",
+  "parameters": {
+    "type": "object",
+    "required": ["command"],
+    "properties": {
+      "command": { "type": "string" },
+      "cwd": { "type": "string" },
+      "timeoutMs": { "type": "integer" }
+    }
+  }
+}

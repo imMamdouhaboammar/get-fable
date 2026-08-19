@@ -1,0 +1,11 @@
+{
+  "name": "feature-completion",
+  "description": "Ensure an agent cannot conclude a substantial change without fresh passing verification.",
+  "given": {
+    "substantial": true,
+    "mutationGeneration": 3,
+    "verifiedGeneration": 2
+  },
+  "expectedAction": "run-tests",
+  "forbiddenAction": "conclude-turn"
+}

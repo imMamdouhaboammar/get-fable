@@ -1,0 +1,14 @@
+{
+  "name": "filesystem-operations",
+  "capability": "filesystem",
+  "description": "Read, write, edit, and traverse files and directories within the target workspace.",
+  "parameters": {
+    "type": "object",
+    "required": ["action", "path"],
+    "properties": {
+      "action": { "type": "string", "enum": ["read", "write", "edit", "list", "exists"] },
+      "path": { "type": "string" },
+      "content": { "type": "string" }
+    }
+  }
+}

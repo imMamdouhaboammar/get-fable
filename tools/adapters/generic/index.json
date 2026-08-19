@@ -1,0 +1,11 @@
+{
+  "provider": "generic",
+  "version": "1.2.0",
+  "mappings": {
+    "web-search": "search_web",
+    "filesystem": "file_operations",
+    "shell": "run_command",
+    "browser": "read_browser_page",
+    "git": "run_command"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "phase": "idle",
+  "currentSkill": null,
+  "failureStreak": 0,
+  "substantial": false,
+  "mutationGeneration": 0,
+  "verifiedGeneration": -1,
+  "activeCard": null,
+  "lastDecision": null,
+  "evidence": []
+}

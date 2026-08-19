@@ -1,0 +1,13 @@
+{
+  "name": "browser-inspection",
+  "capability": "browser",
+  "description": "Drive headless browser sessions, take screenshot evidence, and inspect DOM/render states.",
+  "parameters": {
+    "type": "object",
+    "required": ["url"],
+    "properties": {
+      "url": { "type": "string" },
+      "action": { "type": "string", "enum": ["navigate", "screenshot", "evaluate", "click"] }
+    }
+  }
+}
