@@ -3,25 +3,20 @@
   "schemaVersion": 2,
   "id": "skill-creator",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
     "references/progressive-disclosure.md",
     "references/eval-benchmarking.md",
-    "references/package-contract.md"
+    "references/package-contract.md",
+    "references/depth-standard-v2.md"
   ],
   "templates": [
     "templates/skill-template.md",
     "templates/package-template.json",
     "templates/scenario-template.json"
   ],
-  "examples": [
-    "examples/create-db-migrator-skill.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/create-db-migrator-skill.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }
