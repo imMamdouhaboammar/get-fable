@@ -19,7 +19,7 @@ function project() {
   const dir = freshDir();
   fs.mkdirSync(path.join(dir, '.fable'), { recursive: true });
   fs.writeFileSync(path.join(dir, '.fable', 'LEDGER.md'), '- [x] Acceptance: tests pass -- evidence: bun test 42 passed\n');
-  writeFableState(dir, createInitialState('2026-08-13T00:00:00.000Z'));
+  writeFableState(dir, createInitialState('2026-08-13T00:00:00.000Z', dir));
   return dir;
 }
 
@@ -62,6 +62,51 @@ describe('lifecycle hooks and durable state', () => {
     expect(state.substantial).toBe(true);
   });
 
+  test('successful write hooks advance mutation generation and stale prior verification', () => {
+    const dir = project();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.verifiedGeneration = 0;
+    state.evidence = [
+      {
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'baseline verified',
+        generation: 0,
+        timestamp: '2026-08-18T00:01:00.000Z',
+      },
+    ];
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const result = runHook('fable_mutation.py', {
+      cwd: dir,
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    });
+    expect(result.status).toBe(0);
+
+    const mutated = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    expect(mutated.mutationGeneration).toBe(1);
+    expect(mutated.verifiedGeneration).toBe(0);
+    expect(mutated.substantial).toBe(true);
+  });
+
+  test('failed write hooks do not advance mutation generation', () => {
+    const dir = project();
+    const statePath = path.join(dir, '.fable', 'state.json');
+
+    const result = runHook('fable_mutation.py', {
+      cwd: dir,
+      tool_name: 'Edit',
+      tool_response: { is_error: true, error: 'write failed' },
+    });
+    expect(result.status).toBe(0);
+
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    expect(state.mutationGeneration).toBe(0);
+  });
+
   test('close guard blocks substantial work that has no passing state evidence', () => {
     const dir = project();
     const statePath = path.join(dir, '.fable', 'state.json');
@@ -73,22 +118,24 @@ describe('lifecycle hooks and durable state', () => {
 
     const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
     expect(blocked.status).toBe(2);
-    expect(blocked.stderr).toContain('passing state evidence');
+    expect(blocked.stderr).toContain('current mutation generation');
   });
 
-  test('close guard blocks substantial completion when the newest evidence is a failure', () => {
+  test('close guard blocks substantial completion when the newest current-generation completion evidence is a failure', () => {
     const dir = project();
     const statePath = path.join(dir, '.fable', 'state.json');
     const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
     state.phase = 'complete';
     state.currentSkill = null;
     state.substantial = true;
+    state.verifiedGeneration = 0;
     state.evidence = [
       {
         kind: 'test',
         source: 'bun test',
         result: 'pass',
         detail: 'targeted tests passed',
+        generation: 0,
         timestamp: '2026-08-18T00:01:00.000Z',
       },
       {
@@ -96,6 +143,7 @@ describe('lifecycle hooks and durable state', () => {
         source: 'smoke test',
         result: 'fail',
         detail: 'runtime smoke failed after verification',
+        generation: 0,
         timestamp: '2026-08-18T00:02:00.000Z',
       },
     ];
@@ -104,13 +152,14 @@ describe('lifecycle hooks and durable state', () => {
 
     const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
     expect(blocked.status).toBe(2);
-    expect(blocked.stderr).toContain('fresh passing state evidence');
+    expect(blocked.stderr).toContain('current mutation generation');
 
     state.evidence.push({
       kind: 'runtime',
       source: 'smoke test',
       result: 'pass',
       detail: 'runtime smoke passed after correction',
+      generation: 0,
       timestamp: '2026-08-18T00:03:00.000Z',
     });
     state.failureStreak = 0;
@@ -121,7 +170,33 @@ describe('lifecycle hooks and durable state', () => {
     expect(allowed.status).toBe(0);
   });
 
-  test('close guard rejects non-string or empty latest evidence detail', () => {
+  test('close guard blocks when a newer mutation makes old verification stale', () => {
+    const dir = project();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.phase = 'complete';
+    state.currentSkill = null;
+    state.substantial = true;
+    state.mutationGeneration = 1;
+    state.verifiedGeneration = 0;
+    state.evidence = [
+      {
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'tests passed before final mutation',
+        generation: 0,
+        timestamp: '2026-08-18T00:01:00.000Z',
+      },
+    ];
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
+    expect(blocked.status).toBe(2);
+    expect(blocked.stderr).toContain('current mutation generation');
+  });
+
+  test('close guard rejects malformed latest evidence detail as invalid state', () => {
     const invalidDetails: unknown[] = [null, 42, true, undefined, '   '];
 
     for (const detail of invalidDetails) {
@@ -131,12 +206,14 @@ describe('lifecycle hooks and durable state', () => {
       state.phase = 'complete';
       state.currentSkill = null;
       state.substantial = true;
+      state.verifiedGeneration = 0;
       state.evidence = [
         {
           kind: 'test',
           source: 'bun test',
           result: 'pass',
           ...(detail === undefined ? {} : { detail }),
+          generation: 0,
           timestamp: '2026-08-18T00:01:00.000Z',
         },
       ];
@@ -144,11 +221,11 @@ describe('lifecycle hooks and durable state', () => {
 
       const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
       expect(blocked.status).toBe(2);
-      expect(blocked.stderr).toContain('fresh passing state evidence');
+      expect(blocked.stderr).toContain('invalid for the current lifecycle schema');
     }
   });
 
-  test('profile injector reports the durable workflow phase without synthetic model tiers', () => {
+  test('profile injector reports specialist and mutation-aware durable state without synthetic model tiers', () => {
     const dir = project();
     const statePath = path.join(dir, '.fable', 'state.json');
     const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
@@ -156,6 +233,9 @@ describe('lifecycle hooks and durable state', () => {
     state.currentSkill = 'fable-recover';
     state.failureStreak = 2;
     state.substantial = true;
+    state.mutationGeneration = 3;
+    state.verifiedGeneration = 2;
+    state.activeCard = 'Repair the failing integration path';
     fs.writeFileSync(statePath, JSON.stringify(state));
 
     const result = runHook('fable_profile_inject.py', {
@@ -168,6 +248,9 @@ describe('lifecycle hooks and durable state', () => {
     const context = payload.hookSpecificOutput.additionalContext;
     expect(context).toContain('fable-recover');
     expect(context).toContain('failureStreak=2');
+    expect(context).toContain('mutationGeneration=3');
+    expect(context).toContain('verifiedGeneration=2');
+    expect(context).toContain('Repair the failing integration path');
     expect(context).not.toContain('model ceiling');
     expect(context).not.toContain('Fable-5-grade');
   });
