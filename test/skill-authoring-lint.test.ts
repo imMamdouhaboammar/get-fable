@@ -6,10 +6,15 @@ import { runSkillPackageLint } from '../src/fable-lint.ts';
 import { getCoreRepoRoot } from '../src/core/skill-registry.ts';
 
 describe('Skill authoring lint', () => {
-  test('current canonical Skills satisfy the required authoring contract', () => {
+  test('current canonical Skills satisfy legacy or Deep Playbook V2 authoring contracts', () => {
     const report = runSkillPackageLint(getCoreRepoRoot());
     expect(report.valid).toBe(true);
-    expect(report.warnings.filter((w) => /missing required authoring section/i.test(w))).toEqual([]);
+    expect(report.warnings.filter((w) => /missing (required|v2) authoring section/i.test(w))).toEqual([]);
+  });
+
+  test('Deep Playbook V2 quality gates require semantic breadth and substantial progressive resources', () => {
+    const report = runSkillPackageLint(getCoreRepoRoot());
+    expect(report.errors.filter((e) => /Deep Playbook V2 requires/i.test(e))).toEqual([]);
   });
 
   test('detects recursively nested orphan resources', () => {
