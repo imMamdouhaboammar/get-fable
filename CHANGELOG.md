@@ -10,6 +10,8 @@ All notable changes to `get-fable` are documented in this file.
 - Made evidence ordering conservative across runtimes: a newer current-generation security failure now blocks generic completion until behavior-appropriate verification passes again, and schema-v1 security tasks retain their task-aware completion policy during migration.
 - Prevented execution-stage `currentSkill` and contradictory routing fields from widening a routed task's completion evidence policy. Security evidence is completion-capable only when the canonical skill, pack, and task shape consistently identify security work, with a legacy fallback only when no routing decision exists.
 - Rejected negative persisted routing scores in both TypeScript state validation and Python completion hooks while preserving valid additive scores above one.
+- Treat failed write-oriented tool attempts as potential workspace mutations, invalidating earlier verification through Claude's `PostToolUseFailure` event and broad host adapters.
+- Reapply the fresh-evidence gate when `complete` is requested from an already complete state after a later mutation.
 - Resolve the effective Git hooks directory through Git itself so installation, status, and Doctor repair work from linked worktrees and repositories with a configured `core.hooksPath`.
 - Return a non-zero CLI exit code when Git hook installation cannot resolve or write the effective hooks directory.
 

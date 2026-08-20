@@ -125,6 +125,11 @@ The tracked repository template stays schema v1 and workspace-neutral. Its state
 
 Every recognized workspace mutation advances `mutationGeneration`.
 
+Write-oriented tool failures are treated conservatively as potential
+mutations. A host failure only proves that the operation did not finish
+successfully; it does not prove that no partial filesystem change occurred.
+Read-only and command tools remain excluded by the mutation hook allowlist.
+
 ```text
 mutationGeneration = 4
 verifiedGeneration = 4
@@ -137,6 +142,9 @@ verifiedGeneration = 4
 ```
 
 Substantial completion requires the newest evidence accepted for the routed claim, current generation, and current workspace to pass.
+The completion gate is evaluated even when the requested phase is already
+`complete`, preventing an idempotent transition from reaffirming stale state
+after a later mutation.
 
 Generic behavior-completion evidence kinds:
 

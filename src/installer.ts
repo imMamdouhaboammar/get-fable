@@ -140,6 +140,12 @@ function registerClaudeHooks(settingsPath: string, hooksDest: string) {
       'fable_mutation',
       'Edit|Write|MultiEdit|NotebookEdit'
     );
+    registerOrUpdate(
+      'PostToolUseFailure',
+      pyMutation,
+      'fable_mutation',
+      'Edit|Write|MultiEdit|NotebookEdit'
+    );
     registerOrUpdate('Stop', pyCloseGuard, 'fable_close_guard');
 
     config.hooks = hooks;
@@ -554,6 +560,11 @@ function countClaudeHookRegistrations(settingsPath: string): number {
       script: 'fable_mutation.py',
       matcher: 'Edit|Write|MultiEdit|NotebookEdit',
     },
+    {
+      event: 'PostToolUseFailure',
+      script: 'fable_mutation.py',
+      matcher: 'Edit|Write|MultiEdit|NotebookEdit',
+    },
     { event: 'Stop', script: 'fable_close_guard.py' },
   ];
   return expected.filter(({ event, script, matcher }) =>
@@ -682,7 +693,7 @@ export function checkFableStatus(targetDir: string = process.cwd()) {
   console.log(`Claude Config Dir: ${status.claude.configDir}`);
   console.log(`Skill Installed: ${status.claude.legacySkillInstalled ? 'YES' : 'NO'}`);
   console.log(`Canonical Skill Installed: ${status.claude.canonicalSkillInstalled ? 'YES' : 'NO'}`);
-  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 6`);
+  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 7`);
   console.log(`Antigravity/Gemini Rule Installed: ${status.antigravity.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`Antigravity Plugin Installed: ${status.antigravity.pluginInstalled ? 'YES' : 'NO'}`);
   console.log(`Antigravity Registered Hooks: ${status.antigravity.registeredHooks} / 5`);

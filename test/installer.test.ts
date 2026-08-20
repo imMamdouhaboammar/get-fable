@@ -91,14 +91,20 @@ describe('installGlobalFable', () => {
 
     expect(second).toBe(first);
     const settings = JSON.parse(second);
-    const fableEntries = (event: string) =>
+    const failureEntries = (event: string) =>
       settings.hooks[event].filter((entry: any) =>
         entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
       );
-    expect(fableEntries('PostToolUse')).toHaveLength(1);
-    expect(fableEntries('PostToolUseFailure')).toHaveLength(1);
+    const mutationEntries = (event: string) =>
+      settings.hooks[event].filter((entry: any) =>
+        entry.hooks?.some((hook: any) => hook.command.includes('fable_mutation.py'))
+      );
+    expect(failureEntries('PostToolUse')).toHaveLength(1);
+    expect(failureEntries('PostToolUseFailure')).toHaveLength(1);
+    expect(mutationEntries('PostToolUse')).toHaveLength(1);
+    expect(mutationEntries('PostToolUseFailure')).toHaveLength(1);
     expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
-    expect(getFableStatus(root).claude.registeredHooks).toBe(6);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(7);
   });
 
   test('status rejects a Claude hook wired to the wrong script or matcher', () => {
@@ -109,11 +115,14 @@ describe('installGlobalFable', () => {
     installGlobalFable();
     const settingsPath = path.join(claude, 'settings.json');
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-    settings.hooks.PostToolUseFailure[0].hooks[0].command = 'python3 fable_close_guard.py';
+    const failureTracker = settings.hooks.PostToolUseFailure.find((entry: any) =>
+      entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
+    );
+    failureTracker.hooks[0].command = 'python3 fable_close_guard.py';
     settings.hooks.PostToolUse[0].matcher = 'Write';
     fs.writeFileSync(settingsPath, JSON.stringify(settings));
 
-    expect(getFableStatus(root).claude.registeredHooks).toBe(4);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(5);
   });
 });
 
@@ -199,6 +208,7 @@ describe('installAntigravityGlobal', () => {
       console.log = originalLog;
     }
 
+    expect(messages.some((message) => message.includes('Claude Registered Hooks: 0 / 7'))).toBe(true);
     expect(messages.some((message) => message.includes('Antigravity Registered Hooks: 0 / 5'))).toBe(true);
   });
 });

@@ -92,14 +92,51 @@ describe('lifecycle hooks and durable state', () => {
     expect(mutated.substantial).toBe(true);
   });
 
-  test('failed write hooks do not advance mutation generation', () => {
+  test('failed write attempts stale prior verification and block completion', () => {
     const dir = project();
     const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.phase = 'complete';
+    state.currentSkill = null;
+    state.substantial = true;
+    state.verifiedGeneration = 0;
+    state.evidence = [
+      {
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'verified before the failed write attempt',
+        generation: 0,
+        timestamp: '2026-08-20T00:01:00.000Z',
+      },
+    ];
+    fs.writeFileSync(statePath, JSON.stringify(state));
 
     const result = runHook('fable_mutation.py', {
       cwd: dir,
       tool_name: 'Edit',
       tool_response: { is_error: true, error: 'write failed' },
+    });
+    expect(result.status).toBe(0);
+
+    const mutated = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    expect(mutated.mutationGeneration).toBe(1);
+    expect(mutated.verifiedGeneration).toBe(0);
+
+    const blocked = runHook('fable_close_guard.py', { cwd: dir, stop_hook_active: false });
+    expect(blocked.status).toBe(2);
+    expect(blocked.stderr).toContain('current mutation generation');
+  });
+
+  test('read-only tool failures do not advance mutation generation', () => {
+    const dir = project();
+    const statePath = path.join(dir, '.fable', 'state.json');
+
+    const result = runHook('fable_mutation.py', {
+      hook_event_name: 'PostToolUseFailure',
+      cwd: dir,
+      tool_name: 'Read',
+      error: 'read failed',
     });
     expect(result.status).toBe(0);
 
