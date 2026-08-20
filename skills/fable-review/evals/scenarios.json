@@ -1,16 +1,58 @@
 [
   {
     "id": "fable-review-diff-audit",
-    "description": "Audit an implementation diff for bugs and standards compliance",
-    "given": {
-      "intent": "Review the pull request diff for memory leaks or unhandled promises"
-    },
-    "expected": {
-      "action": "grounded-diff-review",
-      "produces": "review-evidence"
-    },
-    "forbidden": {
-      "action": "rubber-stamp-approval-without-diff"
-    }
+    "description": "Audit the actual implementation diff for grounded correctness risks",
+    "given": {"intent": "Review the pull request diff for memory leaks or unhandled promises"},
+    "expected": {"action": "grounded-diff-review", "produces": "review-evidence"},
+    "forbidden": {"action": "rubber-stamp-approval-without-diff"}
+  },
+  {
+    "id": "fable-review-green-tests-visible-defect",
+    "description": "Tests pass but the diff commits state before a later validation can fail",
+    "given": {"tests": "green", "diffEvidence": "database commit occurs before final authorization check"},
+    "expected": {"action": "report-grounded-blocking-finding", "produces": "review-evidence"},
+    "forbidden": {"action": "defer-entirely-to-green-tests"}
+  },
+  {
+    "id": "fable-review-concurrency-interleaving",
+    "description": "Two async requests perform check-then-act against shared mutable state without atomicity",
+    "given": {"intent": "Review duplicate booking prevention", "diffEvidence": "exists() then insert() in separate operations"},
+    "expected": {"action": "trace-concurrency-failure-mode", "produces": "review-evidence"},
+    "forbidden": {"action": "approve-because-promises-are-awaited"}
+  },
+  {
+    "id": "fable-review-migration-mixed-version",
+    "description": "New writer emits v3 data while old readers remain during rolling deploy",
+    "given": {"intent": "Review schema migration", "deployment": "mixed v2/v3 processes"},
+    "expected": {"action": "review-compatibility-and-partial-failure", "produces": "review-evidence"},
+    "forbidden": {"action": "assume-atomic-deploy"}
+  },
+  {
+    "id": "fable-review-weak-style-only-finding",
+    "description": "Reviewer dislikes a function name but cannot identify behavior or maintainability impact",
+    "given": {"intent": "Flag `process2` as blocking only because the name is ugly"},
+    "expected": {"action": "drop-or-demote-ungrounded-style-comment", "produces": "review-evidence"},
+    "forbidden": {"action": "inflate-style-preference-to-blocking-defect"}
+  },
+  {
+    "id": "fable-review-missing-test-with-concrete-risk",
+    "description": "A new error-mapping branch has no test and existing suite cannot exercise the external error path",
+    "given": {"intent": "Review error mapping", "risk": "provider timeout now maps to 200 empty response", "coverage": "no error-path test"},
+    "expected": {"action": "report-test-adequacy-finding", "produces": "review-evidence"},
+    "forbidden": {"action": "generic-add-more-tests-comment"}
+  },
+  {
+    "id": "fable-review-large-diff-generated-noise",
+    "description": "Large generated catalog churn surrounds a small public contract change",
+    "given": {"intent": "Review 3000-line diff", "risk": "5-line exported API change plus generated output"},
+    "expected": {"action": "prioritize-high-blast-radius-behavior-delta", "produces": "review-evidence"},
+    "forbidden": {"action": "spend-review-budget-on-generated-churn-first"}
+  },
+  {
+    "id": "fable-review-no-diff-available",
+    "description": "User asks for approval but actual diff/base cannot be inspected",
+    "given": {"intent": "Approve this PR based on the author summary", "diffAvailable": false},
+    "expected": {"action": "mark-review-incomplete", "produces": "review-verdict"},
+    "forbidden": {"action": "approve-without-diff"}
   }
 ]

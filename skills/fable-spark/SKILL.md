@@ -25,53 +25,148 @@ neural_links:
   recovery: fable-recover
 ---
 
-# fable-spark
+# Fable Spark
 
-Situational awareness micro-policy and atomic next-move predictor.
+Choose one small next move that improves the state of the current task—or deliberately say nothing.
 
-## Purpose
-Determine the smallest, most natural next move from current state and evidence without expanding scope or inventing unrequested goals.
+## Mission
+Spark is not a planner, router, motivational assistant, or todo generator. It is a micro-policy for moments when the task is already in motion and the best next action should be small, concrete, and justified by current state.
 
-## When to Use
-- Evaluating what action should immediately follow a code edit, test run, or state transition.
-- Identifying missing gates before claiming completion.
-- Deciding whether to output a proactive suggestion or remain silently on standby.
+The quality bar is not "a helpful suggestion." It is **the least action that unlocks the next piece of evidence or safely advances the active Skill**.
 
-## When NOT to Use
-- Full multi-file architectural planning (use `fable-plan`).
-- Writing application code (use `fable-execute`).
+## Activate When
+- an edit/test/failure/state transition just happened;
+- a long session needs the next atomic step rather than another full plan;
+- verification freshness/gates determine what should happen next;
+- an active specialist has a clear ownership boundary but the immediate move is unclear;
+- silence vs intervention itself is a useful decision.
 
-## Inputs
-- **`current_state`**: State object containing `phase`, `mutationGeneration`, `verifiedGeneration`, `failureStreak`.
+## Do Not Activate When
+- no primary Skill has been selected for substantial new work (`get-fable`);
+- architecture/decomposition is the unresolved problem (`fable-plan`);
+- repeated failure requires a diagnosis (`fable-recover` owns the work; Spark may only point there);
+- the user asked for execution, not a suggestion, and the executing Skill already knows its next step.
 
-## Expected Outputs
-- **`spark_suggestion`**: Minimal atomic next action string or `null` (silence).
+## Situation Classification
+| State signal | Spark posture |
+| --- | --- |
+| repeated failure | stop mutation; diagnose |
+| mutation newer than verification | refresh relevant proof |
+| explicit active gate missing | satisfy that gate |
+| review finding unresolved | repair/replan finding |
+| active card blocked by unknown | discover/research/plan |
+| complete/idle with no intent | silence |
+| specialist owns next obvious step | usually silence; avoid narration |
+| several equally plausible non-atomic moves | defer to orchestrator/plan |
 
-## Procedure
-1. Check failure streak: if `failureStreak >= 2`, suggest "diagnose the repeated failure".
-2. Check mutation delta: if `mutationGeneration > verifiedGeneration`, suggest "run the affected tests".
-3. Check missing gates on active skill.
-4. If idle or complete with no pending work, output silence (`silent: true`).
+## Next-Move Protocol
+### Stage 1 — Read state before intent embellishment
+Inspect phase, current Skill/card, mutation/verified generation, failure streak, evidence, unresolved findings, blockers, and latest user intent.
+
+### Stage 2 — Apply safety precedence
+Prefer in order when applicable:
+1. diagnose repeated/contradictory failure;
+2. refresh stale proof after mutation;
+3. satisfy explicit blocking gate;
+4. resolve a named load-bearing unknown;
+5. continue the active specialist's smallest next action;
+6. silence.
+
+### Stage 3 — Make the action atomic
+A Spark suggestion should usually be one observable verb-object step:
+- `run the affected auth tests`;
+- `reproduce the race with a barrier`;
+- `inspect the registered CLI entrypoint`;
+- `review the current diff against the card`;
+- `capture the provider response bundle`.
+
+Avoid multi-stage suggestions such as "research, plan, implement, test, and release."
+
+### Stage 4 — Require a reason tied to evidence
+The reason should reference state/evidence, e.g. verification stale after mutation, failure streak reached recovery threshold, release gate missing, or active card has unresolved API contract.
+
+### Stage 5 — Check actionability
+Before speaking, ask:
+- can the action be done now with available context/tools?
+- does it preserve current scope?
+- is it owned by the active/next Skill?
+- will its outcome reduce uncertainty or satisfy a gate?
+
+If not, prefer silence or route back to the orchestrator.
+
+### Stage 6 — Use silence intentionally
+Silence is correct when:
+- task is idle/complete with no new intent;
+- the active agent already has an obvious immediate action;
+- only speculative future work can be suggested;
+- available context is too ambiguous for a useful atomic step.
 
 ## Decision Rules
-- If the suggestion would not be immediately obvious to a senior engineer, stay silent.
-- Ground predictions in concrete state variables, never in speculative goals.
+- Repeated failure outranks "run tests again" if another identical run adds no information.
+- Fresh mutation outranks completion/release suggestions until relevant evidence is refreshed.
+- Security/research/receipt evidence cannot stand in for required functional verification.
+- Do not suggest implementation when a load-bearing fact/contract remains unknown.
+- Prefer a targeted affected check over a full suite when the next goal is rapid causal feedback; broader required gates can follow.
+- Never invent a new objective because the current task is quiet.
+- Confidence is not a license to act outside the current Skill's scope.
+- If two next moves depend on an unresolved ordering/architecture choice, route to plan instead of guessing.
 
-## Tool Policy
-- Evaluate state via `get-fable spark --json`.
+## Invariants
+- At most one primary Spark suggestion.
+- Suggestion is atomic, actionable, and scope-preserving.
+- State/evidence—not generic best practice—justifies intervention.
+- Silence is allowed and preferred over speculative advice.
+- Spark never upgrades stale/incomplete evidence into completion proof.
 
-## Evidence Requirements
-- Computed suggestion with reason code and confidence score >= 0.85.
+## Failure Taxonomy
+### Scope drift
+Suggestion introduces an unrelated improvement. Drop it and return to active card/gate.
 
-## Failure Handling
-- On ambiguous context, default to silence (`silent: true`, `suggestion: null`).
+### Ceremony
+Spark narrates a step the active specialist is already obviously executing. Stay silent.
+
+### Premature action
+Suggestion mutates code before discovery/TDD/recovery requirement. Apply precedence.
+
+### Stale-proof blindness
+Spark suggests review/release despite mutation newer than verification. Refresh proof first.
+
+### Retry loop
+Spark repeats a command after repeated failure without new diagnostic state. Route to recovery.
+
+### Ambiguous macro-action
+Suggestion contains several dependent steps. Reduce to first atomic decision or route to plan.
+
+## Anti-Patterns
+- turning Spark into a mini project manager;
+- always suggesting something;
+- generic advice such as "keep testing";
+- proposing a full suite when one focused probe is the causal next move;
+- suggesting release because tests once passed;
+- suggesting implementation from unknown external facts;
+- confidence scores unsupported by state;
+- outputting three alternatives instead of one next action.
+
+## Spark Packet
+```text
+State signal:
+Blocking gate / uncertainty:
+Suggestion: <one action or null>
+Why now:
+Expected observation:
+Owner Skill:
+Silent: true|false
+```
 
 ## Completion Criteria
-- Next move identified or silence policy enforced.
+Spark succeeds when it either:
+- names one immediately executable, evidence-grounded action that safely advances the current lifecycle; or
+- remains silent because intervention would add noise, scope, or speculation.
 
 ## Progressive Resources
-- Next-Move: `references/next-move-policy.md`
+- Deep guide: `references/atomic-action-and-silence.md`
+- Next-move policy: `references/next-move-policy.md`
 - Silence: `references/silence-policy.md`
-- Evidence: `references/evidence-and-gates.md`
+- Evidence/gates: `references/evidence-and-gates.md`
 - Confidence: `references/confidence-policy.md`
 - Example: `examples/situational-awareness-walkthrough.md`

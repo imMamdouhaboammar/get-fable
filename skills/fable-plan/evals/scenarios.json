@@ -1,31 +1,58 @@
 [
   {
     "id": "fable-plan-architecture-task",
-    "description": "Multi-file refactoring requires explicit planning and work card decomposition",
-    "given": {
-      "intent": "Refactor the session store to support Redis clustering across multiple server instances",
-      "phase": "planned"
-    },
-    "expected": {
-      "action": "produce-bounded-cards",
-      "produces": "accepted-card"
-    },
-    "forbidden": {
-      "action": "execute-without-plan"
-    }
+    "description": "Cross-module refactor needs dependency-aware work cards and acceptance evidence",
+    "given": {"intent": "Refactor the session store to support Redis clustering across multiple server instances"},
+    "expected": {"action": "produce-bounded-cards", "produces": "accepted-card"},
+    "forbidden": {"action": "execute-without-plan"}
   },
   {
     "id": "fable-plan-boundary-unknown-facts",
-    "description": "When load-bearing architectural facts are missing, plan must route to discover first",
-    "given": {
-      "intent": "Plan migration to the new payment gateway without knowing the API version or auth model"
-    },
-    "expected": {
-      "action": "fallback-to-discover",
-      "selectedSkill": "fable-discover"
-    },
-    "forbidden": {
-      "action": "guess-architecture"
-    }
+    "description": "Blocking external/architectural unknowns must be resolved before planning",
+    "given": {"intent": "Plan migration to the new payment gateway without knowing the API version or auth model"},
+    "expected": {"action": "fallback-to-discover", "selectedSkill": "fable-discover"},
+    "forbidden": {"action": "guess-architecture"}
+  },
+  {
+    "id": "fable-plan-disjoint-files-shared-invariant",
+    "description": "Different files still cannot be parallelized when both redefine one serialized token format",
+    "given": {"intent": "Split token writer and token reader into parallel cards", "evidence": "both independently change the token wire format"},
+    "expected": {"action": "serialize-shared-contract-work", "produces": "accepted-card"},
+    "forbidden": {"action": "parallelize-because-files-disjoint"}
+  },
+  {
+    "id": "fable-plan-shared-integration-file-sequential",
+    "description": "Two coherent cards may touch the same integration file sequentially when ownership/order is explicit",
+    "given": {"intent": "Reject both cards because each must update the central router after implementing separate adapters"},
+    "expected": {"action": "model-sequential-integration-dependency", "produces": "accepted-card"},
+    "forbidden": {"action": "require-universal-file-disjointness"}
+  },
+  {
+    "id": "fable-plan-data-migration-coexistence",
+    "description": "Persisted old and new formats can coexist during rollout and require compatibility planning",
+    "given": {"intent": "Migrate all account records to schema v3", "evidence": "rolling deploy means v2 and v3 processes overlap"},
+    "expected": {"action": "plan-staged-compatible-migration", "produces": "accepted-card"},
+    "forbidden": {"action": "assume-atomic-flag-day-migration"}
+  },
+  {
+    "id": "fable-plan-weak-acceptance",
+    "description": "A card acceptance check only proves a file was created, not the requested behavior",
+    "given": {"intent": "Accept the OAuth callback card when src/oauth.ts exists"},
+    "expected": {"action": "strengthen-acceptance-condition", "produces": "acceptance-condition"},
+    "forbidden": {"action": "accept-file-existence-as-behavior-proof"}
+  },
+  {
+    "id": "fable-plan-risk-first-ordering",
+    "description": "High-risk third-party capability should be proven before broad adapter refactor",
+    "given": {"intent": "Refactor 18 call sites first, then check whether the provider supports required streaming semantics"},
+    "expected": {"action": "reorder-plan-risk-first", "produces": "accepted-card"},
+    "forbidden": {"action": "defer-load-bearing-proof-until-after-broad-change"}
+  },
+  {
+    "id": "fable-plan-scope-explosion",
+    "description": "A supposedly bounded card repeatedly reveals new architecture decisions",
+    "given": {"intent": "Keep adding substeps to the card", "newArchitecturalDecisions": 4},
+    "expected": {"action": "replan-scope-boundaries"},
+    "forbidden": {"action": "hide-architecture-inside-execution-card"}
   }
 ]

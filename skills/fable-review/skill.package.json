@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-review",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/diff-review-checklist.md"
+    "references/diff-review-checklist.md",
+    "references/behavioral-diff-review-playbook.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/code-review-finding.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/code-review-finding.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-recover",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/attribution-ladder.md"
+    "references/attribution-ladder.md",
+    "references/diagnostic-falsification-playbook.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/recovering-stale-test-cache.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/recovering-stale-test-cache.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

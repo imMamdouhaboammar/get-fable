@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-execute",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/mutation-containment.md"
+    "references/mutation-containment.md",
+    "references/bounded-mutation-and-failure-classification.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/bounded-card-execution.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/bounded-card-execution.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

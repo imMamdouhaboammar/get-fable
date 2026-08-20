@@ -55,7 +55,6 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect(result.cases.filter((item) => !item.passed).length).toBe(2);
   });
 
-
   test('supplies one global action vocabulary without leaking case oracles', async () => {
     const plan = buildAgentBehaviorEvalPlan().slice(0, 2);
     const seen: any[] = [];
@@ -76,7 +75,6 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect('forbidden' in seen[0]).toBe(false);
   });
 
-
   test('treats gate and structure collections as semantic sets, not ordered arrays', async () => {
     const item = buildAgentBehaviorEvalPlan().find((entry) => (entry.expected.gates?.length ?? 0) > 1)!;
     const provider: SkillBehaviorProvider = {
@@ -92,17 +90,27 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect(result.passed).toBe(1);
   });
 
-
-  test('builds five enterprise behavior categories per executable action case', async () => {
+  test('builds five enterprise behavior categories for every semantic TDD family', async () => {
     const mod: any = await import('../src/core/agent-behavior-eval.ts');
     expect(typeof mod.buildEnterpriseAgentBehaviorEvalPlan).toBe('function');
     const plan = mod.buildEnterpriseAgentBehaviorEvalPlan();
     const tdd = plan.filter((item: any) => item.skillId === 'fable-tdd');
-    expect(new Set(tdd.map((item: any) => item.category))).toEqual(new Set(['known', 'negative', 'ambiguous', 'adversarial', 'holdout']));
-    expect(tdd.every((item: any) => item.caseId.startsWith('fable-tdd-bug-fix::'))).toBe(true);
-    expect(tdd.find((item: any) => item.category === 'adversarial').given.__fableEval.untrustedInstruction).toContain('modify-production-code-without-test');
-  });
+    const categories = new Set(['known', 'negative', 'ambiguous', 'adversarial', 'holdout']);
+    expect(new Set(tdd.map((item: any) => item.category))).toEqual(categories);
 
+    const families = new Map<string, Set<string>>();
+    for (const item of tdd) {
+      const family = String(item.caseId).split('::')[0];
+      const familyCategories = families.get(family) ?? new Set<string>();
+      familyCategories.add(item.category);
+      families.set(family, familyCategories);
+    }
+    expect(families.size).toBeGreaterThanOrEqual(6);
+    for (const familyCategories of families.values()) expect(familyCategories).toEqual(categories);
+
+    const bugAdversarial = tdd.find((item: any) => item.caseId === 'fable-tdd-bug-fix::adversarial');
+    expect(bugAdversarial.given.__fableEval.untrustedInstruction).toContain('modify-production-code-without-test');
+  });
 
   test('exports oracle-free deterministic request bundles and scores offline responses', async () => {
     const mod: any = await import('../src/core/agent-behavior-eval.ts');
@@ -131,7 +139,6 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect(scored.oracleSha256).toBe(bundle.oracleSha256);
   });
 
-
   test('loads scored evidence from the repository and rejects stale Skill corpora', async () => {
     const fs = await import('node:fs');
     const os = await import('node:os');
@@ -154,7 +161,6 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect(stale.fresh).toBe(false);
     expect(stale.reason).toContain('stale');
   });
-
 
   test('provider request bundles blind evaluation categories behind opaque case IDs', async () => {
     const mod: any = await import('../src/core/agent-behavior-eval.ts');
@@ -186,5 +192,4 @@ describe('provider-neutral agent behavior evaluation', () => {
     expect(validation.fresh).toBe(false);
     expect(validation.reason).toContain('case verdict');
   });
-
 });

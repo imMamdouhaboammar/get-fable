@@ -34,85 +34,184 @@ neural_links:
 
 # Skill Creator
 
-Authoring, evaluating, refining, and packaging autonomous skills for multi-agent ecosystems.
+Create Skills that change agent behavior under pressure, not Skills that merely describe good practice.
 
-## Purpose
-Enable AI agents to systematically convert observed workflows, API contracts, and domain procedures into structured, verified, and self-evaluating Skill packages.
+## Mission
+A production Skill is a compact operating manual for a recurring class of decisions. It should help an agent recognize the situation, choose among plausible actions, collect the right evidence, reject tempting shortcuts, and hand off cleanly when another specialist is better suited.
 
-## When to Use
-- Creating a brand new skill from scratch based on user requirements or workflow observations.
-- Editing, refactoring, or optimizing an existing skill's instructions or triggering accuracy.
-- Writing quantitative evaluation benchmarks, holdouts, and test prompts for skills.
-- Packaging multi-agent skills into packs with neural linking and reference contracts.
+A schema-valid `SKILL.md` is not enough. A Skill that only says "inspect, plan, implement, verify" is documentation, not a behavioral capability.
 
-## When NOT to Use
-- Performing ordinary code changes or bug fixes (use `fable-execute` or `fable-tdd`).
-- Running existing application tests or linters (use `fable-verify`).
-- Conducting high-level project management (use `fable-plan` or `fable-handoff`).
+## Activation Contract
+Use this Skill when the requested work is to:
+- create a new reusable Skill;
+- strengthen or refactor an existing Skill;
+- improve triggering accuracy or reduce overlap with neighboring Skills;
+- add references, examples, templates, agents, or evals;
+- convert a repeated workflow into a portable agent capability;
+- prove that a Skill behaves correctly across more than a happy-path example.
+
+Do not use it for ordinary application changes, bug fixes, or repository maintenance. Route those to the appropriate lifecycle Skill.
 
 ## Inputs
-- **`user_intent`**: The explicit capability or workflow to be codified.
-- **`workflow_trace`**: Optional tool usage history or step sequence from the conversation.
-- **`reference_sources`**: Canonical documentation, schemas, or API guidelines.
+- **`user_intent`**: capability, behavior, or workflow to encode.
+- **`workflow_trace`**: observed sequence of decisions/tools/failures, when available.
+- **`reference_sources`**: primary docs, schemas, domain rules, or proven internal patterns.
 
-## Expected Outputs
-- **`skills/<skill_id>/SKILL.md`**: Fully structured canonical skill instructions with YAML frontmatter.
-- **`skills/<skill_id>/agents/`**: Multi-agent platform profiles (OpenAI, Claude, Generic).
-- **`skills/<skill_id>/references/`**: Domain documentation and deep reference cards.
-- **`skills/<skill_id>/templates/`**: Boilerplate templates and contract formats.
-- **`skills/<skill_id>/examples/`**: Concrete end-to-end usage examples.
+## Skill Depth Classification
+Before authoring, classify the capability:
 
-## Procedure
-1. **Capture Intent**: Identify the trigger conditions, inputs, required tools, and output formats.
-2. **Design Skill Architecture**: Apply the 3-level progressive disclosure pattern:
-   - Level 1: Frontmatter metadata (name + description with explicit triggers).
-   - Level 2: SKILL.md body (<500 lines of actionable decision rules and procedures).
-   - Level 3: Bundled resources in `references/`, `templates/`, and `examples/`.
-3. **Draft Instructions**: Use clear imperative language, concrete examples, and boundary conditions.
-4. **Construct Evals**: Draft quantitative assertions and qualitative evaluation prompts.
-5. **Optimize Description**: Refine frontmatter `description` to ensure high triggering accuracy without over-triggering.
+| Class | Typical shape | Required depth |
+| --- | --- | --- |
+| Rule | One stable decision with few branches | concise Skill, strong boundaries |
+| Procedure | Multi-step repeatable operation | staged protocol + evidence |
+| Diagnostic | Symptoms map to competing causes | failure taxonomy + falsification |
+| Orchestrator | Chooses/delegates among specialists | routing table + handoff contracts |
+| Domain expert | Requires substantial specialist knowledge | deep references + examples + eval families |
+
+If the capability is Diagnostic, Orchestrator, or Domain expert, a short checklist is presumptively insufficient.
+
+## Skill Contract V2
+Every non-trivial Skill must answer these questions explicitly.
+
+### 1. When does it activate?
+Define positive triggers, negative triggers, prerequisites, and escalation conditions. Include near-neighbor tasks that should *not* select this Skill.
+
+### 2. What situation is the agent in?
+Provide a small classification that changes behavior. Examples: bounded vs architectural, deterministic vs flaky, local vs external, reversible vs destructive, known vs uncertain.
+
+### 3. What decisions must be made?
+Use decision tables or branching rules for ambiguous cases. Do not hide judgment behind vague language such as "when appropriate" without defining the evidence that makes it appropriate.
+
+### 4. What is the execution protocol?
+For each stage specify:
+- objective;
+- allowed actions;
+- required evidence;
+- exit condition;
+- stop/escalation condition.
+
+### 5. How can it fail?
+Name domain-specific failure classes and observable signals that distinguish them. Do not collapse every failure into "retry" or "use recover".
+
+### 6. What must never become false?
+List invariants that stay true throughout the Skill. Examples: no production mutation before valid RED, no release claim without registry confirmation, no review finding without a concrete failure mode.
+
+### 7. Which shortcuts are tempting but invalid?
+Document anti-patterns that capable models commonly choose under time pressure or ambiguous prompts.
+
+### 8. What evidence leaves the Skill?
+Define a handoff packet for the next specialist: facts learned, commands run, artifacts changed, residual risk, unresolved questions, and proof freshness where relevant.
+
+### 9. What belongs in progressive resources?
+`SKILL.md` should hold decision logic. References should add operational depth, not repeat the same checklist in different words.
+
+Useful resources include:
+- decision heuristics;
+- failure diagnosis guides;
+- legacy/edge-case playbooks;
+- worked examples with trade-offs;
+- tool-independent verification strategies;
+- checklists only where the checklist encodes non-obvious domain knowledge.
+
+### 10. How will we know the Skill actually works?
+Create multiple semantically distinct eval families. Surface variations of one scenario do not count as breadth.
+
+## Eval Depth Standard
+For a non-trivial Skill, target at least **6 semantic scenario families** across its package before calling evaluation coverage mature. A family is a different decision problem, not the same prompt rewritten five ways.
+
+Include a mix of:
+- straightforward activation;
+- boundary/non-trigger case;
+- ambiguous situation requiring classification;
+- adversarial pressure to take a shortcut;
+- partial or contradictory evidence;
+- failure/recovery handoff;
+- legacy or constrained environment where the normal happy path is unavailable.
+
+The enterprise behavior harness may still expand each family into known/negative/ambiguous/adversarial/holdout variants. That expansion does not replace semantic family breadth.
+
+## Authoring Procedure
+1. **Observe the real job**: identify decisions, artifacts, failure modes, and handoffs from real workflows or primary sources.
+2. **Map neighboring Skills**: define what this Skill owns and what it deliberately refuses.
+3. **Write eval scenarios first** for the most important failure-prone decisions. If the expected action cannot be stated clearly, the Skill contract is not ready.
+4. **Design the decision model**: classification, branches, invariants, stop conditions.
+5. **Write `SKILL.md`** in imperative, tool-independent language.
+6. **Add progressive resources** for depth that would otherwise make the main Skill noisy.
+7. **Add worked examples** including at least one case where the obvious first move is wrong.
+8. **Create/refresh agent profiles** so host-facing prompts point to the full Skill contract rather than replacing it with a one-line summary.
+9. **Validate packaging and registry metadata**.
+10. **Run deterministic and behavioral evals**. Treat changed Skill/eval corpus hashes as requiring fresh proof.
 
 ## Decision Rules
-- If a skill contains >500 lines of prose, extract secondary domain deep dives into `references/<subtopic>.md`.
-- Never hardcode provider-specific tool names (e.g. `tavily_search`) inside canonical skill logic; reference abstract capabilities (`current-search-capability`).
-- Every skill must define explicit `When NOT to use` boundaries to prevent false trigger collisions.
+- Prefer one strong Skill with a clear domain over several overlapping micro-Skills.
+- If two Skills can both reasonably trigger from the same ordinary request, sharpen their boundaries before adding more keywords.
+- If the body contains only a linear happy-path procedure, add the branches that real work forces an expert to choose between.
+- If a reference merely paraphrases the body, replace it with deeper material.
+- If an eval can be passed by parroting the Skill description without understanding the situation, add ambiguity or conflicting evidence.
+- Never lower eval thresholds to preserve a maturity label after the Skill changes.
+- Never copy private expected/forbidden oracle fields into provider-visible prompts.
+- Avoid provider-specific tool names in canonical behavior. Describe capabilities, then let host adapters map them.
 
-## Tool Policy
-- Use file authoring tools to create clean markdown files and YAML metadata.
-- Validate generated skill frontmatter against `schemas/skill.schema.json`.
+## Failure Taxonomy
+### Triggering failure
+Skill activates too often or misses obvious requests. Fix boundaries and description before adding more procedure text.
+
+### Behavioral shallowness
+Skill selects the right broad action but cannot discriminate difficult subcases. Add classification, decision branches, and semantic eval families.
+
+### Resource shallowness
+References exist but contain only summaries. Replace with operational guides and worked trade-offs.
+
+### Evaluation illusion
+Pass rate is high because scenarios are near-duplicates or leak the answer. Increase semantic breadth and oracle isolation.
+
+### Contract drift
+`SKILL.md`, package metadata, agent profiles, registry entries, and evals describe different behavior. Reconcile before release.
+
+## Anti-Patterns
+Reject these patterns during Skill review:
+- "Use best practices" without naming the decision or evidence.
+- one generic procedure reused across unrelated Skills;
+- references under ~one screen that only restate the main steps;
+- one toy example presented as domain coverage;
+- an eval suite made from one scenario plus wording variants;
+- arbitrary retry counts with no diagnostic reason;
+- completion criteria that can be satisfied without fresh evidence;
+- `When NOT to Use` sections that omit the closest competing Skill;
+- giant monolithic prompts that duplicate every reference and destroy progressive disclosure.
 
 ## Evidence Requirements
-- Schema validation pass against `schemas/skill.schema.json`.
-- At least 2 test scenarios demonstrating successful skill execution.
+A strengthened Skill should provide:
+- valid package/frontmatter structure;
+- explicit activation and refusal boundaries;
+- situation classification and decision rules;
+- domain-specific failure taxonomy;
+- at least one substantial progressive reference;
+- worked example(s) covering a non-happy path;
+- multiple semantic eval families;
+- behavioral evidence re-run when the evaluated corpus changes.
 
-## Failure Handling
-- If a skill fails triggering accuracy evals, run description optimization to add domain keywords and pushy intent cues.
-- If skill instructions produce ambiguous agent behavior, add negative examples and explicit decision tables.
+## Handoff Contract
+When finishing Skill authoring, report:
+- Skill ID and owned capability;
+- neighboring Skills and trigger boundaries;
+- semantic eval families added;
+- progressive resources added;
+- known unsupported cases;
+- deterministic validation status;
+- whether behavioral evidence is fresh, stale, or not yet executed.
 
 ## Completion Criteria
-- `SKILL.md` is valid, well-formed, and contains all 12 canonical sections.
-- All bundled subdirectories (`agents/`, `references/`, `templates/`, `examples/`) are populated.
-- Skill is registered in `registry/skills.json` and `skills.sh.json`.
+Do not call the Skill mature merely because all expected folders exist.
 
-## Neural Connections & Referring Links
-- Upstream Precursors: `fable-discover`, `fable-research`
-- Downstream Continuations: `fable-eval`, `fable-verify`, `fable-review`
-- Lateral Peers: `fable-artifact`, `fable-config`
-- Recovery Handler: `fable-recover`
+Completion requires:
+- package validation passes;
+- contract sections above are materially present where relevant;
+- resources add depth rather than duplication;
+- eval breadth tests the major decisions and shortcuts;
+- registry/host metadata remains consistent;
+- any prior behavioral proof invalidated by corpus changes is explicitly marked stale until rerun.
 
-## Examples
-
-### Example 1: Creating a Specialized Tool Skill
-```markdown
----
-name: custom-db-migrator
-description: Migrate Postgres database schemas safely with rollback scripts. Use when applying DB migrations.
-pack: build
-version: 1.0.0
-inputs: [migration_sql, target_env]
-requires: [db_connection]
-produces: [migration_receipt]
----
-# custom-db-migrator
-...
-```
+## Progressive Resources
+- Depth standard: `references/depth-standard-v2.md`
+- Existing authoring references and templates remain useful for package mechanics.

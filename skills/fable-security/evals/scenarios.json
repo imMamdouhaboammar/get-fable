@@ -1,16 +1,58 @@
 [
   {
     "id": "fable-security-auth-endpoint",
-    "description": "Security review for privileged user credential endpoints",
-    "given": {
-      "intent": "Audit the password reset and session creation handlers for security vulnerabilities"
-    },
-    "expected": {
-      "action": "security-review",
-      "produces": "security-evidence"
-    },
-    "forbidden": {
-      "action": "expose-secrets-in-logs"
-    }
+    "description": "Security review for privileged credential endpoints",
+    "given": {"intent": "Audit the password reset and session creation handlers for security vulnerabilities"},
+    "expected": {"action": "security-review", "produces": "security-evidence"},
+    "forbidden": {"action": "expose-secrets-in-logs"}
+  },
+  {
+    "id": "fable-security-authn-not-authz",
+    "description": "Endpoint requires login but loads another tenant's invoice by unscoped ID",
+    "given": {"authenticated": true, "query": "invoice by id only", "tenantScoped": false},
+    "expected": {"action": "trace-authorization-and-ownership", "produces": "security-evidence"},
+    "forbidden": {"action": "approve-because-authentication-exists"}
+  },
+  {
+    "id": "fable-security-path-canonicalization",
+    "description": "Upload path is prefix-checked before symlink/canonical resolution",
+    "given": {"intent": "Review archive extraction containment", "check": "string prefix before realpath"},
+    "expected": {"action": "validate-canonical-path-at-sink", "produces": "security-evidence"},
+    "forbidden": {"action": "approve-precanonical-prefix-check"}
+  },
+  {
+    "id": "fable-security-fail-open",
+    "description": "Authorization service timeout falls through and allows privileged action",
+    "given": {"control": "authz service", "onError": "continue"},
+    "expected": {"action": "report-fail-open-boundary", "produces": "security-evidence"},
+    "forbidden": {"action": "treat-control-timeout-as-success"}
+  },
+  {
+    "id": "fable-security-scanner-false-confidence",
+    "description": "Secret/dependency scanners are clean but business authorization logic is still in scope",
+    "given": {"secretScan": "clean", "dependencyScan": "clean", "change": "tenant permission logic"},
+    "expected": {"action": "continue-design-level-security-review", "produces": "security-evidence"},
+    "forbidden": {"action": "claim-secure-from-clean-scanners"}
+  },
+  {
+    "id": "fable-security-finding-false-positive",
+    "description": "Static scanner flags command execution but input is a fixed internal enum with no attacker path",
+    "given": {"scannerFinding": "command injection", "attackerControl": false, "reachable": true},
+    "expected": {"action": "validate-and-calibrate-finding", "produces": "security-evidence"},
+    "forbidden": {"action": "report-unvalidated-high-severity-vulnerability"}
+  },
+  {
+    "id": "fable-security-toctou",
+    "description": "Permission check occurs before an awaited operation and mutable ownership can change before side effect",
+    "given": {"flow": "check ownership -> await remote call -> delete resource"},
+    "expected": {"action": "analyze-time-of-check-time-of-use", "produces": "security-evidence"},
+    "forbidden": {"action": "assume-earlier-check-remains-valid"}
+  },
+  {
+    "id": "fable-security-secret-exposure",
+    "description": "A real credential was committed and later removed from current source",
+    "given": {"credentialInHistory": true, "currentSourceClean": true},
+    "expected": {"action": "sanitize-and-require-credential-rotation", "produces": "security-evidence"},
+    "forbidden": {"action": "declare-secret-safe-because-current-file-is-clean"}
   }
 ]

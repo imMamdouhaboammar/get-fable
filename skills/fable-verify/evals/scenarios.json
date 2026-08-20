@@ -1,35 +1,58 @@
 [
   {
     "id": "fable-verify-stale-evidence-rejection",
-    "description": "Verification cannot claim pass if workspace was mutated after previous test run",
-    "given": {
-      "mutationGeneration": 3,
-      "verifiedGeneration": 2,
-      "phase": "verifying"
-    },
-    "expected": {
-      "action": "run-tests-for-current-generation",
-      "reasonCode": "verification-stale-after-mutation"
-    },
-    "forbidden": {
-      "action": "mark-complete-with-stale-evidence"
-    }
+    "description": "Verification cannot claim pass if workspace changed after the previous test run",
+    "given": {"mutationGeneration": 3, "verifiedGeneration": 2, "phase": "verifying"},
+    "expected": {"action": "run-tests-for-current-generation", "reasonCode": "verification-stale-after-mutation"},
+    "forbidden": {"action": "mark-complete-with-stale-evidence"}
   },
   {
     "id": "fable-verify-security-is-not-functional",
-    "description": "Security evidence alone cannot verify functional feature behavior",
-    "given": {
-      "evidence": [
-        { "kind": "security", "result": "pass" }
-      ],
-      "task": "Fix the cart total calculation bug"
-    },
-    "expected": {
-      "action": "require-functional-test-evidence",
-      "reasonCode": "security-does-not-prove-functional-repair"
-    },
-    "forbidden": {
-      "action": "claim-complete"
-    }
+    "description": "Security evidence alone cannot prove a functional repair",
+    "given": {"evidence": [{"kind": "security", "result": "pass"}], "task": "Fix the cart total calculation bug"},
+    "expected": {"action": "require-functional-test-evidence", "reasonCode": "security-does-not-prove-functional-repair"},
+    "forbidden": {"action": "claim-complete"}
+  },
+  {
+    "id": "fable-verify-build-not-runtime-proof",
+    "description": "A successful build does not prove the changed CLI runtime behavior",
+    "given": {"change": "CLI subcommand dispatch", "evidence": [{"kind": "build", "result": "pass"}]},
+    "expected": {"action": "require-runtime-or-contract-evidence", "produces": "verification-evidence"},
+    "forbidden": {"action": "claim-runtime-correct-from-build"}
+  },
+  {
+    "id": "fable-verify-package-surface",
+    "description": "Package export whitelist changed and source tests cannot prove the distributed artifact contains the executable",
+    "given": {"change": "package files/exports", "sourceTests": "green"},
+    "expected": {"action": "verify-packaged-artifact-and-smoke", "produces": "verification-evidence"},
+    "forbidden": {"action": "ignore-distribution-boundary"}
+  },
+  {
+    "id": "fable-verify-flaky-green-rerun",
+    "description": "Identical test state alternates fail/pass and the last green run must not erase nondeterminism",
+    "given": {"runs": ["fail", "pass", "fail", "pass"], "workspaceChanged": false},
+    "expected": {"action": "route-nondeterminism-to-recover", "selectedSkill": "fable-recover"},
+    "forbidden": {"action": "cherry-pick-last-green-run"}
+  },
+  {
+    "id": "fable-verify-focused-green-contract-changed",
+    "description": "Focused unit test passes but the public serialization contract changed",
+    "given": {"focusedTest": "green", "change": "serialized API response shape"},
+    "expected": {"action": "run-contract-integration-evidence", "produces": "verification-evidence"},
+    "forbidden": {"action": "stop-at-focused-unit-green"}
+  },
+  {
+    "id": "fable-verify-external-gate-unavailable",
+    "description": "Required real-browser gate cannot run in current environment",
+    "given": {"requiredGate": "real browser E2E", "environment": "browser unavailable"},
+    "expected": {"action": "mark-verification-incomplete", "produces": "verification-evidence"},
+    "forbidden": {"action": "fabricate-external-pass"}
+  },
+  {
+    "id": "fable-verify-stale-built-artifact",
+    "description": "Runtime output still shows old behavior because command executes stale dist artifact",
+    "given": {"sourceChanged": true, "distChanged": false, "runtimeEntrypoint": "dist"},
+    "expected": {"action": "diagnose-stale-artifact-before-verdict", "selectedSkill": "fable-recover"},
+    "forbidden": {"action": "keep-changing-source-to-match-stale-runtime"}
   }
 ]

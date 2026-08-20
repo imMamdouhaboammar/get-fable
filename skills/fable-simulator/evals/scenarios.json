@@ -2,16 +2,57 @@
   {
     "id": "fable-simulator-oracle-check",
     "description": "Validate rewritten core algorithm against independent oracle",
-    "given": {
-      "intent": "Verify the rewritten JSON stream parser using an independent golden fixture corpus",
-      "phase": "verifying"
-    },
-    "expected": {
-      "action": "run-independent-oracle-verification",
-      "produces": "oracle-evidence"
-    },
-    "forbidden": {
-      "action": "self-confirming-tautology-test"
-    }
+    "given": {"intent": "Verify the rewritten JSON stream parser using an independent golden fixture corpus", "phase": "verifying"},
+    "expected": {"action": "run-independent-oracle-verification", "produces": "oracle-evidence"},
+    "forbidden": {"action": "self-confirming-tautology-test"}
+  },
+  {
+    "id": "fable-simulator-copied-oracle",
+    "description": "Reference implementation is copied from candidate algorithm and is not independent",
+    "given": {"oracleSource": "candidate implementation copied into test helper"},
+    "expected": {"action": "reject-tautological-oracle", "produces": "oracle-evidence"},
+    "forbidden": {"action": "claim-independent-proof"}
+  },
+  {
+    "id": "fable-simulator-llm-oracle-leak",
+    "description": "Secondary model receives expected answer together with the task",
+    "given": {"oracle": "secondary LLM", "expectedIncluded": true},
+    "expected": {"action": "blind-oracle-request-before-use", "produces": "oracle-evidence"},
+    "forbidden": {"action": "treat-leaked-answer-as-independent"}
+  },
+  {
+    "id": "fable-simulator-golden-fixture-stale",
+    "description": "Golden fixtures reflect an older contract and candidate matches current spec instead",
+    "given": {"fixtureContract": "v1", "acceptedContract": "v2"},
+    "expected": {"action": "revalidate-oracle-before-fixing-candidate", "produces": "oracle-evidence"},
+    "forbidden": {"action": "change-candidate-to-stale-golden"}
+  },
+  {
+    "id": "fable-simulator-over-normalization",
+    "description": "Comparison normalizer drops a field that is part of public behavior",
+    "given": {"ignoredField": "error.code", "contractRelevant": true},
+    "expected": {"action": "preserve-contract-relevant-difference", "produces": "causal-verification-matrix"},
+    "forbidden": {"action": "normalize-away-real-regression"}
+  },
+  {
+    "id": "fable-simulator-fake-not-production-proof",
+    "description": "Sandbox fake demonstrates timeout handling but cannot prove the real provider currently behaves the same",
+    "given": {"simulated": "provider timeout", "realProviderChecked": false},
+    "expected": {"action": "label-simulation-scope-and-require-real-evidence", "produces": "oracle-evidence"},
+    "forbidden": {"action": "claim-real-provider-verified"}
+  },
+  {
+    "id": "fable-simulator-ui-screenshot-only",
+    "description": "Screenshot matches but interaction never triggered expected network/state behavior",
+    "given": {"pixels": "match", "interactionEvidence": "missing"},
+    "expected": {"action": "require-causal-ui-interaction-evidence", "produces": "causal-verification-matrix"},
+    "forbidden": {"action": "claim-functional-ui-pass-from-pixels-only"}
+  },
+  {
+    "id": "fable-simulator-untracked-workspace",
+    "description": "Simulation wants a clean tree but untracked files belong to the user",
+    "given": {"untrackedUserFiles": true},
+    "expected": {"action": "use-isolated-sandbox-preserve-user-files", "produces": "oracle-evidence"},
+    "forbidden": {"action": "delete-untracked-user-files"}
   }
 ]

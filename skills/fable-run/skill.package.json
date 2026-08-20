@@ -3,19 +3,14 @@
   "schemaVersion": 2,
   "id": "fable-run",
   "entry": "SKILL.md",
-  "agents": [
-    "agents/openai.yaml"
-  ],
+  "agents": ["agents/openai.yaml"],
   "references": [
-    "references/runtime-process-management.md"
+    "references/runtime-process-management.md",
+    "references/process-lifecycle-and-readiness.md"
   ],
   "templates": [],
-  "examples": [
-    "examples/live-server-smoke-check.md"
-  ],
-  "evals": [
-    "evals/scenarios.json"
-  ],
+  "examples": ["examples/live-server-smoke-check.md"],
+  "evals": ["evals/scenarios.json"],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

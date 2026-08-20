@@ -27,52 +27,149 @@ neural_links:
   recovery: fable-recover
 ---
 
-# fable-memory
+# Fable Memory
 
-Cross-session file-based memory and preference indexing specialist.
+Persist only facts that deserve to survive the session, with provenance and contradiction handling strong enough that old memory does not silently become a new source of error.
 
-## Purpose
-Record durable user preferences, project constraints, and architectural feedback into atomic single-fact files with synced index catalogs.
+## Mission
+Memory is not a chat archive. It should reduce rediscovery without freezing temporary guesses into permanent instructions.
 
-## When to Use
-- Storing user preferences (e.g. preferred test runner, styling conventions).
-- Recording durable project constraints and architectural decisions.
-- Indexing and recalling historical facts across multiple agent sessions.
+A durable record needs scope, provenance, confidence, freshness, and a way to be superseded when the user or repository changes.
 
-## When NOT to Use
-- Storing temporary session state or work cards (use `.fable/state.json` or `.fable/LEDGER.md`).
-- Storing secret credentials or API tokens (use environment vault).
+## Activate When
+- the user explicitly asks to remember a durable preference/constraint;
+- a stable project convention or architectural decision will materially affect future work;
+- cross-session continuity repeatedly depends on the same fact;
+- a prior durable fact needs correction, supersession, or retrieval.
 
-## Inputs
-- **`memory_fact`**: Key technical fact, user preference, or project constraint.
+## Do Not Activate When
+- the information is temporary execution state (`.fable/state`, ledger, handoff);
+- it is a one-off conversational detail unlikely to affect future decisions;
+- it is a guess/inference not yet stable enough to persist;
+- it contains a password, token, private key, session cookie, or other secret.
 
-## Expected Outputs
-- **`memory_record`**: Structured markdown file with YAML frontmatter.
-- **`updated_index`**: Updated `MEMORY.md` index catalog.
+## Memory Classification
+| Type | Example | Durability rule |
+| --- | --- | --- |
+| User preference | preferred package manager | persist when explicit/stable |
+| Project constraint | runtime Bun >=1.3 | bind to project/source |
+| Architecture decision | use outbox for events | store rationale + supersession path |
+| Repeated workflow rule | verify package clean-install before release | persist if project-specific and durable |
+| External fact | API behavior/version | usually cite/research at use time; avoid timeless storage |
+| Temporary state | current failing test | handoff/state, not memory |
+| Sensitive credential | API token | never memory |
 
-## Procedure
-1. Create or update an atomic fact file in `.memory/<slug>.md`.
-2. Format YAML frontmatter (`name`, `description`, `type`).
-3. Synchronize `MEMORY.md` table of contents.
-4. Verify no duplicate or conflicting facts exist.
+## Protocol
+### Stage 1 — Decide whether it deserves memory
+Ask:
+- will this likely matter in another session?
+- is it stable, explicit, or source-backed?
+- is there a narrower existing record to update?
+- could persistence create privacy/security risk?
+
+If not durable, leave it in current context/handoff only.
+
+### Stage 2 — Normalize the fact
+Store one coherent decision/fact with:
+- canonical statement;
+- scope (user/project/repo/subsystem);
+- type;
+- source/provenance;
+- confidence/status;
+- created/updated timestamp if supported;
+- supersedes/superseded-by relation when relevant.
+
+### Stage 3 — Check conflicts before write
+Search for existing records with same subject. Compare:
+- exact agreement → update provenance/freshness rather than duplicate;
+- narrower/wider scope → preserve both only if scopes are genuinely different;
+- contradiction → do not keep two active truths; resolve or mark conflict explicitly.
+
+### Stage 4 — Write atomically and index
+Update one canonical fact record and synchronize index/catalog. Preserve unrelated records.
+
+### Stage 5 — Validate retrieval meaning
+Read back the record as a future agent would. Ensure it does not overgeneralize:
+- `use Bun in get-fable` is not `user always uses Bun everywhere`;
+- `API v4 did X in Aug 2026` is not an eternal API guarantee.
+
+### Stage 6 — Apply memory skeptically on retrieval
+When a remembered fact affects current work:
+- confirm scope matches;
+- prefer current user/repository evidence over old memory;
+- revalidate time-sensitive external facts;
+- treat explicit new instruction as superseding old preference where applicable.
 
 ## Decision Rules
-- One fact per file; never aggregate multiple unrelated facts in one file.
-- Update existing memory records rather than creating conflicting notes.
+- User's current explicit statement outranks stored preference.
+- Repository/config/source evidence outranks contradictory memory about repository state.
+- Time-sensitive external facts should be researched again rather than trusted indefinitely.
+- A memory can be historical without remaining active; use superseded status instead of deletion when history matters.
+- Do not infer broad personal preferences from a single project choice.
+- Never store credentials even when the user asks to "remember the token"; reference secure credential management instead.
+- One fact per record is a maintainability rule, but related rationale/source may accompany the fact.
 
-## Tool Policy
-- Read and write `.memory/` files and `MEMORY.md`.
+## Invariants
+- No secrets enter durable memory.
+- Active memory contains no unresolved contradictory truths without explicit conflict status.
+- Scope is explicit enough to prevent accidental generalization.
+- Provenance is retained for consequential constraints/decisions.
+- Current evidence/instruction can supersede memory.
+- Index and underlying record remain consistent.
 
-## Evidence Requirements
-- Valid markdown fact file and updated index entry.
+## Failure Taxonomy
+### Duplicate memory
+Same fact exists twice with minor wording differences. Merge/update canonical record.
 
-## Failure Handling
-- If duplicate facts are detected, merge into a single canonical record.
+### Scope leak
+Project-specific choice is treated as global user preference. Narrow the scope.
+
+### Stale memory
+Repository/user/external reality changed. Supersede or revalidate before use.
+
+### Contradictory active facts
+Two records give incompatible active guidance. Resolve with current source/user evidence.
+
+### Inference hardened into fact
+Agent stored an assumption as durable truth. Downgrade/remove and require evidence.
+
+### Secret persistence
+Sensitive value appears in memory. Remove exposure and handle credential rotation/security as appropriate.
+
+## Anti-Patterns
+- saving every conversation detail "just in case";
+- storing temporary errors/active todos as durable preference;
+- broadening `in this repo` into `always`;
+- persisting current API/version claims with no expiry/provenance;
+- creating a new fact file instead of updating a conflicting one;
+- storing a token because future automation may need it;
+- treating memory as more authoritative than current repository evidence;
+- silently deleting historical decisions when supersession context matters.
+
+## Memory Record
+```text
+Subject/fact:
+Scope:
+Type:
+Status: active | superseded | conflicted
+Source/provenance:
+Confidence:
+Rationale/context:
+Supersedes / superseded by:
+Freshness/revalidation note:
+```
 
 ## Completion Criteria
-- Memory fact stored, indexed, and immediately retrievable.
+Memory work completes when:
+- fact is genuinely durable and safely scoped;
+- duplicates/conflicts were checked;
+- record has enough provenance to evaluate later;
+- index is synchronized;
+- sensitive/temporary data was excluded;
+- a future agent can retrieve and apply the fact without overgeneralizing it.
 
 ## Progressive Resources
-- Protocol: `references/memory-management-protocol.md`
+- Deep guide: `references/durable-fact-lifecycle.md`
+- Existing protocol: `references/memory-management-protocol.md`
 - Template: `templates/memory-fact.template.md`
 - Example: `examples/recording-user-preference.md`
