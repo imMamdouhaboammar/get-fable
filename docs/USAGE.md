@@ -250,6 +250,11 @@ resets the consecutive-failure streak after success. `PostToolUseFailure`
 records a failure from Claude's top-level failure event, including failures that
 do not expose a process exit code.
 
+`fable_mutation.py` handles both result events for `Edit`, `Write`,
+`MultiEdit`, and `NotebookEdit`. Successful and failed write attempts both
+advance `mutationGeneration`, because a failed editor may already have changed
+part of the workspace. Read-only tool failures do not advance it.
+
 At two consecutive failures it selects `fable-recover` and injects the attribution order
 
 ```text

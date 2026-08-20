@@ -18,7 +18,7 @@ The hooks turn selected lifecycle invariants into mechanical host behavior. They
 | `fable_profile_inject.py` | `SessionStart` | Restore phase, specialist skill, failure streak, active card, mutation generation, and verification freshness |
 | `fable_spawn_guard.py` | `PreToolUse` on Agent/Task/Workflow | Require bounded delegated work before substantial spawning |
 | `fable_fail_streak.py` | `PostToolUse` and `PostToolUseFailure` on Bash | Reset on success, record failures, and route two consecutive failures into `fable-recover` |
-| `fable_mutation.py` | `PostToolUse` on write/edit tools | Advance `mutationGeneration` after a successful workspace mutation |
+| `fable_mutation.py` | `PostToolUse` and `PostToolUseFailure` on write/edit tools | Conservatively advance `mutationGeneration` after a write attempt |
 | `fable_close_guard.py` | `Stop` / `SessionEnd` where supported | Block unfinished cards, invalid state, stale proof, or substantial work that has not reached a valid complete state |
 
 `_fable_common.py` provides shared state validation, schema-v1 migration, canonical workspace discovery, ledger parsing, atomic state writes, mutation tracking, and evidence-freshness rules.
@@ -39,7 +39,11 @@ verifiedGeneration = 6
 
 The previous proof remains historical evidence but can no longer close substantial work.
 
-`fable_mutation.py` contains its own write-tool allowlist in addition to host matchers so a host with broad PostToolUse semantics does not mark read-only commands as mutations.
+`fable_mutation.py` contains its own write-tool allowlist in addition to host
+matchers, so broad host events do not mark read-only commands as mutations. A
+failed write attempt still advances the generation: editors can partially
+change a file before reporting failure, so get-fable requires fresh evidence
+instead of assuming the workspace stayed unchanged.
 
 ## Evidence freshness
 

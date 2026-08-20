@@ -158,11 +158,23 @@ describe('OpenAI plugin package', () => {
 
   test('Claude lifecycle hooks include mutation tracking and completion enforcement', () => {
     const hooks = readJson('hooks/hooks.json').hooks;
+    const registryHooks = readJson('registry/hooks.json').hooks;
     const postToolUse = hooks.PostToolUse || [];
-    const commands = JSON.stringify(postToolUse);
-    expect(commands).toContain('fable_fail_streak.py');
-    expect(commands).toContain('fable_mutation.py');
-    expect(commands).toContain('Edit|Write|MultiEdit|NotebookEdit');
+    const postToolUseFailure = hooks.PostToolUseFailure || [];
+    expect(JSON.stringify(postToolUse)).toContain('fable_fail_streak.py');
+
+    for (const eventEntries of [
+      postToolUse,
+      postToolUseFailure,
+      registryHooks.PostToolUse || [],
+      registryHooks.PostToolUseFailure || [],
+    ]) {
+      const mutation = eventEntries.find((entry: any) =>
+        entry.command?.includes('fable_mutation.py') ||
+        entry.hooks?.some((hook: any) => hook.command.includes('fable_mutation.py'))
+      );
+      expect(mutation?.matcher).toBe('Edit|Write|MultiEdit|NotebookEdit');
+    }
   });
 
   test('Codex agent routing points only to existing unpinned profiles', () => {
@@ -287,4 +299,3 @@ describe('OpenAI plugin package', () => {
     }
   });
 });
-

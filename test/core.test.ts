@@ -148,7 +148,8 @@ describe('durable state', () => {
       detail: 'affected path passed',
       timestamp: '2026-08-13T00:01:00.000Z',
     });
-    const mutated = recordMutation(verified, '2026-08-13T00:02:00.000Z');
+    const completed = transitionState(verified, 'complete');
+    const mutated = recordMutation(completed, '2026-08-13T00:02:00.000Z');
 
     expect(mutated.mutationGeneration).toBe(1);
     expect(mutated.verifiedGeneration).toBe(0);

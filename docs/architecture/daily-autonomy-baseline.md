@@ -268,3 +268,39 @@ advertised recovery transition using the host's documented event boundary,
 requires no state migration or dependency, preserves unrelated hooks, and is
 directly testable with `failure -> success -> failure` and `failure -> failure`
 sequences.
+
+## 2026-08-20 revalidation
+
+Revalidated against default-branch SHA `0b94f10b27d37c3b648ced7402d15ba27aabca82`
+and package version `1.3.0`. The runtime now uses schema v3, workspace-bound
+state, mutation generations, 25 canonical skills, and an expanded cross-host
+test matrix. GitHub exposed no open issues. PR #19 was intentionally excluded:
+its change set is unrelated and its current CI matrix is failing.
+
+The audit reproduced two connected freshness bypasses. First, a failed `Edit`
+payload left generation-zero evidence current even though an editor can fail
+after a partial write. Second, after any mutation of a state already marked
+`complete`, another `complete` transition returned before evaluating freshness.
+
+Scores are 1–10. Priority is `(UV × 2) + Rel + Fit + DX + Diff + Learn + Test - Maint - Risk`;
+implementation confidence is recorded but not added.
+
+| Rank | Candidate | UV | Rel | Fit | DX | Diff | Learn | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Failed-write invalidation plus idempotent completion gate | 9 | 10 | 10 | 8 | 8 | 8 | 9 | 10 | 2 | 2 | **68** |
+| 2 | Git checkout/reset mutation tracking | 9 | 10 | 10 | 7 | 8 | 9 | 7 | 9 | 4 | 4 | **63** |
+| 3 | Evidence workspace-provenance enforcement | 9 | 10 | 10 | 7 | 8 | 9 | 7 | 8 | 5 | 5 | **60** |
+| 4 | Claude interrupt/failure discrimination | 7 | 8 | 8 | 8 | 4 | 7 | 9 | 10 | 2 | 2 | **55** |
+| 5 | Reject symlinked `.fable` write boundaries | 8 | 9 | 8 | 7 | 5 | 8 | 8 | 9 | 4 | 4 | **54** |
+| 6 | Packed-package install/import smoke test | 7 | 8 | 8 | 8 | 4 | 7 | 9 | 10 | 3 | 4 | **52** |
+| 7 | Correct unsupported integration claims | 6 | 5 | 7 | 9 | 3 | 4 | 10 | 9 | 1 | 1 | **46** |
+
+### Selected initiative
+
+**Mutation-to-completion freshness hardening.** Failed write attempts now
+invalidate prior evidence through both Claude result events and broad host
+adapters. The state machine also evaluates the completion gate before its
+same-phase idempotency path. This closes the reproduced
+`verify -> complete -> failed write -> complete` sequence without a schema,
+dependency, or public CLI change. The conservative tradeoff is intentional: a
+failed write that made no filesystem change can require redundant verification.
