@@ -36,6 +36,12 @@
         "name": "fable-fail-streak-failure",
         "description": "Record tool failure events directly into failure streak counter",
         "command": "python3 hooks/fable_fail_streak.py"
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "name": "fable-mutation-failure",
+        "description": "Conservatively invalidate verification after a failed write attempt",
+        "command": "python3 hooks/fable_mutation.py"
       }
     ],
     "Stop": [

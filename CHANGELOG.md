@@ -2,6 +2,16 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- Treat failed write-oriented tool attempts as potential workspace mutations,
+  invalidating earlier verification through Claude's `PostToolUseFailure`
+  event and broad host adapters.
+- Reapply the fresh-evidence gate when `complete` is requested from an already
+  complete state after a later mutation.
+
 ## [1.3.0] - 2026-08-19
 
 ### Highlights

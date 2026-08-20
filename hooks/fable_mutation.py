@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Advance get-fable mutation generation after successful write-oriented tools.
+"""Advance get-fable mutation generation after write-oriented tool attempts.
 
 Hosts may provide a matcher before invoking this hook, but the hook also checks
-known tool names itself so adapters with broader PostToolUse events do not mark
-read-only or command activity as workspace mutations.
+known tool names itself so broad host events do not mark read-only or command
+activity as workspace mutations. Failed writes are conservative mutations
+because a tool can partially change the workspace before reporting failure.
 """
 import os
 import sys
@@ -26,16 +27,6 @@ MUTATING_TOOLS = {
 }
 
 
-def response_failed(data):
-    response = data.get("tool_response")
-    if not isinstance(response, dict):
-        return False
-    if response.get("is_error") is True or response.get("error"):
-        return True
-    exit_code = response.get("exitCode")
-    return isinstance(exit_code, int) and exit_code != 0
-
-
 def mutating_tool(data):
     name = data.get("tool_name") or data.get("toolName") or data.get("tool")
     if name is None:
@@ -47,7 +38,7 @@ def mutating_tool(data):
 
 def main():
     data = read_hook_input()
-    if not mutating_tool(data) or response_failed(data):
+    if not mutating_tool(data):
         return 0
 
     fable_dir = find_fable_dir(start_dir(data))

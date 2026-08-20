@@ -586,6 +586,9 @@ export function transitionState(
   nextPhase: FablePhase,
   now: string = new Date().toISOString()
 ): FableState {
+  if (nextPhase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
+    throw new Error('Substantial work cannot complete without passing evidence for the current mutation generation');
+  }
   if (nextPhase === state.phase) {
     return {
       ...state,
@@ -598,10 +601,6 @@ export function transitionState(
   if (!ALLOWED_TRANSITIONS[state.phase].includes(nextPhase)) {
     throw new Error(`Invalid Fable state transition: ${state.phase} -> ${nextPhase}`);
   }
-  if (nextPhase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
-    throw new Error('Substantial work cannot complete without passing evidence for the current mutation generation');
-  }
-
   return {
     ...state,
     phase: nextPhase,
