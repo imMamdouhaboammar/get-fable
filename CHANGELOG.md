@@ -2,6 +2,12 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## Unreleased
+
+### Fixed
+
+- Bound completion evidence to its owning workspace across the TypeScript runtime and Python lifecycle hooks. Explicitly foreign evidence is rejected, while legacy unbound records remain readable but cannot satisfy the completion gate.
+
 ## [1.3.0] - 2026-08-19
 
 ### Highlights

@@ -108,7 +108,7 @@ def _valid_nonempty_string(value):
     return isinstance(value, str) and bool(value.strip())
 
 
-def _valid_evidence(record, max_generation):
+def _valid_evidence(record, max_generation, owner_workspace_id):
     if not isinstance(record, dict):
         return False
     if record.get("kind") not in EVIDENCE_KINDS:
@@ -120,6 +120,9 @@ def _valid_evidence(record, max_generation):
     if not _valid_nonempty_string(record.get("detail")):
         return False
     if not _valid_nonempty_string(record.get("timestamp")):
+        return False
+    record_workspace_id = record.get("workspaceId")
+    if record_workspace_id is not None and record_workspace_id != owner_workspace_id:
         return False
     generation = record.get("generation")
     return isinstance(generation, int) and 0 <= generation <= max_generation
@@ -151,6 +154,7 @@ def _migrate_v1_state(fable_dir, state):
     if not isinstance(evidence, list):
         return None
 
+    owner_workspace_id = workspace_id(fable_dir)
     migrated_evidence = []
     for record in evidence:
         if not isinstance(record, dict):
@@ -168,9 +172,15 @@ def _migrate_v1_state(fable_dir, state):
     migrated = dict(state)
     migrated["schemaVersion"] = STATE_SCHEMA_VERSION
     migrated["stateRevision"] = 0
-    migrated["workspaceId"] = workspace_id(fable_dir)
+    migrated["workspaceId"] = owner_workspace_id
     migrated["mutationGeneration"] = 0
-    migrated["verifiedGeneration"] = 0 if latest_completion and latest_completion.get("result") == "pass" else -1
+    migrated["verifiedGeneration"] = (
+        0
+        if latest_completion
+        and latest_completion.get("workspaceId") == owner_workspace_id
+        and latest_completion.get("result") == "pass"
+        else -1
+    )
     migrated["activeCard"] = None
     migrated["evidence"] = migrated_evidence
     return migrated
@@ -231,7 +241,8 @@ def read_state(fable_dir):
         evidence = state.get("evidence")
         if not isinstance(evidence, list):
             return None
-        if any(not _valid_evidence(record, mutation_generation) for record in evidence):
+        owner_workspace_id = state.get("workspaceId")
+        if any(not _valid_evidence(record, mutation_generation, owner_workspace_id) for record in evidence):
             return None
         return state
     except Exception:
@@ -289,6 +300,7 @@ def has_fresh_passing_state_evidence(state):
     detail = latest.get("detail") if isinstance(latest, dict) else None
     return (
         isinstance(latest, dict)
+        and latest.get("workspaceId") == state.get("workspaceId")
         and latest.get("result") == "pass"
         and isinstance(detail, str)
         and bool(detail.strip())

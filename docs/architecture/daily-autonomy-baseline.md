@@ -268,3 +268,48 @@ advertised recovery transition using the host's documented event boundary,
 requires no state migration or dependency, preserves unrelated hooks, and is
 directly testable with `failure -> success -> failure` and `failure -> failure`
 sequences.
+
+## 2026-08-21 revalidation
+
+Revalidated against default-branch SHA `14d4e54abe3f3ec6bfbff95b1066a7d41cb3c4ad`
+and package version `1.3.0`. PR #19 had expanded the canonical playbooks and was
+the latest merged direction. PR #21 remained a separate draft for failed-write
+invalidation and was excluded from duplicate implementation.
+
+The default branch was not broadly green: GitHub CI run `32341381448` failed on
+all three OS/runtime matrix jobs, while its E2E and Security workflows passed.
+Local focused lifecycle tests passed before modification, but `bun run check`
+stopped at a stale generated `public/llms.txt`. These inherited failures are
+tracked separately from today's evidence-integrity initiative.
+
+Repository reproduction found that `addEvidence()` accepted an explicit foreign
+`workspaceId`, advanced `verifiedGeneration`, and allowed a substantial local
+state to complete. Persisted state validation and the Python close guard also
+ignored evidence-record ownership.
+
+### Ranked candidates
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Failed-write invalidation already isolated in PR #21 | 9 | 9 | 10 | 10 | 8 | 9 | 10 | 10 | 3 | 3 | **68** |
+| 2 | Enforce evidence-record workspace ownership | 9 | 8 | 10 | 10 | 7 | 8 | 10 | 10 | 2 | 2 | **67** |
+| 3 | Invalidate evidence on Git checkout/switch | 9 | 9 | 10 | 10 | 8 | 9 | 8 | 9 | 5 | 5 | **63** |
+| 4 | Reject `.fable` symlink boundary escapes | 8 | 9 | 10 | 9 | 7 | 7 | 9 | 10 | 3 | 4 | **61** |
+| 5 | Support linked-worktree Git directories | 8 | 8 | 9 | 8 | 9 | 6 | 9 | 10 | 3 | 4 | **59** |
+| 6 | Require active-card closure before completion | 8 | 7 | 9 | 8 | 7 | 7 | 9 | 10 | 3 | 3 | **58** |
+| 7 | Preserve existing Git hooks safely | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | **55** |
+| 8 | Restore deterministic default-branch CI | 9 | 7 | 8 | 9 | 10 | 4 | 7 | 9 | 5 | 5 | **55** |
+| 9 | Make Doctor resilient to read-only home directories | 7 | 7 | 7 | 8 | 9 | 4 | 9 | 10 | 3 | 3 | **53** |
+| 10 | Contain public prompt lookup within its asset root | 7 | 7 | 6 | 8 | 6 | 3 | 10 | 10 | 2 | 2 | **50** |
+
+Implementation confidence is recorded but excluded from the prescribed priority
+formula. The highest-ranked candidate was already owned by an open PR, so the
+highest-value unclaimed initiative was selected.
+
+### Selected initiative
+
+**Evidence-record workspace ownership.** New evidence must be stamped with the
+owning state's workspace identity. Explicitly foreign records are rejected by
+both runtimes. Legacy records without an evidence-level owner remain readable,
+but cannot satisfy completion; fresh local verification replaces them without a
+schema or dependency change.

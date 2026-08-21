@@ -44,6 +44,135 @@ describe('hook lifecycle v2 evidence policy', () => {
     expect(result.stderr).toContain('invalid for the current lifecycle schema');
   });
 
+  test('close guard treats migrated schema-v1 evidence as historical', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    fs.writeFileSync(statePath, JSON.stringify({
+      schemaVersion: 1,
+      phase: 'complete',
+      currentSkill: null,
+      failureStreak: 0,
+      substantial: true,
+      lastDecision: null,
+      evidence: [{
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'legacy verification predates workspace ownership',
+        timestamp: '2026-08-21T00:01:00.000Z',
+      }],
+      updatedAt: '2026-08-21T00:01:00.000Z',
+    }));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('current mutation generation');
+  });
+
+  test('close guard rejects explicitly foreign schema-v1 evidence during migration', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    fs.writeFileSync(statePath, JSON.stringify({
+      schemaVersion: 1,
+      phase: 'complete',
+      currentSkill: null,
+      failureStreak: 0,
+      substantial: true,
+      lastDecision: null,
+      evidence: [{
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'foreign legacy evidence retains its original owner',
+        timestamp: '2026-08-21T00:01:00.000Z',
+        workspaceId: 'foreign-workspace',
+      }],
+      updatedAt: '2026-08-21T00:01:00.000Z',
+    }));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('invalid for the current lifecycle schema');
+  });
+
+  test('close guard rejects evidence attributed to a different workspace', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.phase = 'complete';
+    state.substantial = true;
+    state.verifiedGeneration = 0;
+    state.evidence = [{
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'foreign verification must not close this workspace',
+      generation: 0,
+      timestamp: '2026-08-21T00:01:00.000Z',
+      workspaceId: 'foreign-workspace',
+    }];
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('invalid for the current lifecycle schema');
+  });
+
+  test('close guard does not accept legacy evidence without workspace ownership', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.phase = 'complete';
+    state.substantial = true;
+    state.verifiedGeneration = 0;
+    state.evidence = [{
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'historical evidence without workspace ownership',
+      generation: 0,
+      timestamp: '2026-08-21T00:01:00.000Z',
+    }];
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('current mutation generation');
+  });
+
+  test('close guard does not skip newer unbound failure after an older local pass', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.phase = 'complete';
+    state.substantial = true;
+    state.verifiedGeneration = 0;
+    state.evidence = [
+      {
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'local verification passed first',
+        generation: 0,
+        timestamp: '2026-08-21T00:01:00.000Z',
+        workspaceId: state.workspaceId,
+      },
+      {
+        kind: 'test',
+        source: 'external test runner',
+        result: 'fail',
+        detail: 'newer unbound evidence reported failure',
+        generation: 0,
+        timestamp: '2026-08-21T00:02:00.000Z',
+      },
+    ];
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('current mutation generation');
+  });
+
   test('generic substantial work is not closable by security evidence alone', () => {
     const dir = freshProject();
     const statePath = path.join(dir, '.fable', 'state.json');
@@ -95,6 +224,7 @@ describe('hook lifecycle v2 evidence policy', () => {
         detail: 'trust boundary reviewed with no reportable finding',
         generation: 0,
         timestamp: '2026-08-19T00:01:00.000Z',
+        workspaceId: state.workspaceId,
       },
     ];
     fs.writeFileSync(statePath, JSON.stringify(state));
