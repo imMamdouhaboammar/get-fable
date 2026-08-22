@@ -173,6 +173,66 @@ describe('hook lifecycle v2 evidence policy', () => {
     expect(result.stderr).toContain('current mutation generation');
   });
 
+  test('close guard does not skip a newer security failure after a generic pass', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    state.phase = 'complete';
+    state.substantial = true;
+    state.verifiedGeneration = 0;
+    state.evidence = [
+      {
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'functional verification passed',
+        generation: 0,
+        timestamp: '2026-08-22T00:01:00.000Z',
+        workspaceId: state.workspaceId,
+      },
+      {
+        kind: 'security',
+        source: 'security review',
+        result: 'fail',
+        detail: 'a later security check found a blocking issue',
+        generation: 0,
+        timestamp: '2026-08-22T00:02:00.000Z',
+        workspaceId: state.workspaceId,
+      },
+    ];
+    fs.writeFileSync(statePath, JSON.stringify(state));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('current mutation generation');
+  });
+
+  test('close guard migrates task-aware schema-v1 security evidence', () => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const owner = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    fs.writeFileSync(statePath, JSON.stringify({
+      schemaVersion: 1,
+      phase: 'complete',
+      currentSkill: 'fable-security',
+      failureStreak: 0,
+      substantial: true,
+      lastDecision: null,
+      evidence: [{
+        kind: 'security',
+        source: 'security review',
+        result: 'pass',
+        detail: 'legacy security task completed with scoped proof',
+        timestamp: '2026-08-22T00:01:00.000Z',
+        workspaceId: owner.workspaceId,
+      }],
+      updatedAt: '2026-08-22T00:01:00.000Z',
+    }));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(0);
+  });
+
   test('generic substantial work is not closable by security evidence alone', () => {
     const dir = freshProject();
     const statePath = path.join(dir, '.fable', 'state.json');

@@ -311,5 +311,35 @@ highest-value unclaimed initiative was selected.
 **Evidence-record workspace ownership.** New evidence must be stamped with the
 owning state's workspace identity. Explicitly foreign records are rejected by
 both runtimes. Legacy records without an evidence-level owner remain readable,
-but cannot satisfy completion; fresh local verification replaces them without a
-schema or dependency change.
+but cannot satisfy completion; fresh local verification supersedes them as
+completion proof without a schema or dependency change.
+
+## Daily revalidation — 2026-08-22
+
+Repository and GitHub reality were rechecked at `14d4e54` on the default branch
+and `5ef4848` on the open evidence-ownership pull request. The default CI is
+already red for inherited routing, timeout, authoring, performance, and generated
+documentation failures. More importantly, review of the ownership change found
+that both runtimes could skip a newer security failure for generic work, and that
+schema-v1 migration did not use the security task's completion policy.
+
+Priority uses `(User Value × 2) + Reliability + Architectural Fit + Developer
+Experience + Differentiation + Learning + Testability - Maintenance - Risk`.
+Confidence is recorded but is not part of the formula.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Close PR #22 evidence-ordering and migration review gaps | 10 | 8 | 10 | 10 | 8 | 8 | 10 | 10 | 3 | 3 | **68** |
+| Finish failed-write and same-phase hardening in draft PR #21 | 10 | 8 | 10 | 10 | 8 | 8 | 10 | 10 | 3 | 3 | **68** |
+| Correct linked-worktree Git boundaries and hook installation | 9 | 9 | 10 | 9 | 9 | 8 | 9 | 10 | 4 | 4 | **65** |
+| Invalidate evidence after Git HEAD/reset changes | 9 | 9 | 10 | 10 | 8 | 9 | 7 | 9 | 5 | 5 | **63** |
+| Reject symlinked `.fable` workspace-boundary escapes | 9 | 9 | 9 | 10 | 7 | 7 | 8 | 9 | 5 | 5 | **59** |
+| Restore the inherited default-branch CI failures | 8 | 7 | 8 | 8 | 10 | 5 | 7 | 10 | 5 | 5 | **54** |
+| Add an installed-package consumer smoke test | 7 | 7 | 8 | 8 | 8 | 5 | 9 | 10 | 3 | 4 | **53** |
+
+The PR #22 review gaps were selected despite a score tie because they are
+confirmed merge blockers on the current non-draft change and include a direct
+completion-gate bypass. The accepted behavior is explicit: `functional pass ->
+newer security fail` blocks; a newer functional pass reopens the gate; and a
+legacy security task uses security evidence during migration without granting
+that scope to generic work.

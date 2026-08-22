@@ -44,6 +44,7 @@ BEHAVIOR_COMPLETION_EVIDENCE_KINDS = {
     "review",
     "observation",
 }
+FAILURE_RELEVANT_EVIDENCE_KINDS = BEHAVIOR_COMPLETION_EVIDENCE_KINDS | {"security"}
 
 
 def read_hook_input():
@@ -163,9 +164,10 @@ def _migrate_v1_state(fable_dir, state):
         migrated["generation"] = 0
         migrated_evidence.append(migrated)
 
+    accepted_completion_kinds = completion_evidence_kinds(state)
     latest_completion = None
     for record in reversed(migrated_evidence):
-        if record.get("kind") in BEHAVIOR_COMPLETION_EVIDENCE_KINDS:
+        if record.get("kind") in accepted_completion_kinds:
             latest_completion = record
             break
 
@@ -290,11 +292,11 @@ def has_fresh_passing_state_evidence(state):
     accepted_kinds = completion_evidence_kinds(state)
     latest = None
     for record in reversed(evidence):
-        if (
-            isinstance(record, dict)
-            and record.get("generation") == mutation_generation
-            and record.get("kind") in accepted_kinds
-        ):
+        if not isinstance(record, dict) or record.get("generation") != mutation_generation:
+            continue
+        if record.get("result") == "fail" and record.get("kind") in FAILURE_RELEVANT_EVIDENCE_KINDS:
+            return False
+        if record.get("kind") in accepted_kinds:
             latest = record
             break
     detail = latest.get("detail") if isinstance(latest, dict) else None

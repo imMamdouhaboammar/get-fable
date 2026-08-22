@@ -138,4 +138,57 @@ describe('evidence provenance', () => {
       'current mutation generation'
     );
   });
+
+  test('does not skip a newer security failure after a generic completion pass', () => {
+    const state = createInitialState('2026-08-22T00:00:00.000Z');
+    const withPassingTests = addEvidence({ ...state, phase: 'verifying', substantial: true }, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'functional verification passed',
+    });
+    const withNewerSecurityFailure = addEvidence(withPassingTests, {
+      kind: 'security',
+      source: 'security review',
+      result: 'fail',
+      detail: 'a later security check found a blocking issue',
+    });
+
+    expect(hasFreshPassingEvidence(withNewerSecurityFailure)).toBe(false);
+    expect(() => transitionState(withNewerSecurityFailure, 'complete')).toThrow(
+      'current mutation generation'
+    );
+
+    const reverified = addEvidence(withNewerSecurityFailure, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'functional verification passed after the security finding',
+    });
+    expect(hasFreshPassingEvidence(reverified)).toBe(true);
+  });
+
+  test('uses task-aware security evidence when migrating schema-v1 state', () => {
+    const owner = createInitialState('2026-08-22T00:00:00.000Z');
+    const migrated = validateFableState({
+      schemaVersion: 1,
+      phase: 'verifying',
+      currentSkill: 'fable-security',
+      failureStreak: 0,
+      substantial: true,
+      lastDecision: null,
+      evidence: [{
+        kind: 'security',
+        source: 'security review',
+        result: 'pass',
+        detail: 'legacy security task completed with scoped proof',
+        timestamp: '2026-08-22T00:01:00.000Z',
+        workspaceId: owner.workspaceId,
+      }],
+      updatedAt: '2026-08-22T00:01:00.000Z',
+    });
+
+    expect(migrated.verifiedGeneration).toBe(0);
+    expect(hasFreshPassingEvidence(migrated)).toBe(true);
+  });
 });

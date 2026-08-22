@@ -143,6 +143,8 @@ Generic behavior-completion evidence kinds:
 
 Security evidence is completion-capable only when the active routed job is itself a security review. It does not by itself close a normal feature, bug fix, or product repair. After a security repair mutates product behavior, behavior-appropriate verification is required again.
 
+Evidence order remains significant across those scopes. A current-generation security failure that follows a functional pass blocks completion even for a non-security task. The gate reopens only after a newer completion-capable pass; an unrelated or security-only pass cannot erase a functional failure boundary.
+
 Non-completion evidence:
 
 - research: supports decisions

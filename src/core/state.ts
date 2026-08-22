@@ -275,9 +275,14 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
     return migratedRecord;
   });
 
+  const migratedLastDecision = migrateRoutingDecision(value.lastDecision);
+  const acceptedCompletionKinds = completionEvidenceKinds({
+    currentSkill: value.currentSkill as FableSkillId | null,
+    lastDecision: migratedLastDecision,
+  });
   const latestCompletion = [...evidence]
     .reverse()
-    .find((record) => BEHAVIOR_COMPLETION_EVIDENCE_KINDS.includes(record.kind));
+    .find((record) => acceptedCompletionKinds.includes(record.kind));
 
   return {
     schemaVersion: 3,
@@ -293,7 +298,7 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
         ? 0
         : -1,
     activeCard: null,
-    lastDecision: migrateRoutingDecision(value.lastDecision),
+    lastDecision: migratedLastDecision,
     evidence,
     updatedAt,
   };
@@ -580,18 +585,19 @@ export function hasPassingEvidence(state: FableState): boolean {
 export function hasFreshPassingEvidence(state: FableState): boolean {
   if (state.verifiedGeneration < state.mutationGeneration) return false;
   const acceptedKinds = completionEvidenceKinds(state);
-  const latestCurrentCompletion = [...state.evidence]
-    .reverse()
-    .find(
-      (record) =>
-        record.generation === state.mutationGeneration &&
-        acceptedKinds.includes(record.kind)
+  for (const record of [...state.evidence].reverse()) {
+    if (record.generation !== state.mutationGeneration) continue;
+    if (record.result === 'fail' && FAILURE_RELEVANT_EVIDENCE_KINDS.includes(record.kind)) {
+      return false;
+    }
+    if (!acceptedKinds.includes(record.kind)) continue;
+    return (
+      record.workspaceId === state.workspaceId &&
+      record.result === 'pass' &&
+      record.detail.trim().length > 0
     );
-  return (
-    latestCurrentCompletion?.workspaceId === state.workspaceId &&
-    latestCurrentCompletion.result === 'pass' &&
-    latestCurrentCompletion.detail.trim().length > 0
-  );
+  }
+  return false;
 }
 
 function skillMatchesPhase(skill: FableSkillId | null, phase: FablePhase): boolean {
