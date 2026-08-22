@@ -268,3 +268,78 @@ advertised recovery transition using the host's documented event boundary,
 requires no state migration or dependency, preserves unrelated hooks, and is
 directly testable with `failure -> success -> failure` and `failure -> failure`
 sequences.
+
+## 2026-08-21 revalidation
+
+Revalidated against default-branch SHA `14d4e54abe3f3ec6bfbff95b1066a7d41cb3c4ad`
+and package version `1.3.0`. PR #19 had expanded the canonical playbooks and was
+the latest merged direction. PR #21 remained a separate draft for failed-write
+invalidation and was excluded from duplicate implementation.
+
+The default branch was not broadly green: GitHub CI run `32341381448` failed on
+all three OS/runtime matrix jobs, while its E2E and Security workflows passed.
+Local focused lifecycle tests passed before modification, but `bun run check`
+stopped at a stale generated `public/llms.txt`. These inherited failures are
+tracked separately from today's evidence-integrity initiative.
+
+Repository reproduction found that `addEvidence()` accepted an explicit foreign
+`workspaceId`, advanced `verifiedGeneration`, and allowed a substantial local
+state to complete. Persisted state validation and the Python close guard also
+ignored evidence-record ownership.
+
+### Ranked candidates
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Failed-write invalidation already isolated in PR #21 | 9 | 9 | 10 | 10 | 8 | 9 | 10 | 10 | 3 | 3 | **68** |
+| 2 | Enforce evidence-record workspace ownership | 9 | 8 | 10 | 10 | 7 | 8 | 10 | 10 | 2 | 2 | **67** |
+| 3 | Invalidate evidence on Git checkout/switch | 9 | 9 | 10 | 10 | 8 | 9 | 8 | 9 | 5 | 5 | **63** |
+| 4 | Reject `.fable` symlink boundary escapes | 8 | 9 | 10 | 9 | 7 | 7 | 9 | 10 | 3 | 4 | **61** |
+| 5 | Support linked-worktree Git directories | 8 | 8 | 9 | 8 | 9 | 6 | 9 | 10 | 3 | 4 | **59** |
+| 6 | Require active-card closure before completion | 8 | 7 | 9 | 8 | 7 | 7 | 9 | 10 | 3 | 3 | **58** |
+| 7 | Preserve existing Git hooks safely | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | **55** |
+| 8 | Restore deterministic default-branch CI | 9 | 7 | 8 | 9 | 10 | 4 | 7 | 9 | 5 | 5 | **55** |
+| 9 | Make Doctor resilient to read-only home directories | 7 | 7 | 7 | 8 | 9 | 4 | 9 | 10 | 3 | 3 | **53** |
+| 10 | Contain public prompt lookup within its asset root | 7 | 7 | 6 | 8 | 6 | 3 | 10 | 10 | 2 | 2 | **50** |
+
+Implementation confidence is recorded but excluded from the prescribed priority
+formula. The highest-ranked candidate was already owned by an open PR, so the
+highest-value unclaimed initiative was selected.
+
+### Selected initiative
+
+**Evidence-record workspace ownership.** New evidence must be stamped with the
+owning state's workspace identity. Explicitly foreign records are rejected by
+both runtimes. Legacy records without an evidence-level owner remain readable,
+but cannot satisfy completion; fresh local verification supersedes them as
+completion proof without a schema or dependency change.
+
+## Daily revalidation — 2026-08-22
+
+Repository and GitHub reality were rechecked at `14d4e54` on the default branch
+and `5ef4848` on the open evidence-ownership pull request. The default CI is
+already red for inherited routing, timeout, authoring, performance, and generated
+documentation failures. More importantly, review of the ownership change found
+that both runtimes could skip a newer security failure for generic work, and that
+schema-v1 migration did not use the security task's completion policy.
+
+Priority uses `(User Value × 2) + Reliability + Architectural Fit + Developer
+Experience + Differentiation + Learning + Testability - Maintenance - Risk`.
+Confidence is recorded but is not part of the formula.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Close PR #22 evidence-ordering and migration review gaps | 10 | 8 | 10 | 10 | 8 | 8 | 10 | 10 | 3 | 3 | **68** |
+| Finish failed-write and same-phase hardening in draft PR #21 | 10 | 8 | 10 | 10 | 8 | 8 | 10 | 10 | 3 | 3 | **68** |
+| Correct linked-worktree Git boundaries and hook installation | 9 | 9 | 10 | 9 | 9 | 8 | 9 | 10 | 4 | 4 | **65** |
+| Invalidate evidence after Git HEAD/reset changes | 9 | 9 | 10 | 10 | 8 | 9 | 7 | 9 | 5 | 5 | **63** |
+| Reject symlinked `.fable` workspace-boundary escapes | 9 | 9 | 9 | 10 | 7 | 7 | 8 | 9 | 5 | 5 | **59** |
+| Restore the inherited default-branch CI failures | 8 | 7 | 8 | 8 | 10 | 5 | 7 | 10 | 5 | 5 | **54** |
+| Add an installed-package consumer smoke test | 7 | 7 | 8 | 8 | 8 | 5 | 9 | 10 | 3 | 4 | **53** |
+
+The PR #22 review gaps were selected despite a score tie because they are
+confirmed merge blockers on the current non-draft change and include a direct
+completion-gate bypass. The accepted behavior is explicit: `functional pass ->
+newer security fail` blocks; a newer functional pass reopens the gate; and a
+legacy security task uses security evidence during migration without granting
+that scope to generic work.

@@ -1,5 +1,12 @@
 import { describe, expect, test } from 'bun:test';
-import { addEvidence, createInitialState, getRepositoryRevision } from '../src/core/state.ts';
+import {
+  addEvidence,
+  createInitialState,
+  getRepositoryRevision,
+  hasFreshPassingEvidence,
+  transitionState,
+  validateFableState,
+} from '../src/core/state.ts';
 import { getCoreRepoRoot } from '../src/core/skill-registry.ts';
 
 describe('evidence provenance', () => {
@@ -28,5 +35,160 @@ describe('evidence provenance', () => {
     const next = addEvidence(state, { kind: 'receipt', source: 'agentproof', result: 'pass', detail: 'execution receipt', receiptId: 'receipt-123' });
     expect(next.evidence.at(-1)?.receiptId).toBe('receipt-123');
     expect(next.verifiedGeneration).toBe(-1);
+  });
+
+  test('rejects evidence explicitly attributed to another workspace', () => {
+    const state = createInitialState('2026-08-21T00:00:00.000Z');
+
+    expect(() => addEvidence(state, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'foreign verification must not advance the local gate',
+      workspaceId: 'foreign-workspace',
+    })).toThrow('workspaceId does not match the owning workspace');
+  });
+
+  test('rejects persisted evidence attributed to another workspace', () => {
+    const state = createInitialState('2026-08-21T00:00:00.000Z');
+    const persisted = {
+      ...state,
+      evidence: [{
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'foreign verification must not be loaded',
+        generation: 0,
+        timestamp: '2026-08-21T00:01:00.000Z',
+        workspaceId: 'foreign-workspace',
+      }],
+    };
+
+    expect(() => validateFableState(persisted)).toThrow(
+      'evidence[0].workspaceId does not match the owning workspace'
+    );
+  });
+
+  test('does not rebind explicitly foreign schema-v1 evidence during migration', () => {
+    expect(() => validateFableState({
+      schemaVersion: 1,
+      phase: 'verifying',
+      currentSkill: 'fable-verify',
+      failureStreak: 0,
+      substantial: true,
+      lastDecision: null,
+      evidence: [{
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'foreign legacy evidence must retain its provenance',
+        timestamp: '2026-08-21T00:01:00.000Z',
+        workspaceId: 'foreign-workspace',
+      }],
+      updatedAt: '2026-08-21T00:01:00.000Z',
+    })).toThrow('evidence[0].workspaceId does not match the owning workspace');
+  });
+
+  test('keeps legacy unbound evidence readable but not completion-capable', () => {
+    const state = createInitialState('2026-08-21T00:00:00.000Z');
+    const legacy = validateFableState({
+      ...state,
+      phase: 'verifying',
+      substantial: true,
+      verifiedGeneration: 0,
+      evidence: [{
+        kind: 'test',
+        source: 'bun test',
+        result: 'pass',
+        detail: 'historical evidence without workspace ownership',
+        generation: 0,
+        timestamp: '2026-08-21T00:01:00.000Z',
+      }],
+    });
+
+    expect(hasFreshPassingEvidence(legacy)).toBe(false);
+    expect(() => transitionState(legacy, 'complete')).toThrow('current mutation generation');
+  });
+
+  test('does not skip newer unbound evidence in favor of an older local pass', () => {
+    const state = createInitialState('2026-08-21T00:00:00.000Z');
+    const withLocalPass = addEvidence({ ...state, phase: 'verifying', substantial: true }, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'local verification passed first',
+    });
+    const withNewerUnboundFailure = validateFableState({
+      ...withLocalPass,
+      evidence: [
+        ...withLocalPass.evidence,
+        {
+          kind: 'test',
+          source: 'external test runner',
+          result: 'fail',
+          detail: 'newer unbound evidence reported failure',
+          generation: 0,
+          timestamp: '2026-08-21T00:02:00.000Z',
+        },
+      ],
+    });
+
+    expect(hasFreshPassingEvidence(withNewerUnboundFailure)).toBe(false);
+    expect(() => transitionState(withNewerUnboundFailure, 'complete')).toThrow(
+      'current mutation generation'
+    );
+  });
+
+  test('does not skip a newer security failure after a generic completion pass', () => {
+    const state = createInitialState('2026-08-22T00:00:00.000Z');
+    const withPassingTests = addEvidence({ ...state, phase: 'verifying', substantial: true }, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'functional verification passed',
+    });
+    const withNewerSecurityFailure = addEvidence(withPassingTests, {
+      kind: 'security',
+      source: 'security review',
+      result: 'fail',
+      detail: 'a later security check found a blocking issue',
+    });
+
+    expect(hasFreshPassingEvidence(withNewerSecurityFailure)).toBe(false);
+    expect(() => transitionState(withNewerSecurityFailure, 'complete')).toThrow(
+      'current mutation generation'
+    );
+
+    const reverified = addEvidence(withNewerSecurityFailure, {
+      kind: 'test',
+      source: 'bun test',
+      result: 'pass',
+      detail: 'functional verification passed after the security finding',
+    });
+    expect(hasFreshPassingEvidence(reverified)).toBe(true);
+  });
+
+  test('uses task-aware security evidence when migrating schema-v1 state', () => {
+    const owner = createInitialState('2026-08-22T00:00:00.000Z');
+    const migrated = validateFableState({
+      schemaVersion: 1,
+      phase: 'verifying',
+      currentSkill: 'fable-security',
+      failureStreak: 0,
+      substantial: true,
+      lastDecision: null,
+      evidence: [{
+        kind: 'security',
+        source: 'security review',
+        result: 'pass',
+        detail: 'legacy security task completed with scoped proof',
+        timestamp: '2026-08-22T00:01:00.000Z',
+        workspaceId: owner.workspaceId,
+      }],
+      updatedAt: '2026-08-22T00:01:00.000Z',
+    });
+
+    expect(migrated.verifiedGeneration).toBe(0);
+    expect(hasFreshPassingEvidence(migrated)).toBe(true);
   });
 });

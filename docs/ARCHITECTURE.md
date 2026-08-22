@@ -112,7 +112,9 @@ updatedAt
 
 `workspaceId` is a short digest of the canonical real workspace path rather than a stored raw local path. Symlink aliases of the same workspace resolve to one identity, while schema-v2 or schema-v3 runtime state copied to another workspace is rejected.
 
-The tracked repository template stays schema v1 and workspace-neutral. Schema-v1 state binds to the current workspace during migration, schema-v2 runtime state migrates explicitly, and the next state mutation writes schema v3 with a monotonically increasing `stateRevision`.
+Every new evidence record is also stamped with the state's `workspaceId`. A record carrying a different owner is invalid. Historical records without an evidence-level owner remain readable for compatibility, but they are not fresh completion proof until verification runs again in the current workspace.
+
+The tracked repository template stays schema v1 and workspace-neutral. Its state container binds to the current workspace during migration, but historical schema-v1 evidence is not silently rebound into fresh proof. Schema-v2 runtime state migrates explicitly, and the next state mutation writes schema v3 with a monotonically increasing `stateRevision`.
 
 ## Mutation-aware verification
 
@@ -129,7 +131,7 @@ verifiedGeneration = 4
 => previous verification is stale
 ```
 
-Substantial completion requires the newest evidence accepted for the routed claim and current generation to pass.
+Substantial completion requires the newest evidence accepted for the routed claim, current generation, and current workspace to pass.
 
 Generic behavior-completion evidence kinds:
 
@@ -140,6 +142,8 @@ Generic behavior-completion evidence kinds:
 - observation
 
 Security evidence is completion-capable only when the active routed job is itself a security review. It does not by itself close a normal feature, bug fix, or product repair. After a security repair mutates product behavior, behavior-appropriate verification is required again.
+
+Evidence order remains significant across those scopes. A current-generation security failure that follows a functional pass blocks completion even for a non-security task. The gate reopens only after a newer completion-capable pass; an unrelated or security-only pass cannot erase a functional failure boundary.
 
 Non-completion evidence:
 

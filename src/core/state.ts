@@ -148,7 +148,7 @@ function completionEvidenceKinds(state: Pick<FableState, 'currentSkill' | 'lastD
     : BEHAVIOR_COMPLETION_EVIDENCE_KINDS;
 }
 
-function validateEvidenceRecord(value: unknown, index: number): void {
+function validateEvidenceRecord(value: unknown, index: number, workspaceId: string): void {
   const field = `evidence[${index}]`;
   if (!isRecord(value)) throw new Error(`Fable state ${field} must be an object`);
   if (!isEvidenceKind(value.kind)) throw new Error(`Fable state ${field}.kind is invalid`);
@@ -163,6 +163,9 @@ function validateEvidenceRecord(value: unknown, index: number): void {
     if (value[key] !== undefined && !isNonEmptyString(value[key])) {
       throw new Error(`Fable state ${field}.${key} must be a non-empty string when provided`);
     }
+  }
+  if (value.workspaceId !== undefined && value.workspaceId !== workspaceId) {
+    throw new Error(`Fable state ${field}.workspaceId does not match the owning workspace`);
   }
 }
 
@@ -248,6 +251,7 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
     throw new Error('Fable state failureStreak must be a non-negative integer');
   }
   const updatedAt = isNonEmptyString(value.updatedAt) ? value.updatedAt : new Date().toISOString();
+  const ownerWorkspaceId = workspaceIdForTarget(targetDir);
 
   const rawEvidence = Array.isArray(value.evidence) ? value.evidence : [];
   const evidence: EvidenceRecord[] = rawEvidence.map((record, index) => {
@@ -257,33 +261,44 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
     if (!isEvidenceResult(record.result)) throw new Error(`Fable state evidence[${index}].result is invalid`);
     if (!isNonEmptyString(record.detail)) throw new Error(`Fable state evidence[${index}].detail is required`);
     if (!isNonEmptyString(record.timestamp)) throw new Error(`Fable state evidence[${index}].timestamp is required`);
-    return {
+    const migratedRecord = {
       kind: record.kind,
       source: record.source,
       result: record.result,
       detail: record.detail,
       generation: 0,
       timestamp: record.timestamp,
-      workspaceId: workspaceIdForTarget(targetDir),
-    };
+    } as EvidenceRecord;
+    if (record.workspaceId !== undefined) {
+      migratedRecord.workspaceId = record.workspaceId as string;
+    }
+    return migratedRecord;
   });
 
+  const migratedLastDecision = migrateRoutingDecision(value.lastDecision);
+  const acceptedCompletionKinds = completionEvidenceKinds({
+    currentSkill: value.currentSkill as FableSkillId | null,
+    lastDecision: migratedLastDecision,
+  });
   const latestCompletion = [...evidence]
     .reverse()
-    .find((record) => BEHAVIOR_COMPLETION_EVIDENCE_KINDS.includes(record.kind));
+    .find((record) => acceptedCompletionKinds.includes(record.kind));
 
   return {
     schemaVersion: 3,
     stateRevision: 0,
-    workspaceId: workspaceIdForTarget(targetDir),
+    workspaceId: ownerWorkspaceId,
     phase: value.phase,
     currentSkill: value.currentSkill as FableSkillId | null,
     failureStreak: value.failureStreak,
     substantial: typeof value.substantial === 'boolean' ? value.substantial : true,
     mutationGeneration: 0,
-    verifiedGeneration: latestCompletion?.result === 'pass' ? 0 : -1,
+    verifiedGeneration:
+      latestCompletion?.workspaceId === ownerWorkspaceId && latestCompletion.result === 'pass'
+        ? 0
+        : -1,
     activeCard: null,
-    lastDecision: migrateRoutingDecision(value.lastDecision),
+    lastDecision: migratedLastDecision,
     evidence,
     updatedAt,
   };
@@ -340,7 +355,7 @@ export function validateFableState(value: unknown, targetDir: string = process.c
     throw new Error('Fable state activeCard must be null or a non-empty string');
   }
   if (!Array.isArray(state.evidence)) throw new Error('Fable state evidence must be an array');
-  state.evidence.forEach((record, index) => validateEvidenceRecord(record, index));
+  state.evidence.forEach((record, index) => validateEvidenceRecord(record, index, expectedWorkspaceId));
   const mutationGeneration = Number(state.mutationGeneration);
   if (state.evidence.some((record) => (record as EvidenceRecord).generation > mutationGeneration)) {
     throw new Error('Fable state evidence generation cannot exceed mutationGeneration');
@@ -513,6 +528,9 @@ export function addEvidence(
   state: FableState,
   evidence: Omit<EvidenceRecord, 'timestamp' | 'generation'> & { timestamp?: string; generation?: number }
 ): FableState {
+  if (evidence.workspaceId !== undefined && evidence.workspaceId !== state.workspaceId) {
+    throw new Error('Evidence workspaceId does not match the owning workspace');
+  }
   const timestamp = evidence.timestamp || new Date().toISOString();
   const generation = evidence.generation ?? state.mutationGeneration;
   if (!Number.isInteger(generation) || generation < 0 || generation > state.mutationGeneration) {
@@ -552,7 +570,7 @@ export function addEvidence(
         ...evidence,
         generation,
         timestamp,
-        workspaceId: evidence.workspaceId || state.workspaceId,
+        workspaceId: state.workspaceId,
       },
     ],
     failureStreak: nextFailureStreak,
@@ -567,14 +585,19 @@ export function hasPassingEvidence(state: FableState): boolean {
 export function hasFreshPassingEvidence(state: FableState): boolean {
   if (state.verifiedGeneration < state.mutationGeneration) return false;
   const acceptedKinds = completionEvidenceKinds(state);
-  const latestCurrentCompletion = [...state.evidence]
-    .reverse()
-    .find(
-      (record) =>
-        record.generation === state.mutationGeneration &&
-        acceptedKinds.includes(record.kind)
+  for (const record of [...state.evidence].reverse()) {
+    if (record.generation !== state.mutationGeneration) continue;
+    if (record.result === 'fail' && FAILURE_RELEVANT_EVIDENCE_KINDS.includes(record.kind)) {
+      return false;
+    }
+    if (!acceptedKinds.includes(record.kind)) continue;
+    return (
+      record.workspaceId === state.workspaceId &&
+      record.result === 'pass' &&
+      record.detail.trim().length > 0
     );
-  return latestCurrentCompletion?.result === 'pass' && latestCurrentCompletion.detail.trim().length > 0;
+  }
+  return false;
 }
 
 function skillMatchesPhase(skill: FableSkillId | null, phase: FablePhase): boolean {
