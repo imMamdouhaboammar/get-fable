@@ -150,6 +150,21 @@ def completion_evidence_kinds(state):
     return kinds
 
 
+def _legacy_completion_evidence_kinds(state):
+    """Derive migration scope only from canonical skill identities."""
+    decision = state.get("lastDecision")
+    selected_skill = decision.get("selectedSkill") if isinstance(decision, dict) else None
+    migration_context = {
+        "currentSkill": state.get("currentSkill") if state.get("currentSkill") in CANONICAL_SKILLS else None,
+        "lastDecision": (
+            {"selectedSkill": selected_skill}
+            if selected_skill in CANONICAL_SKILLS
+            else None
+        ),
+    }
+    return completion_evidence_kinds(migration_context)
+
+
 def _migrate_v1_state(fable_dir, state):
     evidence = state.get("evidence")
     if not isinstance(evidence, list):
@@ -164,7 +179,7 @@ def _migrate_v1_state(fable_dir, state):
         migrated["generation"] = 0
         migrated_evidence.append(migrated)
 
-    accepted_completion_kinds = completion_evidence_kinds(state)
+    accepted_completion_kinds = _legacy_completion_evidence_kinds(state)
     latest_completion = None
     for record in reversed(migrated_evidence):
         if record.get("kind") in accepted_completion_kinds:

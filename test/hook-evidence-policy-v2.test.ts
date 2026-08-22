@@ -233,6 +233,36 @@ describe('hook lifecycle v2 evidence policy', () => {
     expect(result.status).toBe(0);
   });
 
+  test.each([
+    { taskShape: 'security' },
+    { selectedSkill: 'fable-tdd', taskShape: 'security' },
+  ])('close guard does not trust malformed schema-v1 security routing: %j', (lastDecision) => {
+    const dir = freshProject();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const owner = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
+    fs.writeFileSync(statePath, JSON.stringify({
+      schemaVersion: 1,
+      phase: 'complete',
+      currentSkill: null,
+      failureStreak: 0,
+      substantial: true,
+      lastDecision,
+      evidence: [{
+        kind: 'security',
+        source: 'security review',
+        result: 'pass',
+        detail: 'security-only proof must not close generic work',
+        timestamp: '2026-08-22T00:01:00.000Z',
+        workspaceId: owner.workspaceId,
+      }],
+      updatedAt: '2026-08-22T00:01:00.000Z',
+    }));
+
+    const result = runCloseGuard(dir);
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain('current mutation generation');
+  });
+
   test('generic substantial work is not closable by security evidence alone', () => {
     const dir = freshProject();
     const statePath = path.join(dir, '.fable', 'state.json');
