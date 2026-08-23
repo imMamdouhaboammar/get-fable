@@ -312,7 +312,7 @@ highest-value unclaimed initiative was selected.
 owning state's workspace identity. Explicitly foreign records are rejected by
 both runtimes. Legacy records without an evidence-level owner remain readable,
 but cannot satisfy completion; fresh local verification supersedes them as
-completion proof without a schema or dependency change.
+completion proof without changing the externally persisted schema version or adding a dependency.
 
 ## Daily revalidation — 2026-08-22
 
@@ -343,3 +343,33 @@ completion-gate bypass. The accepted behavior is explicit: `functional pass ->
 newer security fail` blocks; a newer functional pass reopens the gate; and a
 legacy security task uses security evidence during migration without granting
 that scope to generic work.
+
+## Daily revalidation — 2026-08-23
+
+Repository and GitHub reality were rechecked at default-branch SHA `14d4e54`
+and PR #22 head `ce7fd12`. The default CI remained red from inherited playbook,
+generated-output, routing-eval, fixture, and behavior-eval failures, while the
+E2E workflow passed. PR #22's evidence-focused tests passed, but its completion
+policy still trusted three independent scope markers with OR semantics.
+
+Priority uses `(User Value × 2) + Reliability + Architectural Fit + Developer
+Experience + Differentiation + Learning + Testability - Maintenance - Risk`.
+Confidence is recorded but excluded from the formula.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bind completion scope to a consistent routing identity | 10 | 8 | 10 | 10 | 7 | 8 | 9 | 10 | 3 | 3 | **67** |
+| Restore truthful default-branch CI after PR #19 | 9 | 8 | 9 | 10 | 9 | 4 | 8 | 10 | 3 | 3 | **62** |
+| Invalidate evidence from a Git HEAD/worktree fingerprint | 9 | 9 | 10 | 10 | 7 | 9 | 6 | 8 | 6 | 4 | **61** |
+| Enforce applied-routing and phase conformance | 8 | 7 | 10 | 9 | 7 | 6 | 8 | 10 | 4 | 3 | **58** |
+| Reject symlinked `.fable` workspace-boundary escapes | 8 | 8 | 9 | 9 | 7 | 7 | 8 | 9 | 4 | 4 | **57** |
+| Correct linked-worktree Git hook resolution | 8 | 8 | 9 | 9 | 8 | 7 | 7 | 9 | 5 | 5 | **56** |
+| Add an installed-tarball consumer smoke test | 7 | 7 | 8 | 8 | 9 | 5 | 9 | 10 | 3 | 3 | **55** |
+| Add Python-hook concurrent state locking | 8 | 9 | 9 | 9 | 6 | 8 | 6 | 8 | 7 | 7 | **53** |
+
+The selected initiative is **cross-field task-scope integrity**. A generic
+routing decision could coexist with `currentSkill: fable-security` or
+`taskShape: security`; either marker made a security pass completion-capable.
+The accepted policy treats a complete canonical routing decision as the scope
+authority, requires its skill and task shape to agree for security completion,
+and keeps the legacy current-skill fallback only when no decision exists.

@@ -145,6 +145,8 @@ Security evidence is completion-capable only when the active routed job is itsel
 
 Evidence order remains significant across those scopes. A current-generation security failure that follows a functional pass blocks completion even for a non-security task. The gate reopens only after a newer completion-capable pass; an unrelated or security-only pass cannot erase a functional failure boundary.
 
+Completion scope comes from the canonical routing decision, not the transient execution-stage skill. Security evidence can close work only when the routed skill, pack, and task shape consistently identify security work. A contradictory or malformed decision is handled conservatively and cannot widen the accepted evidence kinds or activate the legacy fallback.
+
 Non-completion evidence:
 
 - research: supports decisions
