@@ -305,6 +305,7 @@ describe('hook lifecycle v2 evidence policy', () => {
     state.lastDecision = routeTask(
       'Review this authorization boundary for security vulnerabilities'
     );
+    expect(state.lastDecision.scores['fable-security']).toBeGreaterThan(1);
     state.evidence = [
       {
         kind: 'security',
@@ -379,6 +380,16 @@ describe('hook lifecycle v2 evidence policy', () => {
     ['incomplete decision', { selectedSkill: 'fable-security', taskShape: 'security' }],
     ['incomplete scope tuple', { selectedSkill: 'fable-security', selectedPack: 'proof', taskShape: 'security' }],
     ['invalid pack', { selectedSkill: 'fable-security', selectedPack: 'build', taskShape: 'security' }],
+    [
+      'negative routing score',
+      (() => {
+        const decision = routeTask('Review this authentication change for security vulnerabilities');
+        return {
+          ...decision,
+          scores: { ...decision.scores, 'fable-security': -1 },
+        };
+      })(),
+    ],
     ['array decision', ['fable-security']],
     ['string decision', 'fable-security'],
   ])('malformed %s cannot activate the legacy security fallback', (_label, lastDecision) => {

@@ -9,6 +9,7 @@ All notable changes to `get-fable` are documented in this file.
 - Bound completion evidence to its owning workspace across the TypeScript runtime and Python lifecycle hooks. Explicitly foreign evidence is rejected, while legacy unbound records remain readable but cannot satisfy the completion gate.
 - Made evidence ordering conservative across runtimes: a newer current-generation security failure now blocks generic completion until behavior-appropriate verification passes again, and schema-v1 security tasks retain their task-aware completion policy during migration.
 - Prevented execution-stage `currentSkill` and contradictory routing fields from widening a routed task's completion evidence policy. Security evidence is completion-capable only when the canonical skill, pack, and task shape consistently identify security work, with a legacy fallback only when no routing decision exists.
+- Rejected negative persisted routing scores in both TypeScript state validation and Python completion hooks while preserving valid additive scores above one.
 
 ## [1.3.0] - 2026-08-19
 

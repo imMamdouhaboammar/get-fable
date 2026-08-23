@@ -86,6 +86,11 @@ nextSkills
 scores
 ```
 
+Routing scores are non-negative additive weights, not normalized probabilities;
+values greater than one are expected. Confidence is the normalized `0..1`
+summary. Persisted scores are explanatory routing provenance and do not override
+the validated skill, pack, and task-shape scope tuple.
+
 The router does not expose hidden chain-of-thought. Reasons are concise routing evidence.
 
 ## State schema v3
@@ -145,7 +150,7 @@ Security evidence is completion-capable only when the active routed job is itsel
 
 Evidence order remains significant across those scopes. A current-generation security failure that follows a functional pass blocks completion even for a non-security task. The gate reopens only after a newer completion-capable pass; an unrelated or security-only pass cannot erase a functional failure boundary.
 
-Completion scope comes from the canonical routing decision, not the transient execution-stage skill. Security evidence can close work only when the routed skill, pack, and task shape consistently identify security work. A contradictory or malformed decision is handled conservatively and cannot widen the accepted evidence kinds or activate the legacy fallback.
+When a canonical routing decision exists, completion scope comes from it, not the transient execution-stage skill. For legacy state without a routing decision, only the narrow canonical security `currentSkill` fallback may apply. Security evidence can close work only when the routed skill, pack, and task shape consistently identify security work. A contradictory or malformed decision is handled conservatively and cannot widen the accepted evidence kinds or activate the legacy fallback.
 
 Non-completion evidence:
 

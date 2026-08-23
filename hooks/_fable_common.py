@@ -173,7 +173,12 @@ def _valid_routing_decision(value):
         return False
     for skill in CANONICAL_SKILLS:
         score = scores.get(skill)
-        if isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score):
+        if (
+            isinstance(score, bool)
+            or not isinstance(score, (int, float))
+            or not math.isfinite(score)
+            or score < 0
+        ):
             return False
     return True
 

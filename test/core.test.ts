@@ -255,6 +255,13 @@ describe('durable state', () => {
           scores: { ...validDecision.scores, 'fable-review': 'high' },
         },
       ],
+      [
+        'lastDecision.scores.fable-review',
+        {
+          ...validDecision,
+          scores: { ...validDecision.scores, 'fable-review': -1 },
+        },
+      ],
     ];
 
     for (const [expectedField, lastDecision] of invalidCases) {
