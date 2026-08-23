@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import {
   addEvidence,
+  applyRoutingDecision,
   createInitialState,
   getRepositoryRevision,
   hasFreshPassingEvidence,
@@ -8,6 +9,7 @@ import {
   validateFableState,
 } from '../src/core/state.ts';
 import { getCoreRepoRoot } from '../src/core/skill-registry.ts';
+import { routeTask } from '../src/core/task-router.ts';
 
 describe('evidence provenance', () => {
   test('binds new evidence to workspace, generation, scope, and repository revision when supplied', () => {
@@ -190,5 +192,89 @@ describe('evidence provenance', () => {
 
     expect(migrated.verifiedGeneration).toBe(0);
     expect(hasFreshPassingEvidence(migrated)).toBe(true);
+  });
+
+  test('does not let execution-stage skill widen a generic routing decision', () => {
+    const initial = createInitialState('2026-08-23T00:00:00.000Z');
+    const generic = applyRoutingDecision(
+      initial,
+      routeTask('Fix the bug test-first and add a regression test')
+    );
+    const conflicted = {
+      ...generic,
+      phase: 'verifying' as const,
+      currentSkill: 'fable-security' as const,
+      substantial: true,
+    };
+    const securityOnly = addEvidence(conflicted, {
+      kind: 'security',
+      source: 'security review',
+      result: 'pass',
+      detail: 'no reportable security finding',
+    });
+
+    expect(securityOnly.verifiedGeneration).toBe(-1);
+    expect(hasFreshPassingEvidence(securityOnly)).toBe(false);
+    expect(() => transitionState(securityOnly, 'complete')).toThrow(
+      'current mutation generation'
+    );
+  });
+
+  test('does not trust a security taskShape that conflicts with the routed skill', () => {
+    const initial = createInitialState('2026-08-23T00:00:00.000Z');
+    const decision = routeTask('Fix the bug test-first and add a regression test');
+    const conflicted = applyRoutingDecision(initial, {
+      ...decision,
+      taskShape: 'security',
+    });
+    const securityOnly = addEvidence(conflicted, {
+      kind: 'security',
+      source: 'security review',
+      result: 'pass',
+      detail: 'no reportable security finding',
+    });
+
+    expect(securityOnly.verifiedGeneration).toBe(-1);
+    expect(hasFreshPassingEvidence(securityOnly)).toBe(false);
+  });
+
+  test('does not trust a security route whose pack conflicts with its skill', () => {
+    const initial = createInitialState('2026-08-23T00:00:00.000Z');
+    const decision = routeTask('Review this authorization boundary for security vulnerabilities');
+    const conflicted = applyRoutingDecision(initial, {
+      ...decision,
+      selectedPack: 'build',
+    });
+    const securityOnly = addEvidence(conflicted, {
+      kind: 'security',
+      source: 'security review',
+      result: 'pass',
+      detail: 'no reportable security finding',
+    });
+
+    expect(securityOnly.verifiedGeneration).toBe(-1);
+    expect(hasFreshPassingEvidence(securityOnly)).toBe(false);
+  });
+
+  test('keeps routed security scope while the execution stage is verifying', () => {
+    const initial = createInitialState('2026-08-23T00:00:00.000Z');
+    const security = applyRoutingDecision(
+      initial,
+      routeTask('Review this authorization boundary for security vulnerabilities')
+    );
+    const verifying = {
+      ...security,
+      currentSkill: 'fable-verify' as const,
+    };
+    const evidenced = addEvidence(verifying, {
+      kind: 'security',
+      source: 'security review',
+      result: 'pass',
+      detail: 'authorization boundary reviewed with no reportable finding',
+    });
+
+    expect(verifying.currentSkill).toBe('fable-verify');
+    expect(evidenced.verifiedGeneration).toBe(0);
+    expect(hasFreshPassingEvidence(evidenced)).toBe(true);
   });
 });

@@ -8,6 +8,7 @@ Safety contract:
 import datetime
 import hashlib
 import json
+import math
 import os
 import re
 import sys
@@ -43,6 +44,30 @@ BEHAVIOR_COMPLETION_EVIDENCE_KINDS = {
     "runtime",
     "review",
     "observation",
+}
+FABLE_PACKS = {
+    "core",
+    "intelligence",
+    "build",
+    "proof",
+    "delivery",
+    "evolution",
+    "system",
+    "creator",
+}
+TASK_SHAPES = {
+    "research",
+    "architecture",
+    "bug-fix",
+    "feature",
+    "delegation",
+    "review",
+    "security",
+    "release",
+    "handoff",
+    "eval",
+    "bounded-change",
+    "unknown",
 }
 FAILURE_RELEVANT_EVIDENCE_KINDS = BEHAVIOR_COMPLETION_EVIDENCE_KINDS | {"security"}
 
@@ -109,6 +134,50 @@ def _valid_nonempty_string(value):
     return isinstance(value, str) and bool(value.strip())
 
 
+def _valid_string_list(value):
+    return isinstance(value, list) and all(_valid_nonempty_string(item) for item in value)
+
+
+def _valid_routing_decision(value):
+    if not isinstance(value, dict):
+        return False
+    selected_skill = value.get("selectedSkill")
+    if selected_skill not in CANONICAL_SKILLS:
+        return False
+    if value.get("selectedPack") not in FABLE_PACKS:
+        return False
+    if value.get("taskShape") not in TASK_SHAPES:
+        return False
+    confidence = value.get("confidence")
+    if isinstance(confidence, bool) or not isinstance(confidence, (int, float)) or not math.isfinite(confidence):
+        return False
+    if confidence < 0 or confidence > 1:
+        return False
+    if not _valid_string_list(value.get("reasons")):
+        return False
+    if not isinstance(value.get("requiresPlan"), bool):
+        return False
+    if not _valid_string_list(value.get("requiredGates")):
+        return False
+    fallback_skill = value.get("fallbackSkill")
+    if fallback_skill is not None and fallback_skill not in CANONICAL_SKILLS:
+        return False
+    parallel_candidates = value.get("parallelCandidates")
+    if not isinstance(parallel_candidates, list) or any(skill not in CANONICAL_SKILLS for skill in parallel_candidates):
+        return False
+    next_skills = value.get("nextSkills")
+    if not isinstance(next_skills, list) or any(skill not in CANONICAL_SKILLS for skill in next_skills):
+        return False
+    scores = value.get("scores")
+    if not isinstance(scores, dict):
+        return False
+    for skill in CANONICAL_SKILLS:
+        score = scores.get(skill)
+        if isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score):
+            return False
+    return True
+
+
 def _valid_evidence(record, max_generation, owner_workspace_id):
     if not isinstance(record, dict):
         return False
@@ -132,15 +201,16 @@ def _valid_evidence(record, max_generation, owner_workspace_id):
 def _security_task(state):
     if not isinstance(state, dict):
         return False
-    if state.get("currentSkill") == "fable-security":
-        return True
     decision = state.get("lastDecision")
-    if not isinstance(decision, dict):
-        return False
-    return (
-        decision.get("selectedSkill") == "fable-security"
-        or decision.get("taskShape") == "security"
-    )
+    if "lastDecision" in state and decision is not None:
+        if not _valid_routing_decision(decision):
+            return False
+        return (
+            decision.get("selectedSkill") == "fable-security"
+            and decision.get("selectedPack") == "proof"
+            and decision.get("taskShape") == "security"
+        )
+    return state.get("currentSkill") == "fable-security"
 
 
 def completion_evidence_kinds(state):

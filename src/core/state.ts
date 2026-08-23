@@ -135,11 +135,14 @@ function isEvidenceResult(value: unknown): value is 'pass' | 'fail' {
 }
 
 function isSecurityTask(state: Pick<FableState, 'currentSkill' | 'lastDecision'>): boolean {
-  return (
-    state.currentSkill === 'fable-security' ||
-    state.lastDecision?.selectedSkill === 'fable-security' ||
-    state.lastDecision?.taskShape === 'security'
-  );
+  if (state.lastDecision) {
+    return (
+      state.lastDecision.selectedSkill === 'fable-security' &&
+      state.lastDecision.selectedPack === 'proof' &&
+      state.lastDecision.taskShape === 'security'
+    );
+  }
+  return state.currentSkill === 'fable-security';
 }
 
 function completionEvidenceKinds(state: Pick<FableState, 'currentSkill' | 'lastDecision'>): EvidenceKind[] {
