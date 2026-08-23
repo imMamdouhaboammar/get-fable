@@ -50,6 +50,9 @@ jobs:
       - name: Generated artifact drift
         run: bun run check:generated
 
+      - name: Generated llms.txt drift
+        run: bun run check:llms
+
       - name: Typecheck
         run: bun run typecheck
 
