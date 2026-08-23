@@ -342,7 +342,9 @@ confirmed merge blockers on the current non-draft change and include a direct
 completion-gate bypass. The accepted behavior is explicit: `functional pass ->
 newer security fail` blocks; a newer functional pass reopens the gate; and a
 legacy security task uses security evidence during migration without granting
-that scope to generic work.
+that scope to generic work. Migrated security evidence must still match the
+owning workspace; ownerless or nonmatching legacy records remain historical and
+cannot satisfy completion.
 
 ## Daily revalidation — 2026-08-23
 
