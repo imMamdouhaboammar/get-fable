@@ -102,7 +102,7 @@ describe('host-agnostic lifecycle hook dispatcher', () => {
     expect(log).not.toContain('prompt');
   });
 
-  test('Codex hook map covers current lifecycle event families without Claude-only failure events', () => {
+  test('Codex hook map covers the current supported lifecycle event families', () => {
     const config = JSON.parse(fs.readFileSync(path.join(root, 'hooks', 'hooks.codex.json'), 'utf-8'));
     const events = Object.keys(config.hooks);
     expect(events).toEqual(expect.arrayContaining([
@@ -116,9 +116,9 @@ describe('host-agnostic lifecycle hook dispatcher', () => {
       'SubagentStart',
       'SubagentStop',
       'Stop',
-      'Interrupt',
       'SessionEnd',
     ]));
     expect(events).not.toContain('PostToolUseFailure');
+    expect(events).not.toContain('Interrupt');
   });
 });
