@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""get-fable Bash result attribution hook.
+"""get-fable command-result attribution hook.
 
-PostToolUse success and PostToolUseFailure events update `.fable/state.json`
-when the project is initialized.
-Two consecutive failures move the durable workflow to `recovering` and select
-`fable-recover`. The hook remains advisory and fail-open.
+Claude Code reports command failures with PostToolUseFailure. Codex reports
+Bash completion through PostToolUse even when the command exits non-zero. This
+handler supports both contracts and retains legacy payload compatibility.
+
+Two consecutive command failures move the durable workflow to `recovering` and
+select `fable-recover`. The hook remains advisory and fail-open.
 """
 import json
 import os
@@ -51,18 +53,18 @@ def command_failed(tool_response):
     for key in ("is_error", "isError"):
         if response.get(key) is True:
             return True
-    text = " ".join(str(response.get(key, "")) for key in ("stdout", "stderr", "output"))
+    text = " ".join(str(response.get(key, "")) for key in ("stdout", "stderr", "output", "error"))
     match = _EXIT_CODE_RE.search(text)
     return bool(match and match.group(1) != "0")
 
 
 def event_failed(data):
-    """Classify official Claude events first, retaining legacy payload support."""
+    """Classify native host events while preserving response-based detection."""
     event_name = data.get("hook_event_name")
     if event_name == "PostToolUseFailure":
         return True
     if event_name == "PostToolUse":
-        return False
+        return command_failed(data.get("tool_response"))
     return command_failed(data.get("tool_response"))
 
 
