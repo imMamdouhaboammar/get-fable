@@ -2,6 +2,16 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- Resolve the effective Git hooks directory through Git itself so installation,
+  status, and Doctor repair work from linked worktrees and repositories with a
+  configured `core.hooksPath`.
+- Return a non-zero CLI exit code when Git hook installation cannot resolve or
+  write the effective hooks directory.
+
 ## [1.3.0] - 2026-08-19
 
 ### Highlights
