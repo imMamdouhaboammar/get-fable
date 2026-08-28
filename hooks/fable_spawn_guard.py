@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""get-fable PreToolUse guard for detailed delegation.
+"""get-fable pre-tool guard for substantial delegation.
 
-When a project is opted in, a large Agent/Task/Workflow delegation requires a
-live open ledger card. Small delegations and forks are exempt. The guard is
-model-agnostic and does not rank or block model names.
+When a project is opted in, a large Agent/Task/Workflow-style delegation
+requires a live open ledger card. Small delegations and forks are exempt. The
+guard recognizes common delegation tool names across Claude, Codex, Gemini,
+Antigravity, and generic agent harnesses.
 
 Fail-open on unexpected errors.
 """
@@ -20,12 +21,22 @@ from _fable_common import (  # noqa: E402
     read_state,
 )
 
+DELEGATION_TOOL_MARKERS = (
+    "agent",
+    "subagent",
+    "delegate",
+    "delegation",
+    "task",
+    "workflow",
+    "worker",
+)
+
 
 def payload_len(tool_input):
     if not isinstance(tool_input, dict):
         return 0
     parts = []
-    for key in ("prompt", "script", "description"):
+    for key in ("prompt", "script", "description", "task", "instructions"):
         value = tool_input.get(key)
         if isinstance(value, str):
             parts.append(value)
@@ -35,15 +46,26 @@ def payload_len(tool_input):
 def is_fork(tool_input):
     if not isinstance(tool_input, dict):
         return False
-    for key in ("subagent_type", "agentType", "agent_type"):
+    for key in ("subagent_type", "agentType", "agent_type", "mode"):
         value = tool_input.get(key)
         if isinstance(value, str) and "fork" in value.lower():
             return True
     return False
 
 
+def delegation_tool(data):
+    name = data.get("tool_name") or data.get("toolName") or data.get("tool")
+    if name is None:
+        return True
+    normalized = str(name).replace("-", "_").lower()
+    return any(marker in normalized for marker in DELEGATION_TOOL_MARKERS)
+
+
 def main():
     data = read_hook_input()
+    if not delegation_tool(data):
+        return 0
+
     tool_input = data.get("tool_input", {}) or {}
     fable_dir = find_fable_dir(start_dir(data))
     if not fable_dir:
