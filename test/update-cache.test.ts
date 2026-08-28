@@ -38,6 +38,24 @@ describe('update cache', () => {
     expect(readCache(filePath)).toBeNull();
   });
 
+  test('rejects cache envelopes with malformed timestamps', () => {
+    const filePath = tempFile();
+
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify({ schemaVersion: 1, fetchedAt: 'not-a-date', expiresAt: '2026-08-29T20:00:00.000Z', value: {} }),
+      'utf-8'
+    );
+    expect(readCache(filePath)).toBeNull();
+
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify({ schemaVersion: 1, fetchedAt: '2026-08-28T20:00:00.000Z', expiresAt: 'still-not-a-date', value: {} }),
+      'utf-8'
+    );
+    expect(readCache(filePath)).toBeNull();
+  });
+
   test('writes and reads a schema-versioned cache envelope', () => {
     const filePath = tempFile();
     const envelope = {
