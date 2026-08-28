@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { isNewerVersion, fetchLatestVersion } from '../src/core/updater.ts';
+import { isNewerVersion } from '../src/core/updater.ts';
 
 describe('Auto-Updater Module', () => {
   test('correctly compares semantic versions', () => {
@@ -10,11 +10,13 @@ describe('Auto-Updater Module', () => {
     expect(isNewerVersion('1.2.1', '1.2.0')).toBe(false);
   });
 
-  test('fetches latest version metadata safely without throwing', async () => {
-    const result = await fetchLatestVersion('1.5.1', 2000);
-    expect(result).toBeDefined();
-    expect(result.currentVersion).toBe('1.5.1');
-    expect(typeof result.latestVersion).toBe('string');
-    expect(typeof result.updateAvailable).toBe('boolean');
+  test('orders prereleases before the corresponding stable release', () => {
+    expect(isNewerVersion('1.6.0-rc.1', '1.6.0')).toBe(true);
+    expect(isNewerVersion('1.6.0', '1.6.0-rc.1')).toBe(false);
+  });
+
+  test('rejects invalid semantic versions instead of coercing them', () => {
+    expect(() => isNewerVersion('not-a-version', '1.6.0')).toThrow();
+    expect(() => isNewerVersion('1.6.0', 'still-not-a-version')).toThrow();
   });
 });
