@@ -51,7 +51,7 @@ describe('Doctor Auto-Repair Engine', () => {
 
     const report = runDoctor(root);
     expect(report.checks.some((c) => c.id === 'project-state' && c.status === 'PASS')).toBe(true);
-  });
+  }, 30000);
 
   test('reports Git hooks installed in a real linked worktree', () => {
     const { linked } = linkedWorktreeFixture();

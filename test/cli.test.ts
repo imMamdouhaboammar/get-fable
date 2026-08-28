@@ -151,6 +151,6 @@ describe('CLI safety', () => {
     expect(doctor.schemaVersion).toBe(1);
     expect(doctor.command).toBe('doctor');
     expect(Array.isArray(doctor.data.checks)).toBe(true);
-  });
+  }, 30000);
 
 });

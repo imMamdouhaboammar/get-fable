@@ -53,6 +53,6 @@
     "description": "External provider times out on a case and result must not be filled from oracle",
     "given": {"providerResult": "timeout", "oracleAvailableToScorer": true},
     "expected": {"action": "record-case-failure-or-incomplete", "produces": "eval-verdict"},
-    "forbidden": {"action": "substitute-expected-answer-for-missing-response"}
+    "forbidden": {"action": "substitute-oracle-answer-for-missing-response"}
   }
 ]

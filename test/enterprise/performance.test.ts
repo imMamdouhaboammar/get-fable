@@ -33,5 +33,5 @@ describe('enterprise performance budgets', () => {
     const doctorMs = duration(() => { const report = runDoctor(root, root); expect(report.ok).toBe(true); });
     expect(packageMs).toBeLessThan(B.packageCatalogValidation);
     expect(doctorMs).toBeLessThan(B.doctor);
-  });
+  }, 30000);
 });

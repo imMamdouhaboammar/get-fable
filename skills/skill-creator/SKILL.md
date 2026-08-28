@@ -142,6 +142,13 @@ The enterprise behavior harness may still expand each family into known/negative
 9. **Validate packaging and registry metadata**.
 10. **Run deterministic and behavioral evals**. Treat changed Skill/eval corpus hashes as requiring fresh proof.
 
+## Invariants
+- Never lower evaluation thresholds to preserve a maturity label after a Skill changes.
+- Never copy private expected or forbidden oracle fields into provider-visible prompts.
+- Canonical Skills must describe capabilities in provider-neutral language.
+- Every non-trivial Skill package must include at least one substantial progressive reference (>=1000 bytes).
+- Behavioral maturity claims require fresh verified holdout evaluation across semantic scenario families.
+
 ## Decision Rules
 - Prefer one strong Skill with a clear domain over several overlapping micro-Skills.
 - If two Skills can both reasonably trigger from the same ordinary request, sharpen their boundaries before adding more keywords.

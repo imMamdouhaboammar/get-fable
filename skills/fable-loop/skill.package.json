@@ -7,7 +7,8 @@
     "agents/openai.yaml"
   ],
   "references": [
-    "references/loop-control-guidelines.md"
+    "references/loop-control-guidelines.md",
+    "references/polling-state-machines-and-backoff.md"
   ],
   "templates": [],
   "examples": [

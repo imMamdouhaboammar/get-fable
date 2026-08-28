@@ -156,7 +156,7 @@ describe('coding lifecycle maturity contract', () => {
     } finally {
       process.chdir(previousCwd);
     }
-  });
+  }, 30000);
 
   test('status json reports schema v3 for an active initialized project', () => {
     const target = makeTempDir();

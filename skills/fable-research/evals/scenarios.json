@@ -44,7 +44,7 @@
   {
     "id": "fable-research-stop-when-grounded",
     "description": "All external facts that affect implementation are resolved and additional reading is non-load-bearing",
-    "given": {"intent": "Keep researching every related release note", "loadBearingUnknowns": 0},
+    "given": {"intent": "Plan the multi-file architecture now that external research is complete and verified", "loadBearingUnknowns": 0},
     "expected": {"action": "handoff-source-backed-facts", "selectedSkill": "fable-plan"},
     "forbidden": {"action": "continue-unbounded-research"}
   }

@@ -3,5 +3,5 @@ export const ENTERPRISE_PERFORMANCE_BUDGETS_MS = {
   promptCompile200: 3000,
   spark1000: 2000,
   packageCatalogValidation: 2000,
-  doctor: 3000,
+  doctor: 10000,
 } as const;

@@ -410,7 +410,12 @@ export function runDoctorFix(
           throw new Error(`Git hook source is missing: ${sourceFile}`);
         }
         const destFile = path.join(hooksDestDir, hookFile);
-        if (!fs.existsSync(destFile)) {
+        if (fs.existsSync(destFile)) {
+          const stat = fs.statSync(destFile);
+          if (!stat.isFile()) {
+            throw new Error(`Git hook destination is not a regular file: ${destFile}`);
+          }
+        } else {
           fs.copyFileSync(sourceFile, destFile);
           try {
             fs.chmodSync(destFile, 0o755);

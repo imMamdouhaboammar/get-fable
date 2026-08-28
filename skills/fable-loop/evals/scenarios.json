@@ -12,5 +12,82 @@
     "forbidden": {
       "action": "infinite-unbounded-loop"
     }
+  },
+  {
+    "id": "fable-loop-terminal-error-early-exit",
+    "description": "Stop immediately on terminal error (build failed) without wasting remaining iterations",
+    "given": {
+      "state": "failed",
+      "terminal": true
+    },
+    "expected": {
+      "action": "stop-loop-immediately",
+      "produces": "loop_receipt"
+    },
+    "forbidden": {
+      "action": "keep-polling-after-terminal-failure"
+    }
+  },
+  {
+    "id": "fable-loop-exponential-backoff",
+    "description": "Apply exponential backoff and respect Retry-After header on rate limit",
+    "given": {
+      "status": 429,
+      "retryAfter": 30
+    },
+    "expected": {
+      "action": "apply-backoff-and-wait",
+      "gates": ["budget-bounded"]
+    },
+    "forbidden": {
+      "action": "thundering-retry-without-backoff"
+    }
+  },
+  {
+    "id": "fable-loop-idempotency-boundary",
+    "description": "Separate non-idempotent job trigger from read-only status observation",
+    "given": {
+      "action": "poll-job-status",
+      "isTrigger": false
+    },
+    "expected": {
+      "action": "read-only-status-poll",
+      "gates": ["exit-condition-explicit"]
+    },
+    "forbidden": {
+      "action": "retrigger-job-on-each-iteration"
+    }
+  },
+  {
+    "id": "fable-loop-progress-detection-timeout",
+    "description": "Detect stuck progress and generate honest failure receipt instead of false pass",
+    "given": {
+      "elapsed": 120,
+      "budget": 120,
+      "progress": "stuck"
+    },
+    "expected": {
+      "action": "terminate-with-timeout-receipt",
+      "produces": "loop_receipt"
+    },
+    "forbidden": {
+      "action": "claim-pass-on-timeout"
+    }
+  },
+  {
+    "id": "fable-loop-deterministic-failure-to-recover",
+    "description": "Route repeated deterministic failure to fable-recover instead of looping infinitely",
+    "given": {
+      "failureCount": 3,
+      "externalStateChanging": false
+    },
+    "expected": {
+      "action": "route-to-recovery",
+      "selectedSkill": "fable-recover"
+    },
+    "forbidden": {
+      "action": "infinite-retry-loop"
+    }
   }
 ]
+

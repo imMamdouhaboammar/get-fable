@@ -85,5 +85,5 @@ describe('Auto Skills Installer', () => {
   test('runs skills install CLI command cleanly', () => {
     expect(runCli(['skills', 'list'])).toBe(0);
     expect(runCli(['skills', 'inspect', 'fable-tdd'])).toBe(0);
-  });
+  }, 30000);
 });

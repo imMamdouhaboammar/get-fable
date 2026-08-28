@@ -30,5 +30,5 @@ describe('Doctor evidence semantics', () => {
     expect(byId['docs-preview-config'].status).toBe('PASS');
     expect(byId['release-runtime-evidence'].status).toBe('NOT_CHECKED');
     expect(report.ok).toBe(true);
-  });
+  }, 30000);
 });

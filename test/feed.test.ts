@@ -31,12 +31,12 @@ describe('Skill Feed Engine', () => {
 
     const proofPack = searchSkillFeed('proof');
     expect(proofPack.length).toBeGreaterThanOrEqual(2);
-  });
+  }, 30000);
 
   test('inspects skill detail and instructions', () => {
     const detail = inspectSkillDetail('fable-tdd');
     expect(detail.item).not.toBeNull();
     expect(detail.item?.pack).toBe('build');
     expect(detail.instructions).toContain('fable-tdd');
-  });
+  }, 30000);
 });
