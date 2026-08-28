@@ -82,6 +82,40 @@ describe('stable release source', () => {
     expect(result.releaseUrl).toBeUndefined();
   });
 
+  test('aborts the npm registry request when the timeout elapses', async () => {
+    let sawAbort = false;
+
+    await expectFailure(
+      () =>
+        fetchStableRelease(
+          '1.5.1',
+          {
+            now: () => new Date('2026-08-28T20:00:00.000Z'),
+            fetch: (_input, init) =>
+              new Promise((_resolve, reject) => {
+                const signal = init?.signal;
+                if (!signal) {
+                  reject(new Error('missing abort signal'));
+                  return;
+                }
+
+                const onAbort = () => {
+                  sawAbort = true;
+                  reject(new Error('request aborted by timeout'));
+                };
+
+                if (signal.aborted) onAbort();
+                else signal.addEventListener('abort', onAbort, { once: true });
+              }),
+          },
+          1
+        ),
+      /aborted/i
+    );
+
+    expect(sawAbort).toBe(true);
+  });
+
   test('rejects a non-success npm registry response', async () => {
     await expectFailure(
       () =>
