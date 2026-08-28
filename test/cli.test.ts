@@ -8,7 +8,7 @@ import { getPackageVersion, parsePort, runCli } from '../src/cli.ts';
 const originalClaudeDir = process.env.CLAUDE_CONFIG_DIR;
 const originalGeminiDir = process.env.FABLE_GEMINI_CONFIG_DIR;
 const originalKernelDir = process.env.FABLE_AGENT_KERNEL_DIR;
-const originalCwd = process.cwd();
+const originalCwd = path.resolve(import.meta.dir, '..');
 const tempDirs: string[] = [];
 
 function tempRoot() {
