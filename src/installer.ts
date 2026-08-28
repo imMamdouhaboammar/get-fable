@@ -22,6 +22,11 @@ import {
 import { canonicalSkillIds } from './core/skill-registry.js';
 import { createInitialState, readFableState, writeFableState } from './core/state.js';
 import { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs, copySkillDirectory } from './core/skill-installer.js';
+import {
+  CANONICAL_GIT_HOOKS,
+  areCanonicalGitHooksInstalled,
+  resolveGitHooksPath,
+} from './core/git-hooks-path.js';
 
 export { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs };
 
@@ -393,25 +398,38 @@ export function installPiCodeGlobal(piDir: string = getPiDir()) {
 
 export function installGitHooks(targetDir: string = process.cwd()) {
   const repoRoot = getRepoRootDir();
-  const gitDir = path.join(targetDir, '.git');
-  if (!fs.existsSync(gitDir)) {
+  const hooksPath = resolveGitHooksPath(targetDir);
+  if (hooksPath.kind === 'none') {
     logWarn(`No .git directory found at ${targetDir}. Skipped git hooks installation.`);
     return false;
   }
+  if (hooksPath.kind === 'error') {
+    logWarn(`${hooksPath.message}. Skipped git hooks installation.`);
+    return false;
+  }
 
-  const gitHooksDir = path.join(gitDir, 'hooks');
-  fs.mkdirSync(gitHooksDir, { recursive: true });
+  const gitHooksDir = hooksPath.hooksDir;
+  try {
+    fs.mkdirSync(gitHooksDir, { recursive: true });
 
-  const hookFiles = ['pre-commit', 'post-commit', 'post-checkout', 'pre-push'];
-  for (const hookFile of hookFiles) {
-    const src = path.join(repoRoot, 'hooks', 'git', hookFile);
-    const dest = path.join(gitHooksDir, hookFile);
-    if (fs.existsSync(src)) {
+    for (const hookFile of CANONICAL_GIT_HOOKS) {
+      const src = path.join(repoRoot, 'hooks', 'git', hookFile);
+      const dest = path.join(gitHooksDir, hookFile);
+      if (!fs.existsSync(src)) {
+        logWarn(`Missing get-fable git hook source: ${src}. Git hooks installation is incomplete.`);
+        return false;
+      }
       fs.copyFileSync(src, dest);
       try {
         fs.chmodSync(dest, 0o755);
-      } catch {}
+      } catch {
+        // Executability is best-effort on non-POSIX filesystems.
+      }
     }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logWarn(`Failed to install git hooks in ${gitHooksDir}: ${message}`);
+    return false;
   }
 
   logSuccess(`Installed universal get-fable git hooks in ${gitHooksDir}`);
@@ -582,7 +600,9 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
   const piDir = getPiDir();
   const kernelDir = getAgentKernelDir();
   const active = fs.existsSync(path.join(targetDir, '.fable'));
-  const gitHooksInstalled = fs.existsSync(path.join(targetDir, '.git', 'hooks', 'pre-commit'));
+  const hooksPath = resolveGitHooksPath(targetDir);
+  const gitHooksInstalled = hooksPath.kind === 'resolved' &&
+    areCanonicalGitHooksInstalled(hooksPath.hooksDir);
 
   let stateSchemaVersion: number | null = null;
   let phase: string | null = null;
