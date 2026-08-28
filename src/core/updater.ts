@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { semver } from 'bun';
 import { logInfo, logSuccess, logWarn, logError, colors } from '../utils.js';
 
 export interface UpdateCheckResult {
@@ -79,15 +80,16 @@ export async function fetchLatestVersion(
   return result;
 }
 
-export function isNewerVersion(current: string, latest: string): boolean {
-  const parse = (v: string) => v.split('.').map((n) => parseInt(n, 10) || 0);
-  const [cMaj, cMin, cPatch] = parse(current);
-  const [lMaj, lMin, lPatch] = parse(latest);
+function assertValidVersion(version: string): void {
+  if (!semver.satisfies(version, version)) {
+    throw new Error(`Invalid semantic version: ${version}`);
+  }
+}
 
-  if (lMaj > cMaj) return true;
-  if (lMaj === cMaj && lMin > cMin) return true;
-  if (lMaj === cMaj && lMin === cMin && lPatch > cPatch) return true;
-  return false;
+export function isNewerVersion(current: string, latest: string): boolean {
+  assertValidVersion(current);
+  assertValidVersion(latest);
+  return semver.order(latest, current) > 0;
 }
 
 export async function runAutoUpdate(
