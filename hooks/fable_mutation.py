@@ -25,6 +25,7 @@ MUTATING_TOOLS = {
     "apply_patch",
     "applypatch",
     "write_file",
+    "write_to_file",
     "replace",
     "replace_file_content",
     "multi_replace_file_content",
