@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Antigravity plugin marketplace catalog for get-fable coding lifecycle.",
-    "version": "1.5.0"
+    "version": "1.5.1"
   },
   "plugins": [
     {
       "name": "get-fable",
       "description": "Deterministic lifecycle skills and situational awareness for Antigravity.",
       "source": "./",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"

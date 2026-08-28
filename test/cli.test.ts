@@ -63,7 +63,7 @@ describe('CLI safety', () => {
   });
 
   test('reads the version from package metadata', () => {
-    expect(getPackageVersion()).toBe('1.5.0');
+    expect(getPackageVersion()).toBe('1.5.1');
   });
 
   test('returns failure when Git hooks cannot be installed and success for a valid custom path', () => {

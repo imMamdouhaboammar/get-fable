@@ -2,6 +2,12 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [1.5.1] - 2026-08-28
+
+### Fixed
+
+- **Packaged npm Doctor Supply-Chain Resolution**: Fixed `get-fable doctor` supply-chain check when running from packaged npm/bun distributions where `.github/workflows` is excluded by design from the distribution tarball.
+
 ## [1.5.0] - 2026-08-28
 
 ### Highlights

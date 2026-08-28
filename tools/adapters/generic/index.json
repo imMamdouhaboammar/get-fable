@@ -1,6 +1,6 @@
 {
   "provider": "generic",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "mappings": {
     "web-search": "search_web",
     "filesystem": "file_operations",

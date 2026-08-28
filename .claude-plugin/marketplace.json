@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Portable coding lifecycle for AI agents with deterministic routing, durable mutation-aware state, 25 specialist skills across 8 packs, lifecycle hooks, and evidence gates.",
-    "version": "1.5.0"
+    "version": "1.5.1"
   },
   "plugins": [
     {
       "name": "get-fable",
       "description": "Routes software work through discovery, research, planning, TDD, delegation, execution, verification, review, security, release, handoff, evaluation, and recovery across 25 canonical skills.",
       "source": "./",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"

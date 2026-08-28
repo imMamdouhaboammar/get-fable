@@ -1,6 +1,6 @@
 {
   "name": "system",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Enterprise harness extensions: dataviz, artifacts, code simplification, loops, app runner, memory, harness config, simulator, cowork, and spark situational awareness.",
   "skills": [
     "fable-dataviz",
