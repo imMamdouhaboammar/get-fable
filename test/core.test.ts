@@ -204,9 +204,11 @@ describe('durable state', () => {
 
     expect(migrated.schemaVersion).toBe(3);
     expect(migrated.mutationGeneration).toBe(0);
-    expect(migrated.verifiedGeneration).toBe(0);
+    expect(migrated.verifiedGeneration).toBe(-1);
     expect(migrated.evidence[0].generation).toBe(0);
+    expect(migrated.evidence[0].workspaceId).toBeUndefined();
     expect(migrated.workspaceId.length).toBeGreaterThan(0);
+    expect(() => transitionState(migrated, 'complete')).toThrow('current mutation generation');
   });
 
   test('rejects malformed nested evidence records field by field', () => {
@@ -251,6 +253,13 @@ describe('durable state', () => {
         {
           ...validDecision,
           scores: { ...validDecision.scores, 'fable-review': 'high' },
+        },
+      ],
+      [
+        'lastDecision.scores.fable-review',
+        {
+          ...validDecision,
+          scores: { ...validDecision.scores, 'fable-review': -1 },
         },
       ],
     ];

@@ -176,6 +176,7 @@ describe('lifecycle hooks and durable state', () => {
         detail: 'targeted tests passed',
         generation: 0,
         timestamp: '2026-08-18T00:01:00.000Z',
+        workspaceId: state.workspaceId,
       },
       {
         kind: 'runtime',
@@ -184,6 +185,7 @@ describe('lifecycle hooks and durable state', () => {
         detail: 'runtime smoke failed after verification',
         generation: 0,
         timestamp: '2026-08-18T00:02:00.000Z',
+        workspaceId: state.workspaceId,
       },
     ];
     state.updatedAt = '2026-08-18T00:02:00.000Z';
@@ -200,6 +202,7 @@ describe('lifecycle hooks and durable state', () => {
       detail: 'runtime smoke passed after correction',
       generation: 0,
       timestamp: '2026-08-18T00:03:00.000Z',
+      workspaceId: state.workspaceId,
     });
     state.failureStreak = 0;
     state.updatedAt = '2026-08-18T00:03:00.000Z';

@@ -8,6 +8,7 @@ Safety contract:
 import datetime
 import hashlib
 import json
+import math
 import os
 import re
 import sys
@@ -44,6 +45,31 @@ BEHAVIOR_COMPLETION_EVIDENCE_KINDS = {
     "review",
     "observation",
 }
+FABLE_PACKS = {
+    "core",
+    "intelligence",
+    "build",
+    "proof",
+    "delivery",
+    "evolution",
+    "system",
+    "creator",
+}
+TASK_SHAPES = {
+    "research",
+    "architecture",
+    "bug-fix",
+    "feature",
+    "delegation",
+    "review",
+    "security",
+    "release",
+    "handoff",
+    "eval",
+    "bounded-change",
+    "unknown",
+}
+FAILURE_RELEVANT_EVIDENCE_KINDS = BEHAVIOR_COMPLETION_EVIDENCE_KINDS | {"security"}
 
 
 def read_hook_input():
@@ -108,7 +134,56 @@ def _valid_nonempty_string(value):
     return isinstance(value, str) and bool(value.strip())
 
 
-def _valid_evidence(record, max_generation):
+def _valid_string_list(value):
+    return isinstance(value, list) and all(_valid_nonempty_string(item) for item in value)
+
+
+def _valid_routing_decision(value):
+    if not isinstance(value, dict):
+        return False
+    selected_skill = value.get("selectedSkill")
+    if selected_skill not in CANONICAL_SKILLS:
+        return False
+    if value.get("selectedPack") not in FABLE_PACKS:
+        return False
+    if value.get("taskShape") not in TASK_SHAPES:
+        return False
+    confidence = value.get("confidence")
+    if isinstance(confidence, bool) or not isinstance(confidence, (int, float)) or not math.isfinite(confidence):
+        return False
+    if confidence < 0 or confidence > 1:
+        return False
+    if not _valid_string_list(value.get("reasons")):
+        return False
+    if not isinstance(value.get("requiresPlan"), bool):
+        return False
+    if not _valid_string_list(value.get("requiredGates")):
+        return False
+    fallback_skill = value.get("fallbackSkill")
+    if fallback_skill is not None and fallback_skill not in CANONICAL_SKILLS:
+        return False
+    parallel_candidates = value.get("parallelCandidates")
+    if not isinstance(parallel_candidates, list) or any(skill not in CANONICAL_SKILLS for skill in parallel_candidates):
+        return False
+    next_skills = value.get("nextSkills")
+    if not isinstance(next_skills, list) or any(skill not in CANONICAL_SKILLS for skill in next_skills):
+        return False
+    scores = value.get("scores")
+    if not isinstance(scores, dict):
+        return False
+    for skill in CANONICAL_SKILLS:
+        score = scores.get(skill)
+        if (
+            isinstance(score, bool)
+            or not isinstance(score, (int, float))
+            or not math.isfinite(score)
+            or score < 0
+        ):
+            return False
+    return True
+
+
+def _valid_evidence(record, max_generation, owner_workspace_id):
     if not isinstance(record, dict):
         return False
     if record.get("kind") not in EVIDENCE_KINDS:
@@ -121,6 +196,9 @@ def _valid_evidence(record, max_generation):
         return False
     if not _valid_nonempty_string(record.get("timestamp")):
         return False
+    record_workspace_id = record.get("workspaceId")
+    if record_workspace_id is not None and record_workspace_id != owner_workspace_id:
+        return False
     generation = record.get("generation")
     return isinstance(generation, int) and 0 <= generation <= max_generation
 
@@ -128,15 +206,16 @@ def _valid_evidence(record, max_generation):
 def _security_task(state):
     if not isinstance(state, dict):
         return False
-    if state.get("currentSkill") == "fable-security":
-        return True
     decision = state.get("lastDecision")
-    if not isinstance(decision, dict):
-        return False
-    return (
-        decision.get("selectedSkill") == "fable-security"
-        or decision.get("taskShape") == "security"
-    )
+    if "lastDecision" in state and decision is not None:
+        if not _valid_routing_decision(decision):
+            return False
+        return (
+            decision.get("selectedSkill") == "fable-security"
+            and decision.get("selectedPack") == "proof"
+            and decision.get("taskShape") == "security"
+        )
+    return state.get("currentSkill") == "fable-security"
 
 
 def completion_evidence_kinds(state):
@@ -146,11 +225,27 @@ def completion_evidence_kinds(state):
     return kinds
 
 
+def _legacy_completion_evidence_kinds(state):
+    """Derive migration scope only from canonical skill identities."""
+    decision = state.get("lastDecision")
+    selected_skill = decision.get("selectedSkill") if isinstance(decision, dict) else None
+    migration_context = {
+        "currentSkill": state.get("currentSkill") if state.get("currentSkill") in CANONICAL_SKILLS else None,
+        "lastDecision": (
+            {"selectedSkill": selected_skill}
+            if selected_skill in CANONICAL_SKILLS
+            else None
+        ),
+    }
+    return completion_evidence_kinds(migration_context)
+
+
 def _migrate_v1_state(fable_dir, state):
     evidence = state.get("evidence")
     if not isinstance(evidence, list):
         return None
 
+    owner_workspace_id = workspace_id(fable_dir)
     migrated_evidence = []
     for record in evidence:
         if not isinstance(record, dict):
@@ -159,18 +254,25 @@ def _migrate_v1_state(fable_dir, state):
         migrated["generation"] = 0
         migrated_evidence.append(migrated)
 
+    accepted_completion_kinds = _legacy_completion_evidence_kinds(state)
     latest_completion = None
     for record in reversed(migrated_evidence):
-        if record.get("kind") in BEHAVIOR_COMPLETION_EVIDENCE_KINDS:
+        if record.get("kind") in accepted_completion_kinds:
             latest_completion = record
             break
 
     migrated = dict(state)
     migrated["schemaVersion"] = STATE_SCHEMA_VERSION
     migrated["stateRevision"] = 0
-    migrated["workspaceId"] = workspace_id(fable_dir)
+    migrated["workspaceId"] = owner_workspace_id
     migrated["mutationGeneration"] = 0
-    migrated["verifiedGeneration"] = 0 if latest_completion and latest_completion.get("result") == "pass" else -1
+    migrated["verifiedGeneration"] = (
+        0
+        if latest_completion
+        and latest_completion.get("workspaceId") == owner_workspace_id
+        and latest_completion.get("result") == "pass"
+        else -1
+    )
     migrated["activeCard"] = None
     migrated["evidence"] = migrated_evidence
     return migrated
@@ -231,7 +333,8 @@ def read_state(fable_dir):
         evidence = state.get("evidence")
         if not isinstance(evidence, list):
             return None
-        if any(not _valid_evidence(record, mutation_generation) for record in evidence):
+        owner_workspace_id = state.get("workspaceId")
+        if any(not _valid_evidence(record, mutation_generation, owner_workspace_id) for record in evidence):
             return None
         return state
     except Exception:
@@ -279,16 +382,17 @@ def has_fresh_passing_state_evidence(state):
     accepted_kinds = completion_evidence_kinds(state)
     latest = None
     for record in reversed(evidence):
-        if (
-            isinstance(record, dict)
-            and record.get("generation") == mutation_generation
-            and record.get("kind") in accepted_kinds
-        ):
+        if not isinstance(record, dict) or record.get("generation") != mutation_generation:
+            continue
+        if record.get("result") == "fail" and record.get("kind") in FAILURE_RELEVANT_EVIDENCE_KINDS:
+            return False
+        if record.get("kind") in accepted_kinds:
             latest = record
             break
     detail = latest.get("detail") if isinstance(latest, dict) else None
     return (
         isinstance(latest, dict)
+        and latest.get("workspaceId") == state.get("workspaceId")
         and latest.get("result") == "pass"
         and isinstance(detail, str)
         and bool(detail.strip())

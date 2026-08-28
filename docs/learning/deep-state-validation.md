@@ -37,7 +37,8 @@ Routing-decision validation covers:
 - non-empty reason strings
 - boolean planning flag
 - valid next-skill IDs
-- finite numeric scores for every canonical skill
+- finite, non-negative numeric scores for every canonical skill; routing scores
+  are additive weights and may legitimately exceed one
 
 No new dependency or migration is required.
 
@@ -67,4 +68,6 @@ The RED CI run proved the old validator accepted malformed nested records. The G
 
 ## Remaining limitation
 
-This change validates the current schema-v1 shape; it does not introduce cryptographic integrity, workspace identity, mutation generations, or migration machinery. Those are separate concerns and should only be added when repository evidence justifies them.
+Structural validation does not provide cryptographic integrity or attest that the
+workspace contents still match the persisted state. Those require separate
+provenance and mutation-freshness controls.

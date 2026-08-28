@@ -102,6 +102,8 @@ updatedAt
 
 The workspace identity is a short digest of the resolved project path. Schema-v2 and schema-v3 runtime state copied to another workspace is rejected instead of being trusted as current state. The repository itself keeps a workspace-neutral schema-v1 template so clones and CI can bind locally during migration.
 
+New evidence is stamped with that same workspace identity. Explicitly foreign evidence invalidates persisted state, and legacy evidence without an owner remains historical rather than satisfying completion. The TypeScript runtime and Python completion hook enforce the same rule.
+
 Every recognized workspace mutation advances `mutationGeneration`. Previous verification remains historical evidence but becomes stale for completion.
 
 Evidence is typed by claim:
