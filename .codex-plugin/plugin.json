@@ -19,6 +19,7 @@
     "skills"
   ],
   "skills": "./skills/",
+  "hooks": "./hooks/hooks.codex.json",
   "interface": {
     "displayName": "get-fable",
     "shortDescription": "AI coding lifecycle",
@@ -29,6 +30,7 @@
       "Route coding work across 25 canonical lifecycle skills in 8 packs",
       "Track mutation-aware verification and evidence freshness",
       "Use specialized TDD, review, security, and recovery specialists",
+      "Run lifecycle hooks across supported Codex and ChatGPT plugin surfaces",
       "Predict atomic next moves with Fable Spark situational awareness"
     ],
     "websiteURL": "https://github.com/imMamdouhaboammar/get-fable",
