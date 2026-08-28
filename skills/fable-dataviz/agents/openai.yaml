@@ -1,4 +1,6 @@
-name: fable-dataviz
-description: Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations.
 interface:
+  display_name: "Fable Dataviz"
+  short_description: "Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations."
   default_prompt: "You are the data visualization specialist. Design clean, accessible SVG charts, responsive plots, and metric dashboards with explicit viewBox and high-contrast styling."
+policy:
+  allow_implicit_invocation: true

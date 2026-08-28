@@ -6,7 +6,7 @@ steps:
   - skill: fable-discover
     gate: load-bearing-unknowns-resolved
     description: Inspect domain requirements and capture workflow intent
-  - skill: skill-creator
+  - skill: fable-skill-creator
     gate: lack_of_surprise
     description: Author structured SKILL.md, bundled resources, and YAML frontmatter
   - skill: fable-eval

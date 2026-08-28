@@ -28,4 +28,4 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 180 | system | `fable-simulator` | verifying | Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states. |
 | 190 | system | `fable-cowork` | executing | Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement. |
 | 200 | system | `fable-spark` | idle | Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence. |
-| 210 | creator | `skill-creator` | executing | Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. |
+| 210 | creator | `fable-skill-creator` | executing | Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. |

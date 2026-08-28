@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "id": "skill-creator",
+  "id": "fable-skill-creator",
   "entry": "SKILL.md",
   "agents": [
     "agents/openai.yaml"

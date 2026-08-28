@@ -1,4 +1,6 @@
-name: skill-creator
-description: Author, refine, optimize, and evaluate autonomous skills for multi-agent ecosystems.
 interface:
+  display_name: "Skill Creator"
+  short_description: "Author, refine, optimize, and evaluate autonomous skills for multi-agent ecosystems."
   default_prompt: "You are the skill creator specialist. Author, refine, evaluate, and package canonical skills according to the Skill Package specification with progressive disclosure and behavioral evaluations."
+policy:
+  allow_implicit_invocation: true

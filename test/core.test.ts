@@ -40,7 +40,7 @@ describe('canonical skill registry', () => {
       'fable-simulator',
       'fable-cowork',
       'fable-spark',
-      'skill-creator',
+      'fable-skill-creator',
     ]);
     expect(registry.skills.find((skill) => skill.id === 'fable-security')?.pack).toBe('proof');
     expect(registry.skills.find((skill) => skill.id === 'fable-tdd')?.gates).toContain('red-observed');

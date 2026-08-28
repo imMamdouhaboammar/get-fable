@@ -45,7 +45,7 @@
         "fable-simulator",
         "fable-cowork",
         "fable-spark",
-        "skill-creator"
+        "fable-skill-creator"
       ],
       "keywords": [
         "fable",
@@ -949,7 +949,7 @@
       ]
     },
     {
-      "id": "skill-creator",
+      "id": "fable-skill-creator",
       "order": 210,
       "phase": "executing",
       "pack": "creator",
@@ -985,6 +985,7 @@
         "author skill",
         "benchmark skill",
         "skill creator",
+        "fable skill creator",
         "eval suite"
       ]
     }

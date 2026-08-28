@@ -131,8 +131,8 @@
       "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence."
     },
     {
-      "id": "skill-creator",
-      "path": "skills/skill-creator/SKILL.md",
+      "id": "fable-skill-creator",
+      "path": "skills/fable-skill-creator/SKILL.md",
       "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning."
     }
   ]

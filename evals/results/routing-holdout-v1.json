@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "metric": "enterprise-routing-holdout",
-  "capturedAt": "2026-08-28T18:26:09.758Z",
-  "repositoryRevision": "0f6a74b5e5bcde7ab965b6c5e77178685223b790",
+  "capturedAt": "2026-08-28T19:35:49.595Z",
+  "repositoryRevision": "98a3dd81ec7f5bdd8b51518231d173c26ff6e634",
   "corpusSha256": "58c8745aa6cc1ec76c69a530e6f143563320294452a7f46c420ecf8cfdf467fb",
-  "routerSha256": "dfd64e6adea92b3e7b1cd2da401659a5a25e17986f0be008c655c791c1838b77",
+  "routerSha256": "9b80181a1c62cb26bedcece6223919b5e7d80f572cf750eea9a3aef79bd0c226",
   "runnerSha256": "dd137e320c7cd082ce96654b4e281df89a0b8d50990e089e8b5d190c1285f631",
   "total": 24,
   "passed": 23,

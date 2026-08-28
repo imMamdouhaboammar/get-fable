@@ -1,8 +1,6 @@
 ---
-name: skill-creator
-description: >
-  Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. Use when creating a new skill from scratch, editing an existing skill that misfires or undertriggers, authoring test suites for skills, optimizing skill descriptions, or packaging skills for distribution — even if the user does not explicitly say "skill-creator" (e.g. "create a skill", "build a new skill", "optimize skill description", "package this skill", "teach the agent to do X"). Do NOT use for general application code changes or non-skill tasks.
-
+name: fable-skill-creator
+description: "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. Use when creating a new skill from scratch, editing an existing skill that misfires or undertriggers, authoring test suites for skills, optimizing skill descriptions, or packaging skills for distribution — even if the user does not explicitly say \"fable-skill-creator\" (e.g. \"create a skill\", \"build a new skill\", \"optimize skill description\", \"package this skill\", \"teach the agent to do X\"). Do NOT use for general application code changes or non-skill tasks."
 version: 1.3.0
 pack: creator
 inputs:

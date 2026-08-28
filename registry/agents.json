@@ -70,7 +70,7 @@
       "name": "Author",
       "role": "Skill Engineer & Prompt Optimizer",
       "autonomy_level": "bounded",
-      "primary_skills": ["skill-creator", "fable-eval", "fable-verify"],
+      "primary_skills": ["fable-skill-creator", "fable-eval", "fable-verify"],
       "supporting_skills": ["fable-artifact", "fable-config"]
     }
   ]

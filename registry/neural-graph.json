@@ -25,7 +25,7 @@
     { "id": "fable-simulator", "pack": "system", "phase": "verifying", "label": "Independent Oracle & Contract Simulator" },
     { "id": "fable-cowork", "pack": "system", "phase": "executing", "label": "Autonomous Cowork Execution Mode" },
     { "id": "fable-spark", "pack": "system", "phase": "idle", "label": "Situational Awareness Next-Move Predictor" },
-    { "id": "skill-creator", "pack": "creator", "phase": "executing", "label": "Autonomous Skill Creator & Optimizer" }
+    { "id": "fable-skill-creator", "pack": "creator", "phase": "executing", "label": "Autonomous Skill Creator & Optimizer" }
   ],
   "edges": [
     { "source": "get-fable", "target": "fable-discover", "relation": "continuation", "weight": 1.0 },
@@ -69,8 +69,8 @@
     { "source": "fable-cowork", "target": "fable-execute", "relation": "continuation", "weight": 1.0 },
     { "source": "fable-cowork", "target": "fable-spark", "relation": "peer", "weight": 0.9 },
     { "source": "fable-spark", "target": "get-fable", "relation": "peer", "weight": 1.0 },
-    { "source": "skill-creator", "target": "fable-eval", "relation": "continuation", "weight": 1.0 },
-    { "source": "skill-creator", "target": "fable-verify", "relation": "continuation", "weight": 0.9 },
-    { "source": "skill-creator", "target": "fable-review", "relation": "continuation", "weight": 0.8 }
+    { "source": "fable-skill-creator", "target": "fable-eval", "relation": "continuation", "weight": 1.0 },
+    { "source": "fable-skill-creator", "target": "fable-verify", "relation": "continuation", "weight": 0.9 },
+    { "source": "fable-skill-creator", "target": "fable-review", "relation": "continuation", "weight": 0.8 }
   ]
 }

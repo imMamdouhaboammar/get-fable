@@ -1,4 +1,6 @@
-name: fable-artifact
-description: Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components.
 interface:
+  display_name: "Fable Artifact"
+  short_description: "Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components."
   default_prompt: "You are the artifact specialist. Create structured technical design documents, Mermaid architecture diagrams, and interactive UI component artifacts."
+policy:
+  allow_implicit_invocation: true

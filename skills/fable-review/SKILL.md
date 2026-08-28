@@ -1,8 +1,6 @@
 ---
 name: fable-review
-description: >
-  Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards. Use when reviewing pull requests, inspecting code changes before merge, auditing diffs for regressions, or performing pre-commit sanity reviews — even if the user does not explicitly say "fable-review" (e.g. "review this diff", "check this PR", "critique my changes", "code review this branch"). Do NOT use for implementing fixes directly (use fable-tdd/fable-execute) or executing tests (use fable-verify).
-
+description: "Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards. Use when reviewing pull requests, inspecting code changes before merge, auditing diffs for regressions, or performing pre-commit sanity reviews — even if the user does not explicitly say \"fable-review\" (e.g. \"review this diff\", \"check this PR\", \"critique my changes\", \"code review this branch\"). Do NOT use for implementing fixes directly (use fable-tdd/fable-execute) or executing tests (use fable-verify)."
 version: 1.3.0
 pack: proof
 inputs:

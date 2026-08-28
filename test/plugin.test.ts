@@ -28,7 +28,7 @@ const canonicalSkills = [
   'fable-simulator',
   'fable-cowork',
   'fable-spark',
-  'skill-creator',
+  'fable-skill-creator',
 ];
 
 function readJson(relativePath: string) {

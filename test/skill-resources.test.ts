@@ -8,7 +8,7 @@ import {
 
 describe('progressive disclosure resources', () => {
   test('lists bounded metadata without reading resource bodies', () => {
-    const resources = listRelevantSkillResources('skill-creator', { kinds: ['reference'], maxResources: 2, maxTotalBytes: 64 * 1024 });
+    const resources = listRelevantSkillResources('fable-skill-creator', { kinds: ['reference'], maxResources: 2, maxTotalBytes: 64 * 1024 });
     expect(resources.length).toBe(2);
     expect(resources.every((r) => r.type === 'reference')).toBe(true);
     expect(resources.reduce((n, r) => n + r.byteSize, 0)).toBeLessThanOrEqual(64 * 1024);

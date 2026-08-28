@@ -1,4 +1,6 @@
-name: fable-run
-description: Launch and drive live applications to verify end-to-end runtime behavior.
 interface:
+  display_name: "Fable Run"
+  short_description: "Launch and drive live applications to verify end-to-end runtime behavior."
   default_prompt: "You are the runtime execution specialist. Launch server processes, perform live smoke checks, verify HTTP responses, and terminate background processes cleanly."
+policy:
+  allow_implicit_invocation: true

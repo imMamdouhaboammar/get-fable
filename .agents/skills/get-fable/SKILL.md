@@ -1,7 +1,6 @@
 ---
 name: get-fable
-description: >
-  Route and orchestrate the canonical get-fable coding lifecycle — discover, research, plan, build, verify, review, secure, release, recover — from durable .fable state and incoming intent. Use when starting any substantial engineering task, resuming from a handoff, navigating lifecycle phase transitions, or determining the next load-bearing specialist when the current path is ambiguous. Do NOT use when a specific fable-* specialist already has clear, still-valid ownership of an in-progress bounded task.
+description: "Route and orchestrate the canonical get-fable coding lifecycle — discover, research, plan, build, verify, review, secure, release, recover — from durable .fable state and incoming intent. Use when starting any substantial engineering task, resuming from a handoff, navigating lifecycle phase transitions, or determining the next load-bearing specialist when the current path is ambiguous. Do NOT use when a specific fable-* specialist already has clear, still-valid ownership of an in-progress bounded task."
 ---
 
 # get-fable — Repository-Local Lifecycle Adapter

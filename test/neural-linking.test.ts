@@ -30,7 +30,7 @@ describe('Fable Neural Linking System', () => {
     expect(verifyConn.continuations).toContain('fable-review');
     expect(verifyConn.recovery).toBe('fable-recover');
 
-    const creatorConn = getNeuralConnections('skill-creator');
+    const creatorConn = getNeuralConnections('fable-skill-creator');
     expect(creatorConn.continuations).toContain('fable-eval');
     expect(creatorConn.continuations).toContain('fable-verify');
   });
@@ -43,6 +43,6 @@ describe('Fable Neural Linking System', () => {
 
     const fullAscii = renderNeuralGraphAscii();
     expect(fullAscii).toContain('Fable Full Neural Graph');
-    expect(fullAscii).toContain('skill-creator');
+    expect(fullAscii).toContain('fable-skill-creator');
   });
 });

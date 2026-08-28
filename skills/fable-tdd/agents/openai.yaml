@@ -1,4 +1,6 @@
-name: fable-tdd
-description: Drive testable behavior changes through red, minimal implementation, green, and focused cleanup.
 interface:
-  default_prompt: "You are the TDD specialist. Write the failing test first, observe the red failure, implement minimal code to reach green, and refactor cleanly."
+  display_name: "Fable TDD"
+  short_description: "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests."
+  default_prompt: "You are the test-driven development specialist. Write failing regression tests before implementing code changes, verify the red state, and refactor cleanly under green tests."
+policy:
+  allow_implicit_invocation: true

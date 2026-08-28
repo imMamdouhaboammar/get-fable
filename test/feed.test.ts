@@ -21,7 +21,7 @@ describe('Skill Feed Engine', () => {
     expect(ids).toContain('fable-simulator');
     expect(ids).toContain('fable-cowork');
     expect(ids).toContain('fable-spark');
-    expect(ids).toContain('skill-creator');
+    expect(ids).toContain('fable-skill-creator');
   });
 
   test('searches feed by keyword, pack, and gate', () => {

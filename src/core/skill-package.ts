@@ -245,13 +245,22 @@ export function readSkillResource(id: string, relativePath: string, repoRoot: st
 function validateStructuredResource(type: SkillResourceType, relPath: string, absolutePath: string, errors: string[]) {
   if (type === 'agent' && /\.ya?ml$/i.test(relPath)) {
     try {
-      const lines = fs.readFileSync(absolutePath, 'utf-8').split('\n');
+      const content = fs.readFileSync(absolutePath, 'utf-8');
+      const lines = content.split('\n');
       const index = lines.findIndex((line) => /^\s*default_prompt:/.test(line));
       if (index >= 0) {
         const after = lines[index].replace(/^\s*default_prompt:\s*/, '').trim();
         if ((!after && lines[index + 1] && /^\s+/.test(lines[index + 1])) || after.startsWith('[') || after.startsWith('{')) {
           errors.push(`Agent ${relPath} default_prompt must be a string, not an object or array`);
         }
+      }
+      const hasDisplayName = lines.some((line) => /^\s*display_name:\s*\S+/.test(line));
+      if (!hasDisplayName) {
+        errors.push(`Agent ${relPath} interface.display_name is required and must not be empty`);
+      }
+      const hasShortDescription = lines.some((line) => /^\s*short_description:\s*\S+/.test(line));
+      if (!hasShortDescription) {
+        errors.push(`Agent ${relPath} interface.short_description is required and must not be empty`);
       }
     } catch (error) { errors.push(`Failed to read agent YAML ${relPath}: ${error}`); }
   }

@@ -52,7 +52,7 @@ describe('Auto Skills Installer', () => {
     expect(systemSkills).toContain('fable-simulator');
     expect(systemSkills).toContain('fable-cowork');
     const creatorSkills = resolveSkillsToInstall('creator');
-    expect(creatorSkills).toContain('skill-creator');
+    expect(creatorSkills).toContain('fable-skill-creator');
 
     const allSkills = resolveSkillsToInstall('all');
     expect(allSkills.length).toBe(25);

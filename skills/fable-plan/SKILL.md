@@ -1,8 +1,6 @@
 ---
 name: fable-plan
-description: >
-  Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants. Use when designing multi-file features, planning complex refactors, decomposing architectural migrations, or structuring multi-step implementation tasks — even if the user does not explicitly say "fable-plan" (e.g. "plan this feature", "design the architecture", "break this task down", "create an implementation plan"). Do NOT use when load-bearing facts remain unknown (use fable-discover first) or for trivial single-scope bug fixes (use fable-tdd or fable-execute).
-
+description: "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants. Use when designing multi-file features, planning complex refactors, decomposing architectural migrations, or structuring multi-step implementation tasks — even if the user does not explicitly say \"fable-plan\" (e.g. \"plan this feature\", \"design the architecture\", \"break this task down\", \"create an implementation plan\"). Do NOT use when load-bearing facts remain unknown (use fable-discover first) or for trivial single-scope bug fixes (use fable-tdd or fable-execute)."
 version: 1.3.0
 pack: core
 inputs:

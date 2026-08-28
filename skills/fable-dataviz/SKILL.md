@@ -1,8 +1,6 @@
 ---
 name: fable-dataviz
-description: >
-  Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports. Use when creating SVG charts, rendering metrics plots, designing dashboard visuals, or visualizing performance trends — even if the user does not explicitly say "fable-dataviz" (e.g. "make a chart of this data", "plot these benchmarks", "create an SVG graph", "visualize these metrics"). Do NOT use for non-visual text-only data summaries or generic code edits.
-
+description: "Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports. Use when creating SVG charts, rendering metrics plots, designing dashboard visuals, or visualizing performance trends — even if the user does not explicitly say \"fable-dataviz\" (e.g. \"make a chart of this data\", \"plot these benchmarks\", \"create an SVG graph\", \"visualize these metrics\"). Do NOT use for non-visual text-only data summaries or generic code edits."
 version: 1.3.0
 pack: system
 inputs:

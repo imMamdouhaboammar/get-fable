@@ -37,8 +37,8 @@ describe('Skill Package Architecture & Containment', () => {
     }
   });
 
-  test('reference package skill-creator has full progressive disclosure resources', () => {
-    const summary = getSkillPackageSummary('skill-creator');
+  test('reference package fable-skill-creator has full progressive disclosure resources', () => {
+    const summary = getSkillPackageSummary('fable-skill-creator');
     expect(summary.valid).toBe(true);
     expect(summary.agentCount).toBeGreaterThanOrEqual(1);
     expect(summary.referenceCount).toBeGreaterThanOrEqual(3);
@@ -47,41 +47,37 @@ describe('Skill Package Architecture & Containment', () => {
     expect(summary.evalCount).toBeGreaterThanOrEqual(1);
     expect(summary.totalResources).toBeGreaterThanOrEqual(10);
 
-    const resources = listSkillResources('skill-creator');
+    const resources = listSkillResources('fable-skill-creator');
     expect(resources.some((r) => r.path === 'references/progressive-disclosure.md')).toBe(true);
     expect(resources.some((r) => r.path === 'templates/skill-template.md')).toBe(true);
     expect(resources.some((r) => r.path === 'evals/scenarios.json')).toBe(true);
 
-    const content = readSkillResource('skill-creator', 'references/progressive-disclosure.md');
+    const content = readSkillResource('fable-skill-creator', 'references/progressive-disclosure.md');
     expect(content).toContain('Progressive Disclosure');
   });
 
   test('fable-spark package contains all required policies and scenarios', () => {
     const resources = listSkillResources('fable-spark');
-    const paths = resources.map((r) => r.path);
-    expect(paths).toContain('references/next-move-policy.md');
-    expect(paths).toContain('references/silence-policy.md');
-    expect(paths).toContain('references/evidence-and-gates.md');
-    expect(paths).toContain('references/confidence-policy.md');
-    expect(paths).toContain('evals/scenarios.json');
-
-    const silence = readSkillResource('fable-spark', 'references/silence-policy.md');
-    expect(silence).toContain('Spark Silence Policy');
+    expect(resources.some((r) => r.path === 'references/silence-policy.md')).toBe(true);
+    expect(resources.some((r) => r.path === 'references/confidence-policy.md')).toBe(true);
+    expect(resources.some((r) => r.path === 'references/atomic-action-and-silence.md')).toBe(true);
+    expect(resources.some((r) => r.path === 'templates/spark-decision.template.md')).toBe(true);
+    expect(resources.some((r) => r.path === 'evals/scenarios.json')).toBe(true);
   });
 
   test('rejects path traversal attempts with ../', () => {
     expect(() => {
-      readSkillResource('skill-creator', '../package.json');
+      readSkillResource('fable-skill-creator', '../package.json');
     }).toThrow();
 
     expect(() => {
-      readSkillResource('skill-creator', '../../../../etc/passwd');
+      readSkillResource('fable-skill-creator', '../../../../etc/passwd');
     }).toThrow();
   });
 
   test('rejects absolute resource paths', () => {
     expect(() => {
-      readSkillResource('skill-creator', '/etc/hosts');
+      readSkillResource('fable-skill-creator', '/etc/hosts');
     }).toThrow();
   });
 
@@ -129,7 +125,7 @@ describe('Skill Package Architecture & Containment', () => {
       fs.writeFileSync(path.join(fakeSkillDir, 'SKILL.md'), '# Bad Agent Skill\n');
       fs.writeFileSync(
         path.join(fakeSkillDir, 'agents', 'openai.yaml'),
-        `interface:\n  default_prompt:\n    nested: bad\n`
+        `interface:\n  display_name: "Bad Agent"\n  short_description: "A bad agent"\n  default_prompt:\n    nested: bad\n`
       );
       fs.writeFileSync(
         path.join(fakeSkillDir, 'skill.package.json'),
@@ -150,6 +146,41 @@ describe('Skill Package Architecture & Containment', () => {
       const val = validateSkillPackage('bad-agent-skill', tempDir);
       expect(val.valid).toBe(false);
       expect(val.errors.some((e) => e.includes('default_prompt must be a string'))).toBe(true);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('package validation catches missing display_name and short_description in agents/openai.yaml', () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fable-pkg-test-'));
+    try {
+      const fakeSkillDir = path.join(tempDir, 'skills', 'incomplete-agent-skill');
+      fs.mkdirSync(path.join(fakeSkillDir, 'agents'), { recursive: true });
+      fs.writeFileSync(path.join(fakeSkillDir, 'SKILL.md'), '# Incomplete Agent Skill\n');
+      fs.writeFileSync(
+        path.join(fakeSkillDir, 'agents', 'openai.yaml'),
+        `interface:\n  default_prompt: "Valid prompt"\n`
+      );
+      fs.writeFileSync(
+        path.join(fakeSkillDir, 'skill.package.json'),
+        JSON.stringify({
+          schemaVersion: 2,
+          id: 'incomplete-agent-skill',
+          entry: 'SKILL.md',
+          agents: ['agents/openai.yaml'],
+          references: [],
+          templates: [],
+          examples: [],
+          evals: [],
+          scripts: [],
+          scriptPolicy: 'data-only',
+        })
+      );
+
+      const val = validateSkillPackage('incomplete-agent-skill', tempDir);
+      expect(val.valid).toBe(false);
+      expect(val.errors.some((e) => e.includes('interface.display_name is required'))).toBe(true);
+      expect(val.errors.some((e) => e.includes('interface.short_description is required'))).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

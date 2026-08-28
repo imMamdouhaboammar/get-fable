@@ -1,8 +1,6 @@
 ---
 name: fable-delegate
-description: >
-  Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts. Use when coordinating multiple independent tasks, parallelizing multi-file work without merge conflicts, or managing subagent task assignments — even if the user does not explicitly say "fable-delegate" (e.g. "split this work among workers", "delegate these subtasks", "run parallel agents", "assign independent pieces"). Do NOT use for tightly coupled sequential tasks or when shared mutable state causes edit collisions.
-
+description: "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts. Use when coordinating multiple independent tasks, parallelizing multi-file work without merge conflicts, or managing subagent task assignments — even if the user does not explicitly say \"fable-delegate\" (e.g. \"split this work among workers\", \"delegate these subtasks\", \"run parallel agents\", \"assign independent pieces\"). Do NOT use for tightly coupled sequential tasks or when shared mutable state causes edit collisions."
 version: 1.3.0
 pack: build
 inputs:

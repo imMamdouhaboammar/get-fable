@@ -1,8 +1,6 @@
 ---
 name: fable-cowork
-description: >
-  Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement. Use when executing complex background tasks autonomously, running multi-tool refactoring workflows without conversational noise, or performing deep automated passes — even if the user does not explicitly say "fable-cowork" (e.g. "run autonomously in background", "cowork mode", "execute quietly and report results", "silent refactor pass"). Do NOT use when active user dialogue or step-by-step confirmation is required.
-
+description: "Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement. Use when executing complex background tasks autonomously, running multi-tool refactoring workflows without conversational noise, or performing deep automated passes — even if the user does not explicitly say \"fable-cowork\" (e.g. \"run autonomously in background\", \"cowork mode\", \"execute quietly and report results\", \"silent refactor pass\"). Do NOT use when active user dialogue or step-by-step confirmation is required."
 version: 1.3.0
 pack: system
 inputs:

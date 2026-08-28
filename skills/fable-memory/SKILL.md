@@ -1,8 +1,6 @@
 ---
 name: fable-memory
-description: >
-  Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores. Use when recording user feedback, storing project conventions, recalling cross-session architectural constraints, or indexing durable project memory — even if the user does not explicitly say "fable-memory" (e.g. "remember this preference", "save to memory", "what are my project rules", "recall user feedback"). Do NOT use for volatile task state stored in .fable/state.json.
-
+description: "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores. Use when recording user feedback, storing project conventions, recalling cross-session architectural constraints, or indexing durable project memory — even if the user does not explicitly say \"fable-memory\" (e.g. \"remember this preference\", \"save to memory\", \"what are my project rules\", \"recall user feedback\"). Do NOT use for volatile task state stored in .fable/state.json."
 version: 1.3.0
 pack: system
 inputs:

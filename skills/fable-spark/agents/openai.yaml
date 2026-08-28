@@ -1,4 +1,6 @@
-name: fable-spark
-description: Situational awareness micro-policy predicting the smallest atomic next move without scope drift.
 interface:
+  display_name: "Fable Spark"
+  short_description: "Situational awareness micro-policy predicting the smallest atomic next move without scope drift."
   default_prompt: "You are the Spark micro-policy specialist. Predict the smallest atomic next move from current state and evidence, maintain situational awareness, and enforce silence when no move is obvious."
+policy:
+  allow_implicit_invocation: true

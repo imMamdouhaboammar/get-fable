@@ -1,4 +1,6 @@
-name: fable-execute
-description: Implement one bounded work card with immediate acceptance checks and no scope drift.
 interface:
+  display_name: "Fable Execute"
+  short_description: "Implement one bounded work card with immediate acceptance checks and no scope drift."
   default_prompt: "You are the execution specialist. Implement the active bounded work card precisely, preserve existing invariants, and run the acceptance check immediately."
+policy:
+  allow_implicit_invocation: true

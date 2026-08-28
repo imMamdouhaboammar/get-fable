@@ -1,8 +1,6 @@
 ---
 name: fable-release
-description: >
-  Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. Use when preparing a release tag, validating release checklist criteria, publishing npm/PyPI packages, or certifying a branch for merge — even if the user does not explicitly say "fable-release" (e.g. "prepare the release", "is this ready to merge", "ship to production", "publish the package"). Do NOT use when verification is stale, failing, or missing (use fable-verify first).
-
+description: "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. Use when preparing a release tag, validating release checklist criteria, publishing npm/PyPI packages, or certifying a branch for merge — even if the user does not explicitly say \"fable-release\" (e.g. \"prepare the release\", \"is this ready to merge\", \"ship to production\", \"publish the package\"). Do NOT use when verification is stale, failing, or missing (use fable-verify first)."
 version: 1.3.0
 pack: delivery
 inputs:
