@@ -1,0 +1,26 @@
+{
+  "name": "get-fable",
+  "version": "1.5.0",
+  "description": "xAI Grok and Grok Bot coding lifecycle governance, canonical skills, and lifecycle hook plugin.",
+  "author": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "repository": "https://github.com/imMamdouhaboammar/get-fable",
+  "license": "MIT",
+  "keywords": [
+    "grok",
+    "grok-bot",
+    "xai",
+    "agent-discipline",
+    "agent-skills",
+    "coding-lifecycle",
+    "verification",
+    "tdd",
+    "spark",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json"
+}

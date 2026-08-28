@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dir, '..');
-const NEW_VERSION = '1.4.0';
-const OLD_VERSION = '1.3.0';
+const NEW_VERSION = process.argv[2] || '1.5.0';
+const OLD_VERSION = process.argv[3] || '1.4.0';
 
 function updateJson(filePath: string, updater: (data: any) => void) {
   const fullPath = path.join(root, filePath);
@@ -46,6 +46,8 @@ const pluginFiles = [
   '.kimi-plugin/plugin.json',
   '.kiro-plugin/plugin.json',
   '.pi-plugin/plugin.json',
+  '.grok-plugin/plugin.json',
+  'assets/antigravity/plugin.json',
 ];
 
 for (const pf of pluginFiles) {
@@ -56,6 +58,7 @@ for (const pf of pluginFiles) {
 const marketplaceFiles = [
   '.claude-plugin/marketplace.json',
   '.chatgpt-plugin/marketplace.json',
+  '.codex-plugin/marketplace.json',
   '.gemini-plugin/marketplace.json',
   '.cursor-plugin/marketplace.json',
   '.opencode-plugin/marketplace.json',
@@ -63,10 +66,14 @@ const marketplaceFiles = [
   '.kimi-plugin/marketplace.json',
   '.kiro-plugin/marketplace.json',
   '.pi-plugin/marketplace.json',
+  '.grok-plugin/marketplace.json',
 ];
 
 for (const mf of marketplaceFiles) {
   updateJson(mf, (j) => {
+    if (j.metadata && typeof j.metadata === 'object') {
+      j.metadata.version = NEW_VERSION;
+    }
     if (j.version) j.version = NEW_VERSION;
     if (j.plugins && Array.isArray(j.plugins)) {
       for (const p of j.plugins) {
@@ -97,11 +104,13 @@ updateJson('tools/adapters/generic/index.json', (j) => { j.version = NEW_VERSION
 
 // 5. Formula
 replaceInFile('Formula/get-fable.rb', `version "${OLD_VERSION}"`, `version "${NEW_VERSION}"`);
+replaceInFile('Formula/get-fable.rb', `v${OLD_VERSION}.tar.gz`, `v${NEW_VERSION}.tar.gz`);
 
 // 6. Tests & docs
 replaceInFile('test/cli.test.ts', `expect(getPackageVersion()).toBe('${OLD_VERSION}');`, `expect(getPackageVersion()).toBe('${NEW_VERSION}');`);
 replaceInFile('test/updater.test.ts', `expect(result.currentVersion).toBe('${OLD_VERSION}');`, `expect(result.currentVersion).toBe('${NEW_VERSION}');`);
 replaceInFile('test/updater.test.ts', `fetchLatestVersion('${OLD_VERSION}', 2000);`, `fetchLatestVersion('${NEW_VERSION}', 2000);`);
 replaceInFile('docs/PLUGIN.md', `\`get-fable\` ${OLD_VERSION}`, `\`get-fable\` ${NEW_VERSION}`);
+replaceInFile('public/llms.txt', `\`get-fable\` ${OLD_VERSION}`, `\`get-fable\` ${NEW_VERSION}`);
 
-console.log(`\n🎉 Successfully bumped version to ${NEW_VERSION}!`);
+console.log(`\n🎉 Successfully bumped version from ${OLD_VERSION} to ${NEW_VERSION}!`);

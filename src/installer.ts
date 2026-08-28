@@ -13,6 +13,29 @@ import {
   getDeepSeekDir,
   getKiroDir,
   getPiDir,
+  getGrokDir,
+  getCopilotDir,
+  getDevinDir,
+  getWindsurfDir,
+  getReplitDir,
+  getAmazonQDir,
+  getTraeDir,
+  getWarpDir,
+  getAtlarixDir,
+  getVellumDir,
+  getCodegenDir,
+  getMuseDir,
+  getJunieDir,
+  getQodoDir,
+  getRooDir,
+  getAiderDir,
+  getClineDir,
+  getOpenHandsDir,
+  getContinueDir,
+  getKiloDir,
+  getPlandexDir,
+  getAutoGPTDir,
+  getHermesDir,
   copyDirSync,
   mergeJsonFile,
   logInfo,
@@ -75,14 +98,115 @@ export interface FableStatus {
     configDir: string;
     ruleInstalled: boolean;
   };
+  copilot: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  devin: {
+    configDir: string;
+    ruleInstalled: boolean;
+    canonicalSkillInstalled: boolean;
+  };
+  windsurf: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  replit: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  amazonq: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  trae: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  warp: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  grok: {
+    configDir: string;
+    ruleInstalled: boolean;
+    pluginInstalled: boolean;
+    canonicalSkillInstalled: boolean;
+    registeredHooks: number;
+  };
+  kimi: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  atlarix: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  vellum: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  codegen: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  muse: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  junie: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  qodo: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  roocode: {
+    configDir: string;
+    ruleInstalled: boolean;
+    canonicalSkillInstalled: boolean;
+  };
+  aider: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  cline: {
+    configDir: string;
+    ruleInstalled: boolean;
+    canonicalSkillInstalled: boolean;
+  };
+  openhands: {
+    configDir: string;
+    ruleInstalled: boolean;
+    canonicalSkillInstalled: boolean;
+  };
   opencode: {
     configDir: string;
     ruleInstalled: boolean;
     canonicalSkillInstalled: boolean;
   };
-  kimi: {
+  continue: {
     configDir: string;
     ruleInstalled: boolean;
+  };
+  kilo: {
+    configDir: string;
+    ruleInstalled: boolean;
+    canonicalSkillInstalled: boolean;
+  };
+  plandex: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  autogpt: {
+    configDir: string;
+    ruleInstalled: boolean;
+  };
+  hermes: {
+    configDir: string;
+    ruleInstalled: boolean;
+    canonicalSkillInstalled: boolean;
   };
   deepseek: {
     configDir: string;
@@ -392,6 +516,406 @@ export function installPiCodeGlobal(piDir: string = getPiDir()) {
   logSuccess('Installed Pi Code rules in ~/.pi/rules/fable.md');
 }
 
+export function installGrokGlobal(grokDir: string = getGrokDir()) {
+  const repoRoot = getRepoRootDir();
+
+  logInfo(`Installing get-fable into Grok & Grok Bot (${grokDir})...`);
+  fs.mkdirSync(grokDir, { recursive: true });
+
+  const rulesDir = path.join(grokDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'grok-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'grok-fable-rules.md'),
+    path.join(rulesDir, 'fable5-mode.md')
+  );
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'grok-bot-directive.md'),
+    path.join(rulesDir, 'grok-bot.md')
+  );
+  logSuccess('Installed Grok rules: fable.md, fable5-mode.md, and grok-bot.md');
+
+  const pluginDir = path.join(grokDir, 'plugins', 'get-fable');
+  fs.mkdirSync(pluginDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, '.grok-plugin', 'plugin.json'),
+    path.join(pluginDir, 'plugin.json')
+  );
+
+  copyDirSync(path.join(repoRoot, 'skills'), path.join(pluginDir, 'skills'));
+  fs.mkdirSync(path.join(pluginDir, 'rules'), { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'grok-fable-rules.md'),
+    path.join(pluginDir, 'rules', 'fable5-mode.md')
+  );
+
+  const pluginHooksDir = path.join(pluginDir, 'hooks');
+  copyDirSync(path.join(repoRoot, 'hooks'), pluginHooksDir);
+
+  const hostHooksDir = path.join(grokDir, 'hooks');
+  copyDirSync(path.join(repoRoot, 'hooks'), hostHooksDir);
+  logSuccess('Installed Grok plugin and lifecycle hooks: get-fable');
+
+  const globalSkillsDir = path.join(grokDir, 'skills');
+  installCanonicalSkillPack(repoRoot, globalSkillsDir, false);
+
+  const globalFableSkillDir = path.join(globalSkillsDir, 'fable-mode');
+  fs.mkdirSync(globalFableSkillDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'fable-mode-skill.md'),
+    path.join(globalFableSkillDir, 'SKILL.md')
+  );
+
+  const grokBotSkillDir = path.join(globalSkillsDir, 'grok-bot');
+  fs.mkdirSync(grokBotSkillDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'grok-bot-directive.md'),
+    path.join(grokBotSkillDir, 'SKILL.md')
+  );
+  logSuccess('Installed canonical Grok skills and grok-bot agent skill');
+
+  const hooksJsonPath = path.join(grokDir, 'hooks.json');
+  mergeJsonFile(hooksJsonPath, (existing) => {
+    const config = existing as any;
+    const hooksList: any[] = Array.isArray(config.hooks) ? config.hooks : [];
+
+    const fableHooks = [
+      {
+        name: 'fable5-profile-inject',
+        events: ['SessionStart'],
+        command: `python3 ${path.join(pluginHooksDir, 'fable_profile_inject.py')}`,
+      },
+      {
+        name: 'fable5-spawn-guard',
+        events: ['PreToolUse'],
+        command: `python3 ${path.join(pluginHooksDir, 'fable_spawn_guard.py')}`,
+      },
+      {
+        name: 'fable5-fail-streak',
+        events: ['PostToolUse', 'PostToolUseFailure'],
+        command: `python3 ${path.join(pluginHooksDir, 'fable_fail_streak.py')}`,
+      },
+      {
+        name: 'fable5-mutation',
+        events: ['PostToolUse', 'PostToolUseFailure'],
+        command: `python3 ${path.join(pluginHooksDir, 'fable_mutation.py')}`,
+      },
+      {
+        name: 'fable5-close-guard',
+        events: ['Stop', 'SessionEnd'],
+        command: `python3 ${path.join(pluginHooksDir, 'fable_close_guard.py')}`,
+      },
+    ];
+
+    for (const fableHook of fableHooks) {
+      const index = hooksList.findIndex((hook: any) => hook?.name === fableHook.name);
+      if (index >= 0) hooksList[index] = fableHook;
+      else hooksList.push(fableHook);
+    }
+
+    config.hooks = hooksList;
+    return config;
+  });
+
+  const settingsPath = path.join(grokDir, 'settings.json');
+  registerClaudeHooks(settingsPath, pluginHooksDir);
+
+  logSuccess('Registered Grok lifecycle hooks in hooks.json and settings.json');
+}
+
+export function installCopilotGlobal(copilotDir: string = getCopilotDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for GitHub Copilot (${copilotDir})...`);
+  const rulesDir = path.join(copilotDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'copilot-fable-instructions.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed GitHub Copilot rules in ~/.copilot/rules/fable.md');
+}
+
+export function installDevinGlobal(devinDir: string = getDevinDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Devin (${devinDir})...`);
+  const rulesDir = path.join(devinDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'devin-fable-instructions.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'devin-fable-instructions.md'),
+    path.join(devinDir, 'instructions.md')
+  );
+  const skillsDir = path.join(devinDir, 'skills');
+  installCanonicalSkillPack(repoRoot, skillsDir, false);
+  logSuccess('Installed Devin instructions, rules, and canonical skills');
+}
+
+export function installWindsurfGlobal(windsurfDir: string = getWindsurfDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Windsurf (${windsurfDir})...`);
+  const rulesDir = path.join(windsurfDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'windsurf-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'windsurf-fable-rules.md'),
+    path.join(windsurfDir, 'rules.md')
+  );
+  logSuccess('Installed Windsurf rules in ~/.codeium/windsurf/rules.md');
+}
+
+export function installReplitGlobal(replitDir: string = getReplitDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Replit (${replitDir})...`);
+  const rulesDir = path.join(replitDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'replit-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Replit rules in ~/.replit/rules/fable.md');
+}
+
+export function installAmazonQGlobal(amazonqDir: string = getAmazonQDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Amazon Q Dev (${amazonqDir})...`);
+  const rulesDir = path.join(amazonqDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'amazon-q-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Amazon Q Dev rules in ~/.aws/amazon-q/rules/fable.md');
+}
+
+export function installTraeGlobal(traeDir: string = getTraeDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Trae (${traeDir})...`);
+  const rulesDir = path.join(traeDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'trae-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Trae rules in ~/.trae/rules/fable.md');
+}
+
+export function installWarpGlobal(warpDir: string = getWarpDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Warp AI (${warpDir})...`);
+  const rulesDir = path.join(warpDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'warp-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Warp rules in ~/.warp/rules/fable.md');
+}
+
+export function installAtlarixGlobal(atlarixDir: string = getAtlarixDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Atlarix (${atlarixDir})...`);
+  const rulesDir = path.join(atlarixDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'atlarix-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Atlarix rules in ~/.atlarix/rules/fable.md');
+}
+
+export function installVellumGlobal(vellumDir: string = getVellumDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Vellum (${vellumDir})...`);
+  const rulesDir = path.join(vellumDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'vellum-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Vellum rules in ~/.vellum/rules/fable.md');
+}
+
+export function installCodegenGlobal(codegenDir: string = getCodegenDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Codegen (${codegenDir})...`);
+  const rulesDir = path.join(codegenDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'codegen-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Codegen rules in ~/.codegen/rules/fable.md');
+}
+
+export function installMuseGlobal(museDir: string = getMuseDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Muse Code (${museDir})...`);
+  const rulesDir = path.join(museDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'muse-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Muse Code rules in ~/.muse/rules/fable.md');
+}
+
+export function installJunieGlobal(junieDir: string = getJunieDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Junie (${junieDir})...`);
+  const rulesDir = path.join(junieDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'junie-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed JetBrains Junie rules in ~/.junie/rules/fable.md');
+}
+
+export function installQodoGlobal(qodoDir: string = getQodoDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Qodo (${qodoDir})...`);
+  const rulesDir = path.join(qodoDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'qodo-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Qodo rules in ~/.qodo/rules/fable.md');
+}
+
+export function installRooCodeGlobal(rooDir: string = getRooDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Roo Code (${rooDir})...`);
+  const rulesDir = path.join(rooDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'roocode-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  const skillsDir = path.join(rooDir, 'skills');
+  installCanonicalSkillPack(repoRoot, skillsDir, false);
+  logSuccess('Installed Roo Code rules and canonical skills in ~/.roo/');
+}
+
+export function installAiderGlobal(aiderDir: string = getAiderDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Aider (${aiderDir})...`);
+  const rulesDir = path.join(aiderDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'aider-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Aider rules in ~/.aider/rules/fable.md');
+}
+
+export function installClineGlobal(clineDir: string = getClineDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Cline (${clineDir})...`);
+  const rulesDir = path.join(clineDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'cline-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  const skillsDir = path.join(clineDir, 'skills');
+  installCanonicalSkillPack(repoRoot, skillsDir, false);
+  logSuccess('Installed Cline rules and canonical skills in ~/.cline/');
+}
+
+export function installOpenHandsGlobal(openhandsDir: string = getOpenHandsDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for OpenHands (${openhandsDir})...`);
+  const rulesDir = path.join(openhandsDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'openhands-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  const microagentsDir = path.join(openhandsDir, 'microagents');
+  fs.mkdirSync(microagentsDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'openhands-fable-rules.md'),
+    path.join(microagentsDir, 'fable.md')
+  );
+  const skillsDir = path.join(openhandsDir, 'skills');
+  installCanonicalSkillPack(repoRoot, skillsDir, false);
+  logSuccess('Installed OpenHands rules and canonical skills in ~/.openhands/');
+}
+
+export function installContinueGlobal(continueDir: string = getContinueDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Continue (${continueDir})...`);
+  const rulesDir = path.join(continueDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'continue-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Continue rules in ~/.continue/rules/fable.md');
+}
+
+export function installKiloGlobal(kiloDir: string = getKiloDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Kilo Code (${kiloDir})...`);
+  const rulesDir = path.join(kiloDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'kilo-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  const skillsDir = path.join(kiloDir, 'skills');
+  installCanonicalSkillPack(repoRoot, skillsDir, false);
+  logSuccess('Installed Kilo Code rules and canonical skills in ~/.kilo/');
+}
+
+export function installPlandexGlobal(plandexDir: string = getPlandexDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Plandex (${plandexDir})...`);
+  const rulesDir = path.join(plandexDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'plandex-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed Plandex rules in ~/.plandex/rules/fable.md');
+}
+
+export function installAutoGPTGlobal(autogptDir: string = getAutoGPTDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for AutoGPT (${autogptDir})...`);
+  const rulesDir = path.join(autogptDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'autogpt-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  logSuccess('Installed AutoGPT rules in ~/.autogpt/rules/fable.md');
+}
+
+export function installHermesGlobal(hermesDir: string = getHermesDir()) {
+  const repoRoot = getRepoRootDir();
+  logInfo(`Installing get-fable for Hermes Agent (${hermesDir})...`);
+  const rulesDir = path.join(hermesDir, 'rules');
+  fs.mkdirSync(rulesDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'prompts', 'hermes-fable-rules.md'),
+    path.join(rulesDir, 'fable.md')
+  );
+  const skillsDir = path.join(hermesDir, 'skills');
+  installCanonicalSkillPack(repoRoot, skillsDir, false);
+  logSuccess('Installed Hermes Agent rules and canonical skills in ~/.hermes/');
+}
+
 export function installGitHooks(targetDir: string = process.cwd()) {
   const repoRoot = getRepoRootDir();
   const hooksPath = resolveGitHooksPath(targetDir);
@@ -437,8 +961,31 @@ export function installGlobalFable() {
   installAntigravityGlobal();
   installCodexGlobal();
   installCursorGlobal();
-  installOpenCodeGlobal();
+  installCopilotGlobal();
+  installDevinGlobal();
+  installWindsurfGlobal();
+  installReplitGlobal();
+  installAmazonQGlobal();
+  installTraeGlobal();
+  installWarpGlobal();
+  installGrokGlobal();
   installKimiGlobal();
+  installAtlarixGlobal();
+  installVellumGlobal();
+  installCodegenGlobal();
+  installMuseGlobal();
+  installJunieGlobal();
+  installQodoGlobal();
+  installRooCodeGlobal();
+  installAiderGlobal();
+  installClineGlobal();
+  installOpenHandsGlobal();
+  installOpenCodeGlobal();
+  installContinueGlobal();
+  installKiloGlobal();
+  installPlandexGlobal();
+  installAutoGPTGlobal();
+  installHermesGlobal();
   installDeepSeekGlobal();
   installKiroGlobal();
   installPiCodeGlobal();
@@ -475,11 +1022,31 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   const docsDir = path.join(targetDir, 'docs');
   const agentsDir = path.join(targetDir, '.agents');
   const cursorRulesDir = path.join(targetDir, '.cursor', 'rules');
+  const githubDir = path.join(targetDir, '.github');
+  const devinDir = path.join(targetDir, '.devin');
+  const traeDir = path.join(targetDir, '.trae', 'rules');
+  const continueDir = path.join(targetDir, '.continue', 'rules');
+  const junieDir = path.join(targetDir, '.junie', 'rules');
+  const qodoDir = path.join(targetDir, '.qodo', 'rules');
+  const amazonqDir = path.join(targetDir, '.amazonq');
+  const openhandsDir = path.join(targetDir, '.openhands', 'microagents');
+  const kiloDir = path.join(targetDir, '.kilo', 'rules');
+  const plandexDir = path.join(targetDir, '.plandex');
   const templatesDir = path.join(repoRoot, 'templates');
 
   fs.mkdirSync(fableDir, { recursive: true });
   fs.mkdirSync(docsDir, { recursive: true });
   fs.mkdirSync(cursorRulesDir, { recursive: true });
+  fs.mkdirSync(githubDir, { recursive: true });
+  fs.mkdirSync(devinDir, { recursive: true });
+  fs.mkdirSync(traeDir, { recursive: true });
+  fs.mkdirSync(continueDir, { recursive: true });
+  fs.mkdirSync(junieDir, { recursive: true });
+  fs.mkdirSync(qodoDir, { recursive: true });
+  fs.mkdirSync(amazonqDir, { recursive: true });
+  fs.mkdirSync(openhandsDir, { recursive: true });
+  fs.mkdirSync(kiloDir, { recursive: true });
+  fs.mkdirSync(plandexDir, { recursive: true });
 
   const filesToCopy = [
     { src: path.join(templatesDir, 'LEDGER.template.md'), dest: path.join(fableDir, 'LEDGER.md') },
@@ -497,6 +1064,66 @@ export function initProjectFable(targetDir: string = process.cwd()) {
     {
       src: path.join(repoRoot, 'prompts', 'cursor-fable-rules.mdc'),
       dest: path.join(cursorRulesDir, 'fable-lifecycle.mdc'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'copilot-fable-instructions.md'),
+      dest: path.join(githubDir, 'copilot-instructions.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'cline-fable-rules.md'),
+      dest: path.join(targetDir, '.clinerules'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'windsurf-fable-rules.md'),
+      dest: path.join(targetDir, '.windsurfrules'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'roocode-fable-rules.md'),
+      dest: path.join(targetDir, '.roomodes'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'devin-fable-instructions.md'),
+      dest: path.join(devinDir, 'instructions.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'aider-fable-rules.md'),
+      dest: path.join(targetDir, '.aider.prompt.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'trae-fable-rules.md'),
+      dest: path.join(traeDir, 'fable.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'continue-fable-rules.md'),
+      dest: path.join(continueDir, 'fable.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'junie-fable-rules.md'),
+      dest: path.join(junieDir, 'fable.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'qodo-fable-rules.md'),
+      dest: path.join(qodoDir, 'fable.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'replit-fable-rules.md'),
+      dest: path.join(targetDir, '.replit.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'amazon-q-fable-rules.md'),
+      dest: path.join(amazonqDir, 'rules.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'openhands-fable-rules.md'),
+      dest: path.join(openhandsDir, 'fable.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'kilo-fable-rules.md'),
+      dest: path.join(kiloDir, 'fable.md'),
+    },
+    {
+      src: path.join(repoRoot, 'prompts', 'plandex-fable-rules.md'),
+      dest: path.join(plandexDir, 'context.md'),
     },
   ];
 
@@ -594,6 +1221,37 @@ function countAntigravityHookRegistrations(pluginHooksPath: string): number {
   }
 }
 
+function countGrokHookRegistrations(hooksJsonPath: string, settingsPath?: string): number {
+  let count = 0;
+  if (fs.existsSync(hooksJsonPath)) {
+    try {
+      const config = JSON.parse(fs.readFileSync(hooksJsonPath, 'utf-8'));
+      const hooks = Array.isArray(config.hooks) ? config.hooks : [];
+      const expected = [
+        { name: 'fable5-profile-inject', file: 'fable_profile_inject.py' },
+        { name: 'fable5-spawn-guard', file: 'fable_spawn_guard.py' },
+        { name: 'fable5-fail-streak', file: 'fable_fail_streak.py' },
+        { name: 'fable5-mutation', file: 'fable_mutation.py' },
+        { name: 'fable5-close-guard', file: 'fable_close_guard.py' },
+      ];
+      count = expected.filter(({ name, file }) =>
+        hooks.some(
+          (hook: any) =>
+            hook?.name === name &&
+            typeof hook?.command === 'string' &&
+            hook.command.includes(file)
+        )
+      ).length;
+    } catch {
+      count = 0;
+    }
+  }
+  if (count === 0 && settingsPath && fs.existsSync(settingsPath)) {
+    count = countClaudeHookRegistrations(settingsPath);
+  }
+  return count;
+}
+
 export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
   const claudeDir = getClaudeDir();
   const settingsPath = path.join(claudeDir, 'settings.json');
@@ -603,8 +1261,33 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
   const codexDir = getCodexDir();
   const codexPluginDir = path.join(codexDir, 'plugins', 'get-fable');
   const cursorDir = getCursorDir();
-  const opencodeDir = getOpenCodeDir();
+  const copilotDir = getCopilotDir();
+  const devinDir = getDevinDir();
+  const windsurfDir = getWindsurfDir();
+  const replitDir = getReplitDir();
+  const amazonqDir = getAmazonQDir();
+  const traeDir = getTraeDir();
+  const warpDir = getWarpDir();
+  const grokDir = getGrokDir();
+  const grokHooks = path.join(grokDir, 'hooks.json');
+  const grokSettings = path.join(grokDir, 'settings.json');
   const kimiDir = getKimiDir();
+  const atlarixDir = getAtlarixDir();
+  const vellumDir = getVellumDir();
+  const codegenDir = getCodegenDir();
+  const museDir = getMuseDir();
+  const junieDir = getJunieDir();
+  const qodoDir = getQodoDir();
+  const rooDir = getRooDir();
+  const aiderDir = getAiderDir();
+  const clineDir = getClineDir();
+  const openhandsDir = getOpenHandsDir();
+  const opencodeDir = getOpenCodeDir();
+  const continueDir = getContinueDir();
+  const kiloDir = getKiloDir();
+  const plandexDir = getPlandexDir();
+  const autogptDir = getAutoGPTDir();
+  const hermesDir = getHermesDir();
   const deepseekDir = getDeepSeekDir();
   const kiroDir = getKiroDir();
   const piDir = getPiDir();
@@ -652,14 +1335,115 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
       configDir: cursorDir,
       ruleInstalled: fs.existsSync(path.join(cursorDir, 'rules', 'fable-lifecycle.mdc')),
     },
+    copilot: {
+      configDir: copilotDir,
+      ruleInstalled: fs.existsSync(path.join(copilotDir, 'rules', 'fable.md')),
+    },
+    devin: {
+      configDir: devinDir,
+      ruleInstalled: fs.existsSync(path.join(devinDir, 'rules', 'fable.md')) || fs.existsSync(path.join(devinDir, 'instructions.md')),
+      canonicalSkillInstalled: fs.existsSync(path.join(devinDir, 'skills', 'get-fable', 'SKILL.md')),
+    },
+    windsurf: {
+      configDir: windsurfDir,
+      ruleInstalled: fs.existsSync(path.join(windsurfDir, 'rules', 'fable.md')) || fs.existsSync(path.join(windsurfDir, 'rules.md')),
+    },
+    replit: {
+      configDir: replitDir,
+      ruleInstalled: fs.existsSync(path.join(replitDir, 'rules', 'fable.md')),
+    },
+    amazonq: {
+      configDir: amazonqDir,
+      ruleInstalled: fs.existsSync(path.join(amazonqDir, 'rules', 'fable.md')),
+    },
+    trae: {
+      configDir: traeDir,
+      ruleInstalled: fs.existsSync(path.join(traeDir, 'rules', 'fable.md')),
+    },
+    warp: {
+      configDir: warpDir,
+      ruleInstalled: fs.existsSync(path.join(warpDir, 'rules', 'fable.md')),
+    },
+    grok: {
+      configDir: grokDir,
+      ruleInstalled: fs.existsSync(path.join(grokDir, 'rules', 'fable.md')) || fs.existsSync(path.join(grokDir, 'rules', 'fable5-mode.md')),
+      pluginInstalled: fs.existsSync(path.join(grokDir, 'plugins', 'get-fable', 'plugin.json')),
+      canonicalSkillInstalled: fs.existsSync(path.join(grokDir, 'skills', 'get-fable', 'SKILL.md')),
+      registeredHooks: countGrokHookRegistrations(grokHooks, grokSettings),
+    },
+    kimi: {
+      configDir: kimiDir,
+      ruleInstalled: fs.existsSync(path.join(kimiDir, 'rules', 'fable.md')),
+    },
+    atlarix: {
+      configDir: atlarixDir,
+      ruleInstalled: fs.existsSync(path.join(atlarixDir, 'rules', 'fable.md')),
+    },
+    vellum: {
+      configDir: vellumDir,
+      ruleInstalled: fs.existsSync(path.join(vellumDir, 'rules', 'fable.md')),
+    },
+    codegen: {
+      configDir: codegenDir,
+      ruleInstalled: fs.existsSync(path.join(codegenDir, 'rules', 'fable.md')),
+    },
+    muse: {
+      configDir: museDir,
+      ruleInstalled: fs.existsSync(path.join(museDir, 'rules', 'fable.md')),
+    },
+    junie: {
+      configDir: junieDir,
+      ruleInstalled: fs.existsSync(path.join(junieDir, 'rules', 'fable.md')),
+    },
+    qodo: {
+      configDir: qodoDir,
+      ruleInstalled: fs.existsSync(path.join(qodoDir, 'rules', 'fable.md')),
+    },
+    roocode: {
+      configDir: rooDir,
+      ruleInstalled: fs.existsSync(path.join(rooDir, 'rules', 'fable.md')),
+      canonicalSkillInstalled: fs.existsSync(path.join(rooDir, 'skills', 'get-fable', 'SKILL.md')),
+    },
+    aider: {
+      configDir: aiderDir,
+      ruleInstalled: fs.existsSync(path.join(aiderDir, 'rules', 'fable.md')),
+    },
+    cline: {
+      configDir: clineDir,
+      ruleInstalled: fs.existsSync(path.join(clineDir, 'rules', 'fable.md')),
+      canonicalSkillInstalled: fs.existsSync(path.join(clineDir, 'skills', 'get-fable', 'SKILL.md')),
+    },
+    openhands: {
+      configDir: openhandsDir,
+      ruleInstalled: fs.existsSync(path.join(openhandsDir, 'rules', 'fable.md')),
+      canonicalSkillInstalled: fs.existsSync(path.join(openhandsDir, 'skills', 'get-fable', 'SKILL.md')),
+    },
     opencode: {
       configDir: opencodeDir,
       ruleInstalled: fs.existsSync(path.join(opencodeDir, 'rules', 'fable.md')),
       canonicalSkillInstalled: fs.existsSync(path.join(opencodeDir, 'skills', 'get-fable', 'SKILL.md')),
     },
-    kimi: {
-      configDir: kimiDir,
-      ruleInstalled: fs.existsSync(path.join(kimiDir, 'rules', 'fable.md')),
+    continue: {
+      configDir: continueDir,
+      ruleInstalled: fs.existsSync(path.join(continueDir, 'rules', 'fable.md')),
+    },
+    kilo: {
+      configDir: kiloDir,
+      ruleInstalled: fs.existsSync(path.join(kiloDir, 'rules', 'fable.md')),
+      canonicalSkillInstalled: fs.existsSync(path.join(kiloDir, 'skills', 'get-fable', 'SKILL.md')),
+    },
+    plandex: {
+      configDir: plandexDir,
+      ruleInstalled: fs.existsSync(path.join(plandexDir, 'rules', 'fable.md')),
+    },
+    autogpt: {
+      configDir: autogptDir,
+      ruleInstalled: fs.existsSync(path.join(autogptDir, 'rules', 'fable.md')),
+    },
+    hermes: {
+      configDir: hermesDir,
+      ruleInstalled: fs.existsSync(path.join(hermesDir, 'rules', 'fable.md')),
+      canonicalSkillInstalled: fs.existsSync(path.join(hermesDir, 'skills', 'get-fable', 'SKILL.md')),
     },
     deepseek: {
       configDir: deepseekDir,
@@ -690,24 +1474,40 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
 
 export function checkFableStatus(targetDir: string = process.cwd()) {
   const status = getFableStatus(targetDir);
-  logInfo('--- get-fable status ---');
-  console.log(`Claude Config Dir: ${status.claude.configDir}`);
-  console.log(`Skill Installed: ${status.claude.legacySkillInstalled ? 'YES' : 'NO'}`);
-  console.log(`Canonical Skill Installed: ${status.claude.canonicalSkillInstalled ? 'YES' : 'NO'}`);
-  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 12`);
-  console.log(`Antigravity Rule Installed: ${status.antigravity.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`Antigravity Plugin Installed: ${status.antigravity.pluginInstalled ? 'YES' : 'NO'}`);
-  console.log(`Antigravity Hook Capabilities: ${status.antigravity.registeredHooks} / 6`);
-  console.log(`Codex Rule Installed: ${status.codex.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`Codex Plugin Installed: ${status.codex.pluginInstalled ? 'YES' : 'NO'}`);
-  console.log(`Codex Plugin Hooks Installed: ${status.codex.hooksInstalled ? 'YES' : 'NO'}`);
-  console.log(`Cursor Rule Installed: ${status.cursor.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`OpenCode Rule Installed: ${status.opencode.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`Kimi Rule Installed: ${status.kimi.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`DeepSeek Rule Installed: ${status.deepseek.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`Kiro Rule Installed: ${status.kiro.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`Pi Code Rule Installed: ${status.pi.ruleInstalled ? 'YES' : 'NO'}`);
-  console.log(`Agent Kernel Rule Installed: ${status.agentKernel.ruleInstalled ? 'YES' : 'NO'}`);
+  logInfo('--- get-fable status across 30 supported platforms ---');
+  console.log(`Claude Code (${status.claude.configDir}): Skills=${status.claude.canonicalSkillInstalled ? 'YES' : 'NO'}, Hooks=${status.claude.registeredHooks}/12`);
+  console.log(`Google Antigravity & Gemini (${status.antigravity.configDir}): Rule=${status.antigravity.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.antigravity.canonicalSkillInstalled ? 'YES' : 'NO'}, Hooks=${status.antigravity.registeredHooks}/6`);
+  console.log(`OpenAI Codex (${status.codex.configDir}): Rule=${status.codex.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.codex.canonicalSkillInstalled ? 'YES' : 'NO'}, Plugin=${status.codex.pluginInstalled ? 'YES' : 'NO'}`);
+  console.log(`Cursor IDE (${status.cursor.configDir}): Rule=${status.cursor.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`GitHub Copilot (${status.copilot.configDir}): Rule=${status.copilot.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Devin (${status.devin.configDir}): Rule=${status.devin.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.devin.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`Windsurf (${status.windsurf.configDir}): Rule=${status.windsurf.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Replit Agent (${status.replit.configDir}): Rule=${status.replit.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Amazon Q Dev (${status.amazonq.configDir}): Rule=${status.amazonq.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Trae (${status.trae.configDir}): Rule=${status.trae.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Warp AI (${status.warp.configDir}): Rule=${status.warp.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Grok Build (${status.grok.configDir}): Rule=${status.grok.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.grok.canonicalSkillInstalled ? 'YES' : 'NO'}, Hooks=${status.grok.registeredHooks}/5`);
+  console.log(`Moonshot Kimi (${status.kimi.configDir}): Rule=${status.kimi.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Atlarix (${status.atlarix.configDir}): Rule=${status.atlarix.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Vellum (${status.vellum.configDir}): Rule=${status.vellum.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Codegen (${status.codegen.configDir}): Rule=${status.codegen.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Muse Code (${status.muse.configDir}): Rule=${status.muse.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`JetBrains Junie (${status.junie.configDir}): Rule=${status.junie.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Qodo (${status.qodo.configDir}): Rule=${status.qodo.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Roo Code (${status.roocode.configDir}): Rule=${status.roocode.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.roocode.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`Aider (${status.aider.configDir}): Rule=${status.aider.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Cline (${status.cline.configDir}): Rule=${status.cline.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.cline.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`OpenHands (${status.openhands.configDir}): Rule=${status.openhands.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.openhands.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`OpenCode (${status.opencode.configDir}): Rule=${status.opencode.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.opencode.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`Continue (${status.continue.configDir}): Rule=${status.continue.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Kilo Code (${status.kilo.configDir}): Rule=${status.kilo.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.kilo.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`Plandex (${status.plandex.configDir}): Rule=${status.plandex.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`AutoGPT (${status.autogpt.configDir}): Rule=${status.autogpt.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Hermes Agent (${status.hermes.configDir}): Rule=${status.hermes.ruleInstalled ? 'YES' : 'NO'}, Skills=${status.hermes.canonicalSkillInstalled ? 'YES' : 'NO'}`);
+  console.log(`DeepSeek (${status.deepseek.configDir}): Rule=${status.deepseek.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Kiro (${status.kiro.configDir}): Rule=${status.kiro.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Pi Code (${status.pi.configDir}): Rule=${status.pi.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Agent Kernel (${status.agentKernel.configDir}): Rule=${status.agentKernel.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`Universal Git Hooks: ${status.gitHooks.installed ? 'YES' : 'NO'}`);
   console.log(`Current Project (.fable active): ${status.project.active ? 'YES' : 'NO'}`);
   if (status.project.active) {
@@ -718,3 +1518,5 @@ export function checkFableStatus(targetDir: string = process.cwd()) {
     );
   }
 }
+
+

@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "ChatGPT Custom Action and Plugin for get-fable coding lifecycle across 25 skills in 8 packs.",
-    "version": "1.3.0"
+    "version": "1.5.0"
   },
   "plugins": [
     {
       "name": "get-fable",
       "description": "Coding lifecycle governance, deterministic routing, and spark situational awareness plugin for ChatGPT.",
       "source": "./",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"

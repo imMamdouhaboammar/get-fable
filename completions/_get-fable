@@ -5,6 +5,7 @@ _get_fable() {
   commands=(
     'install:Install supported global integrations'
     'install-antigravity:Install the Antigravity / Gemini target'
+    'install-grok:Install the Grok / Grok Bot target'
     'install-codex:Install the Codex target'
     'install-cursor:Install the Cursor target'
     'install-git-hooks:Install universal Git hooks'
@@ -49,7 +50,7 @@ _get_fable() {
           _values 'shell type' zsh bash fish init
           ;;
         install)
-          _values 'target' all claude antigravity codex cursor opencode kimi deepseek kiro pi git shell
+          _values 'target' all claude antigravity grok codex cursor opencode kimi deepseek kiro pi git shell
           ;;
       esac
       ;;

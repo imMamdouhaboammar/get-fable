@@ -269,6 +269,7 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
   const platforms = [
     { id: 'chatgpt', dir: '.chatgpt-plugin' },
     { id: 'gemini', dir: '.gemini-plugin' },
+    { id: 'grok', dir: '.grok-plugin' },
     { id: 'cursor', dir: '.cursor-plugin' },
     { id: 'kimi', dir: '.kimi-plugin' },
     { id: 'opencode', dir: '.opencode-plugin' },

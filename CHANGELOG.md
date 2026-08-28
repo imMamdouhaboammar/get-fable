@@ -2,18 +2,23 @@
 
 All notable changes to `get-fable` are documented in this file.
 
-## [Unreleased]
+## [1.5.0] - 2026-08-28
 
-### Fixed
+### Highlights
 
-- Bound completion evidence to its owning workspace across the TypeScript runtime and Python lifecycle hooks. Explicitly foreign evidence is rejected, while legacy unbound records remain readable but cannot satisfy the completion gate.
-- Made evidence ordering conservative across runtimes: a newer current-generation security failure now blocks generic completion until behavior-appropriate verification passes again, and schema-v1 security tasks retain their task-aware completion policy during migration.
-- Prevented execution-stage `currentSkill` and contradictory routing fields from widening a routed task's completion evidence policy. Security evidence is completion-capable only when the canonical skill, pack, and task shape consistently identify security work, with a legacy fallback only when no routing decision exists.
-- Rejected negative persisted routing scores in both TypeScript state validation and Python completion hooks while preserving valid additive scores above one.
-- Treat failed write-oriented tool attempts as potential workspace mutations, invalidating earlier verification through Claude's `PostToolUseFailure` event and broad host adapters.
-- Reapply the fresh-evidence gate when `complete` is requested from an already complete state after a later mutation.
-- Resolve the effective Git hooks directory through Git itself so installation, status, and Doctor repair work from linked worktrees and repositories with a configured `core.hooksPath`.
-- Return a non-zero CLI exit code when Git hook installation cannot resolve or write the effective hooks directory.
+- **Universal Multi-Agent Ecosystem Expansion (30+ Supported AI Platforms)**: Extended get-fable rules, prompts, instructions, and canonical skills across 30 AI coding platforms including Claude Code, Google Antigravity & Gemini CLI, OpenAI Codex & ChatGPT, GitHub Copilot, Devin, Windsurf, Replit Agent, Amazon Q Developer, Grok Build, JetBrains Junie, Roo Code, Cline, OpenHands, OpenCode, Aider, Cursor, Continue, Kilo Code, Plandex, AutoGPT, Hermes Agent, Moonshot Kimi, DeepSeek, Kiro, Pi Code, Trae, Warp AI, Atlarix, Vellum, Codegen, Muse Code, Qodo, and Agent Kernel.
+- **Universal Codex & ChatGPT Plugin Package (`.codex-plugin/`)**: Implemented complete Codex plugin roots with `.codex-plugin/plugin.json`, native hooks integration (`hooks.codex.json`), and standalone marketplace submission assets.
+- **Host-Neutral Lifecycle Hook Dispatcher (`fable_hook_dispatch.py`)**: Added a unified Python hook dispatcher supporting Claude Code, Google Antigravity, and OpenAI Codex event schemas with privacy-safe lifecycle journaling (`.fable/events.jsonl`).
+- **Antigravity Five-Event Native Hook Bundle**: Added native PreToolUse, PostToolUse, PreInvocation, PostInvocation, and Stop lifecycle hook integrations for Google Antigravity.
+- **Deterministic & State-Aware Routing Policy**: Hardened task router with tie-breaking, suppression handling, and evidence-driven parallel candidate selection.
+
+### Added
+
+- `hooks/fable_hook_dispatch.py`: Canonical host-agnostic hook dispatcher.
+- `hooks/hooks.codex.json` & `assets/antigravity/hooks.json`: Native lifecycle hook definitions for Codex and Antigravity.
+- `.agents/plugins/marketplace.json`: Repo-local marketplace submission manifest.
+- Prompts, directives, and rules for 20+ additional AI coding agents in `prompts/`.
+- Official vector SVG logos in `assets/logos/` and `site/assets/logos/`.
 
 ## [1.4.0] - 2026-08-28
 

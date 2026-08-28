@@ -8,8 +8,31 @@ import {
   installAntigravityGlobal,
   installCodexGlobal,
   installCursorGlobal,
-  installOpenCodeGlobal,
+  installCopilotGlobal,
+  installDevinGlobal,
+  installWindsurfGlobal,
+  installReplitGlobal,
+  installAmazonQGlobal,
+  installTraeGlobal,
+  installWarpGlobal,
+  installGrokGlobal,
   installKimiGlobal,
+  installAtlarixGlobal,
+  installVellumGlobal,
+  installCodegenGlobal,
+  installMuseGlobal,
+  installJunieGlobal,
+  installQodoGlobal,
+  installRooCodeGlobal,
+  installAiderGlobal,
+  installClineGlobal,
+  installOpenHandsGlobal,
+  installOpenCodeGlobal,
+  installContinueGlobal,
+  installKiloGlobal,
+  installPlandexGlobal,
+  installAutoGPTGlobal,
+  installHermesGlobal,
   installDeepSeekGlobal,
   installKiroGlobal,
   installPiCodeGlobal,
@@ -378,7 +401,15 @@ function runInstallCommand(args: string[]): number {
     case 'antigravity':
     case '--antigravity':
     case '-a':
+    case 'gemini':
       installAntigravityGlobal();
+      return 0;
+    case 'grok':
+    case 'grok-bot':
+    case 'grokbot':
+    case 'xai':
+    case '--grok':
+      installGrokGlobal();
       return 0;
     case 'codex':
     case '--codex':
@@ -388,11 +419,87 @@ function runInstallCommand(args: string[]): number {
     case '--cursor':
       installCursorGlobal();
       return 0;
-    case 'opencode':
-      installOpenCodeGlobal();
+    case 'copilot':
+    case 'github-copilot':
+      installCopilotGlobal();
+      return 0;
+    case 'devin':
+      installDevinGlobal();
+      return 0;
+    case 'windsurf':
+      installWindsurfGlobal();
+      return 0;
+    case 'replit':
+      installReplitGlobal();
+      return 0;
+    case 'amazonq':
+    case 'amazon-q':
+    case 'q':
+      installAmazonQGlobal();
+      return 0;
+    case 'trae':
+      installTraeGlobal();
+      return 0;
+    case 'warp':
+      installWarpGlobal();
       return 0;
     case 'kimi':
       installKimiGlobal();
+      return 0;
+    case 'atlarix':
+      installAtlarixGlobal();
+      return 0;
+    case 'vellum':
+      installVellumGlobal();
+      return 0;
+    case 'codegen':
+      installCodegenGlobal();
+      return 0;
+    case 'muse':
+      installMuseGlobal();
+      return 0;
+    case 'junie':
+    case 'jetbrains':
+      installJunieGlobal();
+      return 0;
+    case 'qodo':
+    case 'codium':
+      installQodoGlobal();
+      return 0;
+    case 'roocode':
+    case 'roo':
+      installRooCodeGlobal();
+      return 0;
+    case 'aider':
+      installAiderGlobal();
+      return 0;
+    case 'cline':
+      installClineGlobal();
+      return 0;
+    case 'openhands':
+    case 'opendevin':
+      installOpenHandsGlobal();
+      return 0;
+    case 'opencode':
+      installOpenCodeGlobal();
+      return 0;
+    case 'continue':
+      installContinueGlobal();
+      return 0;
+    case 'kilo':
+    case 'kilo-code':
+      installKiloGlobal();
+      return 0;
+    case 'plandex':
+      installPlandexGlobal();
+      return 0;
+    case 'autogpt':
+    case 'auto-gpt':
+      installAutoGPTGlobal();
+      return 0;
+    case 'hermes':
+    case 'hermes-agent':
+      installHermesGlobal();
       return 0;
     case 'deepseek':
       installDeepSeekGlobal();
@@ -430,7 +537,7 @@ function runInstallCommand(args: string[]): number {
     }
     default:
       logError(
-        `Unknown install target: ${target}. Valid targets: all, claude, antigravity, codex, cursor, opencode, kimi, deepseek, kiro, pi, git, shell`
+        `Unknown install target: ${target}. Valid targets: all, claude, antigravity, codex, cursor, copilot, devin, windsurf, replit, amazonq, trae, warp, grok, kimi, atlarix, vellum, codegen, muse, junie, qodo, roocode, aider, cline, openhands, opencode, continue, kilo, plandex, autogpt, hermes, deepseek, kiro, pi, git, shell`
       );
       return 1;
   }
@@ -886,6 +993,11 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
       installAntigravityGlobal();
       return 0;
 
+    case 'install-grok':
+      logHeader('Installing get-fable for Grok & Grok Bot');
+      installGrokGlobal();
+      return 0;
+
     case 'install-codex':
       logHeader('Installing get-fable for Codex');
       installCodexGlobal();
@@ -1063,7 +1175,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}graph [skill-id]${colors.reset}     Inspect neural linking and knowledge graph topology; add --json
   ${colors.yellow}recipes [list|inspect]${colors.reset}List and view lifecycle workflow recipes; add --json
   ${colors.yellow}packs [list|inspect]${colors.reset}  List and view grouped skill packs; add --json
-  ${colors.yellow}install [target]${colors.reset}    Install global agent integrations (all, claude, antigravity, codex, cursor, opencode, kimi, deepseek, kiro, pi, git, shell)
+  ${colors.yellow}install [target]${colors.reset}    Install global agent integrations (all, claude, antigravity, grok, codex, cursor, opencode, kimi, deepseek, kiro, pi, git, shell)
   ${colors.yellow}feed [list|search]${colors.reset}  Discover, search, and inspect available skills in the catalog
   ${colors.yellow}shell [zsh|bash|fish]${colors.reset}Print shell integration script for your terminal
   ${colors.yellow}update [--check]${colors.reset}     Check and apply automatic updates

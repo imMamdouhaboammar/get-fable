@@ -73,7 +73,7 @@ export async function fetchLatestVersion(
   } catch {
     // Network unreachable or timeout; fallback to cache
     const cached = readUpdateCache();
-    if (cached) return cached;
+    if (cached) return { ...cached, currentVersion, updateAvailable: isNewerVersion(currentVersion, cached.latestVersion) };
   }
 
   return result;

@@ -13,6 +13,13 @@ import {
   getDeepSeekDir,
   getKiroDir,
   getPiDir,
+  getGrokDir,
+  getDevinDir,
+  getRooDir,
+  getClineDir,
+  getOpenHandsDir,
+  getKiloDir,
+  getHermesDir,
   logInfo,
   logSuccess,
   logWarn,
@@ -49,8 +56,15 @@ export function getPlatformSkillsDirs(
     if (want('claude')) dirs.claude = path.join(getClaudeDir(), 'skills');
     if (want('codex')) dirs.codex = path.join(getCodexDir(), 'skills');
     if (want('antigravity') || want('gemini')) dirs.antigravity = path.join(getGeminiConfigDir(), 'skills');
-    if (want('cursor')) dirs.cursor = path.join(getCursorDir(), 'skills');
+    if (want('devin')) dirs.devin = path.join(getDevinDir(), 'skills');
+    if (want('grok') || want('xai')) dirs.grok = path.join(getGrokDir(), 'skills');
+    if (want('roocode') || want('roo')) dirs.roocode = path.join(getRooDir(), 'skills');
+    if (want('cline')) dirs.cline = path.join(getClineDir(), 'skills');
+    if (want('openhands')) dirs.openhands = path.join(getOpenHandsDir(), 'skills');
     if (want('opencode')) dirs.opencode = path.join(getOpenCodeDir(), 'skills');
+    if (want('kilo')) dirs.kilo = path.join(getKiloDir(), 'skills');
+    if (want('hermes')) dirs.hermes = path.join(getHermesDir(), 'skills');
+    if (want('cursor')) dirs.cursor = path.join(getCursorDir(), 'skills');
     if (want('kimi')) dirs.kimi = path.join(getKimiDir(), 'skills');
     if (want('deepseek')) dirs.deepseek = path.join(getDeepSeekDir(), 'skills');
     if (want('kiro')) dirs.kiro = path.join(getKiroDir(), 'skills');

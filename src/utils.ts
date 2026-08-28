@@ -74,6 +74,99 @@ export function getPiDir(): string {
   return process.env.FABLE_PI_CONFIG_DIR || path.join(os.homedir(), '.pi');
 }
 
+export function getGrokDir(): string {
+  return process.env.FABLE_GROK_CONFIG_DIR || path.join(os.homedir(), '.grok');
+}
+
+export function getCopilotDir(): string {
+  return process.env.FABLE_COPILOT_CONFIG_DIR || path.join(os.homedir(), '.copilot');
+}
+
+export function getDevinDir(): string {
+  return process.env.FABLE_DEVIN_CONFIG_DIR || path.join(os.homedir(), '.devin');
+}
+
+export function getWindsurfDir(): string {
+  return process.env.FABLE_WINDSURF_CONFIG_DIR || path.join(os.homedir(), '.codeium', 'windsurf');
+}
+
+export function getReplitDir(): string {
+  return process.env.FABLE_REPLIT_CONFIG_DIR || path.join(os.homedir(), '.replit');
+}
+
+export function getAmazonQDir(): string {
+  return process.env.FABLE_AMAZONQ_CONFIG_DIR || path.join(os.homedir(), '.aws', 'amazon-q');
+}
+
+export function getTraeDir(): string {
+  return process.env.FABLE_TRAE_CONFIG_DIR || path.join(os.homedir(), '.trae');
+}
+
+export function getWarpDir(): string {
+  return process.env.FABLE_WARP_CONFIG_DIR || path.join(os.homedir(), '.warp');
+}
+
+export function getAtlarixDir(): string {
+  return process.env.FABLE_ATLARIX_CONFIG_DIR || path.join(os.homedir(), '.atlarix');
+}
+
+export function getVellumDir(): string {
+  return process.env.FABLE_VELLUM_CONFIG_DIR || path.join(os.homedir(), '.vellum');
+}
+
+export function getCodegenDir(): string {
+  return process.env.FABLE_CODEGEN_CONFIG_DIR || path.join(os.homedir(), '.codegen');
+}
+
+export function getMuseDir(): string {
+  return process.env.FABLE_MUSE_CONFIG_DIR || path.join(os.homedir(), '.muse');
+}
+
+export function getJunieDir(): string {
+  return process.env.FABLE_JUNIE_CONFIG_DIR || path.join(os.homedir(), '.junie');
+}
+
+export function getQodoDir(): string {
+  return process.env.FABLE_QODO_CONFIG_DIR || path.join(os.homedir(), '.qodo');
+}
+
+export function getRooDir(): string {
+  return process.env.FABLE_ROO_CONFIG_DIR || path.join(os.homedir(), '.roo');
+}
+
+export function getAiderDir(): string {
+  return process.env.FABLE_AIDER_CONFIG_DIR || path.join(os.homedir(), '.aider');
+}
+
+export function getClineDir(): string {
+  return process.env.FABLE_CLINE_CONFIG_DIR || path.join(os.homedir(), '.cline');
+}
+
+export function getOpenHandsDir(): string {
+  return process.env.FABLE_OPENHANDS_CONFIG_DIR || path.join(os.homedir(), '.openhands');
+}
+
+export function getContinueDir(): string {
+  return process.env.FABLE_CONTINUE_CONFIG_DIR || path.join(os.homedir(), '.continue');
+}
+
+export function getKiloDir(): string {
+  return process.env.FABLE_KILO_CONFIG_DIR || path.join(os.homedir(), '.kilo');
+}
+
+export function getPlandexDir(): string {
+  return process.env.FABLE_PLANDEX_CONFIG_DIR || path.join(os.homedir(), '.plandex');
+}
+
+export function getAutoGPTDir(): string {
+  return process.env.FABLE_AUTOGPT_CONFIG_DIR || path.join(os.homedir(), '.autogpt');
+}
+
+export function getHermesDir(): string {
+  return process.env.FABLE_HERMES_CONFIG_DIR || path.join(os.homedir(), '.hermes');
+}
+
+
 export function copyDirSync(src: string, dest: string) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });

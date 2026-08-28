@@ -264,12 +264,13 @@ describe('OpenAI plugin package', () => {
     expect(fs.existsSync(path.join(root, 'skills', 'get-fable', 'registry.json'))).toBe(true);
   });
 
-  test('declares valid plugin and marketplace manifests for all 10 AI platforms', () => {
+  test('declares valid plugin and marketplace manifests for all 11 AI platforms', () => {
     const pluginTargets = [
       '.claude-plugin',
       '.codex-plugin',
       '.chatgpt-plugin',
       '.gemini-plugin',
+      '.grok-plugin',
       '.cursor-plugin',
       '.kimi-plugin',
       '.opencode-plugin',

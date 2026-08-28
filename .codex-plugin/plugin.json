@@ -1,6 +1,6 @@
 {
   "name": "get-fable",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery across 25 canonical skills.",
   "author": {
     "name": "Mamdouh Abo Ammar",

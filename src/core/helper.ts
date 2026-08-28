@@ -128,21 +128,43 @@ ${colors.bright}Recording Evidence:${colors.reset}
   platforms: {
     id: 'platforms',
     title: 'Supported AI Platforms & Integrations',
-    summary: 'How get-fable integrates across 10 AI platforms.',
+    summary: 'How get-fable integrates across 30 AI platforms and coding agents.',
     content: `
-${colors.bright}${colors.cyan}SUPPORTED AI PLATFORMS${colors.reset}
+${colors.bright}${colors.cyan}SUPPORTED AI PLATFORMS (30 AGENTS & TOOLS)${colors.reset}
 --------------------------------------------------
-1. Claude Code   : ~/.claude/settings.json, CLAUDE.md, and 6 lifecycle hooks
-2. OpenAI Codex  : ~/.codex/rules/, skills/, and .codex-plugin/plugin.json
-3. ChatGPT       : .chatgpt-plugin/ai-plugin.json and OpenAPI schema proxy
-4. Antigravity   : ~/.gemini/config/hooks.json, rules, and plugins
-5. Cursor        : ~/.cursor/rules/ and .cursor/rules/fable-lifecycle.mdc
-6. Kimi          : ~/.kimi/rules/fable.md
-7. OpenCode      : ~/.opencode/rules/ and canonical skills
-8. DeepSeek      : ~/.deepseek/rules/fable.md
-9. Kiro          : ~/.kiro/rules/ and Python lifecycle hooks
-10. Pi Code      : ~/.pi/rules/fable.md
-11. Agent Kernel : ~/.agent-kernel/rules/fable5-mode.md
+${colors.yellow}Proprietary & Commercial Markets:${colors.reset}
+1. Claude Code         : ~/.claude/settings.json, CLAUDE.md, and 6 lifecycle hooks
+2. Google Antigravity  : ~/.gemini/config/hooks.json, rules, and plugins
+3. OpenAI Codex        : ~/.codex/rules/, skills/, and .codex-plugin/plugin.json
+4. Cursor IDE          : ~/.cursor/rules/ and .cursor/rules/fable-lifecycle.mdc
+5. GitHub Copilot      : ~/.copilot/rules/fable.md and .github/copilot-instructions.md
+6. Devin               : ~/.devin/instructions.md, rules/, and skills/
+7. Windsurf (Codeium)  : ~/.codeium/windsurf/rules.md and .windsurfrules
+8. Replit Agent        : ~/.replit/rules/fable.md and .replit.md
+9. Amazon Q Dev        : ~/.aws/amazon-q/rules/fable.md and .amazonq/rules.md
+10. Trae (ByteDance)   : ~/.trae/rules/fable.md and .trae/rules/fable.md
+11. Warp AI            : ~/.warp/rules/fable.md
+12. Grok Build (xAI)   : ~/.grok/rules/, skills/, hooks.json, and plugins
+13. Moonshot Kimi      : ~/.kimi/rules/fable.md
+14. Atlarix            : ~/.atlarix/rules/fable.md
+15. Vellum             : ~/.vellum/rules/fable.md
+16. Codegen            : ~/.codegen/rules/fable.md
+17. Muse Code          : ~/.muse/rules/fable.md
+18. JetBrains Junie    : ~/.junie/rules/fable.md and .junie/rules/fable.md
+19. Qodo               : ~/.qodo/rules/fable.md and .qodo/rules/fable.md
+20. Roo Code           : ~/.roo/rules/fable.md, skills/, and .roomodes
+
+${colors.cyan}Open-Source & Community Markets:${colors.reset}
+21. Aider              : ~/.aider/rules/fable.md and .aider.prompt.md
+22. Cline              : ~/.cline/rules/fable.md, skills/, and .clinerules
+23. OpenHands          : ~/.openhands/microagents/, skills/, and rules/
+24. OpenCode           : ~/.opencode/rules/ and canonical skills/
+25. Continue           : ~/.continue/rules/fable.md and .continue/rules/fable.md
+26. Kilo Code          : ~/.kilo/rules/fable.md, skills/, and .kilo/rules/fable.md
+27. Plandex            : ~/.plandex/rules/fable.md and .plandex/context.md
+28. AutoGPT            : ~/.autogpt/rules/fable.md
+29. Hermes Agent       : ~/.hermes/rules/fable.md and skills/
+30. Kiro               : ~/.kiro/rules/ and Python lifecycle hooks
 `,
   },
 

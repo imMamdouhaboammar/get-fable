@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Codex AI coding lifecycle governance and situational awareness.",
-    "version": "1.3.0"
+    "version": "1.5.0"
   },
   "plugins": [
     {
       "name": "get-fable",
       "description": "Full lifecycle skill suite for OpenAI Codex.",
       "source": "./",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"

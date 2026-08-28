@@ -1,0 +1,26 @@
+{
+  "name": "get-fable",
+  "owner": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "metadata": {
+    "description": "xAI Grok and Grok Bot Ecosystem Plugin listing for get-fable.",
+    "version": "1.5.0"
+  },
+  "plugins": [
+    {
+      "name": "get-fable",
+      "description": "Coding lifecycle skills, state machine, and lifecycle hooks for xAI Grok and Grok Bot.",
+      "source": "./",
+      "version": "1.5.0",
+      "author": {
+        "name": "Mamdouh Abo Ammar",
+        "url": "https://github.com/imMamdouhaboammar"
+      },
+      "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+      "repository": "https://github.com/imMamdouhaboammar/get-fable",
+      "license": "MIT"
+    }
+  ]
+}

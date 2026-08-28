@@ -304,31 +304,59 @@ get-fable spark
 
 ## Works with the coding agent you already use
 
-`get-fable` is portable across multiple coding-agent environments and IDEs rather than being tied to one model or editor.
+`get-fable` is portable across 30 AI coding agents, platforms, and IDEs rather than being tied to one model or editor.
 
-| Agent / IDE | Integration Tier | Key Capabilities |
+### Proprietary & Commercial Markets
+
+| Agent / Tool | Integration Tier | Key Capabilities |
 |:---|:---|:---|
-| <img src="assets/logos/claude-color.svg" width="20" height="20" alt="" /> **Claude Code** | **Full Lifecycle** | 5 Python hooks (`settings.json`), 25 skills, rules in `CLAUDE.md`, Marketplace plugin |
-| <img src="assets/logos/gemini-color.svg" width="20" height="20" alt="" /> **Google Antigravity & Gemini** | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
-| <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> **OpenAI Codex & ChatGPT** | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
-| <img src="assets/logos/cursor.svg" width="20" height="20" alt="" /> **Cursor IDE** | **Advisory Rule + Plugin** | `.cursor/rules/fable-lifecycle.mdc`, `.cursor-plugin/marketplace.json` |
-| <img src="assets/logos/opencode.svg" width="20" height="20" alt="" /> **OpenCode** | **Skill + Rule** | Rules in `~/.opencode/rules/fable.md`, skills in `~/.opencode/skills/` |
-| <img src="assets/logos/deepseek-color.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | **Advisory Rule** | Rules in `~/.deepseek/rules/fable.md` |
-| <img src="assets/logos/moonshot-kimi.svg" width="20" height="20" alt="" /> **Moonshot Kimi Code** | **Advisory Rule** | Rules in `~/.kimi/rules/fable.md` |
+| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 25 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
+| <img src="assets/logos/gemini.svg" width="20" height="20" alt="" /> **Gemini CLI / Google Antigravity** (Google) | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
+| <img src="assets/logos/grok.svg" width="20" height="20" alt="" /> **Grok Build** (xAI) | **Full Lifecycle** | `hooks.json` lifecycle triggers, Grok plugin manifest, canonical skills, constitution rules |
+| <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> [**OpenAI Codex & ChatGPT**](https://openai.com/codex) (OpenAI) | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
+| <img src="assets/logos/cursor.svg" width="20" height="20" alt="" /> **Cursor** (Anysphere) | **Advisory Rule + Plugin** | `.cursor/rules/fable-lifecycle.mdc`, `.cursor-plugin/marketplace.json` |
+| <img src="assets/logos/copilot.svg" width="20" height="20" alt="" /> [**GitHub Copilot Agent Mode**](https://github.com/features/copilot) (GitHub / Microsoft) | **Advisory Rule** | Global rules in `~/.copilot/rules/fable.md` & project `.github/copilot-instructions.md` |
+| <img src="assets/logos/devin.svg" width="20" height="20" alt="" /> **Devin** (Cognition) | **Skill + Rule** | Global `~/.devin/instructions.md`, rules, and canonical skills in `~/.devin/skills/` |
+| <img src="assets/logos/windsurf.svg" width="20" height="20" alt="" /> **Windsurf** (Codeium) | **Advisory Rule** | Global rules in `~/.codeium/windsurf/rules.md` & project `.windsurfrules` |
+| <img src="assets/logos/replit.svg" width="20" height="20" alt="" /> **Replit Agent** (Replit) | **Advisory Rule** | Global rules in `~/.replit/rules/fable.md` & project `.replit.md` |
+| <img src="assets/logos/aws.svg" width="20" height="20" alt="" /> [**Amazon Q Dev**](https://kilo.ai/articles/coding-agents-for-vscode) (Amazon Web Services) | **Advisory Rule** | Global rules in `~/.aws/amazon-q/rules/fable.md` & project `.amazonq/rules.md` |
+| <img src="assets/logos/trae.svg" width="20" height="20" alt="" /> **Trae** (ByteDance) | **Advisory Rule** | Global rules in `~/.trae/rules/fable.md` & project `.trae/rules/fable.md` |
+| <img src="assets/logos/warp.svg" width="20" height="20" alt="" /> **Warp AI** (Warp Terminal) | **Advisory Rule** | Global rules in `~/.warp/rules/fable.md` |
+| <img src="assets/logos/moonshot-kimi.svg" width="20" height="20" alt="" /> **Kimi K3** (Moonshot AI) | **Advisory Rule** | Rules in `~/.kimi/rules/fable.md` |
+| <img src="assets/logos/atlarix.svg" width="20" height="20" alt="" /> [**Atlarix**](https://martinterhaak.medium.com/best-ai-coding-agents-summer-2025-c4d20cd0c846) (Atlarix Desktop Copilot) | **Advisory Rule** | Rules in `~/.atlarix/rules/fable.md` |
+| <img src="assets/logos/vellum.svg" width="20" height="20" alt="" /> [**Vellum**](https://www.vellum.ai/blog/best-ai-coding-agents) (Vellum Workflow Platform) | **Advisory Rule** | Rules in `~/.vellum/rules/fable.md` |
+| <img src="assets/logos/codegen.svg" width="20" height="20" alt="" /> [**Codegen**](https://codegen.com/best-ai-coding-agents/) (Codegen Platforms) | **Advisory Rule** | Rules in `~/.codegen/rules/fable.md` |
+| <img src="assets/logos/muse.svg" width="20" height="20" alt="" /> [**Muse Code**](https://medium.com/the-tech-trek-by-tech-chick/10-ai-coding-agents-developers-should-know-in-2026-b369e3dc41ee) (Muse) | **Advisory Rule** | Rules in `~/.muse/rules/fable.md` |
+| <img src="assets/logos/jetbrains.svg" width="20" height="20" alt="" /> **Junie** (JetBrains) | **Advisory Rule** | Global rules in `~/.junie/rules/fable.md` & project `.junie/rules/fable.md` |
+| <img src="assets/logos/qodo.svg" width="20" height="20" alt="" /> **Qodo** (Formerly CodiumAI) | **Advisory Rule** | Global rules in `~/.qodo/rules/fable.md` & project `.qodo/rules/fable.md` |
+| <img src="assets/logos/roocode.svg" width="20" height="20" alt="" /> **Roo Code** | **Skill + Rule** | Global rules `~/.roo/rules/fable.md`, skills in `~/.roo/skills/`, and project `.roomodes` |
+
+### Open-Source & Community Markets
+
+| Agent / Tool | Integration Tier | Key Capabilities |
+|:---|:---|:---|
+| <img src="assets/logos/aider.svg" width="20" height="20" alt="" /> **Aider** (Git-first CLI agent) | **Advisory Rule** | Global rules in `~/.aider/rules/fable.md` & project `.aider.prompt.md` |
+| <img src="assets/logos/cline.svg" width="20" height="20" alt="" /> **Cline** (Autonomous BYOK Agent) | **Skill + Rule** | Global rules in `~/.cline/rules/fable.md`, skills in `~/.cline/skills/`, and `.clinerules` |
+| <img src="assets/logos/openhands.svg" width="20" height="20" alt="" /> **OpenHands** (Formerly OpenDevin) | **Skill + Rule** | Global microagents in `~/.openhands/microagents/`, skills in `~/.openhands/skills/` |
+| <img src="assets/logos/opencode.svg" width="20" height="20" alt="" /> **OpenCode** (SST) | **Skill + Rule** | Rules in `~/.opencode/rules/fable.md`, skills in `~/.opencode/skills/` |
+| <img src="assets/logos/continue.svg" width="20" height="20" alt="" /> **Continue** (IDE extension layer) | **Advisory Rule** | Global rules in `~/.continue/rules/fable.md` & project `.continue/rules/fable.md` |
+| <img src="assets/logos/kilo.svg" width="20" height="20" alt="" /> **Kilo Code** (Kilo Platform) | **Skill + Rule** | Global rules in `~/.kilo/rules/fable.md`, skills in `~/.kilo/skills/` |
+| <img src="assets/logos/plandex.svg" width="20" height="20" alt="" /> [**Plandex**](https://www.youtube.com/watch?v=Q0YgzCHkNXo) (Terminal multi-file engine) | **Advisory Rule** | Global rules in `~/.plandex/rules/fable.md` & project `.plandex/context.md` |
+| <img src="assets/logos/autogpt.svg" width="20" height="20" alt="" /> [**AutoGPT**](https://www.deeplearning.ai/the-batch/next-generation-coding-tools-empower-developers-with-agent-style-interactions) (Significant-Gravitas) | **Advisory Rule** | Global rules in `~/.autogpt/rules/fable.md` |
+| <img src="assets/logos/hermes.svg" width="20" height="20" alt="" /> [**Hermes Agent**](https://openrouter.ai/apps/category/coding) (Nous Research) | **Skill + Rule** | Global rules in `~/.hermes/rules/fable.md`, skills in `~/.hermes/skills/` |
 | <img src="assets/logos/kiro.svg" width="20" height="20" alt="" /> **Kiro** | **Rule + Hooks** | Rules in `~/.kiro/rules/fable.md` and lifecycle triggers |
+| <img src="assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | **Advisory Rule** | Rules in `~/.deepseek/rules/fable.md` |
 | <img src="assets/logos/pi.svg" width="20" height="20" alt="" /> **Pi Code** | **Advisory Rule** | Rules in `~/.pi/rules/fable.md` |
-| <img src="assets/logos/vscode.svg" width="20" height="20" alt="" /> **VS Code** | **IDE & Editor Support** | Direct execution via Bun/Node CLI, task state inspector, and terminal hooks |
-| <img src="assets/logos/windsurf.svg" width="20" height="20" alt="" /> **Windsurf** | **IDE & Editor Support** | Direct execution via Bun/Node CLI, task state inspector, and terminal hooks |
 
 Integration depth depends on what each host actually exposes:
 
-- **Full lifecycle integration** — Claude Code, Antigravity
-- **Skill + rule integration** — Codex, OpenCode
-- **Advisory rule integration** — Cursor, Kiro, Kimi, DeepSeek, Pi Code
+- **Full lifecycle integration** — Claude Code, Antigravity, Grok Build
+- **Skill + rule integration** — Codex, Devin, OpenCode, Roo Code, Cline, OpenHands, Kilo Code, Hermes Agent
+- **Advisory rule integration** — Cursor, Copilot, Windsurf, Replit, Amazon Q, Trae, Warp, Kimi, Atlarix, Vellum, Codegen, Muse, Junie, Qodo, Aider, Continue, Plandex, AutoGPT, Kiro, DeepSeek, Pi Code
 
 That distinction is intentional. A host that can load rules but cannot register lifecycle hooks should not be described as if it has enforcement it does not actually provide.
 
-[See the host capability matrix →](hosts/README.md)
+[See the host capability matrix →](docs/HOSTS.md)
 
 <details>
 <summary><strong>Installation commands by host</strong></summary>
@@ -337,10 +365,33 @@ That distinction is intentional. A host that can load rules but cannot register 
 get-fable install all
 get-fable install claude
 get-fable install antigravity
+get-fable install grok
 get-fable install codex
 get-fable install cursor
-get-fable install opencode
+get-fable install copilot
+get-fable install devin
+get-fable install windsurf
+get-fable install replit
+get-fable install amazonq
+get-fable install trae
+get-fable install warp
 get-fable install kimi
+get-fable install atlarix
+get-fable install vellum
+get-fable install codegen
+get-fable install muse
+get-fable install junie
+get-fable install qodo
+get-fable install roocode
+get-fable install aider
+get-fable install cline
+get-fable install openhands
+get-fable install opencode
+get-fable install continue
+get-fable install kilo
+get-fable install plandex
+get-fable install autogpt
+get-fable install hermes
 get-fable install deepseek
 get-fable install kiro
 get-fable install pi
