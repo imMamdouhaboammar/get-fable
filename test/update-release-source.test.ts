@@ -63,7 +63,7 @@ describe('stable release source', () => {
     expect(result.integrity).toBe('sha512-test-integrity');
     expect(result.releaseUrl).toBe('https://github.com/imMamdouhaboammar/get-fable/releases/tag/v1.6.0');
     expect(result.publishedAt).toBe('2026-08-28T19:59:00.000Z');
-    expect(calls.some((url) => url.includes('raw.githubusercontent.com'))).toBe(false);
+    expect(calls.some((url) => new URL(url).hostname === 'raw.githubusercontent.com')).toBe(false);
   });
 
   test('keeps a valid npm result when GitHub enrichment fails', async () => {
