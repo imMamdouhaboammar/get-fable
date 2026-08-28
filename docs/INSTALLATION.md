@@ -102,18 +102,19 @@ curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/
 
 Get Fable provides native integrations for all major AI coding assistants and IDEs. Run `get-fable install <host>` or `get-fable install all`.
 
-| Agent / IDE | Icon | Integration Tier | Config Command |
-|---|:---:|---|---|
-| **Claude Code** | <img src="../assets/logos/claude-color.svg" width="22" height="22" alt="Claude Code" /> | Full Lifecycle | `get-fable install claude` |
-| **Google Antigravity & Gemini CLI** | <img src="../assets/logos/gemini-color.svg" width="22" height="22" alt="Gemini" /> | Full Lifecycle | `get-fable install antigravity` |
-| **OpenAI Codex & ChatGPT** | <img src="../assets/logos/openai.svg" width="22" height="22" alt="OpenAI" /> | Skill + Rule + Plugin | `get-fable install codex` |
-| **Cursor IDE** | <img src="../assets/logos/cursor.svg" width="22" height="22" alt="Cursor" /> | Rule + Plugin | `get-fable install cursor` |
-| **OpenCode** | <img src="../assets/logos/opencode.svg" width="22" height="22" alt="OpenCode" /> | Skill + Rule | `get-fable install opencode` |
-| **DeepSeek Harness (DSH)** | <img src="../assets/logos/deepseek-color.svg" width="22" height="22" alt="DeepSeek" /> | Advisory Rule | `get-fable install deepseek` |
-| **Moonshot Kimi Code** | <img src="../assets/logos/moonshot-kimi.svg" width="22" height="22" alt="Kimi" /> | Advisory Rule | `get-fable install kimi` |
-| **Kiro** | <img src="../assets/logos/kiro.svg" width="22" height="22" alt="Kiro" /> | Rule + Lifecycle Hooks | `get-fable install kiro` |
-| **Pi Code** | <img src="../assets/logos/pi.svg" width="22" height="22" alt="Pi" /> | Advisory Rule | `get-fable install pi` |
-| **VS Code & Windsurf** | <img src="../assets/logos/vscode.svg" width="22" height="22" alt="VS Code" /> <img src="../assets/logos/windsurf.svg" width="22" height="22" alt="Windsurf" /> | IDE & Terminal Workflow | `get-fable init` |
+| Agent / IDE | Integration Tier | Config Command |
+|---|---|---|
+| <img src="../assets/logos/claude-color.svg" width="20" height="20" alt="" /> **Claude Code** | Full Lifecycle | `get-fable install claude` |
+| <img src="../assets/logos/gemini-color.svg" width="20" height="20" alt="" /> **Google Antigravity & Gemini CLI** | Full Lifecycle | `get-fable install antigravity` |
+| <img src="../assets/logos/openai.svg" width="20" height="20" alt="" /> **OpenAI Codex & ChatGPT** | Skill + Rule + Plugin | `get-fable install codex` |
+| <img src="../assets/logos/cursor.svg" width="20" height="20" alt="" /> **Cursor IDE** | Rule + Plugin | `get-fable install cursor` |
+| <img src="../assets/logos/opencode.svg" width="20" height="20" alt="" /> **OpenCode** | Skill + Rule | `get-fable install opencode` |
+| <img src="../assets/logos/deepseek-color.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | Advisory Rule | `get-fable install deepseek` |
+| <img src="../assets/logos/moonshot-kimi.svg" width="20" height="20" alt="" /> **Moonshot Kimi Code** | Advisory Rule | `get-fable install kimi` |
+| <img src="../assets/logos/kiro.svg" width="20" height="20" alt="" /> **Kiro** | Rule + Lifecycle Hooks | `get-fable install kiro` |
+| <img src="../assets/logos/pi.svg" width="20" height="20" alt="" /> **Pi Code** | Advisory Rule | `get-fable install pi` |
+| <img src="../assets/logos/vscode.svg" width="20" height="20" alt="" /> **VS Code** | IDE & Terminal Workflow | `get-fable init` |
+| <img src="../assets/logos/windsurf.svg" width="20" height="20" alt="" /> **Windsurf** | IDE & Terminal Workflow | `get-fable init` |
 
 ---
 
