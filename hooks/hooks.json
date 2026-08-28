@@ -5,7 +5,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_profile_inject.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event SessionStart --handler profile"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event SessionStart --handler event"
           }
         ]
       }
@@ -16,7 +20,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_spawn_guard.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PreToolUse --handler spawn"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PreToolUse --handler event"
           }
         ]
       }
@@ -27,16 +39,24 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_fail_streak.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PostToolUse --handler failure"
           }
         ]
       },
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|apply_patch",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_mutation.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PostToolUse --handler mutation"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PostToolUse --handler event"
           }
         ]
       }
@@ -47,16 +67,24 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_fail_streak.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PostToolUseFailure --handler failure"
           }
         ]
       },
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|apply_patch",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_mutation.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PostToolUseFailure --handler mutation"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event PostToolUseFailure --handler event"
           }
         ]
       }
@@ -66,7 +94,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_close_guard.py\""
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event Stop --handler close"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event Stop --handler event"
           }
         ]
       }
