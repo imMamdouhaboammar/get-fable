@@ -26,21 +26,37 @@ bun add -g get-fable
 
 ---
 
-## The Harness Thesis
+## I kept coming back to one question
 
-What if any coding agent — Codex, Claude Code, Gemini, OpenCode, Cursor, or local open weights — could operate with the systematic discipline of a principal software engineer?
+What if you could take the coding agent you already have — Codex, Claude Code, Gemini, OpenCode, Cursor, a local model, a cheaper model, whatever you happen to use — and make it **work more like a serious coding partner**?
 
-Not by swapping the underlying model.
+Not by swapping the model.
 
-Not by injecting monolithic system prompts that degrade over long sessions.
+Not by writing one giant system prompt and hoping it still matters forty minutes later.
 
-**By engineering the operational harness around the model.**
+But by changing what happens *around* the model.
 
-A reliable coding partner knows when to inspect source code before touching files. When to consult official API documentation rather than hallucinating deprecated signatures. When a bug demands a failing test before a fix. When two workers can execute in parallel without semantic conflicts. When a test run is invalidated by a subsequent workspace edit. When repeated failures signal a flawed hypothesis rather than a minor syntax bug.
+That question is where `get-fable` started.
 
-`get-fable` provides that harness across coding assistants:
+Because when people talk about a great coding agent, they usually talk about the model first. And obviously the model matters. A lot.
 
-> **The objective: surround any AI model with deterministic lifecycle routing, durable task state, mutation-aware verification, and specialist execution playbooks.**
+But the model is not the whole experience.
+
+A strong coding partner also knows when to inspect before touching anything. When to stop guessing and check the current docs. When a bug needs a failing test before a fix. When a task is large enough to plan. When two workers can genuinely work in parallel — and when they absolutely should not. When a green test is stale because the code changed afterward. When three failed attempts mean *rethink the diagnosis*, not *try a fourth variation of the same patch*.
+
+That behavior is not just raw intelligence.
+
+A lot of it is **the harness**.
+
+`get-fable` is an attempt to bring that harness to almost any coding agent.
+
+> **The goal is deliberately ambitious: take the agent you already use and push its working behavior closer to the discipline you expect from a top-tier coding partner.**
+
+No, it does not magically turn a small local model into Claude Fable.
+
+But it can give that model a better way to approach real software work.
+
+And when the model underneath is already strong, the harness has more to work with.
 
 ---
 
@@ -174,21 +190,21 @@ That is the direction of the project: not more instructions, but **more operatio
 
 ---
 
-## Deep Specialist Playbooks
+## Deep Skill Playbooks V2
 
-Every canonical Skill carries complete operational intelligence directly within its specification:
+Every canonical Skill carries complete operational knowledge and architecture discipline:
 
-- **Activation boundaries**: Exact conditions under which the skill activates, defers, or rejects work.
-- **Situational classification**: Heuristics to categorize intent before touching code or state.
-- **Decision branches**: Deterministic handling for edge cases, ambiguity, and multi-file complexity.
-- **Evidence protocols**: Machine-checkable verification contracts required before completion.
-- **Invariant preservation**: Strict system constraints and architectural rules that must remain true.
-- **Failure taxonomies**: Structured triage paths for regressions, test breaks, and unexpected behavior.
-- **Anti-pattern guards**: Explicit rules forbidding shortcuts, blind retries, and hallucinations.
-- **Progressive references**: Deep-dive architectural guides and production templates for complex workflows.
-- **Multi-family evaluations**: Independent scenario suites validating skill behavior across positive, negative, and adversarial inputs.
+- **Activation boundaries**: Exact criteria for when to activate, refuse, or defer;
+- **Situational classification**: Taxonomy and decision branches for ambiguous cases before acting;
+- **Staged execution**: Verifiable, step-by-step evidence protocol with red/green gates;
+- **Architectural invariants**: Non-negotiable constraints that must remain true;
+- **Failure handling**: Actionable taxonomy that changes the next action upon error;
+- **Anti-pattern guards**: Explicit enumeration of tempting anti-patterns to avoid;
+- **Structured artifacts**: Machine-verifiable receipts, templates, and state handoffs;
+- **Progressive references**: Substantial deep-dive guides (>1,000 to >3,000 bytes) for complex scenarios;
+- **Behavioral evals**: Comprehensive 10-scenario evaluation benchmarks per skill.
 
-Enforced at the repository level: authoring lint rejects shallow recipes, duplicated references, or token benchmarks. Hard-earned operational reasoning lives directly in the Skill specification.
+**The hard-earned engineering reasoning lives directly in the Skill — providing reliable, deterministic execution across all model tiers.**
 
 ---
 
@@ -398,24 +414,34 @@ get-fable doctor
 
 ---
 
-## Behavioral Verification Protocol
+## Behavioral proof: the uncomfortable part is intentional
 
-`get-fable` treats **specification existence** and **proven behavioral execution** as separate verifiable claims.
+`get-fable` treats **“the Skill exists”** and **“the Skill has been proven to behave correctly”** as different claims.
 
-Operational maturity requires blinded evaluation against independent providers across positive, negative, and adversarial test scenarios. Any modification to a Skill's instructions or resource corpus invalidates prior evaluation hashes and requires fresh evaluation runs.
+A previous version of the catalog had an external-provider evidence run across 115 blinded cases with 115 passes and zero forbidden-action violations.
+
+That run is useful history.
+
+It is **not** fresh proof for Deep Skill Playbooks V2.
+
+V2 materially changes the instructions and expands the semantic scenario corpus. The evidence hashes should therefore make the old behavioral result stale.
+
+That is a feature, not a regression.
+
+Until the current V2 request bundle is executed against an independent provider and rescored, affected behavioral maturity should remain **`NOT_CHECKED`**, not magically inherit the old M4 badge.
+
+The current workflow is:
 
 ```bash
-# 1. Export blinded evaluation requests without leaking oracles
 get-fable behavior-eval export --out /tmp/get-fable-behavior-requests.json
-
-# 2. Score independent provider responses against verified behavioral contracts
+# execute the blinded requests with an independent provider
 get-fable behavior-eval score /tmp/provider-responses.json \
   --out evals/results/agent-behavior-v1.json
-
-# 3. Verify evidence freshness and maturity status
 get-fable behavior-eval status
 get-fable doctor --json-v1
 ```
+
+The exported bundle is generated from the current Skill corpus, so the README deliberately does not hard-code a V2 request count.
 
 [Read the behavioral evidence protocol →](docs/BEHAVIOR_EVIDENCE.md)
 
