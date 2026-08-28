@@ -82,6 +82,32 @@ describe('stable release source', () => {
     expect(result.releaseUrl).toBeUndefined();
   });
 
+  test('clears request timeout timers after successful fetches', async () => {
+    const signals: AbortSignal[] = [];
+
+    await fetchStableRelease(
+      '1.5.1',
+      {
+        now: () => new Date('2026-08-28T20:00:00.000Z'),
+        fetch: async (input, init) => {
+          if (!init?.signal) throw new Error('missing abort signal');
+          signals.push(init.signal);
+
+          if (input === 'https://registry.npmjs.org/get-fable') {
+            return jsonResponse({ 'dist-tags': { latest: '1.6.0' }, versions: {} });
+          }
+          return jsonResponse({});
+        },
+      },
+      10
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 30));
+
+    expect(signals).toHaveLength(2);
+    expect(signals.every((signal) => signal.aborted === false)).toBe(true);
+  });
+
   test('aborts the npm registry request when the timeout elapses', async () => {
     let sawAbort = false;
 
