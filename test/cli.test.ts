@@ -2,11 +2,13 @@ import { afterEach, describe, expect, test } from 'bun:test';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { getPackageVersion, parsePort, runCli } from '../src/cli.ts';
 
 const originalClaudeDir = process.env.CLAUDE_CONFIG_DIR;
 const originalGeminiDir = process.env.FABLE_GEMINI_CONFIG_DIR;
 const originalKernelDir = process.env.FABLE_AGENT_KERNEL_DIR;
+const originalCwd = process.cwd();
 const tempDirs: string[] = [];
 
 function tempRoot() {
@@ -15,7 +17,12 @@ function tempRoot() {
   return dir;
 }
 
+function git(cwd: string, ...args: string[]) {
+  return execFileSync('git', args, { cwd, encoding: 'utf-8' }).trim();
+}
+
 afterEach(() => {
+  process.chdir(originalCwd);
   if (originalClaudeDir === undefined) delete process.env.CLAUDE_CONFIG_DIR;
   else process.env.CLAUDE_CONFIG_DIR = originalClaudeDir;
 
@@ -57,6 +64,24 @@ describe('CLI safety', () => {
 
   test('reads the version from package metadata', () => {
     expect(getPackageVersion()).toBe('1.3.0');
+  });
+
+  test('returns failure when Git hooks cannot be installed and success for a valid custom path', () => {
+    if (process.platform === 'win32') return;
+    const unsafe = tempRoot();
+    git(unsafe, 'init');
+    git(unsafe, 'config', 'core.hooksPath', '/dev/null');
+    process.chdir(unsafe);
+
+    expect(runCli(['install', 'git-hooks'])).not.toBe(0);
+
+    const valid = tempRoot();
+    git(valid, 'init');
+    git(valid, 'config', 'core.hooksPath', '.githooks');
+    process.chdir(valid);
+
+    expect(runCli(['install', 'git-hooks'])).toBe(0);
+    expect(fs.existsSync(path.join(valid, '.githooks', 'pre-commit'))).toBe(true);
   });
 
   test('runs spark command in text and json mode', () => {
