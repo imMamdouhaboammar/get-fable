@@ -24,16 +24,28 @@ MUTATING_TOOLS = {
     "notebookedit",
     "apply_patch",
     "applypatch",
+    "write_file",
+    "write_to_file",
+    "replace",
+    "replace_file_content",
+    "multi_replace_file_content",
+    "create_file",
+    "delete_file",
+    "move_file",
+    "rename_file",
 }
+
+
+def normalized_tool_name(value):
+    return str(value).replace("-", "").replace("_", "").lower()
 
 
 def mutating_tool(data):
     name = data.get("tool_name") or data.get("toolName") or data.get("tool")
     if name is None:
         return True
-    return str(name).replace("-", "").replace("_", "").lower() in {
-        item.replace("_", "") for item in MUTATING_TOOLS
-    }
+    normalized = normalized_tool_name(name)
+    return normalized in {normalized_tool_name(item) for item in MUTATING_TOOLS}
 
 
 def main():

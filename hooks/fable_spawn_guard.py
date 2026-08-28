@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""get-fable PreToolUse guard for detailed delegation.
+"""get-fable pre-tool guard for substantial delegation.
 
-When a project is opted in, a large Agent/Task/Workflow delegation requires a
-live open ledger card. Small delegations and forks are exempt. The guard is
-model-agnostic and does not rank or block model names.
+When a project is opted in, a large Agent/Task/Workflow-style delegation
+requires a live open ledger card. Small delegations and forks are exempt. The
+guard recognizes common delegation tool names and nested delegation payloads
+across Claude, Codex, Gemini, Antigravity, and generic agent harnesses.
 
 Fail-open on unexpected errors.
 """
@@ -20,30 +21,61 @@ from _fable_common import (  # noqa: E402
     read_state,
 )
 
+DELEGATION_TOOL_MARKERS = (
+    "agent",
+    "subagent",
+    "delegate",
+    "delegation",
+    "task",
+    "workflow",
+    "worker",
+)
 
-def payload_len(tool_input):
-    if not isinstance(tool_input, dict):
-        return 0
-    parts = []
-    for key in ("prompt", "script", "description"):
-        value = tool_input.get(key)
-        if isinstance(value, str):
-            parts.append(value)
-    return len("\n".join(parts))
+
+def payload_len(value):
+    """Measure nested delegation content without depending on one host schema."""
+    if isinstance(value, str):
+        return len(value)
+    if isinstance(value, dict):
+        return sum(payload_len(item) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return sum(payload_len(item) for item in value)
+    return 0
+
+
+def contains_fork(value):
+    if isinstance(value, str):
+        return "fork" in value.lower()
+    if isinstance(value, dict):
+        for key, item in value.items():
+            normalized = str(key).replace("-", "_").lower()
+            if normalized in ("subagent_type", "agenttype", "agent_type", "mode", "type"):
+                if contains_fork(item):
+                    return True
+            if isinstance(item, (dict, list, tuple)) and contains_fork(item):
+                return True
+    if isinstance(value, (list, tuple)):
+        return any(contains_fork(item) for item in value)
+    return False
 
 
 def is_fork(tool_input):
-    if not isinstance(tool_input, dict):
-        return False
-    for key in ("subagent_type", "agentType", "agent_type"):
-        value = tool_input.get(key)
-        if isinstance(value, str) and "fork" in value.lower():
-            return True
-    return False
+    return contains_fork(tool_input)
+
+
+def delegation_tool(data):
+    name = data.get("tool_name") or data.get("toolName") or data.get("tool")
+    if name is None:
+        return True
+    normalized = str(name).replace("-", "_").lower()
+    return any(marker in normalized for marker in DELEGATION_TOOL_MARKERS)
 
 
 def main():
     data = read_hook_input()
+    if not delegation_tool(data):
+        return 0
+
     tool_input = data.get("tool_input", {}) or {}
     fable_dir = find_fable_dir(start_dir(data))
     if not fable_dir:
