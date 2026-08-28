@@ -1,17 +1,24 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-security",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
+  "agents": [
+    "agents/openai.yaml"
+  ],
   "references": [
-    "references/threat-modeling-matrix.md",
     "references/secret-sanitization.md",
+    "references/threat-modeling-matrix.md",
     "references/trust-boundary-and-finding-validation.md"
   ],
-  "templates": [],
-  "examples": ["examples/security-audit-walkthrough.md"],
-  "evals": ["evals/scenarios.json"],
+  "templates": [
+    "templates/security-finding.template.md"
+  ],
+  "examples": [
+    "examples/security-audit-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

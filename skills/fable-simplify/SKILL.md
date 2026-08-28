@@ -1,6 +1,8 @@
 ---
 name: fable-simplify
-description: Clean up code quality, simplify logic, remove dead code, and improve altitude without changing runtime behavior. Use when refactoring complex functions, flattening nested branches, or deleting unused code.
+description: >
+  Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior. Use when cleaning up complex functions, eliminating boilerplate, deduplicating logic, or improving code altitude after tests pass — even if the user does not explicitly say "fable-simplify" (e.g. "simplify this code", "clean up this function", "refactor this logic", "make this cleaner"). Do NOT use when tests are failing (use fable-recover) or for speculative architectural rewrites (use fable-plan).
+
 version: 1.3.0
 pack: system
 inputs:

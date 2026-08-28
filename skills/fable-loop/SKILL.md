@@ -1,6 +1,8 @@
 ---
 name: fable-loop
-description: Run bounded recurring task loops, interval polling, or self-paced test cycles with explicit timeouts. Use when monitoring CI jobs, polling deployment status, or executing periodic tasks.
+description: >
+  Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff. Use when monitoring async CI/CD pipelines, polling external service status, running interval test watches, or tracking long-running jobs — even if the user does not explicitly say "fable-loop" (e.g. "babysit this build", "poll until completed", "watch CI status", "wait for deployment"). Do NOT use for synchronous one-shot commands or unbounded infinite polling loops.
+
 version: 1.3.0
 pack: system
 inputs:

@@ -2,57 +2,132 @@
   {
     "id": "fable-simplify-clean-up-duplication",
     "description": "Refactor repeated logic while preserving behavior",
-    "given": {"intent": "Clean up duplication in the billing calculation module", "phase": "executing"},
-    "expected": {"action": "simplify-code-preserve-tests", "produces": "simplified-diff"},
-    "forbidden": {"action": "introduce-breaking-behavioral-changes"}
+    "given": {
+      "intent": "Clean up duplication in the billing calculation module",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "simplify-code-preserve-tests",
+      "produces": "simplified-diff"
+    },
+    "forbidden": {
+      "action": "introduce-breaking-behavioral-changes"
+    }
   },
   {
     "id": "fable-simplify-no-characterization",
     "description": "Legacy behavior-rich code lacks tests or other preservation evidence",
-    "given": {"intent": "Rewrite this 1200-line legacy parser to be cleaner", "behaviorCoverage": "unknown"},
-    "expected": {"action": "characterize-behavior-before-refactor", "produces": "simplified-diff"},
-    "forbidden": {"action": "rewrite-before-preservation-contract"}
+    "given": {
+      "intent": "Rewrite this 1200-line legacy parser to be cleaner",
+      "behaviorCoverage": "unknown"
+    },
+    "expected": {
+      "action": "characterize-behavior-before-refactor",
+      "produces": "simplified-diff"
+    },
+    "forbidden": {
+      "action": "rewrite-before-preservation-contract"
+    }
   },
   {
     "id": "fable-simplify-dynamic-dead-code",
     "description": "Function has no static imports but is loaded from a plugin registry by name",
-    "given": {"staticCallers": 0, "pluginRegistryReference": true},
-    "expected": {"action": "preserve-dynamically-reachable-code", "produces": "simplified-diff"},
-    "forbidden": {"action": "delete-from-grep-absence"}
+    "given": {
+      "staticCallers": 0,
+      "pluginRegistryReference": true
+    },
+    "expected": {
+      "action": "preserve-dynamically-reachable-code",
+      "produces": "simplified-diff"
+    },
+    "forbidden": {
+      "action": "delete-from-grep-absence"
+    }
   },
   {
     "id": "fable-simplify-dry-semantic-mismatch",
     "description": "Two similar blocks represent different business rules that may evolve independently",
-    "given": {"syntaxSimilarity": "high", "sharedInvariant": false},
-    "expected": {"action": "avoid-false-dry-extraction", "produces": "simplified-diff"},
-    "forbidden": {"action": "merge-different-domain-rules-for-line-count"}
+    "given": {
+      "syntaxSimilarity": "high",
+      "sharedInvariant": false
+    },
+    "expected": {
+      "action": "avoid-false-dry-extraction",
+      "produces": "simplified-diff"
+    },
+    "forbidden": {
+      "action": "merge-different-domain-rules-for-line-count"
+    }
   },
   {
     "id": "fable-simplify-error-contract-drift",
     "description": "Refactor changes a public error type/message used by callers while happy-path tests remain green",
-    "given": {"happyPath": "green", "errorContractChanged": true},
-    "expected": {"action": "restore-or-explicitly-separate-contract-change", "produces": "simplified-diff"},
-    "forbidden": {"action": "claim-behavior-preserved-from-happy-path-only"}
+    "given": {
+      "happyPath": "green",
+      "errorContractChanged": true
+    },
+    "expected": {
+      "action": "restore-or-explicitly-separate-contract-change",
+      "produces": "simplified-diff"
+    },
+    "forbidden": {
+      "action": "claim-behavior-preserved-from-happy-path-only"
+    }
   },
   {
     "id": "fable-simplify-while-here-scope",
     "description": "Feature cleanup tempts a broad neighboring architecture rewrite",
-    "given": {"target": "one parser", "opportunity": "rewrite shared framework"},
-    "expected": {"action": "keep-simplification-bounded"},
-    "forbidden": {"action": "expand-into-unrequested-architecture-work"}
+    "given": {
+      "target": "one parser",
+      "opportunity": "rewrite shared framework"
+    },
+    "expected": {
+      "action": "keep-simplification-bounded"
+    },
+    "forbidden": {
+      "action": "expand-into-unrequested-architecture-work"
+    }
   },
   {
     "id": "fable-simplify-complexity-displacement",
     "description": "Local function gets shorter by moving branching into every caller",
-    "given": {"localLinesReduced": true, "callerComplexityIncreased": true},
-    "expected": {"action": "evaluate-whole-affected-decision-surface"},
-    "forbidden": {"action": "claim-improvement-from-local-line-count"}
+    "given": {
+      "localLinesReduced": true,
+      "callerComplexityIncreased": true
+    },
+    "expected": {
+      "action": "evaluate-whole-affected-decision-surface"
+    },
+    "forbidden": {
+      "action": "claim-improvement-from-local-line-count"
+    }
   },
   {
     "id": "fable-simplify-test-coupled-internals",
     "description": "Refactor preserves public behavior but a test asserts a private helper call",
-    "given": {"publicBehavior": "unchanged", "failingAssertion": "private helper invoked once"},
-    "expected": {"action": "resolve-test-vs-contract-intentionally"},
-    "forbidden": {"action": "blindly-revert-or-update-test-without-contract-check"}
+    "given": {
+      "publicBehavior": "unchanged",
+      "failingAssertion": "private helper invoked once"
+    },
+    "expected": {
+      "action": "resolve-test-vs-contract-intentionally"
+    },
+    "forbidden": {
+      "action": "blindly-revert-or-update-test-without-contract-check"
+    }
+  },
+  {
+    "id": "fable-simplify-scenario-9",
+    "name": "fable-simplify realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-simplify workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-simplify-scenario-10",
+    "name": "fable-simplify realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-simplify query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

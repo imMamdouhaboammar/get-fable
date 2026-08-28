@@ -7,406 +7,986 @@
       "order": 0,
       "phase": "idle",
       "pack": "core",
-      "description": "Entry router and global execution contract.",
-      "intents": ["route", "resume", "orchestrate"],
+      "description": "Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.",
+      "intents": [
+        "route",
+        "resume",
+        "orchestrate"
+      ],
       "requires": [],
-      "produces": ["routing-decision"],
+      "produces": [
+        "routing-decision"
+      ],
       "gates": [],
       "fallback": null,
       "mutatesWorkspace": false,
       "parallelSafe": true,
       "next": [
-        "fable-discover", "fable-research", "fable-plan", "fable-tdd", "fable-delegate",
-        "fable-execute", "fable-verify", "fable-review", "fable-security", "fable-release",
-        "fable-handoff", "fable-eval", "fable-recover", "fable-dataviz", "fable-artifact",
-        "fable-simplify", "fable-loop", "fable-run", "fable-memory", "fable-config",
-        "fable-simulator", "fable-cowork", "fable-spark", "skill-creator"
+        "fable-discover",
+        "fable-research",
+        "fable-plan",
+        "fable-tdd",
+        "fable-delegate",
+        "fable-execute",
+        "fable-verify",
+        "fable-review",
+        "fable-security",
+        "fable-release",
+        "fable-handoff",
+        "fable-eval",
+        "fable-recover",
+        "fable-dataviz",
+        "fable-artifact",
+        "fable-simplify",
+        "fable-loop",
+        "fable-run",
+        "fable-memory",
+        "fable-config",
+        "fable-simulator",
+        "fable-cowork",
+        "fable-spark",
+        "skill-creator"
       ],
-      "keywords": ["fable", "rigorous", "frontier-like", "lifecycle"]
+      "keywords": [
+        "fable",
+        "rigorous",
+        "frontier-like",
+        "lifecycle"
+      ]
     },
     {
       "id": "fable-discover",
       "order": 10,
       "phase": "discovering",
       "pack": "core",
-      "description": "Gather repository, environment, documentation, and load-bearing evidence before architecture.",
-      "intents": ["inspect-repository", "trace-behavior", "resolve-unknowns"],
+      "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.",
+      "intents": [
+        "inspect-repository",
+        "trace-behavior",
+        "resolve-unknowns"
+      ],
       "requires": [],
-      "produces": ["repository-evidence", "execution-path"],
-      "gates": ["load-bearing-unknowns-resolved"],
+      "produces": [
+        "repository-evidence",
+        "execution-path"
+      ],
+      "gates": [
+        "load-bearing-unknowns-resolved"
+      ],
       "fallback": "fable-recover",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-research", "fable-plan", "fable-tdd", "fable-execute", "fable-verify"],
-      "keywords": ["inspect", "explore", "trace", "unknown", "repository", "current behavior"]
+      "next": [
+        "fable-research",
+        "fable-plan",
+        "fable-tdd",
+        "fable-execute",
+        "fable-verify"
+      ],
+      "keywords": [
+        "inspect",
+        "explore",
+        "trace",
+        "unknown",
+        "repository",
+        "current behavior"
+      ]
     },
     {
       "id": "fable-research",
       "order": 15,
       "phase": "discovering",
       "pack": "intelligence",
-      "description": "Resolve current external facts against primary sources before they influence design or implementation.",
-      "intents": ["external-research", "current-docs", "api-behavior"],
-      "requires": ["research-question"],
-      "produces": ["research-evidence", "source-backed-facts"],
-      "gates": ["primary-source-grounding"],
+      "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.",
+      "intents": [
+        "external-research",
+        "current-docs",
+        "api-behavior"
+      ],
+      "requires": [
+        "research-question"
+      ],
+      "produces": [
+        "research-evidence",
+        "source-backed-facts"
+      ],
+      "gates": [
+        "primary-source-grounding"
+      ],
       "fallback": "fable-discover",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-discover", "fable-plan", "fable-tdd", "fable-execute", "fable-verify"],
-      "keywords": ["official docs", "latest", "current api", "current version", "research", "primary source"]
+      "next": [
+        "fable-discover",
+        "fable-plan",
+        "fable-tdd",
+        "fable-execute",
+        "fable-verify"
+      ],
+      "keywords": [
+        "official docs",
+        "latest",
+        "current api",
+        "current version",
+        "research",
+        "primary source"
+      ]
     },
     {
       "id": "fable-plan",
       "order": 20,
       "phase": "planned",
       "pack": "core",
-      "description": "Convert evidence into bounded work cards with explicit acceptance criteria.",
-      "intents": ["architecture", "migration", "decomposition"],
-      "requires": ["load-bearing-unknowns-resolved"],
-      "produces": ["accepted-card", "acceptance-condition"],
-      "gates": ["bounded-scope", "named-acceptance"],
+      "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.",
+      "intents": [
+        "architecture",
+        "migration",
+        "decomposition"
+      ],
+      "requires": [
+        "load-bearing-unknowns-resolved"
+      ],
+      "produces": [
+        "accepted-card",
+        "acceptance-condition"
+      ],
+      "gates": [
+        "bounded-scope",
+        "named-acceptance"
+      ],
       "fallback": "fable-discover",
       "mutatesWorkspace": false,
       "parallelSafe": false,
-      "next": ["fable-research", "fable-tdd", "fable-delegate", "fable-execute", "fable-discover"],
-      "keywords": ["plan", "design", "architecture", "migration", "refactor", "multi-file", "end to end"]
+      "next": [
+        "fable-research",
+        "fable-tdd",
+        "fable-delegate",
+        "fable-execute",
+        "fable-discover"
+      ],
+      "keywords": [
+        "plan",
+        "design",
+        "architecture",
+        "migration",
+        "refactor",
+        "multi-file",
+        "end to end"
+      ]
     },
     {
       "id": "fable-tdd",
       "order": 30,
       "phase": "executing",
       "pack": "build",
-      "description": "Drive testable behavior changes through red, minimal implementation, green, and focused cleanup.",
-      "intents": ["feature", "bug-fix", "behavior-change"],
-      "requires": ["behavior-contract"],
-      "produces": ["regression-test", "behavior-change"],
-      "gates": ["red-observed", "green-observed"],
+      "description": "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.",
+      "intents": [
+        "feature",
+        "bug-fix",
+        "behavior-change"
+      ],
+      "requires": [
+        "behavior-contract"
+      ],
+      "produces": [
+        "regression-test",
+        "behavior-change"
+      ],
+      "gates": [
+        "red-observed",
+        "green-observed"
+      ],
       "fallback": "fable-recover",
       "mutatesWorkspace": true,
       "parallelSafe": false,
-      "next": ["fable-execute", "fable-verify", "fable-recover"],
-      "keywords": ["tdd", "test first", "regression", "bug fix", "behavior change", "feature"]
+      "next": [
+        "fable-execute",
+        "fable-verify",
+        "fable-recover"
+      ],
+      "keywords": [
+        "tdd",
+        "test first",
+        "regression",
+        "bug fix",
+        "behavior change",
+        "feature"
+      ]
     },
     {
       "id": "fable-delegate",
       "order": 32,
       "phase": "executing",
       "pack": "build",
-      "description": "Delegate independent work only through explicit ownership, scope, and acceptance contracts.",
-      "intents": ["parallel-work", "subagents", "delegation"],
-      "requires": ["bounded-cards", "disjoint-ownership"],
-      "produces": ["delegation-contracts", "worker-results"],
-      "gates": ["ownership-explicit", "acceptance-explicit"],
+      "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.",
+      "intents": [
+        "parallel-work",
+        "subagents",
+        "delegation"
+      ],
+      "requires": [
+        "bounded-cards",
+        "disjoint-ownership"
+      ],
+      "produces": [
+        "delegation-contracts",
+        "worker-results"
+      ],
+      "gates": [
+        "ownership-explicit",
+        "acceptance-explicit"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": true,
       "parallelSafe": true,
-      "next": ["fable-execute", "fable-verify", "fable-recover"],
-      "keywords": ["delegate", "subagent", "parallel", "workers", "multi-agent", "independent tasks"]
+      "next": [
+        "fable-execute",
+        "fable-verify",
+        "fable-recover"
+      ],
+      "keywords": [
+        "delegate",
+        "subagent",
+        "parallel",
+        "workers",
+        "multi-agent",
+        "independent tasks"
+      ]
     },
     {
       "id": "fable-execute",
       "order": 40,
       "phase": "executing",
       "pack": "core",
-      "description": "Implement one accepted card with immediate acceptance checks and no scope drift.",
-      "intents": ["implement-card", "bounded-change", "small-feature"],
-      "requires": ["accepted-card"],
-      "produces": ["implementation-diff", "card-completion"],
-      "gates": ["invariants-preserved", "acceptance-checked"],
+      "description": "Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.",
+      "intents": [
+        "implement-card",
+        "bounded-change",
+        "small-feature"
+      ],
+      "requires": [
+        "accepted-card"
+      ],
+      "produces": [
+        "implementation-diff",
+        "card-completion"
+      ],
+      "gates": [
+        "invariants-preserved",
+        "acceptance-checked"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": true,
       "parallelSafe": false,
-      "next": ["fable-verify", "fable-recover"],
-      "keywords": ["execute", "implement", "build", "write code", "fix typo", "single file", "narrow scope"]
+      "next": [
+        "fable-verify",
+        "fable-recover"
+      ],
+      "keywords": [
+        "execute",
+        "implement",
+        "build",
+        "write code",
+        "fix typo",
+        "single file",
+        "narrow scope"
+      ]
     },
     {
       "id": "fable-verify",
       "order": 50,
       "phase": "verifying",
       "pack": "core",
-      "description": "Try to falsify the implementation and collect concrete acceptance evidence.",
-      "intents": ["run-tests", "typecheck", "falsify-behavior", "validate-acceptance"],
-      "requires": ["implementation-diff"],
-      "produces": ["verification-evidence", "falsification-verdict"],
-      "gates": ["fresh-mutation-covered", "machine-checked"],
+      "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.",
+      "intents": [
+        "run-tests",
+        "typecheck",
+        "falsify-behavior",
+        "validate-acceptance"
+      ],
+      "requires": [
+        "implementation-diff"
+      ],
+      "produces": [
+        "verification-evidence",
+        "falsification-verdict"
+      ],
+      "gates": [
+        "fresh-mutation-covered",
+        "machine-checked"
+      ],
       "fallback": "fable-recover",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-review", "fable-security", "fable-release", "fable-recover", "fable-execute"],
-      "keywords": ["verify", "test", "typecheck", "smoke", "acceptance", "run check", "prove"]
+      "next": [
+        "fable-review",
+        "fable-security",
+        "fable-release",
+        "fable-recover",
+        "fable-execute"
+      ],
+      "keywords": [
+        "verify",
+        "test",
+        "typecheck",
+        "smoke",
+        "acceptance",
+        "run check",
+        "prove"
+      ]
     },
     {
       "id": "fable-review",
       "order": 60,
       "phase": "verifying",
       "pack": "proof",
-      "description": "Review the actual diff against the requested behavior and repository standards independently from implementation.",
-      "intents": ["code-review", "diff-audit", "standards-check"],
-      "requires": ["implementation-diff"],
-      "produces": ["review-evidence", "review-verdict"],
-      "gates": ["grounded-diff-read", "actionable-findings"],
+      "description": "Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.",
+      "intents": [
+        "code-review",
+        "diff-audit",
+        "standards-check"
+      ],
+      "requires": [
+        "implementation-diff"
+      ],
+      "produces": [
+        "review-evidence",
+        "review-verdict"
+      ],
+      "gates": [
+        "grounded-diff-read",
+        "actionable-findings"
+      ],
       "fallback": "fable-recover",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-security", "fable-release", "fable-execute", "fable-recover"],
-      "keywords": ["review", "code review", "diff review", "pr review", "critique", "independent pass"]
+      "next": [
+        "fable-security",
+        "fable-release",
+        "fable-execute",
+        "fable-recover"
+      ],
+      "keywords": [
+        "review",
+        "code review",
+        "diff review",
+        "pr review",
+        "critique",
+        "independent pass"
+      ]
     },
     {
       "id": "fable-security",
       "order": 70,
       "phase": "verifying",
       "pack": "proof",
-      "description": "Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation as appropriate.",
-      "intents": ["security-review", "threat-model", "audit-auth", "validate-finding"],
-      "requires": ["security-scope"],
-      "produces": ["security-evidence", "threat-boundary-verdict"],
-      "gates": ["threat-surface-checked", "no-exposed-secrets"],
+      "description": "Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.",
+      "intents": [
+        "security-review",
+        "threat-model",
+        "audit-auth",
+        "validate-finding"
+      ],
+      "requires": [
+        "security-scope"
+      ],
+      "produces": [
+        "security-evidence",
+        "threat-boundary-verdict"
+      ],
+      "gates": [
+        "threat-surface-checked",
+        "no-exposed-secrets"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-release", "fable-execute", "fable-recover"],
-      "keywords": ["security", "auth", "permission", "secret", "vulnerability", "audit", "injection"]
+      "next": [
+        "fable-release",
+        "fable-execute",
+        "fable-recover"
+      ],
+      "keywords": [
+        "security",
+        "auth",
+        "permission",
+        "secret",
+        "vulnerability",
+        "audit",
+        "injection"
+      ]
     },
     {
       "id": "fable-release",
       "order": 80,
       "phase": "verifying",
       "pack": "delivery",
-      "description": "Establish merge or release readiness from required quality gates and current repository state.",
-      "intents": ["release", "merge", "publish"],
-      "requires": ["completion-evidence"],
-      "produces": ["release-readiness"],
-      "gates": ["required-checks-pass", "no-blocking-findings"],
+      "description": "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.",
+      "intents": [
+        "release",
+        "merge",
+        "publish"
+      ],
+      "requires": [
+        "completion-evidence"
+      ],
+      "produces": [
+        "release-readiness"
+      ],
+      "gates": [
+        "required-checks-pass",
+        "no-blocking-findings"
+      ],
       "fallback": "fable-verify",
       "mutatesWorkspace": false,
       "parallelSafe": false,
-      "next": ["fable-handoff", "fable-recover", "fable-execute"],
-      "keywords": ["release", "merge", "publish", "ship", "tag", "ready for pr"]
+      "next": [
+        "fable-handoff",
+        "fable-recover",
+        "fable-execute"
+      ],
+      "keywords": [
+        "release",
+        "merge",
+        "publish",
+        "ship",
+        "tag",
+        "ready for pr"
+      ]
     },
     {
       "id": "fable-handoff",
       "order": 85,
       "phase": "verifying",
       "pack": "delivery",
-      "description": "Compact decisions, evidence, blockers, and the exact next action into durable continuation state.",
-      "intents": ["handoff", "resume-later", "continue-session"],
-      "requires": ["current-state"],
-      "produces": ["handoff-evidence", "continuation-state"],
-      "gates": ["next-action-explicit"],
+      "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.",
+      "intents": [
+        "handoff",
+        "resume-later",
+        "continue-session"
+      ],
+      "requires": [
+        "current-state"
+      ],
+      "produces": [
+        "handoff-evidence",
+        "continuation-state"
+      ],
+      "gates": [
+        "next-action-explicit"
+      ],
       "fallback": "get-fable",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["get-fable"],
-      "keywords": ["handoff", "continue later", "next session", "resume", "context transfer"]
+      "next": [
+        "get-fable"
+      ],
+      "keywords": [
+        "handoff",
+        "continue later",
+        "next session",
+        "resume",
+        "context transfer"
+      ]
     },
     {
       "id": "fable-eval",
       "order": 90,
       "phase": "verifying",
       "pack": "evolution",
-      "description": "Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions.",
-      "intents": ["agent-eval", "self-improvement", "prompt-change"],
-      "requires": ["reproducible-baseline"],
-      "produces": ["eval-verdict", "regression-evidence"],
-      "gates": ["baseline-frozen", "holdout-tested", "rollback-defined"],
+      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.",
+      "intents": [
+        "agent-eval",
+        "self-improvement",
+        "prompt-change"
+      ],
+      "requires": [
+        "reproducible-baseline"
+      ],
+      "produces": [
+        "eval-verdict",
+        "regression-evidence"
+      ],
+      "gates": [
+        "baseline-frozen",
+        "holdout-tested",
+        "rollback-defined"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-plan", "fable-execute", "fable-verify", "fable-recover"],
-      "keywords": ["eval", "benchmark", "self improve", "skill quality", "prompt quality", "holdout"]
+      "next": [
+        "fable-plan",
+        "fable-execute",
+        "fable-verify",
+        "fable-recover"
+      ],
+      "keywords": [
+        "eval",
+        "benchmark",
+        "self improve",
+        "skill quality",
+        "prompt quality",
+        "holdout"
+      ]
     },
     {
       "id": "fable-recover",
       "order": 100,
       "phase": "recovering",
       "pack": "core",
-      "description": "Diagnose repeated failure, stale execution, or contradictory evidence before another edit.",
-      "intents": ["debug-failure", "stale-execution", "contradictory-evidence"],
-      "requires": ["failure-evidence"],
-      "produces": ["revised-hypothesis", "bounded-repair"],
-      "gates": ["diagnosis-changed"],
+      "description": "Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.",
+      "intents": [
+        "debug-failure",
+        "stale-execution",
+        "contradictory-evidence"
+      ],
+      "requires": [
+        "failure-evidence"
+      ],
+      "produces": [
+        "revised-hypothesis",
+        "bounded-repair"
+      ],
+      "gates": [
+        "diagnosis-changed"
+      ],
       "fallback": "fable-discover",
       "mutatesWorkspace": false,
       "parallelSafe": false,
-      "next": ["fable-discover", "fable-research", "fable-plan", "fable-tdd", "fable-execute", "fable-verify"],
-      "keywords": ["failed twice", "same failure", "retry", "still failing", "stale", "cache", "wrong branch"]
+      "next": [
+        "fable-discover",
+        "fable-research",
+        "fable-plan",
+        "fable-tdd",
+        "fable-execute",
+        "fable-verify"
+      ],
+      "keywords": [
+        "failed twice",
+        "same failure",
+        "retry",
+        "still failing",
+        "stale",
+        "cache",
+        "wrong branch"
+      ]
     },
     {
       "id": "fable-dataviz",
       "order": 110,
       "phase": "executing",
       "pack": "system",
-      "description": "Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations across all rendering mediums.",
-      "intents": ["dataviz", "create-chart", "visualize-data", "dashboard-metrics"],
-      "requires": ["data-source"],
-      "produces": ["visualization-artifact", "svg-chart"],
-      "gates": ["theme-contrast-valid", "viewbox-defined"],
+      "description": "Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.",
+      "intents": [
+        "dataviz",
+        "create-chart",
+        "visualize-data",
+        "dashboard-metrics"
+      ],
+      "requires": [
+        "data-source"
+      ],
+      "produces": [
+        "visualization-artifact",
+        "svg-chart"
+      ],
+      "gates": [
+        "theme-contrast-valid",
+        "viewbox-defined"
+      ],
       "fallback": "fable-execute",
       "mutatesWorkspace": true,
       "parallelSafe": true,
-      "next": ["fable-verify", "fable-review"],
-      "keywords": ["chart", "graph", "plot", "dataviz", "visualization", "dashboard", "metric tile", "heatmap"]
+      "next": [
+        "fable-verify",
+        "fable-review"
+      ],
+      "keywords": [
+        "chart",
+        "graph",
+        "plot",
+        "dataviz",
+        "visualization",
+        "dashboard",
+        "metric tile",
+        "heatmap"
+      ]
     },
     {
       "id": "fable-artifact",
       "order": 120,
       "phase": "executing",
       "pack": "system",
-      "description": "Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components.",
-      "intents": ["create-artifact", "diagram-architecture", "interactive-component"],
-      "requires": ["artifact-spec"],
-      "produces": ["artifact-document", "interactive-ui"],
-      "gates": ["hierarchy-clear", "theme-adaptive"],
+      "description": "Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.",
+      "intents": [
+        "create-artifact",
+        "diagram-architecture",
+        "interactive-component"
+      ],
+      "requires": [
+        "artifact-spec"
+      ],
+      "produces": [
+        "artifact-document",
+        "interactive-ui"
+      ],
+      "gates": [
+        "hierarchy-clear",
+        "theme-adaptive"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": true,
       "parallelSafe": true,
-      "next": ["fable-verify", "fable-review"],
-      "keywords": ["artifact", "diagram", "mermaid", "architecture diagram", "interactive component", "technical proposal"]
+      "next": [
+        "fable-verify",
+        "fable-review"
+      ],
+      "keywords": [
+        "artifact",
+        "diagram",
+        "mermaid",
+        "architecture diagram",
+        "interactive component",
+        "technical proposal"
+      ]
     },
     {
       "id": "fable-simplify",
       "order": 130,
       "phase": "executing",
       "pack": "system",
-      "description": "Clean up code quality, simplify logic, remove dead code, and improve altitude without changing runtime behavior.",
-      "intents": ["simplify-code", "remove-duplication", "clean-architecture"],
-      "requires": ["passing-tests"],
-      "produces": ["simplified-diff"],
-      "gates": ["behavior-preserved", "tests-pass"],
+      "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.",
+      "intents": [
+        "simplify-code",
+        "remove-duplication",
+        "clean-architecture"
+      ],
+      "requires": [
+        "passing-tests"
+      ],
+      "produces": [
+        "simplified-diff"
+      ],
+      "gates": [
+        "behavior-preserved",
+        "tests-pass"
+      ],
       "fallback": "fable-verify",
       "mutatesWorkspace": true,
       "parallelSafe": false,
-      "next": ["fable-verify", "fable-review"],
-      "keywords": ["simplify", "clean up", "refactor", "dead code", "deduplicate", "code quality"]
+      "next": [
+        "fable-verify",
+        "fable-review"
+      ],
+      "keywords": [
+        "simplify",
+        "clean up",
+        "refactor",
+        "dead code",
+        "deduplicate",
+        "code quality"
+      ]
     },
     {
       "id": "fable-loop",
       "order": 140,
       "phase": "executing",
       "pack": "system",
-      "description": "Run bounded recurring task loops, interval polling, or self-paced test cycles with explicit timeouts.",
-      "intents": ["recurring-loop", "poll-status", "babysit-ci"],
-      "requires": ["loop-condition"],
-      "produces": ["loop-receipt"],
-      "gates": ["budget-bounded", "exit-condition-explicit"],
+      "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.",
+      "intents": [
+        "recurring-loop",
+        "poll-status",
+        "babysit-ci"
+      ],
+      "requires": [
+        "loop-condition"
+      ],
+      "produces": [
+        "loop-receipt"
+      ],
+      "gates": [
+        "budget-bounded",
+        "exit-condition-explicit"
+      ],
       "fallback": "fable-recover",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["fable-verify", "fable-handoff"],
-      "keywords": ["loop", "poll", "interval", "recurring", "cron", "schedule", "babysit"]
+      "next": [
+        "fable-verify",
+        "fable-handoff"
+      ],
+      "keywords": [
+        "loop",
+        "poll",
+        "interval",
+        "recurring",
+        "cron",
+        "schedule",
+        "babysit"
+      ]
     },
     {
       "id": "fable-run",
       "order": 150,
       "phase": "verifying",
       "pack": "system",
-      "description": "Launch and drive live applications (CLI, server, TUI, Electron, browser) to verify end-to-end runtime behavior.",
-      "intents": ["run-app", "live-smoke-test", "start-server"],
-      "requires": ["built-artifact"],
-      "produces": ["runtime-evidence", "smoke-proof"],
-      "gates": ["process-clean-exit", "status-200"],
+      "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.",
+      "intents": [
+        "run-app",
+        "live-smoke-test",
+        "start-server"
+      ],
+      "requires": [
+        "built-artifact"
+      ],
+      "produces": [
+        "runtime-evidence",
+        "smoke-proof"
+      ],
+      "gates": [
+        "process-clean-exit",
+        "status-200"
+      ],
       "fallback": "fable-recover",
       "mutatesWorkspace": false,
       "parallelSafe": false,
-      "next": ["fable-verify", "fable-release"],
-      "keywords": ["run", "start app", "launch", "smoke test", "live server", "browser check"]
+      "next": [
+        "fable-verify",
+        "fable-release"
+      ],
+      "keywords": [
+        "run",
+        "start app",
+        "launch",
+        "smoke test",
+        "live server",
+        "browser check"
+      ]
     },
     {
       "id": "fable-memory",
       "order": 160,
       "phase": "discovering",
       "pack": "system",
-      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and project constraints.",
-      "intents": ["record-memory", "recall-facts", "index-memory"],
-      "requires": ["memory-fact"],
-      "produces": ["memory-record", "updated-index"],
-      "gates": ["single-fact-file", "index-synced"],
+      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.",
+      "intents": [
+        "record-memory",
+        "recall-facts",
+        "index-memory"
+      ],
+      "requires": [
+        "memory-fact"
+      ],
+      "produces": [
+        "memory-record",
+        "updated-index"
+      ],
+      "gates": [
+        "single-fact-file",
+        "index-synced"
+      ],
       "fallback": "fable-discover",
       "mutatesWorkspace": true,
       "parallelSafe": true,
-      "next": ["fable-plan", "fable-discover"],
-      "keywords": ["memory", "remember", "user preference", "feedback", "project constraint", "MEMORY.md"]
+      "next": [
+        "fable-plan",
+        "fable-discover"
+      ],
+      "keywords": [
+        "memory",
+        "remember",
+        "user preference",
+        "feedback",
+        "project constraint",
+        "MEMORY.md"
+      ]
     },
     {
       "id": "fable-config",
       "order": 170,
       "phase": "planned",
       "pack": "system",
-      "description": "Configure agent harness settings, permissions allowlists, environment variables, keybindings, and hooks.",
-      "intents": ["update-config", "manage-permissions", "configure-hooks"],
-      "requires": ["config-change"],
-      "produces": ["settings-diff"],
-      "gates": ["valid-json", "safe-permissions"],
+      "description": "Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.",
+      "intents": [
+        "update-config",
+        "manage-permissions",
+        "configure-hooks"
+      ],
+      "requires": [
+        "config-change"
+      ],
+      "produces": [
+        "settings-diff"
+      ],
+      "gates": [
+        "valid-json",
+        "safe-permissions"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": true,
       "parallelSafe": false,
-      "next": ["fable-verify", "get-fable"],
-      "keywords": ["config", "settings.json", "permissions", "keybindings", "env vars", "hooks.json"]
+      "next": [
+        "fable-verify",
+        "get-fable"
+      ],
+      "keywords": [
+        "config",
+        "settings.json",
+        "permissions",
+        "keybindings",
+        "env vars",
+        "hooks.json"
+      ]
     },
     {
       "id": "fable-simulator",
       "order": 180,
       "phase": "verifying",
       "pack": "system",
-      "description": "Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety.",
-      "intents": ["simulator-verify", "derive-contract", "headless-browser-test"],
-      "requires": ["independent-oracle"],
-      "produces": ["oracle-evidence", "causal-verification-matrix"],
-      "gates": ["oracle-independent", "untracked-files-preserved"],
+      "description": "Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.",
+      "intents": [
+        "simulator-verify",
+        "derive-contract",
+        "headless-browser-test"
+      ],
+      "requires": [
+        "independent-oracle"
+      ],
+      "produces": [
+        "oracle-evidence",
+        "causal-verification-matrix"
+      ],
+      "gates": [
+        "oracle-independent",
+        "untracked-files-preserved"
+      ],
       "fallback": "fable-verify",
       "mutatesWorkspace": false,
       "parallelSafe": false,
-      "next": ["fable-verify", "fable-review"],
-      "keywords": ["simulator", "independent oracle", "derive contract", "headless browser", "causal evidence", "truthfulness"]
+      "next": [
+        "fable-verify",
+        "fable-review"
+      ],
+      "keywords": [
+        "simulator",
+        "independent oracle",
+        "derive contract",
+        "headless browser",
+        "causal evidence",
+        "truthfulness"
+      ]
     },
     {
       "id": "fable-cowork",
       "order": 190,
       "phase": "executing",
       "pack": "system",
-      "description": "Autonomous cowork execution with silent tool chaining, outcome-first reporting, and safety boundary enforcement.",
-      "intents": ["cowork-mode", "autonomous-execution", "clean-tool-chain"],
-      "requires": ["autonomous-task"],
-      "produces": ["autonomous-deliverable", "outcome-summary"],
-      "gates": ["no-mid-chain-noise", "outcome-first"],
+      "description": "Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.",
+      "intents": [
+        "cowork-mode",
+        "autonomous-execution",
+        "clean-tool-chain"
+      ],
+      "requires": [
+        "autonomous-task"
+      ],
+      "produces": [
+        "autonomous-deliverable",
+        "outcome-summary"
+      ],
+      "gates": [
+        "no-mid-chain-noise",
+        "outcome-first"
+      ],
       "fallback": "fable-execute",
       "mutatesWorkspace": true,
       "parallelSafe": true,
-      "next": ["fable-verify", "fable-handoff"],
-      "keywords": ["cowork", "autonomous", "background mode", "clean tools", "lead with outcome"]
+      "next": [
+        "fable-verify",
+        "fable-handoff"
+      ],
+      "keywords": [
+        "cowork",
+        "autonomous",
+        "background mode",
+        "clean tools",
+        "lead with outcome"
+      ]
     },
     {
       "id": "fable-spark",
       "order": 200,
       "phase": "idle",
       "pack": "system",
-      "description": "Situational awareness micro-policy predicting the smallest atomic next move without scope drift.",
-      "intents": ["predict-next-move", "situational-awareness", "minimal-action"],
-      "requires": ["current-state"],
-      "produces": ["spark-suggestion"],
-      "gates": ["minimal-action-tested"],
+      "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.",
+      "intents": [
+        "predict-next-move",
+        "situational-awareness",
+        "minimal-action"
+      ],
+      "requires": [
+        "current-state"
+      ],
+      "produces": [
+        "spark-suggestion"
+      ],
+      "gates": [
+        "minimal-action-tested"
+      ],
       "fallback": "get-fable",
       "mutatesWorkspace": false,
       "parallelSafe": true,
-      "next": ["get-fable"],
-      "keywords": ["spark", "next move", "situational awareness", "smallest action", "minimal action"]
+      "next": [
+        "get-fable"
+      ],
+      "keywords": [
+        "spark",
+        "next move",
+        "situational awareness",
+        "smallest action",
+        "minimal action"
+      ]
     },
     {
       "id": "skill-creator",
       "order": 210,
       "phase": "executing",
       "pack": "creator",
-      "description": "Author, refine, optimize, and evaluate autonomous skills for multi-agent ecosystems.",
-      "intents": ["create-skill", "modify-skill", "benchmark-skill", "optimize-skill"],
-      "requires": ["user-intent"],
-      "produces": ["structured-skill-package", "eval-benchmark-suite"],
-      "gates": ["lack-of-surprise", "objective-eval-criteria"],
+      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.",
+      "intents": [
+        "create-skill",
+        "modify-skill",
+        "benchmark-skill",
+        "optimize-skill"
+      ],
+      "requires": [
+        "user-intent"
+      ],
+      "produces": [
+        "structured-skill-package",
+        "eval-benchmark-suite"
+      ],
+      "gates": [
+        "lack-of-surprise",
+        "objective-eval-criteria"
+      ],
       "fallback": "fable-plan",
       "mutatesWorkspace": true,
       "parallelSafe": false,
-      "next": ["fable-eval", "fable-verify", "fable-review"],
-      "keywords": ["create skill", "new skill", "author skill", "benchmark skill", "skill creator", "eval suite"]
+      "next": [
+        "fable-eval",
+        "fable-verify",
+        "fable-review"
+      ],
+      "keywords": [
+        "create skill",
+        "new skill",
+        "author skill",
+        "benchmark skill",
+        "skill creator",
+        "eval suite"
+      ]
     }
   ]
 }

@@ -1,5 +1,4 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-loop",
   "entry": "SKILL.md",
@@ -10,7 +9,9 @@
     "references/loop-control-guidelines.md",
     "references/polling-state-machines-and-backoff.md"
   ],
-  "templates": [],
+  "templates": [
+    "templates/loop-config.template.json"
+  ],
   "examples": [
     "examples/poll-build-job.md"
   ],

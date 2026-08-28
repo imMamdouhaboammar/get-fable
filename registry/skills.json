@@ -7,7 +7,7 @@
       "order": 0,
       "phase": "idle",
       "pack": "core",
-      "description": "Entry router and global execution contract.",
+      "description": "Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.",
       "intents": [
         "route",
         "resume",
@@ -59,7 +59,7 @@
       "order": 10,
       "phase": "discovering",
       "pack": "core",
-      "description": "Gather repository, environment, documentation, and load-bearing evidence before architecture.",
+      "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.",
       "intents": [
         "inspect-repository",
         "trace-behavior",
@@ -97,7 +97,7 @@
       "order": 15,
       "phase": "discovering",
       "pack": "intelligence",
-      "description": "Resolve current external facts against primary sources before they influence design or implementation.",
+      "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.",
       "intents": [
         "external-research",
         "current-docs",
@@ -137,7 +137,7 @@
       "order": 20,
       "phase": "planned",
       "pack": "core",
-      "description": "Convert evidence into bounded work cards with explicit acceptance criteria.",
+      "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.",
       "intents": [
         "architecture",
         "migration",
@@ -179,7 +179,7 @@
       "order": 30,
       "phase": "executing",
       "pack": "build",
-      "description": "Drive testable behavior changes through red, minimal implementation, green, and focused cleanup.",
+      "description": "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.",
       "intents": [
         "feature",
         "bug-fix",
@@ -218,7 +218,7 @@
       "order": 32,
       "phase": "executing",
       "pack": "build",
-      "description": "Delegate independent work only through explicit ownership, scope, and acceptance contracts.",
+      "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.",
       "intents": [
         "parallel-work",
         "subagents",
@@ -258,7 +258,7 @@
       "order": 40,
       "phase": "executing",
       "pack": "core",
-      "description": "Implement one accepted card with immediate acceptance checks and no scope drift.",
+      "description": "Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.",
       "intents": [
         "implement-card",
         "bounded-change",
@@ -297,7 +297,7 @@
       "order": 50,
       "phase": "verifying",
       "pack": "core",
-      "description": "Try to falsify the implementation and collect concrete acceptance evidence.",
+      "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.",
       "intents": [
         "run-tests",
         "typecheck",
@@ -340,7 +340,7 @@
       "order": 60,
       "phase": "verifying",
       "pack": "proof",
-      "description": "Review the actual diff against the requested behavior and repository standards independently from implementation.",
+      "description": "Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.",
       "intents": [
         "code-review",
         "diff-audit",
@@ -380,7 +380,7 @@
       "order": 70,
       "phase": "verifying",
       "pack": "proof",
-      "description": "Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation as appropriate.",
+      "description": "Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.",
       "intents": [
         "security-review",
         "threat-model",
@@ -421,7 +421,7 @@
       "order": 80,
       "phase": "verifying",
       "pack": "delivery",
-      "description": "Establish merge or release readiness from required quality gates and current repository state.",
+      "description": "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.",
       "intents": [
         "release",
         "merge",
@@ -459,7 +459,7 @@
       "order": 85,
       "phase": "verifying",
       "pack": "delivery",
-      "description": "Compact decisions, evidence, blockers, and the exact next action into durable continuation state.",
+      "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.",
       "intents": [
         "handoff",
         "resume-later",
@@ -494,7 +494,7 @@
       "order": 90,
       "phase": "verifying",
       "pack": "evolution",
-      "description": "Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions.",
+      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.",
       "intents": [
         "agent-eval",
         "self-improvement",
@@ -535,7 +535,7 @@
       "order": 100,
       "phase": "recovering",
       "pack": "core",
-      "description": "Diagnose repeated failure, stale execution, or contradictory evidence before another edit.",
+      "description": "Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.",
       "intents": [
         "debug-failure",
         "stale-execution",
@@ -577,7 +577,7 @@
       "order": 110,
       "phase": "executing",
       "pack": "system",
-      "description": "Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations across all rendering mediums.",
+      "description": "Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.",
       "intents": [
         "dataviz",
         "create-chart",
@@ -618,7 +618,7 @@
       "order": 120,
       "phase": "executing",
       "pack": "system",
-      "description": "Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components.",
+      "description": "Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.",
       "intents": [
         "create-artifact",
         "diagram-architecture",
@@ -656,7 +656,7 @@
       "order": 130,
       "phase": "executing",
       "pack": "system",
-      "description": "Clean up code quality, simplify logic, remove dead code, and improve altitude without changing runtime behavior.",
+      "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.",
       "intents": [
         "simplify-code",
         "remove-duplication",
@@ -693,7 +693,7 @@
       "order": 140,
       "phase": "executing",
       "pack": "system",
-      "description": "Run bounded recurring task loops, interval polling, or self-paced test cycles with explicit timeouts.",
+      "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.",
       "intents": [
         "recurring-loop",
         "poll-status",
@@ -731,7 +731,7 @@
       "order": 150,
       "phase": "verifying",
       "pack": "system",
-      "description": "Launch and drive live applications (CLI, server, TUI, Electron, browser) to verify end-to-end runtime behavior.",
+      "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.",
       "intents": [
         "run-app",
         "live-smoke-test",
@@ -769,7 +769,7 @@
       "order": 160,
       "phase": "discovering",
       "pack": "system",
-      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and project constraints.",
+      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.",
       "intents": [
         "record-memory",
         "recall-facts",
@@ -807,7 +807,7 @@
       "order": 170,
       "phase": "planned",
       "pack": "system",
-      "description": "Configure agent harness settings, permissions allowlists, environment variables, keybindings, and hooks.",
+      "description": "Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.",
       "intents": [
         "update-config",
         "manage-permissions",
@@ -844,7 +844,7 @@
       "order": 180,
       "phase": "verifying",
       "pack": "system",
-      "description": "Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety.",
+      "description": "Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.",
       "intents": [
         "simulator-verify",
         "derive-contract",
@@ -882,7 +882,7 @@
       "order": 190,
       "phase": "executing",
       "pack": "system",
-      "description": "Autonomous cowork execution with silent tool chaining, outcome-first reporting, and safety boundary enforcement.",
+      "description": "Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.",
       "intents": [
         "cowork-mode",
         "autonomous-execution",
@@ -919,7 +919,7 @@
       "order": 200,
       "phase": "idle",
       "pack": "system",
-      "description": "Situational awareness micro-policy predicting the smallest atomic next move without scope drift.",
+      "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.",
       "intents": [
         "predict-next-move",
         "situational-awareness",
@@ -953,7 +953,7 @@
       "order": 210,
       "phase": "executing",
       "pack": "creator",
-      "description": "Author, refine, optimize, and evaluate autonomous skills for multi-agent ecosystems.",
+      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.",
       "intents": [
         "create-skill",
         "modify-skill",

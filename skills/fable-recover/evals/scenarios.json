@@ -2,57 +2,144 @@
   {
     "id": "fable-recover-repeated-failure",
     "description": "Repeated failure triggers diagnosis before another mutation",
-    "given": {"failureStreak": 2, "lastError": "TypeError: Cannot read properties of undefined (reading 'headers')", "phase": "recovering"},
-    "expected": {"action": "diagnose-root-cause", "produces": "revised-hypothesis"},
-    "forbidden": {"action": "blindly-repeat-same-command"}
+    "given": {
+      "failureStreak": 2,
+      "lastError": "TypeError: Cannot read properties of undefined (reading 'headers')",
+      "phase": "recovering"
+    },
+    "expected": {
+      "action": "diagnose-root-cause",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "blindly-repeat-same-command"
+    }
   },
   {
     "id": "fable-recover-clean-repair-handoff",
     "description": "Once diagnosis is revised, hand off one bounded repair",
-    "given": {"diagnosis": "Stale dist directory not re-bundled before running integration tests"},
-    "expected": {"action": "hand-off-to-execute", "selectedSkill": "fable-execute"},
-    "forbidden": {"action": "execute-broad-unrelated-refactoring"}
+    "given": {
+      "diagnosis": "Stale dist directory not re-bundled before running integration tests"
+    },
+    "expected": {
+      "action": "hand-off-to-execute",
+      "selectedSkill": "fable-execute"
+    },
+    "forbidden": {
+      "action": "execute-broad-unrelated-refactoring"
+    }
   },
   {
     "id": "fable-recover-stale-artifact-prediction",
     "description": "Source changes have no runtime effect and stale built artifact is a testable hypothesis",
-    "given": {"sourceBehavior": "new", "runtimeBehavior": "old", "entrypoint": "dist/cli.js"},
-    "expected": {"action": "compare-source-and-built-entrypoints", "produces": "revised-hypothesis"},
-    "forbidden": {"action": "edit-source-again-without-proving-runtime-path"}
+    "given": {
+      "sourceBehavior": "new",
+      "runtimeBehavior": "old",
+      "entrypoint": "dist/cli.js"
+    },
+    "expected": {
+      "action": "compare-source-and-built-entrypoints",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "edit-source-again-without-proving-runtime-path"
+    }
   },
   {
     "id": "fable-recover-do-not-delete-cache-first",
     "description": "Cache is suspected but clearing it immediately would erase diagnostic evidence",
-    "given": {"intent": "rm -rf cache and rerun", "diagnosis": "unproven cache staleness"},
-    "expected": {"action": "record-and-test-cache-hypothesis-first", "produces": "revised-hypothesis"},
-    "forbidden": {"action": "destructive-cleanup-before-evidence"}
+    "given": {
+      "intent": "rm -rf cache and rerun",
+      "diagnosis": "unproven cache staleness"
+    },
+    "expected": {
+      "action": "record-and-test-cache-hypothesis-first",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "destructive-cleanup-before-evidence"
+    }
   },
   {
     "id": "fable-recover-ci-only-environment",
     "description": "Failure occurs only in CI and environment differences must be compared before product rewrites",
-    "given": {"local": "green", "ci": "fail", "codeSha": "same"},
-    "expected": {"action": "compare-environment-and-execution-context", "produces": "revised-hypothesis"},
-    "forbidden": {"action": "assume-ci-random-and-retry"}
+    "given": {
+      "local": "green",
+      "ci": "fail",
+      "codeSha": "same"
+    },
+    "expected": {
+      "action": "compare-environment-and-execution-context",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "assume-ci-random-and-retry"
+    }
   },
   {
     "id": "fable-recover-flaky-race",
     "description": "Identical test alternates outcomes and needs deterministic timing/order instrumentation",
-    "given": {"runs": ["pass", "fail", "pass", "fail"], "mutation": "none"},
-    "expected": {"action": "control-or-instrument-nondeterminism", "produces": "revised-hypothesis"},
-    "forbidden": {"action": "rerun-until-green"}
+    "given": {
+      "runs": [
+        "pass",
+        "fail",
+        "pass",
+        "fail"
+      ],
+      "mutation": "none"
+    },
+    "expected": {
+      "action": "control-or-instrument-nondeterminism",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "rerun-until-green"
+    }
   },
   {
     "id": "fable-recover-hypothesis-falsified",
     "description": "Primary hypothesis predicts old dist but hashes prove source and dist are identical and current",
-    "given": {"hypothesis": "stale dist", "observation": "source/dist hashes and timestamps match"},
-    "expected": {"action": "discard-falsified-hypothesis-and-probe-next", "produces": "revised-hypothesis"},
-    "forbidden": {"action": "keep-stale-build-theory-without-evidence"}
+    "given": {
+      "hypothesis": "stale dist",
+      "observation": "source/dist hashes and timestamps match"
+    },
+    "expected": {
+      "action": "discard-falsified-hypothesis-and-probe-next",
+      "produces": "revised-hypothesis"
+    },
+    "forbidden": {
+      "action": "keep-stale-build-theory-without-evidence"
+    }
   },
   {
     "id": "fable-recover-shared-invariant",
     "description": "Local patches shift the failure between components, indicating a shared design invariant",
-    "given": {"attempts": ["patch writer -> reader fails", "patch reader -> writer fails"]},
-    "expected": {"action": "route-shared-invariant-to-plan", "selectedSkill": "fable-plan"},
-    "forbidden": {"action": "continue-local-whack-a-mole-patches"}
+    "given": {
+      "attempts": [
+        "patch writer -> reader fails",
+        "patch reader -> writer fails"
+      ]
+    },
+    "expected": {
+      "action": "route-shared-invariant-to-plan",
+      "selectedSkill": "fable-plan"
+    },
+    "forbidden": {
+      "action": "continue-local-whack-a-mole-patches"
+    }
+  },
+  {
+    "id": "fable-recover-scenario-9",
+    "name": "fable-recover realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-recover workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-recover-scenario-10",
+    "name": "fable-recover realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-recover query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

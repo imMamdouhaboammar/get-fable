@@ -1,19 +1,26 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-spark",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
-  "references": [
-    "references/next-move-policy.md",
-    "references/silence-policy.md",
-    "references/evidence-and-gates.md",
-    "references/confidence-policy.md",
-    "references/atomic-action-and-silence.md"
+  "agents": [
+    "agents/openai.yaml"
   ],
-  "templates": [],
-  "examples": ["examples/situational-awareness-walkthrough.md"],
-  "evals": ["evals/scenarios.json"],
+  "references": [
+    "references/atomic-action-and-silence.md",
+    "references/confidence-policy.md",
+    "references/evidence-and-gates.md",
+    "references/next-move-policy.md",
+    "references/silence-policy.md"
+  ],
+  "templates": [
+    "templates/spark-decision.template.md"
+  ],
+  "examples": [
+    "examples/situational-awareness-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

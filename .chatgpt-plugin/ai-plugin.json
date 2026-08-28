@@ -2,8 +2,8 @@
   "schema_version": "v1",
   "name_for_human": "get-fable",
   "name_for_model": "get_fable",
-  "description_for_human": "AI coding lifecycle governance, deterministic routing, and spark situational prediction.",
-  "description_for_model": "Lifecycle governance kernel: route tasks across 14 specialist skills, track mutation state, collect typed evidence, and predict atomic next moves with spark.",
+  "description_for_human": "AI coding lifecycle governance, deterministic routing across 25 specialist skills, and spark situational prediction.",
+  "description_for_model": "Lifecycle governance kernel: route tasks across 25 specialist skills in 8 packs, track mutation state, collect typed evidence, and predict atomic next moves with spark.",
   "auth": {
     "type": "none"
   },

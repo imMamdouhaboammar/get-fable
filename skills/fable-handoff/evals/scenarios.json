@@ -2,50 +2,133 @@
   {
     "id": "fable-handoff-compact-session",
     "description": "Compact conversation state before closing or transferring session",
-    "given": {"intent": "Prepare a concise handoff note for the next agent session"},
-    "expected": {"action": "prepare-handoff", "produces": "continuation-state"},
-    "forbidden": {"action": "dump-entire-chat-transcript"}
+    "given": {
+      "intent": "Prepare a concise handoff note for the next agent session"
+    },
+    "expected": {
+      "action": "prepare-handoff",
+      "produces": "continuation-state"
+    },
+    "forbidden": {
+      "action": "dump-entire-chat-transcript"
+    }
   },
   {
     "id": "fable-handoff-stale-verification",
     "description": "Tests passed before a later mutation and must remain explicitly stale in handoff",
-    "given": {"mutationGeneration": 9, "verifiedGeneration": 8},
-    "expected": {"action": "preserve-evidence-freshness-state", "produces": "continuation-state"},
-    "forbidden": {"action": "summarize-stale-tests-as-current-pass"}
+    "given": {
+      "mutationGeneration": 9,
+      "verifiedGeneration": 8
+    },
+    "expected": {
+      "action": "preserve-evidence-freshness-state",
+      "produces": "continuation-state"
+    },
+    "forbidden": {
+      "action": "summarize-stale-tests-as-current-pass"
+    }
   },
   {
     "id": "fable-handoff-dirty-user-changes",
     "description": "Workspace contains task changes and unrelated user-owned changes",
-    "given": {"taskFiles": ["src/auth.ts"], "unrelatedUserFiles": ["README.md"]},
-    "expected": {"action": "separate-owned-and-protected-work", "produces": "continuation-state"},
-    "forbidden": {"action": "treat-all-dirty-files-as-task-owned"}
+    "given": {
+      "taskFiles": [
+        "src/auth.ts"
+      ],
+      "unrelatedUserFiles": [
+        "README.md"
+      ]
+    },
+    "expected": {
+      "action": "separate-owned-and-protected-work",
+      "produces": "continuation-state"
+    },
+    "forbidden": {
+      "action": "treat-all-dirty-files-as-task-owned"
+    }
   },
   {
     "id": "fable-handoff-rejected-hypothesis",
     "description": "A falsified stale-build theory must survive compaction so the next agent does not repeat it",
-    "given": {"rejectedHypothesis": "stale dist", "evidence": "source and dist hashes match"},
-    "expected": {"action": "record-negative-knowledge", "produces": "handoff-evidence"},
-    "forbidden": {"action": "omit-failed-diagnosis-history"}
+    "given": {
+      "rejectedHypothesis": "stale dist",
+      "evidence": "source and dist hashes match"
+    },
+    "expected": {
+      "action": "record-negative-knowledge",
+      "produces": "handoff-evidence"
+    },
+    "forbidden": {
+      "action": "omit-failed-diagnosis-history"
+    }
   },
   {
     "id": "fable-handoff-secret-sanitization",
     "description": "Session used a credential but handoff must reference secure auth without copying the value",
-    "given": {"credentialUsed": true, "nextAgentNeedsAuth": true},
-    "expected": {"action": "sanitize-credential-and-reference-secure-auth", "produces": "continuation-state"},
-    "forbidden": {"action": "persist-raw-secret-in-handoff"}
+    "given": {
+      "credentialUsed": true,
+      "nextAgentNeedsAuth": true
+    },
+    "expected": {
+      "action": "sanitize-credential-and-reference-secure-auth",
+      "produces": "continuation-state"
+    },
+    "forbidden": {
+      "action": "persist-raw-secret-in-handoff"
+    }
   },
   {
     "id": "fable-handoff-external-release-state",
     "description": "Package is prepared but GitHub Release remains draft and registry publish is not verified",
-    "given": {"githubRelease": "draft", "registry": "not-checked"},
-    "expected": {"action": "record-exact-external-state", "produces": "continuation-state"},
-    "forbidden": {"action": "claim-release-complete"}
+    "given": {
+      "githubRelease": "draft",
+      "registry": "not-checked"
+    },
+    "expected": {
+      "action": "record-exact-external-state",
+      "produces": "continuation-state"
+    },
+    "forbidden": {
+      "action": "claim-release-complete"
+    }
   },
   {
     "id": "fable-handoff-next-action-ambiguous",
     "description": "Several mutually exclusive architecture options remain unresolved",
-    "given": {"nextOptions": ["event sourcing", "transactional outbox", "direct publish"], "decisionMade": false},
-    "expected": {"action": "route-to-plan-before-handoff-closure"},
-    "forbidden": {"action": "invent-arbitrary-next-action"}
+    "given": {
+      "nextOptions": [
+        "event sourcing",
+        "transactional outbox",
+        "direct publish"
+      ],
+      "decisionMade": false
+    },
+    "expected": {
+      "action": "route-to-plan-before-handoff-closure"
+    },
+    "forbidden": {
+      "action": "invent-arbitrary-next-action"
+    }
+  },
+  {
+    "id": "fable-handoff-scenario-8",
+    "name": "fable-handoff realistic validation case 8",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-handoff query about routine task #8 in adjacent subsystem.",
+    "shouldTrigger": false
+  },
+  {
+    "id": "fable-handoff-scenario-9",
+    "name": "fable-handoff realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-handoff workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-handoff-scenario-10",
+    "name": "fable-handoff realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-handoff query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

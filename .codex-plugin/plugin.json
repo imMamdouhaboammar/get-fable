@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
   "version": "1.3.0",
-  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
+  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery across 25 canonical skills.",
   "author": {
     "name": "Mamdouh Abo Ammar",
     "url": "https://github.com/imMamdouhaboammar"
@@ -22,13 +22,14 @@
   "interface": {
     "displayName": "get-fable",
     "shortDescription": "AI coding lifecycle",
-    "longDescription": "Routes software work through focused lifecycle skills, keeps durable mutation-aware state, and requires evidence appropriate to the claim before completion.",
+    "longDescription": "Routes software work through 25 focused lifecycle skills across 8 packs, keeps durable mutation-aware state in .fable/state.json, and requires fresh evidence before completion.",
     "developerName": "Mamdouh Abo Ammar",
     "category": "Developer Tools",
     "capabilities": [
-      "Route coding work by lifecycle stage",
-      "Track mutation-aware verification",
-      "Use specialized review and recovery skills"
+      "Route coding work across 25 canonical lifecycle skills in 8 packs",
+      "Track mutation-aware verification and evidence freshness",
+      "Use specialized TDD, review, security, and recovery specialists",
+      "Predict atomic next moves with Fable Spark situational awareness"
     ],
     "websiteURL": "https://github.com/imMamdouhaboammar/get-fable",
     "supportURL": "https://github.com/imMamdouhaboammar/get-fable/issues",

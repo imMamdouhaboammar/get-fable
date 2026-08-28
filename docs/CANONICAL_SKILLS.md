@@ -4,28 +4,28 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 
 | Order | Pack | Skill | Phase | Job |
 | ---: | --- | --- | --- | --- |
-| 0 | core | `get-fable` | idle | Entry router and global execution contract. |
-| 10 | core | `fable-discover` | discovering | Gather repository, environment, documentation, and load-bearing evidence before architecture. |
-| 15 | intelligence | `fable-research` | discovering | Resolve current external facts against primary sources before they influence design or implementation. |
-| 20 | core | `fable-plan` | planned | Convert evidence into bounded work cards with explicit acceptance criteria. |
-| 30 | build | `fable-tdd` | executing | Drive testable behavior changes through red, minimal implementation, green, and focused cleanup. |
-| 32 | build | `fable-delegate` | executing | Delegate independent work only through explicit ownership, scope, and acceptance contracts. |
-| 40 | core | `fable-execute` | executing | Implement one accepted card with immediate acceptance checks and no scope drift. |
-| 50 | core | `fable-verify` | verifying | Try to falsify the implementation and collect concrete acceptance evidence. |
-| 60 | proof | `fable-review` | verifying | Review the actual diff against the requested behavior and repository standards independently from implementation. |
-| 70 | proof | `fable-security` | verifying | Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation as appropriate. |
-| 80 | delivery | `fable-release` | verifying | Establish merge or release readiness from required quality gates and current repository state. |
-| 85 | delivery | `fable-handoff` | verifying | Compact decisions, evidence, blockers, and the exact next action into durable continuation state. |
-| 90 | evolution | `fable-eval` | verifying | Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions. |
-| 100 | core | `fable-recover` | recovering | Diagnose repeated failure, stale execution, or contradictory evidence before another edit. |
-| 110 | system | `fable-dataviz` | executing | Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations across all rendering mediums. |
-| 120 | system | `fable-artifact` | executing | Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components. |
-| 130 | system | `fable-simplify` | executing | Clean up code quality, simplify logic, remove dead code, and improve altitude without changing runtime behavior. |
-| 140 | system | `fable-loop` | executing | Run bounded recurring task loops, interval polling, or self-paced test cycles with explicit timeouts. |
-| 150 | system | `fable-run` | verifying | Launch and drive live applications (CLI, server, TUI, Electron, browser) to verify end-to-end runtime behavior. |
-| 160 | system | `fable-memory` | discovering | Manage persistent file-based memory, indexing cross-session user preferences, feedback, and project constraints. |
-| 170 | system | `fable-config` | planned | Configure agent harness settings, permissions allowlists, environment variables, keybindings, and hooks. |
-| 180 | system | `fable-simulator` | verifying | Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety. |
-| 190 | system | `fable-cowork` | executing | Autonomous cowork execution with silent tool chaining, outcome-first reporting, and safety boundary enforcement. |
-| 200 | system | `fable-spark` | idle | Situational awareness micro-policy predicting the smallest atomic next move without scope drift. |
-| 210 | creator | `skill-creator` | executing | Author, refine, optimize, and evaluate autonomous skills for multi-agent ecosystems. |
+| 0 | core | `get-fable` | idle | Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence. |
+| 10 | core | `fable-discover` | discovering | Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. |
+| 15 | intelligence | `fable-research` | discovering | Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation. |
+| 20 | core | `fable-plan` | planned | Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants. |
+| 30 | build | `fable-tdd` | executing | Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests. |
+| 32 | build | `fable-delegate` | executing | Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts. |
+| 40 | core | `fable-execute` | executing | Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift. |
+| 50 | core | `fable-verify` | verifying | Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion. |
+| 60 | proof | `fable-review` | verifying | Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards. |
+| 70 | proof | `fable-security` | verifying | Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs. |
+| 80 | delivery | `fable-release` | verifying | Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. |
+| 85 | delivery | `fable-handoff` | verifying | Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. |
+| 90 | evolution | `fable-eval` | verifying | Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks. |
+| 100 | core | `fable-recover` | recovering | Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits. |
+| 110 | system | `fable-dataviz` | executing | Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports. |
+| 120 | system | `fable-artifact` | executing | Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components. |
+| 130 | system | `fable-simplify` | executing | Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior. |
+| 140 | system | `fable-loop` | executing | Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff. |
+| 150 | system | `fable-run` | verifying | Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown. |
+| 160 | system | `fable-memory` | discovering | Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores. |
+| 170 | system | `fable-config` | planned | Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations. |
+| 180 | system | `fable-simulator` | verifying | Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states. |
+| 190 | system | `fable-cowork` | executing | Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement. |
+| 200 | system | `fable-spark` | idle | Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence. |
+| 210 | creator | `skill-creator` | executing | Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. |

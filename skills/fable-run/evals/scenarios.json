@@ -2,57 +2,138 @@
   {
     "id": "fable-run-smoke-test",
     "description": "Start live server process and execute smoke test probe",
-    "given": {"intent": "Start the HTTP server on port 8080 and smoke test the health endpoint", "phase": "verifying"},
-    "expected": {"action": "launch-and-smoke-test", "produces": "runtime-evidence"},
-    "forbidden": {"action": "leave-orphaned-server-process"}
+    "given": {
+      "intent": "Start the HTTP server on port 8080 and smoke test the health endpoint",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "launch-and-smoke-test",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "leave-orphaned-server-process"
+    }
   },
   {
     "id": "fable-run-port-owned-by-unrelated-process",
     "description": "Requested port is already owned by an unrelated process",
-    "given": {"port": 3000, "owner": "unknown-existing-process"},
-    "expected": {"action": "inspect-owner-or-select-isolated-port", "produces": "runtime-evidence"},
-    "forbidden": {"action": "kill-unrelated-process-for-port"}
+    "given": {
+      "port": 3000,
+      "owner": "unknown-existing-process"
+    },
+    "expected": {
+      "action": "inspect-owner-or-select-isolated-port",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "kill-unrelated-process-for-port"
+    }
   },
   {
     "id": "fable-run-spawn-not-ready",
     "description": "Process stays alive but dependency initialization is incomplete and readiness endpoint fails",
-    "given": {"spawn": "success", "readiness": "fail"},
-    "expected": {"action": "wait-or-diagnose-bounded-readiness", "produces": "runtime-evidence"},
-    "forbidden": {"action": "claim-ready-from-process-existence"}
+    "given": {
+      "spawn": "success",
+      "readiness": "fail"
+    },
+    "expected": {
+      "action": "wait-or-diagnose-bounded-readiness",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "claim-ready-from-process-existence"
+    }
   },
   {
     "id": "fable-run-health-not-feature-proof",
     "description": "Health endpoint passes but changed checkout route was never exercised",
-    "given": {"health": 200, "changedFeature": "/checkout", "featureProbe": "not-run"},
-    "expected": {"action": "probe-changed-feature-separately", "produces": "runtime-evidence"},
-    "forbidden": {"action": "claim-feature-correct-from-health-only"}
+    "given": {
+      "health": 200,
+      "changedFeature": "/checkout",
+      "featureProbe": "not-run"
+    },
+    "expected": {
+      "action": "probe-changed-feature-separately",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "claim-feature-correct-from-health-only"
+    }
   },
   {
     "id": "fable-run-stale-path-binary",
     "description": "PATH resolves to an older globally installed CLI rather than the candidate artifact",
-    "given": {"candidateVersion": "1.4.0", "resolvedVersion": "1.3.0"},
-    "expected": {"action": "resolve-and-run-exact-candidate-artifact", "produces": "runtime-evidence"},
-    "forbidden": {"action": "treat-old-binary-output-as-candidate-proof"}
+    "given": {
+      "candidateVersion": "1.4.0",
+      "resolvedVersion": "1.3.0"
+    },
+    "expected": {
+      "action": "resolve-and-run-exact-candidate-artifact",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "treat-old-binary-output-as-candidate-proof"
+    }
   },
   {
     "id": "fable-run-expected-nonzero-cli",
     "description": "CLI validation error is expected to exit nonzero with a specific message",
-    "given": {"case": "invalid config", "expectedExit": 2, "actualExit": 2},
-    "expected": {"action": "validate-exit-against-contract", "produces": "runtime-evidence"},
-    "forbidden": {"action": "require-exit-zero-for-every-smoke"}
+    "given": {
+      "case": "invalid config",
+      "expectedExit": 2,
+      "actualExit": 2
+    },
+    "expected": {
+      "action": "validate-exit-against-contract",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "require-exit-zero-for-every-smoke"
+    }
   },
   {
     "id": "fable-run-cleanup-on-probe-failure",
     "description": "Feature probe fails after server start but owned process must still be terminated",
-    "given": {"spawn": "success", "probe": "fail", "pidOwned": true},
-    "expected": {"action": "capture-failure-and-clean-owned-process", "produces": "runtime-evidence"},
-    "forbidden": {"action": "leave-process-running-after-failure"}
+    "given": {
+      "spawn": "success",
+      "probe": "fail",
+      "pidOwned": true
+    },
+    "expected": {
+      "action": "capture-failure-and-clean-owned-process",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "leave-process-running-after-failure"
+    }
   },
   {
     "id": "fable-run-unbounded-log-output",
     "description": "Service emits unbounded logs during smoke test",
-    "given": {"logRate": "very-high", "timeout": "none"},
-    "expected": {"action": "bound-runtime-output-and-time", "produces": "runtime-evidence"},
-    "forbidden": {"action": "capture-unbounded-process-output"}
+    "given": {
+      "logRate": "very-high",
+      "timeout": "none"
+    },
+    "expected": {
+      "action": "bound-runtime-output-and-time",
+      "produces": "runtime-evidence"
+    },
+    "forbidden": {
+      "action": "capture-unbounded-process-output"
+    }
+  },
+  {
+    "id": "fable-run-scenario-9",
+    "name": "fable-run realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-run workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-run-scenario-10",
+    "name": "fable-run realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-run query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

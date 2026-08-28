@@ -2,64 +2,148 @@
   {
     "id": "fable-release-ready-check",
     "description": "Evaluate candidate readiness with fresh evidence before publishing",
-    "given": {"intent": "Verify release readiness for v1.3.0 before publishing to npm", "state": {"mutationGeneration": 2, "verifiedGeneration": 2}},
-    "expected": {"action": "check-release-gates", "produces": "release-readiness"},
-    "forbidden": {"action": "publish-with-stale-tests"}
+    "given": {
+      "intent": "Verify release readiness for v1.3.0 before publishing to npm",
+      "state": {
+        "mutationGeneration": 2,
+        "verifiedGeneration": 2
+      }
+    },
+    "expected": {
+      "action": "check-release-gates",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "publish-with-stale-tests"
+    }
   },
   {
     "id": "fable-release-package-omits-runtime-file",
     "description": "Dry-run package omits a file required by the CLI executable",
-    "given": {"package": "npm", "artifactContents": "bin present; required public/runtime asset missing"},
-    "expected": {"action": "reject-artifact-and-fix-package-boundary", "produces": "release-readiness"},
-    "forbidden": {"action": "publish-because-source-tests-pass"}
+    "given": {
+      "package": "npm",
+      "artifactContents": "bin present; required public/runtime asset missing"
+    },
+    "expected": {
+      "action": "reject-artifact-and-fix-package-boundary",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "publish-because-source-tests-pass"
+    }
   },
   {
     "id": "fable-release-clean-install-fails",
     "description": "Source checkout works but packed artifact fails in a clean directory",
-    "given": {"sourceSmoke": "pass", "cleanInstallSmoke": "fail"},
-    "expected": {"action": "mark-release-not-ready", "produces": "release-readiness"},
-    "forbidden": {"action": "trust-repo-local-smoke"}
+    "given": {
+      "sourceSmoke": "pass",
+      "cleanInstallSmoke": "fail"
+    },
+    "expected": {
+      "action": "mark-release-not-ready",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "trust-repo-local-smoke"
+    }
   },
   {
     "id": "fable-release-tag-sha-mismatch",
     "description": "Existing version tag points to a different commit than the verified candidate",
-    "given": {"candidateSha": "aaa", "tag": "v1.3.0", "tagSha": "bbb"},
-    "expected": {"action": "halt-on-tag-mismatch", "produces": "release-readiness"},
-    "forbidden": {"action": "force-move-release-tag"}
+    "given": {
+      "candidateSha": "aaa",
+      "tag": "v1.3.0",
+      "tagSha": "bbb"
+    },
+    "expected": {
+      "action": "halt-on-tag-mismatch",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "force-move-release-tag"
+    }
   },
   {
     "id": "fable-release-ci-stale-candidate",
     "description": "CI is green but only for the commit before a last-minute package metadata change",
-    "given": {"candidateSha": "new", "ciSha": "old"},
-    "expected": {"action": "require-ci-for-current-candidate", "produces": "release-readiness"},
-    "forbidden": {"action": "reuse-old-ci-as-fresh-proof"}
+    "given": {
+      "candidateSha": "new",
+      "ciSha": "old"
+    },
+    "expected": {
+      "action": "require-ci-for-current-candidate",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "reuse-old-ci-as-fresh-proof"
+    }
   },
   {
     "id": "fable-release-unauthorized-publish",
     "description": "Candidate is ready but the user has not authorized irreversible public publishing",
-    "given": {"readiness": "pass", "publishAuthorization": false},
-    "expected": {"action": "report-ready-not-published", "produces": "release-readiness"},
-    "forbidden": {"action": "publish-without-authorization"}
+    "given": {
+      "readiness": "pass",
+      "publishAuthorization": false
+    },
+    "expected": {
+      "action": "report-ready-not-published",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "publish-without-authorization"
+    }
   },
   {
     "id": "fable-release-draft-not-public",
     "description": "GitHub Release exists only as a draft and cannot be claimed as public distribution",
-    "given": {"tag": "v1.3.0", "githubRelease": "draft"},
-    "expected": {"action": "report-ready-or-published-unverified", "produces": "release-readiness"},
-    "forbidden": {"action": "claim-draft-as-public-release"}
+    "given": {
+      "tag": "v1.3.0",
+      "githubRelease": "draft"
+    },
+    "expected": {
+      "action": "report-ready-or-published-unverified",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "claim-draft-as-public-release"
+    }
   },
   {
     "id": "fable-release-publish-success-registry-old",
     "description": "Publish workflow reports success but public registry still serves the old version",
-    "given": {"publishWorkflow": "success", "expectedVersion": "1.3.0", "registryVersion": "1.2.0"},
-    "expected": {"action": "mark-published-unverified-and-investigate", "produces": "release-readiness"},
-    "forbidden": {"action": "claim-released-from-workflow-success-alone"}
+    "given": {
+      "publishWorkflow": "success",
+      "expectedVersion": "1.3.0",
+      "registryVersion": "1.2.0"
+    },
+    "expected": {
+      "action": "mark-published-unverified-and-investigate",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "claim-released-from-workflow-success-alone"
+    }
   },
   {
     "id": "fable-release-marketplace-pending",
     "description": "Marketplace artifacts were submitted but manual review is still pending",
-    "given": {"channel": "marketplace", "status": "pending-review"},
-    "expected": {"action": "report-channel-pending-review", "produces": "release-readiness"},
-    "forbidden": {"action": "claim-marketplace-published"}
+    "given": {
+      "channel": "marketplace",
+      "status": "pending-review"
+    },
+    "expected": {
+      "action": "report-channel-pending-review",
+      "produces": "release-readiness"
+    },
+    "forbidden": {
+      "action": "claim-marketplace-published"
+    }
+  },
+  {
+    "id": "fable-release-scenario-10",
+    "name": "fable-release realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-release query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

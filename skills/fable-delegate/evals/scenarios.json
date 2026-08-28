@@ -2,57 +2,155 @@
   {
     "id": "fable-delegate-independent-tasks",
     "description": "Stable, isolated exporter implementations can run in parallel",
-    "given": {"openCards": ["Implement PDF exporter in src/exporters/pdf.ts", "Implement CSV exporter in src/exporters/csv.ts"]},
-    "expected": {"action": "delegate-independent-cards", "gates": ["ownership-explicit", "acceptance-explicit"]},
-    "forbidden": {"action": "delegate-overlapping-files"}
+    "given": {
+      "openCards": [
+        "Implement PDF exporter in src/exporters/pdf.ts",
+        "Implement CSV exporter in src/exporters/csv.ts"
+      ]
+    },
+    "expected": {
+      "action": "delegate-independent-cards",
+      "gates": [
+        "ownership-explicit",
+        "acceptance-explicit"
+      ]
+    },
+    "forbidden": {
+      "action": "delegate-overlapping-files"
+    }
   },
   {
     "id": "fable-delegate-disjoint-files-shared-contract",
     "description": "Different files still share one unstable wire contract and must not be independently redefined",
-    "given": {"openCards": ["Change token serializer", "Change token parser"], "sharedInvariant": "token wire format is not yet decided"},
-    "expected": {"action": "reject-parallel-semantic-collision", "selectedSkill": "fable-plan"},
-    "forbidden": {"action": "delegate-because-files-disjoint"}
+    "given": {
+      "openCards": [
+        "Change token serializer",
+        "Change token parser"
+      ],
+      "sharedInvariant": "token wire format is not yet decided"
+    },
+    "expected": {
+      "action": "reject-parallel-semantic-collision",
+      "selectedSkill": "fable-plan"
+    },
+    "forbidden": {
+      "action": "delegate-because-files-disjoint"
+    }
   },
   {
     "id": "fable-delegate-shared-registry-parent-integration",
     "description": "Component implementations can parallelize while the parent owns shared registry integration",
-    "given": {"openCards": ["Build adapter A", "Build adapter B"], "sharedFile": "src/registry.ts"},
-    "expected": {"action": "delegate-components-parent-integrates", "gates": ["ownership-explicit", "acceptance-explicit"]},
-    "forbidden": {"action": "let-both-workers-edit-shared-registry"}
+    "given": {
+      "openCards": [
+        "Build adapter A",
+        "Build adapter B"
+      ],
+      "sharedFile": "src/registry.ts"
+    },
+    "expected": {
+      "action": "delegate-components-parent-integrates",
+      "gates": [
+        "ownership-explicit",
+        "acceptance-explicit"
+      ]
+    },
+    "forbidden": {
+      "action": "let-both-workers-edit-shared-registry"
+    }
   },
   {
     "id": "fable-delegate-context-starvation",
     "description": "Workers depend on an unresolved API decision and cannot act independently yet",
-    "given": {"openCards": ["Implement client", "Implement server"], "unknown": "new protocol message format"},
-    "expected": {"action": "resolve-parent-decision-before-delegation", "selectedSkill": "fable-plan"},
-    "forbidden": {"action": "delegate-undefined-contract"}
+    "given": {
+      "openCards": [
+        "Implement client",
+        "Implement server"
+      ],
+      "unknown": "new protocol message format"
+    },
+    "expected": {
+      "action": "resolve-parent-decision-before-delegation",
+      "selectedSkill": "fable-plan"
+    },
+    "forbidden": {
+      "action": "delegate-undefined-contract"
+    }
   },
   {
     "id": "fable-delegate-scope-escape",
     "description": "A worker discovers it must modify a surface outside its ownership",
-    "given": {"workerOwns": "src/pdf/**", "requestedExpansion": "src/core/registry.ts"},
-    "expected": {"action": "pause-and-renegotiate-scope", "produces": "delegation-contracts"},
-    "forbidden": {"action": "silently-expand-worker-ownership"}
+    "given": {
+      "workerOwns": "src/pdf/**",
+      "requestedExpansion": "src/core/registry.ts"
+    },
+    "expected": {
+      "action": "pause-and-renegotiate-scope",
+      "produces": "delegation-contracts"
+    },
+    "forbidden": {
+      "action": "silently-expand-worker-ownership"
+    }
   },
   {
     "id": "fable-delegate-worker-local-green-integration-red",
     "description": "Both workers pass local tests but combined integration fails",
-    "given": {"workerA": "green", "workerB": "green", "integration": "fail"},
-    "expected": {"action": "parent-diagnoses-integration-failure", "selectedSkill": "fable-recover"},
-    "forbidden": {"action": "claim-global-completion-from-worker-local-green"}
+    "given": {
+      "workerA": "green",
+      "workerB": "green",
+      "integration": "fail"
+    },
+    "expected": {
+      "action": "parent-diagnoses-integration-failure",
+      "selectedSkill": "fable-recover"
+    },
+    "forbidden": {
+      "action": "claim-global-completion-from-worker-local-green"
+    }
   },
   {
     "id": "fable-delegate-small-task-overhead",
     "description": "A tiny deterministic edit is cheaper and safer to execute directly than delegate",
-    "given": {"intent": "Rename one private helper and update its single call site"},
-    "expected": {"action": "defer-to-execute", "selectedSkill": "fable-execute"},
-    "forbidden": {"action": "delegate-for-parallelism-theater"}
+    "given": {
+      "intent": "Rename one private helper and update its single call site"
+    },
+    "expected": {
+      "action": "defer-to-execute",
+      "selectedSkill": "fable-execute"
+    },
+    "forbidden": {
+      "action": "delegate-for-parallelism-theater"
+    }
   },
   {
     "id": "fable-delegate-readonly-competing-hypotheses",
     "description": "Independent read-only investigators may explore competing causes in parallel",
-    "given": {"intent": "Investigate whether failure is cache-related or version-related", "mutationAllowed": false},
-    "expected": {"action": "delegate-readonly-investigations", "gates": ["ownership-explicit", "acceptance-explicit"]},
-    "forbidden": {"action": "merge-unverified-worker-mutations"}
+    "given": {
+      "intent": "Investigate whether failure is cache-related or version-related",
+      "mutationAllowed": false
+    },
+    "expected": {
+      "action": "delegate-readonly-investigations",
+      "gates": [
+        "ownership-explicit",
+        "acceptance-explicit"
+      ]
+    },
+    "forbidden": {
+      "action": "merge-unverified-worker-mutations"
+    }
+  },
+  {
+    "id": "fable-delegate-scenario-9",
+    "name": "fable-delegate realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-delegate workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-delegate-scenario-10",
+    "name": "fable-delegate realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-delegate query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

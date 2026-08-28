@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-release",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
-  "references": [
-    "references/release-gates.md",
-    "references/artifact-and-distribution-verification.md"
+  "agents": [
+    "agents/openai.yaml"
   ],
-  "templates": [],
-  "examples": ["examples/release-readiness-audit.md"],
-  "evals": ["evals/scenarios.json"],
+  "references": [
+    "references/artifact-and-distribution-verification.md",
+    "references/release-gates.md"
+  ],
+  "templates": [
+    "templates/release-checklist.template.md"
+  ],
+  "examples": [
+    "examples/release-readiness-audit.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
   "version": "1.3.0",
-  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
+  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery across 25 canonical skills.",
   "author": {
     "name": "Mamdouh Abo Ammar",
     "url": "https://github.com/imMamdouhaboammar"
@@ -17,6 +17,8 @@
     "agent-skills",
     "coding-lifecycle",
     "verification",
+    "tdd",
+    "spark",
     "skills"
   ],
   "skills": "./skills/",

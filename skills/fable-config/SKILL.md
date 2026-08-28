@@ -1,6 +1,8 @@
 ---
 name: fable-config
-description: Configure agent harness settings, permissions allowlists, environment variables, keybindings, and lifecycle hooks. Use when updating settings.json, managing permissions, or configuring hooks.
+description: >
+  Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations. Use when modifying settings.json, adjusting tool permissions, setting up environment variables, or configuring agent lifecycle hooks — even if the user does not explicitly say "fable-config" (e.g. "update settings", "allow command permissions", "configure agent hooks", "setup environment variables"). Do NOT use for application-level business configuration.
+
 version: 1.3.0
 pack: system
 inputs:

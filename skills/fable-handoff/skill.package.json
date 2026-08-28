@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-handoff",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
+  "agents": [
+    "agents/openai.yaml"
+  ],
   "references": [
     "references/continuity-schema.md",
     "references/resumability-and-context-compaction.md"
   ],
-  "templates": ["templates/handoff-state.template.md"],
-  "examples": ["examples/cross-session-handoff.md"],
-  "evals": ["evals/scenarios.json"],
+  "templates": [
+    "templates/handoff-state.template.md"
+  ],
+  "examples": [
+    "examples/cross-session-handoff.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

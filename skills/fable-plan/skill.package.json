@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-plan",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
+  "agents": [
+    "agents/openai.yaml"
+  ],
   "references": [
     "references/decomposition-rules.md",
     "references/risk-and-dependency-decomposition.md"
   ],
-  "templates": ["templates/work-card.template.md"],
-  "examples": ["examples/multi-file-migration-plan.md"],
-  "evals": ["evals/scenarios.json"],
+  "templates": [
+    "templates/work-card.template.md"
+  ],
+  "examples": [
+    "examples/multi-file-migration-plan.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

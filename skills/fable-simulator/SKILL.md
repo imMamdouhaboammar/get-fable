@@ -1,6 +1,8 @@
 ---
 name: fable-simulator
-description: Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety. Use when complex verification requires independent reference models or headless browser checks.
+description: >
+  Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states. Use when deriving independent verification oracles, testing algorithms against reference models, verifying UI with headless browsers, or testing state transitions in sandboxes — even if the user does not explicitly say "fable-simulator" (e.g. "simulate this workflow", "verify with an independent oracle", "headless browser check", "derive a test oracle"). Do NOT use for simple unit test runs (use fable-verify).
+
 version: 1.3.0
 pack: system
 inputs:

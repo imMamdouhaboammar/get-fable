@@ -354,16 +354,30 @@ Claude Code marketplace installation:
 
 ## Start in under a minute
 
-`get-fable` is Bun-first and requires **Bun 1.3+**.
-
+### 1. Vercel / skills.sh CLI (Direct Skill Pack)
 ```bash
-bun add -g get-fable
+npx skills add imMamdouhaboammar/get-fable
+# or
+bunx skills add imMamdouhaboammar/get-fable
 ```
 
-Or:
-
+### 2. Homebrew (macOS & Linux)
 ```bash
+brew tap imMamdouhaboammar/get-fable
+brew install get-fable
+```
+
+### 3. Global Package Manager
+```bash
+bun add -g get-fable
+# or
 npm install -g get-fable
+```
+
+### 4. Configure All Coding Agents
+```bash
+get-fable install all
+# Configures Claude Code, Google Antigravity, OpenAI Codex/ChatGPT, Cursor, OpenCode, Kimi, DeepSeek, Kiro, Pi
 ```
 
 Inside a project:
@@ -391,12 +405,7 @@ Check installation, contracts, and evidence state:
 get-fable doctor
 ```
 
-Try without a global install:
-
-```bash
-bunx get-fable --help
-npx get-fable --help
-```
+> 📖 **Full Multi-Host & Platform Guide**: See [docs/INSTALLATION.md](./docs/INSTALLATION.md) for detailed configuration of hooks, shell completions, and individual agent environments.
 
 ---
 

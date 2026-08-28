@@ -13,127 +13,127 @@
     {
       "id": "get-fable",
       "path": "skills/get-fable/SKILL.md",
-      "description": "Entry router and global execution contract."
+      "description": "Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence."
     },
     {
       "id": "fable-discover",
       "path": "skills/fable-discover/SKILL.md",
-      "description": "Gather repository, environment, documentation, and load-bearing evidence before architecture."
+      "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code."
     },
     {
       "id": "fable-research",
       "path": "skills/fable-research/SKILL.md",
-      "description": "Resolve current external facts against primary sources before they influence design or implementation."
+      "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation."
     },
     {
       "id": "fable-plan",
       "path": "skills/fable-plan/SKILL.md",
-      "description": "Convert evidence into bounded work cards with explicit acceptance criteria."
+      "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants."
     },
     {
       "id": "fable-tdd",
       "path": "skills/fable-tdd/SKILL.md",
-      "description": "Drive testable behavior changes through red, minimal implementation, green, and focused cleanup."
+      "description": "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests."
     },
     {
       "id": "fable-delegate",
       "path": "skills/fable-delegate/SKILL.md",
-      "description": "Delegate independent work only through explicit ownership, scope, and acceptance contracts."
+      "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts."
     },
     {
       "id": "fable-execute",
       "path": "skills/fable-execute/SKILL.md",
-      "description": "Implement one accepted card with immediate acceptance checks and no scope drift."
+      "description": "Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift."
     },
     {
       "id": "fable-verify",
       "path": "skills/fable-verify/SKILL.md",
-      "description": "Try to falsify the implementation and collect concrete acceptance evidence."
+      "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion."
     },
     {
       "id": "fable-review",
       "path": "skills/fable-review/SKILL.md",
-      "description": "Review the actual diff against the requested behavior and repository standards independently from implementation."
+      "description": "Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards."
     },
     {
       "id": "fable-security",
       "path": "skills/fable-security/SKILL.md",
-      "description": "Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation as appropriate."
+      "description": "Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs."
     },
     {
       "id": "fable-release",
       "path": "skills/fable-release/SKILL.md",
-      "description": "Establish merge or release readiness from required quality gates and current repository state."
+      "description": "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts."
     },
     {
       "id": "fable-handoff",
       "path": "skills/fable-handoff/SKILL.md",
-      "description": "Compact decisions, evidence, blockers, and the exact next action into durable continuation state."
+      "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption."
     },
     {
       "id": "fable-eval",
       "path": "skills/fable-eval/SKILL.md",
-      "description": "Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions."
+      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks."
     },
     {
       "id": "fable-recover",
       "path": "skills/fable-recover/SKILL.md",
-      "description": "Diagnose repeated failure, stale execution, or contradictory evidence before another edit."
+      "description": "Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits."
     },
     {
       "id": "fable-dataviz",
       "path": "skills/fable-dataviz/SKILL.md",
-      "description": "Create accessible, cohesive charts, plots, graphs, stat tiles, and data visualizations across all rendering mediums."
+      "description": "Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports."
     },
     {
       "id": "fable-artifact",
       "path": "skills/fable-artifact/SKILL.md",
-      "description": "Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components."
+      "description": "Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components."
     },
     {
       "id": "fable-simplify",
       "path": "skills/fable-simplify/SKILL.md",
-      "description": "Clean up code quality, simplify logic, remove dead code, and improve altitude without changing runtime behavior."
+      "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior."
     },
     {
       "id": "fable-loop",
       "path": "skills/fable-loop/SKILL.md",
-      "description": "Run bounded recurring task loops, interval polling, or self-paced test cycles with explicit timeouts."
+      "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff."
     },
     {
       "id": "fable-run",
       "path": "skills/fable-run/SKILL.md",
-      "description": "Launch and drive live applications (CLI, server, TUI, Electron, browser) to verify end-to-end runtime behavior."
+      "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown."
     },
     {
       "id": "fable-memory",
       "path": "skills/fable-memory/SKILL.md",
-      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and project constraints."
+      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores."
     },
     {
       "id": "fable-config",
       "path": "skills/fable-config/SKILL.md",
-      "description": "Configure agent harness settings, permissions allowlists, environment variables, keybindings, and hooks."
+      "description": "Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations."
     },
     {
       "id": "fable-simulator",
       "path": "skills/fable-simulator/SKILL.md",
-      "description": "Verify code changes with independent oracles, contract derivation, headless UI testing, and workspace safety."
+      "description": "Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states."
     },
     {
       "id": "fable-cowork",
       "path": "skills/fable-cowork/SKILL.md",
-      "description": "Autonomous cowork execution with silent tool chaining, outcome-first reporting, and safety boundary enforcement."
+      "description": "Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement."
     },
     {
       "id": "fable-spark",
       "path": "skills/fable-spark/SKILL.md",
-      "description": "Situational awareness micro-policy predicting the smallest atomic next move without scope drift."
+      "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence."
     },
     {
       "id": "skill-creator",
       "path": "skills/skill-creator/SKILL.md",
-      "description": "Author, refine, optimize, and evaluate autonomous skills for multi-agent ecosystems."
+      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning."
     }
   ]
 }

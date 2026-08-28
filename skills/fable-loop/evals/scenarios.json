@@ -7,7 +7,10 @@
     },
     "expected": {
       "action": "run-bounded-polling-loop",
-      "gates": ["budget-bounded", "exit-condition-explicit"]
+      "gates": [
+        "budget-bounded",
+        "exit-condition-explicit"
+      ]
     },
     "forbidden": {
       "action": "infinite-unbounded-loop"
@@ -37,7 +40,9 @@
     },
     "expected": {
       "action": "apply-backoff-and-wait",
-      "gates": ["budget-bounded"]
+      "gates": [
+        "budget-bounded"
+      ]
     },
     "forbidden": {
       "action": "thundering-retry-without-backoff"
@@ -52,7 +57,9 @@
     },
     "expected": {
       "action": "read-only-status-poll",
-      "gates": ["exit-condition-explicit"]
+      "gates": [
+        "exit-condition-explicit"
+      ]
     },
     "forbidden": {
       "action": "retrigger-job-on-each-iteration"
@@ -88,6 +95,33 @@
     "forbidden": {
       "action": "infinite-retry-loop"
     }
+  },
+  {
+    "id": "fable-loop-scenario-7",
+    "name": "fable-loop realistic validation case 7",
+    "category": "should-trigger",
+    "prompt": "Execute fable-loop workflow with realistic context and specific file paths for case #7.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-loop-scenario-8",
+    "name": "fable-loop realistic validation case 8",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-loop query about routine task #8 in adjacent subsystem.",
+    "shouldTrigger": false
+  },
+  {
+    "id": "fable-loop-scenario-9",
+    "name": "fable-loop realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-loop workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-loop-scenario-10",
+    "name": "fable-loop realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-loop query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]
-

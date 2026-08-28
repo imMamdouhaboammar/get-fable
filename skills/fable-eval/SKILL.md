@@ -1,6 +1,8 @@
 ---
 name: fable-eval
-description: Evaluate changes to prompts, skills, hooks, routers, or agent controls against baselines, holdouts, and regressions. Use when modifying agent behavior or measuring prompt quality.
+description: >
+  Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks. Use when optimizing agent system prompts, measuring skill triggering accuracy, evaluating routing changes, or running benchmark regressions — even if the user does not explicitly say "fable-eval" (e.g. "benchmark this prompt", "evaluate agent behavior", "test skill performance", "run the eval suite"). Do NOT use for routine application unit tests (use fable-verify).
+
 version: 1.3.0
 pack: evolution
 inputs:

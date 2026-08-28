@@ -1,6 +1,8 @@
 ---
 name: fable-handoff
-description: Compact decisions, evidence, blockers, and the exact next action into durable continuation state. Use when pausing, transferring context, or ending an engineering session.
+description: >
+  Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. Use when pausing a coding session, transferring context to another agent, summarizing long-running work, or creating durable continuation checkpoints — even if the user does not explicitly say "fable-handoff" (e.g. "save context for next session", "create a handoff", "pause work here", "summarize where we left off"). Do NOT use as a substitute for verifying code changes (use fable-verify).
+
 version: 1.3.0
 pack: delivery
 inputs:

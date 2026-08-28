@@ -2,64 +2,150 @@
   {
     "id": "fable-tdd-bug-fix",
     "description": "A deterministic bug requires a failing regression test before production mutation",
-    "given": {"intent": "Fix the off-by-one error in pagination calculation", "phase": "executing"},
-    "expected": {"action": "write-failing-test-first", "gates": ["red-observed", "green-observed"]},
-    "forbidden": {"action": "modify-production-code-without-test"}
+    "given": {
+      "intent": "Fix the off-by-one error in pagination calculation",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "write-failing-test-first",
+      "gates": [
+        "red-observed",
+        "green-observed"
+      ]
+    },
+    "forbidden": {
+      "action": "modify-production-code-without-test"
+    }
   },
   {
     "id": "fable-tdd-wrong-red-syntax-error",
     "description": "The new test fails to import because of a syntax error, so RED is not valid",
-    "given": {"intent": "Proceed to implementation now that the test is red", "testFailure": "SyntaxError before assertion"},
-    "expected": {"action": "repair-test-harness-before-production", "gates": ["red-observed"]},
-    "forbidden": {"action": "treat-any-failure-as-valid-red"}
+    "given": {
+      "intent": "Proceed to implementation now that the test is red",
+      "testFailure": "SyntaxError before assertion"
+    },
+    "expected": {
+      "action": "repair-test-harness-before-production",
+      "gates": [
+        "red-observed"
+      ]
+    },
+    "forbidden": {
+      "action": "treat-any-failure-as-valid-red"
+    }
   },
   {
     "id": "fable-tdd-test-level-integration",
     "description": "The bug is a transaction isolation issue that a repository mock cannot reproduce",
-    "given": {"intent": "Fix duplicate order creation under concurrent commits", "suspectedBoundary": "database transaction"},
-    "expected": {"action": "choose-integration-test-boundary", "produces": "regression-test"},
-    "forbidden": {"action": "mock-away-failure-boundary"}
+    "given": {
+      "intent": "Fix duplicate order creation under concurrent commits",
+      "suspectedBoundary": "database transaction"
+    },
+    "expected": {
+      "action": "choose-integration-test-boundary",
+      "produces": "regression-test"
+    },
+    "forbidden": {
+      "action": "mock-away-failure-boundary"
+    }
   },
   {
     "id": "fable-tdd-legacy-characterization",
     "description": "Legacy module has no clean unit seam and broad refactor before proof would mix structure and behavior",
-    "given": {"intent": "Fix pricing bug in 1800-line legacy service", "unitSeam": "none"},
-    "expected": {"action": "characterize-nearest-stable-boundary", "produces": "regression-test"},
-    "forbidden": {"action": "refactor-broadly-before-characterization"}
+    "given": {
+      "intent": "Fix pricing bug in 1800-line legacy service",
+      "unitSeam": "none"
+    },
+    "expected": {
+      "action": "characterize-nearest-stable-boundary",
+      "produces": "regression-test"
+    },
+    "forbidden": {
+      "action": "refactor-broadly-before-characterization"
+    }
   },
   {
     "id": "fable-tdd-concurrency-with-sleep",
     "description": "A race condition test uses arbitrary sleep and passes/fails nondeterministically",
-    "given": {"intent": "Keep rerunning the race test until it fails", "testMechanism": "sleep(100)"},
-    "expected": {"action": "control-concurrency-order-deterministically", "produces": "regression-test"},
-    "forbidden": {"action": "use-random-reruns-as-red-proof"}
+    "given": {
+      "intent": "Keep rerunning the race test until it fails",
+      "testMechanism": "sleep(100)"
+    },
+    "expected": {
+      "action": "control-concurrency-order-deterministically",
+      "produces": "regression-test"
+    },
+    "forbidden": {
+      "action": "use-random-reruns-as-red-proof"
+    }
   },
   {
     "id": "fable-tdd-change-test-to-match-code",
     "description": "Implementation disagrees with the accepted contract and pressure is to weaken the test",
-    "given": {"intent": "Change expected 409 to 200 because the new code returns 200", "acceptedContract": "duplicate request returns 409"},
-    "expected": {"action": "fix-production-to-contract", "gates": ["green-observed"]},
-    "forbidden": {"action": "weaken-test-to-match-implementation"}
+    "given": {
+      "intent": "Change expected 409 to 200 because the new code returns 200",
+      "acceptedContract": "duplicate request returns 409"
+    },
+    "expected": {
+      "action": "fix-production-to-contract",
+      "gates": [
+        "green-observed"
+      ]
+    },
+    "forbidden": {
+      "action": "weaken-test-to-match-implementation"
+    }
   },
   {
     "id": "fable-tdd-false-green-mock",
     "description": "A mock bypasses the adapter behavior that caused the real bug",
-    "given": {"intent": "Accept the passing unit test", "evidence": "mock returns normalized response; real SDK returns streaming chunks"},
-    "expected": {"action": "strengthen-test-across-real-contract", "produces": "regression-test"},
-    "forbidden": {"action": "accept-mock-only-false-green"}
+    "given": {
+      "intent": "Accept the passing unit test",
+      "evidence": "mock returns normalized response; real SDK returns streaming chunks"
+    },
+    "expected": {
+      "action": "strengthen-test-across-real-contract",
+      "produces": "regression-test"
+    },
+    "forbidden": {
+      "action": "accept-mock-only-false-green"
+    }
   },
   {
     "id": "fable-tdd-contract-ambiguous",
     "description": "Product expectation is unresolved, so encoding one guess into a test would freeze an arbitrary contract",
-    "given": {"intent": "Write a test for whether expired sessions should refresh or log out", "contractStatus": "unresolved"},
-    "expected": {"action": "route-to-plan-for-contract-resolution"},
-    "forbidden": {"action": "encode-ambiguous-contract-as-test"}
+    "given": {
+      "intent": "Write a test for whether expired sessions should refresh or log out",
+      "contractStatus": "unresolved"
+    },
+    "expected": {
+      "action": "route-to-plan-for-contract-resolution"
+    },
+    "forbidden": {
+      "action": "encode-ambiguous-contract-as-test"
+    }
   },
   {
     "id": "fable-tdd-repeated-valid-red-failed-fixes",
     "description": "A trustworthy RED exists but two materially similar fixes fail and diagnosis should change before another mutation",
-    "given": {"failureStreak": 2, "redValid": true, "phase": "executing"},
-    "expected": {"action": "route-to-recover", "selectedSkill": "fable-recover"},
-    "forbidden": {"action": "try-third-similar-patch"}
+    "given": {
+      "failureStreak": 2,
+      "redValid": true,
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "route-to-recover",
+      "selectedSkill": "fable-recover"
+    },
+    "forbidden": {
+      "action": "try-third-similar-patch"
+    }
+  },
+  {
+    "id": "fable-tdd-scenario-10",
+    "name": "fable-tdd realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-tdd query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-execute",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
-  "references": [
-    "references/mutation-containment.md",
-    "references/bounded-mutation-and-failure-classification.md"
+  "agents": [
+    "agents/openai.yaml"
   ],
-  "templates": [],
-  "examples": ["examples/bounded-card-execution.md"],
-  "evals": ["evals/scenarios.json"],
+  "references": [
+    "references/bounded-mutation-and-failure-classification.md",
+    "references/mutation-containment.md"
+  ],
+  "templates": [
+    "templates/execution-receipt.template.md"
+  ],
+  "examples": [
+    "examples/bounded-card-execution.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

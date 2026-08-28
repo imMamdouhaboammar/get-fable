@@ -1,16 +1,23 @@
-# Lifecycle Routing Matrix & Precedence
+# Lifecycle Routing Matrix & Evidence Precedence
 
-## Precedence Order
-1. `fable-recover`: Repeated failures (failureStreak >= 2), stale execution, contradictory evidence.
-2. `fable-security`: Security audits, auth/permission logic, secret exposure checks.
-3. `fable-release`: Merge readiness, release checklists, tag/publish gates.
-4. `fable-handoff`: Session continuity, compaction, next-action handoffs.
-5. `fable-eval`: Evaluation of agent skills, prompts, benchmarks, self-improvement.
-6. `fable-review`: Independent diff audits, PR review, standards conformance.
-7. `fable-verify`: Behavioral falsification, test execution, proof generation.
-8. `fable-research`: External fact grounding, API/documentation research.
-9. `fable-discover`: Unfamiliar repository inspection, path tracing, load-bearing unknowns.
-10. `fable-delegate`: Independent subtask delegation with disjoint ownership.
-11. `fable-plan`: Architecture, multi-file design, migration decomposition.
-12. `fable-tdd`: Testable feature additions or bug fixes.
-13. `fable-execute`: Bounded implementation of an accepted card.
+## Purpose
+Comprehensive routing matrix and precedence rules governing transitions between all 25 canonical Get Fable skills.
+
+## Master Routing Table
+
+| Current Workspace State | Incoming User Intent | Selected Skill | Precedence Rationale |
+|---|---|---|---|
+| `failureStreak >= 2` | Any coding task | `fable-recover` | Stop execution churn; diagnose root cause. |
+| Security / Auth risk | Security audit or diff | `fable-security` | Security gates override general review. |
+| Unknown codebase | "How does X work?", "Explore" | `fable-discover` | Gather local facts before designing. |
+| External API question | "Check latest docs for Y" | `fable-research` | Ground external facts in primary sources. |
+| Multi-file feature | "Design X", "Plan architecture" | `fable-plan` | Decompose into bounded cards. |
+| Reproducible bug / TDD | "Fix bug X", "Write test" | `fable-tdd` | Red-Green-Refactor discipline. |
+| Independent subtasks | "Run parallel workers" | `fable-delegate` | Disjoint ownership and contracts. |
+| Accepted work card | "Implement card X" | `fable-execute` | Bounded single-scope execution. |
+| Code modified | "Run tests", "Check if working" | `fable-verify` | Falsification and fresh proof. |
+| PR / Diff ready | "Review my changes" | `fable-review` | Independent grounded code review. |
+| Release candidate | "Ship to prod", "Release tag" | `fable-release` | Certification and gate validation. |
+| Session ending | "Pause work", "Save context" | `fable-handoff` | Durable state serialization. |
+| Agent prompt / skill | "Benchmark skill", "Eval prompt" | `fable-eval` | Baseline and holdout evaluation. |
+| New skill needed | "Create a skill", "Author skill" | `skill-creator` | 6-mode skill lifecycle. |

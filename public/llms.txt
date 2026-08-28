@@ -17,6 +17,7 @@
 - [Evidence & Proof Semantics](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/EVIDENCE.md): - **Freshness**: `verifiedGeneration === mutationGeneration`.
 - [Lifecycle Hooks Specification](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/HOOKS.md): - **`SessionStart`**: Restore state and verify active card.
 - [Multi-Host Platform Matrix (August 19, 2026)](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/HOSTS.md): - **Anthropic Claude**: `claude-opus-5`, `claude-sonnet-5`, `claude-fable-5`, `claude-mythos-5`, `claude-haiku-4-5`
+- [Get Fable Installation Guide](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/INSTALLATION.md): Complete installation, configuration, and host integration guide for **Get Fable** — the evidence-driven coding lifecycle and situational awareness engine for AI coding agents.
 - [External Integrations Guide](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/INTEGRATIONS.md): - **GitHub**: Automatic PR reviews, branch status checks, issue triage.
 - [Fable Coding Lifecycle v2](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/LIFECYCLE.md): │ (route task / intent)
 - [ChatGPT, Codex, and Claude Code plugin package](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/PLUGIN.md): `get-fable` 1.3.0 ships a skill-only OpenAI plugin (`.codex-plugin/plugin.json`) plus a native Claude Code plugin and marketplace manifest (`.claude-plugin/marketplace.json` and `.

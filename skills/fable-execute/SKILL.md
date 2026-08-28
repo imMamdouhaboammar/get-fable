@@ -1,6 +1,8 @@
 ---
 name: fable-execute
-description: Implement one bounded work card with immediate acceptance checks and no scope drift. Use only when scope is stable enough that implementation does not need a new architecture decision.
+description: >
+  Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift. Use when executing a planned work card, applying a well-defined code change, implementing an isolated function, or performing targeted single-scope edits — even if the user does not explicitly say "fable-execute" (e.g. "implement this card", "write the code for this step", "apply the agreed changes", "build this component"). Do NOT use when new architectural decisions are required (use fable-plan) or when tests are repeatedly failing (use fable-recover).
+
 version: 1.3.0
 pack: core
 inputs:

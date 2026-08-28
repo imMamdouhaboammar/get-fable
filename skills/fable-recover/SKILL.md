@@ -1,6 +1,8 @@
 ---
 name: fable-recover
-description: Diagnose repeated failure, stale execution, or contradictory evidence before another edit. Use when commands fail repeatedly or retrying the same approach produces no progress.
+description: >
+  Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits. Use when commands fail repeatedly, tests stay red after attempted fixes, build output contradicts source code, or the execution path is confused — even if the user does not explicitly say "fable-recover" (e.g. "still failing", "why did this fail again", "stuck in a failure loop", "diagnose this error"). Do NOT use for routine first-time test failures in fresh TDD (use fable-tdd).
+
 version: 1.3.0
 pack: core
 inputs:

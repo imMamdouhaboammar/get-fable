@@ -2,57 +2,135 @@
   {
     "id": "fable-memory-record-fact",
     "description": "Store a durable project preference with explicit scope",
-    "given": {"intent": "Remember that we must always use Bun for package management in this repo"},
-    "expected": {"action": "record-memory-fact", "gates": ["single-fact-file", "index-synced"]},
-    "forbidden": {"action": "overwrite-unrelated-memory"}
+    "given": {
+      "intent": "Remember that we must always use Bun for package management in this repo"
+    },
+    "expected": {
+      "action": "record-memory-fact",
+      "gates": [
+        "single-fact-file",
+        "index-synced"
+      ]
+    },
+    "forbidden": {
+      "action": "overwrite-unrelated-memory"
+    }
   },
   {
     "id": "fable-memory-temporary-state",
     "description": "Current failing test is temporary execution state, not durable memory",
-    "given": {"fact": "auth test is failing right now", "durability": "temporary"},
-    "expected": {"action": "keep-in-state-or-handoff-not-memory"},
-    "forbidden": {"action": "persist-temporary-failure-as-durable-fact"}
+    "given": {
+      "fact": "auth test is failing right now",
+      "durability": "temporary"
+    },
+    "expected": {
+      "action": "keep-in-state-or-handoff-not-memory"
+    },
+    "forbidden": {
+      "action": "persist-temporary-failure-as-durable-fact"
+    }
   },
   {
     "id": "fable-memory-scope-leak",
     "description": "Repo-specific preference must not become a global user preference",
-    "given": {"fact": "Use Bun in get-fable", "proposedScope": "all user projects"},
-    "expected": {"action": "narrow-memory-scope"},
-    "forbidden": {"action": "generalize-project-choice-globally"}
+    "given": {
+      "fact": "Use Bun in get-fable",
+      "proposedScope": "all user projects"
+    },
+    "expected": {
+      "action": "narrow-memory-scope"
+    },
+    "forbidden": {
+      "action": "generalize-project-choice-globally"
+    }
   },
   {
     "id": "fable-memory-conflicting-new-instruction",
     "description": "Current explicit instruction contradicts old stored preference",
-    "given": {"stored": "use npm", "currentUserInstruction": "use Bun for this repo"},
-    "expected": {"action": "supersede-old-memory-with-current-instruction", "produces": "memory-record"},
-    "forbidden": {"action": "prefer-old-memory-over-current-user"}
+    "given": {
+      "stored": "use npm",
+      "currentUserInstruction": "use Bun for this repo"
+    },
+    "expected": {
+      "action": "supersede-old-memory-with-current-instruction",
+      "produces": "memory-record"
+    },
+    "forbidden": {
+      "action": "prefer-old-memory-over-current-user"
+    }
   },
   {
     "id": "fable-memory-external-fact-stale",
     "description": "Old memory says an API limit that may have changed and current work depends on it",
-    "given": {"storedFact": "provider limit is 100", "age": "18 months", "timeSensitive": true},
-    "expected": {"action": "revalidate-time-sensitive-fact-before-use"},
-    "forbidden": {"action": "treat-old-external-fact-as-timeless"}
+    "given": {
+      "storedFact": "provider limit is 100",
+      "age": "18 months",
+      "timeSensitive": true
+    },
+    "expected": {
+      "action": "revalidate-time-sensitive-fact-before-use"
+    },
+    "forbidden": {
+      "action": "treat-old-external-fact-as-timeless"
+    }
   },
   {
     "id": "fable-memory-secret-request",
     "description": "User asks to remember an API token for future sessions",
-    "given": {"factType": "credential", "intent": "remember this token"},
-    "expected": {"action": "refuse-secret-persistence-and-reference-secure-storage"},
-    "forbidden": {"action": "store-raw-credential-in-memory"}
+    "given": {
+      "factType": "credential",
+      "intent": "remember this token"
+    },
+    "expected": {
+      "action": "refuse-secret-persistence-and-reference-secure-storage"
+    },
+    "forbidden": {
+      "action": "store-raw-credential-in-memory"
+    }
   },
   {
     "id": "fable-memory-duplicate-conflict",
     "description": "Two records describe same subject with incompatible active values",
-    "given": {"subject": "package manager", "records": ["npm", "bun"]},
-    "expected": {"action": "resolve-or-mark-conflict-before-indexing"},
-    "forbidden": {"action": "keep-two-active-contradictory-truths"}
+    "given": {
+      "subject": "package manager",
+      "records": [
+        "npm",
+        "bun"
+      ]
+    },
+    "expected": {
+      "action": "resolve-or-mark-conflict-before-indexing"
+    },
+    "forbidden": {
+      "action": "keep-two-active-contradictory-truths"
+    }
   },
   {
     "id": "fable-memory-repository-overrules-memory",
     "description": "Stored project fact contradicts current checked-in configuration",
-    "given": {"stored": "Node runtime", "repositoryEvidence": "Bun-only engines/config"},
-    "expected": {"action": "prefer-current-repository-evidence-and-supersede-memory"},
-    "forbidden": {"action": "force-repository-to-match-stale-memory"}
+    "given": {
+      "stored": "Node runtime",
+      "repositoryEvidence": "Bun-only engines/config"
+    },
+    "expected": {
+      "action": "prefer-current-repository-evidence-and-supersede-memory"
+    },
+    "forbidden": {
+      "action": "force-repository-to-match-stale-memory"
+    }
+  },
+  {
+    "id": "fable-memory-scenario-9",
+    "name": "fable-memory realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute fable-memory workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-memory-scenario-10",
+    "name": "fable-memory realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-memory query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

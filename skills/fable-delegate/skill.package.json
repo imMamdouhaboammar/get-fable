@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-delegate",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
-  "references": [
-    "references/subagent-contracts.md",
-    "references/parallelism-and-integration.md"
+  "agents": [
+    "agents/openai.yaml"
   ],
-  "templates": ["templates/delegation-contract.template.md"],
-  "examples": ["examples/parallel-workers-walkthrough.md"],
-  "evals": ["evals/scenarios.json"],
+  "references": [
+    "references/parallelism-and-integration.md",
+    "references/subagent-contracts.md"
+  ],
+  "templates": [
+    "templates/delegation-contract.template.md"
+  ],
+  "examples": [
+    "examples/parallel-workers-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

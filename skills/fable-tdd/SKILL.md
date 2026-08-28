@@ -1,6 +1,8 @@
 ---
 name: fable-tdd
-description: Drive testable behavior changes through red, minimal implementation, green, and focused cleanup. Use for bug fixes, new features, or behavior changes with verifiable assertions.
+description: >
+  Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests. Use when implementing new features with unit/integration tests, fixing reproducible bugs, modifying business logic, or writing test-first behavior contracts — even if the user does not explicitly say "fable-tdd" (e.g. "fix this bug test-first", "write a test and make it pass", "add this feature with tests", "TDD this logic"). Do NOT use for broad exploratory prototyping without clear assertions (use fable-discover or fable-plan) or for post-implementation reviews (use fable-review).
+
 version: 1.3.0
 pack: build
 inputs:

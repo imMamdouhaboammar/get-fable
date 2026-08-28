@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-eval",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
-  "references": [
-    "references/eval-harness-protocol.md",
-    "references/benchmark-design-and-overfit-control.md"
+  "agents": [
+    "agents/openai.yaml"
   ],
-  "templates": [],
-  "examples": ["examples/eval-regression-run.md"],
-  "evals": ["evals/scenarios.json"],
+  "references": [
+    "references/benchmark-design-and-overfit-control.md",
+    "references/eval-harness-protocol.md"
+  ],
+  "templates": [
+    "templates/eval-benchmark-report.template.md"
+  ],
+  "examples": [
+    "examples/eval-regression-run.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

@@ -1,6 +1,8 @@
 ---
 name: fable-discover
-description: Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. Use when load-bearing facts are unknown, current behavior must be traced, or external API behavior can change the design.
+description: >
+  Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. Use when load-bearing facts are unknown, tracing execution paths, inspecting unfamiliar packages, or resolving codebase contradictions — even if the user does not explicitly say "fable-discover" (e.g. "explore the codebase", "how does this work", "where is this implemented", "find where this route is handled"). Do NOT use when the bounded edit is already known (use fable-execute), for external API/version research (use fable-research), or for running existing test suites (use fable-verify).
+
 version: 1.3.0
 pack: core
 inputs:

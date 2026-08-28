@@ -1,16 +1,23 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "fable-discover",
   "entry": "SKILL.md",
-  "agents": ["agents/openai.yaml"],
+  "agents": [
+    "agents/openai.yaml"
+  ],
   "references": [
     "references/evidence-gathering-protocol.md",
     "references/repository-investigation-playbook.md"
   ],
-  "templates": [],
-  "examples": ["examples/codebase-inspection.md"],
-  "evals": ["evals/scenarios.json"],
+  "templates": [
+    "templates/discovery-packet.template.md"
+  ],
+  "examples": [
+    "examples/codebase-inspection.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
   "scripts": [],
   "scriptPolicy": "data-only"
 }

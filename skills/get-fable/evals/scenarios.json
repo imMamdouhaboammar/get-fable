@@ -2,57 +2,145 @@
   {
     "id": "get-fable-route-recovery-precedence",
     "description": "When the user reports repeated failures, recovery must take precedence over planning or execution",
-    "given": {"intent": "The test suite failed twice in a row after changing the auth token logic", "state": {"failureStreak": 2, "phase": "executing"}},
-    "expected": {"selectedSkill": "fable-recover", "reasonCode": "failure-loop-diagnose-required"},
-    "forbidden": {"selectedSkill": "fable-execute"}
+    "given": {
+      "intent": "The test suite failed twice in a row after changing the auth token logic",
+      "state": {
+        "failureStreak": 2,
+        "phase": "executing"
+      }
+    },
+    "expected": {
+      "selectedSkill": "fable-recover",
+      "reasonCode": "failure-loop-diagnose-required"
+    },
+    "forbidden": {
+      "selectedSkill": "fable-execute"
+    }
   },
   {
     "id": "get-fable-route-security-precedence",
     "description": "Explicit security review must route to fable-security",
-    "given": {"intent": "Audit the OAuth callback endpoint for CSRF and open redirect vulnerabilities"},
-    "expected": {"selectedSkill": "fable-security", "pack": "proof"},
-    "forbidden": {"selectedSkill": "fable-execute"}
+    "given": {
+      "intent": "Audit the OAuth callback endpoint for CSRF and open redirect vulnerabilities"
+    },
+    "expected": {
+      "selectedSkill": "fable-security",
+      "pack": "proof"
+    },
+    "forbidden": {
+      "selectedSkill": "fable-execute"
+    }
   },
   {
     "id": "get-fable-route-idle-silence",
     "description": "When idle with no pending intent, Spark remains silent",
-    "given": {"state": {"phase": "idle"}},
-    "expected": {"silent": true, "suggestion": null},
-    "forbidden": {"silent": false}
+    "given": {
+      "state": {
+        "phase": "idle"
+      }
+    },
+    "expected": {
+      "silent": true,
+      "suggestion": null
+    },
+    "forbidden": {
+      "silent": false
+    }
   },
   {
     "id": "get-fable-stale-proof-before-release",
     "description": "A release outcome request cannot bypass verification after a later mutation",
-    "given": {"task": "Ship the package", "state": {"mutationGeneration": 5, "verifiedGeneration": 4, "phase": "executing"}},
-    "expected": {"action": "apply-precedence-before-outcome", "produces": "routing-decision"},
-    "forbidden": {"action": "route-directly-to-release-with-stale-proof"}
+    "given": {
+      "task": "Ship the package",
+      "state": {
+        "mutationGeneration": 5,
+        "verifiedGeneration": 4,
+        "phase": "executing"
+      }
+    },
+    "expected": {
+      "action": "apply-precedence-before-outcome",
+      "produces": "routing-decision"
+    },
+    "forbidden": {
+      "action": "route-directly-to-release-with-stale-proof"
+    }
   },
   {
     "id": "get-fable-external-unknown-before-code",
     "description": "Implementation request depends on an unresolved current external API contract",
-    "given": {"task": "Implement streaming using the provider's newest SDK", "externalContractKnown": false},
-    "expected": {"action": "route-earliest-load-bearing-decision", "produces": "routing-decision"},
-    "forbidden": {"action": "execute-from-model-memory"}
+    "given": {
+      "task": "Implement streaming using the provider's newest SDK",
+      "externalContractKnown": false
+    },
+    "expected": {
+      "action": "route-earliest-load-bearing-decision",
+      "produces": "routing-decision"
+    },
+    "forbidden": {
+      "action": "execute-from-model-memory"
+    }
   },
   {
     "id": "get-fable-no-orchestration-churn",
     "description": "A bounded specialist remains valid and no state/evidence condition changed",
-    "given": {"activeSkill": "fable-execute", "cardStillValid": true, "routingConditionChanged": false},
-    "expected": {"action": "keep-current-specialist-owner", "produces": "routing-decision"},
-    "forbidden": {"action": "reroute-for-ceremony"}
+    "given": {
+      "activeSkill": "fable-execute",
+      "cardStillValid": true,
+      "routingConditionChanged": false
+    },
+    "expected": {
+      "action": "keep-current-specialist-owner",
+      "produces": "routing-decision"
+    },
+    "forbidden": {
+      "action": "reroute-for-ceremony"
+    }
   },
   {
     "id": "get-fable-compound-request-sequencing",
     "description": "Review, fix, test and release is a dependency sequence, not four simultaneous owners",
-    "given": {"task": "Review this, fix anything wrong, test it and release it"},
-    "expected": {"action": "sequence-specialists-by-dependency", "produces": "routing-decision"},
-    "forbidden": {"action": "activate-multiple-primary-owners"}
+    "given": {
+      "task": "Review this, fix anything wrong, test it and release it"
+    },
+    "expected": {
+      "action": "sequence-specialists-by-dependency",
+      "produces": "routing-decision"
+    },
+    "forbidden": {
+      "action": "activate-multiple-primary-owners"
+    }
   },
   {
     "id": "get-fable-state-contradicts-repository",
     "description": "Durable state says verification is current but repository mutation evidence contradicts it",
-    "given": {"state": {"verifiedGeneration": 7, "mutationGeneration": 7}, "repositoryEvidence": "unrecorded source mutation after verification"},
-    "expected": {"action": "treat-state-as-untrusted-and-reconcile", "produces": "routing-decision"},
-    "forbidden": {"action": "trust-corrupt-state-over-repository-evidence"}
+    "given": {
+      "state": {
+        "verifiedGeneration": 7,
+        "mutationGeneration": 7
+      },
+      "repositoryEvidence": "unrecorded source mutation after verification"
+    },
+    "expected": {
+      "action": "treat-state-as-untrusted-and-reconcile",
+      "produces": "routing-decision"
+    },
+    "forbidden": {
+      "action": "trust-corrupt-state-over-repository-evidence"
+    }
+  },
+  {
+    "id": "get-fable-scenario-9",
+    "name": "get-fable realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute get-fable workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "get-fable-scenario-10",
+    "name": "get-fable realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-get-fable query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

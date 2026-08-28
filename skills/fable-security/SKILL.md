@@ -1,6 +1,8 @@
 ---
 name: fable-security
-description: Route security-sensitive work to threat modeling, diff review, repository audit, or finding validation. Use for auth, secrets, untrusted inputs, permissions, or vulnerability analysis.
+description: >
+  Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs. Use when auditing authentication/authorization logic, inspecting APIs for injection/CORS/CSRF risks, checking for hardcoded credentials, or reviewing security-sensitive diffs — even if the user does not explicitly say "fable-security" (e.g. "security audit this code", "check for vulnerabilities", "verify auth logic", "scan for leaked secrets"). Do NOT use for general style reviews (use fable-review) or non-security bug fixes (use fable-tdd).
+
 version: 1.3.0
 pack: proof
 inputs:

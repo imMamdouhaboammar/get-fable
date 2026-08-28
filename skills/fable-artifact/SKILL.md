@@ -1,6 +1,8 @@
 ---
 name: fable-artifact
-description: Design structured technical proposals, responsive artifacts, architecture diagrams, and interactive components. Use when creating standalone markdown reports, Mermaid diagrams, or interactive widgets.
+description: >
+  Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components. Use when creating standalone markdown reports, architectural specifications, Mermaid diagrams, or interactive artifact widgets — even if the user does not explicitly say "fable-artifact" (e.g. "create an artifact", "draw an architecture diagram", "write a technical proposal", "generate a mermaid flowchart"). Do NOT use for quick one-line conversational answers.
+
 version: 1.3.0
 pack: system
 inputs:

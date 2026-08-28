@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 3,
+  "stateRevision": 1,
+  "workspaceId": "neutral-template-id",
+  "phase": "idle",
+  "currentSkill": null,
+  "failureStreak": 0,
+  "substantial": true,
+  "mutationGeneration": 1,
+  "verifiedGeneration": 1,
+  "activeCard": null,
+  "lastDecision": null,
+  "evidence": [
+    {
+      "kind": "test",
+      "command": "bun test",
+      "generation": 1,
+      "passed": true,
+      "details": "Initial baseline verified",
+      "timestamp": "2026-08-28T00:00:00.000Z"
+    }
+  ],
+  "updatedAt": "2026-08-28T00:00:00.000Z"
+}

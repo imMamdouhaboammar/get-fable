@@ -1,6 +1,8 @@
 ---
 name: get-fable
-description: Route substantial software work through get-fable's complete coding lifecycle. Use when the user requests Fable-style rigor, when a project has active .fable state, or when the next safe engineering step depends on discovery, research, planning, testing, delegation, verification, review, security, release, handoff, evaluation, or recovery.
+description: >
+  Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence. Use when starting a complex coding task, navigating lifecycle phases, resuming work with durable .fable state, or routing between research, planning, testing, verification, and recovery — even if the user does not explicitly say "get-fable" (e.g. "follow fable lifecycle", "orchestrate this project", "what is the next engineering step", "route my task"). Do NOT use when an individual specialist skill already has clear isolated ownership of a bounded subtask.
+
 version: 1.3.0
 pack: core
 inputs:

@@ -112,5 +112,19 @@
     "forbidden": {
       "action": "preserve-stale-maturity-claim"
     }
+  },
+  {
+    "id": "skill-creator-scenario-9",
+    "name": "skill-creator realistic validation case 9",
+    "category": "should-trigger",
+    "prompt": "Execute skill-creator workflow with realistic context and specific file paths for case #9.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "skill-creator-scenario-10",
+    "name": "skill-creator realistic validation case 10",
+    "category": "should-not-trigger",
+    "prompt": "General non-skill-creator query about routine task #10 in adjacent subsystem.",
+    "shouldTrigger": false
   }
 ]

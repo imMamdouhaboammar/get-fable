@@ -1,6 +1,8 @@
 ---
 name: fable-run
-description: Launch and drive live applications to verify end-to-end runtime behavior. Use when starting development servers, testing live CLI binaries, or driving browser smoke tests.
+description: >
+  Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown. Use when starting development servers, executing live smoke tests, testing interactive CLI binaries, or driving runtime smoke verification — even if the user does not explicitly say "fable-run" (e.g. "start the dev server", "launch the app", "test the running CLI", "smoke test the web app"). Do NOT use for static analysis or unit testing without a running process (use fable-verify).
+
 version: 1.3.0
 pack: system
 inputs:

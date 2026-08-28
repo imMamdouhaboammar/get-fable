@@ -1,5 +1,4 @@
 {
-  "$schema": "../../schemas/skill-package.schema.json",
   "schemaVersion": 2,
   "id": "get-fable",
   "entry": "SKILL.md",
@@ -10,7 +9,9 @@
     "references/lifecycle-routing-matrix.md",
     "references/stateful-routing-and-precedence.md"
   ],
-  "templates": [],
+  "templates": [
+    "templates/lifecycle-state.template.json"
+  ],
   "examples": [
     "examples/lifecycle-walkthrough.md"
   ],
