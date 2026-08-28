@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { semver } from 'bun';
 import { logInfo, logSuccess, logWarn, logError, colors } from '../utils.js';
 
 export interface UpdateCheckResult {
@@ -12,6 +11,19 @@ export interface UpdateCheckResult {
   checkedAt: string;
   channel: 'npm' | 'github' | 'local';
   changelogUrl?: string;
+}
+
+type BunSemverApi = {
+  order(versionA: string, versionB: string): -1 | 0 | 1;
+  satisfies(version: string, range: string): boolean;
+};
+
+function getBunSemver(): BunSemverApi {
+  const bun = (globalThis as typeof globalThis & { Bun?: { semver?: BunSemverApi } }).Bun;
+  if (!bun?.semver) {
+    throw new Error('Bun semver API is unavailable');
+  }
+  return bun.semver;
 }
 
 export function getUpdateCachePath(): string {
@@ -81,12 +93,14 @@ export async function fetchLatestVersion(
 }
 
 function assertValidVersion(version: string): void {
+  const semver = getBunSemver();
   if (!semver.satisfies(version, version)) {
     throw new Error(`Invalid semantic version: ${version}`);
   }
 }
 
 export function isNewerVersion(current: string, latest: string): boolean {
+  const semver = getBunSemver();
   assertValidVersion(current);
   assertValidVersion(latest);
   return semver.order(latest, current) > 0;
