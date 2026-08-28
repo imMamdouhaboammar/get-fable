@@ -6,13 +6,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SessionStart --handler profile",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SessionStart --handler profile",
             "additionalContextLimit": 5000,
             "statusMessage": "Loading get-fable lifecycle context"
           },
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SessionStart --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SessionStart --handler event",
             "async": true
           }
         ]
@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event UserPromptSubmit --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event UserPromptSubmit --handler event",
             "async": true
           }
         ]
@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PreToolUse --handler spawn",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PreToolUse --handler spawn",
             "timeout": 15,
             "statusMessage": "Checking get-fable delegation guard"
           }
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PreToolUse --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PreToolUse --handler event",
             "async": true
           }
         ]
@@ -56,7 +56,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PermissionRequest --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PermissionRequest --handler event",
             "async": true
           }
         ]
@@ -68,7 +68,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostToolUse --handler failure",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PostToolUse --handler failure",
             "additionalContextLimit": 3500,
             "statusMessage": "Attributing command result"
           }
@@ -79,7 +79,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostToolUse --handler mutation",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PostToolUse --handler mutation",
             "statusMessage": "Recording workspace mutation"
           }
         ]
@@ -88,7 +88,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostToolUse --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PostToolUse --handler event",
             "async": true
           }
         ]
@@ -99,7 +99,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PreCompact --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PreCompact --handler event",
             "async": true
           }
         ]
@@ -110,7 +110,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostCompact --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event PostCompact --handler event",
             "async": true
           }
         ]
@@ -121,7 +121,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SubagentStart --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SubagentStart --handler event",
             "async": true
           }
         ]
@@ -132,7 +132,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SubagentStop --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SubagentStop --handler event",
             "async": true
           }
         ]
@@ -143,24 +143,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event Stop --handler close",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event Stop --handler close",
             "timeout": 30,
             "statusMessage": "Checking get-fable completion gate"
           },
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event Stop --handler event",
-            "async": true
-          }
-        ]
-      }
-    ],
-    "Interrupt": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event Interrupt --handler event",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event Stop --handler event",
             "async": true
           }
         ]
@@ -171,7 +160,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SessionEnd --handler event"
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SessionEnd --handler event"
           }
         ]
       }
