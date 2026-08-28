@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
   "displayName": "get-fable Coding Lifecycle",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Adds a complete coding lifecycle for AI-assisted software work: discovery, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
   "author": "Mamdouh Abo Ammar",
   "homepage": "https://github.com/imMamdouhaboammar/get-fable",

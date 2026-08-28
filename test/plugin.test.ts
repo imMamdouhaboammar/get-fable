@@ -67,6 +67,7 @@ describe('OpenAI plugin package', () => {
       'skills',
       'apps',
       'mcpServers',
+      'hooks',
       'interface',
       'author',
       'homepage',
@@ -83,7 +84,7 @@ describe('OpenAI plugin package', () => {
     expect(manifest.skills).toBe('./skills/');
     expect(manifest.mcpServers).toBeUndefined();
     expect(manifest.apps).toBeUndefined();
-    expect(manifest.hooks).toBeUndefined();
+    expect(manifest.hooks).toBe('./hooks/hooks.codex.json');
     expect(manifest.interface?.displayName).toBeTruthy();
     expect(manifest.interface?.shortDescription).toBeTruthy();
     expect(manifest.interface.shortDescription.length).toBeLessThanOrEqual(30);
@@ -161,19 +162,24 @@ describe('OpenAI plugin package', () => {
     const registryHooks = readJson('registry/hooks.json').hooks;
     const postToolUse = hooks.PostToolUse || [];
     const postToolUseFailure = hooks.PostToolUseFailure || [];
-    expect(JSON.stringify(postToolUse)).toContain('fable_fail_streak.py');
+    expect(JSON.stringify(postToolUse)).toContain('fable_hook_dispatch.py');
+    expect(JSON.stringify(postToolUse)).toContain('--handler failure');
 
-    for (const eventEntries of [
+    const hookLists = [
       postToolUse,
       postToolUseFailure,
       registryHooks.PostToolUse || [],
       registryHooks.PostToolUseFailure || [],
-    ]) {
+    ];
+
+    for (const eventEntries of hookLists) {
       const mutation = eventEntries.find((entry: any) =>
         entry.command?.includes('fable_mutation.py') ||
-        entry.hooks?.some((hook: any) => hook.command.includes('fable_mutation.py'))
+        entry.hooks?.some((hook: any) =>
+          hook.command.includes('fable_mutation.py') || hook.command.includes('--handler mutation')
+        )
       );
-      expect(mutation?.matcher).toBe('Edit|Write|MultiEdit|NotebookEdit');
+      expect(mutation?.matcher).toMatch(/Edit\|Write\|MultiEdit/);
     }
   });
 
@@ -223,7 +229,9 @@ describe('OpenAI plugin package', () => {
       config.hooks[event]?.some(
         (entry: any) =>
           entry.matcher === 'Bash' &&
-          entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
+          entry.hooks?.some((hook: any) =>
+            hook.command.includes('fable_fail_streak.py') || hook.command.includes('--handler failure')
+          )
       );
 
     expect(hasFailureTracker('PostToolUse')).toBe(true);

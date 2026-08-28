@@ -38,7 +38,7 @@ describe('Multi-agent platform installers', () => {
 
     expect(fs.existsSync(path.join(codexDir, 'rules', 'fable5-mode.md'))).toBe(true);
     expect(fs.existsSync(path.join(codexDir, 'skills', 'fable-tdd', 'SKILL.md'))).toBe(true);
-    expect(fs.existsSync(path.join(codexDir, 'plugins', 'get-fable', 'plugin.json'))).toBe(true);
+    expect(fs.existsSync(path.join(codexDir, 'plugins', 'get-fable', '.codex-plugin', 'plugin.json'))).toBe(true);
   });
 
   test('installs Cursor rules', () => {

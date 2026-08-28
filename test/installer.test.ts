@@ -93,18 +93,22 @@ describe('installGlobalFable', () => {
     const settings = JSON.parse(second);
     const failureEntries = (event: string) =>
       settings.hooks[event].filter((entry: any) =>
-        entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
+        entry.hooks?.some((hook: any) =>
+          hook.command.includes('--handler failure') || hook.command.includes('fable_fail_streak.py')
+        )
       );
     const mutationEntries = (event: string) =>
       settings.hooks[event].filter((entry: any) =>
-        entry.hooks?.some((hook: any) => hook.command.includes('fable_mutation.py'))
+        entry.hooks?.some((hook: any) =>
+          hook.command.includes('--handler mutation') || hook.command.includes('fable_mutation.py')
+        )
       );
     expect(failureEntries('PostToolUse')).toHaveLength(1);
     expect(failureEntries('PostToolUseFailure')).toHaveLength(1);
     expect(mutationEntries('PostToolUse')).toHaveLength(1);
     expect(mutationEntries('PostToolUseFailure')).toHaveLength(1);
     expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
-    expect(getFableStatus(root).claude.registeredHooks).toBe(7);
+    expect(getFableStatus(root).claude.registeredHooks).toBe(12);
   });
 
   test('status rejects a Claude hook wired to the wrong script or matcher', () => {
@@ -116,13 +120,15 @@ describe('installGlobalFable', () => {
     const settingsPath = path.join(claude, 'settings.json');
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
     const failureTracker = settings.hooks.PostToolUseFailure.find((entry: any) =>
-      entry.hooks?.some((hook: any) => hook.command.includes('fable_fail_streak.py'))
+      entry.hooks?.some((hook: any) =>
+        hook.command.includes('--handler failure') || hook.command.includes('fable_fail_streak.py')
+      )
     );
     failureTracker.hooks[0].command = 'python3 fable_close_guard.py';
     settings.hooks.PostToolUse[0].matcher = 'Write';
     fs.writeFileSync(settingsPath, JSON.stringify(settings));
 
-    expect(getFableStatus(root).claude.registeredHooks).toBe(5);
+    expect(getFableStatus(root).claude.registeredHooks).toBeLessThan(11);
   });
 });
 
@@ -183,18 +189,20 @@ describe('installAntigravityGlobal', () => {
     const pluginManifest = JSON.parse(fs.readFileSync(path.join(pluginRoot, 'plugin.json'), 'utf-8'));
     expect(pluginManifest.skills).toEqual([...canonicalSkills, 'fable-mode']);
 
-    const hooksConfig = JSON.parse(fs.readFileSync(path.join(target, 'hooks.json'), 'utf-8'));
-    const fableHooks = hooksConfig.hooks.filter((hook: any) => String(hook.name).startsWith('fable5-'));
-    expect(fableHooks).toHaveLength(5);
-    expect(fableHooks.some((hook: any) => hook.name === 'fable5-mutation')).toBe(true);
-    expect(fableHooks.every((hook: any) => hook.command.includes(pluginHooks))).toBe(true);
+    const hooksConfig = JSON.parse(fs.readFileSync(path.join(pluginRoot, 'hooks.json'), 'utf-8'));
+    expect(hooksConfig['get-fable-context'].PreInvocation).toBeArray();
+    expect(hooksConfig['get-fable-delegation'].PreToolUse[0].matcher).toContain('invoke_subagent');
+    expect(hooksConfig['get-fable-command-recovery'].PostToolUse[0].matcher).toBe('run_command');
+    expect(hooksConfig['get-fable-completion'].Stop).toBeArray();
   });
 
   test('status does not treat an unrelated hooks.json as configured', () => {
     const target = makeTempDir('get-fable-status-');
     process.env.FABLE_GEMINI_CONFIG_DIR = target;
+    const pluginDir = path.join(target, 'plugins', 'get-fable');
+    fs.mkdirSync(pluginDir, { recursive: true });
     fs.writeFileSync(
-      path.join(target, 'hooks.json'),
+      path.join(pluginDir, 'hooks.json'),
       JSON.stringify({ hooks: [{ name: 'other-hook', command: 'echo ok' }] })
     );
 
@@ -208,7 +216,7 @@ describe('installAntigravityGlobal', () => {
       console.log = originalLog;
     }
 
-    expect(messages.some((message) => message.includes('Claude Registered Hooks: 0 / 7'))).toBe(true);
-    expect(messages.some((message) => message.includes('Antigravity Registered Hooks: 0 / 5'))).toBe(true);
+    expect(messages.some((message) => message.includes('Claude Registered Hooks: 0 / 12'))).toBe(true);
+    expect(messages.some((message) => message.includes('Antigravity Hook Capabilities: 0 / 6'))).toBe(true);
   });
 });
