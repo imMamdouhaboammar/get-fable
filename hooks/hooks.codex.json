@@ -1,0 +1,180 @@
+{
+  "description": "get-fable lifecycle hooks for current Codex and ChatGPT plugin hosts.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SessionStart --handler profile",
+            "additionalContextLimit": 5000,
+            "statusMessage": "Loading get-fable lifecycle context"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SessionStart --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event UserPromptSubmit --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Agent|Task|Workflow",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PreToolUse --handler spawn",
+            "timeout": 15,
+            "statusMessage": "Checking get-fable delegation guard"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PreToolUse --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PermissionRequest --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostToolUse --handler failure",
+            "additionalContextLimit": 3500,
+            "statusMessage": "Attributing command result"
+          }
+        ]
+      },
+      {
+        "matcher": "apply_patch|Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostToolUse --handler mutation",
+            "statusMessage": "Recording workspace mutation"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostToolUse --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PreCompact --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event PostCompact --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SubagentStart --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SubagentStop --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event Stop --handler close",
+            "timeout": 30,
+            "statusMessage": "Checking get-fable completion gate"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event Stop --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Interrupt": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event Interrupt --handler event",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py --host codex --event SessionEnd --handler event"
+          }
+        ]
+      }
+    ]
+  }
+}
