@@ -51,6 +51,28 @@ describe('update cache', () => {
     expect(readCache<{ version: string }>(filePath)).toEqual(envelope);
   });
 
+  test('atomically replaces an existing valid cache envelope', () => {
+    const filePath = tempFile();
+    const original = {
+      schemaVersion: 1 as const,
+      fetchedAt: '2026-08-28T20:00:00.000Z',
+      expiresAt: '2026-08-29T20:00:00.000Z',
+      value: { version: '1.6.0' },
+    };
+    const replacement = {
+      schemaVersion: 1 as const,
+      fetchedAt: '2026-08-28T21:00:00.000Z',
+      expiresAt: '2026-08-29T21:00:00.000Z',
+      value: { version: '1.6.1' },
+    };
+
+    writeCacheAtomic(filePath, original);
+    writeCacheAtomic(filePath, replacement);
+
+    expect(readCache<{ version: string }>(filePath)).toEqual(replacement);
+    expect(fs.readdirSync(path.dirname(filePath)).filter((name) => name.endsWith('.tmp'))).toEqual([]);
+  });
+
   test('distinguishes fresh cache from expired cache', () => {
     const envelope = {
       schemaVersion: 1 as const,
