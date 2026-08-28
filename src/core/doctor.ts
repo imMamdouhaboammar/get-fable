@@ -14,6 +14,11 @@ import { evaluateSkillMaturity } from './maturity.js';
 import { HOST_CONTRACTS } from './host-contract.js';
 import { evaluateHostInstallerParity } from './host-evidence.js';
 import { FABLE_STATE_SCHEMA_VERSION, type DoctorCheck, type DoctorReport, type FablePack } from './types.js';
+import {
+  CANONICAL_GIT_HOOKS,
+  areCanonicalGitHooksInstalled,
+  resolveGitHooksPath,
+} from './git-hooks-path.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -388,16 +393,25 @@ export function runDoctorFix(
     repaired.push('Created .fable/PROGRESS.md');
   }
 
-  const gitDir = path.join(targetDir, '.git');
-  if (fs.existsSync(gitDir)) {
+  const hooksPath = resolveGitHooksPath(targetDir);
+  if (hooksPath.kind === 'error') {
+    errors.push(hooksPath.message);
+  } else if (hooksPath.kind === 'resolved') {
     const hooksSourceDir = path.join(repoRoot, 'hooks', 'git');
-    const hooksDestDir = path.join(gitDir, 'hooks');
-    if (fs.existsSync(hooksSourceDir)) {
-      if (!fs.existsSync(hooksDestDir)) fs.mkdirSync(hooksDestDir, { recursive: true });
-      for (const hookFile of fs.readdirSync(hooksSourceDir)) {
+    const hooksDestDir = hooksPath.hooksDir;
+    try {
+      if (!fs.existsSync(hooksSourceDir)) {
+        throw new Error(`Git hook sources are missing: ${hooksSourceDir}`);
+      }
+      fs.mkdirSync(hooksDestDir, { recursive: true });
+      for (const hookFile of CANONICAL_GIT_HOOKS) {
+        const sourceFile = path.join(hooksSourceDir, hookFile);
+        if (!fs.existsSync(sourceFile)) {
+          throw new Error(`Git hook source is missing: ${sourceFile}`);
+        }
         const destFile = path.join(hooksDestDir, hookFile);
         if (!fs.existsSync(destFile)) {
-          fs.copyFileSync(path.join(hooksSourceDir, hookFile), destFile);
+          fs.copyFileSync(sourceFile, destFile);
           try {
             fs.chmodSync(destFile, 0o755);
           } catch {
@@ -406,6 +420,9 @@ export function runDoctorFix(
           repaired.push(`Installed missing git hook: ${hookFile}`);
         }
       }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      errors.push(`Failed to repair git hooks in ${hooksDestDir}: ${message}`);
     }
   }
 
@@ -607,13 +624,14 @@ export function runDoctor(
     );
   }
 
-  const gitDir = path.join(targetDir, '.git');
-  if (fs.existsSync(gitDir)) {
-    const preCommitHook = path.join(gitDir, 'hooks', 'pre-commit');
+  const hooksPath = resolveGitHooksPath(targetDir);
+  if (hooksPath.kind === 'error') {
+    checks.push(check('git-hooks', 'WARN', hooksPath.message));
+  } else if (hooksPath.kind === 'resolved') {
     checks.push(
-      fs.existsSync(preCommitHook)
-        ? check('git-hooks', 'PASS', 'Git pre-commit and lifecycle hooks are installed')
-        : check('git-hooks', 'WARN', 'Git hooks not installed in .git/hooks (run get-fable install git-hooks or get-fable doctor --fix)')
+      areCanonicalGitHooksInstalled(hooksPath.hooksDir)
+        ? check('git-hooks', 'PASS', 'All four canonical Git lifecycle hooks are installed')
+        : check('git-hooks', 'WARN', `Canonical Git hooks are incomplete in ${hooksPath.hooksDir} (run get-fable install git-hooks or get-fable doctor --fix)`)
     );
   }
 

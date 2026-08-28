@@ -405,8 +405,7 @@ function runInstallCommand(args: string[]): number {
       return 0;
     case 'git':
     case 'git-hooks':
-      installGitHooks();
-      return 0;
+      return installGitHooks() ? 0 : 1;
     case 'shell': {
       logHeader('Installing get-fable shell integration');
       const home = os.homedir();

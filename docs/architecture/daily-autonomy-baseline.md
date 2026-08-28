@@ -359,7 +359,7 @@ Experience + Differentiation + Learning + Testability - Maintenance - Risk`.
 Confidence is recorded but excluded from the formula.
 
 | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Bind completion scope to a consistent routing identity | 10 | 8 | 10 | 10 | 7 | 8 | 9 | 10 | 3 | 3 | **67** |
 | Restore truthful default-branch CI after PR #19 | 9 | 8 | 9 | 10 | 9 | 4 | 8 | 10 | 3 | 3 | **62** |
 | Invalidate evidence from a Git HEAD/worktree fingerprint | 9 | 9 | 10 | 10 | 7 | 9 | 6 | 8 | 6 | 4 | **61** |
@@ -375,3 +375,44 @@ routing decision could coexist with `currentSkill: fable-security` or
 The accepted policy treats a complete canonical routing decision as the scope
 authority, requires its skill and task shape to agree for security completion,
 and keeps the legacy current-skill fallback only when no decision exists.
+
+## 2026-08-27 revalidation
+
+Revalidated against default-branch SHA
+`14d4e54abe3f3ec6bfbff95b1066a7d41cb3c4ad` and package version `1.3.0`.
+GitHub exposed no standalone open issues. Daily PRs #21, #22, and #23 cover
+failed-write invalidation, evidence ownership, and generated context freshness;
+none implements linked-worktree Git hook support. The default-branch CI test
+job is failing for inherited benchmark and authoring assertions, while E2E and
+the latest scheduled security workflow pass.
+
+Repository execution reproduced a separate integration defect. In a real
+linked worktree, `.git` is a file that points into the repository's worktree
+administration area. The installer, status command, Doctor, and Doctor repair
+all appended `hooks/` to that file path. Installation and repair failed with
+`ENOTDIR`, while read-only checks falsely reported that hooks were missing.
+
+### Ranked candidates
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Ship checkout mutation invalidation | 9 | 8 | 10 | 10 | 8 | 7 | 9 | 10 | 3 | 3 | **65** |
+| 2 | Ship level-triggered Stop gate | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | **64** |
+| 3 | Finish evidence ownership PR #22 | 9 | 9 | 10 | 10 | 7 | 8 | 8 | 10 | 4 | 5 | **63** |
+| 4 | Linked-worktree-aware Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 9 | 10 | 3 | 3 | **61** |
+| 5 | Ship lifecycle symlink containment | 9 | 8 | 10 | 10 | 7 | 7 | 8 | 9 | 4 | 4 | **61** |
+| 6 | Git reset and hook-bypass freshness | 9 | 9 | 9 | 10 | 7 | 8 | 7 | 9 | 4 | 5 | **61** |
+| 7 | Cross-field routing invariants | 8 | 8 | 10 | 9 | 7 | 7 | 8 | 10 | 3 | 4 | **60** |
+| 8 | Restore default-branch CI | 8 | 6 | 8 | 9 | 9 | 5 | 7 | 8 | 5 | 5 | **51** |
+
+Priority uses the documented formula; confidence is recorded but excluded.
+The higher-scoring candidates already have completed local branches or open
+PRs, so reimplementing them would duplicate outstanding integration work.
+
+### Selected initiative
+
+**Linked-worktree-aware Git hook resolution.** One shared resolver asks Git for
+the effective hooks directory instead of parsing `.git`. The bounded change
+strengthens developer experience and host integration without changing state,
+dependencies, CLI contracts, or public schemas. Acceptance uses real
+repositories and linked worktrees, including a configured `core.hooksPath`.
