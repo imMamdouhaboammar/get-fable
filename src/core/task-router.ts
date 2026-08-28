@@ -7,6 +7,8 @@ import type {
   SkillRegistry,
 } from './types.js';
 
+const PARALLEL_SIGNAL_FLOOR = 6;
+const MAX_PARALLEL_CANDIDATES = 3;
 
 function emptyScores(): Record<FableSkillId, number> {
   return Object.fromEntries(
@@ -49,6 +51,45 @@ function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   return 'unknown';
 }
 
+function rankSkills(
+  scores: Record<FableSkillId, number>,
+  registry: SkillRegistry
+): Array<{ skill: FableSkillId; score: number; order: number }> {
+  return canonicalSkillIds()
+    .filter((skill) => skill !== 'get-fable')
+    .map((skill) => ({
+      skill,
+      score: scores[skill],
+      order: getSkillEntry(skill, registry).order,
+    }))
+    .sort((a, b) => b.score - a.score || a.order - b.order || a.skill.localeCompare(b.skill));
+}
+
+function selectParallelCandidates(
+  selectedSkill: FableSkillId,
+  ranked: Array<{ skill: FableSkillId; score: number }>,
+  registry: SkillRegistry
+): FableSkillId[] {
+  const selectedEntry = getSkillEntry(selectedSkill, registry);
+  const allowedNext = new Set(selectedEntry.next);
+
+  return ranked
+    .filter(({ skill, score }) =>
+      skill !== selectedSkill &&
+      score >= PARALLEL_SIGNAL_FLOOR &&
+      allowedNext.has(skill) &&
+      getSkillEntry(skill, registry).parallelSafe
+    )
+    .slice(0, MAX_PARALLEL_CANDIDATES)
+    .map(({ skill }) => skill);
+}
+
+function activeContinuationSkill(state?: FableState | null): FableSkillId | null {
+  if (!state?.currentSkill) return null;
+  if (state.phase === 'idle' || state.phase === 'complete' || state.phase === 'blocked') return null;
+  return state.currentSkill;
+}
+
 export function routeTask(
   task: string,
   state?: FableState | null,
@@ -56,10 +97,14 @@ export function routeTask(
 ): RoutingDecision {
   const text = task.trim().toLowerCase();
   if (!text) throw new Error('Task text must not be empty');
+
   const suppressExternalResearch = /(?:external|web) research (?:is )?not needed|do not (?:use|do|perform) (?:external|web) research|no (?:external|web) research/.test(text);
   const suppressRelease = /do not (?:ship|publish|release|tag)|don't (?:ship|publish|release|tag)|not ready to (?:ship|publish|release)|(?:ship|publish|release) (?:is )?out of scope/.test(text);
   const suppressSecurity = /no security (?:behavior|boundary|logic|change)s?|security (?:work|review) (?:is )?not (?:needed|required)|not (?:a )?security (?:change|task|review)/.test(text);
   const suppressTdd = /no [^.]{0,40}behavior changes?|without (?:changing|a change to) behavior|not (?:a )?behavior change/.test(text);
+  const suppressPlan = /do not plan|don't plan|no planning|planning (?:is )?out of scope|skip (?:the )?plan/.test(text);
+  const suppressReview = /do not review|don't review|no (?:code )?review|review (?:is )?out of scope|skip (?:the )?review/.test(text);
+  const suppressDelegation = /do not delegate|don't delegate|no delegation|without subagents?|single agent|single worker/.test(text);
 
   const scores = emptyScores();
   const reasons = new Map<FableSkillId, string[]>();
@@ -72,6 +117,11 @@ export function routeTask(
   }
   if (state?.phase === 'verifying') {
     addSignal(scores, reasons, 'fable-verify', 3, 'project state is already verifying');
+  }
+
+  const continuationSkill = activeContinuationSkill(state);
+  if (continuationSkill && continuationSkill !== 'get-fable') {
+    addSignal(scores, reasons, continuationSkill, 2, `project state is already active in ${continuationSkill}`);
   }
 
   if (
@@ -112,6 +162,7 @@ export function routeTask(
   }
 
   if (
+    !suppressReview &&
     has(
       text,
       /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files|independently critique|critique (?:the )?changed files/
@@ -139,11 +190,17 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-discover', discoveryWeight, 'task depends on repository discovery or execution-path evidence');
   }
 
-  if (has(text, /\bdelegate\b|\bsubagents?\b|parallel agents|parallel workers|multi[- ]agent|independent tasks|independent work items|disjoint ownership|proceed in parallel|split across agents/)) {
+  if (
+    !suppressDelegation &&
+    has(text, /\bdelegate\b|\bsubagents?\b|parallel agents|parallel workers|multi[- ]agent|independent tasks|independent work items|disjoint ownership|proceed in parallel|split across agents/)
+  ) {
     addSignal(scores, reasons, 'fable-delegate', 8, 'task explicitly requests bounded parallel work');
   }
 
-  if (has(text, /\bplan\b|\bdesign\b|\barchitecture\b|\bmigration\b|\brefactor\b|multi[- ]file|end to end|modular|restructure|redesign/)) {
+  if (
+    !suppressPlan &&
+    has(text, /\bplan\b|\bdesign\b|\barchitecture\b|\bmigration\b|\brefactor\b|multi[- ]file|end to end|modular|restructure|redesign/)
+  ) {
     addSignal(scores, reasons, 'fable-plan', 6, 'task has broad design or decomposition scope');
   }
 
@@ -199,9 +256,7 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-execute', 3, 'task requests a concrete code change');
   }
 
-  const ranked = canonicalSkillIds().filter((skill) => skill !== 'get-fable')
-    .map((skill) => ({ skill, score: scores[skill] }))
-    .sort((a, b) => b.score - a.score);
+  const ranked = rankSkills(scores, registry);
 
   let selectedSkill = ranked[0].score > 0 ? ranked[0].skill : 'fable-execute';
   if (scores['fable-recover'] >= 8) {
@@ -217,7 +272,7 @@ export function routeTask(
 
   const selectedReasons = reasons.get(selectedSkill) || ['bounded execution is the default when no stronger routing signal is present'];
   const entry = getSkillEntry(selectedSkill, registry);
-  const parallelCandidates = entry.next.filter((skill) => getSkillEntry(skill, registry).parallelSafe);
+  const parallelCandidates = selectParallelCandidates(selectedSkill, ranked, registry);
 
   return {
     selectedSkill,
@@ -229,7 +284,7 @@ export function routeTask(
       selectedSkill === 'fable-plan' ||
       selectedSkill === 'fable-discover' ||
       selectedSkill === 'fable-research' ||
-      scores['fable-plan'] >= 4,
+      (!suppressPlan && scores['fable-plan'] >= 4),
     requiredGates: [...entry.gates],
     fallbackSkill: entry.fallback,
     parallelCandidates,
