@@ -94,106 +94,122 @@ For automated environments, CI/CD runners, and Docker containers:
 
 \`\`\`bash
 curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh | bash
-\`\`\`
+```
 
 ---
 
 ## 5. AI Coding Agent & IDE Setup Matrix
 
-Get Fable provides native integrations for all major AI coding assistants. Run \`get-fable install <host>\` or \`get-fable install all\`.
+Get Fable provides native integrations for all major AI coding assistants and IDEs. Run `get-fable install <host>` or `get-fable install all`.
 
-### 1. Claude Code
-\`\`\`bash
+| Agent / IDE | Icon | Integration Tier | Config Command |
+|---|:---:|---|---|
+| **Claude Code** | <img src="../assets/logos/claude-color.svg" width="22" height="22" alt="Claude Code" /> | Full Lifecycle | `get-fable install claude` |
+| **Google Antigravity & Gemini CLI** | <img src="../assets/logos/gemini-color.svg" width="22" height="22" alt="Gemini" /> | Full Lifecycle | `get-fable install antigravity` |
+| **OpenAI Codex & ChatGPT** | <img src="../assets/logos/openai.svg" width="22" height="22" alt="OpenAI" /> | Skill + Rule + Plugin | `get-fable install codex` |
+| **Cursor IDE** | <img src="../assets/logos/cursor.svg" width="22" height="22" alt="Cursor" /> | Rule + Plugin | `get-fable install cursor` |
+| **OpenCode** | <img src="../assets/logos/opencode.svg" width="22" height="22" alt="OpenCode" /> | Skill + Rule | `get-fable install opencode` |
+| **DeepSeek Harness (DSH)** | <img src="../assets/logos/deepseek-color.svg" width="22" height="22" alt="DeepSeek" /> | Advisory Rule | `get-fable install deepseek` |
+| **Moonshot Kimi Code** | <img src="../assets/logos/moonshot-kimi.svg" width="22" height="22" alt="Kimi" /> | Advisory Rule | `get-fable install kimi` |
+| **Kiro** | <img src="../assets/logos/kiro.svg" width="22" height="22" alt="Kiro" /> | Rule + Lifecycle Hooks | `get-fable install kiro` |
+| **Pi Code** | <img src="../assets/logos/pi.svg" width="22" height="22" alt="Pi" /> | Advisory Rule | `get-fable install pi` |
+| **VS Code & Windsurf** | <img src="../assets/logos/vscode.svg" width="22" height="22" alt="VS Code" /> <img src="../assets/logos/windsurf.svg" width="22" height="22" alt="Windsurf" /> | IDE & Terminal Workflow | `get-fable init` |
+
+---
+
+### <img src="../assets/logos/claude-color.svg" width="20" height="20" /> 1. Claude Code
+```bash
 get-fable install claude
-\`\`\`
-- **Skills**: Installs 25 canonical skills into \`~/.claude/skills/\`.
-- **Hooks**: Registers 5 Python lifecycle hooks in \`~/.claude/settings.json\`:
-  - \`SessionStart\`: \`fable_profile_inject.py\`
-  - \`PreToolUse\`: \`fable_spawn_guard.py\`
-  - \`PostToolUse\` & \`PostToolUseFailure\`: \`fable_fail_streak.py\` & \`fable_mutation.py\`
-  - \`Stop\`: \`fable_close_guard.py\`
-- **Rules**: Appends Fable workflow rules to \`~/.claude/CLAUDE.md\`.
-- **Plugin Manifest**: Compatible with \`.claude-plugin/plugin.json\` and \`.claude-plugin/marketplace.json\`.
+```
+- **Skills**: Installs 25 canonical skills into `~/.claude/skills/`.
+- **Hooks**: Registers 5 Python lifecycle hooks in `~/.claude/settings.json`:
+  - `SessionStart`: `fable_profile_inject.py`
+  - `PreToolUse`: `fable_spawn_guard.py`
+  - `PostToolUse` & `PostToolUseFailure`: `fable_fail_streak.py` & `fable_mutation.py`
+  - `Stop`: `fable_close_guard.py`
+- **Rules**: Appends Fable workflow rules to `~/.claude/CLAUDE.md`.
+- **Plugin Manifest**: Compatible with `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 
 ---
 
-### 2. Google Antigravity & Gemini CLI
-\`\`\`bash
+### <img src="../assets/logos/gemini-color.svg" width="20" height="20" /> 2. Google Antigravity & Gemini CLI
+```bash
 get-fable install antigravity
-\`\`\`
-- **Plugin**: Registers \`get-fable\` plugin in \`~/.gemini/plugins/get-fable/\`.
-- **Skills**: Installs canonical skills into \`~/.gemini/config/skills/\` and \`.agents/skills/\`.
-- **Hooks**: Configures lifecycle events in \`~/.gemini/config/hooks.json\`.
-- **Constitution**: Installs \`~/.gemini/config/rules/fable5-mode.md\`.
+```
+- **Plugin**: Registers `get-fable` plugin in `~/.gemini/plugins/get-fable/`.
+- **Skills**: Installs canonical skills into `~/.gemini/config/skills/` and `.agents/skills/`.
+- **Hooks**: Configures lifecycle events in `~/.gemini/config/hooks.json`.
+- **Constitution**: Installs `~/.gemini/config/rules/fable5-mode.md`.
 
 ---
 
-### 3. OpenAI Codex & ChatGPT
-\`\`\`bash
+### <img src="../assets/logos/openai.svg" width="20" height="20" /> 3. OpenAI Codex & ChatGPT
+```bash
 get-fable install codex
-\`\`\`
-- **Codex**: Installs skills into \`~/.codex/skills/\` and rules into \`~/.codex/rules/\`.
-- **Codex Plugin**: Configures \`.codex-plugin/plugin.json\`.
-- **ChatGPT Custom Actions**: Import \`.chatgpt-plugin/openapi.json\` and \`.chatgpt-plugin/ai-plugin.json\` into your Custom GPT configuration.
-- **Custom Instructions**: Load \`prompts/chatgpt-custom-instructions.md\` for ChatGPT sessions.
+```
+- **Codex**: Installs skills into `~/.codex/skills/` and rules into `~/.codex/rules/`.
+- **Codex Plugin**: Configures `.codex-plugin/plugin.json`.
+- **ChatGPT Custom Actions**: Import `.chatgpt-plugin/openapi.json` and `.chatgpt-plugin/ai-plugin.json` into your Custom GPT configuration.
+- **Custom Instructions**: Load `prompts/chatgpt-custom-instructions.md` for ChatGPT sessions.
 
 ---
 
-### 4. Cursor IDE
-\`\`\`bash
+### <img src="../assets/logos/cursor.svg" width="20" height="20" /> 4. Cursor IDE
+```bash
 get-fable install cursor
-\`\`\`
-- **Rules**: Installs \`.cursor/rules/fable-lifecycle.mdc\` in your home directory or active workspace.
-- **Marketplace**: Configured in \`.cursor-plugin/marketplace.json\`.
+```
+- **Rules**: Installs `.cursor/rules/fable-lifecycle.mdc` in your home directory or active workspace.
+- **Marketplace**: Configured in `.cursor-plugin/marketplace.json`.
 
 ---
 
-### 5. OpenCode
-\`\`\`bash
+### <img src="../assets/logos/opencode.svg" width="20" height="20" /> 5. OpenCode
+```bash
 get-fable install opencode
-\`\`\`
-- **Rules**: Installs \`~/.opencode/rules/fable.md\`.
-- **Skills**: Installs skills into \`~/.opencode/skills/\`.
+```
+- **Rules**: Installs `~/.opencode/rules/fable.md`.
+- **Skills**: Installs skills into `~/.opencode/skills/`.
 
 ---
 
-### 6. Kimi Code
-\`\`\`bash
+### <img src="../assets/logos/moonshot-kimi.svg" width="20" height="20" /> 6. Kimi Code
+```bash
 get-fable install kimi
-\`\`\`
-- **Rules**: Installs \`~/.kimi/rules/fable.md\`.
+```
+- **Rules**: Installs `~/.kimi/rules/fable.md`.
 
 ---
 
-### 7. DeepSeek Harness (DSH)
-\`\`\`bash
+### <img src="../assets/logos/deepseek-color.svg" width="20" height="20" /> 7. DeepSeek Harness (DSH)
+```bash
 get-fable install deepseek
-\`\`\`
-- **Rules**: Installs \`~/.deepseek/rules/fable.md\`.
+```
+- **Rules**: Installs `~/.deepseek/rules/fable.md`.
 
 ---
 
-### 8. Kiro
-\`\`\`bash
+### <img src="../assets/logos/kiro.svg" width="20" height="20" /> 8. Kiro
+```bash
 get-fable install kiro
-\`\`\`
-- **Rules & Hooks**: Installs \`~/.kiro/rules/fable.md\` and registers hook triggers.
+```
+- **Rules & Hooks**: Installs `~/.kiro/rules/fable.md` and registers hook triggers.
 
 ---
 
-### 9. Pi Code
-\`\`\`bash
+### <img src="../assets/logos/pi.svg" width="20" height="20" /> 9. Pi Code
+```bash
 get-fable install pi
-\`\`\`
-- **Rules**: Installs \`~/.pi/rules/fable.md\`.
+```
+- **Rules**: Installs `~/.pi/rules/fable.md`.
 
 ---
 
-### 10. Agent Kernel
-\`\`\`bash
+### <img src="../assets/logos/github.svg" width="20" height="20" /> 10. Agent Kernel & IDEs
+```bash
 get-fable install agent-kernel
-\`\`\`
-- **Constitution**: Installs \`~/.agent-kernel/rules/fable.md\`.
+```
+- **Constitution**: Installs `~/.agent-kernel/rules/fable.md`.
+- **VS Code / Zed / Windsurf**: Run `get-fable init` to bind project state directly.
 
 ---
 

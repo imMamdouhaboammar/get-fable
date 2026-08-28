@@ -311,11 +311,22 @@ get-fable spark
 
 ## Works with the coding agent you already use
 
-`get-fable` is portable across multiple coding-agent environments rather than being tied to one model or editor.
+`get-fable` is portable across multiple coding-agent environments and IDEs rather than being tied to one model or editor.
 
-**Claude Code · Antigravity · Codex · OpenCode · Cursor · Kiro · Kimi · DeepSeek · Pi Code**
+| Agent / IDE | Icon | Integration Tier | Key Capabilities |
+|:---|:---:|:---|:---|
+| **Claude Code** | <img src="assets/logos/claude-color.svg" width="24" height="24" alt="Claude Code" /> | **Full Lifecycle** | 5 Python hooks (`settings.json`), 25 skills, rules in `CLAUDE.md`, Marketplace plugin |
+| **Google Antigravity & Gemini** | <img src="assets/logos/gemini-color.svg" width="24" height="24" alt="Google Antigravity" /> | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
+| **OpenAI Codex & ChatGPT** | <img src="assets/logos/openai.svg" width="24" height="24" alt="OpenAI Codex" /> | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
+| **Cursor IDE** | <img src="assets/logos/cursor.svg" width="24" height="24" alt="Cursor" /> | **Advisory Rule + Plugin** | `.cursor/rules/fable-lifecycle.mdc`, `.cursor-plugin/marketplace.json` |
+| **OpenCode** | <img src="assets/logos/opencode.svg" width="24" height="24" alt="OpenCode" /> | **Skill + Rule** | Rules in `~/.opencode/rules/fable.md`, skills in `~/.opencode/skills/` |
+| **DeepSeek Harness (DSH)** | <img src="assets/logos/deepseek-color.svg" width="24" height="24" alt="DeepSeek" /> | **Advisory Rule** | Rules in `~/.deepseek/rules/fable.md` |
+| **Moonshot Kimi Code** | <img src="assets/logos/moonshot-kimi.svg" width="24" height="24" alt="Kimi Code" /> | **Advisory Rule** | Rules in `~/.kimi/rules/fable.md` |
+| **Kiro** | <img src="assets/logos/kiro.svg" width="24" height="24" alt="Kiro" /> | **Rule + Hooks** | Rules in `~/.kiro/rules/fable.md` and lifecycle triggers |
+| **Pi Code** | <img src="assets/logos/pi.svg" width="24" height="24" alt="Pi Code" /> | **Advisory Rule** | Rules in `~/.pi/rules/fable.md` |
+| **VS Code & Windsurf** | <img src="assets/logos/vscode.svg" width="24" height="24" alt="VS Code" /> <img src="assets/logos/windsurf.svg" width="24" height="24" alt="Windsurf" /> | **IDE & Editor Support** | Direct execution via Bun/Node CLI, task state inspector, and terminal hooks |
 
-Integration depth depends on what each host actually exposes.
+Integration depth depends on what each host actually exposes:
 
 - **Full lifecycle integration** — Claude Code, Antigravity
 - **Skill + rule integration** — Codex, OpenCode
