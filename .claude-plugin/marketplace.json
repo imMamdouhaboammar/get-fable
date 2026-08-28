@@ -13,7 +13,7 @@
       "name": "get-fable",
       "description": "Routes software work through discovery, research, planning, TDD, delegation, execution, verification, review, security, release, handoff, evaluation, and recovery across 25 canonical skills.",
       "source": "./",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"

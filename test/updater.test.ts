@@ -11,9 +11,9 @@ describe('Auto-Updater Module', () => {
   });
 
   test('fetches latest version metadata safely without throwing', async () => {
-    const result = await fetchLatestVersion('1.3.0', 2000);
+    const result = await fetchLatestVersion('1.4.0', 2000);
     expect(result).toBeDefined();
-    expect(result.currentVersion).toBe('1.3.0');
+    expect(result.currentVersion).toBe('1.4.0');
     expect(typeof result.latestVersion).toBe('string');
     expect(typeof result.updateAvailable).toBe('boolean');
   });

@@ -15,6 +15,22 @@ All notable changes to `get-fable` are documented in this file.
 - Resolve the effective Git hooks directory through Git itself so installation, status, and Doctor repair work from linked worktrees and repositories with a configured `core.hooksPath`.
 - Return a non-zero CLI exit code when Git hook installation cannot resolve or write the effective hooks directory.
 
+## [1.4.0] - 2026-08-28
+
+### Highlights
+
+- **Canonical Skill Pack Deepening (/skill-conductor & /skill-creator compliance)**: Upgraded all 25 canonical specialist skills across 8 lifecycle packs with 4-part description formulas, 30+ Deep Playbook V2 reference guides (>1,000 to >3,000 bytes each), concrete execution templates, and 10-scenario evaluation benchmarks.
+- **Official Vector SVG Logos Integration (`@lobehub/icons`)**: Integrated authentic, official vector SVG logos from `@lobehub/icons` and host repositories for Claude Code, Google Antigravity & Gemini, OpenAI Codex & ChatGPT, Cursor IDE, OpenCode, DeepSeek Harness, Moonshot Kimi, Kiro, Pi Code, VS Code, and Windsurf in `assets/logos/` and `site/assets/logos/`.
+- **Master Multi-Platform Installation Guide (`docs/INSTALLATION.md`)**: Added unified installation documentation covering Vercel/skills.sh CLI (`npx skills add imMamdouhaboammar/get-fable`), Homebrew formula with shell completions and prompt hooks, global Bun/npm CLI, universal curl installer, and 10 AI coding agent hosts.
+- **Upgraded Plugins & Marketplaces**: Upgraded `.claude-plugin/`, `.codex-plugin/`, and `.chatgpt-plugin/` manifests with updated metadata, keyword taxonomy, and OpenAI Custom Actions.
+
+### Added
+
+- `docs/INSTALLATION.md`: Complete installation and host integration guide with real SVG logos and quick-start matrix.
+- `assets/logos/` & `site/assets/logos/`: Bundled vector SVG assets for all major AI coding agents and IDEs.
+- `site/index.html`: Interactive multi-agent ecosystem showcase cards and responsive styles.
+- `assets/get-fable-infographic.gif`: Repository architectural infographic deliverable.
+
 ## [1.3.0] - 2026-08-19
 
 ### Highlights

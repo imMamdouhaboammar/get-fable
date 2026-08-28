@@ -13,7 +13,7 @@
       "name": "get-fable",
       "description": "Coding lifecycle rules and skill integration for Cursor.",
       "source": "./",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "author": {
         "name": "Mamdouh Abo Ammar",
         "url": "https://github.com/imMamdouhaboammar"
