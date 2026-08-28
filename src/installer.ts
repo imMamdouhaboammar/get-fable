@@ -40,6 +40,16 @@ type HookEntry = {
   hooks: Array<{ type: 'command'; command: string }>;
 };
 
+const FABLE_HOOK_MARKERS = [
+  'fable_hook_dispatch.py',
+  'fable_profile_inject.py',
+  'fable_spawn_guard.py',
+  'fable_fail_streak.py',
+  'fable_mutation.py',
+  'fable_close_guard.py',
+  'fable_event_observer.py',
+];
+
 export interface FableStatus {
   claude: {
     configDir: string;
@@ -58,6 +68,8 @@ export interface FableStatus {
     configDir: string;
     ruleInstalled: boolean;
     canonicalSkillInstalled: boolean;
+    pluginInstalled: boolean;
+    hooksInstalled: boolean;
   };
   cursor: {
     configDir: string;
@@ -98,55 +110,59 @@ export interface FableStatus {
   };
 }
 
+function hookEntry(command: string, matcher?: string): HookEntry {
+  const entry: HookEntry = { hooks: [{ type: 'command', command }] };
+  if (matcher) entry.matcher = matcher;
+  return entry;
+}
+
+function entryHasFableHook(entry: any): boolean {
+  if (!entry) return false;
+  const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
+  return subHooks.some((hook: any) => {
+    const command = hook?.command;
+    return typeof command === 'string' && FABLE_HOOK_MARKERS.some((marker) => command.includes(marker));
+  });
+}
+
 function registerClaudeHooks(settingsPath: string, hooksDest: string) {
-  const pyProfileInject = path.join(hooksDest, 'fable_profile_inject.py');
-  const pySpawnGuard = path.join(hooksDest, 'fable_spawn_guard.py');
-  const pyFailStreak = path.join(hooksDest, 'fable_fail_streak.py');
-  const pyMutation = path.join(hooksDest, 'fable_mutation.py');
-  const pyCloseGuard = path.join(hooksDest, 'fable_close_guard.py');
+  const dispatcher = path.join(hooksDest, 'fable_hook_dispatch.py');
+  const command = (event: string, handler: string) =>
+    `python3 "${dispatcher}" --host claude --event ${event} --handler ${handler}`;
+
+  const desired: Record<string, HookEntry[]> = {
+    SessionStart: [
+      hookEntry(command('SessionStart', 'profile')),
+      hookEntry(command('SessionStart', 'event')),
+    ],
+    PreToolUse: [
+      hookEntry(command('PreToolUse', 'spawn'), 'Agent|Task|Workflow'),
+      hookEntry(command('PreToolUse', 'event')),
+    ],
+    PostToolUse: [
+      hookEntry(command('PostToolUse', 'failure'), 'Bash'),
+      hookEntry(command('PostToolUse', 'mutation'), 'Edit|Write|MultiEdit|NotebookEdit|apply_patch'),
+      hookEntry(command('PostToolUse', 'event')),
+    ],
+    PostToolUseFailure: [
+      hookEntry(command('PostToolUseFailure', 'failure'), 'Bash'),
+      hookEntry(command('PostToolUseFailure', 'mutation'), 'Edit|Write|MultiEdit|NotebookEdit|apply_patch'),
+      hookEntry(command('PostToolUseFailure', 'event')),
+    ],
+    Stop: [
+      hookEntry(command('Stop', 'close')),
+      hookEntry(command('Stop', 'event')),
+    ],
+  };
 
   mergeJsonFile(settingsPath, (existing) => {
     const config = existing as any;
     const hooks = config.hooks && typeof config.hooks === 'object' ? config.hooks : {};
 
-    const createHookObj = (cmd: string, matcher?: string): HookEntry => {
-      const entry: HookEntry = { hooks: [{ type: 'command', command: cmd }] };
-      if (matcher) entry.matcher = matcher;
-      return entry;
-    };
-
-    const isFableHook = (entry: any, pyName: string) => {
-      if (!entry) return false;
-      const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
-      return subHooks.some(
-        (hook: any) => typeof hook?.command === 'string' && hook.command.includes(pyName)
-      );
-    };
-
-    const registerOrUpdate = (event: string, cmd: string, pyName: string, matcher?: string) => {
+    for (const [event, entries] of Object.entries(desired)) {
       const existingList = Array.isArray(hooks[event]) ? hooks[event] : [];
-      const list = existingList.filter((item: any) => !isFableHook(item, pyName));
-      list.push(createHookObj(`python3 ${cmd}`, matcher));
-      hooks[event] = list;
-    };
-
-    registerOrUpdate('SessionStart', pyProfileInject, 'fable_profile_inject');
-    registerOrUpdate('PreToolUse', pySpawnGuard, 'fable_spawn_guard', 'Agent|Task|Workflow');
-    registerOrUpdate('PostToolUse', pyFailStreak, 'fable_fail_streak', 'Bash');
-    registerOrUpdate('PostToolUseFailure', pyFailStreak, 'fable_fail_streak', 'Bash');
-    registerOrUpdate(
-      'PostToolUse',
-      pyMutation,
-      'fable_mutation',
-      'Edit|Write|MultiEdit|NotebookEdit'
-    );
-    registerOrUpdate(
-      'PostToolUseFailure',
-      pyMutation,
-      'fable_mutation',
-      'Edit|Write|MultiEdit|NotebookEdit'
-    );
-    registerOrUpdate('Stop', pyCloseGuard, 'fable_close_guard');
+      hooks[event] = [...existingList.filter((item: any) => !entryHasFableHook(item)), ...entries];
+    }
 
     config.hooks = hooks;
     return config;
@@ -185,7 +201,7 @@ export function installClaudeGlobal(claudeDir: string = getClaudeDir()) {
 
   const settingsPath = path.join(claudeDir, 'settings.json');
   registerClaudeHooks(settingsPath, hooksDest);
-  logSuccess('Claude Code lifecycle hooks registered in settings.json');
+  logSuccess('Claude Code lifecycle hooks registered through the canonical dispatcher');
 
   const claudeMdPath = path.join(claudeDir, 'CLAUDE.md');
   const fableRuleText = fs.readFileSync(path.join(repoRoot, 'prompts', 'fable5-rules.md'), 'utf-8');
@@ -198,6 +214,15 @@ export function installClaudeGlobal(claudeDir: string = getClaudeDir()) {
     atomicWriteFileSync(claudeMdPath, updated);
     logSuccess('Updated ~/.claude/CLAUDE.md with Fable workflow rules');
   }
+}
+
+function renderAntigravityHooks(repoRoot: string, pluginDir: string): string {
+  const template = fs.readFileSync(
+    path.join(repoRoot, 'assets', 'antigravity', 'hooks.json'),
+    'utf-8'
+  );
+  const escapedPluginDir = pluginDir.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return template.replaceAll('__FABLE_PLUGIN_DIR__', escapedPluginDir);
 }
 
 export function installAntigravityGlobal(geminiConfigDir: string = getGeminiConfigDir()) {
@@ -230,7 +255,8 @@ export function installAntigravityGlobal(geminiConfigDir: string = getGeminiConf
 
   const pluginHooksDir = path.join(pluginDir, 'hooks');
   copyDirSync(path.join(repoRoot, 'hooks'), pluginHooksDir);
-  logSuccess('Installed Antigravity plugin: get-fable');
+  atomicWriteFileSync(path.join(pluginDir, 'hooks.json'), renderAntigravityHooks(repoRoot, pluginDir));
+  logSuccess('Installed Antigravity plugin with native Pre/Post tool, invocation, and Stop hooks');
 
   const globalSkillsDir = path.join(geminiConfigDir, 'skills');
   installCanonicalSkillPack(repoRoot, globalSkillsDir, false);
@@ -242,50 +268,6 @@ export function installAntigravityGlobal(geminiConfigDir: string = getGeminiConf
     path.join(globalFableSkillDir, 'SKILL.md')
   );
   logSuccess('Installed canonical Antigravity skills and legacy fable-mode compatibility skill');
-
-  const hooksJsonPath = path.join(geminiConfigDir, 'hooks.json');
-  mergeJsonFile(hooksJsonPath, (existing) => {
-    const config = existing as any;
-    const hooksList: any[] = Array.isArray(config.hooks) ? config.hooks : [];
-
-    const fableHooks = [
-      {
-        name: 'fable5-profile-inject',
-        events: ['SessionStart'],
-        command: `python3 ${path.join(pluginHooksDir, 'fable_profile_inject.py')}`,
-      },
-      {
-        name: 'fable5-spawn-guard',
-        events: ['PreToolUse'],
-        command: `python3 ${path.join(pluginHooksDir, 'fable_spawn_guard.py')}`,
-      },
-      {
-        name: 'fable5-fail-streak',
-        events: ['PostToolUse'],
-        command: `python3 ${path.join(pluginHooksDir, 'fable_fail_streak.py')}`,
-      },
-      {
-        name: 'fable5-mutation',
-        events: ['PostToolUse'],
-        command: `python3 ${path.join(pluginHooksDir, 'fable_mutation.py')}`,
-      },
-      {
-        name: 'fable5-close-guard',
-        events: ['Stop', 'SessionEnd'],
-        command: `python3 ${path.join(pluginHooksDir, 'fable_close_guard.py')}`,
-      },
-    ];
-
-    for (const fableHook of fableHooks) {
-      const index = hooksList.findIndex((hook: any) => hook?.name === fableHook.name);
-      if (index >= 0) hooksList[index] = fableHook;
-      else hooksList.push(fableHook);
-    }
-
-    config.hooks = hooksList;
-    return config;
-  });
-  logSuccess('Registered Antigravity lifecycle hooks in hooks.json');
 }
 
 export function installCodexGlobal(codexDir: string = getCodexDir()) {
@@ -303,13 +285,21 @@ export function installCodexGlobal(codexDir: string = getCodexDir()) {
   installCanonicalSkillPack(repoRoot, skillsDir, false);
 
   const pluginDir = path.join(codexDir, 'plugins', 'get-fable');
-  fs.mkdirSync(pluginDir, { recursive: true });
+  fs.mkdirSync(path.join(pluginDir, '.codex-plugin'), { recursive: true });
   fs.copyFileSync(
     path.join(repoRoot, '.codex-plugin', 'plugin.json'),
-    path.join(pluginDir, 'plugin.json')
+    path.join(pluginDir, '.codex-plugin', 'plugin.json')
   );
+  copyDirSync(path.join(repoRoot, 'skills'), path.join(pluginDir, 'skills'));
+  copyDirSync(path.join(repoRoot, 'hooks'), path.join(pluginDir, 'hooks'));
+  copyDirSync(path.join(repoRoot, 'assets'), path.join(pluginDir, 'assets'));
 
-  logSuccess('Installed Codex rules, skills, and plugin manifest');
+  const legacyManifest = path.join(pluginDir, 'plugin.json');
+  if (fs.existsSync(legacyManifest)) {
+    fs.rmSync(legacyManifest, { force: true });
+  }
+
+  logSuccess('Installed Codex rules, skills, and universal plugin package with lifecycle hooks');
 }
 
 export function installCursorGlobal(cursorDir: string = getCursorDir()) {
@@ -529,7 +519,7 @@ export function initProjectFable(targetDir: string = process.cwd()) {
 function hookCommandPresent(
   settingsPath: string,
   event: string,
-  script: string,
+  commandFragment: string,
   matcher?: string
 ): boolean {
   if (!fs.existsSync(settingsPath)) return false;
@@ -541,7 +531,7 @@ function hookCommandPresent(
       if (matcher && entry?.matcher !== matcher) return false;
       const subHooks = entry.hooks || (Array.isArray(entry) ? entry : [entry]);
       return subHooks.some(
-        (hook: any) => typeof hook?.command === 'string' && hook.command.includes(script)
+        (hook: any) => typeof hook?.command === 'string' && hook.command.includes(commandFragment)
       );
     });
   } catch {
@@ -551,47 +541,54 @@ function hookCommandPresent(
 
 function countClaudeHookRegistrations(settingsPath: string): number {
   const expected = [
-    { event: 'SessionStart', script: 'fable_profile_inject.py' },
-    { event: 'PreToolUse', script: 'fable_spawn_guard.py', matcher: 'Agent|Task|Workflow' },
-    { event: 'PostToolUse', script: 'fable_fail_streak.py', matcher: 'Bash' },
-    { event: 'PostToolUseFailure', script: 'fable_fail_streak.py', matcher: 'Bash' },
+    { event: 'SessionStart', fragment: '--handler profile' },
+    { event: 'SessionStart', fragment: '--handler event' },
+    { event: 'PreToolUse', fragment: '--handler spawn', matcher: 'Agent|Task|Workflow' },
+    { event: 'PreToolUse', fragment: '--handler event' },
+    { event: 'PostToolUse', fragment: '--handler failure', matcher: 'Bash' },
     {
       event: 'PostToolUse',
-      script: 'fable_mutation.py',
-      matcher: 'Edit|Write|MultiEdit|NotebookEdit',
+      fragment: '--handler mutation',
+      matcher: 'Edit|Write|MultiEdit|NotebookEdit|apply_patch',
     },
+    { event: 'PostToolUse', fragment: '--handler event' },
+    { event: 'PostToolUseFailure', fragment: '--handler failure', matcher: 'Bash' },
     {
       event: 'PostToolUseFailure',
-      script: 'fable_mutation.py',
-      matcher: 'Edit|Write|MultiEdit|NotebookEdit',
+      fragment: '--handler mutation',
+      matcher: 'Edit|Write|MultiEdit|NotebookEdit|apply_patch',
     },
-    { event: 'Stop', script: 'fable_close_guard.py' },
+    { event: 'PostToolUseFailure', fragment: '--handler event' },
+    { event: 'Stop', fragment: '--handler close' },
+    { event: 'Stop', fragment: '--handler event' },
   ];
-  return expected.filter(({ event, script, matcher }) =>
-    hookCommandPresent(settingsPath, event, script, matcher)
+  return expected.filter(({ event, fragment, matcher }) =>
+    hookCommandPresent(settingsPath, event, fragment, matcher)
   ).length;
 }
 
-function countAntigravityHookRegistrations(hooksJsonPath: string): number {
-  if (!fs.existsSync(hooksJsonPath)) return 0;
+function jsonContainsCommand(value: unknown, fragment: string): boolean {
+  if (Array.isArray(value)) return value.some((item) => jsonContainsCommand(item, fragment));
+  if (!value || typeof value !== 'object') return false;
+  for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+    if (key === 'command' && typeof item === 'string' && item.includes(fragment)) return true;
+    if (jsonContainsCommand(item, fragment)) return true;
+  }
+  return false;
+}
+
+function countAntigravityHookRegistrations(pluginHooksPath: string): number {
+  if (!fs.existsSync(pluginHooksPath)) return 0;
   try {
-    const config = JSON.parse(fs.readFileSync(hooksJsonPath, 'utf-8'));
-    const hooks = Array.isArray(config.hooks) ? config.hooks : [];
-    const expected = [
-      { name: 'fable5-profile-inject', file: 'fable_profile_inject.py' },
-      { name: 'fable5-spawn-guard', file: 'fable_spawn_guard.py' },
-      { name: 'fable5-fail-streak', file: 'fable_fail_streak.py' },
-      { name: 'fable5-mutation', file: 'fable_mutation.py' },
-      { name: 'fable5-close-guard', file: 'fable_close_guard.py' },
-    ];
-    return expected.filter(({ name, file }) =>
-      hooks.some(
-        (hook: any) =>
-          hook?.name === name &&
-          typeof hook?.command === 'string' &&
-          hook.command.includes(file)
-      )
-    ).length;
+    const config = JSON.parse(fs.readFileSync(pluginHooksPath, 'utf-8'));
+    return [
+      '--handler profile',
+      '--handler spawn',
+      '--handler failure',
+      '--handler mutation',
+      '--handler event',
+      '--handler close',
+    ].filter((fragment) => jsonContainsCommand(config, fragment)).length;
   } catch {
     return 0;
   }
@@ -601,8 +598,10 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
   const claudeDir = getClaudeDir();
   const settingsPath = path.join(claudeDir, 'settings.json');
   const geminiConfig = getGeminiConfigDir();
-  const geminiHooks = path.join(geminiConfig, 'hooks.json');
+  const antigravityPluginDir = path.join(geminiConfig, 'plugins', 'get-fable');
+  const antigravityHooks = path.join(antigravityPluginDir, 'hooks.json');
   const codexDir = getCodexDir();
+  const codexPluginDir = path.join(codexDir, 'plugins', 'get-fable');
   const cursorDir = getCursorDir();
   const opencodeDir = getOpenCodeDir();
   const kimiDir = getKimiDir();
@@ -638,14 +637,16 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
     antigravity: {
       configDir: geminiConfig,
       ruleInstalled: fs.existsSync(path.join(geminiConfig, 'rules', 'fable5-mode.md')),
-      pluginInstalled: fs.existsSync(path.join(geminiConfig, 'plugins', 'get-fable', 'plugin.json')),
+      pluginInstalled: fs.existsSync(path.join(antigravityPluginDir, 'plugin.json')),
       canonicalSkillInstalled: fs.existsSync(path.join(geminiConfig, 'skills', 'get-fable', 'SKILL.md')),
-      registeredHooks: countAntigravityHookRegistrations(geminiHooks),
+      registeredHooks: countAntigravityHookRegistrations(antigravityHooks),
     },
     codex: {
       configDir: codexDir,
       ruleInstalled: fs.existsSync(path.join(codexDir, 'rules', 'fable5-mode.md')),
       canonicalSkillInstalled: fs.existsSync(path.join(codexDir, 'skills', 'get-fable', 'SKILL.md')),
+      pluginInstalled: fs.existsSync(path.join(codexPluginDir, '.codex-plugin', 'plugin.json')),
+      hooksInstalled: fs.existsSync(path.join(codexPluginDir, 'hooks', 'hooks.codex.json')),
     },
     cursor: {
       configDir: cursorDir,
@@ -693,11 +694,13 @@ export function checkFableStatus(targetDir: string = process.cwd()) {
   console.log(`Claude Config Dir: ${status.claude.configDir}`);
   console.log(`Skill Installed: ${status.claude.legacySkillInstalled ? 'YES' : 'NO'}`);
   console.log(`Canonical Skill Installed: ${status.claude.canonicalSkillInstalled ? 'YES' : 'NO'}`);
-  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 7`);
-  console.log(`Antigravity/Gemini Rule Installed: ${status.antigravity.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Claude Registered Hooks: ${status.claude.registeredHooks} / 12`);
+  console.log(`Antigravity Rule Installed: ${status.antigravity.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`Antigravity Plugin Installed: ${status.antigravity.pluginInstalled ? 'YES' : 'NO'}`);
-  console.log(`Antigravity Registered Hooks: ${status.antigravity.registeredHooks} / 5`);
+  console.log(`Antigravity Hook Capabilities: ${status.antigravity.registeredHooks} / 6`);
   console.log(`Codex Rule Installed: ${status.codex.ruleInstalled ? 'YES' : 'NO'}`);
+  console.log(`Codex Plugin Installed: ${status.codex.pluginInstalled ? 'YES' : 'NO'}`);
+  console.log(`Codex Plugin Hooks Installed: ${status.codex.hooksInstalled ? 'YES' : 'NO'}`);
   console.log(`Cursor Rule Installed: ${status.cursor.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`OpenCode Rule Installed: ${status.opencode.ruleInstalled ? 'YES' : 'NO'}`);
   console.log(`Kimi Rule Installed: ${status.kimi.ruleInstalled ? 'YES' : 'NO'}`);
