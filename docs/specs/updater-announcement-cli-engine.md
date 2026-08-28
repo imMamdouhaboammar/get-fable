@@ -363,13 +363,11 @@ get-fable update config --auto-install off|patch|minor|all
 get-fable update config --interval <hours>
 
 get-fable announcements
-a get-fable announcements list
+get-fable announcements list
 get-fable announcements list --unread
 get-fable announcements show <id>
 get-fable announcements dismiss <id>
 ```
-
-Implementation note: the stray leading `a` above is not a command and must not appear in implementation. The intended command is `get-fable announcements list`.
 
 Machine output must use the repository's existing `--json` / `--json-v1` convention and must not include log prefixes or passive-check notifications on stdout.
 
