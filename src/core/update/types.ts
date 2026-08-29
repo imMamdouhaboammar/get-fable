@@ -67,3 +67,23 @@ export interface UpdatePlanInput {
   installation: InstallationInfo;
   targetKind: 'latest-stable' | 'explicit-version';
 }
+
+export interface ProcessResult {
+  status: number;
+  stdout: string;
+  stderr: string;
+}
+
+export type ProcessRunner = (
+  executable: string,
+  argv: string[],
+  options?: { cwd?: string }
+) => ProcessResult;
+
+export interface UpdateReceipt {
+  success: boolean;
+  strategy: UpdatePlan['strategy'];
+  targetVersion: string;
+  verifiedVersion?: string;
+  message: string;
+}
