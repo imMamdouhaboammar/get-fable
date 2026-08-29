@@ -25,3 +25,27 @@ export type FetchLike = (
     headers?: Record<string, string>;
   }
 ) => Promise<FetchResponseLike>;
+
+export type InstallationMethod =
+  | 'bun-global'
+  | 'npm-global'
+  | 'homebrew'
+  | 'git-checkout'
+  | 'unknown';
+
+export interface InstallationInfo {
+  method: InstallationMethod;
+  executablePath: string;
+  repoRoot?: string;
+  packageRoot?: string;
+  evidence: string[];
+}
+
+export interface InstallationDetectionContext {
+  executablePath: string;
+  repoRoot: string;
+  bunGlobalDir?: string;
+  npmGlobalDir?: string;
+  homebrewPrefix?: string;
+  fileExists: (path: string) => boolean;
+}
