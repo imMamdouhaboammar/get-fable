@@ -49,3 +49,21 @@ export interface InstallationDetectionContext {
   homebrewPrefix?: string;
   fileExists: (path: string) => boolean;
 }
+
+export interface UpdatePlan {
+  currentVersion: string;
+  targetVersion: string;
+  installation: InstallationInfo;
+  strategy: InstallationMethod | 'notify-only';
+  executable?: string;
+  argv?: string[];
+  requiresConfirmation: boolean;
+  reason: string;
+}
+
+export interface UpdatePlanInput {
+  currentVersion: string;
+  targetVersion: string;
+  installation: InstallationInfo;
+  targetKind: 'latest-stable' | 'explicit-version';
+}
