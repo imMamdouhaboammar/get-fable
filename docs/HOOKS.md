@@ -21,3 +21,9 @@ worktrees. A populated repository whose effective path cannot be resolved is
 left unchanged; a lightweight synthetic `.git/` directory that is empty or
 contains only its installed `hooks/` retains the historical fixture-compatible
 fallback.
+
+Lifecycle state discovery has a separate boundary. Each Python hook looks for
+local `.fable/` state before walking upward, but it stops at any `.git` entry.
+This includes the `.git` file used at a linked-worktree root. Consequently a
+linked worktree may use its own `.fable/` directory, while a worktree without
+one never inherits state from an unrelated ancestor workspace.
