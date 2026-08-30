@@ -452,3 +452,40 @@ the effective hooks directory instead of parsing `.git`. The bounded change
 strengthens developer experience and host integration without changing state,
 dependencies, CLI contracts, or public schemas. Acceptance uses real
 repositories and linked worktrees, including a configured `core.hooksPath`.
+
+## 2026-08-29 revalidation
+
+Revalidated against default-branch SHA
+`983cb1d50a00bbfabd1698759ac39425dfdfae30` and package version `1.5.1`.
+PR #24 has merged linked-worktree-aware Git hook installation. Draft PR #28
+owns updater release intelligence and was excluded. Default-branch E2E and
+security workflows passed; the CI matrix had one inherited macOS Doctor timing
+failure at 10.63 seconds against a 10-second budget.
+
+Repository execution exposed a distinct state-discovery defect. Python hooks
+stopped upward `.fable/` discovery only at a `.git` directory. Git represents a
+linked-worktree root with a `.git` file, so all shared Python lifecycle hooks
+could cross that root and read or mutate an ancestor workspace's durable state.
+
+Priority uses `(User Value x 2) + Reliability + Architectural Fit + Developer
+Experience + Differentiation + Learning + Testability - Maintenance - Risk`.
+Implementation confidence is recorded but excluded from the formula.
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Contain Python state discovery at linked-worktree roots | 9 | 9 | 10 | 10 | 8 | 8 | 10 | 10 | 2 | 2 | **69** |
+| 2 | Ship checkout mutation invalidation | 9 | 8 | 10 | 10 | 8 | 7 | 9 | 10 | 3 | 3 | **65** |
+| 3 | Ship level-triggered Stop enforcement | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | **64** |
+| 4 | Contain symlink and special-file lifecycle paths | 9 | 8 | 10 | 10 | 7 | 7 | 8 | 9 | 4 | 4 | **61** |
+| 5 | Preserve pre-existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | **55** |
+| 6 | Isolate process-global cwd in CLI tests | 8 | 6 | 8 | 7 | 10 | 4 | 8 | 9 | 4 | 4 | **52** |
+| 7 | Propagate legacy install alias failures | 7 | 5 | 7 | 7 | 9 | 3 | 10 | 10 | 1 | 1 | **52** |
+| 8 | Verify release-asset archive construction | 7 | 7 | 8 | 8 | 8 | 5 | 8 | 9 | 4 | 4 | **51** |
+
+The checkout and Stop candidates already have completed branches, while updater
+work is active in PR #28. The selected initiative is **linked-worktree state
+isolation** because it is the highest-value unclaimed invariant violation and
+has a direct privacy and state-integrity impact. The accepted policy checks for
+local `.fable/` state first, then treats any `.git` filesystem entry—including
+a gitfile or broken symlink—as a conservative repository boundary. It changes
+no schema, dependency, CLI, or public package API.

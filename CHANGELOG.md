@@ -2,6 +2,15 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- **Linked-worktree state isolation**: Python lifecycle hooks now treat every
+  `.git` filesystem entry as a repository boundary. A linked worktree without
+  local `.fable/` state can no longer read or mutate an ancestor workspace's
+  durable state.
+
 ## [1.5.1] - 2026-08-28
 
 ### Fixed
