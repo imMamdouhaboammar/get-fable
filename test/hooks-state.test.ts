@@ -17,10 +17,35 @@ function freshDir(prefix = 'get-fable-hooks-') {
 
 function project() {
   const dir = freshDir();
+  armProject(dir);
+  return dir;
+}
+
+function armProject(dir: string) {
   fs.mkdirSync(path.join(dir, '.fable'), { recursive: true });
   fs.writeFileSync(path.join(dir, '.fable', 'LEDGER.md'), '- [x] Acceptance: tests pass -- evidence: bun test 42 passed\n');
   writeFableState(dir, createInitialState('2026-08-13T00:00:00.000Z', dir));
-  return dir;
+}
+
+function git(cwd: string, ...args: string[]) {
+  const result = spawnSync('git', args, { cwd, encoding: 'utf-8' });
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(' ')} failed: ${result.stderr}`);
+  }
+}
+
+function linkedWorktree(parentDir: string) {
+  const source = freshDir('get-fable-hooks-source-');
+  git(source, 'init', '-q');
+  git(source, 'config', 'user.email', 'test@example.com');
+  git(source, 'config', 'user.name', 'Test User');
+  fs.writeFileSync(path.join(source, 'tracked.txt'), 'baseline\n');
+  git(source, 'add', 'tracked.txt');
+  git(source, 'commit', '-qm', 'baseline');
+
+  const linked = path.join(parentDir, 'linked-worktree');
+  git(source, 'worktree', 'add', '-q', '-b', 'linked-boundary-test', linked);
+  return linked;
 }
 
 function runHook(name: string, input: Record<string, unknown>) {
@@ -36,6 +61,80 @@ afterEach(() => {
 });
 
 describe('lifecycle hooks and durable state', () => {
+  test('linked worktree without local Fable state does not read an ancestor workspace', () => {
+    const outer = project();
+    const linked = linkedWorktree(outer);
+
+    const injected = runHook('fable_profile_inject.py', {
+      cwd: linked,
+      session_id: 'linked-boundary-test',
+    });
+    expect(injected.status).toBe(0);
+    expect(injected.stdout).toBe('');
+  });
+
+  test('linked worktree without local Fable state does not mutate an ancestor workspace', () => {
+    const outer = project();
+    const linked = linkedWorktree(outer);
+    const outerStatePath = path.join(outer, '.fable', 'state.json');
+    const outerStateBefore = fs.readFileSync(outerStatePath, 'utf-8');
+
+    const mutation = runHook('fable_mutation.py', {
+      cwd: linked,
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    });
+    expect(mutation.status).toBe(0);
+    expect(fs.readFileSync(outerStatePath, 'utf-8')).toBe(outerStateBefore);
+  });
+
+  test('cwd symlink into a linked worktree cannot reach ancestor Fable state', () => {
+    const outer = project();
+    const linked = linkedWorktree(outer);
+    const linkedSubdir = path.join(linked, 'subdir');
+    const alias = path.join(outer, 'linked-alias');
+    fs.mkdirSync(linkedSubdir);
+    fs.symlinkSync(linkedSubdir, alias, 'dir');
+    const outerStatePath = path.join(outer, '.fable', 'state.json');
+    const outerStateBefore = fs.readFileSync(outerStatePath, 'utf-8');
+
+    const injected = runHook('fable_profile_inject.py', {
+      cwd: alias,
+      session_id: 'linked-symlink-boundary-test',
+    });
+    expect(injected.status).toBe(0);
+    expect(injected.stdout).toBe('');
+
+    const mutation = runHook('fable_mutation.py', {
+      cwd: alias,
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    });
+    expect(mutation.status).toBe(0);
+    expect(fs.readFileSync(outerStatePath, 'utf-8')).toBe(outerStateBefore);
+  });
+
+  test('linked worktree uses its own local Fable state before stopping at its Git boundary', () => {
+    const outer = project();
+    const linked = linkedWorktree(outer);
+    armProject(linked);
+    const outerStatePath = path.join(outer, '.fable', 'state.json');
+    const linkedStatePath = path.join(linked, '.fable', 'state.json');
+
+    const mutation = runHook('fable_mutation.py', {
+      cwd: linked,
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    });
+    expect(mutation.status).toBe(0);
+
+    const outerState = JSON.parse(fs.readFileSync(outerStatePath, 'utf-8'));
+    const linkedState = JSON.parse(fs.readFileSync(linkedStatePath, 'utf-8'));
+    expect(outerState.mutationGeneration).toBe(0);
+    expect(linkedState.mutationGeneration).toBe(1);
+    expect(linkedState.workspaceId).not.toBe(outerState.workspaceId);
+  });
+
   test('a newly initialized idle project can stop before any work round exists', () => {
     const dir = freshDir('get-fable-init-hooks-');
     initProjectFable(dir);

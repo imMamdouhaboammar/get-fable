@@ -98,14 +98,14 @@ def start_dir(data):
 def find_fable_dir(start):
     """Walk upward for `.fable/`, stopping at the project git root."""
     try:
-        cur = os.path.abspath(start)
+        cur = os.path.realpath(os.path.abspath(start))
     except Exception:
         return None
     while True:
         candidate = os.path.join(cur, ".fable")
         if os.path.isdir(candidate):
             return candidate
-        if os.path.isdir(os.path.join(cur, ".git")):
+        if os.path.lexists(os.path.join(cur, ".git")):
             return None
         parent = os.path.dirname(cur)
         if parent == cur:
