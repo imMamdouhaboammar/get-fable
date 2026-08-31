@@ -489,3 +489,42 @@ has a direct privacy and state-integrity impact. The accepted policy checks for
 local `.fable/` state first, then treats any `.git` filesystem entry—including
 a gitfile or broken symlink—as a conservative repository boundary. It changes
 no schema, dependency, CLI, or public package API.
+
+## 2026-08-31 revalidation
+
+Revalidated against `master` SHA `2d0cf7b261d681c95ecf08a0fff6ff3be12f4b12`
+and package version `1.5.1`. PR #31 had merged the linked-worktree lifecycle
+state boundary, and its post-merge CI, E2E, CodeQL, and TruffleHog runs were
+green. The only open pull requests, #28 through #30, form an owned updater
+stack; no standalone issue supplied an unowned initiative.
+
+Executable reproduction found that a hook payload with an explicit missing
+`cwd` was treated like a payload without `cwd`. When the Python hook process
+itself ran from another initialized project, profile injection exposed that
+project's workflow and mutation handling advanced its durable generation.
+
+Scores use the prescribed formula. Implementation confidence is shown for
+decision quality but is not part of priority.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Reject invalid explicit hook workspaces | 9 | 8 | 10 | 10 | 8 | 7 | 10 | 10 | 2 | 2 | **67** |
+| Invalidate evidence after checkout/reset | 9 | 9 | 10 | 10 | 8 | 8 | 9 | 9 | 4 | 4 | 64 |
+| Make the Stop completion gate level-triggered | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | 64 |
+| Reject symlink/special-file `.fable` roots | 9 | 9 | 10 | 10 | 7 | 7 | 8 | 9 | 4 | 4 | 61 |
+| Enforce phase/current-skill state invariants | 8 | 7 | 10 | 9 | 7 | 6 | 8 | 10 | 4 | 4 | 57 |
+| Preserve and compose pre-existing Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | 55 |
+| Serialize concurrent Python hook state updates | 8 | 9 | 9 | 9 | 6 | 8 | 6 | 8 | 7 | 7 | 53 |
+| Isolate process-global cwd changes in CLI tests | 8 | 6 | 8 | 7 | 10 | 4 | 8 | 9 | 4 | 4 | 52 |
+| Verify release-asset archive construction | 7 | 7 | 8 | 8 | 8 | 5 | 8 | 9 | 4 | 4 | 51 |
+| Stabilize the macOS Doctor performance budget | 7 | 5 | 7 | 7 | 9 | 3 | 7 | 8 | 3 | 3 | 47 |
+
+Checkout invalidation and the level-triggered Stop gate already have completed
+local branches; updater work is owned by open PRs. Invalid explicit hook `cwd`
+was selected as the highest-priority unowned defect. The accepted contract is:
+
+1. A valid explicit `cwd` remains the state-discovery root.
+2. An omitted `cwd` retains the process-directory compatibility fallback.
+3. A present but invalid `cwd` performs no state discovery, injection,
+   mutation, failure tracking, event journaling, spawn policy, or close policy.
+4. No schema, CLI, manifest, dependency, or public TypeScript API changes.
