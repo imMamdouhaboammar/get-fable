@@ -27,3 +27,11 @@ local `.fable/` state before walking upward, but it stops at any `.git` entry.
 This includes the `.git` file used at a linked-worktree root. Consequently a
 linked worktree may use its own `.fable/` directory, while a worktree without
 one never inherits state from an unrelated ancestor workspace.
+
+The host-provided working directory is also an authority boundary. When a hook
+payload contains canonical `cwd` or a supported workspace alias, get-fable
+uses the first supplied authority only if it names an existing directory.
+Invalid explicit values—including missing paths, regular files, empty values,
+and malformed types—survive host normalization and produce no state discovery.
+The process working directory is retained solely as a compatibility fallback
+for hosts that omit workspace authority entirely.

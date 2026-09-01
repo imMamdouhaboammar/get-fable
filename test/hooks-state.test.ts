@@ -48,10 +48,11 @@ function linkedWorktree(parentDir: string) {
   return linked;
 }
 
-function runHook(name: string, input: Record<string, unknown>) {
+function runHook(name: string, input: Record<string, unknown>, cwd?: string) {
   return spawnSync('python3', [path.join(root, 'hooks', name)], {
     input: JSON.stringify(input),
     encoding: 'utf-8',
+    cwd,
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: '1' },
   });
 }
@@ -61,6 +62,57 @@ afterEach(() => {
 });
 
 describe('lifecycle hooks and durable state', () => {
+  test('an explicitly invalid hook cwd cannot read or mutate the process workspace', () => {
+    const outer = project();
+    const statePath = path.join(outer, '.fable', 'state.json');
+    const stateBefore = fs.readFileSync(statePath, 'utf-8');
+    const missing = path.join(freshDir('get-fable-invalid-cwd-'), 'missing');
+
+    const injected = runHook('fable_profile_inject.py', { cwd: missing }, outer);
+    expect(injected.status).toBe(0);
+    expect(injected.stdout).toBe('');
+
+    const mutation = runHook('fable_mutation.py', {
+      cwd: missing,
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    }, outer);
+    expect(mutation.status).toBe(0);
+    expect(fs.readFileSync(statePath, 'utf-8')).toBe(stateBefore);
+  });
+
+  test.each([
+    ['regular file', (outer: string) => path.join(outer, 'not-a-directory')],
+    ['empty string', () => ''],
+    ['null', () => null],
+    ['non-string', () => 42],
+    ['embedded NUL', () => 'invalid\0cwd'],
+  ])('an explicit %s cwd cannot become process-workspace authority', (_label, value) => {
+    const outer = project();
+    fs.writeFileSync(path.join(outer, 'not-a-directory'), 'not a directory\n');
+    const statePath = path.join(outer, '.fable', 'state.json');
+    const stateBefore = fs.readFileSync(statePath, 'utf-8');
+
+    const mutation = runHook('fable_mutation.py', {
+      cwd: value(outer),
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    }, outer);
+    expect(mutation.status).toBe(0);
+    expect(fs.readFileSync(statePath, 'utf-8')).toBe(stateBefore);
+  });
+
+  test('a hook payload that omits cwd retains the process-workspace fallback', () => {
+    const outer = project();
+    const mutation = runHook('fable_mutation.py', {
+      tool_name: 'Edit',
+      tool_response: { ok: true },
+    }, outer);
+    expect(mutation.status).toBe(0);
+    const state = JSON.parse(fs.readFileSync(path.join(outer, '.fable', 'state.json'), 'utf-8'));
+    expect(state.mutationGeneration).toBe(1);
+  });
+
   test('linked worktree without local Fable state does not read an ancestor workspace', () => {
     const outer = project();
     const linked = linkedWorktree(outer);

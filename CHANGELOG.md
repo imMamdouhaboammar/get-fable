@@ -6,6 +6,11 @@ All notable changes to `get-fable` are documented in this file.
 
 ### Fixed
 
+- **Explicit hook workspace authority**: lifecycle hooks now fall back to their
+  process working directory only when a host omits workspace authority. A
+  supplied but invalid, missing, non-directory, or malformed canonical `cwd`
+  or supported host alias no longer reads or mutates `.fable` state belonging
+  to the hook process workspace.
 - **Linked-worktree state isolation**: Python lifecycle hooks now treat every
   `.git` filesystem entry as a repository boundary. A linked worktree without
   local `.fable/` state can no longer read or mutate an ancestor workspace's

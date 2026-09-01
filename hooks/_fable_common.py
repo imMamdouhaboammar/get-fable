@@ -85,14 +85,17 @@ def read_hook_input():
 
 
 def start_dir(data):
-    """Best-effort project directory from hook cwd, else process cwd."""
-    cwd = data.get("cwd")
-    if cwd and os.path.isdir(cwd):
-        return cwd
+    """Use an explicit valid hook cwd, or process cwd only when omitted."""
+    if "cwd" in data:
+        cwd = data.get("cwd")
+        try:
+            return cwd if isinstance(cwd, str) and cwd and os.path.isdir(cwd) else None
+        except (OSError, ValueError):
+            return None
     try:
         return os.getcwd()
     except Exception:
-        return "."
+        return None
 
 
 def find_fable_dir(start):
