@@ -14,7 +14,7 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
-**25 connected Skills · routing · research · planning · TDD · verification · review · recovery · release**
+**25 connected Skills · routing · research · planning · TDD · verification · review · recovery · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
@@ -343,16 +343,16 @@ get-fable spark
 | <img src="assets/logos/kilo.svg" width="20" height="20" alt="" /> **Kilo Code** (Kilo Platform) | **Skill + Rule** | Global rules in `~/.kilo/rules/fable.md`, skills in `~/.kilo/skills/` |
 | <img src="assets/logos/plandex.svg" width="20" height="20" alt="" /> [**Plandex**](https://www.youtube.com/watch?v=Q0YgzCHkNXo) (Terminal multi-file engine) | **Advisory Rule** | Global rules in `~/.plandex/rules/fable.md` & project `.plandex/context.md` |
 | <img src="assets/logos/autogpt.svg" width="20" height="20" alt="" /> [**AutoGPT**](https://www.deeplearning.ai/the-batch/next-generation-coding-tools-empower-developers-with-agent-style-interactions) (Significant-Gravitas) | **Advisory Rule** | Global rules in `~/.autogpt/rules/fable.md` |
-| <img src="assets/logos/hermes.svg" width="20" height="20" alt="" /> [**Hermes Agent**](https://openrouter.ai/apps/category/coding) (Nous Research) | **Skill + Rule** | Global rules in `~/.hermes/rules/fable.md`, skills in `~/.hermes/skills/` |
 | <img src="assets/logos/kiro.svg" width="20" height="20" alt="" /> **Kiro** | **Rule + Hooks** | Rules in `~/.kiro/rules/fable.md` and lifecycle triggers |
-| <img src="assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | **Advisory Rule** | Rules in `~/.deepseek/rules/fable.md` |
+| <img src="assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | **Plugin + UI** | Cordis plugin bundle (`cordis.patch.yml`), REST backend, and consumed React Web UI |
 | <img src="assets/logos/pi.svg" width="20" height="20" alt="" /> **Pi Code** | **Advisory Rule** | Rules in `~/.pi/rules/fable.md` |
 
 Integration depth depends on what each host actually exposes:
 
+- **Cordis Plugin & Consumed Web UI** — DeepSeek Harness (DSH)
 - **Full lifecycle integration** — Claude Code, Antigravity, Grok Build
 - **Skill + rule integration** — Codex, Devin, OpenCode, Roo Code, Cline, OpenHands, Kilo Code, Hermes Agent
-- **Advisory rule integration** — Cursor, Copilot, Windsurf, Replit, Amazon Q, Trae, Warp, Kimi, Atlarix, Vellum, Codegen, Muse, Junie, Qodo, Aider, Continue, Plandex, AutoGPT, Kiro, DeepSeek, Pi Code
+- **Advisory rule integration** — Cursor, Copilot, Windsurf, Replit, Amazon Q, Trae, Warp, Kimi, Atlarix, Vellum, Codegen, Muse, Junie, Qodo, Aider, Continue, Plandex, AutoGPT, Kiro, Pi Code
 
 That distinction is intentional. A host that can load rules but cannot register lifecycle hooks should not be described as if it has enforcement it does not actually provide.
 
@@ -393,8 +393,15 @@ get-fable install plandex
 get-fable install autogpt
 get-fable install hermes
 get-fable install deepseek
+get-fable install dsh
 get-fable install kiro
 get-fable install pi
+```
+
+DeepSeek Harness (DSH) Plugin installation:
+
+```bash
+dsh plugin add imMamdouhaboammar/get-fable
 ```
 
 Claude Code marketplace installation:

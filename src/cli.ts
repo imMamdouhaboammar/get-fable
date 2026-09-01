@@ -34,6 +34,7 @@ import {
   installAutoGPTGlobal,
   installHermesGlobal,
   installDeepSeekGlobal,
+  installDshGlobal,
   installKiroGlobal,
   installPiCodeGlobal,
   installGitHooks,
@@ -503,6 +504,10 @@ function runInstallCommand(args: string[]): number {
       return 0;
     case 'deepseek':
       installDeepSeekGlobal();
+      return 0;
+    case 'dsh':
+    case 'deepseek-harness':
+      installDshGlobal();
       return 0;
     case 'kiro':
       installKiroGlobal();
@@ -996,6 +1001,16 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'install-grok':
       logHeader('Installing get-fable for Grok & Grok Bot');
       installGrokGlobal();
+      return 0;
+
+    case 'install-deepseek':
+      logHeader('Installing get-fable for DeepSeek & DeepSeek Harness');
+      installDeepSeekGlobal();
+      return 0;
+
+    case 'install-dsh':
+      logHeader('Installing get-fable for DeepSeek Harness (DSH)');
+      installDshGlobal();
       return 0;
 
     case 'install-codex':

@@ -1,17 +1,27 @@
 {
   "name": "get-fable",
   "version": "1.5.1",
-  "description": "A portable coding lifecycle for AI agents with deterministic routing, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, and an optional local request proxy.",
+  "description": "A portable coding lifecycle for AI agents with deterministic routing across 25 skills, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./client": "./dist/client.js"
   },
   "bin": {
     "get-fable": "bin/get-fable.js"
   },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  },
   "files": [
+    "cordis.patch.yml",
     ".claude-plugin/",
     ".codex-plugin/",
     ".chatgpt-plugin/",
@@ -37,6 +47,7 @@
     "bin/",
     "src/",
     "public/",
+    "dist/",
     "assets/",
     "prompts/",
     "hooks/",
@@ -56,7 +67,9 @@
     "test": "bun test --timeout 30000",
     "test:coverage": "bun test --timeout 30000 --coverage",
     "typecheck": "tsc --noEmit",
-    "build": "rm -rf dist && bun build ./src/index.ts ./src/cli.ts --outdir ./dist --target bun",
+    "build:host": "bun build ./src/index.ts ./src/cli.ts --outdir ./dist --target bun",
+    "build:client": "bun build ./src/dsh/client/index.tsx --outfile ./dist/client.js --target browser",
+    "build": "rm -rf dist && bun run build:host && bun run build:client",
     "check": "bun run check:generated && bun run check:llms && bun run typecheck && bun run test && bun run build",
     "lint": "bun ./bin/get-fable.js lint",
     "serve:web": "bun ./bin/serve-web.js",
@@ -67,6 +80,11 @@
     "check:llms": "bun scripts/generate-llms-txt.ts --check"
   },
   "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "planning-with-files",
     "codex",
     "chatgpt",
     "openai-plugin",
@@ -105,7 +123,9 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
     "cypress": "15.21.0",
+    "react": "^19.2.0",
     "typescript": "^5.7.0"
   }
 }

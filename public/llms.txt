@@ -30,3 +30,4 @@
 - [SPEC — <project / round name>](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SPEC.md): <One paragraph: what must exist when this round is done, and for whom.>
 - [Tool Capabilities & Schema Binding](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/TOOLS.md): 1. `filesystem-operations`: Workspace file read/write/edit.
 - [Usage: get-fable 1.3](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/USAGE.md): This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
+- [DeepSeek Harness (DSH) Plugin Guide for get-fable](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/dsh-plugin.md): `get-fable` is fully compatible with **DeepSeek Harness (DSH)** as an official Cordis plugin bundle and Web UI extension.

@@ -471,6 +471,33 @@ export function installKimiGlobal(kimiDir: string = getKimiDir()) {
   logSuccess('Installed Kimi rules in ~/.kimi/rules/fable.md');
 }
 
+export function getDshHomeDir(): string {
+  return process.env.DSH_HOME || path.join(process.env.HOME || '~', '.dsh');
+}
+
+export function installDshGlobal(dshHome: string = getDshHomeDir()) {
+  logInfo(`Installing get-fable for DeepSeek Harness (${dshHome})...`);
+  fs.mkdirSync(dshHome, { recursive: true });
+
+  const patchFile = path.join(dshHome, 'cordis.patch.yml');
+  const patchEntry = `\n# get-fable bundle patch\n- insert:\n    - id: get-fable\n      name: get-fable\n`;
+
+  if (fs.existsSync(patchFile)) {
+    const existing = fs.readFileSync(patchFile, 'utf-8');
+    if (!existing.includes('id: get-fable')) {
+      fs.appendFileSync(patchFile, patchEntry);
+      logSuccess('Appended get-fable plugin entry to ~/.dsh/cordis.patch.yml');
+    } else {
+      logWarn('get-fable entry already present in ~/.dsh/cordis.patch.yml');
+    }
+  } else {
+    fs.writeFileSync(patchFile, `# DeepSeek Harness Global Cordis Patch\n${patchEntry}`);
+    logSuccess('Created ~/.dsh/cordis.patch.yml with get-fable plugin bundle');
+  }
+
+  logSuccess('DeepSeek Harness integration configured successfully.');
+}
+
 export function installDeepSeekGlobal(deepseekDir: string = getDeepSeekDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for DeepSeek (${deepseekDir})...`);
@@ -482,6 +509,7 @@ export function installDeepSeekGlobal(deepseekDir: string = getDeepSeekDir()) {
     path.join(rulesDir, 'fable.md')
   );
 
+  installDshGlobal();
   logSuccess('Installed DeepSeek rules in ~/.deepseek/rules/fable.md');
 }
 
