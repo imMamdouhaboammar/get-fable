@@ -6,6 +6,12 @@ All notable changes to `get-fable` are documented in this file.
 
 ### Fixed
 
+- **Lifecycle filesystem boundary**: reject symlinked `.fable` directories and
+  non-regular lifecycle files before state, ledger, lock, initialization, or
+  repair I/O. Python Stop treats an unsafe local boundary as a blocking error,
+  not as an uninitialized project. Event journal paths receive the same
+  static-path protection. Atomic writes reject existing temporary paths without
+  modifying or deleting them. This does not eliminate concurrent path-swap races.
 - **Explicit hook workspace authority**: lifecycle hooks now fall back to their
   process working directory only when a host omits workspace authority. A
   supplied but invalid, missing, non-directory, or malformed canonical `cwd`

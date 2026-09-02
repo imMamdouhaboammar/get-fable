@@ -3,6 +3,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './skill-registry.js';
 import { readFableState, createInitialState, writeFableState } from './state.js';
+import { assertSafeFableBoundary } from './state-boundary.js';
 import { evaluateFableSpark } from './spark.js';
 import { loadTelemetryConfig } from './telemetry.js';
 import { loadSkillFeed } from './feed.js';
@@ -362,8 +363,13 @@ export function runDoctorFix(
   const errors: string[] = [];
 
   const fableDir = path.join(targetDir, '.fable');
-  if (!fs.existsSync(fableDir)) {
-    fs.mkdirSync(fableDir, { recursive: true });
+  const existed = fs.existsSync(fableDir);
+  try {
+    assertSafeFableBoundary(targetDir, true);
+  } catch (error) {
+    return { repaired, errors: [`Refusing unsafe .fable lifecycle boundary: ${error instanceof Error ? error.message : String(error)}`] };
+  }
+  if (!existed) {
     repaired.push('Created .fable/ directory');
   }
 
@@ -598,7 +604,8 @@ export function runDoctor(
     checks.push(check('telemetry-health', 'ERROR', `Telemetry error: ${message}`));
   }
 
-  const activeProject = fs.existsSync(path.join(targetDir, '.fable'));
+  // lstat distinguishes absent opt-in from a dangling symlink that must be diagnosed.
+  const activeProject = fs.lstatSync(path.join(targetDir, '.fable'), { throwIfNoEntry: false }) !== undefined;
   if (!activeProject) {
     checks.push(check('project-state', 'WARN', 'No active .fable directory in the current project'));
     checks.push(check('project-skills', 'WARN', 'Project-local canonical skills are not required until get-fable is initialized'));

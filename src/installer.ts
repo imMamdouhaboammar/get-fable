@@ -44,6 +44,7 @@ import {
 } from './utils.js';
 import { canonicalSkillIds } from './core/skill-registry.js';
 import { createInitialState, readFableState, writeFableState } from './core/state.js';
+import { assertSafeFableBoundary } from './core/state-boundary.js';
 import { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs, copySkillDirectory } from './core/skill-installer.js';
 import {
   CANONICAL_GIT_HOOKS,
@@ -1062,7 +1063,7 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   const plandexDir = path.join(targetDir, '.plandex');
   const templatesDir = path.join(repoRoot, 'templates');
 
-  fs.mkdirSync(fableDir, { recursive: true });
+  assertSafeFableBoundary(targetDir, true);
   fs.mkdirSync(docsDir, { recursive: true });
   fs.mkdirSync(cursorRulesDir, { recursive: true });
   fs.mkdirSync(githubDir, { recursive: true });
@@ -1320,7 +1321,7 @@ export function getFableStatus(targetDir: string = process.cwd()): FableStatus {
   const kiroDir = getKiroDir();
   const piDir = getPiDir();
   const kernelDir = getAgentKernelDir();
-  const active = fs.existsSync(path.join(targetDir, '.fable'));
+  const active = fs.lstatSync(path.join(targetDir, '.fable'), { throwIfNoEntry: false }) !== undefined;
   const hooksPath = resolveGitHooksPath(targetDir);
   const gitHooksInstalled = hooksPath.kind === 'resolved' &&
     areCanonicalGitHooksInstalled(hooksPath.hooksDir);

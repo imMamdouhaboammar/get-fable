@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+import stat
 import sys
 import tempfile
 import time
@@ -106,7 +107,8 @@ def find_fable_dir(start):
         return None
     while True:
         candidate = os.path.join(cur, ".fable")
-        if os.path.isdir(candidate):
+        # Keep unsafe opt-in discoverable: Stop must not mistake it for no project.
+        if os.path.lexists(candidate):
             return candidate
         if os.path.lexists(os.path.join(cur, ".git")):
             return None
@@ -114,6 +116,28 @@ def find_fable_dir(start):
         if parent == cur:
             return None
         cur = parent
+
+
+LIFECYCLE_FILES = ("state.json", "state.lock", "LEDGER.md", "PROGRESS.md", "VERIFIER_PROMPT.md")
+
+
+def safe_fable_boundary(fable_dir, extra_files=()):
+    """Reject pre-existing symlinks/special files; concurrent replacement is out of scope."""
+    try:
+        if not stat.S_ISDIR(os.lstat(fable_dir).st_mode):
+            return False
+        for filename in LIFECYCLE_FILES + tuple(extra_files):
+            if not filename or os.path.basename(filename) != filename:
+                return False
+            try:
+                mode = os.lstat(os.path.join(fable_dir, filename)).st_mode
+            except FileNotFoundError:
+                continue
+            if not stat.S_ISREG(mode):
+                return False
+        return True
+    except (OSError, ValueError, TypeError):
+        return False
 
 
 def ledger_path(fable_dir):
@@ -292,6 +316,8 @@ def _migrate_v2_state(fable_dir, state):
 
 def read_state(fable_dir):
     """Read valid schema-v3 runtime state, migrating schema v1/v2 in memory."""
+    if not safe_fable_boundary(fable_dir):
+        return None
     try:
         with open(state_path(fable_dir), encoding="utf-8") as handle:
             state = json.load(handle)
@@ -348,8 +374,9 @@ def write_state(fable_dir, state):
     """Atomically write state beside the current state file. Best effort."""
     if not isinstance(state, dict):
         return False
+    if not safe_fable_boundary(fable_dir):
+        return False
     try:
-        os.makedirs(fable_dir, exist_ok=True)
         fd, tmp_path = tempfile.mkstemp(prefix=".state.", suffix=".tmp", dir=fable_dir)
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as handle:
@@ -424,8 +451,10 @@ def _pid_alive(pid):
 
 def _stale_lock_can_be_removed(path):
     try:
-        stat = os.stat(path)
-        if time.time() - stat.st_mtime < STATE_LOCK_STALE_SECONDS:
+        lock_stat = os.lstat(path)
+        if not stat.S_ISREG(lock_stat.st_mode):
+            return False
+        if time.time() - lock_stat.st_mtime < STATE_LOCK_STALE_SECONDS:
             return False
         try:
             with open(path, encoding="utf-8") as handle:
@@ -440,7 +469,8 @@ def _stale_lock_can_be_removed(path):
 
 
 def _acquire_state_lock(fable_dir):
-    os.makedirs(fable_dir, exist_ok=True)
+    if not safe_fable_boundary(fable_dir):
+        return None
     path = _lock_path(fable_dir)
     deadline = time.monotonic() + STATE_LOCK_TIMEOUT_SECONDS
     while True:
@@ -452,6 +482,8 @@ def _acquire_state_lock(fable_dir):
                 os.fsync(handle.fileno())
             return path
         except FileExistsError:
+            if not safe_fable_boundary(fable_dir):
+                return None
             if _stale_lock_can_be_removed(path):
                 try:
                     os.remove(path)
@@ -521,6 +553,8 @@ MIN_EVIDENCE_CHARS = 6
 
 def closed_without_evidence(path):
     """List checked ledger cards with missing or hollow evidence markers."""
+    if not safe_fable_boundary(os.path.dirname(path)):
+        return []
     bad = []
     try:
         with open(path, "r", encoding="utf-8", errors="replace") as handle:
@@ -581,6 +615,8 @@ def save_fail_streak(session_id, count):
 
 def parse_ledger(path):
     """Return (open_items, has_any, paused) for a ledger file."""
+    if not safe_fable_boundary(os.path.dirname(path)):
+        return [], False, False
     open_items = []
     has_any = False
     paused = False

@@ -11,7 +11,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _fable_common import read_hook_input, start_dir, find_fable_dir  # noqa: E402
+from _fable_common import read_hook_input, start_dir, find_fable_dir, safe_fable_boundary  # noqa: E402
 
 MAX_BYTES = 256 * 1024
 RETAIN_LINES = 500
@@ -34,6 +34,8 @@ def classify_success(data):
 
 def compact_if_needed(path):
     try:
+        if not safe_fable_boundary(os.path.dirname(path), ("events.jsonl", "events.jsonl.tmp")):
+            return
         if not os.path.isfile(path) or os.path.getsize(path) <= MAX_BYTES:
             return
         with open(path, "r", encoding="utf-8") as handle:
@@ -50,6 +52,8 @@ def main():
     data = read_hook_input()
     fable_dir = find_fable_dir(start_dir(data))
     if not fable_dir:
+        return 0
+    if not safe_fable_boundary(fable_dir, ("events.jsonl", "events.jsonl.tmp")):
         return 0
 
     event_name = data.get("hook_event_name")
