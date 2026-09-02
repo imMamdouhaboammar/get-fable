@@ -2,7 +2,13 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fetchStableRelease, isNewerVersion as isReleaseNewerVersion } from './update/release-source.js';
+import { readCache, writeCacheAtomic } from './update/cache.js';
+import type { FetchLike } from './update/types.js';
 import { logInfo, logSuccess, logWarn, logError, colors } from '../utils.js';
+
+const RELEASES_URL = 'https://github.com/imMamdouhaboammar/get-fable/releases';
+const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 export interface UpdateCheckResult {
   currentVersion: string;
@@ -13,81 +19,97 @@ export interface UpdateCheckResult {
   changelogUrl?: string;
 }
 
+export interface FetchLatestVersionDeps {
+  fetch?: FetchLike;
+  now?: () => Date;
+  cachePath?: string;
+}
+
+function defaultFetch(input: string, init?: Parameters<FetchLike>[1]) {
+  return fetch(input, init);
+}
+
 export function getUpdateCachePath(): string {
-  const dir = path.join(os.homedir(), '.fable');
+  const dir = path.join(os.homedir(), '.fable', 'update');
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  return path.join(dir, 'update-cache.json');
+  return path.join(dir, 'release.json');
 }
 
-export function readUpdateCache(): UpdateCheckResult | null {
-  try {
-    const p = getUpdateCachePath();
-    if (!fs.existsSync(p)) return null;
-    return JSON.parse(fs.readFileSync(p, 'utf-8'));
-  } catch {
-    return null;
-  }
+export function readUpdateCache(cachePath = getUpdateCachePath()): UpdateCheckResult | null {
+  return readCache<UpdateCheckResult>(cachePath)?.value ?? null;
 }
 
-export function writeUpdateCache(cache: UpdateCheckResult) {
+export function writeUpdateCache(
+  cache: UpdateCheckResult,
+  cachePath = getUpdateCachePath(),
+  ttlMs = DEFAULT_CACHE_TTL_MS
+): void {
   try {
-    const p = getUpdateCachePath();
-    fs.writeFileSync(p, JSON.stringify(cache, null, 2), 'utf-8');
+    const fetchedAtMs = Date.parse(cache.checkedAt);
+    const baseTime = Number.isFinite(fetchedAtMs) ? fetchedAtMs : Date.now();
+    writeCacheAtomic(cachePath, {
+      schemaVersion: 1,
+      fetchedAt: new Date(baseTime).toISOString(),
+      expiresAt: new Date(baseTime + ttlMs).toISOString(),
+      value: cache,
+    });
   } catch {
-    // ignore cache write failures
+    // Cache persistence is best-effort and must not fail an explicit update check.
   }
 }
 
 export async function fetchLatestVersion(
   currentVersion: string,
-  timeoutMs: number = 3000
+  timeoutMs: number = 3000,
+  deps: FetchLatestVersionDeps = {}
 ): Promise<UpdateCheckResult> {
-  const result: UpdateCheckResult = {
-    currentVersion,
-    latestVersion: currentVersion,
-    updateAvailable: false,
-    checkedAt: new Date().toISOString(),
-    channel: 'github',
-    changelogUrl: 'https://github.com/imMamdouhaboammar/get-fable/releases',
-  };
+  const now = deps.now ?? (() => new Date());
+  const cachePath = deps.cachePath ?? getUpdateCachePath();
 
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-    const res = await fetch(
-      'https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/package.json',
-      { signal: controller.signal }
+    const release = await fetchStableRelease(
+      currentVersion,
+      {
+        fetch: deps.fetch ?? defaultFetch,
+        now,
+      },
+      timeoutMs
     );
-    clearTimeout(timer);
 
-    if (res.ok) {
-      const data = (await res.json()) as { version?: string };
-      if (data.version) {
-        result.latestVersion = data.version;
-        result.updateAvailable = isNewerVersion(currentVersion, data.version);
-        writeUpdateCache(result);
-        return result;
-      }
-    }
+    const result: UpdateCheckResult = {
+      currentVersion,
+      latestVersion: release.version,
+      updateAvailable: isNewerVersion(currentVersion, release.version),
+      checkedAt: release.checkedAt,
+      channel: 'npm',
+      changelogUrl: release.releaseUrl ?? release.notesUrl ?? RELEASES_URL,
+    };
+
+    writeUpdateCache(result, cachePath);
+    return result;
   } catch {
-    // Network unreachable or timeout; fallback to cache
-    const cached = readUpdateCache();
-    if (cached) return { ...cached, currentVersion, updateAvailable: isNewerVersion(currentVersion, cached.latestVersion) };
-  }
+    const cached = readUpdateCache(cachePath);
+    if (cached) {
+      return {
+        ...cached,
+        currentVersion,
+        updateAvailable: isNewerVersion(currentVersion, cached.latestVersion),
+      };
+    }
 
-  return result;
+    return {
+      currentVersion,
+      latestVersion: currentVersion,
+      updateAvailable: false,
+      checkedAt: now().toISOString(),
+      channel: 'npm',
+      changelogUrl: RELEASES_URL,
+    };
+  }
 }
 
 export function isNewerVersion(current: string, latest: string): boolean {
-  const parse = (v: string) => v.split('.').map((n) => parseInt(n, 10) || 0);
-  const [cMaj, cMin, cPatch] = parse(current);
-  const [lMaj, lMin, lPatch] = parse(latest);
-
-  if (lMaj > cMaj) return true;
-  if (lMaj === cMaj && lMin > cMin) return true;
-  if (lMaj === cMaj && lMin === cMin && lPatch > cPatch) return true;
-  return false;
+  return isReleaseNewerVersion(current, latest);
 }
 
 export async function runAutoUpdate(
