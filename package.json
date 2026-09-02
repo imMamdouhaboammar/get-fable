@@ -123,7 +123,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/react": "^18.3.0",
+    "@types/react": "^19.2.18",
     "cypress": "15.21.0",
     "react": "^19.2.0",
     "typescript": "^5.7.0"
