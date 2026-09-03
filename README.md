@@ -404,6 +404,10 @@ DeepSeek Harness (DSH) Plugin installation:
 dsh plugin add imMamdouhaboammar/get-fable
 ```
 
+When configuring the DSH plugin's `projectRoot`, fresh routing state belongs to
+that project even when the host starts elsewhere. A routing preview does not
+create `.fable` state; applying the route writes it to the configured project.
+
 Claude Code marketplace installation:
 
 ```bash

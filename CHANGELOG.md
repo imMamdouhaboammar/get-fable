@@ -6,6 +6,10 @@ All notable changes to `get-fable` are documented in this file.
 
 ### Fixed
 
+- **DSH routing workspace ownership**: fresh routing previews and first applied
+  routes now initialize state for the configured `projectRoot`, not the host
+  process directory. Applying a route in a separate consumer workspace no
+  longer fails workspace identity validation.
 - **Explicit hook workspace authority**: lifecycle hooks now fall back to their
   process working directory only when a host omits workspace authority. A
   supplied but invalid, missing, non-directory, or malformed canonical `cwd`
