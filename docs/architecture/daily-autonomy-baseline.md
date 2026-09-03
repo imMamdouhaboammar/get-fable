@@ -528,3 +528,46 @@ was selected as the highest-priority unowned defect. The accepted contract is:
 3. A present but invalid `cwd` performs no state discovery, injection,
    mutation, failure tracking, event journaling, spawn policy, or close policy.
 4. No schema, CLI, manifest, dependency, or public TypeScript API changes.
+
+## Revalidation — 2026-09-03
+
+Fresh default SHA: `1827c39dd66cd0c02dd3da79131e196bebee6289`; package `1.5.1`.
+Executable runtime state is schema v3 (older repository instructions still
+describe v2). Canonical registry/catalog, deterministic routing, state/evidence
+validation and recovery remain core-owned. The CLI and Python hooks consume
+that contract. New `src/dsh/` code exposes a Cordis adapter and browser client;
+`src/index.ts` publicly exports the adapter. No runtime dependencies were added.
+
+The fresh baseline ran 372 tests with zero failures (2,584 assertions). Master
+CI, E2E and Security were green. PR #33 owns filesystem trust boundaries and
+must not be duplicated; its Dependency Review is blocked by repository
+configuration. Updater drafts #28–30 remain separate owned work. Recent
+Dependabot failures concern exact-pin assertions, CodeQL pair version drift
+and omitted Bun lockfile updates, not evidence that dependencies are unsafe.
+
+Discovery questions resolved: the configured root reaches the API handler;
+both missing-state factories silently substitute process cwd; the core writer
+correctly rejects mismatched identity; existing DSH tests use the repository
+as the project and therefore miss the consumer-workspace case. Probes reproduced
+a wrong preview identity and `workspaceId` validation failure on first apply.
+
+Scores are 1–10, higher is better except maintenance and risk. Priority is
+`2*UV + Rel + Fit + DX + Diff + Learn + Test - Maint - Risk`; confidence is
+reported separately, not added to the requested formula.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| DSH initial-state workspace ownership | 8 | 6 | 10 | 9 | 9 | 6 | 10 | 10 | 2 | 2 | 62 |
+| Durable mutation invalidation after lock timeout | 10 | 9 | 10 | 10 | 8 | 8 | 9 | 8 | 7 | 7 | 59 |
+| Repeated Stop completion enforcement | 10 | 7 | 10 | 10 | 7 | 8 | 10 | 10 | 5 | 8 | 59 |
+| DSH routing transactions and revisions | 8 | 8 | 10 | 9 | 8 | 6 | 10 | 8 | 4 | 4 | 57 |
+| DSH unverified-mutation status accuracy | 7 | 5 | 9 | 7 | 8 | 6 | 10 | 10 | 2 | 2 | 55 |
+| DSH installed-catalog skill inventory | 6 | 6 | 8 | 7 | 8 | 5 | 9 | 10 | 3 | 3 | 50 |
+| Explicit DSH Doctor repair semantics | 6 | 5 | 8 | 7 | 8 | 4 | 10 | 9 | 4 | 5 | 44 |
+
+Selected: pass `projectRoot` to both canonical fresh-state factories. Acceptance:
+preview returns target-owned state without creating `.fable`; first apply
+persists valid target-owned state; existing evidence/counters survive subsequent
+routing; relative and absolute configured paths agree. No new normalization,
+state schema, dependency, public API, or live-host compatibility claim. Other
+DSH issues and host Stop/lock policy remain follow-ups, not implied fixes.

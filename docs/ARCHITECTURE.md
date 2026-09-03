@@ -288,6 +288,20 @@ The proxy accepts documented OpenAI-style and supported translated request shape
 
 Safety defaults remain loopback binding, no permissive CORS by default, bounded body size, bounded upstream timeout, and HTTP/HTTPS upstream schemes only. The proxy does not provide its own authentication boundary.
 
+## DSH routing workspace ownership
+
+`src/dsh/index.ts` passes the configured `projectRoot` to the API handler in
+`src/dsh/api.ts`. Both fresh-state fallbacks (routing preview and route/apply)
+pass that root to the canonical state factory. They must not infer state
+ownership from the host process working directory. Existing state continues
+through the core reader/validator; the adapter does not replace its evidence
+or mutation counters with a fresh state.
+
+A preview remains read-only. Applying a route persists state in the configured
+project. Relative paths retain the core's existing process-relative resolution;
+this change adds no new path normalization or schema. DSH routing transactions,
+explicit preview overrides, and status counter accuracy are separate concerns.
+
 ## Verification strategy
 
 Repository CI checks:
