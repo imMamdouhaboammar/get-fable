@@ -52,3 +52,25 @@ entries on your behalf.
 
 This is static path validation. Concurrent replacement between checking and
 opening a path remains outside the guarantee.
+
+## Mutation debt under lock contention
+
+Python hooks wait a bounded time for `.fable/state.lock`. If a recognized
+workspace mutation cannot acquire that lock, the mutation hook preserves the
+invalidation obligation as a unique file in `.fable/pending-mutations/` rather
+than treating the callback's zero exit status as proof that state was updated.
+The token records only the hashed `workspaceId`; it does not record tool input,
+paths, prompts, command output, source content, or environment values.
+
+Stop blocks while any mutation token is present, including repeated active
+Stop callbacks. The next successful Python or TypeScript state transaction
+validates and reconciles the token snapshot into `mutationGeneration` before
+running its requested state change. Verification performed before that
+generation remains stale. Tokens created after the snapshot are deliberately
+left for the following transaction.
+
+Do not delete the debt directory to unblock completion. A malformed, foreign,
+symlinked, or special-file token is an integrity error and must be repaired as
+state, not interpreted as absence of a mutation. Total inability to create a
+token (for example, exhausted or read-only storage) remains an operational
+failure outside this mechanism's durable guarantee.

@@ -130,6 +130,8 @@ links), directories, FIFOs, or other special files. Initialization and Doctor
 repair preflight lifecycle destinations before writing them; lock acquisition
 checks the lock type before inspecting stale-lock contents. Python journal
 writes also validate `events.jsonl` and its compaction temporary path.
+The optional `pending-mutations/` debt store must be a real directory, and its
+entries must be regular files with the canonical mutation-token name shape.
 The TypeScript atomic writer creates its temporary file exclusively: a
 pre-existing temporary-path collision is rejected and left untouched.
 
@@ -151,6 +153,23 @@ Write-oriented tool failures are treated conservatively as potential
 mutations. A host failure only proves that the operation did not finish
 successfully; it does not prove that no partial filesystem change occurred.
 Read-only and command tools remain excluded by the mutation hook allowlist.
+
+Python lifecycle callbacks have a bounded state-lock wait so a live writer
+cannot stall a host indefinitely. A recognized mutation that reaches that
+bound is not discarded: the hook exclusively creates a unique, content-free
+token in `.fable/pending-mutations/`, containing only the current hashed
+`workspaceId`. Stop checks this durable debt before active-stop or completion
+shortcuts and remains blocked until reconciliation.
+
+The next successful Python or TypeScript state transaction validates token
+ownership, snapshots the current tokens while holding the state lock, advances
+`mutationGeneration` once per snapshot token, and applies its requested
+mutation to that reconciled state. Tokens are removed only after the state
+write succeeds. A token created concurrently after the snapshot remains for a
+later transaction. Malformed or foreign debt prevents the transaction; a
+partially written token is retained so Stop fails conservatively. Failure to
+remove a reconciled token can conservatively count it again later, but cannot
+make stale evidence fresh.
 
 ```text
 mutationGeneration = 4
