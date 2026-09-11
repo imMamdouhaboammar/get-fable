@@ -332,7 +332,7 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
 
   const server = http.createServer(async (req, res) => {
     const address = server.address();
-    const listenerHost = address && typeof address !== 'string' ? address.address : resolved.host;
+    const listenerHost = address && typeof address !== 'string' ? address.address : '0.0.0.0';
     const listenerIsLoopback = isLoopbackHost(listenerHost);
 
     applyCors(res, resolved.corsOrigin);
