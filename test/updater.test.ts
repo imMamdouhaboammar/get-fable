@@ -117,4 +117,40 @@ describe('Auto-Updater Module', () => {
     expect(cached.updateAvailable).toBe(true);
     expect(cached.channel).toBe('npm');
   });
+
+  test('does not report an expired cache entry as current release intelligence', async () => {
+    const cachePath = tempCachePath();
+    const now = new Date('2026-08-28T20:00:00.000Z');
+
+    fs.writeFileSync(
+      cachePath,
+      JSON.stringify({
+        schemaVersion: 1,
+        fetchedAt: '2026-08-27T19:00:00.000Z',
+        expiresAt: '2026-08-28T19:00:00.000Z',
+        value: {
+          currentVersion: '1.5.1',
+          latestVersion: '9.9.9',
+          updateAvailable: true,
+          checkedAt: '2026-08-27T19:00:00.000Z',
+          channel: 'npm',
+          changelogUrl: 'https://example.invalid/stale',
+        },
+      })
+    );
+
+    const result = await fetchLatestVersion('1.5.2', 100, {
+      cachePath,
+      now: () => now,
+      fetch: async () => {
+        throw new Error('offline');
+      },
+    });
+
+    expect(result.currentVersion).toBe('1.5.2');
+    expect(result.latestVersion).toBe('1.5.2');
+    expect(result.updateAvailable).toBe(false);
+    expect(result.checkedAt).toBe(now.toISOString());
+    expect(result.channel).toBe('npm');
+  });
 });
