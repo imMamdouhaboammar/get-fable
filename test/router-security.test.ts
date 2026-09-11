@@ -67,7 +67,7 @@ describe('request proxy security boundary', () => {
       upstreamAuthToken: 'provider-auth-sentinel',
       upstreamUrl,
       allowPrivateUpstream: true,
-    } as Parameters<typeof createMythosRouterServer>[0] & { upstreamAuthToken: string }));
+    }));
 
     const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
       method: 'POST',
