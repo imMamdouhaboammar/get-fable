@@ -132,10 +132,16 @@ describe('Auto-Updater Module', () => {
   });
 
   test('does not let default cache directory creation failure prevent a network update check', async () => {
+    const originalExistsSync = fs.existsSync;
     const originalMkdirSync = fs.mkdirSync;
     let cacheMkdirAttempted = false;
     let fetchCalled = false;
 
+    fs.existsSync = ((target: fs.PathLike) => {
+      const candidate = String(target);
+      if (candidate.endsWith(path.join('.fable', 'update'))) return false;
+      return originalExistsSync(target);
+    }) as typeof fs.existsSync;
     fs.mkdirSync = ((target: fs.PathLike, options?: unknown) => {
       const candidate = String(target);
       if (candidate.endsWith(path.join('.fable', 'update'))) {
@@ -174,6 +180,7 @@ describe('Auto-Updater Module', () => {
       expect(result.latestVersion).toBe('1.6.0');
       expect(result.updateAvailable).toBe(true);
     } finally {
+      fs.existsSync = originalExistsSync;
       fs.mkdirSync = originalMkdirSync;
     }
   });
