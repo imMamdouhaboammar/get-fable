@@ -131,6 +131,53 @@ describe('Auto-Updater Module', () => {
     }
   });
 
+  test('does not let default cache directory creation failure prevent a network update check', async () => {
+    const originalMkdirSync = fs.mkdirSync;
+    let cacheMkdirAttempted = false;
+    let fetchCalled = false;
+
+    fs.mkdirSync = ((target: fs.PathLike, options?: unknown) => {
+      const candidate = String(target);
+      if (candidate.endsWith(path.join('.fable', 'update'))) {
+        cacheMkdirAttempted = true;
+        throw Object.assign(new Error('cache directory denied'), { code: 'EACCES' });
+      }
+      return originalMkdirSync(target, options as never);
+    }) as typeof fs.mkdirSync;
+
+    try {
+      const result = await fetchLatestVersion('1.5.1', 100, {
+        now: () => new Date('2026-08-28T20:00:00.000Z'),
+        fetch: async (input: string) => {
+          fetchCalled = true;
+          if (input === 'https://registry.npmjs.org/get-fable') {
+            return {
+              ok: true,
+              status: 200,
+              async json() {
+                return { 'dist-tags': { latest: '1.6.0' }, versions: {} };
+              },
+            };
+          }
+          return {
+            ok: false,
+            status: 404,
+            async json() {
+              return {};
+            },
+          };
+        },
+      });
+
+      expect(cacheMkdirAttempted).toBe(true);
+      expect(fetchCalled).toBe(true);
+      expect(result.latestVersion).toBe('1.6.0');
+      expect(result.updateAvailable).toBe(true);
+    } finally {
+      fs.mkdirSync = originalMkdirSync;
+    }
+  });
+
   test('falls back to the schema cache when stable discovery fails', async () => {
     const cachePath = tempCachePath();
     const deps = {
