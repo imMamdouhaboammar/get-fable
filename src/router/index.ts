@@ -24,6 +24,7 @@ export interface RouterOptions {
   maxResponseBytes?: number;
   maxConcurrentRequests?: number;
   proxyAuthToken?: string;
+  trustProxyTlsTermination?: boolean;
   rateLimitPerMinute?: number;
 }
 
@@ -38,6 +39,7 @@ type ResolvedRouterOptions = {
   maxResponseBytes: number;
   maxConcurrentRequests: number;
   proxyAuthToken?: string;
+  trustProxyTlsTermination: boolean;
   rateLimitPerMinute: number;
 };
 
@@ -130,13 +132,23 @@ function resolveOptions(options: RouterOptions = {}): ResolvedRouterOptions {
   const allowPrivateUpstream = options.allowPrivateUpstream === true || process.env.FABLE_ALLOW_PRIVATE_UPSTREAM === '1';
   const proxyAuthToken = options.proxyAuthToken ?? process.env.FABLE_PROXY_AUTH_TOKEN ?? undefined;
   const upstreamAuthToken = options.upstreamAuthToken ?? process.env.FABLE_UPSTREAM_AUTH_TOKEN ?? undefined;
+  const trustProxyTlsTermination = options.trustProxyTlsTermination === true || process.env.FABLE_TRUST_PROXY_TLS_TERMINATION === '1';
+  const upstreamUrl = validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL, allowPrivateUpstream);
+
   if (!isLoopbackHost(host) && !proxyAuthToken) {
     throw new Error('Non-loopback proxy binding requires authentication via proxyAuthToken or FABLE_PROXY_AUTH_TOKEN');
   }
+  if (!isLoopbackHost(host) && !trustProxyTlsTermination) {
+    throw new Error('Non-loopback proxy binding requires trusted TLS termination via trustProxyTlsTermination or FABLE_TRUST_PROXY_TLS_TERMINATION=1');
+  }
+  if (upstreamAuthToken && upstreamUrl && new URL(upstreamUrl).protocol !== 'https:') {
+    throw new Error('Upstream bearer authentication requires an HTTPS upstream URL');
+  }
+
   return {
     host,
     maxBodyBytes: positiveInteger(options.maxBodyBytes, envPositiveInteger('FABLE_MAX_BODY_BYTES', DEFAULT_MAX_BODY_BYTES)),
-    upstreamUrl: validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL, allowPrivateUpstream),
+    upstreamUrl,
     upstreamAuthToken,
     upstreamTimeoutMs: positiveInteger(options.upstreamTimeoutMs, envPositiveInteger('FABLE_UPSTREAM_TIMEOUT_MS', DEFAULT_UPSTREAM_TIMEOUT_MS)),
     corsOrigin: options.corsOrigin ?? process.env.FABLE_CORS_ORIGIN ?? undefined,
@@ -144,6 +156,7 @@ function resolveOptions(options: RouterOptions = {}): ResolvedRouterOptions {
     maxResponseBytes: positiveInteger(options.maxResponseBytes, envPositiveInteger('FABLE_MAX_RESPONSE_BYTES', DEFAULT_MAX_RESPONSE_BYTES)),
     maxConcurrentRequests: positiveInteger(options.maxConcurrentRequests, envPositiveInteger('FABLE_MAX_CONCURRENT_REQUESTS', DEFAULT_MAX_CONCURRENT_REQUESTS)),
     proxyAuthToken,
+    trustProxyTlsTermination,
     rateLimitPerMinute: positiveInteger(options.rateLimitPerMinute, envPositiveInteger('FABLE_RATE_LIMIT_PER_MINUTE', DEFAULT_RATE_LIMIT_PER_MINUTE)),
   };
 }
@@ -261,11 +274,15 @@ async function forwardToUpstream(
   upstreamAuthorization?: string
 ) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (upstreamAuthorization) {
-    headers.Authorization = upstreamAuthorization;
-  }
 
   try {
+    if (upstreamAuthorization && new URL(upstreamUrl).protocol !== 'https:') {
+      throw new HttpError(502, 'Upstream Authorization requires HTTPS');
+    }
+    if (upstreamAuthorization) {
+      headers.Authorization = upstreamAuthorization;
+    }
+
     await assertPublicUpstream(upstreamUrl, allowPrivateUpstream);
     const upstreamRes = await fetch(upstreamUrl, {
       method: 'POST',
@@ -316,9 +333,14 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
   const server = http.createServer(async (req, res) => {
     const address = server.address();
     const listenerHost = address && typeof address !== 'string' ? address.address : resolved.host;
+    const listenerIsLoopback = isLoopbackHost(listenerHost);
 
     applyCors(res, resolved.corsOrigin);
-    if (!isLoopbackHost(listenerHost) && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
+    if (!listenerIsLoopback && !resolved.trustProxyTlsTermination) {
+      sendJson(res, 403, { error: 'Non-loopback proxy traffic requires trusted TLS termination' });
+      return;
+    }
+    if (!listenerIsLoopback && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
       sendJson(res, 401, { error: 'Proxy authentication required' });
       return;
     }
