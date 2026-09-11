@@ -47,6 +47,11 @@ describe('CI and release supply-chain contract', () => {
     expect(security).toContain('version: 3.97.0');
   });
 
+  test('enables Debricked SCA only when its credential is configured', () => {
+    const fortify = read('.github/workflows/fortify.yml');
+    expect(fortify).toContain("debricked-sca-scan: ${{ env.DEBRICKED_TOKEN != '' }}");
+    expect(fortify).not.toContain('debricked-sca-scan: true');
+  });
 
   test('runs pinned Cypress end-to-end smoke tests against the static site', () => {
     const workflow = read('.github/workflows/e2e.yml');
@@ -67,5 +72,4 @@ describe('CI and release supply-chain contract', () => {
     expect(workflow).toContain('src: docs');
     expect(workflow).toContain('dst: .generated/markdown-docs');
   });
-
 });
