@@ -2,13 +2,18 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { fetchStableRelease, isNewerVersion as isReleaseNewerVersion } from './update/release-source.js';
+import {
+  assertValidVersion,
+  fetchStableRelease,
+  isNewerVersion as isReleaseNewerVersion,
+} from './update/release-source.js';
 import { isCacheFresh, readCache, writeCacheAtomic } from './update/cache.js';
 import type { FetchLike } from './update/types.js';
 import { logInfo, logSuccess, logWarn, logError, colors } from '../utils.js';
 
 const RELEASES_URL = 'https://github.com/imMamdouhaboammar/get-fable/releases';
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const UPDATE_CHANNELS = new Set<UpdateCheckResult['channel']>(['npm', 'github', 'local']);
 
 export interface UpdateCheckResult {
   currentVersion: string;
@@ -29,14 +34,43 @@ function defaultFetch(input: string, init?: Parameters<FetchLike>[1]) {
   return fetch(input, init);
 }
 
+function isCanonicalTimestamp(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) && new Date(parsed).toISOString() === value;
+}
+
+function isValidUpdateCheckResult(value: unknown): value is UpdateCheckResult {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const candidate = value as Record<string, unknown>;
+  if (
+    typeof candidate.currentVersion !== 'string' ||
+    typeof candidate.latestVersion !== 'string' ||
+    typeof candidate.updateAvailable !== 'boolean' ||
+    !isCanonicalTimestamp(candidate.checkedAt) ||
+    typeof candidate.channel !== 'string' ||
+    !UPDATE_CHANNELS.has(candidate.channel as UpdateCheckResult['channel']) ||
+    (candidate.changelogUrl !== undefined && typeof candidate.changelogUrl !== 'string')
+  ) {
+    return false;
+  }
+
+  try {
+    assertValidVersion(candidate.currentVersion, 'cached current version');
+    assertValidVersion(candidate.latestVersion, 'cached latest version');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function getUpdateCachePath(): string {
-  const dir = path.join(os.homedir(), '.fable', 'update');
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  return path.join(dir, 'release.json');
+  return path.join(os.homedir(), '.fable', 'update', 'release.json');
 }
 
 export function readUpdateCache(cachePath = getUpdateCachePath()): UpdateCheckResult | null {
-  return readCache<UpdateCheckResult>(cachePath)?.value ?? null;
+  const cached = readCache<unknown>(cachePath);
+  return cached && isValidUpdateCheckResult(cached.value) ? cached.value : null;
 }
 
 export function writeUpdateCache(
@@ -63,6 +97,8 @@ export async function fetchLatestVersion(
   timeoutMs: number = 3000,
   deps: FetchLatestVersionDeps = {}
 ): Promise<UpdateCheckResult> {
+  assertValidVersion(currentVersion, 'current version');
+
   const now = deps.now ?? (() => new Date());
   const cachePath = deps.cachePath ?? getUpdateCachePath();
 
@@ -88,8 +124,8 @@ export async function fetchLatestVersion(
     writeUpdateCache(result, cachePath);
     return result;
   } catch {
-    const cached = readCache<UpdateCheckResult>(cachePath);
-    if (cached && isCacheFresh(cached, now())) {
+    const cached = readCache<unknown>(cachePath);
+    if (cached && isCacheFresh(cached, now()) && isValidUpdateCheckResult(cached.value)) {
       return {
         ...cached.value,
         currentVersion,
