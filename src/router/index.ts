@@ -241,11 +241,11 @@ async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise
 
 function upstreamAuthorizationForRequest(
   req: IncomingMessage,
-  host: string,
+  listenerHost: string,
   upstreamAuthToken: string | undefined
 ): string | undefined {
   if (upstreamAuthToken) return `Bearer ${upstreamAuthToken}`;
-  if (!isLoopbackHost(host)) return undefined;
+  if (!isLoopbackHost(listenerHost)) return undefined;
   return typeof req.headers.authorization === 'string' && req.headers.authorization
     ? req.headers.authorization
     : undefined;
@@ -313,9 +313,12 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
   let activeRequests = 0;
   const rateWindows = new Map<string, { windowStartedAt: number; count: number }>();
 
-  return http.createServer(async (req, res) => {
+  const server = http.createServer(async (req, res) => {
+    const address = server.address();
+    const listenerHost = address && typeof address !== 'string' ? address.address : resolved.host;
+
     applyCors(res, resolved.corsOrigin);
-    if (!isLoopbackHost(resolved.host) && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
+    if (!isLoopbackHost(listenerHost) && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
       sendJson(res, 401, { error: 'Proxy authentication required' });
       return;
     }
@@ -396,7 +399,7 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
             enriched,
             resolved.allowPrivateUpstream,
             resolved.maxResponseBytes,
-            upstreamAuthorizationForRequest(req, resolved.host, resolved.upstreamAuthToken)
+            upstreamAuthorizationForRequest(req, listenerHost, resolved.upstreamAuthToken)
           );
           return;
         }
@@ -447,6 +450,8 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
 
     sendJson(res, 404, { error: 'Endpoint not found. Use POST /v1/chat/completions' });
   });
+
+  return server;
 }
 
 export function startMythosRouterServer(port: number = 8080, options: RouterOptions = {}) {
