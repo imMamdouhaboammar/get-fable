@@ -161,7 +161,7 @@ export function createFableApiHandler(projectRoot: string = process.cwd()) {
     },
 
     postRoute: (task: string, stateOverride?: any) => {
-      const state = stateOverride || readFableState(projectRoot) || createInitialState();
+      const state = stateOverride || readFableState(projectRoot) || createInitialState(undefined, projectRoot);
       const decision = routeTask(task, state);
       return {
         decision,
@@ -173,7 +173,7 @@ export function createFableApiHandler(projectRoot: string = process.cwd()) {
     postRouteAndApply: (task: string) => {
       let state = readFableState(projectRoot);
       if (!state) {
-        state = createInitialState();
+        state = createInitialState(undefined, projectRoot);
       }
       const decision = routeTask(task, state);
       const nextState = applyRoutingDecision(state, decision);
