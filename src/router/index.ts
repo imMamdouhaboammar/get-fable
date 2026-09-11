@@ -17,12 +17,14 @@ export interface RouterOptions {
   host?: string;
   maxBodyBytes?: number;
   upstreamUrl?: string;
+  upstreamAuthToken?: string;
   upstreamTimeoutMs?: number;
   corsOrigin?: string;
   allowPrivateUpstream?: boolean;
   maxResponseBytes?: number;
   maxConcurrentRequests?: number;
   proxyAuthToken?: string;
+  trustProxyTlsTermination?: boolean;
   rateLimitPerMinute?: number;
 }
 
@@ -30,12 +32,14 @@ type ResolvedRouterOptions = {
   host: string;
   maxBodyBytes: number;
   upstreamUrl?: string;
+  upstreamAuthToken?: string;
   upstreamTimeoutMs: number;
   corsOrigin?: string;
   allowPrivateUpstream: boolean;
   maxResponseBytes: number;
   maxConcurrentRequests: number;
   proxyAuthToken?: string;
+  trustProxyTlsTermination: boolean;
   rateLimitPerMinute: number;
 };
 
@@ -127,19 +131,32 @@ function resolveOptions(options: RouterOptions = {}): ResolvedRouterOptions {
   const host = options.host || process.env.FABLE_HOST || DEFAULT_HOST;
   const allowPrivateUpstream = options.allowPrivateUpstream === true || process.env.FABLE_ALLOW_PRIVATE_UPSTREAM === '1';
   const proxyAuthToken = options.proxyAuthToken ?? process.env.FABLE_PROXY_AUTH_TOKEN ?? undefined;
+  const upstreamAuthToken = options.upstreamAuthToken ?? process.env.FABLE_UPSTREAM_AUTH_TOKEN ?? undefined;
+  const trustProxyTlsTermination = options.trustProxyTlsTermination === true || process.env.FABLE_TRUST_PROXY_TLS_TERMINATION === '1';
+  const upstreamUrl = validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL, allowPrivateUpstream);
+
   if (!isLoopbackHost(host) && !proxyAuthToken) {
     throw new Error('Non-loopback proxy binding requires authentication via proxyAuthToken or FABLE_PROXY_AUTH_TOKEN');
   }
+  if (!isLoopbackHost(host) && !trustProxyTlsTermination) {
+    throw new Error('Non-loopback proxy binding requires trusted TLS termination via trustProxyTlsTermination or FABLE_TRUST_PROXY_TLS_TERMINATION=1');
+  }
+  if (upstreamAuthToken && upstreamUrl && new URL(upstreamUrl).protocol !== 'https:') {
+    throw new Error('Upstream bearer authentication requires an HTTPS upstream URL');
+  }
+
   return {
     host,
     maxBodyBytes: positiveInteger(options.maxBodyBytes, envPositiveInteger('FABLE_MAX_BODY_BYTES', DEFAULT_MAX_BODY_BYTES)),
-    upstreamUrl: validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL, allowPrivateUpstream),
+    upstreamUrl,
+    upstreamAuthToken,
     upstreamTimeoutMs: positiveInteger(options.upstreamTimeoutMs, envPositiveInteger('FABLE_UPSTREAM_TIMEOUT_MS', DEFAULT_UPSTREAM_TIMEOUT_MS)),
     corsOrigin: options.corsOrigin ?? process.env.FABLE_CORS_ORIGIN ?? undefined,
     allowPrivateUpstream,
     maxResponseBytes: positiveInteger(options.maxResponseBytes, envPositiveInteger('FABLE_MAX_RESPONSE_BYTES', DEFAULT_MAX_RESPONSE_BYTES)),
     maxConcurrentRequests: positiveInteger(options.maxConcurrentRequests, envPositiveInteger('FABLE_MAX_CONCURRENT_REQUESTS', DEFAULT_MAX_CONCURRENT_REQUESTS)),
     proxyAuthToken,
+    trustProxyTlsTermination,
     rateLimitPerMinute: positiveInteger(options.rateLimitPerMinute, envPositiveInteger('FABLE_RATE_LIMIT_PER_MINUTE', DEFAULT_RATE_LIMIT_PER_MINUTE)),
   };
 }
@@ -235,21 +252,37 @@ async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise
   });
 }
 
-async function forwardToUpstream(
+function upstreamAuthorizationForRequest(
   req: IncomingMessage,
+  listenerHost: string,
+  upstreamAuthToken: string | undefined
+): string | undefined {
+  if (upstreamAuthToken) return `Bearer ${upstreamAuthToken}`;
+  if (!isLoopbackHost(listenerHost)) return undefined;
+  return typeof req.headers.authorization === 'string' && req.headers.authorization
+    ? req.headers.authorization
+    : undefined;
+}
+
+async function forwardToUpstream(
   res: ServerResponse,
   upstreamUrl: string,
   upstreamTimeoutMs: number,
   body: unknown,
   allowPrivateUpstream: boolean,
-  maxResponseBytes: number
+  maxResponseBytes: number,
+  upstreamAuthorization?: string
 ) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (typeof req.headers.authorization === 'string' && req.headers.authorization) {
-    headers.Authorization = req.headers.authorization;
-  }
 
   try {
+    if (upstreamAuthorization && new URL(upstreamUrl).protocol !== 'https:') {
+      throw new HttpError(502, 'Upstream Authorization requires HTTPS');
+    }
+    if (upstreamAuthorization) {
+      headers.Authorization = upstreamAuthorization;
+    }
+
     await assertPublicUpstream(upstreamUrl, allowPrivateUpstream);
     const upstreamRes = await fetch(upstreamUrl, {
       method: 'POST',
@@ -297,9 +330,17 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
   let activeRequests = 0;
   const rateWindows = new Map<string, { windowStartedAt: number; count: number }>();
 
-  return http.createServer(async (req, res) => {
+  const server = http.createServer(async (req, res) => {
+    const address = server.address();
+    const listenerHost = address && typeof address !== 'string' ? address.address : '0.0.0.0';
+    const listenerIsLoopback = isLoopbackHost(listenerHost);
+
     applyCors(res, resolved.corsOrigin);
-    if (!isLoopbackHost(resolved.host) && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
+    if (!listenerIsLoopback && !resolved.trustProxyTlsTermination) {
+      sendJson(res, 403, { error: 'Non-loopback proxy traffic requires trusted TLS termination' });
+      return;
+    }
+    if (!listenerIsLoopback && !tokenMatches(req.headers.authorization, resolved.proxyAuthToken)) {
       sendJson(res, 401, { error: 'Proxy authentication required' });
       return;
     }
@@ -374,13 +415,13 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
 
         if (resolved.upstreamUrl) {
           await forwardToUpstream(
-            req,
             res,
             resolved.upstreamUrl,
             resolved.upstreamTimeoutMs,
             enriched,
             resolved.allowPrivateUpstream,
-            resolved.maxResponseBytes
+            resolved.maxResponseBytes,
+            upstreamAuthorizationForRequest(req, listenerHost, resolved.upstreamAuthToken)
           );
           return;
         }
@@ -431,6 +472,8 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
 
     sendJson(res, 404, { error: 'Endpoint not found. Use POST /v1/chat/completions' });
   });
+
+  return server;
 }
 
 export function startMythosRouterServer(port: number = 8080, options: RouterOptions = {}) {
