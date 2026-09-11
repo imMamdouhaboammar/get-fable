@@ -4,11 +4,12 @@ import type { AddressInfo } from 'node:net';
 import { createMythosRouterServer } from '../src/router/index.ts';
 
 const servers: Server[] = [];
-async function listen(server: Server) {
+async function listen(server: Server, host = '127.0.0.1') {
   servers.push(server);
-  await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
+  await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(0, host, resolve); });
   const addr = server.address() as AddressInfo;
-  return `http://127.0.0.1:${addr.port}`;
+  const connectHost = host === '0.0.0.0' ? '127.0.0.1' : host;
+  return `http://${connectHost}:${addr.port}`;
 }
 afterEach(async () => { await Promise.all(servers.splice(0).map((s) => new Promise<void>((r) => s.close(() => r())))); });
 
@@ -21,11 +22,50 @@ describe('request proxy security boundary', () => {
     expect(() => createMythosRouterServer({ upstreamUrl: 'http://localhost:8081/v1' })).toThrow('private');
   });
 
-  test('requires proxy authentication before a non-loopback bind', () => {
+  test('requires proxy authentication before a configured non-loopback bind', () => {
     expect(() => createMythosRouterServer({ host: '0.0.0.0' })).toThrow('authentication');
   });
 
-  test('does not forward the non-loopback proxy access token upstream', async () => {
+  test('requires proxy authentication when the actual listener is non-loopback', async () => {
+    const proxyUrl = await listen(createMythosRouterServer({ proxyAuthToken: 'proxy-access-sentinel' }), '0.0.0.0');
+
+    const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  test('does not forward the proxy access token when the actual listener is non-loopback', async () => {
+    let upstreamAuthorization: string | undefined;
+    const upstream = http.createServer((req, res) => {
+      upstreamAuthorization = req.headers.authorization;
+      res.setHeader('content-type', 'application/json');
+      res.end(JSON.stringify({ ok: true }));
+    });
+    const upstreamUrl = await listen(upstream);
+    const proxyUrl = await listen(createMythosRouterServer({
+      proxyAuthToken: 'proxy-access-sentinel',
+      upstreamUrl,
+      allowPrivateUpstream: true,
+    }), '0.0.0.0');
+
+    const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer proxy-access-sentinel',
+      },
+      body: JSON.stringify(body),
+    });
+
+    expect(response.status).toBe(200);
+    expect(upstreamAuthorization).toBeUndefined();
+  });
+
+  test('does not forward the configured non-loopback proxy access token upstream', async () => {
     let upstreamAuthorization: string | undefined;
     const upstream = http.createServer((req, res) => {
       upstreamAuthorization = req.headers.authorization;
@@ -38,7 +78,7 @@ describe('request proxy security boundary', () => {
       proxyAuthToken: 'proxy-access-sentinel',
       upstreamUrl,
       allowPrivateUpstream: true,
-    }));
+    }), '0.0.0.0');
 
     const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
       method: 'POST',
@@ -67,7 +107,7 @@ describe('request proxy security boundary', () => {
       upstreamAuthToken: 'provider-auth-sentinel',
       upstreamUrl,
       allowPrivateUpstream: true,
-    }));
+    }), '0.0.0.0');
 
     const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
       method: 'POST',
