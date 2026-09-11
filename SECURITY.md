@@ -42,9 +42,13 @@ The request proxy binds to `127.0.0.1` by default
 
 CORS is disabled unless `FABLE_CORS_ORIGIN` is configured
 
-The proxy does not provide its own user authentication or authorization boundary. If you deliberately bind it beyond loopback, protect it with network controls and an authenticated gateway appropriate to your environment
+Binding the proxy beyond loopback requires a proxy access token via `proxyAuthToken` or `FABLE_PROXY_AUTH_TOKEN`. Clients send that token as a bearer credential in the inbound `Authorization` header
 
-Inbound `Authorization` is forwarded only when an upstream URL is configured. Treat proxy logs and request bodies as potentially sensitive
+Proxy access credentials and upstream provider credentials are separate trust boundaries. The proxy access token is not forwarded upstream. Configure upstream bearer authentication independently with `upstreamAuthToken` or `FABLE_UPSTREAM_AUTH_TOKEN`
+
+For backward compatibility on loopback only, when no dedicated upstream token is configured, an inbound `Authorization` header may still be forwarded to the configured upstream. Prefer the dedicated upstream token when the proxy is part of a shared or network-accessible setup
+
+Treat proxy logs and request bodies as potentially sensitive
 
 ## Configuration safety
 

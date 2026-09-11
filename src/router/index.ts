@@ -17,6 +17,7 @@ export interface RouterOptions {
   host?: string;
   maxBodyBytes?: number;
   upstreamUrl?: string;
+  upstreamAuthToken?: string;
   upstreamTimeoutMs?: number;
   corsOrigin?: string;
   allowPrivateUpstream?: boolean;
@@ -30,6 +31,7 @@ type ResolvedRouterOptions = {
   host: string;
   maxBodyBytes: number;
   upstreamUrl?: string;
+  upstreamAuthToken?: string;
   upstreamTimeoutMs: number;
   corsOrigin?: string;
   allowPrivateUpstream: boolean;
@@ -127,6 +129,7 @@ function resolveOptions(options: RouterOptions = {}): ResolvedRouterOptions {
   const host = options.host || process.env.FABLE_HOST || DEFAULT_HOST;
   const allowPrivateUpstream = options.allowPrivateUpstream === true || process.env.FABLE_ALLOW_PRIVATE_UPSTREAM === '1';
   const proxyAuthToken = options.proxyAuthToken ?? process.env.FABLE_PROXY_AUTH_TOKEN ?? undefined;
+  const upstreamAuthToken = options.upstreamAuthToken ?? process.env.FABLE_UPSTREAM_AUTH_TOKEN ?? undefined;
   if (!isLoopbackHost(host) && !proxyAuthToken) {
     throw new Error('Non-loopback proxy binding requires authentication via proxyAuthToken or FABLE_PROXY_AUTH_TOKEN');
   }
@@ -134,6 +137,7 @@ function resolveOptions(options: RouterOptions = {}): ResolvedRouterOptions {
     host,
     maxBodyBytes: positiveInteger(options.maxBodyBytes, envPositiveInteger('FABLE_MAX_BODY_BYTES', DEFAULT_MAX_BODY_BYTES)),
     upstreamUrl: validateUpstreamUrl(options.upstreamUrl ?? process.env.UPSTREAM_OPENAI_URL, allowPrivateUpstream),
+    upstreamAuthToken,
     upstreamTimeoutMs: positiveInteger(options.upstreamTimeoutMs, envPositiveInteger('FABLE_UPSTREAM_TIMEOUT_MS', DEFAULT_UPSTREAM_TIMEOUT_MS)),
     corsOrigin: options.corsOrigin ?? process.env.FABLE_CORS_ORIGIN ?? undefined,
     allowPrivateUpstream,
@@ -235,18 +239,30 @@ async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise
   });
 }
 
-async function forwardToUpstream(
+function upstreamAuthorizationForRequest(
   req: IncomingMessage,
+  host: string,
+  upstreamAuthToken: string | undefined
+): string | undefined {
+  if (upstreamAuthToken) return `Bearer ${upstreamAuthToken}`;
+  if (!isLoopbackHost(host)) return undefined;
+  return typeof req.headers.authorization === 'string' && req.headers.authorization
+    ? req.headers.authorization
+    : undefined;
+}
+
+async function forwardToUpstream(
   res: ServerResponse,
   upstreamUrl: string,
   upstreamTimeoutMs: number,
   body: unknown,
   allowPrivateUpstream: boolean,
-  maxResponseBytes: number
+  maxResponseBytes: number,
+  upstreamAuthorization?: string
 ) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (typeof req.headers.authorization === 'string' && req.headers.authorization) {
-    headers.Authorization = req.headers.authorization;
+  if (upstreamAuthorization) {
+    headers.Authorization = upstreamAuthorization;
   }
 
   try {
@@ -374,13 +390,13 @@ export function createMythosRouterServer(options: RouterOptions = {}) {
 
         if (resolved.upstreamUrl) {
           await forwardToUpstream(
-            req,
             res,
             resolved.upstreamUrl,
             resolved.upstreamTimeoutMs,
             enriched,
             resolved.allowPrivateUpstream,
-            resolved.maxResponseBytes
+            resolved.maxResponseBytes,
+            upstreamAuthorizationForRequest(req, resolved.host, resolved.upstreamAuthToken)
           );
           return;
         }
