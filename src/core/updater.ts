@@ -97,9 +97,20 @@ export async function fetchLatestVersion(
   timeoutMs: number = 3000,
   deps: FetchLatestVersionDeps = {}
 ): Promise<UpdateCheckResult> {
+  const now = deps.now ?? (() => new Date());
+
+  if (currentVersion === 'unknown') {
+    return {
+      currentVersion,
+      latestVersion: currentVersion,
+      updateAvailable: false,
+      checkedAt: now().toISOString(),
+      channel: 'local',
+    };
+  }
+
   assertValidVersion(currentVersion, 'current version');
 
-  const now = deps.now ?? (() => new Date());
   const cachePath = deps.cachePath ?? getUpdateCachePath();
 
   try {
