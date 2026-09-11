@@ -142,6 +142,39 @@ describe('stable release source', () => {
     expect(sawAbort).toBe(true);
   });
 
+  test('keeps the timeout active while consuming the npm response body', async () => {
+    const outcome = await Promise.race([
+      fetchStableRelease(
+        '1.5.1',
+        {
+          now: () => new Date('2026-08-28T20:00:00.000Z'),
+          fetch: async (_input, init) => ({
+            ok: true,
+            status: 200,
+            json: () =>
+              new Promise((_resolve, reject) => {
+                const signal = init?.signal;
+                if (!signal) {
+                  reject(new Error('missing abort signal'));
+                  return;
+                }
+                const onAbort = () => reject(new Error('response body aborted by timeout'));
+                if (signal.aborted) onAbort();
+                else signal.addEventListener('abort', onAbort, { once: true });
+              }),
+          }),
+        },
+        5
+      ).then(
+        () => 'resolved',
+        () => 'rejected'
+      ),
+      new Promise<'hung'>((resolve) => setTimeout(() => resolve('hung'), 50)),
+    ]);
+
+    expect(outcome).toBe('rejected');
+  });
+
   test('rejects a non-success npm registry response', async () => {
     await expectFailure(
       () =>
