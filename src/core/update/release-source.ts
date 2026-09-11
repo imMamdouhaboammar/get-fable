@@ -31,7 +31,7 @@ function getBunSemver(): BunSemverApi {
   return bun.semver;
 }
 
-function assertValidVersion(version: string, label = 'semantic version'): void {
+export function assertValidVersion(version: string, label = 'semantic version'): void {
   const semver = getBunSemver();
   if (!semver.satisfies(version, version)) {
     throw new Error(`Invalid ${label}: ${version}`);
@@ -44,20 +44,26 @@ export function isNewerVersion(current: string, latest: string): boolean {
   return getBunSemver().order(latest, current) > 0;
 }
 
-async function fetchWithTimeout(
+async function fetchJsonWithTimeout(
   deps: ReleaseSourceDeps,
   input: string,
   timeoutMs: number,
   headers?: Record<string, string>
-) {
+): Promise<{ ok: boolean; status: number; body?: unknown }> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await deps.fetch(input, {
+    const response = await deps.fetch(input, {
       signal: controller.signal,
       redirect: 'error',
       headers,
     });
+    const body = response.ok ? await response.json() : undefined;
+    return {
+      ok: response.ok,
+      status: response.status,
+      ...(response.ok ? { body } : {}),
+    };
   } finally {
     clearTimeout(timer);
   }
@@ -106,14 +112,14 @@ export async function fetchStableRelease(
 ): Promise<ReleaseMetadata> {
   assertValidVersion(currentVersion, 'current version');
 
-  const npmResponse = await fetchWithTimeout(deps, NPM_PACKAGE_URL, timeoutMs, {
+  const npmResponse = await fetchJsonWithTimeout(deps, NPM_PACKAGE_URL, timeoutMs, {
     accept: 'application/vnd.npm.install-v1+json',
   });
   if (!npmResponse.ok) {
     throw new Error(`npm registry request failed with status ${npmResponse.status}`);
   }
 
-  const npmMetadata = readNpmLatest(await npmResponse.json());
+  const npmMetadata = readNpmLatest(npmResponse.body);
   let result: ReleaseMetadata = {
     version: npmMetadata.version,
     channel: 'stable',
@@ -123,14 +129,14 @@ export async function fetchStableRelease(
   };
 
   try {
-    const githubResponse = await fetchWithTimeout(
+    const githubResponse = await fetchJsonWithTimeout(
       deps,
       `${GITHUB_RELEASE_TAG_URL}${encodeURIComponent(npmMetadata.version)}`,
       timeoutMs,
       { accept: 'application/vnd.github+json' }
     );
     if (githubResponse.ok) {
-      result = enrichFromGitHub(result, await githubResponse.json());
+      result = enrichFromGitHub(result, githubResponse.body);
     }
   } catch {
     // GitHub release data only enriches npm's authoritative stable result.
