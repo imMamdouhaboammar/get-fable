@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fetchStableRelease, isNewerVersion as isReleaseNewerVersion } from './update/release-source.js';
-import { readCache, writeCacheAtomic } from './update/cache.js';
+import { isCacheFresh, readCache, writeCacheAtomic } from './update/cache.js';
 import type { FetchLike } from './update/types.js';
 import { logInfo, logSuccess, logWarn, logError, colors } from '../utils.js';
 
@@ -88,12 +88,12 @@ export async function fetchLatestVersion(
     writeUpdateCache(result, cachePath);
     return result;
   } catch {
-    const cached = readUpdateCache(cachePath);
-    if (cached) {
+    const cached = readCache<UpdateCheckResult>(cachePath);
+    if (cached && isCacheFresh(cached, now())) {
       return {
-        ...cached,
+        ...cached.value,
         currentVersion,
-        updateAvailable: isNewerVersion(currentVersion, cached.latestVersion),
+        updateAvailable: isNewerVersion(currentVersion, cached.value.latestVersion),
       };
     }
 
