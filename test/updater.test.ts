@@ -54,6 +54,26 @@ describe('Auto-Updater Module', () => {
     expect(fetchCalled).toBe(false);
   });
 
+  test('treats the CLI unknown-version sentinel as unavailable without checking the network', async () => {
+    let fetchCalled = false;
+    const now = new Date('2026-08-28T20:00:00.000Z');
+
+    const result = await fetchLatestVersion('unknown', 100, {
+      cachePath: tempCachePath(),
+      now: () => now,
+      fetch: async () => {
+        fetchCalled = true;
+        throw new Error('network should not be reached');
+      },
+    });
+
+    expect(fetchCalled).toBe(false);
+    expect(result.currentVersion).toBe('unknown');
+    expect(result.latestVersion).toBe('unknown');
+    expect(result.updateAvailable).toBe(false);
+    expect(result.checkedAt).toBe(now.toISOString());
+  });
+
   test('adapts npm stable metadata through injected facade dependencies', async () => {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = (async () => {
@@ -175,7 +195,7 @@ describe('Auto-Updater Module', () => {
         },
       });
 
-      expect(cacheMkdirAttempted).toBe(true);
+      expect(cacheMkdirAttempted).toBe(false);
       expect(fetchCalled).toBe(true);
       expect(result.latestVersion).toBe('1.6.0');
       expect(result.updateAvailable).toBe(true);
