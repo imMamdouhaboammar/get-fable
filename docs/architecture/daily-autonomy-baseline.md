@@ -529,45 +529,54 @@ was selected as the highest-priority unowned defect. The accepted contract is:
    mutation, failure tracking, event journaling, spawn policy, or close policy.
 4. No schema, CLI, manifest, dependency, or public TypeScript API changes.
 
-## Revalidation — 2026-09-03
+## 2026-09-02 revalidation
 
-Fresh default SHA: `1827c39dd66cd0c02dd3da79131e196bebee6289`; package `1.5.1`.
-Executable runtime state is schema v3 (older repository instructions still
-describe v2). Canonical registry/catalog, deterministic routing, state/evidence
-validation and recovery remain core-owned. The CLI and Python hooks consume
-that contract. New `src/dsh/` code exposes a Cordis adapter and browser client;
-`src/index.ts` publicly exports the adapter. No runtime dependencies were added.
+Inspected `master` at `1827c39dd66cd0c02dd3da79131e196bebee6289`, version
+`1.5.1`. Executable TypeScript and Python state use schema **v3** (the v2
+statement in `AGENTS.md` is stale). PRs #31 and #32 are merged. The only open
+PRs, #28 through #30, own the updater stack; no standalone issues were found.
+Latest master CI, E2E, CodeQL and TruffleHog passed. The push Security workflow
+skips Dependency Review; its PR-only repository configuration failure remains
+separate from product verification.
 
-The fresh baseline ran 372 tests with zero failures (2,584 assertions). Master
-CI, E2E and Security were green. PR #33 owns filesystem trust boundaries and
-must not be duplicated; its Dependency Review is blocked by repository
-configuration. Updater drafts #28–30 remain separate owned work. Recent
-Dependabot failures concern exact-pin assertions, CodeQL pair version drift
-and omitted Bun lockfile updates, not evidence that dependencies are unsafe.
+The new DSH Cordis backend and React client reach core state through `src/dsh`.
+They are additional consumers of the filesystem boundary, not grounds for
+forking its state ownership. Canonical skills/registry, deterministic routing,
+prompt compilation, mutation generations, typed completion evidence and recovery
+remain the core architecture. Tests cover hooks, state/evidence, concurrency,
+install/Doctor, routing, DSH and packaging. No runtime dependency was added by
+this initiative.
 
-Discovery questions resolved: the configured root reaches the API handler;
-both missing-state factories silently substitute process cwd; the core writer
-correctly rejects mismatched identity; existing DSH tests use the repository
-as the project and therefore miss the consumer-workspace case. Probes reproduced
-a wrong preview identity and `workspaceId` validation failure on first apply.
+Scores follow `2*UV + Rel + Fit + DX + Diff + Learn + Test - Cost - Risk`.
+Implementation confidence is recorded but excluded from the calculation.
 
-Scores are 1–10, higher is better except maintenance and risk. Priority is
-`2*UV + Rel + Fit + DX + Diff + Learn + Test - Maint - Risk`; confidence is
-reported separately, not added to the requested formula.
-
-| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Cost | Risk | Priority |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| DSH initial-state workspace ownership | 8 | 6 | 10 | 9 | 9 | 6 | 10 | 10 | 2 | 2 | 62 |
-| Durable mutation invalidation after lock timeout | 10 | 9 | 10 | 10 | 8 | 8 | 9 | 8 | 7 | 7 | 59 |
-| Repeated Stop completion enforcement | 10 | 7 | 10 | 10 | 7 | 8 | 10 | 10 | 5 | 8 | 59 |
-| DSH routing transactions and revisions | 8 | 8 | 10 | 9 | 8 | 6 | 10 | 8 | 4 | 4 | 57 |
-| DSH unverified-mutation status accuracy | 7 | 5 | 9 | 7 | 8 | 6 | 10 | 10 | 2 | 2 | 55 |
-| DSH installed-catalog skill inventory | 6 | 6 | 8 | 7 | 8 | 5 | 9 | 10 | 3 | 3 | 50 |
-| Explicit DSH Doctor repair semantics | 6 | 5 | 8 | 7 | 8 | 4 | 10 | 9 | 4 | 5 | 44 |
+| Lifecycle symlink/special-file containment | 10 | 9 | 10 | 10 | 8 | 8 | 9 | 10 | 4 | 3 | **68** |
+| Level-triggered Stop gate | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | 64 |
+| Git checkout/reset freshness | 9 | 9 | 10 | 10 | 8 | 8 | 8 | 9 | 4 | 4 | 64 |
+| DSH transaction/workspace-identity parity | 8 | 8 | 10 | 9 | 8 | 7 | 9 | 10 | 3 | 3 | 62 |
+| Crash-safe mutation lock contention | 9 | 9 | 10 | 10 | 7 | 8 | 7 | 9 | 5 | 5 | 61 |
+| DSH evidence-freshness status | 8 | 6 | 9 | 8 | 9 | 6 | 10 | 10 | 2 | 2 | 60 |
+| Phase/currentSkill invariants | 8 | 8 | 10 | 9 | 7 | 7 | 8 | 10 | 4 | 4 | 59 |
+| Preserve existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | 55 |
 
-Selected: pass `projectRoot` to both canonical fresh-state factories. Acceptance:
-preview returns target-owned state without creating `.fable`; first apply
-persists valid target-owned state; existing evidence/counters survive subsequent
-routing; relative and absolute configured paths agree. No new normalization,
-state schema, dependency, public API, or live-host compatibility claim. Other
-DSH issues and host Stop/lock policy remain follow-ups, not implied fixes.
+Selected: **lifecycle filesystem containment**, a reachable state-integrity
+gap with no open owner. The historical local branch `3020211` is reference
+material, not a safe patch to replay: it predates the journal consumer and
+current cwd/worktree contracts, and its unsafe-root opt-out could allow Stop.
+
+Accepted boundary: `.fable` must be a real directory; lifecycle leaves must be
+regular files or absent. Validate before reading, locking, initialization or
+repair, including journal append/compaction. Missing remains opt-out, unsafe
+remains an explicit local boundary and blocks Stop. Preserve schema migrations,
+normal initialization, worktree isolation and canonical workspace aliases.
+The policy addresses static symlinks and special files; concurrent path swaps
+and hard-link isolation remain outside the guarantee.
+
+Future findings (static, not claimed fixed here): DSH route-and-apply uses
+process cwd when initializing state for a configured project root and performs
+read/modify/write without the core transaction; its status path reads fields
+not present in the current state schema. Separate reproductions should precede
+any DSH behavior changes. General active-Stop enforcement, Git reset freshness,
+and lost mutation writes under lock contention also remain separate work.

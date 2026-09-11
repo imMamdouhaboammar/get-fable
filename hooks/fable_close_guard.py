@@ -23,6 +23,7 @@ from _fable_common import (  # noqa: E402
     closed_without_evidence,
     read_state,
     has_fresh_passing_state_evidence,
+    safe_fable_boundary,
 )
 
 MAX_LIST = 12
@@ -97,11 +98,13 @@ def validated_state_or_block(fable_dir):
 
 def main():
     data = read_hook_input()
-    if data.get("stop_hook_active"):
-        return 0
-
     fable_dir = find_fable_dir(start_dir(data))
     if not fable_dir:
+        return 0
+    if not safe_fable_boundary(fable_dir):
+        sys.stderr.write("[get-fable] BLOCKED stop: unsafe .fable filesystem boundary; repair symlinks or special files before completion.\n")
+        return 2
+    if data.get("stop_hook_active"):
         return 0
 
     state, blocked = validated_state_or_block(fable_dir)
