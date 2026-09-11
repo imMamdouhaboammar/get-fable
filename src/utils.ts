@@ -212,8 +212,15 @@ export function atomicWriteFileSync(filePath: string, content: string) {
     `.${path.basename(filePath)}.${process.pid}.${Date.now()}.tmp`
   );
 
+  // Acquire ownership exclusively before entering cleanup: a collision belongs
+  // to somebody else and must never be followed, overwritten, or unlinked.
+  const fd = fs.openSync(tempPath, 'wx', mode);
   try {
-    fs.writeFileSync(tempPath, content, { encoding: 'utf-8', mode });
+    try {
+      fs.writeFileSync(fd, content, { encoding: 'utf-8' });
+    } finally {
+      fs.closeSync(fd);
+    }
     replaceTempFileSync(tempPath, filePath, mode);
   } catch (error) {
     try {

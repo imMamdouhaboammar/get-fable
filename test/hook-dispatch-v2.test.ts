@@ -24,7 +24,8 @@ function dispatch(
   handler: string,
   event: string,
   host: string,
-  input: Record<string, unknown>
+  input: Record<string, unknown>,
+  cwd?: string
 ) {
   return spawnSync(
     'python3',
@@ -37,6 +38,7 @@ function dispatch(
     {
       input: JSON.stringify(input),
       encoding: 'utf-8',
+      cwd,
       env: { ...process.env, PYTHONDONTWRITEBYTECODE: '1' },
     }
   );
@@ -47,6 +49,73 @@ afterEach(() => {
 });
 
 describe('host-agnostic lifecycle hook dispatcher', () => {
+  test.each([
+    ['workspaceRoot empty', { workspaceRoot: '' }],
+    ['workspaceRoot null', { workspaceRoot: null }],
+    ['workspace_root null', { workspace_root: null }],
+    ['projectRoot empty', { projectRoot: '' }],
+    ['context cwd null', { context: { cwd: null } }],
+    ['workspace root empty', { workspace: { root: '' } }],
+    ['workspace root hidden by empty context', { context: {}, workspace: { root: null } }],
+    ['workspace root hidden by unrelated context', { context: { session: 'x' }, workspace: { root: '' } }],
+    ['workspacePaths empty', { workspacePaths: [] }],
+    ['workspacePaths blank', { workspacePaths: [''] }],
+    ['tool call cwd null', { toolCall: { args: { Cwd: null } } }],
+    ['tool_call cwd hidden by empty toolCall', { toolCall: {}, tool_call: { args: { cwd: null } } }],
+    ['tool_call cwd hidden by unrelated toolCall', {
+      toolCall: { name: 'apply_patch' },
+      tool_call: { args: { cwd: '' } },
+    }],
+  ])('does not erase explicitly invalid %s authority', (_label, workspaceInput) => {
+    const dir = project();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const before = fs.readFileSync(statePath, 'utf-8');
+    const result = dispatch('mutation', 'PostToolUse', 'antigravity', {
+      ...workspaceInput,
+      toolName: 'apply_patch',
+      toolResponse: { ok: true },
+    }, dir);
+    expect(result.status).toBe(0);
+    expect(fs.readFileSync(statePath, 'utf-8')).toBe(before);
+  });
+
+  test.each([
+    ['profile', 'PreInvocation'],
+    ['spawn', 'SubagentStart'],
+    ['failure', 'PostToolUse'],
+    ['mutation', 'PostToolUse'],
+    ['close', 'Stop'],
+    ['event', 'UserPromptSubmit'],
+  ])('an invalid normalized workspace disables the %s handler', (handler, event) => {
+    const dir = project();
+    const fableDir = path.join(dir, '.fable');
+    const statePath = path.join(fableDir, 'state.json');
+    const before = fs.readFileSync(statePath, 'utf-8');
+    const result = dispatch(handler, event, 'codex', {
+      workspaceRoot: null,
+      toolName: 'apply_patch',
+      toolResponse: { exitCode: 1 },
+      stopHookActive: false,
+    }, dir);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toBe('');
+    expect(fs.readFileSync(statePath, 'utf-8')).toBe(before);
+    expect(fs.existsSync(path.join(fableDir, 'events.jsonl'))).toBe(false);
+  });
+
+  test('does not turn a normalized invalid workspace path into process-workspace authority', () => {
+    const dir = project();
+    const statePath = path.join(dir, '.fable', 'state.json');
+    const before = fs.readFileSync(statePath, 'utf-8');
+    const result = dispatch('mutation', 'PostToolUse', 'antigravity', {
+      workspaceRoot: path.join(dir, 'missing-workspace'),
+      toolName: 'apply_patch',
+      toolResponse: { ok: true },
+    }, dir);
+    expect(result.status).toBe(0);
+    expect(fs.readFileSync(statePath, 'utf-8')).toBe(before);
+  });
+
   test('normalizes Antigravity-style workspace and tool aliases for mutation tracking', () => {
     const dir = project();
     const result = dispatch('mutation', 'PostToolUse', 'antigravity', {

@@ -2,6 +2,34 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- **Durable mutation debt under state-lock contention**: when a Python
+  lifecycle mutation hook cannot acquire the bounded state lock and lifecycle
+  storage remains writable, it now writes a unique, content-free ownership
+  token under `.fable/pending-mutations/`.
+  Stop blocks while any token is present, and the next successful Python or
+  TypeScript state transaction validates and folds its token snapshot into
+  `mutationGeneration` before it can accept new verification or completion.
+  Malformed, foreign, symlinked, or special-file debt fails conservatively.
+- **Lifecycle filesystem boundary**: reject symlinked `.fable` directories and
+  non-regular lifecycle files before state, ledger, lock, initialization, or
+  repair I/O. Python Stop treats an unsafe local boundary as a blocking error,
+  not as an uninitialized project. Event journal paths receive the same
+  static-path protection. Atomic writes reject existing temporary paths without
+  modifying or deleting them. This does not eliminate concurrent path-swap races.
+- **Explicit hook workspace authority**: lifecycle hooks now fall back to their
+  process working directory only when a host omits workspace authority. A
+  supplied but invalid, missing, non-directory, or malformed canonical `cwd`
+  or supported host alias no longer reads or mutates `.fable` state belonging
+  to the hook process workspace.
+- **Linked-worktree state isolation**: Python lifecycle hooks now treat every
+  `.git` filesystem entry as a repository boundary. A linked worktree without
+  local `.fable/` state can no longer read or mutate an ancestor workspace's
+  durable state.
+
 ## [1.5.1] - 2026-08-28
 
 ### Fixed

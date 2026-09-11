@@ -44,14 +44,45 @@ def first_value(*values):
     return None
 
 
-def first_workspace_path(data):
+def workspace_authority(data):
+    """Return whether workspace authority was supplied and its first value.
+
+    Presence is intentionally separate from validity. Downstream policy must
+    reject an explicit empty or malformed authority instead of silently using
+    the hook process directory.
+    """
+    for key in ("cwd", "workspace_root", "workspaceRoot", "project_root", "projectRoot"):
+        if key in data:
+            return True, data[key]
+
+    for container_key in ("context", "workspace"):
+        container = data.get(container_key)
+        if isinstance(container, dict):
+            for key in ("cwd", "root"):
+                if key in container:
+                    return True, container[key]
+
     for key in ("workspacePaths", "workspace_paths"):
-        value = data.get(key)
-        if isinstance(value, list):
-            for item in value:
-                if isinstance(item, str) and item.strip():
-                    return item.strip()
-    return None
+        if key in data:
+            value = data[key]
+            if isinstance(value, list):
+                for item in value:
+                    if isinstance(item, str) and item.strip():
+                        return True, item.strip()
+            return True, None
+
+    for container_key in ("toolCall", "tool_call"):
+        tool_call = data.get(container_key)
+        if not isinstance(tool_call, dict):
+            continue
+        tool_call_args = tool_call.get("args")
+        if not isinstance(tool_call_args, dict):
+            continue
+        for key in ("Cwd", "cwd"):
+            if key in tool_call_args:
+                return True, tool_call_args[key]
+
+    return False, None
 
 
 def normalize_payload(raw, event_name=None, host=None):
@@ -70,18 +101,7 @@ def normalize_payload(raw, event_name=None, host=None):
         data.get("eventName"),
         data.get("event"),
     )
-    cwd = first_value(
-        data.get("cwd"),
-        data.get("workspace_root"),
-        data.get("workspaceRoot"),
-        data.get("project_root"),
-        data.get("projectRoot"),
-        context.get("cwd"),
-        context.get("root"),
-        first_workspace_path(data),
-        tool_call_args.get("Cwd"),
-        tool_call_args.get("cwd"),
-    )
+    cwd_present, cwd = workspace_authority(data)
     tool_name = first_value(
         data.get("tool_name"),
         data.get("toolName"),
@@ -110,8 +130,8 @@ def normalize_payload(raw, event_name=None, host=None):
 
     if event is not None:
         data["hook_event_name"] = str(event)
-    if cwd is not None:
-        data["cwd"] = str(cwd)
+    if cwd_present:
+        data["cwd"] = str(cwd) if isinstance(cwd, str) else cwd
     if tool_name is not None:
         data["tool_name"] = str(tool_name)
     if tool_input is not None:

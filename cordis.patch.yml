@@ -1,0 +1,5 @@
+# get-fable bundle patch for DeepSeek Harness (dsh)
+# Registers the get-fable host plugin and interactive web client in the active DSH profile.
+- insert:
+    - id: get-fable
+      name: get-fable

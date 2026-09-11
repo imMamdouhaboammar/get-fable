@@ -452,3 +452,174 @@ the effective hooks directory instead of parsing `.git`. The bounded change
 strengthens developer experience and host integration without changing state,
 dependencies, CLI contracts, or public schemas. Acceptance uses real
 repositories and linked worktrees, including a configured `core.hooksPath`.
+
+## 2026-08-29 revalidation
+
+Revalidated against default-branch SHA
+`983cb1d50a00bbfabd1698759ac39425dfdfae30` and package version `1.5.1`.
+PR #24 has merged linked-worktree-aware Git hook installation. Draft PR #28
+owns updater release intelligence and was excluded. Default-branch E2E and
+security workflows passed; the CI matrix had one inherited macOS Doctor timing
+failure at 10.63 seconds against a 10-second budget.
+
+Repository execution exposed a distinct state-discovery defect. Python hooks
+stopped upward `.fable/` discovery only at a `.git` directory. Git represents a
+linked-worktree root with a `.git` file, so all shared Python lifecycle hooks
+could cross that root and read or mutate an ancestor workspace's durable state.
+
+Priority uses `(User Value x 2) + Reliability + Architectural Fit + Developer
+Experience + Differentiation + Learning + Testability - Maintenance - Risk`.
+Implementation confidence is recorded but excluded from the formula.
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Contain Python state discovery at linked-worktree roots | 9 | 9 | 10 | 10 | 8 | 8 | 10 | 10 | 2 | 2 | **69** |
+| 2 | Ship checkout mutation invalidation | 9 | 8 | 10 | 10 | 8 | 7 | 9 | 10 | 3 | 3 | **65** |
+| 3 | Ship level-triggered Stop enforcement | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | **64** |
+| 4 | Contain symlink and special-file lifecycle paths | 9 | 8 | 10 | 10 | 7 | 7 | 8 | 9 | 4 | 4 | **61** |
+| 5 | Preserve pre-existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | **55** |
+| 6 | Isolate process-global cwd in CLI tests | 8 | 6 | 8 | 7 | 10 | 4 | 8 | 9 | 4 | 4 | **52** |
+| 7 | Propagate legacy install alias failures | 7 | 5 | 7 | 7 | 9 | 3 | 10 | 10 | 1 | 1 | **52** |
+| 8 | Verify release-asset archive construction | 7 | 7 | 8 | 8 | 8 | 5 | 8 | 9 | 4 | 4 | **51** |
+
+The checkout and Stop candidates already have completed branches, while updater
+work is active in PR #28. The selected initiative is **linked-worktree state
+isolation** because it is the highest-value unclaimed invariant violation and
+has a direct privacy and state-integrity impact. The accepted policy checks for
+local `.fable/` state first, then treats any `.git` filesystem entry—including
+a gitfile or broken symlink—as a conservative repository boundary. It changes
+no schema, dependency, CLI, or public package API.
+
+## 2026-08-31 revalidation
+
+Revalidated against `master` SHA `2d0cf7b261d681c95ecf08a0fff6ff3be12f4b12`
+and package version `1.5.1`. PR #31 had merged the linked-worktree lifecycle
+state boundary, and its post-merge CI, E2E, CodeQL, and TruffleHog runs were
+green. The only open pull requests, #28 through #30, form an owned updater
+stack; no standalone issue supplied an unowned initiative.
+
+Executable reproduction found that a hook payload with an explicit missing
+`cwd` was treated like a payload without `cwd`. When the Python hook process
+itself ran from another initialized project, profile injection exposed that
+project's workflow and mutation handling advanced its durable generation.
+
+Scores use the prescribed formula. Implementation confidence is shown for
+decision quality but is not part of priority.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Maint | Risk | Priority |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Reject invalid explicit hook workspaces | 9 | 8 | 10 | 10 | 8 | 7 | 10 | 10 | 2 | 2 | **67** |
+| Invalidate evidence after checkout/reset | 9 | 9 | 10 | 10 | 8 | 8 | 9 | 9 | 4 | 4 | 64 |
+| Make the Stop completion gate level-triggered | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | 64 |
+| Reject symlink/special-file `.fable` roots | 9 | 9 | 10 | 10 | 7 | 7 | 8 | 9 | 4 | 4 | 61 |
+| Enforce phase/current-skill state invariants | 8 | 7 | 10 | 9 | 7 | 6 | 8 | 10 | 4 | 4 | 57 |
+| Preserve and compose pre-existing Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | 55 |
+| Serialize concurrent Python hook state updates | 8 | 9 | 9 | 9 | 6 | 8 | 6 | 8 | 7 | 7 | 53 |
+| Isolate process-global cwd changes in CLI tests | 8 | 6 | 8 | 7 | 10 | 4 | 8 | 9 | 4 | 4 | 52 |
+| Verify release-asset archive construction | 7 | 7 | 8 | 8 | 8 | 5 | 8 | 9 | 4 | 4 | 51 |
+| Stabilize the macOS Doctor performance budget | 7 | 5 | 7 | 7 | 9 | 3 | 7 | 8 | 3 | 3 | 47 |
+
+Checkout invalidation and the level-triggered Stop gate already have completed
+local branches; updater work is owned by open PRs. Invalid explicit hook `cwd`
+was selected as the highest-priority unowned defect. The accepted contract is:
+
+1. A valid explicit `cwd` remains the state-discovery root.
+2. An omitted `cwd` retains the process-directory compatibility fallback.
+3. A present but invalid `cwd` performs no state discovery, injection,
+   mutation, failure tracking, event journaling, spawn policy, or close policy.
+4. No schema, CLI, manifest, dependency, or public TypeScript API changes.
+
+## 2026-09-02 revalidation
+
+Inspected `master` at `1827c39dd66cd0c02dd3da79131e196bebee6289`, version
+`1.5.1`. Executable TypeScript and Python state use schema **v3** (the v2
+statement in `AGENTS.md` is stale). PRs #31 and #32 are merged. The only open
+PRs, #28 through #30, own the updater stack; no standalone issues were found.
+Latest master CI, E2E, CodeQL and TruffleHog passed. The push Security workflow
+skips Dependency Review; its PR-only repository configuration failure remains
+separate from product verification.
+
+The new DSH Cordis backend and React client reach core state through `src/dsh`.
+They are additional consumers of the filesystem boundary, not grounds for
+forking its state ownership. Canonical skills/registry, deterministic routing,
+prompt compilation, mutation generations, typed completion evidence and recovery
+remain the core architecture. Tests cover hooks, state/evidence, concurrency,
+install/Doctor, routing, DSH and packaging. No runtime dependency was added by
+this initiative.
+
+Scores follow `2*UV + Rel + Fit + DX + Diff + Learn + Test - Cost - Risk`.
+Implementation confidence is recorded but excluded from the calculation.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Cost | Risk | Priority |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Lifecycle symlink/special-file containment | 10 | 9 | 10 | 10 | 8 | 8 | 9 | 10 | 4 | 3 | **68** |
+| Level-triggered Stop gate | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | 64 |
+| Git checkout/reset freshness | 9 | 9 | 10 | 10 | 8 | 8 | 8 | 9 | 4 | 4 | 64 |
+| DSH transaction/workspace-identity parity | 8 | 8 | 10 | 9 | 8 | 7 | 9 | 10 | 3 | 3 | 62 |
+| Crash-safe mutation lock contention | 9 | 9 | 10 | 10 | 7 | 8 | 7 | 9 | 5 | 5 | 61 |
+| DSH evidence-freshness status | 8 | 6 | 9 | 8 | 9 | 6 | 10 | 10 | 2 | 2 | 60 |
+| Phase/currentSkill invariants | 8 | 8 | 10 | 9 | 7 | 7 | 8 | 10 | 4 | 4 | 59 |
+| Preserve existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | 55 |
+
+Selected: **lifecycle filesystem containment**, a reachable state-integrity
+gap with no open owner. The historical local branch `3020211` is reference
+material, not a safe patch to replay: it predates the journal consumer and
+current cwd/worktree contracts, and its unsafe-root opt-out could allow Stop.
+
+Accepted boundary: `.fable` must be a real directory; lifecycle leaves must be
+regular files or absent. Validate before reading, locking, initialization or
+repair, including journal append/compaction. Missing remains opt-out, unsafe
+remains an explicit local boundary and blocks Stop. Preserve schema migrations,
+normal initialization, worktree isolation and canonical workspace aliases.
+The policy addresses static symlinks and special files; concurrent path swaps
+and hard-link isolation remain outside the guarantee.
+
+Future findings (static, not claimed fixed here): DSH route-and-apply uses
+process cwd when initializing state for a configured project root and performs
+read/modify/write without the core transaction; its status path reads fields
+not present in the current state schema. Separate reproductions should precede
+any DSH behavior changes. General active-Stop enforcement, Git reset freshness,
+and lost mutation writes under lock contention also remain separate work.
+
+## 2026-09-04 revalidation
+
+Revalidated package version `1.5.1` from default-branch SHA
+`1827c39dd66cd0c02dd3da79131e196bebee6289`. The implementation branch is
+stacked on PR #33 at `bc6600d5690b7892df94e42d058204e7ed01857f`
+because mutation debt is a new lifecycle filesystem surface and depends on
+that pull request's symlink and special-file boundary. PR #42 owns the DSH
+workspace-identity correction; updater work remains owned by PRs #28 through
+#30. Those overlapping initiatives were excluded from today's selection.
+
+Executable inspection confirmed a freshness gap in the shared Python hook
+runtime. `_acquire_state_lock` gives up after two seconds and
+`record_workspace_mutation` previously propagated no durable invalidation when
+that happened. `fable_mutation.py` then returned successfully, so a later Stop
+could accept verification that predated the actual workspace mutation.
+TypeScript state transactions throw on lock timeout and did not silently lose
+the update, but both runtimes must reconcile any debt created by Python hooks.
+
+Scores use `2*UV + Rel + Fit + DX + Diff + Learn + Test - Cost - Risk`.
+Implementation confidence is recorded but excluded from the calculation.
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Cost | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Persist and reconcile mutation debt after lock contention | 10 | 9 | 10 | 10 | 7 | 9 | 8 | 10 | 5 | 4 | **66** |
+| 2 | Invalidate evidence after Git checkout/reset | 9 | 9 | 10 | 10 | 8 | 8 | 8 | 9 | 4 | 4 | **64** |
+| 3 | Make the Stop completion gate level-triggered | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | **64** |
+| 4 | Route DSH state updates through revisioned transactions | 8 | 8 | 10 | 9 | 8 | 7 | 8 | 10 | 4 | 4 | **60** |
+| 5 | Enforce phase/current-skill state invariants | 8 | 8 | 10 | 9 | 7 | 7 | 8 | 10 | 4 | 4 | **59** |
+| 6 | Preserve and compose pre-existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | **55** |
+| 7 | Verify release-asset archive construction | 7 | 7 | 8 | 8 | 8 | 5 | 8 | 9 | 4 | 4 | **51** |
+
+Selected: **durable pending-mutation debt**. The accepted behavior keeps the
+bounded host callback but makes its incomplete safety transition explicit. A
+content-free, workspace-owned token blocks Stop; the next locked Python or
+TypeScript transaction validates and folds a token snapshot into the mutation
+generation before accepting any requested change. Tokens are deleted only
+after the reconciled state write, and concurrent arrivals remain pending.
+
+This does not claim durability when local storage cannot create a token, nor
+does it eliminate PR #33's documented path-swap and hard-link limits. Failed
+token cleanup may conservatively increment a generation again. Those outcomes
+can block or require extra verification; they do not authorize stale proof.

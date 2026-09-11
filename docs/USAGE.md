@@ -189,7 +189,13 @@ The Claude and Antigravity adapters use the same Python hook implementations for
 get-fable serve 8080
 ```
 
-The proxy binds to loopback by default, does not enable permissive CORS by default, limits request bodies, accepts only HTTP/HTTPS upstream URLs, and does not provide its own authentication boundary.
+The proxy binds to loopback by default, does not enable permissive CORS by default, limits request bodies, and accepts only HTTP/HTTPS upstream URLs. Binding beyond loopback requires proxy authentication via `FABLE_PROXY_AUTH_TOKEN` or the equivalent `proxyAuthToken` option, plus an explicitly trusted TLS-terminating boundary via `FABLE_TRUST_PROXY_TLS_TERMINATION=1` or `trustProxyTlsTermination: true`.
+
+`FABLE_TRUST_PROXY_TLS_TERMINATION` is an operator assertion that a trusted reverse proxy or equivalent boundary terminates TLS before traffic reaches get-fable. The built-in request proxy remains an HTTP server and does not terminate TLS itself.
+
+Proxy access authentication and upstream provider authorization are separate. For network-accessible bindings, the inbound proxy bearer credential is never reused as upstream authorization. Configure upstream bearer authentication independently with `FABLE_UPSTREAM_AUTH_TOKEN` or `upstreamAuthToken`.
+
+Any upstream request carrying `Authorization` requires HTTPS. Plain HTTP upstreams remain usable only when no bearer credential will be forwarded.
 
 ## Diagnostics
 
@@ -388,28 +394,45 @@ The reasons explain routing rules and are not private chain-of-thought
 
 ```bash
 export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
+export FABLE_UPSTREAM_AUTH_TOKEN="your-provider-token"
 bun ./bin/get-fable.js serve 8080
 ```
 
-The upstream URL must use HTTP or HTTPS
+The upstream URL may use HTTP or HTTPS when no `Authorization` value is sent. Any upstream request carrying bearer authorization requires HTTPS.
 
 The proxy preserves upstream status, content type, and response bytes
 
-The inbound `Authorization` header is forwarded only when an upstream is configured
+`FABLE_UPSTREAM_AUTH_TOKEN` is sent upstream as a bearer credential only when `UPSTREAM_OPENAI_URL` uses HTTPS. On loopback only, if no dedicated upstream token is configured, an inbound `Authorization` header remains eligible for forwarding as a compatibility fallback, and that fallback also requires an HTTPS upstream. If the fallback would send credentials over HTTP, the request fails before the upstream is contacted.
+
+For a non-loopback binding, configure proxy access and provider credentials separately and place get-fable behind a trusted TLS-terminating reverse proxy or equivalent boundary:
+
+```bash
+export FABLE_HOST="0.0.0.0"
+export FABLE_PROXY_AUTH_TOKEN="proxy-access-token"
+export FABLE_TRUST_PROXY_TLS_TERMINATION="1"
+export FABLE_UPSTREAM_AUTH_TOKEN="provider-token"
+export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
+bun ./bin/get-fable.js serve 8080
+```
+
+Set `FABLE_TRUST_PROXY_TLS_TERMINATION=1` only when a trusted boundary actually terminates TLS before traffic reaches get-fable. It does not enable TLS in the built-in HTTP server.
+
+Clients authenticate to the non-loopback proxy with `Authorization: Bearer <FABLE_PROXY_AUTH_TOKEN>`. That access credential is validated by the proxy and is not forwarded upstream.
 
 Defaults
 
 ```text
-FABLE_HOST                 127.0.0.1
-FABLE_CORS_ORIGIN          disabled unless set
-FABLE_MAX_BODY_BYTES       1048576
-FABLE_UPSTREAM_TIMEOUT_MS  30000
-UPSTREAM_OPENAI_URL        optional
+FABLE_HOST                         127.0.0.1
+FABLE_CORS_ORIGIN                  disabled unless set
+FABLE_MAX_BODY_BYTES               1048576
+FABLE_UPSTREAM_TIMEOUT_MS          30000
+FABLE_PROXY_AUTH_TOKEN             required for non-loopback bindings
+FABLE_TRUST_PROXY_TLS_TERMINATION  required for non-loopback bindings
+FABLE_UPSTREAM_AUTH_TOKEN          optional dedicated upstream bearer token; requires HTTPS upstream
+UPSTREAM_OPENAI_URL                optional
 ```
 
-The proxy has no built-in user authentication or authorization boundary
-
-If you bind it beyond loopback, add appropriate external controls
+If you bind beyond loopback, keep `FABLE_PROXY_AUTH_TOKEN` distinct from `FABLE_UPSTREAM_AUTH_TOKEN`, terminate TLS at a trusted boundary before get-fable, set `FABLE_TRUST_PROXY_TLS_TERMINATION=1` to assert that deployment condition, and retain appropriate network controls for the environment.
 
 ## Supported request shapes
 

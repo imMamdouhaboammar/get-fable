@@ -28,7 +28,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _fable_common import (  # noqa: E402
-    find_fable_dir, ledger_path, closed_without_evidence,
+    find_fable_dir, ledger_path, closed_without_evidence, safe_fable_boundary,
 )
 
 SOURCE_TAG_RE = re.compile(
@@ -45,6 +45,9 @@ def lint(project_dir):
         print("fable-lint: no .fable/ found from %s — not a fable-mode "
               "project, nothing to lint" % project_dir)
         return 0
+    if not safe_fable_boundary(fable_dir):
+        print("FINDING unsafe .fable filesystem boundary")
+        return 1
     root = os.path.dirname(fable_dir)
 
     spec = os.path.join(root, "docs", "SPEC.md")

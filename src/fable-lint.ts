@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { hasFreshPassingEvidence, readFableState } from './core/state.js';
+import { assertSafeFableBoundary } from './core/state-boundary.js';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './core/skill-registry.js';
 import { validateAllSkillPackages, getSkillPackageDir, readSkillResource } from './core/skill-package.js';
 import { checkCatalogArtifacts } from './core/catalog-generator.js';
@@ -183,6 +184,12 @@ export function runSkillPackageLint(repoRoot: string = getCoreRepoRoot()): Skill
 
 export function runFableLint(targetDir: string = process.cwd()): boolean {
   logInfo(`Running Fable lint checks on ${targetDir}...`);
+  try {
+    assertSafeFableBoundary(targetDir);
+  } catch (error) {
+    logError(error instanceof Error ? error.message : String(error));
+    return false;
+  }
   let hasErrors = false;
 
   const repoRoot = getCoreRepoRoot();
