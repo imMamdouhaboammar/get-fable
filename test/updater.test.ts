@@ -195,7 +195,7 @@ describe('Auto-Updater Module', () => {
         },
       });
 
-      expect(cacheMkdirAttempted).toBe(false);
+      expect(cacheMkdirAttempted).toBe(true);
       expect(fetchCalled).toBe(true);
       expect(result.latestVersion).toBe('1.6.0');
       expect(result.updateAvailable).toBe(true);
