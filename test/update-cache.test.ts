@@ -56,6 +56,22 @@ describe('update cache', () => {
     expect(readCache(filePath)).toBeNull();
   });
 
+  test('rejects parseable timestamps that are not canonical ISO instants', () => {
+    const filePath = tempFile();
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify({
+        schemaVersion: 1,
+        fetchedAt: '2026-02-31T00:00:00.000Z',
+        expiresAt: '2026-08-29T20:00:00.000Z',
+        value: {},
+      }),
+      'utf-8'
+    );
+
+    expect(readCache(filePath)).toBeNull();
+  });
+
   test('writes and reads a schema-versioned cache envelope', () => {
     const filePath = tempFile();
     const envelope = {
