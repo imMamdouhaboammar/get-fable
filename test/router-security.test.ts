@@ -25,6 +25,63 @@ describe('request proxy security boundary', () => {
     expect(() => createMythosRouterServer({ host: '0.0.0.0' })).toThrow('authentication');
   });
 
+  test('does not forward the non-loopback proxy access token upstream', async () => {
+    let upstreamAuthorization: string | undefined;
+    const upstream = http.createServer((req, res) => {
+      upstreamAuthorization = req.headers.authorization;
+      res.setHeader('content-type', 'application/json');
+      res.end(JSON.stringify({ ok: true }));
+    });
+    const upstreamUrl = await listen(upstream);
+    const proxyUrl = await listen(createMythosRouterServer({
+      host: '0.0.0.0',
+      proxyAuthToken: 'proxy-access-sentinel',
+      upstreamUrl,
+      allowPrivateUpstream: true,
+    }));
+
+    const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer proxy-access-sentinel',
+      },
+      body: JSON.stringify(body),
+    });
+
+    expect(response.status).toBe(200);
+    expect(upstreamAuthorization).toBeUndefined();
+  });
+
+  test('uses a dedicated upstream token instead of the non-loopback proxy token', async () => {
+    let upstreamAuthorization: string | undefined;
+    const upstream = http.createServer((req, res) => {
+      upstreamAuthorization = req.headers.authorization;
+      res.setHeader('content-type', 'application/json');
+      res.end(JSON.stringify({ ok: true }));
+    });
+    const upstreamUrl = await listen(upstream);
+    const proxyUrl = await listen(createMythosRouterServer({
+      host: '0.0.0.0',
+      proxyAuthToken: 'proxy-access-sentinel',
+      upstreamAuthToken: 'provider-auth-sentinel',
+      upstreamUrl,
+      allowPrivateUpstream: true,
+    } as Parameters<typeof createMythosRouterServer>[0] & { upstreamAuthToken: string }));
+
+    const response = await fetch(`${proxyUrl}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer proxy-access-sentinel',
+      },
+      body: JSON.stringify(body),
+    });
+
+    expect(response.status).toBe(200);
+    expect(upstreamAuthorization).toBe('Bearer provider-auth-sentinel');
+  });
+
   test('does not follow upstream redirects or forward Authorization to a redirected origin', async () => {
     let redirectedHits = 0;
     const receiver = http.createServer((req, res) => { redirectedHits += 1; res.end('should not be reached'); });
