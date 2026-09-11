@@ -37,6 +37,23 @@ describe('Auto-Updater Module', () => {
     expect(() => isNewerVersion('1.6.0', 'still-not-a-version')).toThrow();
   });
 
+  test('rejects an invalid current version instead of converting it to a no-update result', async () => {
+    let fetchCalled = false;
+
+    await expect(
+      fetchLatestVersion('not-a-version', 100, {
+        cachePath: tempCachePath(),
+        now: () => new Date('2026-08-28T20:00:00.000Z'),
+        fetch: async () => {
+          fetchCalled = true;
+          throw new Error('network should not be reached');
+        },
+      })
+    ).rejects.toThrow(/invalid/i);
+
+    expect(fetchCalled).toBe(false);
+  });
+
   test('adapts npm stable metadata through injected facade dependencies', async () => {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = (async () => {
@@ -74,6 +91,43 @@ describe('Auto-Updater Module', () => {
       expect(result.checkedAt).toBe('2026-08-28T20:00:00.000Z');
     } finally {
       globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('returns network release intelligence even when the default cache directory cannot be created', async () => {
+    const originalHome = process.env.HOME;
+    const fakeHomeFile = tempCachePath();
+    fs.writeFileSync(fakeHomeFile, 'not-a-directory', 'utf-8');
+    process.env.HOME = fakeHomeFile;
+
+    try {
+      const result = await fetchLatestVersion('1.5.1', 100, {
+        now: () => new Date('2026-08-28T20:00:00.000Z'),
+        fetch: async (input: string) => {
+          if (input === 'https://registry.npmjs.org/get-fable') {
+            return {
+              ok: true,
+              status: 200,
+              async json() {
+                return { 'dist-tags': { latest: '1.6.0' }, versions: {} };
+              },
+            };
+          }
+          return {
+            ok: false,
+            status: 404,
+            async json() {
+              return {};
+            },
+          };
+        },
+      });
+
+      expect(result.latestVersion).toBe('1.6.0');
+      expect(result.updateAvailable).toBe(true);
+    } finally {
+      if (originalHome === undefined) delete process.env.HOME;
+      else process.env.HOME = originalHome;
     }
   });
 
@@ -116,6 +170,40 @@ describe('Auto-Updater Module', () => {
     expect(cached.latestVersion).toBe('1.6.0');
     expect(cached.updateAvailable).toBe(true);
     expect(cached.channel).toBe('npm');
+  });
+
+  test('ignores a fresh cache envelope whose value is not a valid update result', async () => {
+    const cachePath = tempCachePath();
+    const now = new Date('2026-08-28T20:00:00.000Z');
+
+    fs.writeFileSync(
+      cachePath,
+      JSON.stringify({
+        schemaVersion: 1,
+        fetchedAt: '2026-08-28T19:00:00.000Z',
+        expiresAt: '2026-08-28T21:00:00.000Z',
+        value: {
+          currentVersion: '1.5.1',
+          latestVersion: 'not-a-version',
+          updateAvailable: true,
+          checkedAt: '2026-08-28T19:00:00.000Z',
+          channel: 'npm',
+        },
+      }),
+      'utf-8'
+    );
+
+    const result = await fetchLatestVersion('1.5.2', 100, {
+      cachePath,
+      now: () => now,
+      fetch: async () => {
+        throw new Error('offline');
+      },
+    });
+
+    expect(result.currentVersion).toBe('1.5.2');
+    expect(result.latestVersion).toBe('1.5.2');
+    expect(result.updateAvailable).toBe(false);
   });
 
   test('does not report an expired cache entry as current release intelligence', async () => {
