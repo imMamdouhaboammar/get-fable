@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const LIFECYCLE_FILES = ['state.json', 'state.lock', 'LEDGER.md', 'PROGRESS.md', 'VERIFIER_PROMPT.md'];
+export const PENDING_MUTATIONS_DIRECTORY = 'pending-mutations';
+const PENDING_MUTATION_TOKEN = /^mutation-[A-Za-z0-9._-]+\.json$/;
 
 /** Validate existing entries before touching lifecycle data. This is not a TOCTOU defense. */
 export function assertSafeFableBoundary(targetDir: string, create = false): string | null {
@@ -29,6 +31,21 @@ export function assertSafeFableBoundary(targetDir: string, create = false): stri
     if (!entry.isFile() || entry.isSymbolicLink()) {
       throw new Error(`Unsafe .fable/${filename}: expected a regular file, not a symlink or special file`);
     }
+  }
+  const pendingDir = path.join(fableDir, PENDING_MUTATIONS_DIRECTORY);
+  try {
+    const pending = fs.lstatSync(pendingDir);
+    if (!pending.isDirectory() || pending.isSymbolicLink()) {
+      throw new Error('Unsafe .fable/pending-mutations: expected a real directory');
+    }
+    for (const filename of fs.readdirSync(pendingDir)) {
+      const token = fs.lstatSync(path.join(pendingDir, filename));
+      if (!PENDING_MUTATION_TOKEN.test(filename) || !token.isFile() || token.isSymbolicLink()) {
+        throw new Error(`Unsafe .fable/pending-mutations/${filename}: expected a mutation token`);
+      }
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
   }
   return fableDir;
 }

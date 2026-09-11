@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+import secrets
 import stat
 import sys
 import tempfile
@@ -119,6 +120,8 @@ def find_fable_dir(start):
 
 
 LIFECYCLE_FILES = ("state.json", "state.lock", "LEDGER.md", "PROGRESS.md", "VERIFIER_PROMPT.md")
+PENDING_MUTATIONS_DIRECTORY = "pending-mutations"
+PENDING_MUTATION_TOKEN_RE = re.compile(r"^mutation-[A-Za-z0-9._-]+\.json$")
 
 
 def safe_fable_boundary(fable_dir, extra_files=()):
@@ -135,6 +138,19 @@ def safe_fable_boundary(fable_dir, extra_files=()):
                 continue
             if not stat.S_ISREG(mode):
                 return False
+        pending_dir = os.path.join(fable_dir, PENDING_MUTATIONS_DIRECTORY)
+        try:
+            pending_mode = os.lstat(pending_dir).st_mode
+        except FileNotFoundError:
+            return True
+        if not stat.S_ISDIR(pending_mode):
+            return False
+        with os.scandir(pending_dir) as entries:
+            for entry in entries:
+                if not PENDING_MUTATION_TOKEN_RE.fullmatch(entry.name):
+                    return False
+                if not stat.S_ISREG(entry.stat(follow_symlinks=False).st_mode):
+                    return False
         return True
     except (OSError, ValueError, TypeError):
         return False
@@ -495,6 +511,99 @@ def _acquire_state_lock(fable_dir):
             time.sleep(0.01)
 
 
+def _pending_mutations_dir(fable_dir):
+    return os.path.join(fable_dir, PENDING_MUTATIONS_DIRECTORY)
+
+
+def pending_mutation_tokens(fable_dir, expected_workspace_id):
+    """Return a validated token snapshot, or None for malformed/unsafe debt."""
+    if not safe_fable_boundary(fable_dir):
+        return None
+    directory = _pending_mutations_dir(fable_dir)
+    try:
+        names = sorted(os.listdir(directory))
+    except FileNotFoundError:
+        return []
+    except OSError:
+        return None
+    tokens = []
+    for name in names:
+        if not PENDING_MUTATION_TOKEN_RE.fullmatch(name):
+            return None
+        token = os.path.join(directory, name)
+        try:
+            if not stat.S_ISREG(os.lstat(token).st_mode):
+                return None
+            with open(token, encoding="utf-8") as handle:
+                payload = json.load(handle)
+            if (
+                not isinstance(payload, dict)
+                or set(payload) != {"workspaceId"}
+                or payload.get("workspaceId") != expected_workspace_id
+            ):
+                return None
+        except Exception:
+            return None
+        tokens.append(token)
+    return tokens
+
+
+def has_pending_mutation_debt(fable_dir, expected_workspace_id=None):
+    """Return whether debt exists; optionally validate each token's ownership."""
+    if expected_workspace_id is None:
+        if not safe_fable_boundary(fable_dir):
+            return None
+        try:
+            return bool(os.listdir(_pending_mutations_dir(fable_dir)))
+        except FileNotFoundError:
+            return False
+        except OSError:
+            return None
+    tokens = pending_mutation_tokens(fable_dir, expected_workspace_id)
+    return None if tokens is None else bool(tokens)
+
+
+def _persist_pending_mutation(fable_dir):
+    """Persist content-free mutation debt after lock contention, if ownership is valid."""
+    if not safe_fable_boundary(fable_dir):
+        return False
+    state = read_state(fable_dir)
+    if state is None:
+        return False
+    owner = state.get("workspaceId")
+    directory = _pending_mutations_dir(fable_dir)
+    try:
+        os.mkdir(directory, 0o700)
+    except FileExistsError:
+        pass
+    except OSError:
+        return False
+    if not safe_fable_boundary(fable_dir):
+        return False
+    name = "mutation-%d-%d-%s.json" % (os.getpid(), time.time_ns(), secrets.token_hex(12))
+    token = os.path.join(directory, name)
+    fd = None
+    try:
+        fd = os.open(token, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            fd = None
+            json.dump({"workspaceId": owner}, handle, separators=(",", ":"))
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        return True
+    except Exception:
+        if fd is not None:
+            try:
+                os.close(fd)
+            except OSError:
+                pass
+        # Once O_EXCL creates the token, retain even malformed/partial content.
+        # Reconciliation will reject it and Stop will remain blocked; deleting it
+        # after an uncertain write would turn an I/O failure into lost mutation debt.
+        return False
+
+
 def _with_state_transaction(fable_dir, mutator):
     lock = _acquire_state_lock(fable_dir)
     if lock is None:
@@ -503,6 +612,14 @@ def _with_state_transaction(fable_dir, mutator):
         state = read_state(fable_dir)
         if state is None:
             return None
+        pending = pending_mutation_tokens(fable_dir, state.get("workspaceId"))
+        if pending is None:
+            return None
+        if pending:
+            state = dict(state)
+            state["mutationGeneration"] = int(state.get("mutationGeneration", 0)) + len(pending)
+            state["substantial"] = True
+            state["updatedAt"] = now_iso()
         current_revision = int(state.get("stateRevision", 0))
         updated = mutator(dict(state))
         if not isinstance(updated, dict):
@@ -512,6 +629,11 @@ def _with_state_transaction(fable_dir, mutator):
         updated["stateRevision"] = current_revision + 1
         if not write_state(fable_dir, updated):
             return None
+        for token in pending:
+            try:
+                os.remove(token)
+            except OSError:
+                pass
         return updated
     finally:
         try:
@@ -527,7 +649,11 @@ def record_workspace_mutation(fable_dir):
         state["substantial"] = True
         state["updatedAt"] = now_iso()
         return state
-    return _with_state_transaction(fable_dir, mutate)
+    updated = _with_state_transaction(fable_dir, mutate)
+    if updated is not None:
+        return updated
+    _persist_pending_mutation(fable_dir)
+    return None
 
 
 def record_command_result(fable_dir, failed):

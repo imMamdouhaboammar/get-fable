@@ -580,3 +580,46 @@ read/modify/write without the core transaction; its status path reads fields
 not present in the current state schema. Separate reproductions should precede
 any DSH behavior changes. General active-Stop enforcement, Git reset freshness,
 and lost mutation writes under lock contention also remain separate work.
+
+## 2026-09-04 revalidation
+
+Revalidated package version `1.5.1` from default-branch SHA
+`1827c39dd66cd0c02dd3da79131e196bebee6289`. The implementation branch is
+stacked on PR #33 at `bc6600d5690b7892df94e42d058204e7ed01857f`
+because mutation debt is a new lifecycle filesystem surface and depends on
+that pull request's symlink and special-file boundary. PR #42 owns the DSH
+workspace-identity correction; updater work remains owned by PRs #28 through
+#30. Those overlapping initiatives were excluded from today's selection.
+
+Executable inspection confirmed a freshness gap in the shared Python hook
+runtime. `_acquire_state_lock` gives up after two seconds and
+`record_workspace_mutation` previously propagated no durable invalidation when
+that happened. `fable_mutation.py` then returned successfully, so a later Stop
+could accept verification that predated the actual workspace mutation.
+TypeScript state transactions throw on lock timeout and did not silently lose
+the update, but both runtimes must reconcile any debt created by Python hooks.
+
+Scores use `2*UV + Rel + Fit + DX + Diff + Learn + Test - Cost - Risk`.
+Implementation confidence is recorded but excluded from the calculation.
+
+| Rank | Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Cost | Risk | Priority |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Persist and reconcile mutation debt after lock contention | 10 | 9 | 10 | 10 | 7 | 9 | 8 | 10 | 5 | 4 | **66** |
+| 2 | Invalidate evidence after Git checkout/reset | 9 | 9 | 10 | 10 | 8 | 8 | 8 | 9 | 4 | 4 | **64** |
+| 3 | Make the Stop completion gate level-triggered | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | **64** |
+| 4 | Route DSH state updates through revisioned transactions | 8 | 8 | 10 | 9 | 8 | 7 | 8 | 10 | 4 | 4 | **60** |
+| 5 | Enforce phase/current-skill state invariants | 8 | 8 | 10 | 9 | 7 | 7 | 8 | 10 | 4 | 4 | **59** |
+| 6 | Preserve and compose pre-existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | **55** |
+| 7 | Verify release-asset archive construction | 7 | 7 | 8 | 8 | 8 | 5 | 8 | 9 | 4 | 4 | **51** |
+
+Selected: **durable pending-mutation debt**. The accepted behavior keeps the
+bounded host callback but makes its incomplete safety transition explicit. A
+content-free, workspace-owned token blocks Stop; the next locked Python or
+TypeScript transaction validates and folds a token snapshot into the mutation
+generation before accepting any requested change. Tokens are deleted only
+after the reconciled state write, and concurrent arrivals remain pending.
+
+This does not claim durability when local storage cannot create a token, nor
+does it eliminate PR #33's documented path-swap and hard-link limits. Failed
+token cleanup may conservatively increment a generation again. Those outcomes
+can block or require extra verification; they do not authorize stale proof.

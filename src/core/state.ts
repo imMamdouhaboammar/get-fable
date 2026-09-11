@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { assertSafeFableBoundary } from './state-boundary.js';
+import { PENDING_MUTATIONS_DIRECTORY, assertSafeFableBoundary } from './state-boundary.js';
 import { atomicWriteFileSync } from '../utils.js';
 import { CANONICAL_SKILLS, FABLE_PACKS, SKILL_PACK, SKILL_PHASE } from '../generated/skill-catalog.js';
 import {
@@ -445,6 +445,31 @@ function acquireStateLock(targetDir: string): () => void {
   }
 }
 
+function snapshotPendingMutationTokens(targetDir: string, expectedWorkspaceId: string): string[] {
+  const directory = path.join(targetDir, '.fable', PENDING_MUTATIONS_DIRECTORY);
+  let names: string[];
+  try {
+    names = fs.readdirSync(directory).sort();
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [];
+    throw error;
+  }
+  return names.map((name) => {
+    const token = path.join(directory, name);
+    const payload = JSON.parse(fs.readFileSync(token, 'utf-8')) as unknown;
+    if (
+      !payload ||
+      typeof payload !== 'object' ||
+      Array.isArray(payload) ||
+      Object.keys(payload).length !== 1 ||
+      (payload as { workspaceId?: unknown }).workspaceId !== expectedWorkspaceId
+    ) {
+      throw new Error(`Invalid pending mutation token: ${name}`);
+    }
+    return token;
+  });
+}
+
 export function withFableStateTransaction(
   targetDir: string,
   mutator: (state: FableState) => FableState
@@ -453,7 +478,14 @@ export function withFableStateTransaction(
   try {
     const current = readFableState(targetDir);
     if (!current) throw new Error('No .fable/state.json found. Run get-fable init first.');
-    const proposed = mutator(current);
+    const pending = snapshotPendingMutationTokens(targetDir, current.workspaceId);
+    const reconciled = pending.length === 0 ? current : {
+      ...current,
+      substantial: true,
+      mutationGeneration: current.mutationGeneration + pending.length,
+      updatedAt: new Date().toISOString(),
+    };
+    const proposed = mutator(reconciled);
     const next = validateFableState({
       ...proposed,
       schemaVersion: FABLE_STATE_SCHEMA_VERSION,
@@ -461,6 +493,9 @@ export function withFableStateTransaction(
       stateRevision: current.stateRevision + 1,
     }, targetDir);
     writeFableState(targetDir, next);
+    for (const token of pending) {
+      try { fs.unlinkSync(token); } catch {}
+    }
     return next;
   } finally {
     release();
