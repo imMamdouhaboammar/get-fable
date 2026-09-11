@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { assertSafeFableBoundary } from './state-boundary.js';
 import { atomicWriteFileSync } from '../utils.js';
 import { CANONICAL_SKILLS, FABLE_PACKS, SKILL_PACK, SKILL_PHASE } from '../generated/skill-catalog.js';
 import {
@@ -382,6 +383,7 @@ export function statePath(targetDir: string = process.cwd()): string {
 }
 
 export function readFableState(targetDir: string = process.cwd()): FableState | null {
+  if (!assertSafeFableBoundary(targetDir)) return null;
   const filePath = statePath(targetDir);
   if (!fs.existsSync(filePath)) return null;
   const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -401,7 +403,8 @@ function lockPath(targetDir: string): string {
 
 function staleLockCanBeRemoved(filePath: string): boolean {
   try {
-    const stat = fs.statSync(filePath);
+    const stat = fs.lstatSync(filePath);
+    if (!stat.isFile()) return false;
     if (Date.now() - stat.mtimeMs < STATE_LOCK_STALE_MS) return false;
     try {
       const value = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
@@ -418,8 +421,7 @@ function staleLockCanBeRemoved(filePath: string): boolean {
 }
 
 function acquireStateLock(targetDir: string): () => void {
-  const fableDir = path.join(targetDir, '.fable');
-  fs.mkdirSync(fableDir, { recursive: true });
+  assertSafeFableBoundary(targetDir, true);
   const filePath = lockPath(targetDir);
   const deadline = Date.now() + STATE_LOCK_TIMEOUT_MS;
   while (true) {
@@ -433,6 +435,7 @@ function acquireStateLock(targetDir: string): () => void {
     } catch (error) {
       const code = (error as NodeJS.ErrnoException).code;
       if (code !== 'EEXIST') throw error;
+      assertSafeFableBoundary(targetDir);
       if (staleLockCanBeRemoved(filePath)) {
         try { fs.unlinkSync(filePath); continue; } catch {}
       }
@@ -465,8 +468,8 @@ export function withFableStateTransaction(
 }
 
 export function writeFableState(targetDir: string, state: FableState): void {
+  assertSafeFableBoundary(targetDir, true);
   const filePath = statePath(targetDir);
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   atomicWriteFileSync(filePath, `${JSON.stringify(validateFableState(state, targetDir), null, 2)}\n`);
 }
 

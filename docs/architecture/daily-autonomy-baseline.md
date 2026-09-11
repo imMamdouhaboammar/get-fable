@@ -528,3 +528,55 @@ was selected as the highest-priority unowned defect. The accepted contract is:
 3. A present but invalid `cwd` performs no state discovery, injection,
    mutation, failure tracking, event journaling, spawn policy, or close policy.
 4. No schema, CLI, manifest, dependency, or public TypeScript API changes.
+
+## 2026-09-02 revalidation
+
+Inspected `master` at `1827c39dd66cd0c02dd3da79131e196bebee6289`, version
+`1.5.1`. Executable TypeScript and Python state use schema **v3** (the v2
+statement in `AGENTS.md` is stale). PRs #31 and #32 are merged. The only open
+PRs, #28 through #30, own the updater stack; no standalone issues were found.
+Latest master CI, E2E, CodeQL and TruffleHog passed. The push Security workflow
+skips Dependency Review; its PR-only repository configuration failure remains
+separate from product verification.
+
+The new DSH Cordis backend and React client reach core state through `src/dsh`.
+They are additional consumers of the filesystem boundary, not grounds for
+forking its state ownership. Canonical skills/registry, deterministic routing,
+prompt compilation, mutation generations, typed completion evidence and recovery
+remain the core architecture. Tests cover hooks, state/evidence, concurrency,
+install/Doctor, routing, DSH and packaging. No runtime dependency was added by
+this initiative.
+
+Scores follow `2*UV + Rel + Fit + DX + Diff + Learn + Test - Cost - Risk`.
+Implementation confidence is recorded but excluded from the calculation.
+
+| Candidate | UV | Learn | Fit | Rel | DX | Diff | Conf | Test | Cost | Risk | Priority |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Lifecycle symlink/special-file containment | 10 | 9 | 10 | 10 | 8 | 8 | 9 | 10 | 4 | 3 | **68** |
+| Level-triggered Stop gate | 9 | 8 | 10 | 10 | 7 | 7 | 9 | 10 | 3 | 3 | 64 |
+| Git checkout/reset freshness | 9 | 9 | 10 | 10 | 8 | 8 | 8 | 9 | 4 | 4 | 64 |
+| DSH transaction/workspace-identity parity | 8 | 8 | 10 | 9 | 8 | 7 | 9 | 10 | 3 | 3 | 62 |
+| Crash-safe mutation lock contention | 9 | 9 | 10 | 10 | 7 | 8 | 7 | 9 | 5 | 5 | 61 |
+| DSH evidence-freshness status | 8 | 6 | 9 | 8 | 9 | 6 | 10 | 10 | 2 | 2 | 60 |
+| Phase/currentSkill invariants | 8 | 8 | 10 | 9 | 7 | 7 | 8 | 10 | 4 | 4 | 59 |
+| Preserve existing user Git hooks | 8 | 8 | 9 | 9 | 9 | 6 | 7 | 9 | 5 | 6 | 55 |
+
+Selected: **lifecycle filesystem containment**, a reachable state-integrity
+gap with no open owner. The historical local branch `3020211` is reference
+material, not a safe patch to replay: it predates the journal consumer and
+current cwd/worktree contracts, and its unsafe-root opt-out could allow Stop.
+
+Accepted boundary: `.fable` must be a real directory; lifecycle leaves must be
+regular files or absent. Validate before reading, locking, initialization or
+repair, including journal append/compaction. Missing remains opt-out, unsafe
+remains an explicit local boundary and blocks Stop. Preserve schema migrations,
+normal initialization, worktree isolation and canonical workspace aliases.
+The policy addresses static symlinks and special files; concurrent path swaps
+and hard-link isolation remain outside the guarantee.
+
+Future findings (static, not claimed fixed here): DSH route-and-apply uses
+process cwd when initializing state for a configured project root and performs
+read/modify/write without the core transaction; its status path reads fields
+not present in the current state schema. Separate reproductions should precede
+any DSH behavior changes. General active-Stop enforcement, Git reset freshness,
+and lost mutation writes under lock contention also remain separate work.

@@ -121,6 +121,28 @@ Every new evidence record is also stamped with the state's `workspaceId`. A reco
 
 The tracked repository template stays schema v1 and workspace-neutral. Its state container binds to the current workspace during migration, but historical schema-v1 evidence is not silently rebound into fresh proof. Schema-v2 runtime state migrates explicitly, and the next state mutation writes schema v3 with a monotonically increasing `stateRevision`.
 
+## Lifecycle filesystem boundary
+
+Workspace identity does not authorize following lifecycle symlinks. TypeScript
+and Python inspect `.fable` itself with `lstat`: it must be a real directory.
+Existing lifecycle files must be regular files, not links (including dangling
+links), directories, FIFOs, or other special files. Initialization and Doctor
+repair preflight lifecycle destinations before writing them; lock acquisition
+checks the lock type before inspecting stale-lock contents. Python journal
+writes also validate `events.jsonl` and its compaction temporary path.
+The TypeScript atomic writer creates its temporary file exclusively: a
+pre-existing temporary-path collision is rejected and left untouched.
+
+An absent `.fable` remains opt-out for hooks. An unsafe local entry remains a
+boundary: discovery cannot skip it and inherit parent state, and Stop blocks
+before evaluating ledger pause or active-stop shortcuts. Other consumers avoid
+reading or mutating rejected lifecycle paths. A symlink alias of the workspace
+root remains supported when its actual `.fable` child is a real directory.
+
+These checks reject static unsafe paths, not concurrent adversarial path swaps.
+The check-to-open/replace TOCTOU window remains; no race-free sandbox or hard-link
+isolation is claimed.
+
 ## Mutation-aware verification
 
 Every recognized workspace mutation advances `mutationGeneration`.
