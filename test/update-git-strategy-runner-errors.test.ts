@@ -15,7 +15,7 @@ function plan(dependencyInputsChanged: boolean): GitUpdatePlan {
   };
 }
 
-function gitAwareRun(throwOn: 'install' | 'build'): ProcessRunner {
+function gitAwareRun(throwOn: 'merge' | 'install' | 'build'): ProcessRunner {
   return (executable, argv) => {
     if (executable === 'git') {
       if (argv[0] === 'rev-parse' && argv[1] === '--is-inside-work-tree') {
@@ -28,7 +28,10 @@ function gitAwareRun(throwOn: 'install' | 'build'): ProcessRunner {
       if (argv[0] === 'rev-parse' && argv[1] === 'HEAD') {
         return { status: 0, stdout: `${previousSha}\n`, stderr: '' };
       }
-      if (argv[0] === 'merge') return { status: 0, stdout: '', stderr: '' };
+      if (argv[0] === 'merge') {
+        if (throwOn === 'merge') throw new Error('merge runner exploded with private detail');
+        return { status: 0, stdout: '', stderr: '' };
+      }
       return { status: 1, stdout: '', stderr: 'unexpected git command' };
     }
 
@@ -46,6 +49,19 @@ function gitAwareRun(throwOn: 'install' | 'build'): ProcessRunner {
 }
 
 describe('Git post-move runner exceptions', () => {
+  test('preserves previous SHA when fast-forward runner throws with movement state unknown', () => {
+    const receipt = executeGitUpdate(plan(false), '1.6.0', {
+      run: gitAwareRun('merge'),
+      verifyInstalledVersion: () => '1.6.0',
+    });
+
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('command-failure');
+    expect(receipt.message).toContain(previousSha);
+    expect(receipt.message).toMatch(/inspect|git .*diff|recovery/i);
+    expect(receipt.message).not.toContain('private detail');
+  });
+
   test('preserves previous SHA and recovery guidance when dependency runner throws', () => {
     const receipt = executeGitUpdate(plan(true), '1.6.0', {
       run: gitAwareRun('install'),
