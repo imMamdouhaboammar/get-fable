@@ -80,10 +80,29 @@ export type ProcessRunner = (
   options?: { cwd?: string }
 ) => ProcessResult;
 
-export interface UpdateReceipt {
-  success: boolean;
+export type UpdateReceiptOutcome =
+  | 'success'
+  | 'notify-only'
+  | 'unsupported'
+  | 'lock-failure'
+  | 'command-failure'
+  | 'verification-failure'
+  | 'release-failure';
+
+interface UpdateReceiptBase {
   strategy: UpdatePlan['strategy'];
   targetVersion: string;
-  verifiedVersion?: string;
   message: string;
 }
+
+export type UpdateReceipt =
+  | (UpdateReceiptBase & {
+      success: true;
+      outcome: 'success';
+      verifiedVersion: string;
+    })
+  | (UpdateReceiptBase & {
+      success: false;
+      outcome: Exclude<UpdateReceiptOutcome, 'success'>;
+      verifiedVersion?: string;
+    });

@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { executeUpdate } from '../src/core/update/executor.ts';
 import type { UpdatePlan } from '../src/core/update/types.ts';
 import type { ExecutorDeps } from '../src/core/update/executor.ts';
-import type { LockHandle } from '../src/core/update/lock.ts';
+import { UpdateLockError, type LockHandle } from '../src/core/update/lock.ts';
 
 function plan(overrides: Partial<UpdatePlan> = {}): UpdatePlan {
   return {
@@ -132,7 +132,9 @@ describe('explicit update executor', () => {
     );
 
     expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('command-failure');
     expect(receipt.message).toMatch(/failed|status|exit/i);
+    expect(receipt.message).not.toContain('install failed');
     expect(receipt.verifiedVersion).toBeUndefined();
     expect(verified).toBe(false);
   });
@@ -144,6 +146,7 @@ describe('explicit update executor', () => {
     );
 
     expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('verification-failure');
     expect(receipt.verifiedVersion).toBe('1.5.1');
     expect(receipt.message).toMatch(/version|verify|mismatch/i);
   });
@@ -152,61 +155,89 @@ describe('explicit update executor', () => {
     const receipt = executeUpdate(plan(), deps({ verifyInstalledVersion: () => '1.6.0' }));
 
     expect(receipt.success).toBe(true);
+    expect(receipt.outcome).toBe('success');
     expect(receipt.verifiedVersion).toBe('1.6.0');
     expect(receipt.targetVersion).toBe('1.6.0');
   });
 
-  test('releases the owned lock in finally when the runner throws', () => {
+  test('returns a structured command failure and releases the lock when the runner throws', () => {
     const events: string[] = [];
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        acquireLock: () => { events.push('acquire'); return handle(); },
+        run: () => { events.push('run'); throw new Error('runner exploded secret=abc'); },
+        releaseLock: () => { events.push('release'); },
+      })
+    );
 
-    expect(() =>
-      executeUpdate(
-        plan(),
-        deps({
-          acquireLock: () => {
-            events.push('acquire');
-            return handle();
-          },
-          run: () => {
-            events.push('run');
-            throw new Error('runner exploded');
-          },
-          releaseLock: () => {
-            events.push('release');
-          },
-        })
-      )
-    ).toThrow(/runner exploded/i);
-
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('command-failure');
+    expect(receipt.message).not.toContain('secret=abc');
     expect(events).toEqual(['acquire', 'run', 'release']);
   });
 
-  test('releases the owned lock in finally when verification throws', () => {
+  test('returns a structured verification failure and releases the lock when verification throws', () => {
     const events: string[] = [];
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        acquireLock: () => { events.push('acquire'); return handle(); },
+        run: () => { events.push('run'); return { status: 0, stdout: '', stderr: '' }; },
+        verifyInstalledVersion: () => { events.push('verify'); throw new Error('verification exploded'); },
+        releaseLock: () => { events.push('release'); },
+      })
+    );
 
-    expect(() =>
-      executeUpdate(
-        plan(),
-        deps({
-          acquireLock: () => {
-            events.push('acquire');
-            return handle();
-          },
-          run: () => {
-            events.push('run');
-            return { status: 0, stdout: '', stderr: '' };
-          },
-          verifyInstalledVersion: () => {
-            events.push('verify');
-            throw new Error('verification exploded');
-          },
-          releaseLock: () => {
-            events.push('release');
-          },
-        })
-      )
-    ).toThrow(/verification exploded/i);
-
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('verification-failure');
     expect(events).toEqual(['acquire', 'run', 'verify', 'release']);
+  });
+
+  test('returns a structured lock failure without running a command', () => {
+    let ran = false;
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        acquireLock: () => { throw new Error('live owner 4242'); },
+        run: () => { ran = true; return { status: 0, stdout: '', stderr: '' }; },
+      })
+    );
+
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('lock-failure');
+    expect(receipt.message).toMatch(/lock/i);
+    expect(ran).toBe(false);
+  });
+
+  test('preserves bounded recovery guidance when lock-owner liveness is unknown', () => {
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        acquireLock: () => {
+          throw new UpdateLockError('owner-liveness-unknown', 'internal owner detail');
+        },
+      })
+    );
+
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('lock-failure');
+    expect(receipt.message).toMatch(/verify|owner|retry|remov/i);
+    expect(receipt.message).not.toContain('internal owner detail');
+  });
+
+  test('returns a structured release failure instead of throwing after execution', () => {
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        releaseLock: () => { throw new Error('unlink failed private-detail'); },
+      })
+    );
+
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('release-failure');
+    expect(receipt.verifiedVersion).toBe('1.6.0');
+    expect(receipt.message).toMatch(/release|lock/i);
+    expect(receipt.message).not.toContain('private-detail');
   });
 });

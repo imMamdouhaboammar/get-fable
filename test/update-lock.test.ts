@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, test } from 'bun:test';
-import { acquireUpdateLock, releaseUpdateLock } from '../src/core/update/lock.ts';
+import { acquireUpdateLock, releaseUpdateLock, UpdateLockError } from '../src/core/update/lock.ts';
 import type { LockDeps, UpdateLockRecord } from '../src/core/update/lock.ts';
 
 const tempDirs: string[] = [];
@@ -122,10 +122,15 @@ describe('owner-token update lock', () => {
       installationMethod: 'homebrew',
     });
 
-    expect(() =>
-      acquireUpdateLock(filePath, '1.6.0', 'homebrew', deps({ isProcessAlive: () => 'unknown' }))
-    ).toThrow(/lock|owner|unknown|liveness/i);
+    let thrown: unknown;
+    try {
+      acquireUpdateLock(filePath, '1.6.0', 'homebrew', deps({ isProcessAlive: () => 'unknown' }));
+    } catch (error) {
+      thrown = error;
+    }
 
+    expect(thrown).toBeInstanceOf(UpdateLockError);
+    expect((thrown as UpdateLockError).code).toBe('owner-liveness-unknown');
     expect(JSON.parse(fs.readFileSync(filePath, 'utf-8')).token).toBe('uncertain-owner');
   });
 

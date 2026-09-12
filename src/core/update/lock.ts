@@ -5,6 +5,18 @@ import type { InstallationMethod } from './types.js';
 
 export type ProcessLiveness = 'alive' | 'dead' | 'unknown';
 
+export type UpdateLockErrorCode =
+  | 'owner-alive'
+  | 'owner-liveness-unknown'
+  | 'reclaim-race';
+
+export class UpdateLockError extends Error {
+  constructor(public readonly code: UpdateLockErrorCode, message: string) {
+    super(message);
+    this.name = 'UpdateLockError';
+  }
+}
+
 export interface UpdateLockRecord {
   schemaVersion: 1;
   token: string;
@@ -137,15 +149,21 @@ export function acquireUpdateLock(
   const liveness = deps.isProcessAlive(existing.pid);
 
   if (liveness === 'alive') {
-    throw new Error(`Update lock is owned by live process ${existing.pid}`);
+    throw new UpdateLockError('owner-alive', `Update lock is owned by live process ${existing.pid}`);
   }
   if (liveness === 'unknown') {
-    throw new Error(`Update lock owner liveness is unknown for process ${existing.pid}`);
+    throw new UpdateLockError(
+      'owner-liveness-unknown',
+      `Update lock owner liveness is unknown for process ${existing.pid}`
+    );
   }
 
   const current = readLockRecord(filePath);
   if (current.token !== existing.token || current.pid !== existing.pid) {
-    throw new Error('Update lock changed while dead-owner reclaim was being evaluated');
+    throw new UpdateLockError(
+      'reclaim-race',
+      'Update lock changed while dead-owner reclaim was being evaluated'
+    );
   }
 
   try {
@@ -158,7 +176,10 @@ export function acquireUpdateLock(
     return createOwnedLock(filePath, targetVersion, installationMethod, deps);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
-      throw new Error('Update lock was acquired by another owner during reclaim');
+      throw new UpdateLockError(
+        'reclaim-race',
+        'Update lock was acquired by another owner during reclaim'
+      );
     }
     throw error;
   }
