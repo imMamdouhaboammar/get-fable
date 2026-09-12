@@ -188,24 +188,6 @@ function buildPlan(newVersion: string, expectedOldVersion?: string): string {
   );
 
   planRequiredReplacement(
-    'test/cli.test.ts',
-    `expect(getPackageVersion()).toBe('${oldVersion}');`,
-    `expect(getPackageVersion()).toBe('${newVersion}');`,
-    'CLI version assertion'
-  );
-  planRequiredReplacement(
-    'test/updater.test.ts',
-    `expect(result.currentVersion).toBe('${oldVersion}');`,
-    `expect(result.currentVersion).toBe('${newVersion}');`,
-    'updater current-version assertion'
-  );
-  planRequiredReplacement(
-    'test/updater.test.ts',
-    `fetchLatestVersion('${oldVersion}', 2000);`,
-    `fetchLatestVersion('${newVersion}', 2000);`,
-    'updater fetch version'
-  );
-  planRequiredReplacement(
     'docs/PLUGIN.md',
     `\`get-fable\` ${oldVersion}`,
     `\`get-fable\` ${newVersion}`,
