@@ -337,10 +337,13 @@ function validatePluginPackage(repoRoot: string): DoctorCheck[] {
     return checks;
   }
 
-  const invalidEntries = fs.readdirSync(skillsRoot, { withFileTypes: true }).flatMap((entry) => {
-    if (!entry.isDirectory()) return [entry.name];
-    return fs.existsSync(path.join(skillsRoot, entry.name, 'SKILL.md')) ? [] : [`${entry.name}/`];
-  });
+  const invalidEntries = fs
+    .readdirSync(skillsRoot, { withFileTypes: true })
+    .filter((entry) => !entry.name.startsWith('.'))
+    .flatMap((entry) => {
+      if (!entry.isDirectory()) return [entry.name];
+      return fs.existsSync(path.join(skillsRoot, entry.name, 'SKILL.md')) ? [] : [`${entry.name}/`];
+    });
 
   checks.push(
     invalidEntries.length === 0
