@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { readFableState, writeFableState, createInitialState, applyRoutingDecision } from '../core/state.js';
+import { readFableState, createInitialState, applyRoutingDecision, withFableStateTransaction } from '../core/state.js';
 import { routeTask } from '../core/task-router.js';
 import { loadSkillRegistry, canonicalSkillIds, readSkillBody } from '../core/skill-registry.js';
-import { runDoctor } from '../core/doctor.js';
-import type { FableDshConfig, FablePlanStatus, FableSkillInfo, FableStatusResponse } from './types.js';
+import { runDoctor, runDoctorFix } from '../core/doctor.js';
+import type { RoutingDecision } from '../core/types.js';
+import type { FableDoctorResponse, FablePlanStatus, FableSkillInfo, FableStatusResponse } from './types.js';
 
 export function readPlanStatus(projectRoot: string): FablePlanStatus {
   const taskPlanPath = path.join(projectRoot, 'task_plan.md');
@@ -171,22 +172,44 @@ export function createFableApiHandler(projectRoot: string = process.cwd()) {
     },
 
     postRouteAndApply: (task: string) => {
-      let state = readFableState(projectRoot);
-      if (!state) {
-        state = createInitialState(undefined, projectRoot);
-      }
-      const decision = routeTask(task, state);
-      const nextState = applyRoutingDecision(state, decision);
-      writeFableState(projectRoot, nextState);
+      let capturedDecision: RoutingDecision | null = null;
+      const nextState = withFableStateTransaction(
+        projectRoot,
+        (state) => {
+          capturedDecision = routeTask(task, state);
+          return applyRoutingDecision(state, capturedDecision);
+        },
+        { createIfMissing: () => createInitialState(undefined, projectRoot) }
+      );
       return {
-        decision,
+        decision: capturedDecision!,
         state: nextState,
         applied: true,
       };
     },
 
-    postDoctor: (_fix: boolean = false) => {
-      return runDoctor(projectRoot, projectRoot);
+    postDoctor: (fix: boolean = false): FableDoctorResponse => {
+      if (fix) {
+        const fixResult = runDoctorFix(projectRoot);
+        const report = runDoctor(projectRoot);
+        return {
+          ...report,
+          fixed: true,
+          repaired: fixResult.repaired,
+          repairErrors: fixResult.errors,
+          healthy: report.ok && fixResult.errors.length === 0,
+          issues: report.checks.filter((c) => c.status === 'ERROR'),
+        };
+      }
+      const report = runDoctor(projectRoot);
+      return {
+        ...report,
+        fixed: false,
+        repaired: [],
+        repairErrors: [],
+        healthy: report.ok,
+        issues: report.checks.filter((c) => c.status === 'ERROR'),
+      };
     },
   };
 }

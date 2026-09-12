@@ -1,0 +1,11 @@
+---
+engines:
+  eslint-8:
+    exclude_paths:
+      - "test/**"
+      - "eval/**"
+      - "evals/**"
+exclude_paths:
+  - "test/**"
+  - "eval/**"
+  - "evals/**"

@@ -470,14 +470,27 @@ function snapshotPendingMutationTokens(targetDir: string, expectedWorkspaceId: s
   });
 }
 
+export interface StateTransactionOptions {
+  createIfMissing?: boolean | (() => FableState);
+}
+
 export function withFableStateTransaction(
   targetDir: string,
-  mutator: (state: FableState) => FableState
+  mutator: (state: FableState) => FableState,
+  options?: StateTransactionOptions
 ): FableState {
   const release = acquireStateLock(targetDir);
   try {
-    const current = readFableState(targetDir);
-    if (!current) throw new Error('No .fable/state.json found. Run get-fable init first.');
+    let current = readFableState(targetDir);
+    if (!current) {
+      if (options?.createIfMissing) {
+        current = typeof options.createIfMissing === 'function'
+          ? options.createIfMissing()
+          : createInitialState(undefined, targetDir);
+      } else {
+        throw new Error('No .fable/state.json found. Run get-fable init first.');
+      }
+    }
     const pending = snapshotPendingMutationTokens(targetDir, current.workspaceId);
     const reconciled = pending.length === 0 ? current : {
       ...current,

@@ -34,8 +34,8 @@ dsh plugin --profile web add .
 | `/api/fable/status` | GET | Returns current Fable phase, fail streak, doctor status, and `task_plan.md` progress. |
 | `/api/fable/plan` | GET | Returns structured phases from `task_plan.md`, `progress.md`, and attestation SHA. |
 | `/api/fable/skills` | GET | Returns registry of 25 canonical Fable skills with categories and metadata. |
-| `/api/fable/route` | POST | Executes Fable task router on `{ task: "string" }` and returns selected skill + reasons. |
-| `/api/fable/doctor` | POST | Runs diagnostic health checks with optional `{ fix: true }` auto-repair. |
+| `/api/fable/route` | POST | Executes Fable task router on `{ task: "string", apply?: boolean }`. Read-only preview by default; `{ apply: true }` executes transactional mutation inside canonical state lock. |
+| `/api/fable/doctor` | POST | Diagnostic health checks by default; optional `{ fix: true }` executes canonical bounded auto-repair and returns structured repair results (`fixed`, `repaired`, `repairErrors`) with post-repair status. |
 
 ### Consumed Web UI (`dist/client.js`)
 - **Sidebar Status Pill**: Live indicator showing active phase and pulsing red warning badge on failure streak $\ge 2$.
