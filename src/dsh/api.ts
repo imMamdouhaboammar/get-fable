@@ -4,6 +4,7 @@ import { readFableState, createInitialState, applyRoutingDecision, withFableStat
 import { routeTask, RECOVERY_FAILURE_THRESHOLD } from '../core/task-router.js';
 import { loadSkillRegistry, canonicalSkillIds, readSkillBody } from '../core/skill-registry.js';
 import { runDoctor, runDoctorFix } from '../core/doctor.js';
+import { getPackageVersion } from '../version.js';
 import type { RoutingDecision } from '../core/types.js';
 import type { FableDoctorResponse, FablePlanStatus, FableSkillInfo, FableStatusResponse } from './types.js';
 
@@ -144,7 +145,7 @@ export function createFableApiHandler(projectRoot: string = process.cwd()) {
 
       return {
         active: state !== null,
-        version: '1.5.1',
+        version: getPackageVersion(),
         stateSchemaVersion: state ? state.schemaVersion : null,
         activeCard: state ? state.activeCard : null,
         phase: state ? state.phase : 'idle',
