@@ -84,6 +84,7 @@ export type UpdateReceiptOutcome =
   | 'success'
   | 'notify-only'
   | 'unsupported'
+  | 'preflight-failure'
   | 'lock-failure'
   | 'command-failure'
   | 'verification-failure'

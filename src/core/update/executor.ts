@@ -6,6 +6,7 @@ export interface ExecutorDeps {
   verifyInstalledVersion: () => string;
   acquireLock: (plan: UpdatePlan) => LockHandle;
   releaseLock: (handle: LockHandle) => void;
+  executeGitUpdate?: (plan: UpdatePlan) => UpdateReceipt;
 }
 
 function lockFailureMessage(error: unknown): string {
@@ -82,12 +83,34 @@ function executeOwnedUpdate(
   };
 }
 
+function executeValidatedPlan(plan: UpdatePlan, deps: ExecutorDeps): UpdateReceipt {
+  if (plan.strategy === 'git-checkout') {
+    if (!deps.executeGitUpdate) {
+      return failureReceipt(plan, 'unsupported', 'Git checkout strategy is not configured for execution');
+    }
+    try {
+      return deps.executeGitUpdate(plan);
+    } catch {
+      return failureReceipt(plan, 'command-failure', 'Git checkout update failed unexpectedly');
+    }
+  }
+
+  if (!plan.executable || !plan.argv) {
+    return failureReceipt(plan, 'unsupported', `Strategy ${plan.strategy} is not executable in this updater stage`);
+  }
+
+  return executeOwnedUpdate(plan, plan.executable, plan.argv, deps);
+}
+
 export function executeUpdate(plan: UpdatePlan, deps: ExecutorDeps): UpdateReceipt {
   if (plan.strategy === 'notify-only') {
     return failureReceipt(plan, 'notify-only', plan.reason || 'Update plan is notification-only');
   }
 
-  if (!plan.executable || !plan.argv) {
+  if (plan.strategy === 'git-checkout' && !deps.executeGitUpdate) {
+    return failureReceipt(plan, 'unsupported', 'Git checkout strategy is not configured for execution');
+  }
+  if (plan.strategy !== 'git-checkout' && (!plan.executable || !plan.argv)) {
     return failureReceipt(plan, 'unsupported', `Strategy ${plan.strategy} is not executable in this updater stage`);
   }
 
@@ -101,7 +124,7 @@ export function executeUpdate(plan: UpdatePlan, deps: ExecutorDeps): UpdateRecei
   let receipt: UpdateReceipt | null = null;
   let releaseFailed = false;
   try {
-    receipt = executeOwnedUpdate(plan, plan.executable, plan.argv, deps);
+    receipt = executeValidatedPlan(plan, deps);
   } finally {
     try {
       deps.releaseLock(lock);
