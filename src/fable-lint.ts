@@ -3,6 +3,7 @@ import path from 'node:path';
 import { hasFreshPassingEvidence, readFableState } from './core/state.js';
 import { assertSafeFableBoundary } from './core/state-boundary.js';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './core/skill-registry.js';
+import { RECOVERY_FAILURE_THRESHOLD } from './core/task-router.js';
 import { validateAllSkillPackages, getSkillPackageDir, readSkillResource } from './core/skill-package.js';
 import { checkCatalogArtifacts } from './core/catalog-generator.js';
 import { validateAllRecipes } from './core/recipes.js';
@@ -262,7 +263,7 @@ export function runFableLint(targetDir: string = process.cwd()): boolean {
         logError('state.json: substantial work is complete without fresh passing evidence');
         hasErrors = true;
       }
-      if (state.failureStreak > 1 && state.phase === 'executing') {
+      if (state.failureStreak >= RECOVERY_FAILURE_THRESHOLD && state.phase === 'executing') {
         logError('state.json: repeated failure must route through recovery before more execution');
         hasErrors = true;
       }
