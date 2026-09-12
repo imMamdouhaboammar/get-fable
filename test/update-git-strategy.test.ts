@@ -226,19 +226,17 @@ describe('guarded Git checkout update strategy', () => {
 
   test('skips dependency installation when dependency inputs did not change', () => {
     const fixture = createFixture();
-    publishChange(fixture, {
-      'package.json': '{"name":"get-fable","version":"1.6.0"}\n',
-      'README.md': 'docs plus release metadata\n',
-    });
+    publishChange(fixture, { 'README.md': 'docs-only update\n' });
     const plan = preflightGitUpdate(fixture.checkout, runProcess);
     const calls: string[][] = [];
 
-    const receipt = executeGitUpdate(plan, '1.6.0', {
+    const receipt = executeGitUpdate(plan, '1.5.1', {
       run: interceptBun(calls),
-      verifyInstalledVersion: () => '1.6.0',
+      verifyInstalledVersion: () => '1.5.1',
     });
 
     expect(receipt.success).toBe(true);
+    expect(plan.dependencyInputsChanged).toBe(false);
     expect(calls).toEqual([['bun', 'run', 'build']]);
   });
 
