@@ -1,0 +1,38 @@
+name: Frogbot Scan and Fix
+
+on:
+  push:
+    branches: ["master"]
+
+permissions:
+  contents: write
+  pull-requests: write
+  security-events: write
+
+jobs:
+  create-fix-pull-requests:
+    runs-on: ubuntu-latest
+    env:
+      JF_URL: ${{ secrets.JF_URL }}
+      JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Detect JFrog configuration
+        id: jfrog-config
+        shell: bash
+        run: |
+          if [[ -n "$JF_URL" && -n "$JF_ACCESS_TOKEN" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping Frogbot because JF_URL and JF_ACCESS_TOKEN are not configured."
+          fi
+
+      - name: Run Frogbot
+        if: steps.jfrog-config.outputs.enabled == 'true'
+        uses: jfrog/frogbot@5d9c42c30f1169d8be4ba5510b40e75ffcbbc2a9 # v2.21.2
+        env:
+          JF_URL: ${{ env.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ env.JF_ACCESS_TOKEN }}
+          JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,30 @@
+name: Labeler
+
+on: [pull_request_target]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout base repository configuration
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Detect labeler configuration
+        id: labeler-config
+        shell: bash
+        run: |
+          if [[ -f .github/labeler.yml ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping labeler because .github/labeler.yml is not configured."
+          fi
+
+      - name: Apply labels
+        if: steps.labeler-config.outputs.present == 'true'
+        uses: actions/labeler@ac9175f8a1f3625fd0d4fb234536d26811351594 # v4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
