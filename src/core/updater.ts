@@ -8,11 +8,24 @@ import {
   isNewerVersion as isReleaseNewerVersion,
 } from './update/release-source.js';
 import { isCacheFresh, readCache, writeCacheAtomic } from './update/cache.js';
-import type { FetchLike } from './update/types.js';
-import { logInfo, logSuccess, logWarn, logError, colors } from '../utils.js';
+import { detectInstallation } from './update/install-method.js';
+import { planUpdate } from './update/planner.js';
+import { executeUpdate } from './update/executor.js';
+import { acquireUpdateLock, releaseUpdateLock } from './update/lock.js';
+import { executeGitUpdate, preflightGitUpdate } from './update/git-strategy.js';
+import type {
+  FetchLike,
+  InstallationInfo,
+  ProcessRunner,
+  UpdatePlan,
+  UpdatePlanInput,
+  UpdateReceipt,
+} from './update/types.js';
+import { logInfo, logSuccess, logError } from '../utils.js';
 
 const RELEASES_URL = 'https://github.com/imMamdouhaboammar/get-fable/releases';
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const DEFAULT_UPDATE_TIMEOUT_MS = 3000;
 const UPDATE_CHANNELS = new Set<UpdateCheckResult['channel']>(['npm', 'github', 'local']);
 
 export interface UpdateCheckResult {
@@ -30,8 +43,36 @@ export interface FetchLatestVersionDeps {
   cachePath?: string;
 }
 
+export interface UpdateRuntimeDeps extends FetchLatestVersionDeps {
+  run?: ProcessRunner;
+  verifyInstalledVersion?: () => string;
+  executablePath?: string;
+  bunGlobalDir?: string;
+  npmGlobalDir?: string;
+  homebrewPrefix?: string;
+  lockPath?: string;
+  timeoutMs?: number;
+}
+
+export interface CreateUpdatePlanOptions {
+  targetVersion?: string;
+  targetKind?: UpdatePlanInput['targetKind'];
+}
+
 function defaultFetch(input: string, init?: Parameters<FetchLike>[1]) {
   return fetch(input, init);
+}
+
+function defaultProcessRunner(executable: string, argv: string[], options: { cwd?: string } = {}) {
+  const result = spawnSync(executable, argv, {
+    cwd: options.cwd,
+    encoding: 'utf-8',
+  });
+  return {
+    status: result.status ?? 1,
+    stdout: result.stdout ?? '',
+    stderr: result.stderr ?? '',
+  };
 }
 
 function isCanonicalTimestamp(value: unknown): value is string {
@@ -68,6 +109,10 @@ export function getUpdateCachePath(): string {
   return path.join(os.homedir(), '.fable', 'update', 'release.json');
 }
 
+export function getUpdateLockPath(): string {
+  return path.join(os.homedir(), '.fable', 'update', 'update.lock');
+}
+
 export function readUpdateCache(cachePath = getUpdateCachePath()): UpdateCheckResult | null {
   const cached = readCache<unknown>(cachePath);
   return cached && isValidUpdateCheckResult(cached.value) ? cached.value : null;
@@ -94,7 +139,7 @@ export function writeUpdateCache(
 
 export async function fetchLatestVersion(
   currentVersion: string,
-  timeoutMs: number = 3000,
+  timeoutMs: number = DEFAULT_UPDATE_TIMEOUT_MS,
   deps: FetchLatestVersionDeps = {}
 ): Promise<UpdateCheckResult> {
   const now = deps.now ?? (() => new Date());
@@ -159,13 +204,129 @@ export function isNewerVersion(current: string, latest: string): boolean {
   return isReleaseNewerVersion(current, latest);
 }
 
+function probePath(run: ProcessRunner, executable: string, argv: string[]): string | undefined {
+  try {
+    const result = run(executable, argv);
+    if (result.status !== 0) return undefined;
+    const value = result.stdout.trim();
+    return value || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function detectCurrentInstallation(
+  repoRoot: string,
+  deps: UpdateRuntimeDeps = {}
+): InstallationInfo {
+  const executablePath = deps.executablePath ?? path.resolve(process.argv[1] || path.join(repoRoot, 'bin', 'get-fable.js'));
+
+  if (fs.existsSync(path.join(repoRoot, '.git'))) {
+    return {
+      ...detectInstallation({
+        executablePath,
+        repoRoot,
+        fileExists: fs.existsSync,
+      }),
+      packageRoot: repoRoot,
+    };
+  }
+
+  const run = deps.run ?? defaultProcessRunner;
+  const installation = detectInstallation({
+    executablePath,
+    repoRoot,
+    bunGlobalDir: deps.bunGlobalDir ?? probePath(run, 'bun', ['pm', 'bin', '-g']),
+    npmGlobalDir: deps.npmGlobalDir ?? probePath(run, 'npm', ['prefix', '-g']),
+    homebrewPrefix: deps.homebrewPrefix ?? probePath(run, 'brew', ['--prefix']),
+    fileExists: fs.existsSync,
+  });
+
+  return { ...installation, packageRoot: repoRoot };
+}
+
+export async function createUpdatePlan(
+  currentVersion: string,
+  repoRoot: string,
+  options: CreateUpdatePlanOptions = {},
+  deps: UpdateRuntimeDeps = {}
+): Promise<UpdatePlan> {
+  let targetVersion = options.targetVersion;
+  let targetKind = options.targetKind;
+
+  if (targetVersion) {
+    assertValidVersion(targetVersion, 'target version');
+    targetKind ??= 'explicit-version';
+  } else {
+    const check = await fetchLatestVersion(
+      currentVersion,
+      deps.timeoutMs ?? DEFAULT_UPDATE_TIMEOUT_MS,
+      deps
+    );
+    targetVersion = check.latestVersion;
+    targetKind = 'latest-stable';
+  }
+
+  return planUpdate({
+    currentVersion,
+    targetVersion,
+    targetKind: targetKind ?? 'latest-stable',
+    installation: detectCurrentInstallation(repoRoot, deps),
+  });
+}
+
+function readPackageVersion(packageRoot: string): string {
+  const raw = fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf-8');
+  const parsed = JSON.parse(raw) as { version?: unknown };
+  if (typeof parsed.version !== 'string') throw new Error('Installed package version is unavailable');
+  assertValidVersion(parsed.version, 'installed package version');
+  return parsed.version;
+}
+
+export function applyUpdatePlan(plan: UpdatePlan, deps: UpdateRuntimeDeps = {}): UpdateReceipt {
+  const run = deps.run ?? defaultProcessRunner;
+  const packageRoot = plan.installation.packageRoot ?? plan.installation.repoRoot;
+  const verifyInstalledVersion = deps.verifyInstalledVersion ?? (() => {
+    if (!packageRoot) throw new Error('Installed package root is unavailable');
+    return readPackageVersion(packageRoot);
+  });
+  const lockPath = deps.lockPath ?? getUpdateLockPath();
+
+  return executeUpdate(plan, {
+    run,
+    verifyInstalledVersion,
+    acquireLock: (candidate) =>
+      acquireUpdateLock(lockPath, candidate.targetVersion, candidate.installation.method),
+    releaseLock: releaseUpdateLock,
+    executeGitUpdate: (candidate) => {
+      const repoRoot = candidate.installation.repoRoot;
+      if (!repoRoot) {
+        return {
+          success: false,
+          outcome: 'preflight-failure',
+          strategy: 'git-checkout',
+          targetVersion: candidate.targetVersion,
+          message: 'Git checkout root is unavailable',
+        };
+      }
+      const gitPlan = preflightGitUpdate(repoRoot, run);
+      return executeGitUpdate(gitPlan, candidate.targetVersion, { run, verifyInstalledVersion });
+    },
+  });
+}
+
 export async function runAutoUpdate(
   currentVersion: string,
   repoRoot: string,
-  force: boolean = false
+  force: boolean = false,
+  deps: UpdateRuntimeDeps = {}
 ): Promise<{ success: boolean; message: string }> {
   logInfo(`Checking for get-fable updates (current: v${currentVersion})...`);
-  const check = await fetchLatestVersion(currentVersion);
+  const check = await fetchLatestVersion(
+    currentVersion,
+    deps.timeoutMs ?? DEFAULT_UPDATE_TIMEOUT_MS,
+    deps
+  );
 
   if (!check.updateAvailable && !force) {
     logSuccess(`get-fable is up to date (v${currentVersion}).`);
@@ -176,32 +337,19 @@ export async function runAutoUpdate(
     logInfo(`New version available: v${check.latestVersion} (current: v${currentVersion})`);
   }
 
-  const gitDir = path.join(repoRoot, '.git');
-  if (fs.existsSync(gitDir)) {
-    logInfo('Updating repository via git pull...');
-    const pull = spawnSync('git', ['pull', '--ff-only'], { cwd: repoRoot, encoding: 'utf-8' });
-    if (pull.status !== 0) {
-      logError(`Git pull failed: ${pull.stderr || pull.stdout}`);
-      return { success: false, message: 'Git pull failed' };
-    }
+  const plan = await createUpdatePlan(
+    currentVersion,
+    repoRoot,
+    { targetVersion: check.latestVersion, targetKind: 'latest-stable' },
+    deps
+  );
+  const receipt = applyUpdatePlan(plan, deps);
 
-    logInfo('Rebuilding bundle with Bun...');
-    const build = spawnSync('bun', ['run', 'build'], { cwd: repoRoot, encoding: 'utf-8' });
-    if (build.status !== 0) {
-      logError(`Build failed: ${build.stderr || build.stdout}`);
-      return { success: false, message: 'Rebuild failed after git pull' };
-    }
-
-    logSuccess(`Successfully updated get-fable to latest version!`);
-    return { success: true, message: `Updated to latest version` };
+  if (receipt.success) {
+    logSuccess(receipt.message);
+  } else {
+    logError(receipt.message);
   }
 
-  logInfo('Updating global get-fable package via bun...');
-  const bunInstall = spawnSync('bun', ['install', '-g', 'get-fable@latest'], { encoding: 'utf-8' });
-  if (bunInstall.status === 0) {
-    logSuccess(`Successfully updated get-fable to v${check.latestVersion}!`);
-    return { success: true, message: `Updated to v${check.latestVersion}` };
-  }
-
-  return { success: false, message: 'Automatic update failed' };
+  return { success: receipt.success, message: receipt.message };
 }
