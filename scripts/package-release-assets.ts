@@ -83,7 +83,7 @@ console.log(`✔ Generated ${skillsZipPath}`);
 // 3. Tarball
 const tarPath = path.join(releaseDir, `get-fable-v${version}.tar.gz`);
 fs.rmSync(tarPath, { force: true });
-execFileSync('tar', ['-czf', tarPath, '--exclude=.git', '--exclude=node_modules', '--exclude=dist', '.'], { cwd: root, stdio: 'inherit' });
+execFileSync('tar', ['-czf', tarPath, '--exclude=.git', '--exclude=node_modules', '--exclude=dist', '--exclude=Formula', '.'], { cwd: root, stdio: 'inherit' });
 console.log(`✔ Generated ${tarPath}`);
 
 console.log(`\n🎉 All release assets successfully packaged in ${releaseDir}!`);
