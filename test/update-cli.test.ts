@@ -2,33 +2,30 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, test } from 'bun:test';
-import { runCli } from '../src/cli.ts';
+import { runUpdateCli } from '../src/core/update/cli-command.ts';
+import type { FetchLike } from '../src/core/update/types.ts';
 
 const tempDirs: string[] = [];
-const originalFetch = globalThis.fetch;
-const originalHome = process.env.HOME;
 const originalLog = console.log;
 const originalError = console.error;
 const originalWarn = console.warn;
 
-function tempHome(): string {
+function tempCachePath(): string {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'get-fable-update-cli-'));
   tempDirs.push(dir);
-  process.env.HOME = dir;
-  return dir;
+  return path.join(dir, 'release.json');
 }
 
-function stableFetch(version = '1.5.1'): void {
-  globalThis.fetch = (async (input: string | URL | Request) => {
-    const url = String(input);
-    if (url === 'https://registry.npmjs.org/get-fable') {
+function stableFetch(version = '1.5.1'): FetchLike {
+  return async (input: string) => {
+    if (input === 'https://registry.npmjs.org/get-fable') {
       return {
         ok: true,
         status: 200,
         async json() {
           return { 'dist-tags': { latest: version }, versions: {} };
         },
-      } as Response;
+      };
     }
     return {
       ok: false,
@@ -36,8 +33,8 @@ function stableFetch(version = '1.5.1'): void {
       async json() {
         return {};
       },
-    } as Response;
-  }) as typeof fetch;
+    };
+  };
 }
 
 async function capture(args: string[]): Promise<{ code: number; stdout: string; stderr: string }> {
@@ -47,8 +44,14 @@ async function capture(args: string[]): Promise<{ code: number; stdout: string; 
   console.error = (...values: unknown[]) => err.push(values.map(String).join(' '));
   console.warn = (...values: unknown[]) => err.push(values.map(String).join(' '));
   try {
-    const result = runCli(args);
-    const code = result instanceof Promise ? await result : result;
+    const code = await runUpdateCli(args, {
+      currentVersion: '1.5.1',
+      repoRoot: path.resolve(new URL('..', import.meta.url).pathname),
+      deps: {
+        cachePath: tempCachePath(),
+        fetch: stableFetch('1.5.1'),
+      },
+    });
     return { code, stdout: out.join('\n'), stderr: err.join('\n') };
   } finally {
     console.log = originalLog;
@@ -58,9 +61,6 @@ async function capture(args: string[]): Promise<{ code: number; stdout: string; 
 }
 
 afterEach(() => {
-  globalThis.fetch = originalFetch;
-  if (originalHome === undefined) delete process.env.HOME;
-  else process.env.HOME = originalHome;
   console.log = originalLog;
   console.error = originalError;
   console.warn = originalWarn;
@@ -71,10 +71,7 @@ afterEach(() => {
 
 describe('update CLI compatibility and machine output', () => {
   test('update status --json emits one valid JSON document and no human prefix', async () => {
-    tempHome();
-    stableFetch('1.5.1');
-
-    const result = await capture(['update', 'status', '--json']);
+    const result = await capture(['status', '--json']);
 
     expect(result.code).toBe(0);
     expect(result.stderr).toBe('');
@@ -86,10 +83,7 @@ describe('update CLI compatibility and machine output', () => {
   });
 
   test('legacy update --check uses the same machine-safe status path', async () => {
-    tempHome();
-    stableFetch('1.5.1');
-
-    const result = await capture(['update', '--check', '--json-v1']);
+    const result = await capture(['--check', '--json-v1']);
 
     expect(result.code).toBe(0);
     const payload = JSON.parse(result.stdout) as {
@@ -105,10 +99,7 @@ describe('update CLI compatibility and machine output', () => {
   });
 
   test('update plan --json returns a structured detected-owner plan', async () => {
-    tempHome();
-    stableFetch('1.5.1');
-
-    const result = await capture(['update', 'plan', '--json']);
+    const result = await capture(['plan', '--json']);
 
     expect(result.code).toBe(0);
     const payload = JSON.parse(result.stdout) as {
@@ -124,16 +115,13 @@ describe('update CLI compatibility and machine output', () => {
   });
 
   test('an explicit arbitrary Git target is notification-only and never applied', async () => {
-    tempHome();
-    stableFetch('1.5.1');
-
-    const planned = await capture(['update', 'plan', '--version', '1.4.0', '--json']);
+    const planned = await capture(['plan', '--version', '1.4.0', '--json']);
     expect(planned.code).toBe(0);
     const plan = JSON.parse(planned.stdout) as { strategy: string; targetVersion: string };
     expect(plan.strategy).toBe('notify-only');
     expect(plan.targetVersion).toBe('1.4.0');
 
-    const applied = await capture(['update', 'apply', '--version', '1.4.0', '--json']);
+    const applied = await capture(['apply', '--version', '1.4.0', '--json']);
     expect(applied.code).toBe(1);
     const receipt = JSON.parse(applied.stdout) as { success: boolean; outcome: string };
     expect(receipt.success).toBe(false);
@@ -141,15 +129,18 @@ describe('update CLI compatibility and machine output', () => {
   });
 
   test('update doctor --json reports installation ownership without mutation', async () => {
-    tempHome();
-    stableFetch('1.5.1');
-
-    const result = await capture(['update', 'doctor', '--json']);
+    const result = await capture(['doctor', '--json']);
 
     expect(result.code).toBe(0);
     const payload = JSON.parse(result.stdout) as { method: string; evidence: string[] };
     expect(payload.method).toBe('git-checkout');
     expect(payload.evidence.length).toBeGreaterThan(0);
+  });
+
+  test('public bin routes update before the legacy CLI dispatcher', () => {
+    const source = fs.readFileSync(new URL('../bin/get-fable.js', import.meta.url), 'utf-8');
+    expect(source).toMatch(/runUpdateCli/);
+    expect(source).toMatch(/process\.argv\[2\].*update|command.*update/);
   });
 
   test('legacy wrapper no longer owns direct Git or package-manager mutation', () => {
