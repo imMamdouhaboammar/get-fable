@@ -35,4 +35,15 @@ describe('release consistency contract', () => {
       expect(formula.sha256).toBe('7f00286f99bbb23bfaba99b915c194e57fbce0b78dd513e91084a6d0ef393d59');
     }
   });
+
+  test('Homebrew release tarball excludes Formula metadata from its own checksum bytes', () => {
+    const source = fs.readFileSync(path.join(root, 'scripts/package-release-assets.ts'), 'utf-8');
+
+    expect(source).toContain('get-fable-v${version}.tar.gz');
+    expect(source).toContain("'--exclude=.git'");
+    expect(source).toContain("'--exclude=node_modules'");
+    expect(source).toContain("'--exclude=dist'");
+    expect(source).toContain("'--exclude=Formula'");
+    expect(source).toMatch(/execFileSync\('tar',[\s\S]*?\{\s*cwd:\s*root,/);
+  });
 });
