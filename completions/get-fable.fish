@@ -17,3 +17,7 @@ complete -c get-fable -n "__fish_use_subcommand" -a "doctor" -d "Validate setup 
 complete -c get-fable -n "__fish_use_subcommand" -a "shell" -d "Print shell integration script"
 complete -c get-fable -n "__fish_use_subcommand" -a "lint" -d "Verify ledger and evidence"
 complete -c get-fable -n "__fish_use_subcommand" -a "status" -d "Report installation status"
+complete -c get-fable -n "__fish_use_subcommand" -a "update" -d "Inspect or apply explicit updates"
+complete -c get-fable -n "__fish_use_subcommand" -a "announcements" -d "Inspect data-only notices"
+complete -c get-fable -n "__fish_seen_subcommand_from update" -a "status plan apply doctor"
+complete -c get-fable -n "__fish_seen_subcommand_from announcements" -a "list show dismiss refresh"

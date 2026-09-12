@@ -21,6 +21,8 @@ _get_fable() {
     'serve:Start local request-enrichment proxy'
     'lint:Verify ledger, evidence, and state consistency'
     'status:Report installation status'
+    'update:Inspect or apply explicit get-fable updates'
+    'announcements:List, show, dismiss, or refresh data-only notices'
     'assets:List historical bundled assets'
     'prompt:Print compatibility execution prompt'
     'version:Print installed get-fable version'
@@ -51,6 +53,12 @@ _get_fable() {
           ;;
         install)
           _values 'target' all claude antigravity grok codex cursor opencode kimi deepseek kiro pi git shell
+          ;;
+        update)
+          _values 'update action' status plan apply doctor
+          ;;
+        announcements)
+          _values 'announcement action' list show dismiss refresh
           ;;
       esac
       ;;
