@@ -131,6 +131,7 @@ const EXECUTABLE_SHAPED_KEYS = new Set([
   'hook',
   'code',
 ]);
+const TERMINAL_CONTROL_CHARACTERS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/u;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value));
@@ -146,13 +147,21 @@ function requireString(value: unknown, field: string, maxLength: number): string
   if (typeof value !== 'string' || value.trim().length === 0 || value.length > maxLength) {
     throw new Error(`Announcement ${field} must be a non-empty string of at most ${maxLength} characters`);
   }
+  if (TERMINAL_CONTROL_CHARACTERS.test(value)) {
+    throw new Error(`Announcement ${field} contains forbidden terminal control characters`);
+  }
   return value;
 }
 
 function rejectExecutableShape(value: unknown): void {
   const pending: unknown[] = [value];
+  const visited = new Set<object>();
   while (pending.length > 0) {
     const current = pending.pop();
+    if (!current || typeof current !== 'object') continue;
+    if (visited.has(current)) continue;
+    visited.add(current);
+
     if (Array.isArray(current)) {
       for (const item of current) pending.push(item);
       continue;
