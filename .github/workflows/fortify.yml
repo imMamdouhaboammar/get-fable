@@ -54,4 +54,4 @@ jobs:
         uses: fortify/github-action@ef5539bf4bd9c45c0bd971978f635a69eae55297 # v1.7.0
         with:
           sast-scan: true
-          debricked-sca-scan: true
+          debricked-sca-scan: ${{ env.DEBRICKED_TOKEN != '' }}
