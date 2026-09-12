@@ -7,6 +7,8 @@ import type {
   SkillRegistry,
 } from './types.js';
 
+export const RECOVERY_FAILURE_THRESHOLD = 2;
+
 const PARALLEL_SIGNAL_FLOOR = 6;
 const MAX_PARALLEL_CANDIDATES = 3;
 
@@ -109,7 +111,7 @@ export function routeTask(
   const scores = emptyScores();
   const reasons = new Map<FableSkillId, string[]>();
 
-  if ((state?.failureStreak || 0) >= 2) {
+  if ((state?.failureStreak || 0) >= RECOVERY_FAILURE_THRESHOLD) {
     addSignal(scores, reasons, 'fable-recover', 8, 'project state records repeated failure');
   }
   if (state?.phase === 'recovering') {

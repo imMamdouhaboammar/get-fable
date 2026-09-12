@@ -51,8 +51,8 @@ export interface FableStatusResponse {
   activeCard: string | null;
   phase: string | null;
   failureStreak: number;
+  recoveryThreshold: number;
   unverifiedMutations: number;
-  totalCards: number;
   doctorHealthy: boolean;
   issuesCount: number;
   planning: FablePlanStatus;

@@ -55,6 +55,9 @@ describe('DeepSeek Harness (DSH) Plugin Integration', () => {
     const status = api.getStatus();
     expect(status.version).toBe('1.5.1');
     expect(typeof status.failureStreak).toBe('number');
+    expect(typeof status.unverifiedMutations).toBe('number');
+    expect(status.recoveryThreshold).toBe(2);
+    expect((status as any).totalCards).toBeUndefined();
     expect(status.planning.hasPlan).toBe(true);
 
     const routeRes = api.postRoute('Fix broken authentication bug and verify tokens');
@@ -108,6 +111,9 @@ describe('DeepSeek Harness (DSH) Plugin Integration', () => {
     await routes['GET /api/fable/status']({}, mockRes);
     expect(jsonResult).toBeDefined();
     expect(jsonResult.version).toBe('1.5.1');
+    expect(typeof jsonResult.unverifiedMutations).toBe('number');
+    expect(jsonResult.recoveryThreshold).toBe(2);
+    expect(jsonResult.totalCards).toBeUndefined();
     expect(jsonResult.planning.hasPlan).toBe(true);
   });
 });

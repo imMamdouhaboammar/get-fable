@@ -1,4 +1,5 @@
 import type { FableState } from './types.ts';
+import { RECOVERY_FAILURE_THRESHOLD } from './task-router.js';
 
 export type SparkSource =
   | 'failure-loop'
@@ -51,7 +52,7 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
   }
 
   // 1. Rule 1 & Rule 9: Failure Loop Detection
-  if (state.failureStreak >= 2 || state.phase === 'recovering') {
+  if (state.failureStreak >= RECOVERY_FAILURE_THRESHOLD || state.phase === 'recovering') {
     const errorStr = (latestError || '').toLowerCase();
     let raw = 'diagnose the repeated failure';
     if (errorStr.includes('integration')) {

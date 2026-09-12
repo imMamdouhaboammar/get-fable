@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { readFableState, createInitialState, applyRoutingDecision, withFableStateTransaction } from '../core/state.js';
-import { routeTask } from '../core/task-router.js';
+import { routeTask, RECOVERY_FAILURE_THRESHOLD } from '../core/task-router.js';
 import { loadSkillRegistry, canonicalSkillIds, readSkillBody } from '../core/skill-registry.js';
 import { runDoctor, runDoctorFix } from '../core/doctor.js';
 import type { RoutingDecision } from '../core/types.js';
@@ -138,15 +138,19 @@ export function createFableApiHandler(projectRoot: string = process.cwd()) {
         issuesCount = 1;
       }
 
+      const unverifiedMutations = state && state.mutationGeneration > 0
+        ? Math.max(0, state.mutationGeneration - Math.max(0, state.verifiedGeneration))
+        : 0;
+
       return {
         active: state !== null,
         version: '1.5.1',
         stateSchemaVersion: state ? state.schemaVersion : null,
-        activeCard: (state as any)?.activeCard ?? null,
+        activeCard: state ? state.activeCard : null,
         phase: state ? state.phase : 'idle',
         failureStreak: state ? state.failureStreak : 0,
-        unverifiedMutations: (state as any)?.unverifiedMutations ?? 0,
-        totalCards: (state as any)?.cards ? Object.keys((state as any).cards).length : 0,
+        recoveryThreshold: RECOVERY_FAILURE_THRESHOLD,
+        unverifiedMutations,
         doctorHealthy: healthy,
         issuesCount,
         planning: plan,
