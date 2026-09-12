@@ -1,3 +1,5 @@
+import type { DoctorReport } from '../core/types.js';
+
 export interface FableDshConfig {
   /** Automatically run Fable route analysis on new prompts (default: true) */
   autoRoute?: boolean;
@@ -55,3 +57,13 @@ export interface FableStatusResponse {
   issuesCount: number;
   planning: FablePlanStatus;
 }
+
+export interface FableDoctorResponse extends DoctorReport {
+  fixed: boolean;
+  repaired: string[];
+  repairErrors: string[];
+  healthy?: boolean;
+  issues?: (string | { message?: string })[];
+}
+
+

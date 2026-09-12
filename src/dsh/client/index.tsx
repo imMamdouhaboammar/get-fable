@@ -78,6 +78,7 @@ export const FableDashboard: React.FC = () => {
   const [routing, setRouting] = useState(false);
   const [doctorReport, setDoctorReport] = useState<any>(null);
   const [fixing, setFixing] = useState(false);
+  const [fixError, setFixError] = useState<string | null>(null);
 
   const loadData = async () => {
     try {
@@ -120,6 +121,7 @@ export const FableDashboard: React.FC = () => {
 
   const handleRunDoctorFix = async () => {
     setFixing(true);
+    setFixError(null);
     try {
       const res = await fetch('/api/fable/doctor', {
         method: 'POST',
@@ -130,7 +132,12 @@ export const FableDashboard: React.FC = () => {
         const report = await res.json();
         setDoctorReport(report);
         loadData();
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        setFixError(errorData.error || `Doctor repair failed with HTTP ${res.status}`);
       }
+    } catch (err: any) {
+      setFixError(err.message || 'Network error executing doctor repair');
     } finally {
       setFixing(false);
     }
@@ -308,20 +315,59 @@ export const FableDashboard: React.FC = () => {
               {fixing ? 'Running Doctor...' : 'Run Fable Doctor Fix'}
             </button>
           </div>
-          {doctorReport && (
-            <div style={{ padding: '12px', background: '#121316', borderRadius: '8px', border: '1px solid #2e3035' }}>
-              <div style={{ fontWeight: 600, color: doctorReport.healthy ? '#34d399' : '#f87171', fontSize: '13px' }}>
-                Status: {doctorReport.healthy ? 'Healthy (No issues found)' : `${doctorReport.issues.length} Issues Detected`}
-              </div>
-              {doctorReport.issues?.length > 0 && (
-                <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '12px', color: '#d1d5db' }}>
-                  {doctorReport.issues.map((iss: any, i: number) => (
-                    <li key={i}>{typeof iss === 'string' ? iss : iss.message || JSON.stringify(iss)}</li>
-                  ))}
-                </ul>
-              )}
+          {fixError && (
+            <div style={{ padding: '10px 12px', marginBottom: '12px', background: '#3b1219', border: '1px solid #7f1d1d', borderRadius: '6px', color: '#fca5a5', fontSize: '12px' }}>
+              <strong>Repair Error:</strong> {fixError}
             </div>
           )}
+          {doctorReport && (() => {
+            const isHealthy = doctorReport.healthy !== undefined
+              ? (doctorReport.healthy && (!doctorReport.repairErrors || doctorReport.repairErrors.length === 0))
+              : (doctorReport.ok ?? false);
+            const errCount = (doctorReport.checks ? doctorReport.checks.filter((c: any) => c.status === 'ERROR').length : (doctorReport.issues?.length ?? 0))
+              + (doctorReport.repairErrors?.length ?? 0);
+            return (
+              <div style={{ padding: '12px', background: '#121316', borderRadius: '8px', border: '1px solid #2e3035' }}>
+                <div style={{ fontWeight: 600, color: isHealthy ? '#34d399' : '#f87171', fontSize: '13px' }}>
+                  Status: {isHealthy ? 'Healthy (No issues found)' : `${errCount} Issues Detected`}
+                </div>
+                {doctorReport.fixed && doctorReport.repaired?.length > 0 && (
+                  <div style={{ marginTop: '8px', padding: '8px', background: '#14291f', borderRadius: '4px', border: '1px solid #166534', fontSize: '12px', color: '#86efac' }}>
+                    <strong>Auto-repaired ({doctorReport.repaired.length}):</strong>
+                    <ul style={{ margin: '4px 0 0 0', paddingLeft: '20px' }}>
+                      {doctorReport.repaired.map((item: string, i: number) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {doctorReport.repairErrors?.length > 0 && (
+                  <div style={{ marginTop: '8px', padding: '8px', background: '#3b1219', borderRadius: '4px', border: '1px solid #7f1d1d', fontSize: '12px', color: '#fca5a5' }}>
+                    <strong>Repair Errors ({doctorReport.repairErrors.length}):</strong>
+                    <ul style={{ margin: '4px 0 0 0', paddingLeft: '20px' }}>
+                      {doctorReport.repairErrors.map((err: string, i: number) => (
+                        <li key={i}>{err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {doctorReport.checks?.filter((c: any) => c.status === 'ERROR').length > 0 && (
+                  <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '12px', color: '#d1d5db' }}>
+                    {doctorReport.checks.filter((c: any) => c.status === 'ERROR').map((iss: any, i: number) => (
+                      <li key={i}>{iss.message || iss.id}</li>
+                    ))}
+                  </ul>
+                )}
+                {!doctorReport.checks && doctorReport.issues?.length > 0 && (
+                  <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px', fontSize: '12px', color: '#d1d5db' }}>
+                    {doctorReport.issues.map((iss: any, i: number) => (
+                      <li key={i}>{typeof iss === 'string' ? iss : iss.message || JSON.stringify(iss)}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>

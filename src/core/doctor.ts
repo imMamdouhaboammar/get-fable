@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { canonicalSkillIds, getCoreRepoRoot, loadSkillRegistry } from './skill-registry.js';
-import { readFableState, createInitialState, writeFableState } from './state.js';
+import { readFableState, createInitialState, writeFableState, withFableStateTransaction } from './state.js';
 import { assertSafeFableBoundary } from './state-boundary.js';
 import { evaluateFableSpark } from './spark.js';
 import { loadTelemetryConfig } from './telemetry.js';
@@ -379,9 +379,20 @@ export function runDoctorFix(
   const statePath = path.join(fableDir, 'state.json');
   if (!fs.existsSync(statePath)) {
     try {
-      const state = createInitialState(new Date().toISOString(), targetDir);
-      writeFableState(targetDir, state);
-      repaired.push('Repaired initial .fable/state.json');
+      let created = false;
+      withFableStateTransaction(
+        targetDir,
+        (existingState) => existingState,
+        {
+          createIfMissing: () => {
+            created = true;
+            return createInitialState(new Date().toISOString(), targetDir);
+          },
+        }
+      );
+      if (created) {
+        repaired.push('Repaired initial .fable/state.json');
+      }
     } catch (e) {
       errors.push(`Failed to repair state.json: ${e}`);
     }
