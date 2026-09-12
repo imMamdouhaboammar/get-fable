@@ -94,6 +94,19 @@ describe('announcement feed schema', () => {
       ).toThrow(/executable|data-only|field|schema/i);
     }
   });
+
+  test('deeply nested remote data fails as schema data instead of exhausting the call stack', () => {
+    const base = (feed() as { announcements: Record<string, unknown>[] }).announcements[0]!;
+    let nested: Record<string, unknown> = { value: 'leaf' };
+    for (let index = 0; index < 6000; index += 1) nested = { nested };
+
+    expect(() =>
+      validateAnnouncementFeed({
+        ...(feed() as object),
+        announcements: [{ ...base, metadata: nested }],
+      })
+    ).toThrow(/unknown announcement field/i);
+  });
 });
 
 describe('announcement targeting and client state', () => {
