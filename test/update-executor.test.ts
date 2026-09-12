@@ -209,4 +209,19 @@ describe('explicit update executor', () => {
     expect(receipt.message).toMatch(/lock/i);
     expect(ran).toBe(false);
   });
+
+  test('returns a structured release failure instead of throwing after execution', () => {
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        releaseLock: () => { throw new Error('unlink failed private-detail'); },
+      })
+    );
+
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('release-failure');
+    expect(receipt.verifiedVersion).toBe('1.6.0');
+    expect(receipt.message).toMatch(/release|lock/i);
+    expect(receipt.message).not.toContain('private-detail');
+  });
 });

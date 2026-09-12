@@ -86,7 +86,8 @@ export type UpdateReceiptOutcome =
   | 'unsupported'
   | 'lock-failure'
   | 'command-failure'
-  | 'verification-failure';
+  | 'verification-failure'
+  | 'release-failure';
 
 interface UpdateReceiptBase {
   strategy: UpdatePlan['strategy'];
