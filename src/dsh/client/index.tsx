@@ -13,9 +13,63 @@ function injectFableStyles() {
   }
 }
 
-export const FableWidget: React.FC = () => {
-  const [status, setStatus] = useState<FableStatusResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+export interface FableWidgetViewProps {
+  status: FableStatusResponse | null;
+  loading?: boolean;
+  onOpenHub?: () => void;
+}
+
+export const FableWidgetView: React.FC<FableWidgetViewProps> = ({
+  status,
+  loading = false,
+  onOpenHub,
+}) => {
+  if (loading || !status) {
+    return (
+      <div className="fable-widget-pill">
+        <span className="fable-dot" style={{ opacity: 0.5 }} />
+        <span>Fable: Loading...</span>
+      </div>
+    );
+  }
+
+  const recoveryThreshold = status.recoveryThreshold ?? 2;
+  const hasHighStreak = status.failureStreak >= recoveryThreshold;
+  const unverifiedDebt = status.unverifiedMutations ?? 0;
+
+  return (
+    <div
+      className="fable-widget-pill"
+      title={`Fable Phase: ${status.phase} | Fail Streak: ${status.failureStreak}/${recoveryThreshold}${hasHighStreak ? ' (Recovery Triggered)' : ''}${unverifiedDebt > 0 ? ` | Unverified Debt: ${unverifiedDebt}` : ''}`}
+      onClick={onOpenHub}
+    >
+      <span className={`fable-dot ${hasHighStreak ? 'fable-dot-warn' : ''}`} />
+      <span>Fable: {status.phase}</span>
+      {status.failureStreak > 0 && (
+        <span style={{ color: hasHighStreak ? '#f87171' : '#fbbf24', fontSize: '11px', fontWeight: 700 }}>
+          ({status.failureStreak}/{recoveryThreshold}{hasHighStreak ? ' - Recovery' : ' streak'})
+        </span>
+      )}
+      {unverifiedDebt > 0 && (
+        <span style={{ color: '#fbbf24', fontSize: '10px', marginLeft: '4px', fontWeight: 600 }}>
+          [{unverifiedDebt} unverified]
+        </span>
+      )}
+    </div>
+  );
+};
+
+export interface FableWidgetProps {
+  initialStatus?: FableStatusResponse | null;
+  skipAutoFetch?: boolean;
+}
+
+export const FableWidget: React.FC<FableWidgetProps> = ({
+  initialStatus = null,
+  skipAutoFetch = false,
+}) => {
+  const [status, setStatus] = useState<FableStatusResponse | null>(initialStatus);
+  const [loading, setLoading] = useState(initialStatus === null && !skipAutoFetch);
 
   const fetchStatus = async () => {
     try {
@@ -33,118 +87,65 @@ export const FableWidget: React.FC = () => {
 
   useEffect(() => {
     injectFableStyles();
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading || !status) {
-    return (
-      <div className="fable-widget-pill">
-        <span className="fable-dot" style={{ opacity: 0.5 }} />
-        <span>Fable: Loading...</span>
-      </div>
-    );
-  }
-
-  const hasHighStreak = status.failureStreak >= 2;
+    if (!skipAutoFetch) {
+      fetchStatus();
+      const interval = setInterval(fetchStatus, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [skipAutoFetch]);
 
   return (
-    <div
-      className="fable-widget-pill"
-      title={`Fable Phase: ${status.phase} | Fail Streak: ${status.failureStreak}`}
-      onClick={() => {
+    <FableWidgetView
+      status={status}
+      loading={loading}
+      onOpenHub={() => {
         const hubEvent = new CustomEvent('dsh:open-tab', { detail: { tabId: 'fable-hub' } });
         window.dispatchEvent(hubEvent);
       }}
-    >
-      <span className={`fable-dot ${hasHighStreak ? 'fable-dot-warn' : ''}`} />
-      <span>Fable: {status.phase}</span>
-      {status.failureStreak > 0 && (
-        <span style={{ color: hasHighStreak ? '#f87171' : '#fbbf24', fontSize: '11px', fontWeight: 700 }}>
-          ({status.failureStreak} streak)
-        </span>
-      )}
-    </div>
+    />
   );
 };
 
-export const FableDashboard: React.FC = () => {
-  const [status, setStatus] = useState<FableStatusResponse | null>(null);
-  const [skills, setSkills] = useState<FableSkillInfo[]>([]);
-  const [activeTab, setActiveTab] = useState<'plan' | 'skills' | 'router' | 'doctor'>('plan');
-  const [taskInput, setTaskInput] = useState('');
-  const [routeResult, setRouteResult] = useState<any>(null);
-  const [routing, setRouting] = useState(false);
-  const [doctorReport, setDoctorReport] = useState<any>(null);
-  const [fixing, setFixing] = useState(false);
-  const [fixError, setFixError] = useState<string | null>(null);
+export interface FableDashboardViewProps {
+  status: FableStatusResponse | null;
+  skills: FableSkillInfo[];
+  skillsState: 'loading' | 'error' | 'loaded';
+  skillsError?: string | null;
+  activeTab?: 'plan' | 'skills' | 'router' | 'doctor';
+  onTabChange?: (tab: 'plan' | 'skills' | 'router' | 'doctor') => void;
+  taskInput?: string;
+  onTaskInputChange?: (value: string) => void;
+  onTestRoute?: () => void;
+  routeResult?: any;
+  routing?: boolean;
+  onRunDoctorFix?: () => void;
+  fixing?: boolean;
+  fixError?: string | null;
+  doctorReport?: any;
+}
 
-  const loadData = async () => {
-    try {
-      const [statusRes, skillsRes] = await Promise.all([
-        fetch('/api/fable/status'),
-        fetch('/api/fable/skills'),
-      ]);
-      if (statusRes.ok) setStatus(await statusRes.json());
-      if (skillsRes.ok) setSkills(await skillsRes.json());
-    } catch {
-      // offline fallback
-    }
-  };
-
-  useEffect(() => {
-    injectFableStyles();
-    loadData();
-    const interval = setInterval(loadData, 6000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleTestRoute = async () => {
-    if (!taskInput.trim()) return;
-    setRouting(true);
-    try {
-      const res = await fetch('/api/fable/route', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task: taskInput }),
-      });
-      if (res.ok) {
-        setRouteResult(await res.json());
-      }
-    } catch (err: any) {
-      setRouteResult({ error: err.message });
-    } finally {
-      setRouting(false);
-    }
-  };
-
-  const handleRunDoctorFix = async () => {
-    setFixing(true);
-    setFixError(null);
-    try {
-      const res = await fetch('/api/fable/doctor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fix: true }),
-      });
-      if (res.ok) {
-        const report = await res.json();
-        setDoctorReport(report);
-        loadData();
-      } else {
-        const errorData = await res.json().catch(() => ({}));
-        setFixError(errorData.error || `Doctor repair failed with HTTP ${res.status}`);
-      }
-    } catch (err: any) {
-      setFixError(err.message || 'Network error executing doctor repair');
-    } finally {
-      setFixing(false);
-    }
-  };
-
+export const FableDashboardView: React.FC<FableDashboardViewProps> = ({
+  status,
+  skills,
+  skillsState,
+  skillsError = null,
+  activeTab = 'plan',
+  onTabChange,
+  taskInput = '',
+  onTaskInputChange,
+  onTestRoute,
+  routeResult,
+  routing = false,
+  onRunDoctorFix,
+  fixing = false,
+  fixError = null,
+  doctorReport,
+}) => {
   const completedPhases = status?.planning?.phases?.filter((p) => p.status === 'complete').length ?? 0;
   const totalPhases = status?.planning?.phases?.length ?? 0;
+  const recoveryThreshold = status?.recoveryThreshold ?? 2;
+  const isRecovering = (status?.failureStreak ?? 0) >= recoveryThreshold;
+  const unverifiedDebt = status?.unverifiedMutations ?? 0;
 
   return (
     <div className="fable-root">
@@ -154,7 +155,7 @@ export const FableDashboard: React.FC = () => {
           <div className="fable-logo">F</div>
           <div>
             <h2 className="fable-title">Fable Frontier Discipline Hub</h2>
-            <p className="fable-subtitle">Evidence-First Agent Lifecycle, 25-Skill Engine & File Planning for DSH</p>
+            <p className="fable-subtitle">Evidence-First Agent Lifecycle, Skill Registry & File Planning for DSH</p>
           </div>
         </div>
         <div className="fable-badge-row">
@@ -167,8 +168,13 @@ export const FableDashboard: React.FC = () => {
               🔒 Attested
             </span>
           )}
-          {(status?.failureStreak ?? 0) >= 2 && (
-            <span className="fable-badge fable-badge-warn">Fail Streak: {status?.failureStreak}</span>
+          {isRecovering && (
+            <span className="fable-badge fable-badge-warn">Recovery Triggered (Streak: {status?.failureStreak})</span>
+          )}
+          {unverifiedDebt > 0 && (
+            <span className="fable-badge fable-badge-warn" title={`${unverifiedDebt} unverified mutation(s)`}>
+              Unverified Debt: {unverifiedDebt}
+            </span>
           )}
         </div>
       </div>
@@ -178,6 +184,11 @@ export const FableDashboard: React.FC = () => {
         <div className="fable-stat-card">
           <span className="fable-stat-label">Active Work Card</span>
           <span className="fable-stat-val">{status?.activeCard || 'Root Session'}</span>
+          {unverifiedDebt > 0 && (
+            <span style={{ display: 'block', fontSize: '11px', color: '#fbbf24', marginTop: '4px' }}>
+              {unverifiedDebt} unverified mutation{unverifiedDebt === 1 ? '' : 's'}
+            </span>
+          )}
         </div>
         <div className="fable-stat-card">
           <span className="fable-stat-label">Planning Progress</span>
@@ -187,13 +198,24 @@ export const FableDashboard: React.FC = () => {
         </div>
         <div className="fable-stat-card">
           <span className="fable-stat-label">Failure Streak</span>
-          <span className="fable-stat-val" style={{ color: (status?.failureStreak ?? 0) >= 2 ? '#ef4444' : 'inherit' }}>
-            {status?.failureStreak ?? 0}/3
+          <span className="fable-stat-val" style={{ color: isRecovering ? '#ef4444' : 'inherit' }}>
+            {status?.failureStreak ?? 0}/{recoveryThreshold}
+            {isRecovering && (
+              <span style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#ef4444' }}>
+                Recovery Triggered
+              </span>
+            )}
           </span>
         </div>
         <div className="fable-stat-card">
           <span className="fable-stat-label">Available Skills</span>
-          <span className="fable-stat-val">{skills.length || 25}</span>
+          <span className="fable-stat-val">
+            {skillsState === 'loading'
+              ? 'Loading...'
+              : skillsState === 'error'
+              ? 'Unavailable'
+              : skills.length}
+          </span>
         </div>
       </div>
 
@@ -201,25 +223,25 @@ export const FableDashboard: React.FC = () => {
       <div className="fable-tabs">
         <button
           className={`fable-tab-btn ${activeTab === 'plan' ? 'active' : ''}`}
-          onClick={() => setActiveTab('plan')}
+          onClick={() => onTabChange?.('plan')}
         >
           Manus-Style Plan
         </button>
         <button
           className={`fable-tab-btn ${activeTab === 'skills' ? 'active' : ''}`}
-          onClick={() => setActiveTab('skills')}
+          onClick={() => onTabChange?.('skills')}
         >
-          25 Skills Registry
+          {skillsState === 'loaded' ? `Skills Registry (${skills.length})` : 'Skills Registry'}
         </button>
         <button
           className={`fable-tab-btn ${activeTab === 'router' ? 'active' : ''}`}
-          onClick={() => setActiveTab('router')}
+          onClick={() => onTabChange?.('router')}
         >
           Interactive Router
         </button>
         <button
           className={`fable-tab-btn ${activeTab === 'doctor' ? 'active' : ''}`}
-          onClick={() => setActiveTab('doctor')}
+          onClick={() => onTabChange?.('doctor')}
         >
           Doctor & Diagnostics
         </button>
@@ -251,22 +273,33 @@ export const FableDashboard: React.FC = () => {
       {activeTab === 'skills' && (
         <div className="fable-card-body">
           <h3 style={{ margin: '0 0 14px 0', fontSize: '15px' }}>Canonical Fable Skills Matrix</h3>
-          <div className="fable-skill-grid">
-            {skills.map((s) => (
-              <div key={s.id} className="fable-skill-card">
-                <span className="fable-skill-name">{s.name || s.id}</span>
-                <span className="fable-skill-desc">{s.description || 'Fable lifecycle skill'}</span>
-                <div style={{ display: 'flex', gap: '4px', marginTop: 'auto' }}>
-                  <span style={{ fontSize: '10px', background: '#2e3035', padding: '2px 6px', borderRadius: '4px' }}>
-                    v{s.version}
-                  </span>
-                  <span style={{ fontSize: '10px', background: '#312e81', color: '#c7d2fe', padding: '2px 6px', borderRadius: '4px' }}>
-                    {s.pack}
-                  </span>
+          {skillsState === 'loading' && (
+            <p style={{ color: '#9ca3af', fontSize: '13px' }}>Loading registered skills...</p>
+          )}
+          {skillsState === 'error' && (
+            <p style={{ color: '#f87171', fontSize: '13px' }}>{skillsError || 'Unable to load skills registry.'}</p>
+          )}
+          {skillsState === 'loaded' && skills.length === 0 && (
+            <p style={{ color: '#9ca3af', fontSize: '13px' }}>No registered skills found in repository.</p>
+          )}
+          {skillsState === 'loaded' && skills.length > 0 && (
+            <div className="fable-skill-grid">
+              {skills.map((s) => (
+                <div key={s.id} className="fable-skill-card">
+                  <span className="fable-skill-name">{s.name || s.id}</span>
+                  <span className="fable-skill-desc">{s.description || 'Fable lifecycle skill'}</span>
+                  <div style={{ display: 'flex', gap: '4px', marginTop: 'auto' }}>
+                    <span style={{ fontSize: '10px', background: '#2e3035', padding: '2px 6px', borderRadius: '4px' }}>
+                      v{s.version}
+                    </span>
+                    <span style={{ fontSize: '10px', background: '#312e81', color: '#c7d2fe', padding: '2px 6px', borderRadius: '4px' }}>
+                      {s.pack}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -281,10 +314,10 @@ export const FableDashboard: React.FC = () => {
               className="fable-input"
               placeholder="e.g. Write unit tests for OAuth token rotation and verify failure cases"
               value={taskInput}
-              onChange={(e) => setTaskInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleTestRoute()}
+              onChange={(e) => onTaskInputChange?.(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && onTestRoute?.()}
             />
-            <button className="fable-btn" onClick={handleTestRoute} disabled={routing}>
+            <button className="fable-btn" onClick={onTestRoute} disabled={routing}>
               {routing ? 'Analyzing Route...' : 'Analyze Route'}
             </button>
             {routeResult && (
@@ -311,7 +344,7 @@ export const FableDashboard: React.FC = () => {
             Validates `.fable/state.json`, hooks, skill packs, and environment configurations.
           </p>
           <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
-            <button className="fable-btn" onClick={handleRunDoctorFix} disabled={fixing}>
+            <button className="fable-btn" onClick={onRunDoctorFix} disabled={fixing}>
               {fixing ? 'Running Doctor...' : 'Run Fable Doctor Fix'}
             </button>
           </div>
@@ -371,6 +404,130 @@ export const FableDashboard: React.FC = () => {
         </div>
       )}
     </div>
+  );
+};
+
+export interface FableDashboardProps {
+  initialStatus?: FableStatusResponse | null;
+  initialSkills?: FableSkillInfo[];
+  initialSkillsState?: 'loading' | 'error' | 'loaded';
+  skipAutoFetch?: boolean;
+}
+
+export const FableDashboard: React.FC<FableDashboardProps> = ({
+  initialStatus = null,
+  initialSkills = [],
+  initialSkillsState = 'loading',
+  skipAutoFetch = false,
+}) => {
+  const [status, setStatus] = useState<FableStatusResponse | null>(initialStatus);
+  const [skills, setSkills] = useState<FableSkillInfo[]>(initialSkills);
+  const [skillsState, setSkillsState] = useState<'loading' | 'error' | 'loaded'>(
+    initialSkills.length > 0 ? 'loaded' : initialSkillsState
+  );
+  const [skillsError, setSkillsError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'plan' | 'skills' | 'router' | 'doctor'>('plan');
+  const [taskInput, setTaskInput] = useState('');
+  const [routeResult, setRouteResult] = useState<any>(null);
+  const [routing, setRouting] = useState(false);
+  const [doctorReport, setDoctorReport] = useState<any>(null);
+  const [fixing, setFixing] = useState(false);
+  const [fixError, setFixError] = useState<string | null>(null);
+
+  const loadData = async () => {
+    try {
+      const [statusRes, skillsRes] = await Promise.allSettled([
+        fetch('/api/fable/status'),
+        fetch('/api/fable/skills'),
+      ]);
+      if (statusRes.status === 'fulfilled' && statusRes.value.ok) {
+        setStatus(await statusRes.value.json());
+      }
+      if (skillsRes.status === 'fulfilled' && skillsRes.value.ok) {
+        const data = await skillsRes.value.json();
+        setSkills(data);
+        setSkillsState('loaded');
+        setSkillsError(null);
+      } else {
+        setSkillsState('error');
+        setSkillsError('Failed to load skills registry');
+      }
+    } catch (err: any) {
+      setSkillsState('error');
+      setSkillsError(err?.message || 'Failed to load skills registry');
+    }
+  };
+
+  useEffect(() => {
+    injectFableStyles();
+    if (!skipAutoFetch) {
+      loadData();
+      const interval = setInterval(loadData, 6000);
+      return () => clearInterval(interval);
+    }
+  }, [skipAutoFetch]);
+
+  const handleTestRoute = async () => {
+    if (!taskInput.trim()) return;
+    setRouting(true);
+    try {
+      const res = await fetch('/api/fable/route', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task: taskInput }),
+      });
+      if (res.ok) {
+        setRouteResult(await res.json());
+      }
+    } catch (err: any) {
+      setRouteResult({ error: err.message });
+    } finally {
+      setRouting(false);
+    }
+  };
+
+  const handleRunDoctorFix = async () => {
+    setFixing(true);
+    setFixError(null);
+    try {
+      const res = await fetch('/api/fable/doctor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fix: true }),
+      });
+      if (res.ok) {
+        const report = await res.json();
+        setDoctorReport(report);
+        loadData();
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        setFixError(errorData.error || `Doctor repair failed with HTTP ${res.status}`);
+      }
+    } catch (err: any) {
+      setFixError(err.message || 'Network error executing doctor repair');
+    } finally {
+      setFixing(false);
+    }
+  };
+
+  return (
+    <FableDashboardView
+      status={status}
+      skills={skills}
+      skillsState={skillsState}
+      skillsError={skillsError}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      taskInput={taskInput}
+      onTaskInputChange={setTaskInput}
+      onTestRoute={handleTestRoute}
+      routeResult={routeResult}
+      routing={routing}
+      onRunDoctorFix={handleRunDoctorFix}
+      fixing={fixing}
+      fixError={fixError}
+      doctorReport={doctorReport}
+    />
   );
 };
 
