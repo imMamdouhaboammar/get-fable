@@ -22,7 +22,7 @@ The R2 updater crosses process, filesystem, lock, and installed-version boundari
 
 Model the executor result as a discriminated receipt. Success must require a verified installed version. Failures must identify a bounded outcome such as `lock-failure`, `command-failure`, `verification-failure`, or `release-failure` without copying arbitrary stderr or exception text into the public receipt.
 
-Acquire the owner-token lock before process execution. Once acquired, release that exact handle from `finally`; a failed command or failed verification must not skip release. Lock acquisition failure itself is returned as a structured failure and must not run the mutation command. A release failure must also become a structured receipt so a successful process result cannot hide a stale updater lock.
+Acquire the owner-token lock before process execution. Once acquired, release that exact handle from `finally`; a failed command or failed verification must not skip release. Lock acquisition failure itself is returned as a structured failure and must not run the mutation command. When the lock layer can safely classify contention, use a typed error code to preserve bounded recovery guidance, especially when owner liveness cannot be verified. Do not recover guidance by parsing exception prose. A release failure must also become a structured receipt so a successful process result cannot hide a stale updater lock.
 
 ## Why This Matters
 

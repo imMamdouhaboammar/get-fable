@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { executeUpdate } from '../src/core/update/executor.ts';
 import type { UpdatePlan } from '../src/core/update/types.ts';
 import type { ExecutorDeps } from '../src/core/update/executor.ts';
-import type { LockHandle } from '../src/core/update/lock.ts';
+import { UpdateLockError, type LockHandle } from '../src/core/update/lock.ts';
 
 function plan(overrides: Partial<UpdatePlan> = {}): UpdatePlan {
   return {
@@ -208,6 +208,22 @@ describe('explicit update executor', () => {
     expect(receipt.outcome).toBe('lock-failure');
     expect(receipt.message).toMatch(/lock/i);
     expect(ran).toBe(false);
+  });
+
+  test('preserves bounded recovery guidance when lock-owner liveness is unknown', () => {
+    const receipt = executeUpdate(
+      plan(),
+      deps({
+        acquireLock: () => {
+          throw new UpdateLockError('owner-liveness-unknown', 'internal owner detail');
+        },
+      })
+    );
+
+    expect(receipt.success).toBe(false);
+    expect(receipt.outcome).toBe('lock-failure');
+    expect(receipt.message).toMatch(/verify|owner|retry|remov/i);
+    expect(receipt.message).not.toContain('internal owner detail');
   });
 
   test('returns a structured release failure instead of throwing after execution', () => {

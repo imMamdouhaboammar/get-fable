@@ -1,4 +1,4 @@
-import type { LockHandle } from './lock.js';
+import { UpdateLockError, type LockHandle } from './lock.js';
 import type { ProcessRunner, UpdatePlan, UpdateReceipt, UpdateReceiptOutcome } from './types.js';
 
 export interface ExecutorDeps {
@@ -6,6 +6,21 @@ export interface ExecutorDeps {
   verifyInstalledVersion: () => string;
   acquireLock: (plan: UpdatePlan) => LockHandle;
   releaseLock: (handle: LockHandle) => void;
+}
+
+function lockFailureMessage(error: unknown): string {
+  if (!(error instanceof UpdateLockError)) {
+    return 'Update lock could not be acquired safely';
+  }
+
+  switch (error.code) {
+    case 'owner-alive':
+      return 'Another updater still owns the update lock; wait for it to finish, then retry';
+    case 'owner-liveness-unknown':
+      return 'Update lock ownership could not be verified; inspect the existing updater process before retrying, and remove the lock only after confirming the owner is absent';
+    case 'reclaim-race':
+      return 'Update lock ownership changed during recovery; retry after the other updater finishes';
+  }
 }
 
 function failureReceipt(
@@ -79,8 +94,8 @@ export function executeUpdate(plan: UpdatePlan, deps: ExecutorDeps): UpdateRecei
   let lock: LockHandle;
   try {
     lock = deps.acquireLock(plan);
-  } catch {
-    return failureReceipt(plan, 'lock-failure', 'Update lock could not be acquired safely');
+  } catch (error) {
+    return failureReceipt(plan, 'lock-failure', lockFailureMessage(error));
   }
 
   let receipt: UpdateReceipt | null = null;
