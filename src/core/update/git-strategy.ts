@@ -148,6 +148,11 @@ function safeRecovery(plan: GitUpdatePlan): string {
   return `Checkout moved from ${plan.previousSha}. Inspect the change before recovery with: git -C ${repo} diff ${plan.previousSha}..HEAD`;
 }
 
+function uncertainMovementRecovery(plan: GitUpdatePlan): string {
+  const repo = JSON.stringify(path.resolve(plan.repoRoot));
+  return `Previous checkout was ${plan.previousSha}. Movement state could not be confirmed. Inspect the current revision with: git -C ${repo} diff ${plan.previousSha}..HEAD`;
+}
+
 function postMoveFailure(
   plan: GitUpdatePlan,
   targetVersion: string,
@@ -188,7 +193,16 @@ export function executeGitUpdate(
 
   let moved = false;
   if (plan.targetSha !== plan.previousSha) {
-    const movement = runGit(deps.run, plan.repoRoot, ['merge', '--ff-only', plan.targetSha]);
+    let movement: ProcessResult;
+    try {
+      movement = runGit(deps.run, plan.repoRoot, ['merge', '--ff-only', plan.targetSha]);
+    } catch {
+      return failure(
+        targetVersion,
+        'command-failure',
+        `Git fast-forward runner failed. ${uncertainMovementRecovery(plan)}`
+      );
+    }
     if (movement.status !== 0) {
       return failure(targetVersion, 'command-failure', 'Git fast-forward movement failed');
     }
@@ -196,7 +210,14 @@ export function executeGitUpdate(
   }
 
   if (plan.dependencyInputsChanged) {
-    const install = deps.run('bun', ['install', '--frozen-lockfile'], { cwd: plan.repoRoot });
+    let install: ProcessResult;
+    try {
+      install = deps.run('bun', ['install', '--frozen-lockfile'], { cwd: plan.repoRoot });
+    } catch {
+      return moved
+        ? postMoveFailure(plan, targetVersion, 'command-failure', 'Dependency reconciliation runner failed after Git movement')
+        : failure(targetVersion, 'command-failure', 'Dependency reconciliation runner failed');
+    }
     if (install.status !== 0) {
       return moved
         ? postMoveFailure(plan, targetVersion, 'command-failure', 'Dependency reconciliation failed after Git movement')
@@ -204,7 +225,14 @@ export function executeGitUpdate(
     }
   }
 
-  const build = deps.run('bun', ['run', 'build'], { cwd: plan.repoRoot });
+  let build: ProcessResult;
+  try {
+    build = deps.run('bun', ['run', 'build'], { cwd: plan.repoRoot });
+  } catch {
+    return moved
+      ? postMoveFailure(plan, targetVersion, 'command-failure', 'Build runner failed after Git movement')
+      : failure(targetVersion, 'command-failure', 'Build runner failed');
+  }
   if (build.status !== 0) {
     return moved
       ? postMoveFailure(plan, targetVersion, 'command-failure', 'Build failed after Git movement')
