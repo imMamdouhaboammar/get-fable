@@ -149,18 +149,22 @@ function requireString(value: unknown, field: string, maxLength: number): string
   return value;
 }
 
-function rejectExecutableShape(value: unknown, path = 'feed'): void {
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => rejectExecutableShape(item, `${path}[${index}]`));
-    return;
-  }
-  if (!isRecord(value)) return;
-
-  for (const [key, nested] of Object.entries(value)) {
-    if (EXECUTABLE_SHAPED_KEYS.has(key.toLowerCase())) {
-      throw new Error(`Announcement feed is data-only; executable-shaped field ${path}.${key} is forbidden`);
+function rejectExecutableShape(value: unknown): void {
+  const pending: unknown[] = [value];
+  while (pending.length > 0) {
+    const current = pending.pop();
+    if (Array.isArray(current)) {
+      for (const item of current) pending.push(item);
+      continue;
     }
-    rejectExecutableShape(nested, `${path}.${key}`);
+    if (!isRecord(current)) continue;
+
+    for (const [key, nested] of Object.entries(current)) {
+      if (EXECUTABLE_SHAPED_KEYS.has(key.toLowerCase())) {
+        throw new Error(`Announcement feed is data-only; executable-shaped field ${key} is forbidden`);
+      }
+      if (nested && typeof nested === 'object') pending.push(nested);
+    }
   }
 }
 
