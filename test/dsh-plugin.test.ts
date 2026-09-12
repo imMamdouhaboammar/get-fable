@@ -5,6 +5,7 @@ import { apply, createFableApiHandler, readPlanStatus, getAllSkills } from '../s
 
 describe('DeepSeek Harness (DSH) Plugin Integration', () => {
   const repoRoot = path.resolve(import.meta.dir, '..');
+  const packageVersion = (JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf-8')) as { version: string }).version;
 
   test('declares a valid cordis.patch.yml manifest', () => {
     const patchPath = path.join(repoRoot, 'cordis.patch.yml');
@@ -49,11 +50,19 @@ describe('DeepSeek Harness (DSH) Plugin Integration', () => {
     expect(plan.phases.some((p) => p.name.includes('Phase 1'))).toBe(true);
   });
 
+  test('DSH status derives its version from canonical package metadata', () => {
+    const apiSource = fs.readFileSync(path.join(repoRoot, 'src/dsh/api.ts'), 'utf-8');
+    const api = createFableApiHandler(repoRoot);
+
+    expect(api.getStatus().version).toBe(packageVersion);
+    expect(apiSource).not.toMatch(/version:\s*['"]\d+\.\d+\.\d+['"]/);
+  });
+
   test('createFableApiHandler provides status, routing, and doctor capabilities', () => {
     const api = createFableApiHandler(repoRoot);
 
     const status = api.getStatus();
-    expect(status.version).toBe('1.5.1');
+    expect(status.version).toBe(packageVersion);
     expect(typeof status.failureStreak).toBe('number');
     expect(typeof status.unverifiedMutations).toBe('number');
     expect(status.recoveryThreshold).toBe(2);
@@ -110,7 +119,7 @@ describe('DeepSeek Harness (DSH) Plugin Integration', () => {
     };
     await routes['GET /api/fable/status']({}, mockRes);
     expect(jsonResult).toBeDefined();
-    expect(jsonResult.version).toBe('1.5.1');
+    expect(jsonResult.version).toBe(packageVersion);
     expect(typeof jsonResult.unverifiedMutations).toBe('number');
     expect(jsonResult.recoveryThreshold).toBe(2);
     expect(jsonResult.totalCards).toBeUndefined();
