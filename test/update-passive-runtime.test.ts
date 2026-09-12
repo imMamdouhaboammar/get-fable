@@ -28,8 +28,8 @@ describe('passive update runtime storage', () => {
     const state = getAnnouncementStatePath(home);
 
     expect(cache).not.toBe(state);
-    expect(cache).toEndWith(path.join('.fable', 'update', 'announcements-feed.json'));
-    expect(state).toEndWith(path.join('.fable', 'update', 'announcements-state.json'));
+    expect(cache.endsWith(path.join('.fable', 'update', 'announcements-feed.json'))).toBe(true);
+    expect(state.endsWith(path.join('.fable', 'update', 'announcements-state.json'))).toBe(true);
   });
 
   test('writes and reads seen/dismiss state atomically through the shared file helper', () => {
