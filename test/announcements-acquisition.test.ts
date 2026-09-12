@@ -160,7 +160,7 @@ describe('bounded announcement acquisition', () => {
           writes += 1;
         },
       }, { refresh: true, explicit: true })
-    ).rejects.toThrow(/128|size|large/i);
+    ).rejects.toThrow(/announcement feed unavailable/i);
 
     expect(writes).toBe(0);
   });
@@ -184,7 +184,7 @@ describe('bounded announcement acquisition', () => {
         readCache: () => null,
         writeCache: () => {},
       }, { refresh: true, explicit: true })
-    ).rejects.toThrow(/128|size|large/i);
+    ).rejects.toThrow(/announcement feed unavailable/i);
     expect(bodyRead).toBe(false);
   });
 
