@@ -107,7 +107,9 @@ describe('OpenAI plugin package', () => {
 
   test('skills root contains only importable skill directories', () => {
     const skillsRoot = path.join(root, 'skills');
-    const entries = fs.readdirSync(skillsRoot, { withFileTypes: true });
+    const entries = fs
+      .readdirSync(skillsRoot, { withFileTypes: true })
+      .filter((entry) => !entry.name.startsWith('.'));
 
     expect(entries.length).toBeGreaterThan(0);
     for (const entry of entries) {
