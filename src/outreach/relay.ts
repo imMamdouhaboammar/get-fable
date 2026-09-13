@@ -1,5 +1,5 @@
-import { parseOutreachContract, renderDiscussionBody, type OutreachContract } from './contract.ts';
-import type { DiscussionCategoryResolution, GitHubDiscussion, GitHubIssue } from './github.ts';
+import { parseOutreachContract, renderDiscussionBody, type OutreachContract } from './contract.js';
+import type { DiscussionCategoryResolution, GitHubDiscussion, GitHubIssue } from './github.js';
 import {
   appendPublicationRecord,
   collectPublicationRecords,
@@ -7,7 +7,7 @@ import {
   isTopicPreviouslyPublished,
   parsePublicationRecord,
   type PublicationRecord,
-} from './policy.ts';
+} from './policy.js';
 
 export interface OutreachGitHubPort {
   getIssue(issueNumber: number): Promise<GitHubIssue>;
@@ -160,6 +160,9 @@ export async function publishOutreachForIssue(input: PublishOutreachInput): Prom
 
   const existingDiscussion = await client.findDiscussionByIssueMarker(issueNumber);
   if (existingDiscussion) {
+    if (!existingDiscussion.viewerDidAuthor) {
+      fail('existing Discussion marker was not authored by the authenticated relay viewer');
+    }
     const expectedBody = renderDiscussionBody(contract, issueNumber);
     if (existingDiscussion.body !== expectedBody) {
       fail('existing Discussion marker does not match the current outreach contract');
@@ -188,8 +191,8 @@ export async function publishOutreachForIssue(input: PublishOutreachInput): Prom
     contract.discussionTitle,
     discussionBody,
   );
-  if (created.body !== discussionBody) {
-    fail('created Discussion body did not match the requested publication body');
+  if (!created.viewerDidAuthor || created.body !== discussionBody) {
+    fail('created Discussion did not match the authenticated publication request');
   }
 
   const record = recordForDiscussion(contract, created);
