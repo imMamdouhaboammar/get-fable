@@ -13,7 +13,7 @@ beforeAll(async () => {
     // Mock .env exposure
     if (url === '/.env') {
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('DATABASE_URL=postgres://user:pass@localhost:5432/db\nSECRET_KEY=supersecret\n');
+      res.end('DATABASE_URL=sqlite:///:memory:\nAPP_ENV=test\nAPI_KEY=fixture_indicator_key\n');
       return;
     }
 
@@ -86,7 +86,7 @@ describe('Native HTTP Security Probe', () => {
 
     expect(leakFinding).toBeDefined();
     expect(leakFinding?.severity).toBe('critical');
-    expect(leakFinding?.evidence.response?.snippet).toContain('SECRET_KEY');
+    expect(leakFinding?.evidence.response?.snippet).toContain('DATABASE_URL');
   });
 
   test('detects arbitrary CORS reflection with credentials', async () => {
