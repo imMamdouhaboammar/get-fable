@@ -3,11 +3,18 @@
   "version": "1.6.0",
   "description": "A portable coding lifecycle for AI agents with deterministic routing across 26 skills, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./dist/client.js"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": "./dist/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./dsh.plugin.json": "./dsh.plugin.json",
+    "./package.json": "./package.json"
   },
   "bin": {
     "get-fable": "bin/get-fable.js"
@@ -21,6 +28,7 @@
     }
   },
   "files": [
+    "dsh.plugin.json",
     "cordis.patch.yml",
     ".claude-plugin/",
     ".codex-plugin/",
@@ -67,7 +75,7 @@
     "test": "bun test --timeout 30000",
     "test:coverage": "bun test --timeout 30000 --coverage",
     "typecheck": "tsc --noEmit",
-    "build:host": "bun build ./src/index.ts ./src/cli.ts --outdir ./dist --target bun",
+    "build:host": "bun build ./src/index.ts ./src/cli.ts --outdir ./dist --target node",
     "build:client": "bun build ./src/dsh/client/index.tsx --outfile ./dist/client.js --target browser",
     "build": "rm -rf dist && bun run build:host && bun run build:client",
     "check": "bun run check:generated && bun run check:llms && bun run typecheck && bun run test && bun run build",

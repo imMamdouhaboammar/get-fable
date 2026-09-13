@@ -48,6 +48,7 @@ const pluginFiles = [
   '.pi-plugin/plugin.json',
   '.grok-plugin/plugin.json',
   'assets/antigravity/plugin.json',
+  'dsh.plugin.json',
 ];
 
 for (const pf of pluginFiles) {

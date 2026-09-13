@@ -1,9 +1,28 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 3,
   "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
   "substantial": true,
   "lastDecision": null,
-  "evidence": []
+  "evidence": [
+    {
+      "kind": "test",
+      "source": "test/dsh-plugin.test.ts",
+      "result": "pass",
+      "detail": "DSH prebuilt artifacts, native dsh.plugin.json, and manifest version updated and verified",
+      "repositoryRevision": "14f9a8d0a37b8f3463f229dce07a958e7c541f53",
+      "commandCategory": "test",
+      "scope": "workspace",
+      "generation": 0,
+      "timestamp": "2026-09-13T13:13:31.321Z",
+      "workspaceId": "4d0a9132c2e476001278e544"
+    }
+  ],
+  "stateRevision": 25,
+  "workspaceId": "4d0a9132c2e476001278e544",
+  "mutationGeneration": 0,
+  "verifiedGeneration": 0,
+  "activeCard": null,
+  "updatedAt": "2026-09-13T13:13:55.427251Z"
 }
