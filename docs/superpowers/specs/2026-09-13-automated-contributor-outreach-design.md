@@ -1,15 +1,20 @@
-# Automated Contributor Outreach Design
+# Automated Contributor Outreach Design v2
 
-**Status:** Approved design, pending implementation plan  
+**Status:** Design complete, awaiting human review before implementation planning  
 **Date:** 2026-09-13  
 **Target repository:** `imMamdouhaboammar/get-fable`  
 **Execution model:** ChatGPT Schedule -> GitHub Issue -> GitHub Action -> GitHub Discussion
 
 ## Purpose
 
-Create a twice-weekly, end-to-end contributor outreach pipeline that identifies one genuinely relevant open-source contributor, creates one real contribution opportunity in `get-fable`, and publishes one linked GitHub Discussion containing a single targeted `@mention`.
+Create a twice-weekly contributor outreach pipeline that can run end to end without a manual publishing step while remaining narrow, auditable, idempotent, and resistant to accidental spam.
 
-The pipeline must generate useful repository artifacts even when the targeted person never responds. It must not behave like a mass-mention or promotional bot.
+Every successful run must create two useful repository artifacts:
+
+1. one real contribution Issue in `get-fable`;
+2. one linked GitHub Discussion in `Ideas` containing exactly one intended external `@mention`.
+
+A run is allowed to publish nothing when no candidate or topic meets the policy.
 
 ## Goals
 
@@ -17,245 +22,298 @@ The automation must:
 
 1. Run twice each week from ChatGPT Schedule.
 2. Select at most one external contributor per run.
-3. Ground the choice in public GitHub work with concrete overlap to `get-fable`.
-4. Avoid duplicate people, duplicate topics, and repeated outreach within the cooldown window.
-5. Create a real GitHub Issue that remains useful as a contribution opportunity.
-6. Publish one GitHub Discussion in the `Ideas` category through a repository-owned GitHub Action.
-7. Put the external `@mention` only in the Discussion.
-8. Link the Issue and Discussion after publication.
-9. Fail closed when validation, category lookup, deduplication, or publication cannot be proven safe.
-10. Preserve an auditable record of every automated outreach attempt.
+3. Ground selection in public GitHub work with concrete overlap to `get-fable`.
+4. Enforce a 30-day cooldown for the same candidate.
+5. Reject previously used topic keys.
+6. Create a contribution Issue that is useful independently of the outreach attempt.
+7. Publish one linked Discussion through a repository-owned GitHub Action and GitHub GraphQL `createDiscussion` mutation.
+8. Ensure the external username is mentioned only when the Discussion is created, never in the source Issue.
+9. Recover safely from partial publication without creating a duplicate Discussion.
+10. Keep enough durable metadata in GitHub itself to audit and deduplicate future runs.
 
 ## Non-goals
 
-This design does not:
+The first version does not:
 
-- send direct messages, emails, collaborator invitations, or review requests;
-- post on another person's repository;
-- create multiple mentions in one run;
-- scrape private data;
-- close the contribution Issue after publication;
-- use engagement metrics as a reason to repeatedly contact the same person;
-- manufacture a Discussion whose only purpose is promotion.
+- send email, direct messages, collaborator invitations, or review requests;
+- post to another person's repository;
+- create more than one external mention per Discussion;
+- send automated follow-up pings;
+- use private data;
+- require a separate database;
+- require custom repository labels for activation or state;
+- publish a Discussion whose only purpose is promotion.
 
 ## High-level flow
 
 ```text
 ChatGPT Schedule
-  -> inspect get-fable + existing outreach
-  -> research one candidate
-  -> validate fit + cooldown + topic uniqueness
-  -> create one GitHub Issue with outreach metadata
-  -> GitHub Actions issues event
-  -> validate trusted issue contract
-  -> resolve Ideas discussion category
+  -> inspect get-fable and prior outreach records
+  -> research public GitHub candidates
+  -> choose zero or one candidate
+  -> validate fit, cooldown, and topic novelty
+  -> create one trusted contribution Issue
+  -> GitHub Actions issues.opened event
+  -> re-fetch the current Issue from GitHub
+  -> validate the machine contract and trusted author
+  -> re-check cooldown and duplicate state
+  -> resolve the Ideas Discussion category
+  -> reconcile an existing Discussion if an Issue marker is found
+  -> otherwise render exactly one @candidate mention
   -> create Discussion through GitHub GraphQL
-  -> attach deterministic marker
-  -> update Issue with Discussion URL + publication state
+  -> update the Issue with the Discussion URL and publication metadata
 ```
+
+## Why the Issue is the relay boundary
+
+The connected GitHub capability available to the scheduled ChatGPT run can create Issues, but does not expose a create-Discussion action. GitHub Actions can use the repository-scoped `GITHUB_TOKEN` with `discussions: write` and call GitHub GraphQL.
+
+The Issue therefore acts as a durable, inspectable handoff between editorial candidate selection and repository-owned publication.
+
+The Issue is not only a queue item. Its human-readable section must describe a real contribution opportunity that remains useful even if the invited contributor never responds.
 
 ## ChatGPT Schedule responsibilities
 
-The scheduled ChatGPT run owns candidate discovery and editorial judgment.
+Each scheduled run must:
 
-Each run must:
+1. Inspect the current `get-fable` README and relevant architecture or feature documentation.
+2. Inspect prior outreach Issues and linked Discussions.
+3. Research public GitHub activity for possible candidates.
+4. Select a candidate only when a specific technical overlap can be explained.
+5. Choose a Discussion question that is independently useful as an RFC or design discussion.
+6. Check the previous 30 days for the candidate.
+7. Check all prior outreach records for the normalized `topicKey`.
+8. Skip the run when candidate fit or topic novelty is weak or uncertain.
+9. Create exactly one source Issue when all preconditions pass.
+10. Perform no separate mention, comment, collaborator invitation, or Discussion publication.
 
-1. Inspect the current `get-fable` README, relevant architecture/docs, open Issues, and prior outreach Issues/Discussions.
-2. Research public GitHub activity for potential contributors.
-3. Select exactly one candidate only when a specific technical overlap exists.
-4. Prefer a technical RFC or implementation question that is independently useful to `get-fable`.
-5. Check whether the same GitHub username was targeted within the previous 30 days.
-6. Check whether the same normalized topic was already used.
-7. Create no artifact if a safe, justified candidate cannot be found.
-8. Create one Issue carrying the publication contract and the contribution opportunity.
+The relay repeats safety and deduplication checks. Scheduler checks are an early filter, not a trust boundary.
 
-The scheduled run must not publish a Discussion directly. GitHub Discussion creation is delegated to the repository-owned relay because the connected GitHub action surface available to ChatGPT can create Issues but does not expose a create-Discussion mutation.
+## Source Issue contract
 
-## Issue contract
-
-The ChatGPT run creates one Issue with label:
-
-```text
-outreach:publish
-```
-
-The Issue is a real contribution opportunity. It must not merely say that outreach happened.
-
-Suggested title form:
+The Issue title must begin with:
 
 ```text
-Contribution opportunity: <specific technical problem>
+Contribution opportunity:
 ```
 
-The body contains human-readable context plus one machine-readable JSON block:
+The Issue body has two sections:
 
-```json
+1. human-readable contribution context;
+2. one fenced machine contract with a stable sentinel.
+
+Example:
+
+````markdown
+## Why this matters
+
+<real implementation or design opportunity>
+
+## Outreach publication contract
+
+```get-fable-outreach-v1
 {
   "schema": 1,
   "candidate": "obra",
   "topicKey": "lifecycle-gates-vs-advisory-skills",
   "discussionTitle": "RFC: Should coding-agent skills enforce lifecycle gates or remain advisory?",
   "discussionCategory": "Ideas",
-  "discussionBody": "...",
+  "discussionBodyTemplate": "I am exploring ... {{candidate}} ...",
   "sourceIssuePurpose": "contribution-opportunity",
   "createdBy": "chatgpt-scheduled-outreach"
 }
 ```
+````
 
-The Discussion body may contain exactly one external GitHub `@mention`, corresponding to `candidate`.
+### Mention isolation
 
-The Issue body must contain no external `@mention` for the candidate.
+The source Issue must contain zero external `@mentions`.
 
-## Publication relay
+`discussionBodyTemplate` must also contain zero `@mentions` and exactly one literal `{{candidate}}` placeholder.
 
-A new workflow listens to Issue events and runs only when the Issue contains `outreach:publish`.
-
-Proposed workflow:
-
-```text
-.github/workflows/publish-outreach-discussion.yml
-```
-
-Proposed implementation entrypoint:
+Only the repository relay may replace that placeholder with:
 
 ```text
-scripts/publish-outreach-discussion.ts
+@<candidate>
 ```
 
-The workflow permissions are narrowly scoped:
+This prevents GitHub from notifying the candidate when the Issue is created and guarantees that the only automated external notification comes from the published Discussion.
+
+## Workflow trigger
+
+No custom label is required to start publication. Requiring a label would introduce a setup dependency and could make a scheduled Issue fail before the relay runs.
+
+The workflow listens only for newly opened Issues:
 
 ```yaml
+on:
+  issues:
+    types: [opened]
+
 permissions:
   contents: read
   issues: write
   discussions: write
 ```
 
-The workflow must never accept arbitrary executable content from the Issue.
+A cheap workflow-level condition may restrict execution to the canonical repository and owner-created Issues, but the TypeScript relay must re-fetch and validate the Issue authoritatively before any side effect.
 
-The script parses only the declared JSON contract and treats all values as data.
+There is no `pull_request_target`, no arbitrary repository dispatch payload, and no execution of content supplied by the Issue.
 
-## Validation gates
+## Proposed files
 
-Publication is allowed only if every gate passes.
+```text
+.github/workflows/publish-outreach-discussion.yml
+scripts/publish-outreach-discussion.ts
+src/outreach/contract.ts
+src/outreach/policy.ts
+src/outreach/github.ts
+src/outreach/relay.ts
+```
+
+Tests should follow the repository's current Bun test conventions and may remain colocated with the relevant modules if that matches existing patterns discovered during implementation planning.
+
+## Trusted publication gates
+
+The relay must fail closed unless every gate passes.
 
 ### Repository and event gate
 
-- event repository must be `imMamdouhaboammar/get-fable`;
-- event must refer to an Issue, not a Pull Request;
-- Issue must be open;
-- Issue must have `outreach:publish`;
-- Issue author must be the repository owner or another explicitly allowlisted trusted actor;
-- schema version must be supported.
+- repository is exactly `imMamdouhaboammar/get-fable`;
+- source is an Issue, not a Pull Request;
+- Issue is currently open;
+- Issue was authored by `imMamdouhaboammar` or another future username explicitly committed to a repository allowlist;
+- title begins with `Contribution opportunity:`;
+- exactly one supported `get-fable-outreach-v1` block exists;
+- contract `schema` equals `1`;
+- `createdBy` equals `chatgpt-scheduled-outreach`;
+- `sourceIssuePurpose` equals `contribution-opportunity`.
+
+The relay must re-fetch the Issue from the GitHub API instead of treating the workflow event payload as current truth.
 
 ### Candidate gate
 
-- candidate is a valid GitHub login token;
+- `candidate` matches GitHub username grammar accepted by the implementation;
 - candidate is not the repository owner;
-- candidate is not a bot account name by configured suffix/pattern policy;
-- candidate appears exactly once as an `@mention` in the Discussion body;
-- Issue body contains zero candidate mentions.
+- candidate does not match configured bot-account patterns;
+- source Issue contains no external `@mentions`;
+- `discussionBodyTemplate` contains no `@mentions`;
+- template contains exactly one `{{candidate}}` placeholder.
 
 ### Content gate
 
-- title and body must be non-empty and bounded in length;
-- category must equal the configured allowed category, initially `Ideas`;
-- Discussion body must include a concrete technical question;
-- body must not contain additional external mentions;
-- topicKey must satisfy a stable slug grammar.
+- title and body fields are non-empty and have explicit maximum lengths;
+- category must be exactly `Ideas` in v1;
+- `topicKey` follows a stable lowercase slug grammar;
+- body template contains a concrete technical question or request for technical feedback;
+- contract fields are parsed as data only;
+- Issue content is never evaluated as shell, JavaScript, GitHub Actions expression syntax, or GraphQL source.
 
-### Duplicate and cooldown gate
+## Deduplication and cooldown
 
-The relay must fail closed when publication appears duplicated.
+Both scheduler and relay check deduplication. The relay is authoritative for publication.
 
-Before creating a Discussion it checks:
+Before creating a Discussion, the relay checks:
 
-1. whether the Issue already records a published Discussion URL;
-2. whether a recent Discussion already contains the deterministic marker for this Issue;
-3. whether a previously published outreach record targets the same candidate inside the configured 30-day cooldown;
-4. whether the same `topicKey` has already been published.
+1. whether the source Issue already contains a valid published-outreach marker;
+2. whether a Discussion already contains the deterministic source-Issue marker;
+3. whether another published outreach Issue targeted the same candidate during the previous 30 days;
+4. whether another published outreach Issue used the same `topicKey`.
 
-The canonical marker is:
+The current Issue is excluded from candidate and topic duplicate comparisons.
+
+If duplicate state cannot be established reliably because the required GitHub query fails, publication stops.
+
+## Durable markers
+
+The Discussion body receives this marker from the relay:
 
 ```html
 <!-- get-fable-outreach:issue-<number> -->
 ```
 
-The marker is appended to the Discussion body by the relay, not supplied by ChatGPT.
+The source Issue receives a publication block only after the Discussion is known to exist:
+
+```html
+<!-- get-fable-outreach-published-v1
+{"candidate":"obra","topicKey":"lifecycle-gates-vs-advisory-skills","discussionUrl":"https://github.com/.../discussions/123","publishedAt":"2026-09-13T...Z"}
+-->
+```
+
+A visible `Related Discussion` link may accompany the hidden marker.
+
+These markers are the v1 audit and reconciliation state. No custom labels or external persistence are required.
 
 ## Discussion creation
 
-The relay resolves the configured Discussion category dynamically through GitHub GraphQL and must find exactly one category named `Ideas`.
-
-It then calls `createDiscussion` with repository ID, resolved category ID, validated title, and validated body plus the deterministic Issue marker.
-
-The workflow must not hardcode a category node ID because category IDs are repository-specific and may change if Discussions are reconfigured.
-
-## Post-publication state
-
-After successful Discussion creation, the workflow updates the source Issue with the Discussion URL, publication timestamp, candidate, and topicKey.
+The relay queries GitHub GraphQL for the repository and Discussion categories and must resolve exactly one category named `Ideas`.
 
 It then:
 
-- adds `outreach:published`;
-- removes `outreach:publish`;
-- keeps the Issue open.
+1. validates the body template again;
+2. replaces exactly one `{{candidate}}` with `@candidate`;
+3. confirms the rendered body contains exactly one external mention and that it is the intended candidate;
+4. appends the deterministic source-Issue marker;
+5. calls a static `createDiscussion` GraphQL mutation using variables for all Issue-derived values.
 
-The Issue remains the implementation/contribution surface. The Discussion remains the architectural/community discussion surface.
+Repository ID and category node ID are resolved at runtime and are not hardcoded.
+
+## Idempotency and partial failure
+
+Publication follows reconcile-before-create semantics.
+
+Before `createDiscussion`, the relay searches for the deterministic source-Issue marker.
+
+If a matching Discussion already exists, the relay does not create another Discussion. It updates the Issue with the existing Discussion URL and publication marker if necessary.
+
+This handles the critical partial-failure case:
+
+1. GitHub creates the Discussion successfully;
+2. updating the source Issue fails;
+3. the workflow is retried;
+4. the retry finds the existing Discussion marker;
+5. the retry reconciles the Issue instead of publishing again.
 
 ## Failure behavior
 
-The relay is fail-closed.
+Before Discussion creation, any validation, lookup, permission, cooldown, or duplicate-check failure stops publication and leaves the Issue without a published marker.
 
-On validation or publication failure it must:
+After Discussion creation, failure to update the Issue is recoverable through marker reconciliation on retry.
 
-- not create a partial second Discussion;
-- not silently mutate the Issue into a published state;
-- add a bounded diagnostic comment or failure label such as `outreach:failed` when Issue write access is available;
-- preserve enough context to retry safely after correction;
-- re-check idempotency before every retry.
+The workflow should emit bounded diagnostics in Actions logs. It should not automatically mention the candidate again, create a second Discussion, or post repeated failure comments.
 
-A retry after a successful Discussion creation but before Issue state update must discover the existing Issue marker and reconcile instead of creating another Discussion.
+A manual workflow rerun is sufficient for transient failures in v1.
 
 ## Rate and anti-spam policy
 
-The policy is intentionally stricter than the twice-weekly scheduler cadence.
-
 - maximum one candidate per scheduled run;
-- maximum two publication attempts per week under normal operation;
-- 30-day candidate cooldown;
-- one external mention per Discussion;
-- zero candidate mentions in the paired Issue;
-- no outreach when candidate fit is weak or topic novelty cannot be established;
-- no automated follow-up ping if the candidate does not reply.
-
-The automation is allowed to skip a scheduled run.
-
-## Audit state
-
-The Issue itself is the durable audit record. Publication metadata is stored in the Issue body or a deterministic bot comment and through state labels.
-
-No separate database is required for v1.
-
-The ChatGPT scheduler should search prior Issues using the outreach labels and candidate/topic metadata before creating a new Issue.
-
-## Labels
-
-The implementation should ensure these repository labels exist or document the one-time setup requirement:
-
-```text
-outreach:publish
-outreach:published
-outreach:failed
-```
+- normal cadence is Monday and Thursday;
+- maximum two successful outreach publications per week under the configured schedule;
+- 30-day cooldown for the same candidate;
+- permanent deduplication by `topicKey` unless the contract version later defines an explicit supersession mechanism;
+- exactly one external mention in a published Discussion;
+- zero external mentions in the source Issue and stored template;
+- no automated follow-up ping;
+- no publication when fit or novelty is uncertain;
+- skipped runs are valid outcomes.
 
 ## Security boundaries
 
-Untrusted Issue text must never be evaluated as JavaScript, shell, GitHub Actions expressions, or GraphQL source code.
+The Issue is untrusted text until the relay validates it, even when an early workflow condition checks the author.
 
-The relay must construct GraphQL variables separately from the static mutation, avoid shell interpolation of Issue-controlled values, use bounded parsing and explicit schemas, redact tokens from logs, use the repository-scoped `GITHUB_TOKEN` only, and request only the permissions required for publication and Issue state reconciliation.
+The relay must:
 
-A fork or arbitrary external Issue must not be able to use the workflow as a general-purpose Discussion publisher.
+- re-fetch current Issue state;
+- use explicit schema validation and bounded strings;
+- keep GraphQL documents static and pass untrusted values only through variables;
+- never interpolate Issue content into shell commands;
+- avoid logging tokens or secret-bearing headers;
+- use the repository-scoped `GITHUB_TOKEN` only;
+- request only `contents: read`, `issues: write`, and `discussions: write`;
+- reject unexpected contract keys if strict parsing is selected in implementation planning;
+- fail closed when GitHub state required for a decision cannot be read.
+
+An arbitrary external Issue must not be able to use the workflow as a general-purpose Discussion publisher.
 
 ## Testing strategy
 
@@ -263,32 +321,94 @@ Implementation follows TDD.
 
 ### Unit tests
 
-Cover metadata extraction, malformed/missing schema, login validation, mention counting, additional-mention rejection, Issue mention rejection, topicKey validation, title/body bounds, publication marker creation, existing marker reconciliation, cooldown decision logic, duplicate topic detection, and safe GraphQL variable construction.
+Cover at minimum:
+
+- extraction of exactly one contract block;
+- malformed JSON;
+- unsupported schema;
+- trusted metadata fields;
+- candidate login validation;
+- bot candidate rejection;
+- zero Issue mentions;
+- zero template mentions;
+- exactly one `{{candidate}}` placeholder;
+- correct single-mention rendering;
+- rejection of extra placeholders or mentions;
+- topicKey validation;
+- title and body limits;
+- Discussion marker construction;
+- published Issue marker parsing and construction;
+- candidate cooldown calculation;
+- topic duplicate detection;
+- current-Issue exclusion from duplicate checks.
 
 ### Integration tests
 
-Use mocked GitHub API responses to cover category resolution, successful `createDiscussion`, duplicate marker recovery, Discussion creation followed by initial Issue-update failure, category missing/ambiguous, permission/API failure, and state-label reconciliation.
+Mock GitHub API and GraphQL boundaries to cover:
+
+- authoritative Issue re-fetch;
+- trusted and untrusted Issue authors;
+- category resolution;
+- successful `createDiscussion`;
+- existing Discussion marker reconciliation;
+- Discussion succeeds but Issue update fails;
+- retry after partial failure;
+- missing or ambiguous Ideas category;
+- candidate cooldown hit;
+- duplicate topic hit;
+- API or permission failure before publication;
+- Issue update with visible Discussion link and hidden publication marker.
 
 ### Workflow contract tests
 
-Assert the trigger is restricted to Issue events, the job requires `outreach:publish`, permissions remain `contents: read`, `issues: write`, `discussions: write`, no `pull_request_target` or other untrusted privileged trigger is introduced, and the workflow executes the tested TypeScript entrypoint instead of embedding business logic in YAML.
+Assert:
+
+- trigger is only `issues: [opened]`;
+- no privileged untrusted trigger such as `pull_request_target` exists;
+- permissions are exactly the intended least-privilege set;
+- workflow calls the tested TypeScript relay rather than duplicating business logic in YAML;
+- Issue-controlled strings are not interpolated into workflow shell source.
 
 ## ChatGPT Schedule update
 
-After the relay is merged and verified, the existing `get-fable Outreach Draft` automation is updated so each run researches candidates and repository state, enforces the 30-day candidate cooldown and topic deduplication, skips when no justified candidate exists, creates exactly one Issue with `outreach:publish` and the v1 metadata contract, and does not separately publish or comment after Issue creation.
+The existing twice-weekly ChatGPT automation stays in draft-only mode until the relay is implemented, reviewed, merged, and verified.
 
-The schedule remains twice weekly on Monday and Thursday in `Africa/Cairo`.
+After deployment, update it so each run:
+
+1. researches public candidates and current `get-fable` context;
+2. checks prior published outreach records;
+3. enforces candidate cooldown and topic novelty;
+4. skips if no strong candidate exists;
+5. creates exactly one owner-authored contribution Issue with the v1 contract and neutral `{{candidate}}` placeholder;
+6. performs no other GitHub mutation for that outreach run.
+
+The schedule remains Monday and Thursday in `Africa/Cairo`.
 
 ## Rollout
 
-1. Implement parser, policy, and tests.
-2. Add GitHub workflow with least-privilege permissions.
-3. Verify Discussions are enabled and `Ideas` exists.
-4. Test the relay with non-mention fixtures in automated tests.
-5. Merge the implementation PR.
-6. Update the ChatGPT scheduled task to publication mode.
-7. Observe the first real run and verify Issue/Discussion linking and idempotency.
+1. Write an implementation plan after this spec is reviewed.
+2. Implement contract and policy modules through TDD.
+3. Implement GitHub query, reconciliation, and publication boundaries with mocked integration tests.
+4. Add the least-privilege GitHub Actions workflow and workflow contract tests.
+5. Run focused tests, full tests, typecheck, build, and existing repository checks.
+6. Open a Pull Request from the feature branch.
+7. Review the actual diff and CI evidence before merge.
+8. Merge only after the implementation is verified.
+9. Update the ChatGPT scheduled task from draft mode to end-to-end Issue creation.
+10. Observe the first real scheduled publication for correct Issue/Discussion linking and idempotency.
 
 ## Acceptance criteria
 
-The feature is complete when a scheduled ChatGPT run can create one valid outreach Issue; the repository workflow publishes exactly one linked Discussion; the Discussion includes exactly one intended external mention; the Issue includes no external candidate mention; duplicate retries do not create duplicate Discussions; candidate cooldown and topic deduplication are enforced; publication state is reflected back onto the Issue; all new unit, integration, workflow contract, typecheck, and existing repository tests pass; and the final implementation is delivered through a reviewed Pull Request rather than direct changes to `master`.
+The feature is complete when:
+
+- one valid scheduled Issue can cause exactly one Discussion to be created;
+- the Issue itself sends no external mention notification;
+- the Discussion contains exactly one intended candidate mention;
+- a workflow retry cannot create a duplicate Discussion for the same source Issue;
+- the same candidate cannot be published again inside 30 days;
+- an existing topicKey cannot be republished;
+- untrusted or malformed Issues cannot publish Discussions;
+- failed GitHub reads required for a policy decision stop publication;
+- successful publication is recorded back on the Issue with a durable marker and link;
+- all focused and existing repository checks pass;
+- delivery happens through a Pull Request rather than direct mutation of `master`.
