@@ -37,8 +37,9 @@ function discussion(overrides: Partial<GitHubDiscussion> = {}): GitHubDiscussion
     id: 'D_42',
     number: 123,
     url: 'https://github.com/imMamdouhaboammar/get-fable/discussions/123',
-    body: 'Question @obra\n<!-- get-fable-outreach:issue-42 -->',
+    body: 'I am exploring lifecycle gates. @obra what trade-offs would you watch?\n\n<!-- get-fable-outreach:issue-42 -->',
     createdAt: '2026-09-13T11:59:00Z',
+    viewerDidAuthor: true,
     ...overrides,
   };
 }
