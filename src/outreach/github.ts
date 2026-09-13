@@ -1,4 +1,4 @@
-import { discussionIssueMarker } from './policy.ts';
+import { discussionIssueMarker } from './policy.js';
 
 export type FetchLike = typeof fetch;
 
@@ -30,6 +30,15 @@ export type GitHubOutreachClientOptions = {
   owner: string;
   repo: string;
   fetch?: FetchLike;
+};
+
+type DiscussionConnectionPage = {
+  nodes?: unknown;
+  pageInfo?: { hasNextPage?: unknown; endCursor?: unknown };
+};
+
+type DiscussionsData = {
+  repository?: { discussions?: DiscussionConnectionPage } | null;
 };
 
 const API_VERSION = '2022-11-28';
@@ -195,8 +204,8 @@ export class GitHubOutreachClient {
         discussionCategories?: { nodes?: unknown };
       } | null;
     };
-    const data = await this.graphQL<CategoryData>(CATEGORY_QUERY, { owner: this.owner, repo: this.repo });
-    const repository = data?.repository;
+    const data: CategoryData = await this.graphQL<CategoryData>(CATEGORY_QUERY, { owner: this.owner, repo: this.repo });
+    const repository = data.repository;
     if (!repository || !Array.isArray(repository.discussionCategories?.nodes)) {
       return fail('could not resolve Discussion categories');
     }
@@ -218,20 +227,12 @@ export class GitHubOutreachClient {
     let after: string | null = null;
 
     for (let page = 1; page <= MAX_GRAPHQL_PAGES; page += 1) {
-      type DiscussionsData = {
-        repository?: {
-          discussions?: {
-            nodes?: unknown;
-            pageInfo?: { hasNextPage?: unknown; endCursor?: unknown };
-          };
-        } | null;
-      };
-      const data = await this.graphQL<DiscussionsData>(DISCUSSIONS_QUERY, {
+      const data: DiscussionsData = await this.graphQL<DiscussionsData>(DISCUSSIONS_QUERY, {
         owner: this.owner,
         repo: this.repo,
         after,
       });
-      const connection = data?.repository?.discussions;
+      const connection: DiscussionConnectionPage | undefined = data.repository?.discussions;
       if (!connection || !Array.isArray(connection.nodes) || !isObject(connection.pageInfo)) {
         return fail('Discussion list response was malformed');
       }
@@ -268,8 +269,8 @@ export class GitHubOutreachClient {
       body: requireString(body, 'Discussion body'),
     };
     type CreateData = { createDiscussion?: { discussion?: unknown } | null };
-    const data = await this.graphQL<CreateData>(CREATE_DISCUSSION_MUTATION, variables);
-    const discussion = data?.createDiscussion?.discussion;
+    const data: CreateData = await this.graphQL<CreateData>(CREATE_DISCUSSION_MUTATION, variables);
+    const discussion = data.createDiscussion?.discussion;
     if (!discussion) return fail('createDiscussion did not return a Discussion');
     return normalizeDiscussion(discussion);
   }
