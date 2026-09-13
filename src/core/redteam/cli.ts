@@ -114,8 +114,9 @@ export async function handleRedTeamCli(argv: string[]): Promise<number> {
     const force = remainingArgs.includes('--force');
     const generateCompose = !remainingArgs.includes('--no-compose');
     const generateMcp = !remainingArgs.includes('--no-mcp');
+    const generateScope = !remainingArgs.includes('--no-scope');
 
-    const result = runRedTeamSetup({ force, generateCompose, generateMcp });
+    const result = runRedTeamSetup({ force, generateCompose, generateMcp, generateScope });
 
     if (outputFormat === 'json') {
       console.log(JSON.stringify(result, null, 2));

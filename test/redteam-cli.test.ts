@@ -28,6 +28,10 @@ beforeAll(async () => {
 
 afterAll(() => {
   server.close();
+  try {
+    fs.rmSync(path.join(process.cwd(), '.fable/redteam.json'), { force: true });
+    fs.rmSync(path.join(process.cwd(), '.fable/redteam'), { recursive: true, force: true });
+  } catch {}
 });
 
 describe('RedTeam CLI Command', () => {
@@ -58,7 +62,7 @@ describe('RedTeam CLI Command', () => {
 
   test('executes setup subcommand and enforces policy', async () => {
     const isColima = checkColimaForbidden().detected;
-    const code = await handleRedTeamCli(['setup', '--json', '--no-compose', '--no-mcp']);
+    const code = await handleRedTeamCli(['setup', '--json', '--no-compose', '--no-mcp', '--no-scope']);
     expect(code).toBe(isColima ? 1 : 0);
   });
 

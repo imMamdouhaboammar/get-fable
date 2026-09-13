@@ -208,7 +208,6 @@ export function runRedTeamSetup(options: SetupOptions = {}): SetupResult {
     if (!fs.existsSync(scopePath) || options.force) {
       const defaultScope = {
         allowedHosts: ['127.0.0.1', 'localhost'],
-        allowedPorts: [3000, 8000, 8080, 5173, 4173],
         allowLocalhost: true,
         maxRequestsPerSecond: 10,
         safeMode: true,

@@ -99,6 +99,11 @@ describe('RedTeam Deterministic Lab & Live Orchestration Golden Test', () => {
       runRedTeamScan(
         {
           target: `${lab.url.replace(/:\d+$/, ':9999')}`,
+          scopeConfig: {
+            allowedHosts: ['127.0.0.1'],
+            allowedPorts: [lab.port, 9999],
+            allowLocalhost: true,
+          },
           envelope: {
             allowedHosts: ['127.0.0.1'],
             allowedPorts: [lab.port], // only lab port allowed
