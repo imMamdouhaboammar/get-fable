@@ -14,6 +14,7 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 50 | core | `fable-verify` | verifying | Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion. |
 | 60 | proof | `fable-review` | verifying | Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards. |
 | 70 | proof | `fable-security` | verifying | Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs. |
+| 75 | proof | `fable-redteam` | verifying | Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets. |
 | 80 | delivery | `fable-release` | verifying | Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. |
 | 85 | delivery | `fable-handoff` | verifying | Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. |
 | 90 | evolution | `fable-eval` | verifying | Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks. |

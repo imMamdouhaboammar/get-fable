@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-redteam",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/scope-and-safety-rules.md",
+    "references/owasp-api-playbooks.md"
+  ],
+  "templates": [
+    "templates/redteam-finding.template.md"
+  ],
+  "examples": [
+    "examples/redteam-audit-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

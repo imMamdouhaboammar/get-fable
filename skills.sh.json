@@ -61,6 +61,11 @@
       "description": "Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs."
     },
     {
+      "id": "fable-redteam",
+      "path": "skills/fable-redteam/SKILL.md",
+      "description": "Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets."
+    },
+    {
       "id": "fable-release",
       "path": "skills/fable-release/SKILL.md",
       "description": "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts."

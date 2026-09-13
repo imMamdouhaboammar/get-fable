@@ -24,6 +24,9 @@ if (command === 'update') {
   }
 } else if (command === 'announcements') {
   process.exitCode = await runDefaultAnnouncementsCli(args.slice(1), getPackageVersion());
+} else if (command === 'redteam' || command === 'pentest') {
+  const { handleRedTeamCli } = await import('../src/core/redteam/cli.ts');
+  process.exitCode = await handleRedTeamCli(args.slice(1));
 } else {
   await main();
 

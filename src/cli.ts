@@ -94,6 +94,7 @@ import {
   type AgentBehaviorResponseBundle,
 } from './core/agent-behavior-eval.js';
 import { logHeader, logInfo, logError, logSuccess, logWarn, colors } from './utils.js';
+import { handleRedTeamCli } from './core/redteam/cli.js';
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
   'test',
@@ -1063,6 +1064,10 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'feed':
       return runFeedCommand(args.slice(1));
 
+    case 'redteam':
+    case 'pentest':
+      return handleRedTeamCli(args.slice(1));
+
     case 'guide':
     case 'help':
       if (args[1]) {
@@ -1194,6 +1199,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}feed [list|search]${colors.reset}  Discover, search, and inspect available skills in the catalog
   ${colors.yellow}shell [zsh|bash|fish]${colors.reset}Print shell integration script for your terminal
   ${colors.yellow}update [--check]${colors.reset}     Check and apply automatic updates
+  ${colors.yellow}redteam --target <url>${colors.reset}Execute native agentic ethical penetration audit
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
   ${colors.yellow}behavior-eval${colors.reset}        Export oracle-free cases, score provider responses, and inspect evidence

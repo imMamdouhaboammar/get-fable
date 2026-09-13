@@ -4,6 +4,7 @@
   "description": "Independent diff review, code quality audit, and security boundary evaluation.",
   "skills": [
     "fable-review",
-    "fable-security"
+    "fable-security",
+    "fable-redteam"
   ]
 }
