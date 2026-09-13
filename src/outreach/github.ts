@@ -17,6 +17,7 @@ export type GitHubDiscussion = {
   url: string;
   body: string;
   createdAt: string;
+  viewerDidAuthor: boolean;
 };
 
 export type DiscussionCategoryResolution = {
@@ -49,7 +50,7 @@ const DISCUSSIONS_QUERY = `
 query OutreachDiscussions($owner: String!, $repo: String!, $after: String) {
   repository(owner: $owner, name: $repo) {
     discussions(first: 100, after: $after, orderBy: {field: UPDATED_AT, direction: DESC}) {
-      nodes { id number url body createdAt }
+      nodes { id number url body createdAt viewerDidAuthor }
       pageInfo { hasNextPage endCursor }
     }
   }
@@ -58,7 +59,7 @@ query OutreachDiscussions($owner: String!, $repo: String!, $after: String) {
 const CREATE_DISCUSSION_MUTATION = `
 mutation CreateOutreachDiscussion($repositoryId: ID!, $categoryId: ID!, $title: String!, $body: String!) {
   createDiscussion(input: {repositoryId: $repositoryId, categoryId: $categoryId, title: $title, body: $body}) {
-    discussion { id number url createdAt }
+    discussion { id number url body createdAt viewerDidAuthor }
   }
 }`;
 
@@ -92,14 +93,16 @@ function normalizeIssue(value: unknown): GitHubIssue {
   return issue;
 }
 
-function normalizeDiscussion(value: unknown, includeBody = true): GitHubDiscussion {
+function normalizeDiscussion(value: unknown): GitHubDiscussion {
   if (!isObject(value)) fail('received malformed Discussion data');
+  if (typeof value.viewerDidAuthor !== 'boolean') fail('Discussion viewerDidAuthor is missing');
   return {
     id: requireString(value.id, 'Discussion id'),
     number: requirePositiveInteger(value.number, 'Discussion number'),
     url: requireString(value.url, 'Discussion URL'),
-    body: includeBody ? requireString(value.body, 'Discussion body') : '',
+    body: requireString(value.body, 'Discussion body'),
     createdAt: requireString(value.createdAt, 'Discussion createdAt'),
+    viewerDidAuthor: value.viewerDidAuthor,
   };
 }
 
@@ -211,6 +214,7 @@ export class GitHubOutreachClient {
 
   async findDiscussionByIssueMarker(issueNumber: number): Promise<GitHubDiscussion | null> {
     const marker = discussionIssueMarker(issueNumber);
+    const matches: GitHubDiscussion[] = [];
     let after: string | null = null;
 
     for (let page = 1; page <= MAX_GRAPHQL_PAGES; page += 1) {
@@ -234,11 +238,14 @@ export class GitHubOutreachClient {
 
       for (const node of connection.nodes) {
         const discussion = normalizeDiscussion(node);
-        if (discussion.body.includes(marker)) return discussion;
+        if (discussion.body.includes(marker) && discussion.viewerDidAuthor) {
+          matches.push(discussion);
+          if (matches.length > 1) fail('multiple relay-authored Discussions contain the same source-Issue marker');
+        }
       }
 
       const hasNextPage = connection.pageInfo.hasNextPage;
-      if (hasNextPage === false) return null;
+      if (hasNextPage === false) return matches[0] ?? null;
       if (hasNextPage !== true || typeof connection.pageInfo.endCursor !== 'string' || connection.pageInfo.endCursor.length === 0) {
         return fail('Discussion pagination state was malformed');
       }
@@ -264,7 +271,7 @@ export class GitHubOutreachClient {
     const data = await this.graphQL<CreateData>(CREATE_DISCUSSION_MUTATION, variables);
     const discussion = data?.createDiscussion?.discussion;
     if (!discussion) return fail('createDiscussion did not return a Discussion');
-    return normalizeDiscussion(discussion, false);
+    return normalizeDiscussion(discussion);
   }
 
   async updateIssueBody(issueNumber: number, body: string): Promise<void> {
