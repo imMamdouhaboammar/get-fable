@@ -28,13 +28,13 @@ describe('Auto-Updater Module', () => {
   });
 
   test('orders prereleases before the corresponding stable release', () => {
-    expect(isNewerVersion('1.6.0-rc.1', '1.6.0')).toBe(true);
-    expect(isNewerVersion('1.6.0', '1.6.0-rc.1')).toBe(false);
+    expect(isNewerVersion('1.6.1-rc.1', '1.6.1')).toBe(true);
+    expect(isNewerVersion('1.6.1', '1.6.1-rc.1')).toBe(false);
   });
 
   test('rejects invalid semantic versions instead of coercing them', () => {
-    expect(() => isNewerVersion('not-a-version', '1.6.0')).toThrow();
-    expect(() => isNewerVersion('1.6.0', 'still-not-a-version')).toThrow();
+    expect(() => isNewerVersion('not-a-version', '1.6.1')).toThrow();
+    expect(() => isNewerVersion('1.6.1', 'still-not-a-version')).toThrow();
   });
 
   test('rejects an invalid current version instead of converting it to a no-update result', async () => {
@@ -81,7 +81,7 @@ describe('Auto-Updater Module', () => {
     }) as typeof fetch;
 
     try {
-      const result = await fetchLatestVersion('1.6.0', 100, {
+      const result = await fetchLatestVersion('1.6.1', 100, {
         cachePath: tempCachePath(),
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input: string) => {
@@ -104,7 +104,7 @@ describe('Auto-Updater Module', () => {
         },
       });
 
-      expect(result.currentVersion).toBe('1.6.0');
+      expect(result.currentVersion).toBe('1.6.1');
       expect(result.latestVersion).toBe('1.7.0');
       expect(result.updateAvailable).toBe(true);
       expect(result.channel).toBe('npm');
@@ -121,7 +121,7 @@ describe('Auto-Updater Module', () => {
     process.env.HOME = fakeHomeFile;
 
     try {
-      const result = await fetchLatestVersion('1.6.0', 100, {
+      const result = await fetchLatestVersion('1.6.1', 100, {
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input: string) => {
           if (input === 'https://registry.npmjs.org/get-fable') {
@@ -172,7 +172,7 @@ describe('Auto-Updater Module', () => {
     }) as typeof fs.mkdirSync;
 
     try {
-      const result = await fetchLatestVersion('1.6.0', 100, {
+      const result = await fetchLatestVersion('1.6.1', 100, {
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input: string) => {
           fetchCalled = true;
@@ -216,7 +216,7 @@ describe('Auto-Updater Module', () => {
             ok: true,
             status: 200,
             async json() {
-              return { 'dist-tags': { latest: '1.6.0' }, versions: {} };
+              return { 'dist-tags': { latest: '1.6.1' }, versions: {} };
             },
           };
         }
@@ -230,8 +230,8 @@ describe('Auto-Updater Module', () => {
       },
     };
 
-    const fresh = await fetchLatestVersion('1.6.0', 100, deps);
-    expect(fresh.latestVersion).toBe('1.6.0');
+    const fresh = await fetchLatestVersion('1.6.1', 100, deps);
+    expect(fresh.latestVersion).toBe('1.6.1');
 
     const cached = await fetchLatestVersion('1.5.2', 100, {
       ...deps,
@@ -241,7 +241,7 @@ describe('Auto-Updater Module', () => {
     });
 
     expect(cached.currentVersion).toBe('1.5.2');
-    expect(cached.latestVersion).toBe('1.6.0');
+    expect(cached.latestVersion).toBe('1.6.1');
     expect(cached.updateAvailable).toBe(true);
     expect(cached.channel).toBe('npm');
   });
@@ -257,7 +257,7 @@ describe('Auto-Updater Module', () => {
         fetchedAt: '2026-08-28T19:00:00.000Z',
         expiresAt: '2026-08-28T21:00:00.000Z',
         value: {
-          currentVersion: '1.6.0',
+          currentVersion: '1.6.1',
           latestVersion: 'not-a-version',
           updateAvailable: true,
           checkedAt: '2026-08-28T19:00:00.000Z',
@@ -291,7 +291,7 @@ describe('Auto-Updater Module', () => {
         fetchedAt: '2026-08-27T19:00:00.000Z',
         expiresAt: '2026-08-28T19:00:00.000Z',
         value: {
-          currentVersion: '1.6.0',
+          currentVersion: '1.6.1',
           latestVersion: '9.9.9',
           updateAvailable: true,
           checkedAt: '2026-08-27T19:00:00.000Z',

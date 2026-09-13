@@ -2,6 +2,15 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [1.6.1] - 2026-09-13
+
+### Highlights
+
+- **Prebuilt DSH Plugin Bundles & Zero-Build Installation**:
+  - Included prebuilt runtime bundles (`dist/index.js`, `dist/cli.js`, `dist/client.js`) in repository and npm package distribution, enabling instantaneous zero-build installation on DeepSeek Harness / Cordis without hitting the default `allowBuilds` security block.
+  - Added native `dsh.plugin.json` declaring `get-fable` plugin with prebuilt entrypoints, browser client export, and `"build": false`.
+  - Updated upstream DeepSeek Harness catalog manifest (`data/plugins/imMamdouhaboammar__get-fable.yml`) with full 26-skill canonical lifecycle routing and interactive web dashboard.
+
 ## [1.6.0] - 2026-09-13
 
 ### Highlights

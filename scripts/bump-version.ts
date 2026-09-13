@@ -115,6 +115,7 @@ replaceInFile('test/announcement-cli.test.ts', new RegExp(OLD_VERSION, 'g'), NEW
 replaceInFile('test/passive-announcements.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
 replaceInFile('test/update-release-source.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
 replaceInFile('docs/PLUGIN.md', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('src/dsh/api.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
 replaceInFile('public/llms.txt', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
 
 console.log(`\n🎉 Successfully bumped version from ${OLD_VERSION} to ${NEW_VERSION}!`);

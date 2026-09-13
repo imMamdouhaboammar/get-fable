@@ -6422,7 +6422,7 @@ function createFableApiHandler(projectRoot = process.cwd()) {
         issuesCount = 1;
       }
       const unverifiedMutations = state && state.mutationGeneration > 0 ? Math.max(0, state.mutationGeneration - Math.max(0, state.verifiedGeneration)) : 0;
-      let pkgVersion = "1.6.0";
+      let pkgVersion = "1.6.1";
       try {
         const pkg = JSON.parse(fs23.readFileSync(path23.join(projectRoot, "package.json"), "utf-8"));
         if (pkg.version)

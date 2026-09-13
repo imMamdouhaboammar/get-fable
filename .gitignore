@@ -8,3 +8,4 @@ coverage/
 
 # Ignore VS Code AI instructions
 .github/instructions/codacy.instructions.md
+.fable/events.jsonl

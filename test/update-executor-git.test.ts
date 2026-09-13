@@ -5,8 +5,8 @@ import type { LockHandle } from '../src/core/update/lock.ts';
 
 function gitPlan(): UpdatePlan {
   return {
-    currentVersion: '1.6.0',
-    targetVersion: '1.6.0',
+    currentVersion: '1.6.1',
+    targetVersion: '1.6.1',
     installation: {
       method: 'git-checkout',
       executablePath: '/workspace/get-fable/bin/get-fable.js',
@@ -29,7 +29,7 @@ function handle(): LockHandle {
       token: 'owner-token',
       pid: 4242,
       acquiredAt: '2026-09-12T12:00:00.000Z',
-      targetVersion: '1.6.0',
+      targetVersion: '1.6.1',
       installationMethod: 'git-checkout',
     },
   };
@@ -40,8 +40,8 @@ function gitSuccess(): UpdateReceipt {
     success: true,
     outcome: 'success',
     strategy: 'git-checkout',
-    targetVersion: '1.6.0',
-    verifiedVersion: '1.6.0',
+    targetVersion: '1.6.1',
+    verifiedVersion: '1.6.1',
     message: 'updated',
   };
 }
@@ -49,7 +49,7 @@ function gitSuccess(): UpdateReceipt {
 function deps(overrides: Partial<ExecutorDeps> = {}): ExecutorDeps {
   return {
     run: () => ({ status: 0, stdout: '', stderr: '' }),
-    verifyInstalledVersion: () => '1.6.0',
+    verifyInstalledVersion: () => '1.6.1',
     acquireLock: () => handle(),
     releaseLock: () => {},
     executeGitUpdate: () => gitSuccess(),
@@ -136,7 +136,7 @@ describe('explicit executor Git delegation', () => {
 
     expect(receipt.success).toBe(false);
     expect(receipt.outcome).toBe('release-failure');
-    expect(receipt.verifiedVersion).toBe('1.6.0');
+    expect(receipt.verifiedVersion).toBe('1.6.1');
     expect(receipt.message).not.toContain('unlink detail');
   });
 });

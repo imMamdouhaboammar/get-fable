@@ -1,6 +1,6 @@
 {
   "name": "get-fable",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A portable coding lifecycle for AI agents with deterministic routing across 26 skills, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
   "main": "./dist/index.js",
