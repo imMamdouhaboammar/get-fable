@@ -79,11 +79,11 @@ function countOccurrences(text: string, needle: string): number {
 
 function parseCandidate(value: unknown): string {
   const candidate = requireString(value, 'candidate', { max: 39 });
-  if (!CANDIDATE_RE.test(candidate)) {
-    fail('candidate must be a valid GitHub username');
-  }
   if (/\[bot\]$/i.test(candidate) || /(?:^|-)bot$/i.test(candidate)) {
     fail('candidate must not be a bot account');
+  }
+  if (!CANDIDATE_RE.test(candidate)) {
+    fail('candidate must be a valid GitHub username');
   }
   return candidate;
 }
