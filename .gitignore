@@ -6,3 +6,6 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# Ignore VS Code AI instructions
+.github/instructions/codacy.instructions.md
