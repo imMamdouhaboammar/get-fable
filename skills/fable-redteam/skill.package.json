@@ -7,7 +7,9 @@
   ],
   "references": [
     "references/scope-and-safety-rules.md",
-    "references/owasp-api-playbooks.md"
+    "references/owasp-api-playbooks.md",
+    "references/claude-red-tactics.md",
+    "references/tool-orchestration.md"
   ],
   "templates": [
     "templates/redteam-finding.template.md"

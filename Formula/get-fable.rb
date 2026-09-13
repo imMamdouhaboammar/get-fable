@@ -2,7 +2,7 @@ class GetFable < Formula
   desc "Coding lifecycle discipline and situational awareness for AI coding agents"
   homepage "https://github.com/imMamdouhaboammar/get-fable"
   url "https://github.com/imMamdouhaboammar/get-fable/archive/refs/heads/master.tar.gz"
-  version "1.5.1"
+  version "1.6.0"
   license "MIT"
 
   depends_on "bun"

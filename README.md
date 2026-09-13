@@ -14,13 +14,13 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
-**25 connected Skills · routing · research · planning · TDD · verification · review · recovery · DSH plugin · release**
+**26 connected Skills · routing · research · planning · TDD · verification · review · redteam · recovery · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
 ```
 
-[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#25-skills-one-way-of-working) · [Docs](#documentation)
+[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#26-skills-one-way-of-working) · [Docs](#documentation)
 
 </div>
 
@@ -208,7 +208,7 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 ---
 
-## 25 Skills. One way of working.
+## 26 Skills. One way of working.
 
 ### Understand the work
 
@@ -237,6 +237,8 @@ Every canonical Skill carries complete operational knowledge and architecture di
 `fable-review` — inspect the actual diff for concrete failure scenarios instead of style-comment theater.
 
 `fable-security` — trace attacker-controlled input across trust boundaries and validate findings skeptically.
+
+`fable-redteam` — run enterprise-grade automated penetration testing, CVSS v3.1 scoring, circuit breaker protection, SARIF reports, and cryptographic run attestations.
 
 `fable-simulator` — compare against an independent oracle without confusing simulation with production proof.
 
@@ -470,6 +472,16 @@ Check installation, contracts, and evidence state:
 
 ```bash
 get-fable doctor
+```
+
+Run automated security audits and red teaming:
+
+```bash
+# Scan staging endpoints with API logic probes
+get-fable redteam scan --target http://127.0.0.1:3000 --profile api-logic
+
+# CI/CD regression gating with baseline diffing and CVSS threshold
+get-fable redteam scan --target http://127.0.0.1:3000 --baseline .fable/baseline.json --fail-on-cvss 7.0
 ```
 
 > 📖 **Full Multi-Host & Platform Guide**: See [docs/INSTALLATION.md](./docs/INSTALLATION.md) for detailed configuration of hooks, shell completions, and individual agent environments.

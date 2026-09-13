@@ -27,7 +27,7 @@ const acquisition: AnnouncementAcquisitionResult = {
 
 function context(overrides: Partial<PassiveAnnouncementContext> = {}): PassiveAnnouncementContext {
   return {
-    currentVersion: '1.5.1',
+    currentVersion: '1.6.0',
     command: 'status',
     autoCheck: true,
     isCI: false,

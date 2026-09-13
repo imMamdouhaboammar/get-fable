@@ -53,41 +53,53 @@ Provide an automated, reproducible offensive security audit engine to prove whet
 ## Inputs
 - `target`: Target HTTP/HTTPS URL.
 - `profile`: Scan depth (`passive`, `api-logic`, `comprehensive`).
-- `scopeConfig`: Optional custom scope JSON (defaults to `.fable/redteam.json` or local safe defaults).
+- `scopeConfig`: Optional custom scope JSON (defaults to `.fable/redteam.json` or local safe defaults). Supports `allowedCidrs`, `maintenanceWindow`, and automatic cloud metadata protection (`169.254.169.254`).
 - `authToken`: Optional Bearer token for authenticated API probes.
+- `baseline`: Optional path to prior `.fable/redteam-findings.json` for regression diffing.
+- `failOnCvss`: Optional numeric CVSS v3.1 threshold (e.g. 7.0) to exit with status code 1 on CI/CD security violations.
+- `suppress`: Optional list of finding fingerprints or IDs to ignore.
 
 ## Expected Outputs
-- `redteam_findings`: Array of validated vulnerability findings with CWE IDs, descriptions, and reproduction curl commands.
-- `docs/security/REDTEAM_REPORT.md`: Comprehensive Markdown audit report.
+- `redteam_findings`: Array of validated vulnerability findings with CWE IDs, automated CVSS v3.1 vectors, numeric base scores, compliance taxonomy tags, and reproduction curl commands.
+- `docs/security/REDTEAM_REPORT.md`: Comprehensive Markdown audit report with executive risk scorecard (A-F), MTTR estimate, and finding breakdowns.
+- `docs/security/REDTEAM_REPORT.sarif`: OASIS SARIF v2.1.0 report for GitHub Advanced Security and enterprise SIEM/SOAR ingestion.
+- `.fable/run-attestation.json`: Cryptographic SHA-256 tamper-evident attestation record.
 - `remediation_cards`: Actionable Fable work cards ready for `.fable/LEDGER.md`.
 
 ## Procedure
-1. **Scope Preflight:** Verify the target URL against allowed host patterns, ports, and excluded paths. Fail closed immediately if target is out of scope.
+1. **Scope Preflight:** Verify the target URL against allowed host patterns, CIDR subnets, and excluded paths. Enforce cloud metadata guard (`169.254.169.254`) and active maintenance windows. Fail closed immediately if target is out of scope.
 2. **Reconnaissance & Passive Probing:** Inspect security headers, CORS origin reflections with credentials, and sensitive file exposures (`.env`, `.git/HEAD`).
 3. **API Logic & Auth Boundary Testing:** When `authToken` is provided, test endpoint behavior under token absence, token tampering, and privilege transitions.
-4. **Evidence Synthesis:** For each detected vulnerability, capture status codes, response headers, and generate a reproducible `curl` command.
-5. **Work Card Generation:** Convert validated findings into structured remediation cards for `$fable-plan` and `$fable-tdd`.
+4. **Adaptive Throttling & Circuit Breaker:** The request envelope monitors target health. On HTTP 429, it applies exponential backoff with randomized jitter. If target returns 502/503/504 errors beyond the threshold, the circuit breaker opens to protect target availability.
+5. **Correlation & Scoring:** Calculate CVSS v3.1 vector and numeric base score for each finding. Map findings against OWASP Top 10, OWASP API Top 10, PCI-DSS v4.0, and SOC 2 Type II. If a baseline is provided, compute new, fixed, and persistent regressions.
+6. **Evidence Synthesis & Attestation:** Record status codes, response headers, reproducible `curl` commands, and sign the scan run into a cryptographic SHA-256 attestation digest.
+7. **Work Card Generation:** Convert validated findings into structured remediation cards for `$fable-plan` and `$fable-tdd`.
 
 ## Decision Rules
-- If a target host does not match `allowedHosts` or loopback defaults, refuse execution immediately without network calls.
+- If a target host does not match `allowedHosts`, `allowedCidrs`, or loopback defaults, refuse execution immediately without network calls.
+- If target resolves to cloud instance metadata (`169.254.169.254`), abort immediately.
 - If `safe-mode` is active, never execute database-dropping SQL payloads or unbounded fuzz loops.
-- If a critical exposure (e.g. leaked `.env`) is discovered, flag with CRITICAL severity and prioritize immediate reverse-proxy blocking.
+- If circuit breaker trips to OPEN state, abort probe operations gracefully and report partial findings.
+- If `--fail-on-cvss` is set and any unsuppressed finding meets or exceeds the threshold, exit with non-zero failure status for CI/CD gates.
 - When all findings are resolved, transition to `fable-verify` or `fable-release`.
 
 ## Tool Policy
 - Use native TS HTTP probe (`src/core/redteam/probe.ts`) for zero-dependency execution across any host.
-- Optional external tools (Nuclei, Nmap, FFuf) may be invoked via the tool adapter when installed.
+- Optional external tools (Nuclei, Nmap, FFuf, Akto, HexStrike, CyberStrike, PentAGI, PentestAgent) may be orchestrated via adapters when available.
 - Never write credentials or sensitive data into git-tracked files or public logs.
 
 ## Evidence Requirements
-- Findings must include the exact target URL, HTTP status code, and reproducible `curl` commands.
+- Findings must include the exact target URL, HTTP status code, CVSS v3.1 vector/score, compliance tags, and reproducible `curl` commands.
 - Repaired vulnerabilities require a negative re-scan proving the attack vector now returns 401/403/404.
+- Cryptographic run attestation verifies findings integrity.
 
 ## Failure Handling
 - On network connection errors or target timeouts, record the failure as an unresolved endpoint rather than a false negative.
-- If rate limits are encountered, throttle request frequency or pause execution.
+- If rate limits are encountered, throttle request frequency or pause execution with backoff.
+- On repeated target server errors, trigger the circuit breaker to prevent cascading denial-of-service.
 
 ## Completion Criteria
 - Complete execution of the selected scan profile.
-- Generated Markdown report at `docs/security/REDTEAM_REPORT.md`.
+- Generated Markdown report at `docs/security/REDTEAM_REPORT.md` and SARIF at `docs/security/REDTEAM_REPORT.sarif`.
+- Generated run attestation at `.fable/run-attestation.json`.
 - Remediation work cards formatted for `.fable/LEDGER.md`.

@@ -26,6 +26,7 @@ describe('canonical skill registry', () => {
       'fable-verify',
       'fable-review',
       'fable-security',
+      'fable-redteam',
       'fable-release',
       'fable-handoff',
       'fable-eval',

@@ -5,7 +5,7 @@ import type { LockHandle } from '../src/core/update/lock.ts';
 
 function gitPlan(): UpdatePlan {
   return {
-    currentVersion: '1.5.1',
+    currentVersion: '1.6.0',
     targetVersion: '1.6.0',
     installation: {
       method: 'git-checkout',
