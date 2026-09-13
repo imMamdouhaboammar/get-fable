@@ -25,7 +25,8 @@
     { "id": "fable-simulator", "pack": "system", "phase": "verifying", "label": "Independent Oracle & Contract Simulator" },
     { "id": "fable-cowork", "pack": "system", "phase": "executing", "label": "Autonomous Cowork Execution Mode" },
     { "id": "fable-spark", "pack": "system", "phase": "idle", "label": "Situational Awareness Next-Move Predictor" },
-    { "id": "fable-skill-creator", "pack": "creator", "phase": "executing", "label": "Autonomous Skill Creator & Optimizer" }
+    { "id": "fable-skill-creator", "pack": "creator", "phase": "executing", "label": "Autonomous Skill Creator & Optimizer" },
+    { "id": "fable-redteam", "pack": "proof", "phase": "verifying", "label": "Ethical RedTeam & Pentest Engine" }
   ],
   "edges": [
     { "source": "get-fable", "target": "fable-discover", "relation": "continuation", "weight": 1.0 },
@@ -71,6 +72,9 @@
     { "source": "fable-spark", "target": "get-fable", "relation": "peer", "weight": 1.0 },
     { "source": "fable-skill-creator", "target": "fable-eval", "relation": "continuation", "weight": 1.0 },
     { "source": "fable-skill-creator", "target": "fable-verify", "relation": "continuation", "weight": 0.9 },
-    { "source": "fable-skill-creator", "target": "fable-review", "relation": "continuation", "weight": 0.8 }
+    { "source": "fable-skill-creator", "target": "fable-review", "relation": "continuation", "weight": 0.8 },
+    { "source": "fable-security", "target": "fable-redteam", "relation": "peer", "weight": 0.9 },
+    { "source": "fable-redteam", "target": "fable-plan", "relation": "continuation", "weight": 1.0 },
+    { "source": "fable-redteam", "target": "fable-tdd", "relation": "continuation", "weight": 0.9 }
   ]
 }

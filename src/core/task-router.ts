@@ -40,7 +40,7 @@ function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
   if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator') return 'review';
-  if (skill === 'fable-security') return 'security';
+  if (skill === 'fable-security' || skill === 'fable-redteam') return 'security';
   if (skill === 'fable-release') return 'release';
   if (skill === 'fable-handoff') return 'handoff';
   if (skill === 'fable-eval' || skill === 'fable-loop') return 'eval';
@@ -143,6 +143,15 @@ export function routeTask(
     )
   ) {
     addSignal(scores, reasons, 'fable-security', 9, 'task crosses an explicit security or trust boundary');
+  }
+
+  if (
+    has(
+      text,
+      /\bredteam\b|\bpentest\b|penetration test|offensive security|security audit|attack graph|idor probe|vulnerability discovery/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-redteam', 10, 'task asks for offensive security testing, penetration testing, or red teaming');
   }
 
   if (

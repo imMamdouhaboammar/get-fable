@@ -45,7 +45,8 @@
         "fable-simulator",
         "fable-cowork",
         "fable-spark",
-        "fable-skill-creator"
+        "fable-skill-creator",
+        "fable-redteam"
       ],
       "keywords": [
         "fable",
@@ -404,7 +405,8 @@
       "next": [
         "fable-release",
         "fable-execute",
-        "fable-recover"
+        "fable-recover",
+        "fable-redteam"
       ],
       "keywords": [
         "security",
@@ -414,6 +416,50 @@
         "vulnerability",
         "audit",
         "injection"
+      ]
+    },
+    {
+      "id": "fable-redteam",
+      "order": 75,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets.",
+      "intents": [
+        "redteam",
+        "pentest",
+        "security-audit",
+        "vulnerability-discovery"
+      ],
+      "requires": [
+        "target_in_scope"
+      ],
+      "produces": [
+        "redteam_findings",
+        "remediation_cards"
+      ],
+      "gates": [
+        "scope_verified",
+        "non_destructive_mode"
+      ],
+      "fallback": "fable-security",
+      "mutatesWorkspace": false,
+      "parallelSafe": true,
+      "next": [
+        "fable-plan",
+        "fable-tdd",
+        "fable-security",
+        "fable-recover"
+      ],
+      "keywords": [
+        "redteam",
+        "pentest",
+        "penetration-testing",
+        "ethical-hacking",
+        "vulnerability",
+        "exploit",
+        "idor",
+        "injection",
+        "owasp"
       ]
     },
     {

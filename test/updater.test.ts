@@ -81,7 +81,7 @@ describe('Auto-Updater Module', () => {
     }) as typeof fetch;
 
     try {
-      const result = await fetchLatestVersion('1.5.1', 100, {
+      const result = await fetchLatestVersion('1.6.0', 100, {
         cachePath: tempCachePath(),
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input: string) => {
@@ -90,7 +90,7 @@ describe('Auto-Updater Module', () => {
               ok: true,
               status: 200,
               async json() {
-                return { 'dist-tags': { latest: '1.6.0' }, versions: {} };
+                return { 'dist-tags': { latest: '1.7.0' }, versions: {} };
               },
             };
           }
@@ -104,8 +104,8 @@ describe('Auto-Updater Module', () => {
         },
       });
 
-      expect(result.currentVersion).toBe('1.5.1');
-      expect(result.latestVersion).toBe('1.6.0');
+      expect(result.currentVersion).toBe('1.6.0');
+      expect(result.latestVersion).toBe('1.7.0');
       expect(result.updateAvailable).toBe(true);
       expect(result.channel).toBe('npm');
       expect(result.checkedAt).toBe('2026-08-28T20:00:00.000Z');
@@ -121,7 +121,7 @@ describe('Auto-Updater Module', () => {
     process.env.HOME = fakeHomeFile;
 
     try {
-      const result = await fetchLatestVersion('1.5.1', 100, {
+      const result = await fetchLatestVersion('1.6.0', 100, {
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input: string) => {
           if (input === 'https://registry.npmjs.org/get-fable') {
@@ -129,7 +129,7 @@ describe('Auto-Updater Module', () => {
               ok: true,
               status: 200,
               async json() {
-                return { 'dist-tags': { latest: '1.6.0' }, versions: {} };
+                return { 'dist-tags': { latest: '1.7.0' }, versions: {} };
               },
             };
           }
@@ -143,7 +143,7 @@ describe('Auto-Updater Module', () => {
         },
       });
 
-      expect(result.latestVersion).toBe('1.6.0');
+      expect(result.latestVersion).toBe('1.7.0');
       expect(result.updateAvailable).toBe(true);
     } finally {
       if (originalHome === undefined) delete process.env.HOME;
@@ -172,7 +172,7 @@ describe('Auto-Updater Module', () => {
     }) as typeof fs.mkdirSync;
 
     try {
-      const result = await fetchLatestVersion('1.5.1', 100, {
+      const result = await fetchLatestVersion('1.6.0', 100, {
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input: string) => {
           fetchCalled = true;
@@ -181,7 +181,7 @@ describe('Auto-Updater Module', () => {
               ok: true,
               status: 200,
               async json() {
-                return { 'dist-tags': { latest: '1.6.0' }, versions: {} };
+                return { 'dist-tags': { latest: '1.7.0' }, versions: {} };
               },
             };
           }
@@ -197,7 +197,7 @@ describe('Auto-Updater Module', () => {
 
       expect(cacheMkdirAttempted).toBe(true);
       expect(fetchCalled).toBe(true);
-      expect(result.latestVersion).toBe('1.6.0');
+      expect(result.latestVersion).toBe('1.7.0');
       expect(result.updateAvailable).toBe(true);
     } finally {
       fs.existsSync = originalExistsSync;
@@ -230,7 +230,7 @@ describe('Auto-Updater Module', () => {
       },
     };
 
-    const fresh = await fetchLatestVersion('1.5.1', 100, deps);
+    const fresh = await fetchLatestVersion('1.6.0', 100, deps);
     expect(fresh.latestVersion).toBe('1.6.0');
 
     const cached = await fetchLatestVersion('1.5.2', 100, {
@@ -257,7 +257,7 @@ describe('Auto-Updater Module', () => {
         fetchedAt: '2026-08-28T19:00:00.000Z',
         expiresAt: '2026-08-28T21:00:00.000Z',
         value: {
-          currentVersion: '1.5.1',
+          currentVersion: '1.6.0',
           latestVersion: 'not-a-version',
           updateAvailable: true,
           checkedAt: '2026-08-28T19:00:00.000Z',
@@ -291,7 +291,7 @@ describe('Auto-Updater Module', () => {
         fetchedAt: '2026-08-27T19:00:00.000Z',
         expiresAt: '2026-08-28T19:00:00.000Z',
         value: {
-          currentVersion: '1.5.1',
+          currentVersion: '1.6.0',
           latestVersion: '9.9.9',
           updateAvailable: true,
           checkedAt: '2026-08-27T19:00:00.000Z',

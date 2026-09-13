@@ -23,6 +23,8 @@ _get_fable() {
     'status:Report installation status'
     'update:Inspect or apply explicit get-fable updates'
     'announcements:List, show, dismiss, or refresh data-only notices'
+    'redteam:Execute native agentic ethical penetration audit'
+    'pentest:Alias for redteam ethical penetration audit'
     'assets:List historical bundled assets'
     'prompt:Print compatibility execution prompt'
     'version:Print installed get-fable version'

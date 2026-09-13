@@ -6,7 +6,7 @@ _get_fable_completion() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-  commands="install install-antigravity install-grok install-codex install-cursor install-git-hooks init route spark state mutation card evidence doctor shell serve lint status update announcements assets prompt version help"
+  commands="install install-antigravity install-grok install-codex install-cursor install-git-hooks init route spark state mutation card evidence doctor shell serve lint status update announcements redteam pentest assets prompt version help"
 
   if [ $COMP_CWORD -eq 1 ]; then
     COMPREPLY=( $(compgen -W "${commands}" -- ${cur}) )

@@ -58,6 +58,7 @@ function createFixture(): GitFixture {
   const checkout = path.join(root, 'checkout');
 
   mustRun('git', ['init', '--bare', remote]);
+  mustRun('git', ['symbolic-ref', 'HEAD', 'refs/heads/master'], remote);
   mustRun('git', ['init', publisher]);
   mustRun('git', ['config', 'user.email', 'tests@example.com'], publisher);
   mustRun('git', ['config', 'user.name', 'Updater Tests'], publisher);

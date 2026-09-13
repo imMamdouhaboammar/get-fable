@@ -51,9 +51,10 @@ describe('DeepSeek Harness (DSH) Plugin Integration', () => {
 
   test('createFableApiHandler provides status, routing, and doctor capabilities', () => {
     const api = createFableApiHandler(repoRoot);
+    const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf-8'));
 
     const status = api.getStatus();
-    expect(status.version).toBe('1.5.1');
+    expect(status.version).toBe(pkg.version);
     expect(typeof status.failureStreak).toBe('number');
     expect(typeof status.unverifiedMutations).toBe('number');
     expect(status.recoveryThreshold).toBe(2);
@@ -110,7 +111,8 @@ describe('DeepSeek Harness (DSH) Plugin Integration', () => {
     };
     await routes['GET /api/fable/status']({}, mockRes);
     expect(jsonResult).toBeDefined();
-    expect(jsonResult.version).toBe('1.5.1');
+    const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf-8'));
+    expect(jsonResult.version).toBe(pkg.version);
     expect(typeof jsonResult.unverifiedMutations).toBe('number');
     expect(jsonResult.recoveryThreshold).toBe(2);
     expect(jsonResult.totalCards).toBeUndefined();

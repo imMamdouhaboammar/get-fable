@@ -33,7 +33,7 @@ describe('stable release source', () => {
   test('uses npm latest as authority and enriches the matching GitHub release', async () => {
     const calls: string[] = [];
     const result = await fetchStableRelease(
-      '1.5.1',
+      '1.6.0',
       {
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input) => {
@@ -67,7 +67,7 @@ describe('stable release source', () => {
   });
 
   test('keeps a valid npm result when GitHub enrichment fails', async () => {
-    const result = await fetchStableRelease('1.5.1', {
+    const result = await fetchStableRelease('1.6.0', {
       now: () => new Date('2026-08-28T20:00:00.000Z'),
       fetch: async (input) => {
         if (input === 'https://registry.npmjs.org/get-fable') {
@@ -86,7 +86,7 @@ describe('stable release source', () => {
     const signals: AbortSignal[] = [];
 
     await fetchStableRelease(
-      '1.5.1',
+      '1.6.0',
       {
         now: () => new Date('2026-08-28T20:00:00.000Z'),
         fetch: async (input, init) => {
@@ -114,7 +114,7 @@ describe('stable release source', () => {
     await expectFailure(
       () =>
         fetchStableRelease(
-          '1.5.1',
+          '1.6.0',
           {
             now: () => new Date('2026-08-28T20:00:00.000Z'),
             fetch: (_input, init) =>
@@ -145,7 +145,7 @@ describe('stable release source', () => {
   test('keeps the timeout active while consuming the npm response body', async () => {
     const outcome = await Promise.race([
       fetchStableRelease(
-        '1.5.1',
+        '1.6.0',
         {
           now: () => new Date('2026-08-28T20:00:00.000Z'),
           fetch: async (_input, init) => ({
@@ -178,7 +178,7 @@ describe('stable release source', () => {
   test('rejects a non-success npm registry response', async () => {
     await expectFailure(
       () =>
-        fetchStableRelease('1.5.1', {
+        fetchStableRelease('1.6.0', {
           now: () => new Date('2026-08-28T20:00:00.000Z'),
           fetch: async () => jsonResponse({ error: 'unavailable' }, 503),
         }),
@@ -189,7 +189,7 @@ describe('stable release source', () => {
   test('rejects malformed npm metadata without a valid latest tag', async () => {
     await expectFailure(
       () =>
-        fetchStableRelease('1.5.1', {
+        fetchStableRelease('1.6.0', {
           now: () => new Date('2026-08-28T20:00:00.000Z'),
           fetch: async () => jsonResponse({ 'dist-tags': { latest: 'not-a-version' }, versions: {} }),
         }),

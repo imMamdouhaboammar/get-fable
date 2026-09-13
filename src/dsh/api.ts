@@ -142,9 +142,15 @@ export function createFableApiHandler(projectRoot: string = process.cwd()) {
         ? Math.max(0, state.mutationGeneration - Math.max(0, state.verifiedGeneration))
         : 0;
 
+      let pkgVersion = '1.5.1';
+      try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.json'), 'utf-8'));
+        if (pkg.version) pkgVersion = pkg.version;
+      } catch {}
+
       return {
         active: state !== null,
-        version: '1.5.1',
+        version: pkgVersion,
         stateSchemaVersion: state ? state.schemaVersion : null,
         activeCard: state ? state.activeCard : null,
         phase: state ? state.phase : 'idle',

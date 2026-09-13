@@ -103,14 +103,17 @@ for (const p of packs) {
 updateJson('tools/adapters/generic/index.json', (j) => { j.version = NEW_VERSION; });
 
 // 5. Formula
-replaceInFile('Formula/get-fable.rb', `version "${OLD_VERSION}"`, `version "${NEW_VERSION}"`);
-replaceInFile('Formula/get-fable.rb', `v${OLD_VERSION}.tar.gz`, `v${NEW_VERSION}.tar.gz`);
+replaceInFile('Formula/get-fable.rb', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
 
 // 6. Tests & docs
-replaceInFile('test/cli.test.ts', `expect(getPackageVersion()).toBe('${OLD_VERSION}');`, `expect(getPackageVersion()).toBe('${NEW_VERSION}');`);
-replaceInFile('test/updater.test.ts', `expect(result.currentVersion).toBe('${OLD_VERSION}');`, `expect(result.currentVersion).toBe('${NEW_VERSION}');`);
-replaceInFile('test/updater.test.ts', `fetchLatestVersion('${OLD_VERSION}', 2000);`, `fetchLatestVersion('${NEW_VERSION}', 2000);`);
-replaceInFile('docs/PLUGIN.md', `\`get-fable\` ${OLD_VERSION}`, `\`get-fable\` ${NEW_VERSION}`);
-replaceInFile('public/llms.txt', `\`get-fable\` ${OLD_VERSION}`, `\`get-fable\` ${NEW_VERSION}`);
+replaceInFile('test/cli.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('test/updater.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('test/update-executor.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('test/update-executor-git.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('test/announcement-cli.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('test/passive-announcements.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('test/update-release-source.test.ts', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('docs/PLUGIN.md', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
+replaceInFile('public/llms.txt', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
 
 console.log(`\n🎉 Successfully bumped version from ${OLD_VERSION} to ${NEW_VERSION}!`);
