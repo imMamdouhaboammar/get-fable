@@ -1,76 +1,15 @@
 {
   "schemaVersion": 3,
-  "phase": "complete",
+  "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
-  "substantial": true,
+  "substantial": false,
   "lastDecision": null,
-  "evidence": [
-    {
-      "kind": "test",
-      "source": "test/dsh-plugin.test.ts",
-      "result": "pass",
-      "detail": "DSH prebuilt artifacts, native dsh.plugin.json, and manifest version updated and verified",
-      "repositoryRevision": "14f9a8d0a37b8f3463f229dce07a958e7c541f53",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 0,
-      "timestamp": "2026-09-13T13:13:31.321Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "test",
-      "source": "test/dsh-plugin.test.ts",
-      "result": "pass",
-      "detail": "Walkthrough documented and verified",
-      "repositoryRevision": "917a1a43ae9251f8d9c2ebe04960e78bbd60511f",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 1,
-      "timestamp": "2026-09-13T13:17:36.003Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "test",
-      "source": "test/dsh-plugin.test.ts",
-      "result": "pass",
-      "detail": "Verified complete lifecycle",
-      "repositoryRevision": "16ac6362cbb54e85b0784ad96ef93c5cd7545f56",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 2,
-      "timestamp": "2026-09-13T13:19:29.367Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "test",
-      "source": "test/dsh-plugin.test.ts",
-      "result": "pass",
-      "detail": "Verified complete lifecycle",
-      "repositoryRevision": "68e92251bcc40ccc5a5aa83828a4339a758a971f",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 3,
-      "timestamp": "2026-09-13T13:19:41.101Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "test",
-      "source": "test/dsh-plugin.test.ts",
-      "result": "pass",
-      "detail": "Bump to v1.6.1 with prebuilt DSH bundles",
-      "repositoryRevision": "68e92251bcc40ccc5a5aa83828a4339a758a971f",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 7,
-      "timestamp": "2026-09-13T13:45:10.386Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    }
-  ],
-  "stateRevision": 71,
+  "evidence": [],
+  "stateRevision": 6,
   "workspaceId": "4d0a9132c2e476001278e544",
-  "mutationGeneration": 7,
-  "verifiedGeneration": 7,
+  "mutationGeneration": 0,
+  "verifiedGeneration": -1,
   "activeCard": null,
-  "updatedAt": "2026-09-13T13:46:17.251926Z"
+  "updatedAt": "2026-09-13T14:01:46.667855Z"
 }
