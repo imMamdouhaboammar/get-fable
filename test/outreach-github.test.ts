@@ -77,26 +77,53 @@ describe('GitHub outreach client', () => {
     }
   });
 
-  test('finds an existing Discussion by deterministic marker across GraphQL pages', async () => {
+  test('finds a relay-authored Discussion by deterministic marker across GraphQL pages', async () => {
     let page = 0;
     const client = new GitHubOutreachClient({
       token: 'token', owner: 'o', repo: 'r',
       fetch: async (_input, init) => {
         const payload = JSON.parse(String(init?.body));
-        expect(payload.query).toContain('discussions');
+        expect(payload.query).toContain('viewerDidAuthor');
         page += 1;
         if (page === 1) {
           expect(payload.variables.after).toBeNull();
-          return jsonResponse({ data: { repository: { discussions: { nodes: [{ id: 'D_old', number: 1, url: 'https://github.com/o/r/discussions/1', body: 'other', createdAt: '2026-08-01T00:00:00.000Z' }], pageInfo: { hasNextPage: true, endCursor: 'cursor-1' } } } } });
+          return jsonResponse({ data: { repository: { discussions: { nodes: [{ id: 'D_old', number: 1, url: 'https://github.com/o/r/discussions/1', body: 'other', createdAt: '2026-08-01T00:00:00.000Z', viewerDidAuthor: false }], pageInfo: { hasNextPage: true, endCursor: 'cursor-1' } } } } });
         }
         expect(payload.variables.after).toBe('cursor-1');
-        return jsonResponse({ data: { repository: { discussions: { nodes: [{ id: 'D_42', number: 9, url: 'https://github.com/o/r/discussions/9', body: 'text\n<!-- get-fable-outreach:issue-42 -->', createdAt: '2026-09-01T00:00:00.000Z' }], pageInfo: { hasNextPage: false, endCursor: null } } } } });
+        return jsonResponse({ data: { repository: { discussions: { nodes: [{ id: 'D_42', number: 9, url: 'https://github.com/o/r/discussions/9', body: 'text\n<!-- get-fable-outreach:issue-42 -->', createdAt: '2026-09-01T00:00:00.000Z', viewerDidAuthor: true }], pageInfo: { hasNextPage: false, endCursor: null } } } } });
       },
     });
 
     const found = await client.findDiscussionByIssueMarker(42);
     expect(found?.url).toBe('https://github.com/o/r/discussions/9');
     expect(page).toBe(2);
+  });
+
+  test('ignores marker squatting by Discussions not authored by the authenticated relay viewer', async () => {
+    const client = new GitHubOutreachClient({
+      token: 'token', owner: 'o', repo: 'r',
+      fetch: async () => jsonResponse({ data: { repository: { discussions: {
+        nodes: [{ id: 'D_attacker', number: 7, url: 'https://github.com/o/r/discussions/7', body: '<!-- get-fable-outreach:issue-42 -->', createdAt: '2026-09-01T00:00:00.000Z', viewerDidAuthor: false }],
+        pageInfo: { hasNextPage: false, endCursor: null },
+      } } } }),
+    });
+    expect(await client.findDiscussionByIssueMarker(42)).toBeNull();
+  });
+
+  test('fails closed if multiple relay-authored Discussions contain the same marker', async () => {
+    const nodes = [1, 2].map((number) => ({
+      id: `D_${number}`,
+      number,
+      url: `https://github.com/o/r/discussions/${number}`,
+      body: '<!-- get-fable-outreach:issue-42 -->',
+      createdAt: '2026-09-01T00:00:00.000Z',
+      viewerDidAuthor: true,
+    }));
+    const client = new GitHubOutreachClient({
+      token: 'token', owner: 'o', repo: 'r',
+      fetch: async () => jsonResponse({ data: { repository: { discussions: { nodes, pageInfo: { hasNextPage: false, endCursor: null } } } } }),
+    });
+    await expect(client.findDiscussionByIssueMarker(42)).rejects.toThrow('multiple relay-authored');
   });
 
   test('creates a Discussion with static GraphQL source and untrusted values only in variables', async () => {
@@ -110,12 +137,14 @@ describe('GitHub outreach client', () => {
         expect(payload.query).not.toContain(title);
         expect(payload.query).not.toContain(body);
         expect(payload.variables).toEqual({ repositoryId: 'R_1', categoryId: 'C_1', title, body });
-        return jsonResponse({ data: { createDiscussion: { discussion: { id: 'D_1', number: 123, url: 'https://github.com/o/r/discussions/123', createdAt: '2026-09-13T12:00:00.000Z' } } } });
+        return jsonResponse({ data: { createDiscussion: { discussion: { id: 'D_1', number: 123, url: 'https://github.com/o/r/discussions/123', body, createdAt: '2026-09-13T12:00:00.000Z', viewerDidAuthor: true } } } });
       },
     });
 
     const created = await client.createDiscussion('R_1', 'C_1', title, body);
     expect(created.number).toBe(123);
+    expect(created.body).toBe(body);
+    expect(created.viewerDidAuthor).toBe(true);
   });
 
   test('updates only the Issue body with PATCH', async () => {
