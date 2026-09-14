@@ -4,7 +4,7 @@ import { loadSkillFeed, searchSkillFeed, inspectSkillDetail } from '../src/core/
 describe('Skill Feed Engine', () => {
   test('loads complete skill feed containing all canonical skills', () => {
     const feed = loadSkillFeed();
-    expect(feed.length).toBe(26);
+    expect(feed.length).toBe(27);
     const ids = feed.map((s) => s.id);
     expect(ids).toContain('get-fable');
     expect(ids).toContain('fable-discover');
@@ -23,6 +23,7 @@ describe('Skill Feed Engine', () => {
     expect(ids).toContain('fable-cowork');
     expect(ids).toContain('fable-spark');
     expect(ids).toContain('fable-skill-creator');
+    expect(ids).toContain('fable-learning');
   });
 
   test('searches feed by keyword, pack, and gate', () => {

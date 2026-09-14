@@ -6,6 +6,8 @@ describe('supported host capability contract', () => {
     const byId = Object.fromEntries(HOST_CONTRACTS.map((host) => [host.id, host]));
     expect(byId.claude.level).toBe('FULL');
     expect(byId.antigravity.level).toBe('FULL');
+    expect(byId.grok.level).toBe('FULL');
+    expect(byId.grok.hooksRegistered).toBe(true);
     expect(byId.codex.level).toBe('PARTIAL');
     expect(byId.codex.hooksRegistered).toBe(false);
     expect(byId.cursor.level).toBe('ADVISORY');

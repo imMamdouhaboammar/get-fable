@@ -17,12 +17,12 @@ export const HOST_CONTRACTS: readonly HostContract[] = [
   // Full Lifecycle
   { id: 'claude', level: 'FULL', packages: true, nestedResources: true, rules: true, hooksRegistered: true, durableStateAware: true, mutationDetection: true, completionGuard: true, sparkViaCli: true, cliFallback: true },
   { id: 'antigravity', level: 'FULL', packages: true, nestedResources: true, rules: true, hooksRegistered: true, durableStateAware: true, mutationDetection: true, completionGuard: true, sparkViaCli: true, cliFallback: true },
+  { id: 'grok', level: 'FULL', packages: true, nestedResources: true, rules: true, hooksRegistered: true, durableStateAware: true, mutationDetection: true, completionGuard: true, sparkViaCli: true, cliFallback: true },
 
   // Skill + Rule / Partial
   { id: 'codex', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },
   { id: 'opencode', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },
   { id: 'devin', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },
-  { id: 'grok', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },
   { id: 'roocode', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },
   { id: 'cline', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },
   { id: 'openhands', level: 'PARTIAL', packages: true, nestedResources: true, rules: true, hooksRegistered: false, durableStateAware: false, mutationDetection: false, completionGuard: false, sparkViaCli: true, cliFallback: true },

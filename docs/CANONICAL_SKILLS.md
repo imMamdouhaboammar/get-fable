@@ -18,6 +18,7 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 80 | delivery | `fable-release` | verifying | Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. |
 | 85 | delivery | `fable-handoff` | verifying | Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. |
 | 90 | evolution | `fable-eval` | verifying | Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks. |
+| 95 | evolution | `fable-learning` | verifying | Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks. |
 | 100 | core | `fable-recover` | recovering | Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits. |
 | 110 | system | `fable-dataviz` | executing | Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports. |
 | 120 | system | `fable-artifact` | executing | Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components. |

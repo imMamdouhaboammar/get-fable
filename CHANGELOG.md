@@ -2,6 +2,27 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [1.7.0] - 2026-09-14
+
+### Highlights
+
+- **Grok Bot & xAI Provider Adapter (`tools/adapters/grok/`)**:
+  - **Autonomous Grok Bot Integration**: Added official Grok Bot agent persona (`agents/grok-bot.md`) and command-line execution (`get-fable grok "<task>"` and `get-fable grok-bot --status`).
+  - **Full xAI Provider Adapter (`GrokBotAdapter`)**: Implemented complete provider bridge connecting xAI `grok-2-latest` API with offline simulation mode for testing, first-principles truth discovery, and strict TDD enforcement.
+  - **Adapter Parity**: Registered Grok tool adapter in `tools/adapters/grok/index.json`, host contracts, and multi-agent lifecycle hooks.
+
+- **TOON (Token-Optimized Object Notation) Protocol**:
+  - **High-Density Tabular Serialization**: Introduced TOON format with `src/core/toon.ts`, achieving 30–50% token reduction across multi-agent communications.
+  - **Lossless Subagent Delegation & Return Packets**: Shipped `skills/fable-delegate/templates/delegation-contract.toon` and `return-packet.toon` for standardized, fail-closed subagent task delegation.
+  - **Durable State Compaction**: Compacted FableState and evidence arrays into high-density TOON blocks for prompt budget preservation.
+
+- **`fable-learning` Self-Improvement Lifecycle Skill (Evolution Pack)**:
+  - **Autonomous Learning Capture**: Added `fable-learning` canonical skill with dedicated Deep Playbook V2 documentation, templates, and evaluation benchmarks.
+  - **Session-Learning Hook Dispatcher (`hooks/fable_session_learn.py`)**: Automatic extraction of durable lessons, behavioral facts, and tactical playbooks into `.fable/learnings.json` upon task completion.
+
+- **Universal Multi-Agent Host Synchronization (32 Platforms)**:
+  - Updated and synchronized plugin manifests and marketplace definitions across all 32 supported hosts including Claude Code, Google Antigravity, OpenAI Codex, ChatGPT, Cursor, Windsurf, DeepSeek Harness, OpenCode, Devin, Roo Code, Cline, and Kiro.
+
 ## [1.6.1] - 2026-09-13
 
 ### Highlights

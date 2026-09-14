@@ -151,6 +151,11 @@
             "type": "command",
             "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event Stop --handler event",
             "async": true
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event Stop --handler learn",
+            "async": true
           }
         ]
       }
@@ -161,6 +166,11 @@
           {
             "type": "command",
             "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SessionEnd --handler event"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host codex --event SessionEnd --handler learn",
+            "async": true
           }
         ]
       }

@@ -1,0 +1,10 @@
+result:
+  workerId: <worker-name>
+  targetCard: <CARD-ID>
+  status: complete
+  allChecksPassed: true
+mutations[1]{path,action}:
+  <path1>,modified
+verifications[1]{command,result,durationMs}:
+  <command>,pass,100
+notes[1]: Worker summary of concrete actions taken

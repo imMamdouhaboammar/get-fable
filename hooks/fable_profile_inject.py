@@ -73,6 +73,7 @@ def build_context(state, open_items, paused):
         ),
         "Routing priority: recover repeated failure; route explicit trust-boundary work; prove delivery claims; "
         "research current external facts; discover repository unknowns; plan broad work; use test-first behavior changes; execute bounded cards.",
+        "TOON protocol: format inter-agent messages, subagent contracts, and state payloads in ```toon ... ``` with explicit [N] counts.",
         "Completion rule: a newer workspace mutation makes older verification stale; substantial work requires passing completion evidence for the current generation.",
     ]
 

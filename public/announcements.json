@@ -1,5 +1,18 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-12T00:00:00.000Z",
-  "announcements": []
+  "generatedAt": "2026-09-14T08:00:00.000Z",
+  "announcements": [
+    {
+      "id": "release-170",
+      "type": "release",
+      "title": "get-fable 1.7.0: Grok Bot, TOON Protocol & Self-Learning Lifecycle",
+      "message": "v1.7.0 delivers native Grok Bot & xAI adapter integration, token-efficient TOON delegation contracts, and the fable-learning self-evolution skill.",
+      "url": "https://github.com/imMamdouhaboammar/get-fable/releases/tag/v1.7.0",
+      "minVersion": "1.0.0",
+      "maxVersion": "1.7.0",
+      "startsAt": "2026-09-14T00:00:00.000Z",
+      "expiresAt": "2026-10-14T00:00:00.000Z",
+      "display": "once"
+    }
+  ]
 }

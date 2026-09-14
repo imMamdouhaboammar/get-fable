@@ -1,7 +1,7 @@
 {
   "name": "get-fable",
-  "version": "1.6.1",
-  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery across 25 canonical skills.",
+  "version": "1.7.0",
+  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery across 27 canonical skills.",
   "author": {
     "name": "Mamdouh Abo Ammar",
     "url": "https://github.com/imMamdouhaboammar"
@@ -23,11 +23,11 @@
   "interface": {
     "displayName": "get-fable",
     "shortDescription": "AI coding lifecycle",
-    "longDescription": "Routes software work through 25 focused lifecycle skills across 8 packs, keeps durable mutation-aware state in .fable/state.json, and requires fresh evidence before completion.",
+    "longDescription": "Routes software work through 27 focused lifecycle skills across 8 packs, keeps durable mutation-aware state in .fable/state.json, and requires fresh evidence before completion.",
     "developerName": "Mamdouh Abo Ammar",
     "category": "Developer Tools",
     "capabilities": [
-      "Route coding work across 25 canonical lifecycle skills in 8 packs",
+      "Route coding work across 27 canonical lifecycle skills in 8 packs",
       "Track mutation-aware verification and evidence freshness",
       "Use specialized TDD, review, security, and recovery specialists",
       "Run lifecycle hooks across supported Codex and ChatGPT plugin surfaces",

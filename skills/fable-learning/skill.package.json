@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-learning",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/analysis.md",
+    "references/synthesis.md",
+    "references/post-training-signals.md",
+    "references/session-sources.md",
+    "references/skill-compilation.md",
+    "references/confidence-and-drift.md",
+    "references/solution-architecture.md"
+  ],
+  "templates": [
+    "templates/learning-report.template.md",
+    "templates/session-learning.template.md",
+    "templates/solution.template.md",
+    "templates/concept-dictionary.template.md"
+  ],
+  "examples": [
+    "examples/learning-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [
+    "scripts/extract_learnings.py",
+    "scripts/extract_learnings.sh"
+  ],
+  "scriptPolicy": "data-only"
+}

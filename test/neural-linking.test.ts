@@ -7,9 +7,9 @@ import {
 } from '../src/core/neural-linking.ts';
 
 describe('Fable Neural Linking System', () => {
-  test('loads neural graph with 26 nodes and validated connections', () => {
+  test('loads neural graph with 27 nodes and validated connections', () => {
     const graph = loadNeuralGraph();
-    expect(graph.nodes.length).toBe(26);
+    expect(graph.nodes.length).toBe(27);
     expect(graph.edges.length).toBeGreaterThanOrEqual(30);
 
     const validation = validateNeuralGraph(graph);
@@ -33,6 +33,12 @@ describe('Fable Neural Linking System', () => {
     const creatorConn = getNeuralConnections('fable-skill-creator');
     expect(creatorConn.continuations).toContain('fable-eval');
     expect(creatorConn.continuations).toContain('fable-verify');
+
+    const learnConn = getNeuralConnections('fable-learning');
+    expect(learnConn.precursors).toContain('fable-handoff');
+    expect(learnConn.continuations).toContain('fable-eval');
+    expect(learnConn.peers).toContain('fable-memory');
+    expect(learnConn.recovery).toBe('fable-recover');
   });
 
   test('renders interactive ASCII graph representation', () => {

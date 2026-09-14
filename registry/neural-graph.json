@@ -26,7 +26,8 @@
     { "id": "fable-cowork", "pack": "system", "phase": "executing", "label": "Autonomous Cowork Execution Mode" },
     { "id": "fable-spark", "pack": "system", "phase": "idle", "label": "Situational Awareness Next-Move Predictor" },
     { "id": "fable-skill-creator", "pack": "creator", "phase": "executing", "label": "Autonomous Skill Creator & Optimizer" },
-    { "id": "fable-redteam", "pack": "proof", "phase": "verifying", "label": "Ethical RedTeam & Pentest Engine" }
+    { "id": "fable-redteam", "pack": "proof", "phase": "verifying", "label": "Ethical RedTeam & Pentest Engine" },
+    { "id": "fable-learning", "pack": "evolution", "phase": "verifying", "label": "Conversation Analysis & Knowledge Synthesis" }
   ],
   "edges": [
     { "source": "get-fable", "target": "fable-discover", "relation": "continuation", "weight": 1.0 },
@@ -75,6 +76,11 @@
     { "source": "fable-skill-creator", "target": "fable-review", "relation": "continuation", "weight": 0.8 },
     { "source": "fable-security", "target": "fable-redteam", "relation": "peer", "weight": 0.9 },
     { "source": "fable-redteam", "target": "fable-plan", "relation": "continuation", "weight": 1.0 },
-    { "source": "fable-redteam", "target": "fable-tdd", "relation": "continuation", "weight": 0.9 }
+    { "source": "fable-redteam", "target": "fable-tdd", "relation": "continuation", "weight": 0.9 },
+    { "source": "fable-handoff", "target": "fable-learning", "relation": "continuation", "weight": 0.9 },
+    { "source": "fable-learning", "target": "fable-eval", "relation": "continuation", "weight": 0.9 },
+    { "source": "fable-learning", "target": "fable-memory", "relation": "peer", "weight": 0.9 },
+    { "source": "fable-learning", "target": "get-fable", "relation": "continuation", "weight": 1.0 },
+    { "source": "fable-learning", "target": "fable-recover", "relation": "recovery", "weight": 1.0 }
   ]
 }

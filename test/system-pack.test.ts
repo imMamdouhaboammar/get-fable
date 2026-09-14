@@ -87,4 +87,19 @@ describe('System Pack and Harness Integration', () => {
     expect(compiled.systemPrompt).toContain('Readable over compressed');
     expect(compiled.systemPrompt).toContain('fable-dataviz');
   });
+
+  test('routes convo-learn and learning extraction tasks to fable-learning in evolution pack', () => {
+    const d1 = routeTask('Run convo-learn on the session transcript to extract what we learned');
+    expect(d1.selectedSkill).toBe('fable-learning');
+    expect(d1.selectedPack).toBe('evolution');
+    expect(d1.taskShape).toBe('eval');
+
+    const d2 = routeTask('Analyze this session realities and extract learnings from issues and fixes');
+    expect(d2.selectedSkill).toBe('fable-learning');
+    expect(d2.selectedPack).toBe('evolution');
+
+    const d3 = routeTask('What did we learn from this conversation? Generate playbook and rules');
+    expect(d3.selectedSkill).toBe('fable-learning');
+    expect(d3.selectedPack).toBe('evolution');
+  });
 });

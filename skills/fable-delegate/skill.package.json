@@ -10,7 +10,9 @@
     "references/subagent-contracts.md"
   ],
   "templates": [
-    "templates/delegation-contract.template.md"
+    "templates/delegation-contract.template.md",
+    "templates/delegation-contract.toon",
+    "templates/return-packet.toon"
   ],
   "examples": [
     "examples/parallel-workers-walkthrough.md"

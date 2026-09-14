@@ -4,6 +4,7 @@ import { isIP } from 'node:net';
 import { timingSafeEqual } from 'node:crypto';
 import { ProviderTranslator, RequestValidationError } from './provider-translator.js';
 import { compileFableDirective, latestUserIntent } from '../core/prompt-compiler.js';
+import { decodeToon } from '../core/toon.js';
 import { logInfo, logSuccess, logError } from '../utils.js';
 
 const DEFAULT_HOST = '127.0.0.1';
@@ -237,10 +238,25 @@ async function readJsonBody(req: IncomingMessage, maxBodyBytes: number): Promise
         return;
       }
 
+      const contentType = String(req.headers['content-type'] || '').toLowerCase();
+      if (contentType.includes('toon')) {
+        try {
+          resolve(decodeToon(bodyText));
+          return;
+        } catch {
+          reject(new HttpError(400, 'Request body must contain valid TOON'));
+          return;
+        }
+      }
+
       try {
         resolve(JSON.parse(bodyText));
       } catch {
-        reject(new HttpError(400, 'Request body must contain valid JSON'));
+        try {
+          resolve(decodeToon(bodyText));
+        } catch {
+          reject(new HttpError(400, 'Request body must contain valid JSON or TOON'));
+        }
       }
     };
 

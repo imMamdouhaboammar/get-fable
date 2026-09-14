@@ -46,7 +46,8 @@
         "fable-cowork",
         "fable-spark",
         "fable-skill-creator",
-        "fable-redteam"
+        "fable-redteam",
+        "fable-learning"
       ],
       "keywords": [
         "fable",
@@ -574,6 +575,50 @@
         "skill quality",
         "prompt quality",
         "holdout"
+      ]
+    },
+    {
+      "id": "fable-learning",
+      "order": 95,
+      "phase": "verifying",
+      "pack": "evolution",
+      "description": "Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.",
+      "intents": [
+        "extract-learnings",
+        "convo-learn",
+        "synthesize-knowledge",
+        "playbook-generation"
+      ],
+      "requires": [
+        "session-transcript"
+      ],
+      "produces": [
+        "learning-evidence",
+        "extracted-patterns",
+        "playbook-candidate"
+      ],
+      "gates": [
+        "evidence-grounded",
+        "atomic-claims"
+      ],
+      "fallback": "fable-eval",
+      "mutatesWorkspace": true,
+      "parallelSafe": true,
+      "next": [
+        "fable-eval",
+        "fable-plan",
+        "fable-handoff",
+        "get-fable"
+      ],
+      "keywords": [
+        "convo-learn",
+        "learning",
+        "extract learnings",
+        "session learnings",
+        "what did we learn",
+        "playbook",
+        "gbrain",
+        "fable-convo-learn"
       ]
     },
     {

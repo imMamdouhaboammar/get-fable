@@ -6,3 +6,4 @@ export * from '../src/core/recipes.js';
 export * from '../src/core/spark.js';
 export * from '../src/core/doctor.js';
 export * from '../src/core/prompt-compiler.js';
+export * from '../src/core/toon.js';

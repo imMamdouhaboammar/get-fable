@@ -565,6 +565,12 @@ export function installGrokGlobal(grokDir: string = getGrokDir()) {
     path.join(repoRoot, 'prompts', 'grok-bot-directive.md'),
     path.join(rulesDir, 'grok-bot.md')
   );
+  const grokAgentsDir = path.join(grokDir, 'agents');
+  fs.mkdirSync(grokAgentsDir, { recursive: true });
+  fs.copyFileSync(
+    path.join(repoRoot, 'agents', 'grok-bot.md'),
+    path.join(grokAgentsDir, 'grok-bot.md')
+  );
   logSuccess('Installed Grok rules: fable.md, fable5-mode.md, and grok-bot.md');
 
   const pluginDir = path.join(grokDir, 'plugins', 'get-fable');
@@ -1089,6 +1095,10 @@ export function initProjectFable(targetDir: string = process.cwd()) {
     {
       src: path.join(repoRoot, 'prompts', 'fable5-rules.md'),
       dest: path.join(agentsDir, 'rules', 'fable5-mode.md'),
+    },
+    {
+      src: path.join(repoRoot, 'agents', 'grok-bot.md'),
+      dest: path.join(agentsDir, 'agents', 'grok-bot.md'),
     },
     {
       src: path.join(repoRoot, 'prompts', 'cursor-fable-rules.mdc'),

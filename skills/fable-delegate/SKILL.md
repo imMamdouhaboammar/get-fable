@@ -158,19 +158,39 @@ No meaningful progress or repeated failure. Terminate/recover rather than consum
 - assuming subagents transfer responsibility away from the parent;
 - delegating a decision the parent has not made simply to avoid making it.
 
-## Delegation Contract
+## Mandatory TOON Delegation Protocol
 
-```text
-Worker objective:
-Why independent:
-Evidence/context:
-Owns:
-Must not change:
-Stable dependencies assumed:
-Acceptance evidence:
-Stop/escalate if:
-Return packet:
-Integration owner:
+All subagent delegation contracts and worker return packets MUST use **TOON (Token-Oriented Object Notation)**. This guarantees:
+1. **Token efficiency**: 35-70% fewer tokens compared to verbose markdown/JSON.
+2. **Deterministic parsing**: Explicit length tags `[N]` allow the parent agent to instantly detect truncated or dropped tasks.
+3. **Structured schema**: Field headers `{fields}` enforce contract compliance.
+
+### Boss → Worker Delegation Contract (TOON)
+```toon
+contract:
+  workerId: worker-1
+  targetCard: CARD-101
+  objective: "Implement JWT authentication guard"
+ownedPaths[2]: src/auth/guard.ts,test/auth/guard.test.ts
+forbiddenPaths[2]: src/config/keys.ts,.env
+acceptanceChecks[2]: "bun test test/auth/guard.test.ts","bun run typecheck"
+rules[2]: "Do not touch files outside ownedPaths","Use TOON format for the return packet"
+```
+
+### Worker → Boss Return Packet (TOON)
+```toon
+result:
+  workerId: worker-1
+  targetCard: CARD-101
+  status: complete
+  allChecksPassed: true
+mutations[2]{path,action}:
+  src/auth/guard.ts,modified
+  test/auth/guard.test.ts,created
+verifications[2]{command,result,durationMs}:
+  "bun test test/auth/guard.test.ts",pass,120
+  "bun run typecheck",pass,340
+notes[1]: Successfully implemented guard with full test coverage
 ```
 
 ## Completion Criteria

@@ -16,6 +16,7 @@ CANONICAL_SKILLS = {
     "fable-release",
     "fable-handoff",
     "fable-eval",
+    "fable-learning",
     "fable-recover",
     "fable-dataviz",
     "fable-artifact",

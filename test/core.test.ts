@@ -30,6 +30,7 @@ describe('canonical skill registry', () => {
       'fable-release',
       'fable-handoff',
       'fable-eval',
+      'fable-learning',
       'fable-recover',
       'fable-dataviz',
       'fable-artifact',

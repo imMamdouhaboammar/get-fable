@@ -43,7 +43,7 @@ function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-security' || skill === 'fable-redteam') return 'security';
   if (skill === 'fable-release') return 'release';
   if (skill === 'fable-handoff') return 'handoff';
-  if (skill === 'fable-eval' || skill === 'fable-loop') return 'eval';
+  if (skill === 'fable-eval' || skill === 'fable-loop' || skill === 'fable-learning') return 'eval';
   if (skill === 'fable-simplify') return 'bounded-change';
   if (skill === 'fable-dataviz' || skill === 'fable-cowork' || skill === 'fable-skill-creator') return 'feature';
   if (skill === 'fable-tdd') {
@@ -170,6 +170,15 @@ export function routeTask(
 
   if (has(text, /\beval\b|\bevaluate\b|\bbenchmark\b|holdout|self[- ]improv|prompt quality|skill quality|agent control|regression suite for (?:prompt|skill|agent)/)) {
     addSignal(scores, reasons, 'fable-eval', 8, 'task evaluates or changes agent-control behavior');
+  }
+
+  if (
+    has(
+      text,
+      /\bconvo[- ]learn\b|extract learnings?|synthesize learnings?|what did we learn|playbook generation|session learnings?|analyze (?:this )?conversation|learning synthesis|\bfable-learning\b|\bfable-convo-learn\b|session realities|compound solution|extract (?:decisions|lessons|patterns|surprises)/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-learning', 12, 'task extracts or synthesizes durable learnings from session or conversation');
   }
 
   if (

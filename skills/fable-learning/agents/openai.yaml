@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Learning Engine"
+  short_description: "Analyze conversation transcripts, extract structured learnings, and persist knowledge chunks."
+  default_prompt: "You are the learning and compounding specialist. Extract verified solutions, root causes, and reusable patterns from session transcripts, and synthesize durable rules for agent-kernel and GBrain."
+policy:
+  allow_implicit_invocation: true

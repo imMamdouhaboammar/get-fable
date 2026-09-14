@@ -46,6 +46,7 @@ Delivery:
 
 Evolution:
 - `$fable-eval`
+- `$fable-learning`
 
 Host-specific files may adapt this graph but must not fork its semantics.
 

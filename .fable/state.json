@@ -3,13 +3,26 @@
   "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
-  "substantial": false,
+  "substantial": true,
   "lastDecision": null,
-  "evidence": [],
-  "stateRevision": 6,
+  "evidence": [
+    {
+      "kind": "test",
+      "source": "test-suite",
+      "result": "pass",
+      "detail": "Release v1.7.0 verified: typecheck, focused suite, doctor 0 errors, build green",
+      "repositoryRevision": "c38f3cc5d8dd01e343ba321925ab12ac6adb2a00",
+      "commandCategory": "test",
+      "scope": "workspace",
+      "generation": 6,
+      "timestamp": "2026-09-14T05:15:13.720Z",
+      "workspaceId": "4d0a9132c2e476001278e544"
+    }
+  ],
+  "stateRevision": 101,
   "workspaceId": "4d0a9132c2e476001278e544",
-  "mutationGeneration": 0,
-  "verifiedGeneration": -1,
+  "mutationGeneration": 6,
+  "verifiedGeneration": 6,
   "activeCard": null,
-  "updatedAt": "2026-09-13T14:01:46.667855Z"
+  "updatedAt": "2026-09-14T05:15:33.386306Z"
 }

@@ -144,7 +144,7 @@ ${colors.yellow}Proprietary & Commercial Markets:${colors.reset}
 9. Amazon Q Dev        : ~/.aws/amazon-q/rules/fable.md and .amazonq/rules.md
 10. Trae (ByteDance)   : ~/.trae/rules/fable.md and .trae/rules/fable.md
 11. Warp AI            : ~/.warp/rules/fable.md
-12. Grok Build (xAI)   : ~/.grok/rules/, skills/, hooks.json, and plugins
+12. Grok & Grok Bot (xAI): ~/.grok/rules/, agents/, skills/, hooks.json, and plugins
 13. Moonshot Kimi      : ~/.kimi/rules/fable.md
 14. Atlarix            : ~/.atlarix/rules/fable.md
 15. Vellum             : ~/.vellum/rules/fable.md

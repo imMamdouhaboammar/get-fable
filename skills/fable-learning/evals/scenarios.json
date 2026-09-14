@@ -1,0 +1,63 @@
+[
+  {
+    "id": "trigger-explicit-convo-learn",
+    "prompt": "run convo-learn on the last session to extract what we learned",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  },
+  {
+    "id": "trigger-fable-learning-what-did-we-learn",
+    "prompt": "what did we learn from this conversation? save our learnings and generate a playbook",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  },
+  {
+    "id": "trigger-session-realities-learning",
+    "prompt": "analyze this session realities and extract learnings from issues and fixes",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  },
+  {
+    "id": "non-trigger-general-code-review",
+    "prompt": "review the git diff of this branch and critique code quality",
+    "expected_skill": "fable-review",
+    "type": "negative"
+  },
+  {
+    "id": "non-trigger-memory-preference",
+    "prompt": "remember my user preference for dark mode in MEMORY.md",
+    "expected_skill": "fable-memory",
+    "type": "negative"
+  },
+  {
+    "id": "trigger-headless-post-session",
+    "prompt": "headless auto session learn: extract fixed errors from transcript and persist to agent-kernel",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  },
+  {
+    "id": "trigger-compile-skill-learning",
+    "prompt": "compile our session learnings into a reusable skill package",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  },
+  {
+    "id": "trigger-compound-solution-doc",
+    "prompt": "document this resolved test issue as a compound solution doc in docs/solutions/",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  },
+  {
+    "id": "trigger-gsd-extract-learnings-4categories",
+    "prompt": "extract decisions, lessons, patterns, and surprises from our completed phase artifacts",
+    "expected_skill": "fable-learning",
+    "expected_pack": "evolution",
+    "type": "positive"
+  }
+]

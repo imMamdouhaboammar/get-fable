@@ -9,3 +9,6 @@ coverage/
 # Ignore VS Code AI instructions
 .github/instructions/codacy.instructions.md
 .fable/events.jsonl
+.fable/learnings.json
+.fable/redteam-findings.json
+.fable/run-attestation.json

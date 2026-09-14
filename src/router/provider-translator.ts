@@ -69,7 +69,15 @@ function modelName(value: unknown, fallback: string): string {
   return typeof value === 'string' && value.trim() ? value.trim() : fallback;
 }
 
+export function isGrokModel(model: string): boolean {
+  return /^(grok|xai)/i.test(model);
+}
+
 export class ProviderTranslator {
+  static isGrokRequest(request: GenericLLMRequest): boolean {
+    return isGrokModel(request.model);
+  }
+
   static normalizeRequest(body: unknown): GenericLLMRequest {
     const request = asRecord(body);
     if (!request) {

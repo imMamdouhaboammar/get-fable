@@ -99,6 +99,10 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event Stop --handler event"
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/fable_hook_dispatch.py\" --host claude --event Stop --handler learn"
           }
         ]
       }

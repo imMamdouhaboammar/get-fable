@@ -14,11 +14,11 @@ import {
 import { canonicalSkillIds } from '../src/core/skill-registry.ts';
 
 describe('Skill Package Architecture & Containment', () => {
-  test('all 26 canonical skill packages load and validate cleanly', () => {
+  test('all 27 canonical skill packages load and validate cleanly', () => {
     const all = loadAllSkillPackages();
     const canonical = canonicalSkillIds();
-    expect(canonical.length).toBe(26);
-    expect(Object.keys(all).length).toBe(26);
+    expect(canonical.length).toBe(27);
+    expect(Object.keys(all).length).toBe(27);
 
     const validationResults = validateAllSkillPackages();
     for (const id of canonical) {
@@ -35,6 +35,23 @@ describe('Skill Package Architecture & Containment', () => {
       expect(val.errors).toEqual([]);
       expect(val.resources.length).toBeGreaterThanOrEqual(5);
     }
+  });
+
+  test('fable-learning package has complete synthesis resources and scripts', () => {
+    const summary = getSkillPackageSummary('fable-learning');
+    expect(summary.valid).toBe(true);
+    expect(summary.agentCount).toBeGreaterThanOrEqual(1);
+    expect(summary.referenceCount).toBeGreaterThanOrEqual(4);
+    expect(summary.templateCount).toBeGreaterThanOrEqual(2);
+    expect(summary.exampleCount).toBeGreaterThanOrEqual(1);
+    expect(summary.evalCount).toBeGreaterThanOrEqual(1);
+    expect(summary.scriptCount).toBeGreaterThanOrEqual(2);
+
+    const resources = listSkillResources('fable-learning');
+    expect(resources.some((r) => r.path === 'references/analysis.md')).toBe(true);
+    expect(resources.some((r) => r.path === 'references/synthesis.md')).toBe(true);
+    expect(resources.some((r) => r.path === 'scripts/extract_learnings.py')).toBe(true);
+    expect(resources.some((r) => r.path === 'evals/scenarios.json')).toBe(true);
   });
 
   test('reference package fable-skill-creator has full progressive disclosure resources', () => {

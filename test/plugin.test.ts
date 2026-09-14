@@ -18,6 +18,7 @@ const canonicalSkills = [
   'fable-release',
   'fable-handoff',
   'fable-eval',
+  'fable-learning',
   'fable-recover',
   'fable-dataviz',
   'fable-artifact',
@@ -305,7 +306,7 @@ describe('OpenAI plugin package', () => {
     const skillsCatalog = readJson('skills.sh.json');
     expect(skillsCatalog.name).toBe('get-fable');
     expect(Array.isArray(skillsCatalog.skills)).toBe(true);
-    expect(skillsCatalog.skills.length).toBe(26);
+    expect(skillsCatalog.skills.length).toBe(27);
     for (const skill of skillsCatalog.skills) {
       expect(fs.existsSync(path.join(root, skill.path))).toBe(true);
     }

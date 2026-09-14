@@ -2,6 +2,7 @@ import { readFableState } from './state.js';
 import { getCoreRepoRoot, readSkillBody } from './skill-registry.js';
 import { routeTask } from './task-router.js';
 import { evaluateFableSpark } from './spark.js';
+import { compactFableStateToon } from './toon.js';
 import type { FableState, RoutingDecision } from './types.js';
 
 const CORE_CONTRACT = `# get-fable runtime contract & harness discipline
@@ -9,6 +10,8 @@ const CORE_CONTRACT = `# get-fable runtime contract & harness discipline
 - Ground load-bearing decisions in code, tools, tests, or primary sources.
 - Lead with the outcome: state the direct answer or TLDR first before supporting reasoning.
 - Readable over compressed: write in complete sentences with technical terms spelled out.
+- Structured communication protocol: all inter-agent exchanges, subagent delegation contracts, worker return packets, and structured state transfers MUST use TOON (Token-Oriented Object Notation).
+- Format TOON payloads inside \`\`\`toon ... \`\`\` codeblocks with explicit [N] counts and {fields} headers for strict structural validation.
 - Code comments: write comments only to state constraints the code itself cannot show.
 - Neutral pronoun default: use they/them unless stated.
 - Destructive confirmation: confirm before irreversible or outward-facing actions.
@@ -32,7 +35,7 @@ function compactState(state: FableState | null, task?: string): string {
   const evidenceFailures = state.evidence.filter((item) => item.result === 'fail').length;
   const spark = evaluateFableSpark({ state, userIntent: task });
   const sparkSnippet = spark.suggestion ? `; sparkNextMove=${spark.suggestion}` : '';
-  return [
+  const summaryLine = [
     `Project state: phase=${state.phase}`,
     `skill=${state.currentSkill || 'none'}`,
     `failureStreak=${state.failureStreak}`,
@@ -43,6 +46,9 @@ function compactState(state: FableState | null, task?: string): string {
     `evidencePasses=${evidencePasses}`,
     `evidenceFailures=${evidenceFailures}`,
   ].join('; ') + sparkSnippet;
+
+  const toonBlock = compactFableStateToon(state);
+  return `${summaryLine}\n\`\`\`toon\n${toonBlock}\n\`\`\``;
 }
 
 export function compileFableDirective(

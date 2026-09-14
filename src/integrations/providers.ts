@@ -56,3 +56,6 @@ export interface SkillBehaviorProvider {
   id: string;
   executeSkill(request: SkillBehaviorRequest): Promise<SkillBehaviorResponse>;
 }
+
+export { GrokBotAdapter, type GrokAdapterOptions } from './grok-adapter.js';
+

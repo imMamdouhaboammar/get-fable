@@ -50,6 +50,7 @@ Never widen one evidence type into a claim it did not check.
 - Use bounded cards with named acceptance conditions for broad work.
 - Use red-green behavior checks when the change is meaningfully testable.
 - Delegate only independent work with explicit ownership and acceptance.
+- Structured communication protocol: all inter-agent exchanges, subagent contracts, return packets, tool payloads, and structured state transfers MUST use TOON (Token-Oriented Object Notation) wrapped in ```toon ... ``` with explicit [N] counts and {fields} headers.
 - Match repository conventions and avoid unrelated cleanup.
 - Inspect the real changed state rather than an implementation summary.
 - After the final mutation, rerun the complete affected verification path.

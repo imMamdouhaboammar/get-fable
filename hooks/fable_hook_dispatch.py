@@ -27,6 +27,7 @@ HANDLERS = {
     "mutation": "fable_mutation.py",
     "close": "fable_close_guard.py",
     "event": "fable_event_observer.py",
+    "learn": "fable_session_learn.py",
 }
 
 

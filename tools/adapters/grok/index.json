@@ -1,0 +1,14 @@
+{
+  "provider": "grok",
+  "version": "1.7.0",
+  "mappings": {
+    "web-search": "xai_search",
+    "filesystem": "file_operations",
+    "shell": "run_command",
+    "browser": "read_browser_page",
+    "git": "run_command",
+    "route": "fable_route",
+    "spark": "fable_spark",
+    "evidence": "fable_evidence"
+  }
+}

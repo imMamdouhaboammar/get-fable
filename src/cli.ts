@@ -92,9 +92,19 @@ import {
   loadAgentBehaviorEvidenceSnapshot,
   scoreAgentBehaviorResponseBundle,
   type AgentBehaviorResponseBundle,
+  buildAgentBehaviorEvalPlan,
+  runAgentBehaviorEvalPlan,
 } from './core/agent-behavior-eval.js';
-import { logHeader, logInfo, logError, logSuccess, logWarn, colors } from './utils.js';
+import { logHeader, logInfo, logError, logSuccess, logWarn, colors, getGrokDir } from './utils.js';
+import { GrokBotAdapter } from './integrations/grok-adapter.js';
 import { handleRedTeamCli } from './core/redteam/cli.js';
+import {
+  encodeToon,
+  decodeToon,
+  validateToon,
+  compareTokens,
+  compactFableStateToon,
+} from './core/toon.js';
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
   'test',
@@ -331,6 +341,141 @@ function runEvidenceCommand(args: string[]): number {
     console.log(`Failure streak: ${nextState.failureStreak}`);
     console.log(`Verified generation: ${nextState.verifiedGeneration}`);
   });
+}
+
+function runToonCommand(args: string[]): number {
+  const sub = args[0] || 'help';
+  const target = args[1];
+
+  switch (sub) {
+    case 'encode': {
+      let content = '';
+      if (target && target !== '-') {
+        if (!fs.existsSync(target)) {
+          logError(`File not found: ${target}`);
+          return 1;
+        }
+        content = fs.readFileSync(target, 'utf-8');
+      } else {
+        try {
+          content = fs.readFileSync(0, 'utf-8');
+        } catch {
+          logError('No input provided via file or stdin');
+          return 1;
+        }
+      }
+      try {
+        const parsed = JSON.parse(content);
+        const encoded = encodeToon(parsed);
+        console.log(encoded);
+        return 0;
+      } catch (err: any) {
+        logError(`TOON encode failed: ${err.message}`);
+        return 1;
+      }
+    }
+    case 'decode': {
+      let content = '';
+      if (target && target !== '-') {
+        if (!fs.existsSync(target)) {
+          logError(`File not found: ${target}`);
+          return 1;
+        }
+        content = fs.readFileSync(target, 'utf-8');
+      } else {
+        try {
+          content = fs.readFileSync(0, 'utf-8');
+        } catch {
+          logError('No input provided via file or stdin');
+          return 1;
+        }
+      }
+      try {
+        const decoded = decodeToon(content, { strict: true });
+        console.log(JSON.stringify(decoded, null, 2));
+        return 0;
+      } catch (err: any) {
+        logError(`TOON decode failed: ${err.message}`);
+        return 1;
+      }
+    }
+    case 'stats': {
+      let content = '';
+      if (target && target !== '-') {
+        if (!fs.existsSync(target)) {
+          logError(`File not found: ${target}`);
+          return 1;
+        }
+        content = fs.readFileSync(target, 'utf-8');
+      } else {
+        try {
+          content = fs.readFileSync(0, 'utf-8');
+        } catch {
+          logError('No input provided via file or stdin');
+          return 1;
+        }
+      }
+      try {
+        const parsed = JSON.parse(content);
+        const stats = compareTokens(parsed);
+        logHeader('TOON Token Statistics');
+        console.log(`JSON Characters:      ${stats.jsonChars}`);
+        console.log(`TOON Characters:      ${stats.toonChars}`);
+        console.log(`Estimated JSON Tokens: ~${stats.estimatedJsonTokens}`);
+        console.log(`Estimated TOON Tokens: ~${stats.estimatedToonTokens}`);
+        console.log(`Token Savings:         ${stats.savingsPercent}%`);
+        return 0;
+      } catch (err: any) {
+        logError(`TOON stats failed: ${err.message}`);
+        return 1;
+      }
+    }
+    case 'state': {
+      const state = readFableState(process.cwd());
+      if (!state) {
+        logError('No active .fable/state.json found.');
+        return 1;
+      }
+      const toon = compactFableStateToon(state);
+      console.log(toon);
+      return 0;
+    }
+    case 'validate': {
+      let content = '';
+      if (target && target !== '-') {
+        if (!fs.existsSync(target)) {
+          logError(`File not found: ${target}`);
+          return 1;
+        }
+        content = fs.readFileSync(target, 'utf-8');
+      } else {
+        try {
+          content = fs.readFileSync(0, 'utf-8');
+        } catch {
+          logError('No input provided via file or stdin');
+          return 1;
+        }
+      }
+      const result = validateToon(content);
+      if (result.valid) {
+        logSuccess('Valid TOON format (structure and [N] lengths verified)');
+        return 0;
+      } else {
+        logError(`Invalid TOON format: ${result.error}`);
+        return 1;
+      }
+    }
+    default: {
+      logHeader('get-fable toon – Token-Oriented Object Notation utilities');
+      console.log('Usage:');
+      console.log('  get-fable toon encode <file|->   Encode JSON into compact TOON');
+      console.log('  get-fable toon decode <file|->   Decode TOON back to JSON');
+      console.log('  get-fable toon stats <file|->    Compare JSON vs TOON token metrics');
+      console.log('  get-fable toon state             Render current .fable state in TOON');
+      console.log('  get-fable toon validate <file|-> Validate TOON syntax and row lengths');
+      return 0;
+    }
+  }
 }
 
 function runSparkCommand(args: string[]): number {
@@ -969,10 +1114,83 @@ function runBehaviorEvalCommand(args: string[]): number {
   return 1;
 }
 
+async function runGrokCommand(args: string[]): Promise<number> {
+  const adapter = new GrokBotAdapter();
+  const showStatus = hasFlag(args, '--status');
+  const runEval = hasFlag(args, '--eval');
+
+  if (showStatus || args.length === 0) {
+    const grokDir = getGrokDir();
+    const status = {
+      adapter: 'grok-bot',
+      configured: adapter.isConfigured(),
+      model: adapter.getModel(),
+      baseUrl: adapter.getBaseUrl(),
+      offlineMode: adapter.isOffline(),
+      capabilities: adapter.getCapabilities(),
+      configDir: grokDir,
+      rulesInstalled: fs.existsSync(path.join(grokDir, 'rules', 'grok-bot.md')),
+      hooksConfigured: fs.existsSync(path.join(grokDir, 'hooks.json')),
+      agentSpecInstalled: fs.existsSync(path.join(grokDir, 'agents', 'grok-bot.md')),
+    };
+
+    if (hasJsonFlag(args)) {
+      printMachineJson(args, 'grok:status', status);
+      return 0;
+    }
+
+    logHeader('Grok Bot & Adapter Status');
+    console.log(`Model:         ${status.model}`);
+    console.log(`Base URL:      ${status.baseUrl}`);
+    console.log(
+      `Configured:    ${status.configured ? colors.green + 'Yes (API key present)' + colors.reset : colors.yellow + 'No (offline/simulation mode)' + colors.reset}`
+    );
+    console.log(`Offline Mode:  ${status.offlineMode}`);
+    console.log(`Config Dir:    ${status.configDir}`);
+    console.log(`Capabilities:  ${status.capabilities.join(', ')}`);
+    console.log(`Rules:         ${status.rulesInstalled ? 'Installed' : 'Missing'}`);
+    console.log(`Hooks:         ${status.hooksConfigured ? 'Installed' : 'Missing'}`);
+    console.log(`Agent Spec:    ${status.agentSpecInstalled ? 'Installed' : 'Missing'}`);
+    return 0;
+  }
+
+  if (runEval) {
+    logHeader('Running Grok Bot Skill Behavior Evaluation');
+    const plan = buildAgentBehaviorEvalPlan();
+    const result = await runAgentBehaviorEvalPlan(adapter, plan, { timeoutMs: 15_000 });
+    if (hasJsonFlag(args)) {
+      printMachineJson(args, 'grok:eval', result);
+    } else {
+      console.log(`Evaluated ${result.cases.length} cases.`);
+      console.log(`Passed: ${result.cases.filter((c) => c.passed).length}/${result.cases.length}`);
+    }
+    return 0;
+  }
+
+  const task = args.filter((a) => !a.startsWith('--')).join(' ').trim();
+  logHeader(`Grok Bot Task Routing: "${task}"`);
+  const route = routeTask(task);
+  console.log(`Selected Skill: ${route.selectedSkill}`);
+  console.log(`Selected Pack:  ${route.selectedPack}`);
+  console.log(`Task Shape:     ${route.taskShape}`);
+  console.log(`Confidence:     ${route.confidence}`);
+  console.log('Operational Directives:');
+  console.log('  1. Truth-seeking first-principles discovery');
+  console.log('  2. Strict Test-Driven Development (failing test first)');
+  console.log('  3. Machine-checked evidence generation (get-fable evidence pass)');
+  console.log('  4. High-density output with clean state handoff');
+  return 0;
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number | Promise<number> {
   const command = args[0] || 'help';
 
   switch (command) {
+    case 'grok':
+    case 'grok-bot':
+    case 'grokbot':
+      return runGrokCommand(args.slice(1));
+
     case 'behavior-eval':
     case 'behavior':
       return runBehaviorEvalCommand(args.slice(1));
@@ -1051,6 +1269,9 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
 
     case 'evidence':
       return runEvidenceCommand(args.slice(1));
+
+    case 'toon':
+      return runToonCommand(args.slice(1));
 
     case 'shell':
       return runShellCommand(args.slice(1));
@@ -1188,6 +1409,7 @@ ${colors.bright}CORE WORKFLOW COMMANDS:${colors.reset}
   ${colors.yellow}mutation [source]${colors.reset}    Record a workspace mutation and invalidate older verification
   ${colors.yellow}card <text>${colors.reset}          Set the active work card; use --clear to remove it
   ${colors.yellow}evidence ...${colors.reset}         Record typed evidence: <result> <kind> <source> <detail>
+  ${colors.yellow}toon <action>${colors.reset}        Token-Oriented Object Notation: encode, decode, stats, state, validate
   ${colors.yellow}lint${colors.reset}                 Verify ledger acceptance, evidence, and state consistency
   ${colors.yellow}doctor [--fix]${colors.reset}       Validate and auto-repair installation, registry, state, and hooks
 
@@ -1202,6 +1424,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}redteam --target <url>${colors.reset}Execute native agentic ethical penetration audit
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
+  ${colors.yellow}grok [task|--status]${colors.reset} Invoke Grok Bot adapter for task routing, status, and skill eval
   ${colors.yellow}behavior-eval${colors.reset}        Export oracle-free cases, score provider responses, and inspect evidence
 
 ${colors.bright}HELP & GUIDANCE:${colors.reset}

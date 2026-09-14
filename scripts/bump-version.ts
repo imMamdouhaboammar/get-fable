@@ -102,6 +102,7 @@ for (const p of packs) {
 
 // 4. Tools adapter
 updateJson('tools/adapters/generic/index.json', (j) => { j.version = NEW_VERSION; });
+updateJson('tools/adapters/grok/index.json', (j) => { j.version = NEW_VERSION; });
 
 // 5. Formula
 replaceInFile('Formula/get-fable.rb', new RegExp(OLD_VERSION, 'g'), NEW_VERSION);
