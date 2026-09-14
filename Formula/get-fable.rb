@@ -2,7 +2,7 @@ class GetFable < Formula
   desc "Coding lifecycle discipline and situational awareness for AI coding agents"
   homepage "https://github.com/imMamdouhaboammar/get-fable"
   url "https://github.com/imMamdouhaboammar/get-fable/archive/refs/heads/master.tar.gz"
-  version "1.7.0"
+  version "1.8.0"
   license "MIT"
 
   depends_on "bun"
@@ -34,7 +34,7 @@ class GetFable < Formula
         # Fish (~/.config/fish/config.fish)
         get-fable shell fish | source
 
-      To install global agent hooks and rules for all supported AI agents:
+      To install global agent hooks, rules, and collaborative quality gate (no-mistakes):
         get-fable install all
     EOS
   end

@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-14T08:00:00.000Z",
+  "generatedAt": "2026-09-14T10:30:00.000Z",
   "announcements": [
     {
-      "id": "release-170",
+      "id": "release-180",
       "type": "release",
-      "title": "get-fable 1.7.0: Grok Bot, TOON Protocol & Self-Learning Lifecycle",
-      "message": "v1.7.0 delivers native Grok Bot & xAI adapter integration, token-efficient TOON delegation contracts, and the fable-learning self-evolution skill.",
-      "url": "https://github.com/imMamdouhaboammar/get-fable/releases/tag/v1.7.0",
+      "title": "get-fable 1.8.0: Architecture Enforcement, Worker RPC & No-Mistakes Gate",
+      "message": "v1.8.0 introduces fable-architecture with deterministic vector scoring and monolith lockout, gRPC Worker RPC server, native no-mistakes quality gate integration, and automated contributor outreach relay.",
+      "url": "https://github.com/imMamdouhaboammar/get-fable/releases/tag/v1.8.0",
       "minVersion": "1.0.0",
-      "maxVersion": "1.7.0",
+      "maxVersion": "1.8.0",
       "startsAt": "2026-09-14T00:00:00.000Z",
       "expiresAt": "2026-10-14T00:00:00.000Z",
       "display": "once"

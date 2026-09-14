@@ -47,7 +47,8 @@
         "fable-spark",
         "fable-skill-creator",
         "fable-redteam",
-        "fable-learning"
+        "fable-learning",
+        "fable-architecture"
       ],
       "keywords": [
         "fable",
@@ -164,7 +165,8 @@
         "fable-tdd",
         "fable-delegate",
         "fable-execute",
-        "fable-discover"
+        "fable-discover",
+        "fable-architecture"
       ],
       "keywords": [
         "plan",
@@ -1078,6 +1080,56 @@
         "skill creator",
         "fable skill creator",
         "eval suite"
+      ]
+    },
+    {
+      "id": "fable-architecture",
+      "order": 220,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture.",
+      "intents": [
+        "evaluate-architecture",
+        "enforce-microservices",
+        "assign-tech-stack",
+        "scaffold-distributed-system"
+      ],
+      "requires": [
+        "project-spec"
+      ],
+      "produces": [
+        "architecture-verdict",
+        "service-decomposition",
+        "tech-stack-matrix",
+        "communication-contract"
+      ],
+      "gates": [
+        "microservices-threshold-evaluated",
+        "monolith-prohibited-if-distributed",
+        "east-west-grpc-or-broker-enforced"
+      ],
+      "fallback": "fable-plan",
+      "mutatesWorkspace": true,
+      "parallelSafe": false,
+      "next": [
+        "fable-plan",
+        "fable-delegate",
+        "fable-tdd",
+        "fable-execute",
+        "fable-verify"
+      ],
+      "keywords": [
+        "architecture",
+        "microservices",
+        "scale",
+        "concurrency",
+        "distributed system",
+        "tech stack matrix",
+        "grpc",
+        "grpc east-west",
+        "api gateway",
+        "decoupled domains",
+        "scaffold microservices"
       ]
     }
   ]

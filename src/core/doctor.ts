@@ -20,6 +20,12 @@ import {
   areCanonicalGitHooksInstalled,
   resolveGitHooksPath,
 } from './git-hooks-path.js';
+import {
+  findNoMistakesBinary,
+  isNoMistakesDaemonRunning,
+  installOrUpdateNoMistakes,
+  configureNoMistakesEcosystem,
+} from '../integrations/no-mistakes-installer.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -452,6 +458,21 @@ export function runDoctorFix(
     }
   }
 
+  try {
+    const nmBin = findNoMistakesBinary();
+    if (!nmBin) {
+      if (installOrUpdateNoMistakes({ silent: true })) {
+        configureNoMistakesEcosystem({ silent: true });
+        repaired.push('Installed and configured no-mistakes quality gate');
+      }
+    } else {
+      configureNoMistakesEcosystem({ silent: true });
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    errors.push(`Failed to configure no-mistakes quality gate: ${message}`);
+  }
+
   return { repaired, errors };
 }
 
@@ -678,6 +699,15 @@ export function runDoctor(
       ? check('python-runtime', 'PASS', (python.stdout || python.stderr || 'python3 available').trim())
       : check('python-runtime', 'WARN', 'python3 was not found; lifecycle hooks cannot run on hosts that require them')
   );
+
+  const nmBinary = findNoMistakesBinary();
+  if (nmBinary) {
+    const isRunning = isNoMistakesDaemonRunning();
+    const daemonMsg = isRunning ? 'daemon running' : 'daemon stopped (run get-fable doctor --fix)';
+    checks.push(check('quality-gate-no-mistakes', 'PASS', `no-mistakes proxy available at ${nmBinary} (${daemonMsg})`));
+  } else {
+    checks.push(check('quality-gate-no-mistakes', 'WARN', 'no-mistakes quality gate proxy not found; install with get-fable install-quality-gate or get-fable doctor --fix'));
+  }
 
   return {
     schemaVersion: 1,

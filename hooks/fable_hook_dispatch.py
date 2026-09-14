@@ -28,6 +28,7 @@ HANDLERS = {
     "close": "fable_close_guard.py",
     "event": "fable_event_observer.py",
     "learn": "fable_session_learn.py",
+    "architecture": "fable_architecture_guard.py",
 }
 
 
@@ -205,7 +206,7 @@ def adapt_antigravity_result(handler, event_name, returncode, stdout, stderr):
     parsed = parse_json_object(stdout)
     reason = (stderr or "").strip()
 
-    if handler == "profile" and event_name == "PreInvocation":
+    if handler in ("profile", "architecture") and event_name in ("PreInvocation", "SessionStart"):
         context = first_dict(parsed.get("hookSpecificOutput")).get("additionalContext")
         if isinstance(context, str) and context.strip():
             return 0, json.dumps({"injectSteps": [{"ephemeralMessage": context.strip()}]}, ensure_ascii=False), stderr

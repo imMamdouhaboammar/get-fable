@@ -1,0 +1,122 @@
+[
+  {
+    "id": "fable-arch-high-concurrency-microservices",
+    "name": "High concurrency fintech platform forces microservices",
+    "category": "should-trigger",
+    "prompt": "Evaluate architecture for a payment platform with 25k concurrent users, sub-20ms SLA, Stripe billing, and identity auth.",
+    "shouldTrigger": true,
+    "given": {
+      "scale": "25k concurrent users",
+      "domains": ["auth", "billing", "gateway"]
+    },
+    "expected": {
+      "verdict": "microservices",
+      "allowMonolith": false,
+      "requiredGates": [
+        "microservices-threshold-evaluated",
+        "monolith-prohibited-if-distributed",
+        "east-west-grpc-or-broker-enforced"
+      ]
+    },
+    "forbidden": {
+      "action": "allow-monolith-scaffolding"
+    }
+  },
+  {
+    "id": "fable-arch-mixed-workload-transcoding",
+    "name": "CPU-bound video transcoding with CRUD API gateway",
+    "category": "should-trigger",
+    "prompt": "Architect a video processing system that transcodes H.265 streams in parallel and serves metadata via a REST API gateway.",
+    "shouldTrigger": true,
+    "given": {
+      "workload": "mixed CPU-bound transcoding and I/O-bound API gateway"
+    },
+    "expected": {
+      "verdict": "microservices",
+      "allowMonolith": false,
+      "techStack": {
+        "compute": "Rust",
+        "gateway": "TypeScript"
+      }
+    },
+    "forbidden": {
+      "action": "merge-transcoder-into-nodejs-event-loop"
+    }
+  },
+  {
+    "id": "fable-arch-ai-deep-learning-pipeline",
+    "name": "AI inference pipeline with LLM routing",
+    "category": "should-trigger",
+    "prompt": "Design an AI inference service with PyTorch model serving, LLM prompt routing, and vector search.",
+    "shouldTrigger": true,
+    "given": {
+      "domain": "ai-inference",
+      "scenario": 4
+    },
+    "expected": {
+      "scenario": 4,
+      "selectedLanguage": "Python",
+      "selectedFramework": "FastAPI",
+      "role": "ai-inference-engineer"
+    },
+    "forbidden": {
+      "action": "assign-non-python-for-deep-learning"
+    }
+  },
+  {
+    "id": "fable-arch-stateless-high-throughput-routing",
+    "name": "Stateless cluster message routing in Go",
+    "category": "should-trigger",
+    "prompt": "Build an internal message routing broker handling millions of stateless events per second across cluster nodes.",
+    "shouldTrigger": true,
+    "given": {
+      "scenario": 2,
+      "throughput": "millions of stateless events/sec"
+    },
+    "expected": {
+      "scenario": 2,
+      "selectedLanguage": "Go",
+      "selectedFramework": "Fiber",
+      "role": "distributed-network-engineer"
+    },
+    "forbidden": {
+      "action": "route-high-throughput-over-single-thread"
+    }
+  },
+  {
+    "id": "fable-arch-monolith-cli-negative",
+    "name": "Simple CLI utility does not trigger microservices",
+    "category": "should-not-trigger",
+    "prompt": "Write a single-file command line tool to count lines in local text files.",
+    "shouldTrigger": false,
+    "given": {
+      "scale": "local CLI",
+      "domains": 1
+    },
+    "expected": {
+      "verdict": "monolith",
+      "allowMonolith": true
+    },
+    "forbidden": {
+      "action": "force-microservices-on-trivial-script"
+    }
+  },
+  {
+    "id": "fable-arch-east-west-grpc-enforcement",
+    "name": "East-west internal traffic hard-enforces gRPC",
+    "category": "should-trigger",
+    "prompt": "Connect billing service to auth service for internal transaction settlement.",
+    "shouldTrigger": true,
+    "given": {
+      "trafficPattern": "east-west"
+    },
+    "expected": {
+      "protocol": "gRPC",
+      "transport": "HTTP/2 + Protobuf",
+      "httpJsonProhibited": true
+    },
+    "forbidden": {
+      "action": "use-untyped-http-json-for-internal-calls"
+    }
+  }
+]

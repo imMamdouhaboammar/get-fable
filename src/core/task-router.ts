@@ -37,7 +37,7 @@ function has(text: string, pattern: RegExp): boolean {
 
 function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-research' || skill === 'fable-memory') return 'research';
-  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark') return 'architecture';
+  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
   if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator') return 'review';
   if (skill === 'fable-security' || skill === 'fable-redteam') return 'security';
@@ -268,6 +268,15 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-skill-creator', 12, 'task creates or optimizes an autonomous skill package');
   }
 
+  if (
+    has(
+      text,
+      /\b(?:microservices?|distributed architecture|decoupled (?:services|domains)|tech stack matrix|architecture enforcement|evaluate architecture|scaffold microservices|grpc east[- ]west)\b/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-architecture', 13, 'task requests architecture evaluation or microservices enforcement');
+  }
+
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
     addSignal(scores, reasons, 'fable-tdd', 10, 'task describes a testable behavior change');
   }
@@ -302,6 +311,7 @@ export function routeTask(
     reasons: selectedReasons,
     requiresPlan:
       selectedSkill === 'fable-plan' ||
+      selectedSkill === 'fable-architecture' ||
       selectedSkill === 'fable-discover' ||
       selectedSkill === 'fable-research' ||
       (!suppressPlan && scores['fable-plan'] >= 4),

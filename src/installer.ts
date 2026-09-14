@@ -53,6 +53,17 @@ import {
 } from './core/git-hooks-path.js';
 
 export { autoInstallSkills, resolveSkillsToInstall, getPlatformSkillsDirs };
+export {
+  ensureNoMistakesInstalled,
+  initProjectNoMistakes,
+  checkNoMistakesStatus,
+  installOrUpdateNoMistakes,
+  configureNoMistakesEcosystem,
+} from './integrations/no-mistakes-installer.js';
+import {
+  ensureNoMistakesInstalled,
+  initProjectNoMistakes,
+} from './integrations/no-mistakes-installer.js';
 
 export function getRepoRootDir(): string {
   const currentFile = fileURLToPath(import.meta.url);
@@ -480,6 +491,23 @@ export function installDshGlobal(dshHome: string = getDshHomeDir()) {
   logInfo(`Installing get-fable for DeepSeek Harness (${dshHome})...`);
   fs.mkdirSync(dshHome, { recursive: true });
 
+  const webPkgPath = path.join(dshHome, 'profiles', 'web', 'package.json');
+  let isBundle = false;
+  if (fs.existsSync(webPkgPath)) {
+    try {
+      const webPkg = JSON.parse(fs.readFileSync(webPkgPath, 'utf-8'));
+      if (webPkg?.dsh?.profile?.bundles?.includes('get-fable')) {
+        isBundle = true;
+      }
+    } catch {}
+  }
+
+  if (isBundle) {
+    logInfo('get-fable is already registered as a profile bundle in DSH; skipping cordis.patch.yml duplicate insert.');
+    logSuccess('DeepSeek Harness integration configured successfully.');
+    return;
+  }
+
   const patchFile = path.join(dshHome, 'cordis.patch.yml');
   const patchEntry = `\n# get-fable bundle patch\n- insert:\n    - id: get-fable\n      name: get-fable\n`;
 
@@ -510,7 +538,8 @@ export function installDeepSeekGlobal(deepseekDir: string = getDeepSeekDir()) {
     path.join(rulesDir, 'fable.md')
   );
 
-  installDshGlobal();
+  const dshDir = deepseekDir === getDeepSeekDir() ? getDshHomeDir() : path.join(path.dirname(deepseekDir), 'dsh');
+  installDshGlobal(dshDir);
   logSuccess('Installed DeepSeek rules in ~/.deepseek/rules/fable.md');
 }
 
@@ -1037,6 +1066,12 @@ export function installGlobalFable() {
     logSuccess('Updated Agent Kernel rules');
   }
 
+  try {
+    ensureNoMistakesInstalled({ silent: false });
+  } catch (err) {
+    logWarn(`Could not complete no-mistakes quality gate setup: ${err instanceof Error ? err.message : String(err)}`);
+  }
+
   logSuccess('Installed get-fable across all supported AI coding platforms');
 }
 
@@ -1178,6 +1213,10 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   }
 
   installGitHooks(targetDir);
+
+  try {
+    initProjectNoMistakes(targetDir);
+  } catch {}
 
   logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }

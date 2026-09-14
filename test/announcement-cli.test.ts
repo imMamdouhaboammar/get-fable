@@ -44,7 +44,7 @@ function deps(overrides: Partial<AnnouncementCliDeps> = {}) {
   const stderr: string[] = [];
   let state: AnnouncementState = { schemaVersion: 1, seen: [], dismissed: [] };
   const value: AnnouncementCliDeps = {
-    currentVersion: '1.7.0',
+    currentVersion: '1.8.0',
     now: () => NOW,
     acquire: async () => acquisition(),
     readState: () => state,

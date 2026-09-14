@@ -13,7 +13,9 @@ export * from './core/prompt-compiler.js';
 export * from './core/toon.js';
 export * from './core/doctor.js';
 export * from './core/spark.js';
+export * from './core/architecture-eval.js';
 
 export * from './integrations/providers.js';
 export * from './core/agent-behavior-eval.js';
 export * from './dsh/index.js';
+export * from './rpc/index.js';

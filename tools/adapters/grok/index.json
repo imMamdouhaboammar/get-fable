@@ -1,6 +1,6 @@
 {
   "provider": "grok",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "mappings": {
     "web-search": "xai_search",
     "filesystem": "file_operations",

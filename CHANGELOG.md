@@ -2,6 +2,31 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [1.8.0] - 2026-09-14
+
+### Highlights
+
+- **`fable-architecture` Architecture Enforcement Skill (`skills/fable-architecture/`)**:
+  - **Deterministic Architectural Vector Scoring**: Analyzes project specifications across Scale & Load (traffic, RPS, latency, concurrency), Domain Decoupling (bounded contexts, independent teams, polyglot data models), and Resource Intensity (GPU/TPU, compute-bound vs IO-bound, streaming workloads) to produce an authoritative composite score (0-10).
+  - **Hard Monolith Lockout**: Automatically locks out monolithic scaffolding (`allowMonolith: false`) when vector thresholds cross defined thresholds (Scale ≥ 7, Domains ≥ 6, or Resource ≥ 8; or Composite ≥ 7.0), preventing AI agents from collapsing high-scale distributed systems into fragile monoliths.
+  - **Dual-Transport Standard (ADR 0007)**: Mandates North-South HTTP/REST for external edge traffic and East-West gRPC Protobuf / Message Brokers for internal inter-service communication, explicitly prohibiting internal HTTP/JSON mesh calls.
+  - **Prescriptive Multi-Language Matrix**: Selects purpose-built language and framework stacks based on workload scenario (Scenario 1 Node.js/Bun/Fastify for high-concurrency gateways; Scenario 2 Go/Gin/gRPC for high-throughput distributed microservices; Scenario 3 Python/FastAPI/PyTorch/Ray for AI/ML inference; Scenario 4 Rust/Axum/Tonic for ultra-low-latency mission-critical systems).
+  - **Project Inception Hook Interception (`hooks/fable_architecture_guard.py`)**: Intercepts session starts and pre-invocation prompts to inject architectural constraints and enforce microservices decomposition before any code is generated.
+  - **CLI Evaluation Command**: Added `get-fable arch-eval "<spec>"` to evaluate project specs and output TOON/JSON manifests on demand.
+
+- **Fable Worker gRPC RPC Framework (`proto/` & `src/rpc/`)**:
+  - **High-Performance Worker Service**: Shipped `proto/fable_worker.proto` with Protobuf service definitions (`ExecuteTask`, `StreamLogs`, `GetStatus`, `CancelTask`) for distributed subagent execution.
+  - **Fable Worker Server**: Built `FableWorkerServer` (`src/rpc/server.ts`) and client SDK (`src/rpc/client.ts`), runnable via `get-fable worker-serve` or `get-fable rpc-serve`.
+
+- **Native `no-mistakes` Quality Gate Integration (`src/integrations/no-mistakes-installer.ts`)**:
+  - **Automated Installation & Setup**: Introduced `get-fable install-no-mistakes` (aliased to `get-fable install-quality-gate`), automatically configuring the no-mistakes gate, template `.no-mistakes/` configuration, and Git pre-push hook integration.
+
+- **Automated Contributor Outreach Relay (`src/outreach/`)**:
+  - **Trusted Community Outreach**: Merged idempotent GitHub relay pipeline converting external contributor PRs and issues into structured GitHub Discussions with strict provenance verification and bot candidate filtering.
+
+- **DSH Web UI Script Sanitizer & Prebuilt Distribution**:
+  - Shipped `scripts/build-client.ts` to automatically strip ESM export statements from `dist/client.js`, enabling clean script concatenation in DeepSeek Harness / Cordis classic script combo bundling.
+
 ## [1.7.0] - 2026-09-14
 
 ### Highlights

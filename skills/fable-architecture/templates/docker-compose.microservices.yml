@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  # Public API Gateway (TypeScript / NestJS / Bun)
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - AUTH_SERVICE_GRPC=auth-service:50052
+      - COMPUTE_SERVICE_GRPC=compute-service:50053
+      - AI_SERVICE_GRPC=ai-service:50054
+      - MESSAGE_BROKER_URL=amqp://guest:guest@message-broker:5672
+    depends_on:
+      - auth-service
+      - message-broker
+    networks:
+      - public-net
+      - internal-mesh
+
+  # High-Concurrency Auth Service (Go / Fiber)
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"
+    environment:
+      - GRPC_PORT=50052
+      - DATABASE_URL=postgres://user:pass@postgres:5432/auth_db
+    networks:
+      - internal-mesh
+
+  # High-Performance Computational Kernel (Rust / Axum)
+  compute-service:
+    build:
+      context: ./services/compute-service
+      dockerfile: Dockerfile
+    ports:
+      - "50053:50053"
+    environment:
+      - GRPC_PORT=50053
+    networks:
+      - internal-mesh
+
+  # Machine Learning & AI Inference Service (Python / FastAPI)
+  ai-service:
+    build:
+      context: ./services/ai-service
+      dockerfile: Dockerfile
+    ports:
+      - "50054:50054"
+    environment:
+      - GRPC_PORT=50054
+    networks:
+      - internal-mesh
+
+  # East-West Event-Driven Message Broker (RabbitMQ)
+  message-broker:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - internal-mesh
+
+networks:
+  public-net:
+    driver: bridge
+  internal-mesh:
+    internal: true

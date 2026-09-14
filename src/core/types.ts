@@ -183,3 +183,58 @@ export interface SkillPackageValidationResult {
   manifest?: SkillPackageManifest;
   resources: SkillResourceEntry[];
 }
+
+export type TechStackCategory = 'A' | 'B' | 'C' | 'D' | 'E';
+
+export interface TechStackAssignment {
+  category: TechStackCategory;
+  language: 'Go' | 'TypeScript' | 'Rust' | 'Python' | 'Elixir';
+  framework: string;
+  frameworkOptions: string[];
+  runtime: string;
+  role: string;
+  competency: string;
+}
+
+export interface ArchitectureVectorScores {
+  scaleAndLoad: number;
+  domainDecoupling: number;
+  resourceIntensity: number;
+  compositeScore: number;
+}
+
+export type ArchitectureVerdict = 'microservices' | 'monolith';
+
+export interface MicroserviceCommunicationContract {
+  northSouth: {
+    protocol: 'REST HTTP/JSON';
+    schemaStandard: 'OpenAPI 3.1';
+    tlsVersion: 'TLS 1.3';
+  };
+  eastWest: {
+    protocol: 'gRPC' | 'Message Broker';
+    transport: 'HTTP/2 + Protobuf' | 'AMQP (RabbitMQ)' | 'Kafka Binary Protocol';
+    prohibitHttpJson: boolean;
+  };
+}
+
+export interface DecomposedService {
+  name: string;
+  domain: string;
+  scenario: 1 | 2 | 3 | 4 | 5;
+  stack: TechStackAssignment;
+  description: string;
+  port: number;
+  grpcPort?: number;
+}
+
+export interface ArchitectureEvaluationResult {
+  verdict: ArchitectureVerdict;
+  allowMonolith: boolean;
+  vectors: ArchitectureVectorScores;
+  reasons: string[];
+  services: DecomposedService[];
+  communication: MicroserviceCommunicationContract;
+  manifestToon: string;
+}
+

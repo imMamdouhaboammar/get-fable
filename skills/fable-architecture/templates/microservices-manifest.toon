@@ -1,0 +1,12 @@
+architecture_manifest: {verdict, allow_monolith, scale_score, domain_score, resource_score, composite_score}
+  microservices, false, 8.5, 8.0, 8.5, 8.3
+
+communication_standards: {boundary, protocol, transport, http_json_prohibited}
+  North-South (Client -> Gateway), REST HTTP/JSON, TLS 1.3 (OpenAPI 3.1), false
+  East-West (Service -> Service), gRPC, HTTP/2 + Protobuf, true
+
+services [4]: {name, domain, scenario, language, framework, runtime, role, port, grpc_port}
+  api-gateway, API Gateway & Ingress Orchestration, 1, TypeScript, NestJS, Node.js 22+ / Bun, gateway-orchestrator, 8080, 50051
+  auth-service, Identity & Authentication, 2, Go, Fiber, Go 1.23+, distributed-network-engineer, 8081, 50052
+  transcoder-service, Computational Transcoding Kernel, 3, Rust, Axum, Rust 1.80+, systems-kernel-engineer, 8082, 50053
+  ai-inference-service, AI & Predictive Inference Engine, 4, Python, FastAPI, Python 3.12+, ai-inference-engineer, 8083, 50054

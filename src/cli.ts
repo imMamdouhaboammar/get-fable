@@ -39,6 +39,7 @@ import {
   installPiCodeGlobal,
   installGitHooks,
   initProjectFable,
+  ensureNoMistakesInstalled,
   autoInstallSkills,
   checkFableStatus,
   getFableStatus,
@@ -46,6 +47,7 @@ import {
 } from './installer.js';
 import { runFableLint } from './fable-lint.js';
 import { startMythosRouterServer } from './router/index.js';
+import { FableWorkerServer } from './rpc/index.js';
 import {
   addEvidence,
   applyRoutingDecision,
@@ -60,6 +62,7 @@ import {
   writeFableState,
 } from './core/state.js';
 import { routeTask } from './core/task-router.js';
+import { evaluateArchitecture } from './core/architecture-eval.js';
 import { runDoctor, runDoctorFix } from './core/doctor.js';
 import { evaluateFableSpark } from './core/spark.js';
 import { renderInteractiveHelp, getHelpTopic } from './core/helper.js';
@@ -128,8 +131,8 @@ export function getPackageVersion(): string {
   }
 }
 
-export function parsePort(value: string | undefined): number {
-  if (value === undefined) return 8080;
+export function parsePort(value: string | undefined, defaultPort: number = 8080): number {
+  if (value === undefined) return defaultPort;
   if (!/^\d+$/.test(value)) throw new Error('Port must be an integer between 1 and 65535');
 
   const port = Number(value);
@@ -218,6 +221,32 @@ function runRoute(args: string[]): number {
       console.log(`Parallel Candidates: ${decision.parallelCandidates.join(', ')}`);
     }
     if (apply) logSuccess('Applied routing decision to .fable/state.json');
+  });
+}
+
+function runArchEvalCommand(args: string[]): number {
+  const spec = args.filter((arg) => !arg.startsWith('--')).join(' ').trim();
+  if (!spec) {
+    logError('arch-eval requires project specification text');
+    return 1;
+  }
+  const result = evaluateArchitecture(spec);
+  return printJsonOrSummary(result, args, 'arch-eval', () => {
+    logHeader(`Architecture Evaluation: ${result.verdict.toUpperCase()}`);
+    console.log(`Allow Monolith:      ${result.allowMonolith ? 'YES' : 'NO (LOCKED OUT)'}`);
+    console.log(`Scale & Load Score:  ${result.vectors.scaleAndLoad} / 10`);
+    console.log(`Domain Decoupling:   ${result.vectors.domainDecoupling} / 10`);
+    console.log(`Resource Intensity:  ${result.vectors.resourceIntensity} / 10`);
+    console.log(`Composite Score:     ${result.vectors.compositeScore} / 10`);
+    console.log('\nCommunication Standards:');
+    console.log(`  North-South: ${result.communication.northSouth.protocol} (${result.communication.northSouth.schemaStandard})`);
+    console.log(`  East-West:   ${result.communication.eastWest.protocol} (${result.communication.eastWest.transport}) [HTTP/JSON Prohibited: ${result.communication.eastWest.prohibitHttpJson}]`);
+    console.log(`\nDecomposed Services (${result.services.length}):`);
+    for (const s of result.services) {
+      console.log(`  - ${s.name} [Scenario ${s.scenario}]: ${s.stack.language} (${s.stack.framework}) -> Role: ${s.stack.role} (Port: ${s.port}, gRPC: ${s.grpcPort || 'N/A'})`);
+    }
+    console.log('\nArchitecture Manifest (TOON):');
+    console.log(result.manifestToon);
   });
 }
 
@@ -541,6 +570,11 @@ function runInstallCommand(args: string[]): number {
   switch (target) {
     case 'all':
       installGlobalFable();
+      return 0;
+    case 'no-mistakes':
+    case 'quality-gate':
+      logHeader('Installing and configuring no-mistakes quality gate');
+      ensureNoMistakesInstalled();
       return 0;
     case 'claude':
       installClaudeGlobal();
@@ -1247,6 +1281,14 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
       installGitHooks();
       return 0;
 
+    case 'install-no-mistakes':
+    case 'install-quality-gate':
+      logHeader('Installing and configuring no-mistakes quality gate');
+      return (async () => {
+        await ensureNoMistakesInstalled({ forceUpdate: hasFlag(args, '--force'), projectDir: process.cwd() });
+        return 0;
+      })();
+
     case 'init':
       logHeader('Initializing project workflow files (.fable/ & .agents/)');
       initProjectFable(process.cwd());
@@ -1254,6 +1296,10 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
 
     case 'route':
       return runRoute(args.slice(1));
+
+    case 'arch-eval':
+    case 'eval-arch':
+      return runArchEvalCommand(args.slice(1));
 
     case 'spark':
       return runSparkCommand(args.slice(1));
@@ -1346,6 +1392,20 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
       const port = parsePort(args[1]);
       logHeader(`Starting request-enrichment proxy on port ${port}`);
       startMythosRouterServer(port);
+      return 0;
+    }
+
+    case 'worker-serve':
+    case 'rpc-serve': {
+      const port = parsePort(args[1], 50051);
+      logHeader(`Starting Fable gRPC Worker Server on port ${port}`);
+      const server = new FableWorkerServer({ port });
+      server.start().then((boundPort) => {
+        logSuccess(`Fable gRPC Worker Server active on port ${boundPort}`);
+      }).catch((err) => {
+        logError(`Failed to start worker server: ${err.message}`);
+        process.exit(1);
+      });
       return 0;
     }
 

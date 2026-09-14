@@ -7,9 +7,9 @@ import {
 } from '../src/core/neural-linking.ts';
 
 describe('Fable Neural Linking System', () => {
-  test('loads neural graph with 27 nodes and validated connections', () => {
+  test('loads neural graph with 28 nodes and validated connections', () => {
     const graph = loadNeuralGraph();
-    expect(graph.nodes.length).toBe(27);
+    expect(graph.nodes.length).toBe(28);
     expect(graph.edges.length).toBeGreaterThanOrEqual(30);
 
     const validation = validateNeuralGraph(graph);

@@ -2086,9 +2086,4 @@ if (typeof window !== "undefined") {
     }
   });
 }
-export {
-  FableDashboard,
-  FableDashboardView,
-  FableWidget,
-  FableWidgetView
-};
+/* stripped esm exports for dsh bundle */

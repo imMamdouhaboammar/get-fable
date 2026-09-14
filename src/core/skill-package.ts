@@ -29,8 +29,8 @@ const REQUIRED_FIELDS = [
 const EXTENSIONS: Record<SkillResourceType, Set<string>> = {
   entry: new Set(['.md']),
   agent: new Set(['.yaml', '.yml', '.json']),
-  reference: new Set(['.md', '.json', '.yaml', '.yml', '.txt']),
-  template: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon']),
+  reference: new Set(['.md', '.json', '.yaml', '.yml', '.txt', '.proto']),
+  template: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon', '.proto']),
   example: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon']),
   eval: new Set(['.json', '.yaml', '.yml']),
   script: new Set(['.sh', '.bash', '.py', '.js', '.mjs', '.ts']),

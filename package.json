@@ -1,12 +1,17 @@
 {
   "name": "get-fable",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "A portable coding lifecycle for AI agents with deterministic routing across 27 skills, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "bun": "./src/index.ts",
+      "import": "./dist/index.js",
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
     "./client": "./dist/client.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./dsh.plugin.json": "./dsh.plugin.json",
@@ -50,6 +55,7 @@
     "agents/",
     "bin/",
     "src/",
+    "proto/",
     "public/",
     "dist/",
     "assets/",
@@ -72,7 +78,7 @@
     "test:coverage": "bun test --timeout 30000 --coverage",
     "typecheck": "tsc --noEmit",
     "build:host": "bun build ./src/index.ts ./src/cli.ts --outdir ./dist --target node",
-    "build:client": "bun build ./src/dsh/client/index.tsx --outfile ./dist/client.js --target browser",
+    "build:client": "bun scripts/build-client.ts",
     "build": "rm -rf dist && bun run build:host && bun run build:client",
     "check": "bun run check:generated && bun run check:llms && bun run typecheck && bun run test && bun run build",
     "lint": "bun ./bin/get-fable.js lint",
@@ -81,7 +87,9 @@
     "generate:catalog": "bun scripts/generate-catalog.ts",
     "check:generated": "bun scripts/generate-catalog.ts --check",
     "generate:llms": "bun scripts/generate-llms-txt.ts",
-    "check:llms": "bun scripts/generate-llms-txt.ts --check"
+    "check:llms": "bun scripts/generate-llms-txt.ts --check",
+    "install:quality-gate": "bun ./bin/get-fable.js install-quality-gate",
+    "install:no-mistakes": "bun ./bin/get-fable.js install-no-mistakes"
   },
   "keywords": [
     "dsh",
@@ -130,6 +138,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.14.4",
+    "@grpc/proto-loader": "^0.8.1",
     "@toon-format/toon": "^4.1.1"
   },
   "devDependencies": {

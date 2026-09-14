@@ -1,52 +1,80 @@
-# Task Plan: DeepSeek Harness (DSH) Plugin & Consumed UI for get-fable
+# Task Plan: Architecture Enforcement Skill Integration for Get-Fable System
 
 ## Goal
-Transform `get-fable` into a fully compatible, installable DeepSeek Harness (DSH) Plugin with Cordis bundle manifests, backend REST service, and a consumed React/Preact Web UI client, and prepare the publication metadata for `awesome-dsh-plugin`.
+Design, implement, package, and integrate a native system skill (`fable-architecture`) within `get-fable` that intercepts project specifications at inception (Step One), deterministically evaluates scale, domain decoupling, and resource intensity vectors, hard-constrains agents to a microservices architecture when thresholds are met, assigns curated language-framework stacks by core competency, and enforces strict communication standards (North-South REST vs. East-West gRPC/Brokers).
+
+## Next Step
+Register `fable-architecture` in `skills/get-fable/registry.json`, update `task-router.ts`, implement inception hook guard, and run `generate:catalog`.
 
 ## Current Phase
-Phase 5: Awesome-DSH-Plugin Publication Spec & Documentation (Complete)
+Phase 4: Registry, Task Router & Hook Interception Integration
 
 ## Phases
 
-### Phase 1: DSH Bundle & Manifest Configuration
-- [x] Create `cordis.patch.yml` at repository root with `insert` entry for `get-fable`.
-- [x] Update `package.json` with `dsh.bundle`, `dsh.client`, keywords, and exports (`.`, `./client`, `./package.json`).
-- [x] Configure `tsconfig.json` to build both Host and Web Client bundles.
-- Status: complete
+### Phase 1: Planning & Implementation Plan Design
+- [x] Research get-fable skill package conventions, hook dispatcher, and registry mechanics
+- [x] Document architectural vectors, scoring rules, and tech stack matrix in `findings.md`
+- [x] Create comprehensive `implementation_plan.md` artifact for user review
+- [x] Receive user approval
+- **Status:** complete
 
-### Phase 2: DSH Backend Plugin & Service Architecture
-- [x] Implement `src/dsh/types.ts` defining Cordis context, services (`webServer`, `sessionProjections`, `llm`), and config schemas.
-- [x] Implement `src/dsh/api.ts` exposing REST routes:
-  - `GET /api/fable/status` (current phase, work card, fail streak, state health)
-  - `GET /api/fable/plan` (reads `task_plan.md`, `progress.md`, `findings.md`, `.mode`, and attestation)
-  - `GET /api/fable/skills` (returns complete registry of 25 Fable skills and metadata)
-  - `POST /api/fable/route` (runs Fable task router on input task/prompt)
-  - `POST /api/fable/doctor` (runs diagnostic check and auto-repair)
-- [x] Implement `src/dsh/index.ts` as the Cordis host plugin entrypoint that binds services and lifecycle hooks.
-- Status: complete
+### Phase 2: Core Architecture Evaluation Engine
+- [x] Implement `src/core/architecture-eval.ts` with:
+  - Vector evaluation (Scale & Load, Domain Decoupling, Resource Intensity)
+  - Monolith restriction lock (`allowMonolith: false`)
+  - Deterministic stack selection (Categories A, B, C, D for Scenarios 1-4)
+  - Protocol assignment (Inbound REST, East-West gRPC/Message Broker)
+- [x] Implement TOON / JSON serialization for microservice architecture manifests
+- **Status:** complete
 
-### Phase 3: Consumed UI Development (DSH Web Client)
-- [x] Implement DSH Web UI styling in `src/dsh/client/styles.ts` matching DSH theme variables (`--dsw-alias-*`).
-- [x] Build React/JSX components:
-  - `FableWidget`: Sidebar status indicator, phase badge, fail-streak alert, quick-fix button.
-  - `FableDashboard`: Full dashboard tab for DSH settings / tab surface.
-  - `PlanViewer`: Manus-style live markdown / structured phase viewer for `task_plan.md` and attestation.
-  - `SkillGraph`: Visual interactive explorer of the 25 Fable skills and their neural links.
-  - `TaskRouterTester`: Interactive task testing sandbox.
-- [x] Bundle into `src/dsh/client/index.tsx` registered via `window.__ModuleLoader__.load({ id: "get-fable", factory: ... })`.
-- Status: complete
+### Phase 3: Canonical Skill Package Definition (`skills/fable-architecture/`)
+- [x] Author `skills/fable-architecture/SKILL.md` (progressive disclosure, YAML frontmatter, execution rules)
+- [x] Author `skills/fable-architecture/skill.package.json` (schemaVersion 2)
+- [x] Create `agents/openai.yaml` (`architect-enforcer` agent profile)
+- [x] Create `references/` (`vector-scoring.md`, `tech-stack-matrix.md`, `communication-standards.md`, `subagent-role-distribution.md`)
+- [x] Create `templates/` (`microservices-manifest.toon`, `docker-compose.microservices.yml`, `service-contract.proto`)
+- [x] Create `examples/` (`fintech-scale-walkthrough.md`, `ai-media-pipeline-walkthrough.md`)
+- [x] Create `evals/` (`scenarios.json` with positive, negative, and threshold test cases)
+- [x] Create `scripts/` (`evaluate-architecture.py` deterministic validator)
+- **Status:** complete
 
-### Phase 4: Build, Typecheck & Verification
-- [x] Add build scripts in `package.json` to build `dist/index.js` and `dist/client.js` with Bun.
-- [x] Write automated tests in `test/dsh-plugin.test.ts` to verify Cordis plugin registration, REST endpoints, and schema conformity.
-- [x] Run `bun run check` (typecheck, 68 tests, build) to verify everything compiles cleanly.
-- Status: complete
+### Phase 4: Registry, Task Router & Hook Interception Integration
+- [x] Register `fable-architecture` in `skills/get-fable/registry.json` (order 220, pack `system`, phase `planned`)
+- [x] Update `src/core/task-router.ts` with intent matching, vector scoring signals, and task shaping
+- [x] Implement `hooks/fable_architecture_guard.py` hook handler to intercept project inception prompts
+- [x] Wire hook into `hooks/fable_hook_dispatch.py` and `hooks/hooks.json`
+- [x] Run `bun run generate:catalog` to regenerate catalog artifacts
+- **Status:** complete
 
-### Phase 5: Awesome-DSH-Plugin Publication Spec & Documentation
-- [x] Create `data/plugins/imMamdouhaboammar__get-fable.yml` matching awesome-dsh-plugin schema.
-- [x] Update `README.md` and `docs/dsh-plugin.md` with installation and usage instructions for DSH users.
-- [x] Update `installer.ts` and `cli.ts` so `get-fable install-dsh` configures DSH targets (`~/.dsh/cordis.patch.yml`).
-- Status: complete
+### Phase 5: Verification, Doctor Audits & Documentation
+- [x] Author automated test suite in `test/fable-architecture.test.ts`
+- [x] Run `validateSkillPackage('fable-architecture')` (valid: true, 0 errors)
+- [x] Run `bun run check:generated` (pass)
+- [x] Run `get-fable doctor --json` and verify zero errors (44 checks passing)
+- [x] Run `bun run typecheck && bun test && bun run build` (all passing)
+- [x] Update `progress.md` with verification results
+- **Status:** complete
 
-## Next Step
-Work is fully implemented, verified, and ready for publication and PR submission.
+## Key Questions
+1. How should the inception hook communicate monolith lockout to host agents?
+   - Via injected ephemeral context in `SessionStart` / `PreInvocation` and prompt directive compiler, plus `PreToolUse` blocking if a monolithic file is scaffolded when `allowMonolith: false`.
+2. What format should the architecture contract take?
+   - Standard Fable TOON block (`microservices_manifest.toon`) and companion JSON specification.
+
+## Decisions Made
+| Decision | Rationale |
+|----------|-----------|
+| Skill ID: `fable-architecture` | Fits existing canonical naming (`fable-security`, `fable-artifact`, `fable-config`) and pack `system` |
+| Deterministic Scoring Function | Threshold-based with 3 discrete vector scores (Scale, Domains, Workload) and a composite index to eliminate agent hallucination |
+| Dual-Transport Alignment with ADR 0007 | North-South REST HTTP/JSON; East-West gRPC Protobuf or Kafka/RabbitMQ |
+| SchemaVersion 2 Skill Package | Strictly adheres to Fable package validator (`skill.package.json`, data-only scripts, non-empty resources) |
+
+## Errors Encountered
+| Error | Attempt | Resolution |
+|-------|---------|------------|
+| None yet | - | - |
+
+## Notes
+- Bun is mandatory for all package/script executions.
+- Do not bypass `get-fable doctor` or `bun test`.
+- Wait for user approval before modifying production source or executing code changes.

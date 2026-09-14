@@ -85,6 +85,7 @@ Do not choose patch/minor/major purely for convenience.
 
 ### Stage 3 — Reconfirm fresh quality gates
 Verify required functional/build/review/security evidence belongs to the candidate SHA/mutation generation. If evidence was produced before candidate changes, rerun it.
+- When available, route branch pushes through the `no-mistakes` proxy (`git push no-mistakes` or `no-mistakes axi run`) to ensure rebase, automated review, tests, lint, and docs pass before remote merge.
 
 ### Stage 4 — Inspect the artifact boundary
 Build/dry-run the exact artifact and inspect its manifest/content.

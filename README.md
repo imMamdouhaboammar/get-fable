@@ -14,13 +14,13 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
-**26 connected Skills · routing · research · planning · TDD · verification · review · redteam · recovery · DSH plugin · release**
+**27 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · recovery · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
 ```
 
-[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#26-skills-one-way-of-working) · [Docs](#documentation)
+[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#27-skills-one-way-of-working) · [Docs](#documentation)
 
 </div>
 
@@ -112,7 +112,7 @@ A MORE DISCIPLINED CODING LOOP
 
 ## So what does get-fable actually do?
 
-It gives the agent 25 connected specialist Skills and a lifecycle that decides when each one should take over.
+It gives the agent 27 connected specialist Skills and a lifecycle that decides when each one should take over.
 
 A normal bug request should not immediately mean “edit production code.”
 
@@ -208,7 +208,7 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 ---
 
-## 26 Skills. One way of working.
+## 27 Skills. One way of working.
 
 ### Understand the work
 
@@ -221,6 +221,8 @@ Every canonical Skill carries complete operational knowledge and architecture di
 `fable-plan` — turn evidence into dependency-aware, risk-aware, falsifiable work cards.
 
 ### Build the change
+
+`fable-architecture` — evaluate scale, domain decoupling, and resource intensity vectors, lock out monolithic scaffolds when thresholds cross limits, enforce dual-transport boundaries (REST vs. gRPC), and prescribe multi-language stack matrices before scaffolding.
 
 `fable-tdd` — prove the behavior gap through the right test boundary before production mutation.
 
@@ -306,13 +308,13 @@ get-fable spark
 
 ## Works with the coding agent you already use
 
-`get-fable` is portable across 30 AI coding agents, platforms, and IDEs rather than being tied to one model or editor.
+`get-fable` is portable across 32 AI coding agents, platforms, and IDEs rather than being tied to one model or editor.
 
 ### Proprietary & Commercial Markets
 
 | Agent / Tool | Integration Tier | Key Capabilities |
 |:---|:---|:---|
-| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 25 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
+| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 28 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
 | <img src="assets/logos/gemini.svg" width="20" height="20" alt="" /> **Gemini CLI / Google Antigravity** (Google) | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/grok.svg" width="20" height="20" alt="" /> **Grok Build** (xAI) | **Full Lifecycle** | `hooks.json` lifecycle triggers, Grok plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> [**OpenAI Codex & ChatGPT**](https://openai.com/codex) (OpenAI) | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
@@ -398,6 +400,7 @@ get-fable install deepseek
 get-fable install dsh
 get-fable install kiro
 get-fable install pi
+get-fable install no-mistakes
 ```
 
 DeepSeek Harness (DSH) Plugin installation:
@@ -474,14 +477,17 @@ Check installation, contracts, and evidence state:
 get-fable doctor
 ```
 
-Run automated security audits and red teaming:
-
-```bash
-# Scan staging endpoints with API logic probes
+# Run automated security audits and red teaming:
 get-fable redteam scan --target http://127.0.0.1:3000 --profile api-logic
 
 # CI/CD regression gating with baseline diffing and CVSS threshold
 get-fable redteam scan --target http://127.0.0.1:3000 --baseline .fable/baseline.json --fail-on-cvss 7.0
+
+# Evaluate architecture vectors, monolith lockout & dual-transport contracts:
+get-fable arch-eval "High-throughput fintech ledger with 100k TPS and polyglot datastores"
+
+# Install and configure no-mistakes quality gate & pre-push pipeline:
+get-fable install-no-mistakes
 ```
 
 > 📖 **Full Multi-Host & Platform Guide**: See [docs/INSTALLATION.md](./docs/INSTALLATION.md) for detailed configuration of hooks, shell completions, and individual agent environments.
@@ -527,7 +533,7 @@ The exported bundle is generated from the current Skill corpus, so the README de
 
 - telemetry is disabled by default;
 - state and evidence live locally with the project;
-- the CLI has zero production npm dependencies;
+- minimal zero-telemetry dependencies (`@grpc/grpc-js`, `@grpc/proto-loader`, `@toon-format/toon`) for high-performance gRPC and TOON serialization;
 - Skill installation rejects traversal and symlink escapes;
 - the local proxy binds to loopback by default;
 - GitHub Actions are pinned to immutable commit SHAs;
@@ -543,7 +549,10 @@ For the full trust boundary, see [SECURITY.md](SECURITY.md).
 get-fable init
 get-fable route "your task"
 get-fable spark
+get-fable arch-eval "your specification"
 get-fable doctor
+get-fable install-no-mistakes
+get-fable worker-serve
 get-fable feed list
 get-fable graph
 get-fable recipes

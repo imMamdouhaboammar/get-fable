@@ -7,7 +7,7 @@ import { UpdateLockError, type LockHandle } from '../src/core/update/lock.ts';
 function plan(overrides: Partial<UpdatePlan> = {}): UpdatePlan {
   return {
     currentVersion: '1.5.1',
-    targetVersion: '1.7.0',
+    targetVersion: '1.8.0',
     installation: {
       method: 'npm-global',
       executablePath: '/usr/local/bin/get-fable',
@@ -15,7 +15,7 @@ function plan(overrides: Partial<UpdatePlan> = {}): UpdatePlan {
     },
     strategy: 'npm-global',
     executable: 'npm',
-    argv: ['install', '-g', 'get-fable@1.7.0'],
+    argv: ['install', '-g', 'get-fable@1.8.0'],
     requiresConfirmation: true,
     reason: 'fixture plan',
     ...overrides,
@@ -31,7 +31,7 @@ function handle(): LockHandle {
       token: 'owner-token',
       pid: 4242,
       acquiredAt: '2026-08-29T03:00:00.000Z',
-      targetVersion: '1.7.0',
+      targetVersion: '1.8.0',
       installationMethod: 'npm-global',
     },
   };
@@ -40,7 +40,7 @@ function handle(): LockHandle {
 function deps(overrides: Partial<ExecutorDeps> = {}): ExecutorDeps {
   return {
     run: () => ({ status: 0, stdout: '', stderr: '' }),
-    verifyInstalledVersion: () => '1.7.0',
+    verifyInstalledVersion: () => '1.8.0',
     acquireLock: () => handle(),
     releaseLock: () => {},
     ...overrides,
@@ -59,7 +59,7 @@ describe('explicit update executor', () => {
         },
         strategy: 'bun-global',
         executable: 'bun',
-        argv: ['add', '-g', 'get-fable@1.7.0'],
+        argv: ['add', '-g', 'get-fable@1.8.0'],
       }),
       deps({
         run: (executable, argv) => {
@@ -69,7 +69,7 @@ describe('explicit update executor', () => {
       })
     );
 
-    expect(calls).toEqual([{ executable: 'bun', argv: ['add', '-g', 'get-fable@1.7.0'] }]);
+    expect(calls).toEqual([{ executable: 'bun', argv: ['add', '-g', 'get-fable@1.8.0'] }]);
     expect(receipt.success).toBe(true);
   });
 
@@ -85,7 +85,7 @@ describe('explicit update executor', () => {
       })
     );
 
-    expect(calls).toEqual([{ executable: 'npm', argv: ['install', '-g', 'get-fable@1.7.0'] }]);
+    expect(calls).toEqual([{ executable: 'npm', argv: ['install', '-g', 'get-fable@1.8.0'] }]);
     expect(receipt.success).toBe(true);
   });
 
@@ -126,7 +126,7 @@ describe('explicit update executor', () => {
         run: () => ({ status: 7, stdout: '', stderr: 'install failed' }),
         verifyInstalledVersion: () => {
           verified = true;
-          return '1.7.0';
+          return '1.8.0';
         },
       })
     );
@@ -152,12 +152,12 @@ describe('explicit update executor', () => {
   });
 
   test('reports success only after the installed version matches exactly', () => {
-    const receipt = executeUpdate(plan(), deps({ verifyInstalledVersion: () => '1.7.0' }));
+    const receipt = executeUpdate(plan(), deps({ verifyInstalledVersion: () => '1.8.0' }));
 
     expect(receipt.success).toBe(true);
     expect(receipt.outcome).toBe('success');
-    expect(receipt.verifiedVersion).toBe('1.7.0');
-    expect(receipt.targetVersion).toBe('1.7.0');
+    expect(receipt.verifiedVersion).toBe('1.8.0');
+    expect(receipt.targetVersion).toBe('1.8.0');
   });
 
   test('returns a structured command failure and releases the lock when the runner throws', () => {
@@ -236,7 +236,7 @@ describe('explicit update executor', () => {
 
     expect(receipt.success).toBe(false);
     expect(receipt.outcome).toBe('release-failure');
-    expect(receipt.verifiedVersion).toBe('1.7.0');
+    expect(receipt.verifiedVersion).toBe('1.8.0');
     expect(receipt.message).toMatch(/release|lock/i);
     expect(receipt.message).not.toContain('private-detail');
   });
