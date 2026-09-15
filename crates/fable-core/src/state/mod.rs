@@ -45,8 +45,11 @@ pub fn read_state(target_dir: &Path) -> Result<Option<FableState>, String> {
     }
     let data = fs::read_to_string(&path)
         .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
-    let state: FableState =
+    let mut state: FableState =
         serde_json::from_str(&data).map_err(|e| format!("Failed to parse state.json: {}", e))?;
+    if state.workspace_id.is_empty() {
+        state.workspace_id = workspace_id_for_target(target_dir);
+    }
     Ok(Some(state))
 }
 
@@ -141,7 +144,7 @@ pub fn add_evidence(state: &mut FableState, record: EvidenceRecord) {
         && record.generation == state.mutation_generation;
 
     if advances_verification {
-        state.verified_generation = state.verified_generation.max(record.generation);
+        state.verified_generation = state.verified_generation.max(record.generation as i64);
     }
 
     if counts_toward_failure && record.result == EvidenceResult::Fail {
@@ -156,7 +159,7 @@ pub fn add_evidence(state: &mut FableState, record: EvidenceRecord) {
 }
 
 pub fn has_fresh_passing_evidence(state: &FableState) -> bool {
-    if state.verified_generation < state.mutation_generation {
+    if state.verified_generation < state.mutation_generation as i64 {
         return false;
     }
     for record in state.evidence.iter().rev() {

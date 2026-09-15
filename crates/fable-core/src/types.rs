@@ -4,9 +4,10 @@ use std::collections::HashMap;
 pub const FABLE_STATE_SCHEMA_VERSION: u32 = 3;
 pub const FABLE_REGISTRY_SCHEMA_VERSION: u32 = 2;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum FablePhase {
+    #[default]
     Idle,
     Discovering,
     Planned,
@@ -200,16 +201,28 @@ pub struct RoutingDecision {
 #[serde(rename_all = "camelCase")]
 pub struct FableState {
     pub schema_version: u32,
+    #[serde(default)]
     pub state_revision: u64,
+    #[serde(default)]
     pub workspace_id: String,
+    #[serde(default)]
     pub phase: FablePhase,
+    #[serde(default)]
     pub current_skill: Option<String>,
+    #[serde(default)]
     pub failure_streak: u32,
+    #[serde(default)]
     pub substantial: bool,
+    #[serde(default)]
     pub mutation_generation: u64,
-    pub verified_generation: u64,
+    #[serde(default)]
+    pub verified_generation: i64,
+    #[serde(default)]
     pub active_card: Option<String>,
+    #[serde(default)]
     pub last_decision: Option<RoutingDecision>,
+    #[serde(default)]
     pub evidence: Vec<EvidenceRecord>,
+    #[serde(default)]
     pub updated_at: String,
 }
