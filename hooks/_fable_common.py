@@ -623,7 +623,9 @@ def _with_state_transaction(fable_dir, mutator):
         current_revision = int(state.get("stateRevision", 0))
         updated = mutator(dict(state))
         if not isinstance(updated, dict):
-            return None
+            if not pending:
+                return None
+            updated = state
         updated["schemaVersion"] = STATE_SCHEMA_VERSION
         updated["workspaceId"] = state["workspaceId"]
         updated["stateRevision"] = current_revision + 1
@@ -666,6 +668,8 @@ def record_command_result(fable_dir, failed):
                 state["currentSkill"] = "fable-recover"
                 state["substantial"] = True
         else:
+            if int(state.get("failureStreak", 0)) == 0:
+                return None
             state["failureStreak"] = 0
         state["updatedAt"] = now_iso()
         return state
