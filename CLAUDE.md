@@ -1,6 +1,6 @@
 # CLAUDE.md — get-fable Rules for Claude Code
 
-Version: **1.9.0** · Integration tier: **Full Lifecycle** · Skills: **29**
+Version: **1.9.1** · Integration tier: **Full Lifecycle** · Skills: **29**
 
 This file configures how Claude Code interacts with the get-fable lifecycle harness. Claude Code is a **Full Lifecycle** host — all five Python hooks are active and `fable-recover`, `fable-verify`, and `fable-close_guard` run automatically on every session.
 

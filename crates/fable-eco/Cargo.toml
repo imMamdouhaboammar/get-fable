@@ -1,6 +1,6 @@
 [package]
 name = "fable-eco"
-version = "1.9.0"
+version = "1.9.1"
 edition = "2021"
 authors = ["Mamdouh Abo Ammar"]
 description = "Curated capability distribution and execution-control subsystem for get-fable"

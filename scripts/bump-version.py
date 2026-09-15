@@ -409,6 +409,13 @@ TARGETS: list[FileTarget] = [
         optional=True,
     ),
     FileTarget(
+        path="crates/fable-eco/Cargo.toml",
+        pattern=r'version\s*=\s*"[\d]+\.[\d]+\.[\d]+"',
+        replacement=_cargo_version,
+        description="fable-eco Cargo.toml version",
+        optional=True,
+    ),
+    FileTarget(
         path="crates/fable-cli/src/main.rs",
         pattern=r'#\[command\(version\s*=\s*"[\d]+\.[\d]+\.[\d]+"\)\]',
         replacement=_cargo_cli_macro,
@@ -427,6 +434,13 @@ TARGETS: list[FileTarget] = [
         pattern=r'name = "fable-core"\nversion = "[\d]+\.[\d]+\.[\d]+"',
         replacement=lambda v: f'name = "fable-core"\nversion = "{v}"',
         description="Cargo.lock fable-core version",
+        optional=True,
+    ),
+    FileTarget(
+        path="Cargo.lock",
+        pattern=r'name = "fable-eco"\nversion = "[\d]+\.[\d]+\.[\d]+"',
+        replacement=lambda v: f'name = "fable-eco"\nversion = "{v}"',
+        description="Cargo.lock fable-eco version",
         optional=True,
     ),
 

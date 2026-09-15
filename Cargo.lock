@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "fable-cli"
-version = "1.9.0"
+version = "1.9.1"
 dependencies = [
  "chrono",
  "clap",
@@ -239,7 +239,7 @@ dependencies = [
 
 [[package]]
 name = "fable-core"
-version = "1.9.0"
+version = "1.9.1"
 dependencies = [
  "chrono",
  "fs2",
@@ -253,7 +253,7 @@ dependencies = [
 
 [[package]]
 name = "fable-eco"
-version = "1.9.0"
+version = "1.9.1"
 dependencies = [
  "chrono",
  "fable-core",

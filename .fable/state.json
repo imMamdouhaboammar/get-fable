@@ -1,76 +1,9 @@
 {
-  "schemaVersion": 3,
-  "phase": "complete",
+  "schemaVersion": 1,
+  "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
-  "substantial": true,
+  "substantial": false,
   "lastDecision": null,
-  "evidence": [
-    {
-      "kind": "test",
-      "source": "cargo test --workspace && bun test tests/eco-bridge.test.ts",
-      "result": "pass",
-      "detail": "fable-eco complete implementation with 52 rust tests and native bun bridge tests passing",
-      "repositoryRevision": "8d55674aaaf49c055e0f8f956ac703a0f435ca47",
-      "commandCategory": "test",
-      "scope": "Implement fable-eco Phase 3, 4, 5: host adapters, CLI, capability runtime, doctor and hardening",
-      "generation": 107,
-      "timestamp": "2026-09-15T07:09:58.520Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "build",
-      "source": "bun run typecheck && bun run build",
-      "result": "pass",
-      "detail": "TypeScript typecheck and production build pass cleanly",
-      "repositoryRevision": "8d55674aaaf49c055e0f8f956ac703a0f435ca47",
-      "commandCategory": "build",
-      "scope": "Implement fable-eco Phase 3, 4, 5: host adapters, CLI, capability runtime, doctor and hardening",
-      "generation": 107,
-      "timestamp": "2026-09-15T07:10:04.874Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "runtime",
-      "source": "bun ./bin/get-fable.js doctor --json-v1",
-      "result": "pass",
-      "detail": "all 30 canonical skills and lifecycle checks report PASS with doctor exit code 0",
-      "repositoryRevision": "8d55674aaaf49c055e0f8f956ac703a0f435ca47",
-      "commandCategory": "runtime",
-      "scope": "Implement fable-eco Phase 3, 4, 5: host adapters, CLI, capability runtime, doctor and hardening",
-      "generation": 107,
-      "timestamp": "2026-09-15T07:10:12.791Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "build",
-      "source": "bun run build",
-      "result": "pass",
-      "detail": "build clean and sanitized",
-      "repositoryRevision": "8d55674aaaf49c055e0f8f956ac703a0f435ca47",
-      "commandCategory": "build",
-      "scope": "workspace",
-      "generation": 111,
-      "timestamp": "2026-09-15T07:19:37.236Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "build",
-      "source": "bun run build",
-      "result": "pass",
-      "detail": "build clean",
-      "repositoryRevision": "6aca3bec0d0ebb1a4c2d95d6766b1c8481696967",
-      "commandCategory": "build",
-      "scope": "workspace",
-      "generation": 112,
-      "timestamp": "2026-09-15T07:20:27.639Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    }
-  ],
-  "stateRevision": 122,
-  "workspaceId": "4d0a9132c2e476001278e544",
-  "mutationGeneration": 112,
-  "verifiedGeneration": 112,
-  "activeCard": null,
-  "updatedAt": "2026-09-15T07:20:27.639Z"
+  "evidence": []
 }
