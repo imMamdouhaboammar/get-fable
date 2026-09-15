@@ -586,12 +586,24 @@
       "generation": 290,
       "timestamp": "2026-09-15T01:36:43.371Z",
       "workspaceId": "4d0a9132c2e476001278e544"
+    },
+    {
+      "kind": "review",
+      "source": "git tag",
+      "result": "pass",
+      "detail": "created tag v1.9.0 and verified clean release commit",
+      "repositoryRevision": "561538c803243d7e7aaa1048308558603aa96fe1",
+      "commandCategory": "review",
+      "scope": "workspace",
+      "generation": 291,
+      "timestamp": "2026-09-15T01:37:40.607Z",
+      "workspaceId": "4d0a9132c2e476001278e544"
     }
   ],
-  "stateRevision": 1028,
+  "stateRevision": 1064,
   "workspaceId": "4d0a9132c2e476001278e544",
-  "mutationGeneration": 290,
-  "verifiedGeneration": 290,
+  "mutationGeneration": 291,
+  "verifiedGeneration": 291,
   "activeCard": null,
-  "updatedAt": "2026-09-15T01:37:14.618237Z"
+  "updatedAt": "2026-09-15T01:42:43.254471Z"
 }
