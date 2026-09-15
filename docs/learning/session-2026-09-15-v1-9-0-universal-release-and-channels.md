@@ -83,3 +83,71 @@ bun ./bin/get-fable.js install all
 bun ./bin/get-fable.js status --json-v1
 ```
 Ensure each platform directory receives updated rules (`fable.md`, `fable5-mode.md`), canonical skills, and lifecycle hook dispatchers.
+
+---
+
+## L5 — Portable Repository State Template vs. Local Machine Binding
+
+### Problem
+When `.fable/state.json` is committed with a local machine path hash (`workspaceId`) and runtime schema (`schemaVersion: 3`), CI environments and downstream clones fail test suites (`Error: Fable state workspaceId does not match the current workspace`). In addition, `test/enterprise/repository-state-template.test.ts` strictly validates that tracked repository state remains workspace-neutral.
+
+### Correct Pattern
+Tracked `.fable/state.json` in git must always maintain the `schemaVersion: 1` portable template:
+```json
+{
+  "schemaVersion": 1,
+  "phase": "idle",
+  "currentSkill": null,
+  "failureStreak": 0,
+  "substantial": false,
+  "lastDecision": null,
+  "evidence": []
+}
+```
+At runtime, the harness transparently upgrades the state in memory and creates local transaction locks, but working tree commits and check gates must maintain the neutral template.
+
+---
+
+## L6 — Cross-Test Process Environment Isolation
+
+### Problem
+Test suites mutating process-wide variables (such as `process.env.CLAUDE_CONFIG_DIR` or `process.env.FABLE_CODEX_CONFIG_DIR`) without structured cleanup cause downstream test suites to look for configuration in stale, deleted temporary directories, producing flaky or cascading test failures on CI runners.
+
+### Correct Pattern
+Always wrap environment-mutating setup in `try ... finally` blocks and save/restore previous environment values explicitly:
+```typescript
+const previousClaude = process.env.CLAUDE_CONFIG_DIR;
+try {
+  process.env.CLAUDE_CONFIG_DIR = testDir;
+  // execute test assertions
+} finally {
+  if (previousClaude === undefined) {
+    delete process.env.CLAUDE_CONFIG_DIR;
+  } else {
+    process.env.CLAUDE_CONFIG_DIR = previousClaude;
+  }
+}
+```
+
+---
+
+## L7 — Dual-Engine Packaging and NPM Registry Publication
+
+### Problem
+On systems where `npm` is aliased or shimmed to Bun (`bun pm`), `bun publish` packs artifacts and displays CLI summaries but may rely on different auth token conventions than upstream npm registry endpoints or fail to propagate immediate dist-tags when scoped package access policies differ.
+
+### Correct Pattern
+1. Generate and verify the distribution tarball using standard prepack validation:
+   ```bash
+   RAW_NPM=1 npm pack
+   ```
+2. Publish the verified tarball directly with explicit access parameters:
+   ```bash
+   RAW_NPM=1 npm publish get-fable-<version>.tgz --access public
+   ```
+3. Inspect and verify registry dist-tags immediately:
+   ```bash
+   npm info get-fable dist-tags --json
+   ```
+   Ensure `"latest": "<version>"` is active across the public registry.
+
