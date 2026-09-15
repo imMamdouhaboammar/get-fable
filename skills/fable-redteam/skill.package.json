@@ -9,7 +9,23 @@
     "references/scope-and-safety-rules.md",
     "references/owasp-api-playbooks.md",
     "references/claude-red-tactics.md",
-    "references/tool-orchestration.md"
+    "references/tool-orchestration.md",
+    "references/cloudflare/AI-AND-LLM.md",
+    "references/cloudflare/ATTACK-CLASSES.md",
+    "references/cloudflare/CLIENT-SIDE.md",
+    "references/cloudflare/CLOUD-AND-DEPLOYMENT.md",
+    "references/cloudflare/DATA-ISOLATION-AND-LIFECYCLE.md",
+    "references/cloudflare/DESKTOP-MOBILE-AND-LOCAL-IPC.md",
+    "references/cloudflare/HUNTING.md",
+    "references/cloudflare/MEMORY-SAFETY-AND-BINARY.md",
+    "references/cloudflare/PROTOCOLS-RPC-AND-MESSAGING.md",
+    "references/cloudflare/RECONNAISSANCE.md",
+    "references/cloudflare/RESOURCE-EXHAUSTION-AND-AVAILABILITY.md",
+    "references/cloudflare/SKILL.md",
+    "references/cloudflare/SUPPLY-CHAIN-AND-RELEASE.md",
+    "references/cloudflare/VALIDATION-AND-REPORTING.md",
+    "references/cloudflare/WEB-PROTOCOL-AND-AUTH.md",
+    "references/cloudflare/report-schema.json"
   ],
   "templates": [
     "templates/redteam-finding.template.md"

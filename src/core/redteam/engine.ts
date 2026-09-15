@@ -171,6 +171,8 @@ export async function runRedTeamScan(
       if (adapter.id !== 'native') {
         if (profile === 'api-logic' && adapter.id === 'akto') {
           // allow Akto for api-logic profile
+        } else if (profile === 'audit' && adapter.id === 'cloudflare') {
+          // allow Cloudflare for audit profile
         } else {
           continue;
         }
@@ -288,12 +290,12 @@ export async function runRedTeamScan(
         fs.writeFileSync(baselineDiffPath, JSON.stringify(baselineDiff, null, 2), 'utf-8');
       }
 
-      // Save SARIF Report if requested or custom output file
-      if (options.outputFormat === 'sarif' || options.outputFile?.endsWith('.sarif')) {
-        const sarifLog = generateSarifReport(result);
-        const sarifPath = options.outputFile || path.join(docsDir, 'REDTEAM_REPORT.sarif');
-        fs.writeFileSync(sarifPath, JSON.stringify(sarifLog, null, 2), 'utf-8');
-      }
+      // Save SARIF Report for GitHub / SIEM ingestion
+      const sarifLog = generateSarifReport(result);
+      const sarifPath = options.outputFile?.endsWith('.sarif')
+        ? options.outputFile
+        : path.join(docsDir, 'REDTEAM_REPORT.sarif');
+      fs.writeFileSync(sarifPath, JSON.stringify(sarifLog, null, 2), 'utf-8');
 
       // Write custom output file if specified
       if (options.outputFile) {

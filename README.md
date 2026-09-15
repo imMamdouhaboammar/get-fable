@@ -14,13 +14,13 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
-**27 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · recovery · DSH plugin · release**
+**29 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · recovery · gRPC worker · TOON protocol · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
 ```
 
-[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#27-skills-one-way-of-working) · [Docs](#documentation)
+[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#29-skills-one-way-of-working) · [Docs](#documentation)
 
 </div>
 
@@ -112,7 +112,7 @@ A MORE DISCIPLINED CODING LOOP
 
 ## So what does get-fable actually do?
 
-It gives the agent 27 connected specialist Skills and a lifecycle that decides when each one should take over.
+It gives the agent 28 connected specialist Skills and a lifecycle that decides when each one should take over.
 
 A normal bug request should not immediately mean “edit production code.”
 
@@ -208,7 +208,7 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 ---
 
-## 27 Skills. One way of working.
+## 29 Skills. One way of working.
 
 ### Understand the work
 
@@ -242,6 +242,8 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 `fable-redteam` — run enterprise-grade automated penetration testing, CVSS v3.1 scoring, circuit breaker protection, SARIF reports, and cryptographic run attestations.
 
+`fable-heal` — automatically synthesize, apply, and verify security remediations for vulnerabilities identified by `fable-redteam`.
+
 `fable-simulator` — compare against an independent oracle without confusing simulation with production proof.
 
 `fable-eval` — measure changes to agent behavior without benchmark overfitting or oracle leakage.
@@ -274,7 +276,9 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 ### Extend the harness
 
-`skill-creator` — author new Skills to the same V2 standard instead of cloning shallow templates.
+`fable-skill-creator` — author new Skills to the same V2 standard instead of cloning shallow templates.
+
+`fable-learning` — extract structured learnings, reusable patterns, and agent-kernel Playbooks from completed sessions.
 
 [Explore the canonical Skill catalog →](docs/CANONICAL_SKILLS.md)
 
@@ -314,7 +318,7 @@ get-fable spark
 
 | Agent / Tool | Integration Tier | Key Capabilities |
 |:---|:---|:---|
-| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 28 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
+| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 29 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
 | <img src="assets/logos/gemini.svg" width="20" height="20" alt="" /> **Gemini CLI / Google Antigravity** (Google) | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/grok.svg" width="20" height="20" alt="" /> **Grok Build** (xAI) | **Full Lifecycle** | `hooks.json` lifecycle triggers, Grok plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> [**OpenAI Codex & ChatGPT**](https://openai.com/codex) (OpenAI) | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
@@ -424,71 +428,163 @@ Claude Code marketplace installation:
 
 ---
 
-## Start in under a minute
+## Quick install
 
-### 1. Vercel / skills.sh CLI (Direct Skill Pack)
 ```bash
-npx skills add imMamdouhaboammar/get-fable
-# or
+# Bun (recommended)
+bun add -g get-fable
+
+# npm
+npm install -g get-fable
+
+# Homebrew (macOS & Linux)
+brew tap imMamdouhaboammar/get-fable && brew install get-fable
+
+# One-line shell installer (CI, Docker, bare metal)
+curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh | bash
+
+# Skill pack only (Vercel / skills.sh)
 bunx skills add imMamdouhaboammar/get-fable
+
+# DeepSeek Harness (DSH) Cordis plugin
+dsh plugin add imMamdouhaboammar/get-fable
+
+# Claude Code Marketplace
+# /plugin marketplace add imMamdouhaboammar/get-fable
+# /plugin install get-fable@get-fable
 ```
 
-### 2. Homebrew (macOS & Linux)
-```bash
-brew tap imMamdouhaboammar/get-fable
-brew install get-fable
-```
+---
 
-### 3. Global Package Manager
+## Full install path
+
+Follow these steps once after installing the CLI to get the complete lifecycle active across your agents and project.
+
+### Step 1 — Install the CLI
+
 ```bash
 bun add -g get-fable
-# or
-npm install -g get-fable
+get-fable --version   # confirm binary is on PATH
 ```
 
-### 4. Configure All Coding Agents
+### Step 2 — Configure your coding agents
+
 ```bash
+# All agents at once (recommended)
 get-fable install all
-# Configures Claude Code, Google Antigravity, OpenAI Codex/ChatGPT, Cursor, OpenCode, Kimi, DeepSeek, Kiro, Pi
+
+# Or pick individually
+get-fable install claude        # Claude Code   — full lifecycle hooks + skills
+get-fable install antigravity   # Google Antigravity / Gemini CLI — hooks + plugin
+get-fable install grok          # Grok Build (xAI) — hooks + plugin
+get-fable install codex         # OpenAI Codex + ChatGPT — plugin + skills
+get-fable install cursor        # Cursor — advisory rule + plugin
+get-fable install copilot       # GitHub Copilot — advisory rule
+get-fable install devin         # Devin — skill + rule
+get-fable install windsurf      # Windsurf — advisory rule
+get-fable install replit        # Replit Agent — advisory rule
+get-fable install amazonq       # Amazon Q Dev — advisory rule
+get-fable install trae          # Trae — advisory rule
+get-fable install warp          # Warp AI — advisory rule
+get-fable install kimi          # Moonshot Kimi — advisory rule
+get-fable install roocode       # Roo Code — skill + rule
+get-fable install cline         # Cline — skill + rule
+get-fable install openhands     # OpenHands — skill + rule
+get-fable install opencode      # OpenCode — skill + rule
+get-fable install kilo          # Kilo Code — skill + rule
+get-fable install aider         # Aider — advisory rule
+get-fable install continue      # Continue — advisory rule
+get-fable install plandex       # Plandex — advisory rule
+get-fable install autogpt       # AutoGPT — advisory rule
+get-fable install hermes        # Hermes Agent — skill + rule
+get-fable install kiro          # Kiro — rule + hooks
+get-fable install dsh           # DeepSeek Harness — Cordis plugin + Web UI
+get-fable install pi            # Pi Code — advisory rule
+get-fable install no-mistakes   # no-mistakes quality gate + pre-push hook
 ```
 
-Inside a project:
+### Step 3 — Initialize a project
 
 ```bash
 cd your-project
 get-fable init
 ```
 
-Route a real task:
+Creates `.fable/state.json`, `.fable/LEDGER.md`, `.fable/PROGRESS.md`, and `docs/SPEC.md`.
+
+### Step 4 — Verify health
+
+```bash
+get-fable doctor          # 42 system checks — skills, hooks, state, supply chain
+get-fable doctor --json-v1  # machine-readable diagnostic envelope
+get-fable lint            # ledger + state completion semantics
+```
+
+### Step 5 — Route your first task
 
 ```bash
 get-fable route "Fix the checkout race condition and verify it with a regression test"
 ```
 
-Ask for the next useful move:
+Get the smallest useful next move at any point:
 
 ```bash
 get-fable spark
 ```
 
-Check installation, contracts, and evidence state:
+### Step 6 — Architecture evaluation (new projects)
 
 ```bash
-get-fable doctor
+get-fable arch-eval "High-throughput fintech ledger with 100k TPS and polyglot datastores"
+# → outputs composite score, monolith lockout decision, dual-transport contract, language matrix
 ```
 
-# Run automated security audits and red teaming:
+### Step 7 — Security & quality gates
+
+```bash
+# Red team scan against a local target
 get-fable redteam scan --target http://127.0.0.1:3000 --profile api-logic
 
-# CI/CD regression gating with baseline diffing and CVSS threshold
-get-fable redteam scan --target http://127.0.0.1:3000 --baseline .fable/baseline.json --fail-on-cvss 7.0
+# CI/CD baseline diff + CVSS threshold gate
+get-fable redteam scan --target http://127.0.0.1:3000 \
+  --baseline .fable/baseline.json --fail-on-cvss 7.0
 
-# Evaluate architecture vectors, monolith lockout & dual-transport contracts:
-get-fable arch-eval "High-throughput fintech ledger with 100k TPS and polyglot datastores"
+# Auto-heal findings from the last red team run
+get-fable route "remediate redteam findings"
 
-# Install and configure no-mistakes quality gate & pre-push pipeline:
+# no-mistakes pre-push quality gate
 get-fable install-no-mistakes
 ```
+
+### Step 8 — gRPC worker (distributed execution)
+
+```bash
+# Start the Fable Worker gRPC server
+get-fable worker-serve
+
+# Behavioral evaluation pipeline
+get-fable behavior-eval export --out /tmp/fable-behavior-requests.json
+get-fable behavior-eval score /tmp/provider-responses.json \
+  --out evals/results/agent-behavior-v1.json
+get-fable behavior-eval status
+```
+
+### Shell integration (optional)
+
+Add real-time prompt hints and lifecycle aliases to your shell profile:
+
+```bash
+# Zsh (~/.zshrc)
+eval "$(get-fable shell zsh)"
+
+# Bash (~/.bashrc or ~/.bash_profile)
+eval "$(get-fable shell bash)"
+
+# Fish (~/.config/fish/config.fish)
+get-fable shell fish | source
+```
+
+Aliases enabled: `gfr` (route), `gfs` (spark), `gfe` (evidence), `gfc` (card), `gfl` (lint), `gfd` (doctor), `gfm` (mutation), `gfst` (status).
 
 > 📖 **Full Multi-Host & Platform Guide**: See [docs/INSTALLATION.md](./docs/INSTALLATION.md) for detailed configuration of hooks, shell completions, and individual agent environments.
 

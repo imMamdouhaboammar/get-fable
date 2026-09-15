@@ -13,6 +13,7 @@ CANONICAL_SKILLS = {
     "fable-review",
     "fable-security",
     "fable-redteam",
+    "fable-heal",
     "fable-release",
     "fable-handoff",
     "fable-eval",

@@ -1,4 +1,4 @@
-# Usage: get-fable 1.3
+# Usage: get-fable 1.9.0
 
 This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
 
@@ -162,6 +162,8 @@ Build
 Proof
   fable-review
   fable-security
+  fable-redteam
+  fable-heal
 
 Delivery
   fable-release
@@ -169,6 +171,22 @@ Delivery
 
 Evolution
   fable-eval
+  fable-learning
+
+System
+  fable-dataviz
+  fable-artifact
+  fable-simplify
+  fable-loop
+  fable-run
+  fable-memory
+  fable-config
+  fable-simulator
+  fable-cowork
+  fable-spark
+
+Creator
+  fable-skill-creator
 ```
 
 The registry decides which specialist is needed. Do not load the whole pack into context for every task.
@@ -177,11 +195,81 @@ The registry decides which specialist is needed. Do not load the whole pack into
 
 ```bash
 get-fable install
+get-fable install claude
+get-fable install antigravity
+get-fable install grok
+get-fable install codex
+get-fable install all
 ```
 
 Supported installation paths include Claude Code and the repository's Antigravity / Gemini target. Agent Kernel rules are copied only when an existing Agent Kernel directory is detected.
 
 The Claude and Antigravity adapters use the same Python hook implementations for session context, delegation guard, failure recovery, mutation tracking, canonical workspace identity, and close enforcement.
+
+## Quality gate
+
+Install and configure the no-mistakes quality gate and Git pre-push hook:
+
+```bash
+get-fable install-no-mistakes
+# aliased as:
+get-fable install-quality-gate
+```
+
+## Architecture evaluation
+
+Evaluate a project specification against Scale, Domain Decoupling, and Resource Intensity vectors:
+
+```bash
+get-fable arch-eval "High-throughput fintech ledger with 100k TPS and polyglot datastores"
+```
+
+Outputs a TOON/JSON manifest with the composite score, monolith lockout decision, dual-transport contract, and prescriptive language matrix. The `fable-architecture` hook intercepts session starts to inject architectural constraints before any code is generated.
+
+## gRPC worker service
+
+Start the Fable Worker gRPC server for distributed subagent execution:
+
+```bash
+get-fable worker-serve
+# aliased as:
+get-fable rpc-serve
+```
+
+The worker exposes `ExecuteTask`, `StreamLogs`, `GetStatus`, and `CancelTask` RPC methods via `proto/fable_worker.proto`.
+
+## Red team and security
+
+Run automated security audits:
+
+```bash
+# Basic red team scan
+get-fable redteam scan --target http://127.0.0.1:3000 --profile api-logic
+
+# CI/CD regression gating with baseline diffing
+get-fable redteam scan --target http://127.0.0.1:3000 --baseline .fable/baseline.json --fail-on-cvss 7.0
+```
+
+After a red team run, route to `fable-heal` to synthesize and verify security remediations.
+
+## Behavioral evaluation
+
+Export evaluation requests, score provider responses, and check evidence freshness:
+
+```bash
+get-fable behavior-eval export --out /tmp/get-fable-behavior-requests.json
+get-fable behavior-eval score /tmp/provider-responses.json --out evals/results/agent-behavior-v1.json
+get-fable behavior-eval status
+```
+
+## Feed, graph, recipes, and packs
+
+```bash
+get-fable feed list    # list available skill feeds
+get-fable graph        # display the lifecycle skill graph
+get-fable recipes      # list available lifecycle recipes
+get-fable packs        # list available skill packs
+```
 
 ## Request proxy
 
@@ -202,12 +290,16 @@ Any upstream request carrying `Authorization` requires HTTPS. Plain HTTP upstrea
 ```bash
 get-fable status
 get-fable status --json
+get-fable status --json-v1
 get-fable doctor
 get-fable doctor --json
+get-fable doctor --json-v1
 get-fable lint
 ```
 
 `lint` checks human ledger contracts together with durable-state completion semantics.
+
+`--json-v1` produces a versioned schema envelope (see `schemas/cli-json-envelope.schema.json`). Legacy `--json` output remains available.
 
 ## Repository gate
 

@@ -12,3 +12,5 @@ coverage/
 .fable/learnings.json
 .fable/redteam-findings.json
 .fable/run-attestation.json
+target/
+

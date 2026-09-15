@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
+  "version": "1.9.0",
   "nodes": [
     { "id": "get-fable", "pack": "core", "phase": "idle", "label": "Universal Lifecycle Orchestrator" },
     { "id": "fable-discover", "pack": "core", "phase": "discovering", "label": "Repository & Execution Grounding" },
@@ -27,6 +27,7 @@
     { "id": "fable-spark", "pack": "system", "phase": "idle", "label": "Situational Awareness Next-Move Predictor" },
     { "id": "fable-skill-creator", "pack": "creator", "phase": "executing", "label": "Autonomous Skill Creator & Optimizer" },
     { "id": "fable-redteam", "pack": "proof", "phase": "verifying", "label": "Ethical RedTeam & Pentest Engine" },
+    { "id": "fable-heal", "pack": "proof", "phase": "executing", "label": "Security Healing & Fixing Engine" },
     { "id": "fable-learning", "pack": "evolution", "phase": "verifying", "label": "Conversation Analysis & Knowledge Synthesis" },
     { "id": "fable-architecture", "pack": "system", "phase": "planned", "label": "Microservices Architecture Enforcer" }
   ],
@@ -78,6 +79,10 @@
     { "source": "fable-security", "target": "fable-redteam", "relation": "peer", "weight": 0.9 },
     { "source": "fable-redteam", "target": "fable-plan", "relation": "continuation", "weight": 1.0 },
     { "source": "fable-redteam", "target": "fable-tdd", "relation": "continuation", "weight": 0.9 },
+    { "source": "fable-redteam", "target": "fable-heal", "relation": "continuation", "weight": 1.0 },
+    { "source": "fable-heal", "target": "fable-verify", "relation": "continuation", "weight": 1.0 },
+    { "source": "fable-heal", "target": "fable-recover", "relation": "recovery", "weight": 1.0 },
+    { "source": "fable-heal", "target": "fable-tdd", "relation": "peer", "weight": 0.9 },
     { "source": "fable-handoff", "target": "fable-learning", "relation": "continuation", "weight": 0.9 },
     { "source": "fable-learning", "target": "fable-eval", "relation": "continuation", "weight": 0.9 },
     { "source": "fable-learning", "target": "fable-memory", "relation": "peer", "weight": 0.9 },

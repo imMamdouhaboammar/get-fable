@@ -6,6 +6,7 @@
     "agents/openai.yaml"
   ],
   "references": [
+    "references/alibaba-ocr-rulesets.md",
     "references/behavioral-diff-review-playbook.md",
     "references/diff-review-checklist.md"
   ],

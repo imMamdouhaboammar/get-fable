@@ -8,10 +8,180 @@
           "name": "get-fable-redteam",
           "version": "1.0.0",
           "informationUri": "https://github.com/imMamdouhaboammar/get-fable",
-          "rules": []
+          "rules": [
+            {
+              "id": "CWE-1021",
+              "name": "Missing_Content-Security-Policy_Header",
+              "shortDescription": {
+                "text": "Missing Content-Security-Policy Header"
+              },
+              "fullDescription": {
+                "text": "The response does not specify a Content-Security-Policy header, increasing risk of XSS and data injection."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/1021.html",
+              "help": {
+                "text": "Add a strict 'Content-Security-Policy' HTTP response header restricting script and object sources.",
+                "markdown": "### Remediation\n\nAdd a strict 'Content-Security-Policy' HTTP response header restricting script and object sources.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:52240\"\n```"
+              },
+              "properties": {
+                "tags": [
+                  "security-headers",
+                  "external/cwe/cwe-1021",
+                  "CWE-1021",
+                  "A05:2021-Security Misconfiguration",
+                  "API8:2023-Security Misconfiguration",
+                  "Req 6.4.3-Web Application Headers and Scripts",
+                  "CC6.6-Boundary Protection"
+                ],
+                "precision": "very-high",
+                "problem.severity": "warning",
+                "security-severity": "5.3",
+                "cvss-vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N"
+              }
+            },
+            {
+              "id": "CWE-79",
+              "name": "Missing_X-Content-Type-Options_Header",
+              "shortDescription": {
+                "text": "Missing X-Content-Type-Options Header"
+              },
+              "fullDescription": {
+                "text": "Without X-Content-Type-Options: nosniff, browsers may MIME-sniff response bodies into executable scripts."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/79.html",
+              "help": {
+                "text": "Set 'X-Content-Type-Options: nosniff' header on all HTTP responses.",
+                "markdown": "### Remediation\n\nSet 'X-Content-Type-Options: nosniff' header on all HTTP responses.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:52240\"\n```"
+              },
+              "properties": {
+                "tags": [
+                  "security-headers",
+                  "external/cwe/cwe-79",
+                  "CWE-79"
+                ],
+                "precision": "very-high",
+                "problem.severity": "warning"
+              }
+            },
+            {
+              "id": "CWE-200",
+              "name": "Exposed_Sensitive_File__Environment_Configuration_File___env_",
+              "shortDescription": {
+                "text": "Exposed Sensitive File: Environment Configuration File (.env)"
+              },
+              "fullDescription": {
+                "text": "The path /.env returned HTTP 200 and contained verified sensitive indicators, potentially leaking credentials or source structure."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/200.html",
+              "help": {
+                "text": "Block public access to /.env at the reverse proxy (Nginx, Cloudflare, Caddy) or web server configuration.",
+                "markdown": "### Remediation\n\nBlock public access to /.env at the reverse proxy (Nginx, Cloudflare, Caddy) or web server configuration.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:52240/.env\"\n```"
+              },
+              "properties": {
+                "tags": [
+                  "sensitive-exposure",
+                  "external/cwe/cwe-200",
+                  "CWE-200"
+                ],
+                "precision": "very-high",
+                "problem.severity": "error"
+              }
+            }
+          ]
         }
       },
-      "results": []
+      "results": [
+        {
+          "ruleId": "CWE-1021",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Missing Content-Security-Policy Header: The response does not specify a Content-Security-Policy header, increasing risk of XSS and data injection."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:52240"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "id": "SEC-HEADER-CSP",
+            "category": "security-headers",
+            "severity": "medium",
+            "cwe": "CWE-1021",
+            "confidence": 0.99,
+            "evidenceLevel": "observed",
+            "reproCurl": "curl -i -s \"http://127.0.0.1:52240\"",
+            "priority": 0.552,
+            "cvssScore": 5.3,
+            "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+            "compliance": {
+              "owaspTop10": "A05:2021-Security Misconfiguration",
+              "owaspApi": "API8:2023-Security Misconfiguration",
+              "pciDss": "Req 6.4.3-Web Application Headers and Scripts",
+              "soc2": "CC6.6-Boundary Protection",
+              "cweTitle": "CWE-1021"
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-79",
+          "ruleIndex": 1,
+          "level": "note",
+          "message": {
+            "text": "Missing X-Content-Type-Options Header: Without X-Content-Type-Options: nosniff, browsers may MIME-sniff response bodies into executable scripts."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:52240"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "id": "SEC-HEADER-XCTO",
+            "category": "security-headers",
+            "severity": "low",
+            "cwe": "CWE-79",
+            "confidence": 0.95,
+            "evidenceLevel": "observed",
+            "reproCurl": "curl -i -s \"http://127.0.0.1:52240\"",
+            "priority": 0.455
+          }
+        },
+        {
+          "ruleId": "CWE-200",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "Exposed Sensitive File: Environment Configuration File (.env): The path /.env returned HTTP 200 and contained verified sensitive indicators, potentially leaking credentials or source structure."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:52240/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "id": "EXPOSURE-__ENV",
+            "category": "sensitive-exposure",
+            "severity": "critical",
+            "cwe": "CWE-200",
+            "confidence": 0.98,
+            "evidenceLevel": "reproduced",
+            "reproCurl": "curl -i -s \"http://127.0.0.1:52240/.env\"",
+            "priority": 0.9
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,20 +1,25 @@
 # Code Review Finding: [Finding Title]
 
-## Finding Summary
-- **Location**: `src/path/to/file.ts:L45-L60`
-- **Severity**: [BLOCKING / WARNING / SUGGESTION]
-- **Category**: [Correctness / Security / Architecture / Performance]
+## Finding Summary (Alibaba OCR Schema)
+- **Path**: `src/path/to/file.ts`
+- **Lines**: `L45-L60` (`start_line: 45`, `end_line: 60`)
+- **Severity**: `critical` | `high` | `medium` | `low`
+- **Category**: `bug` | `security` | `performance` | `maintainability` | `test` | `style` | `documentation` | `other`
 
-## Description & Evidence
-[Detailed explanation of the issue citing specific line numbers, potential race conditions, or unhandled edge cases]
+## Description & Failure Scenario
+[Detailed explanation of the failure mode citing the exact changed behavior, missing null-safety, concurrency race, or security injection risk]
 
-## Recommended Remediation
-```diff
-- const token = request.headers['authorization'];
-- const user = decodeTokenUnsafe(token);
-+ const authHeader = request.headers['authorization'];
-+ if (!authHeader || !authHeader.startsWith('Bearer ')) {
-+   return response.status(401).json({ error: 'Unauthorized' });
-+ }
-+ const user = await verifyTokenCryptographically(authHeader.slice(7));
+## Existing Code
+```typescript
+const token = request.headers['authorization'];
+const user = decodeTokenUnsafe(token);
+```
+
+## Recommended Remediation (Suggestion Code)
+```typescript
+const authHeader = request.headers['authorization'];
+if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  return response.status(401).json({ error: 'Unauthorized' });
+}
+const user = await verifyTokenCryptographically(authHeader.slice(7));
 ```

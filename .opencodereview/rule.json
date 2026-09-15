@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/alibaba/open-code-review/main/.opencodereview/rule.schema.json",
+  "rules": [
+    {
+      "path": "src/**/*.{ts,js}",
+      "rule": "Ensure all public CLI commands and core functions gracefully handle invalid options without crashing, preserving schema v3 state invariants.",
+      "category": "bug",
+      "merge_system_rule": true
+    },
+    {
+      "path": "test/**/*.test.ts",
+      "rule": "Verify that tests assert behavioral outcomes rather than mocking internals, and assert expected failure messages on invalid inputs.",
+      "category": "test",
+      "merge_system_rule": true
+    }
+  ],
+  "excludes": [
+    "**/dist/**",
+    "**/build/**",
+    "**/.git/**",
+    "**/.fable/**"
+  ]
+}

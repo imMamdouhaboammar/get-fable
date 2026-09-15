@@ -47,6 +47,7 @@
         "fable-spark",
         "fable-skill-creator",
         "fable-redteam",
+        "fable-heal",
         "fable-learning",
         "fable-architecture"
       ],
@@ -448,6 +449,7 @@
       "mutatesWorkspace": false,
       "parallelSafe": true,
       "next": [
+        "fable-heal",
         "fable-plan",
         "fable-tdd",
         "fable-security",
@@ -462,7 +464,55 @@
         "exploit",
         "idor",
         "injection",
-        "owasp"
+        "owasp",
+        "coverage-ledger",
+        "cloudflare-audit",
+        "adversarial-validation"
+      ]
+    },
+    {
+      "id": "fable-heal",
+      "order": 78,
+      "phase": "executing",
+      "pack": "proof",
+      "description": "Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.",
+      "intents": [
+        "heal",
+        "security-fix",
+        "remediate-vulnerability",
+        "patch-security"
+      ],
+      "requires": [
+        "redteam_findings"
+      ],
+      "produces": [
+        "security_patches",
+        "regression_tests",
+        "healed_attestation"
+      ],
+      "gates": [
+        "syntax_verified",
+        "regression_tests_passed",
+        "repro_neutralized"
+      ],
+      "fallback": "fable-recover",
+      "mutatesWorkspace": true,
+      "parallelSafe": false,
+      "next": [
+        "fable-verify",
+        "fable-release",
+        "fable-review",
+        "fable-recover"
+      ],
+      "keywords": [
+        "heal",
+        "remediation",
+        "patch",
+        "fix",
+        "security-fix",
+        "vulnerability-fix",
+        "auto-patch",
+        "circuit-breaker"
       ]
     },
     {

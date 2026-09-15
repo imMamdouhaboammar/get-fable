@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {
   AktoAdapter,
+  CloudflareAuditAdapter,
   CyberStrikeAdapter,
   HexStrikeAdapter,
   NativeProbeAdapter,
@@ -23,15 +24,20 @@ describe('Modular RedTeam Tool Adapters', () => {
     expect(ids).toContain('cyberstrike');
     expect(ids).toContain('pentagi');
     expect(ids).toContain('pentestagent');
+    expect(ids).toContain('cloudflare');
   });
 
   test('getAdapterStatusMatrix returns status for all adapters', async () => {
     const matrix = await getAdapterStatusMatrix();
-    expect(matrix.length).toBe(6);
+    expect(matrix.length).toBe(7);
 
     const nativeStatus = matrix.find((s) => s.id === 'native');
     expect(nativeStatus?.available).toBe(true);
     expect(nativeStatus?.runtime).toBe('ready');
+
+    const cfStatus = matrix.find((s) => s.id === 'cloudflare');
+    expect(cfStatus?.available).toBe(true);
+    expect(cfStatus?.name).toBe('Cloudflare Security Audit Engine');
   });
 
   test('NativeProbeAdapter is always available and implements BaseToolAdapter', async () => {

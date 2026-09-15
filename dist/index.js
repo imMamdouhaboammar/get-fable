@@ -23268,6 +23268,7 @@ var CANONICAL_SKILLS = [
   "fable-review",
   "fable-security",
   "fable-redteam",
+  "fable-heal",
   "fable-release",
   "fable-handoff",
   "fable-eval",
@@ -23308,6 +23309,7 @@ var SKILL_PHASE = {
   "fable-review": "verifying",
   "fable-security": "verifying",
   "fable-redteam": "verifying",
+  "fable-heal": "executing",
   "fable-release": "verifying",
   "fable-handoff": "verifying",
   "fable-eval": "verifying",
@@ -23338,6 +23340,7 @@ var SKILL_PACK = {
   "fable-review": "proof",
   "fable-security": "proof",
   "fable-redteam": "proof",
+  "fable-heal": "proof",
   "fable-release": "delivery",
   "fable-handoff": "delivery",
   "fable-eval": "evolution",
@@ -25750,7 +25753,7 @@ function taskShapeFor(skill, text) {
     return "delegation";
   if (skill === "fable-review" || skill === "fable-verify" || skill === "fable-run" || skill === "fable-simulator")
     return "review";
-  if (skill === "fable-security" || skill === "fable-redteam")
+  if (skill === "fable-security" || skill === "fable-redteam" || skill === "fable-heal")
     return "security";
   if (skill === "fable-release")
     return "release";
@@ -25822,6 +25825,9 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
   }
   if (has(text, /\bredteam\b|\bpentest\b|penetration test|offensive security|security audit|attack graph|idor probe|vulnerability discovery/i)) {
     addSignal(scores, reasons, "fable-redteam", 10, "task asks for offensive security testing, penetration testing, or red teaming");
+  }
+  if (has(text, /\bheal\b|\bauto-heal\b|remediate(?:\s+vulnerability)?|security(?:\s+remediation|\s+patch|\s+fix)|patch(?:\s+vulnerability|\s+security)/i)) {
+    addSignal(scores, reasons, "fable-heal", 11, "task asks to heal or remediate security vulnerabilities");
   }
   if (!suppressRelease && has(text, /\brelease\b|\bpublish\b|\bship\b|\btag\b|ready (?:to|for) (?:merge|release|publish)|merge (?:this|now|the pr)|open (?:a )?pr|create (?:a )?pull request|ready for pr|pull request readiness/)) {
     addSignal(scores, reasons, "fable-release", 8, "task asks for delivery or release readiness");

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-heal",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/remediation-patterns.md"
+  ],
+  "templates": [
+    "templates/healing-report.template.md"
+  ],
+  "examples": [
+    "examples/healing-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

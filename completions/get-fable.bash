@@ -34,6 +34,10 @@ _get_fable_completion() {
       COMPREPLY=( $(compgen -W "list show dismiss refresh" -- ${cur}) )
       return 0
       ;;
+    redteam|pentest)
+      COMPREPLY=( $(compgen -W "scan audit verify fix status setup playbooks" -- ${cur}) )
+      return 0
+      ;;
   esac
 }
 

@@ -108,6 +108,16 @@ import {
   compareTokens,
   compactFableStateToon,
 } from './core/toon.js';
+import {
+  getReviewableFiles,
+  bundleReviewFiles,
+  resolveRulesForFile,
+  validateReviewFinding,
+  summarizeReviewFindings,
+  isOcrCliAvailable,
+  loadCustomRuleConfig,
+} from './core/review/index.js';
+
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
   'test',
@@ -370,6 +380,105 @@ function runEvidenceCommand(args: string[]): number {
     console.log(`Failure streak: ${nextState.failureStreak}`);
     console.log(`Verified generation: ${nextState.verifiedGeneration}`);
   });
+}
+
+function runReviewCommand(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const fromIndex = args.indexOf('--from');
+  const toIndex = args.indexOf('--to');
+  const commitIndex = args.indexOf('--commit');
+  const ruleIndex = args.indexOf('--rule');
+  const excludeIndex = args.indexOf('--exclude');
+  const formatIndex = args.indexOf('--format');
+
+  const from = fromIndex !== -1 ? args[fromIndex + 1] : undefined;
+  const to = toIndex !== -1 ? args[toIndex + 1] : undefined;
+  const commit = commitIndex !== -1 ? args[commitIndex + 1] : undefined;
+  const rulePath = ruleIndex !== -1 ? args[ruleIndex + 1] : undefined;
+  const excludePatterns = excludeIndex !== -1 ? args[excludeIndex + 1]?.split(',').map((s) => s.trim()) : undefined;
+  const format = formatIndex !== -1 ? args[formatIndex + 1] : (json ? 'json' : 'text');
+
+  const files = getReviewableFiles({
+    repoRoot: process.cwd(),
+    from,
+    to,
+    commit,
+    rulePath,
+    excludePatterns,
+  });
+
+  const bundles = bundleReviewFiles(files);
+  const ocrAvailable = isOcrCliAvailable();
+
+  if (format === 'json') {
+    printMachineJson(args, 'review', {
+      mode: commit ? 'commit' : (from && to ? 'range' : 'workspace'),
+      ocrCliAvailable: ocrAvailable,
+      delegationEngine: ocrAvailable ? 'alibaba-ocr-cli' : 'fable-native-ocr',
+      totalFiles: files.length,
+      bundlesCount: bundles.length,
+      bundles: bundles.map((b) => ({
+        id: b.id,
+        name: b.name,
+        totalLines: b.totalLines,
+        planModeRequired: b.planModeRequired,
+        fileCount: b.files.length,
+        files: b.files.map((f) => ({
+          path: f.path,
+          status: f.status,
+          insertions: f.insertions,
+          deletions: f.deletions,
+          rulesCount: f.rules.length,
+        })),
+        rules: b.sharedRules.map((r) => ({
+          id: r.id,
+          category: r.category,
+          title: r.title,
+          checklist: r.checklist,
+        })),
+      })),
+      files: files.map((f) => ({
+        path: f.path,
+        status: f.status,
+        insertions: f.insertions,
+        deletions: f.deletions,
+        rules: f.rules.map((r) => r.id),
+      })),
+    });
+    return 0;
+  }
+
+  logHeader('Alibaba Open Code Review — Zero-API Delegation Preview');
+  console.log(`Mode:              ${commit ? `commit (${commit})` : (from && to ? `range (${from}..${to})` : 'workspace')}`);
+  console.log(`Delegation Engine: ${ocrAvailable ? 'Alibaba OCR CLI + Host Agent' : 'Fable Native OCR + Host Agent (Zero-API)'}`);
+  console.log(`Reviewable Files:  ${files.length}`);
+  console.log(`Review Bundles:    ${bundles.length} isolated bounded unit(s)\n`);
+
+  if (files.length === 0) {
+    logSuccess('No reviewable changes detected.');
+    return 0;
+  }
+
+  for (let i = 0; i < bundles.length; i++) {
+    const bundle = bundles[i];
+    console.log(`Bundle ${i + 1}/${bundles.length}: ${bundle.name} (${bundle.totalLines} changed lines${bundle.planModeRequired ? ', PLAN MODE' : ''})`);
+    for (const f of bundle.files) {
+      console.log(`  - [${f.status}] ${f.path} (+${f.insertions}/-${f.deletions})`);
+    }
+    if (bundle.sharedRules.length > 0) {
+      console.log(`  Applicable Rules (${bundle.sharedRules.length}):`);
+      for (const r of bundle.sharedRules) {
+        console.log(`    * [${r.category.toUpperCase()}] ${r.title}`);
+        for (const check of r.checklist) {
+          console.log(`      • ${check}`);
+        }
+      }
+    }
+    console.log('');
+  }
+
+  logInfo('Agent Directive: Review each bundle in order. Report findings with exact start_line/end_line and 4-tier severity (critical, high, medium, low).');
+  return 0;
 }
 
 function runToonCommand(args: string[]): number {
@@ -1316,6 +1425,10 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'evidence':
       return runEvidenceCommand(args.slice(1));
 
+    case 'review':
+    case 'ocr':
+      return runReviewCommand(args.slice(1));
+
     case 'toon':
       return runToonCommand(args.slice(1));
 
@@ -1334,6 +1447,9 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'redteam':
     case 'pentest':
       return handleRedTeamCli(args.slice(1));
+
+    case 'heal':
+      return handleRedTeamCli(['heal', ...args.slice(1)]);
 
     case 'guide':
     case 'help':
@@ -1482,6 +1598,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}shell [zsh|bash|fish]${colors.reset}Print shell integration script for your terminal
   ${colors.yellow}update [--check]${colors.reset}     Check and apply automatic updates
   ${colors.yellow}redteam --target <url>${colors.reset}Execute native agentic ethical penetration audit
+  ${colors.yellow}heal [options]${colors.reset}        Synthesize and apply code patches, TDD guards, and attestations
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
   ${colors.yellow}grok [task|--status]${colors.reset} Invoke Grok Bot adapter for task routing, status, and skill eval

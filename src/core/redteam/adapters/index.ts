@@ -6,10 +6,12 @@ import { HexStrikeAdapter } from './hexstrike.js';
 import { NativeProbeAdapter } from './native.js';
 import { PentAGIAdapter } from './pentagi.js';
 import { PentestAgentAdapter } from './pentestagent.js';
+import { CloudflareAuditAdapter } from './cloudflare.js';
 
 export {
   AktoAdapter,
   BaseToolAdapter,
+  CloudflareAuditAdapter,
   CyberStrikeAdapter,
   HexStrikeAdapter,
   NativeProbeAdapter,
@@ -25,6 +27,7 @@ export function getAllAdapters(): RedTeamToolAdapter[] {
     new CyberStrikeAdapter(),
     new PentAGIAdapter(),
     new PentestAgentAdapter(),
+    new CloudflareAuditAdapter(),
   ];
 }
 

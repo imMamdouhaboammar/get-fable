@@ -1,6 +1,6 @@
-# Multi-Host Platform Matrix (August 2026)
+# Multi-Host Platform Matrix (September 2026)
 
-`get-fable` provides universal harness support across 30 leading AI coding agents, platforms, and IDEs.
+`get-fable` provides universal harness support across 32 leading AI coding agents, platforms, and IDEs.
 
 ## Supported Hosts & Integration Tiers
 
@@ -43,6 +43,6 @@
 | <img src="../assets/logos/autogpt.svg" width="20" height="20" alt="" /> **AutoGPT** | Significant Gravitas | **Advisory Rule** | `~/.autogpt/` | `rules/fable.md` |
 | <img src="../assets/logos/hermes.svg" width="20" height="20" alt="" /> **Hermes Agent** | Nous Research | **Skill + Rule** | `~/.hermes/` | `rules/fable.md`, skills in `skills/` |
 | <img src="../assets/logos/kiro.svg" width="20" height="20" alt="" /> **Kiro** | Kiro | **Rule + Hooks** | `~/.kiro/` | `rules/fable.md`, lifecycle triggers |
-| <img src="../assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | DeepSeek / Community | **Advisory Rule** | `~/.deepseek/` | `rules/fable.md` |
+| <img src="../assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | DeepSeek / Community | **Cordis Plugin + Web UI** | `~/.deepseek/` | `cordis.patch.yml`, `dsh.plugin.json`, prebuilt `dist/client.js`, `rules/fable.md` |
 | <img src="../assets/logos/pi.svg" width="20" height="20" alt="" /> **Pi Code** | Pi | **Advisory Rule** | `~/.pi/` | `rules/fable.md` |
 

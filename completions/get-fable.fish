@@ -23,3 +23,4 @@ complete -c get-fable -n "__fish_use_subcommand" -a "redteam" -d "Execute native
 complete -c get-fable -n "__fish_use_subcommand" -a "pentest" -d "Alias for redteam ethical penetration audit"
 complete -c get-fable -n "__fish_seen_subcommand_from update" -a "status plan apply doctor"
 complete -c get-fable -n "__fish_seen_subcommand_from announcements" -a "list show dismiss refresh"
+complete -c get-fable -n "__fish_seen_subcommand_from redteam pentest" -a "scan audit verify fix status setup playbooks"

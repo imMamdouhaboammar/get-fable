@@ -1,4 +1,4 @@
-# Architecture: get-fable 1.2
+# Architecture: get-fable 1.9.0
 
 ## Purpose
 
@@ -33,11 +33,15 @@ Intelligence: `fable-research`
 
 Build: `fable-tdd`, `fable-delegate`
 
-Proof: `fable-review`, `fable-security`
+Proof: `fable-review`, `fable-security`, `fable-redteam`, `fable-heal`
 
 Delivery: `fable-release`, `fable-handoff`
 
-Evolution: `fable-eval`
+Evolution: `fable-eval`, `fable-learning`
+
+System: `fable-dataviz`, `fable-artifact`, `fable-simplify`, `fable-loop`, `fable-run`, `fable-memory`, `fable-config`, `fable-simulator`, `fable-cowork`, `fable-spark`, `fable-architecture`
+
+Creator: `fable-skill-creator`
 
 Historical material under `assets/` remains an optional reference library and is not the canonical lifecycle.
 
@@ -250,16 +254,31 @@ Lifecycle commands include:
 
 ```text
 init
-route <task> [--apply] [--json]
+route <task> [--apply] [--json] [--json-v1]
 state <phase> [--substantial] [--json]
 card <text> [--clear] [--json]
 mutation [source] [--json]
 evidence <pass|fail> <kind> <source> <detail> [--json]
-doctor [--json]
-status [--json]
+doctor [--json] [--json-v1]
+status [--json] [--json-v1]
 lint
 serve [port]
 router [port]
+spark [task] [--json] [--json-v1]
+arch-eval <spec>
+worker-serve
+rpc-serve
+install [host]
+install-no-mistakes
+install-quality-gate
+behavior-eval export [--out <file>]
+behavior-eval score <responses>
+behavior-eval status
+feed list
+graph
+recipes
+packs
+redteam scan --target <url> [--profile <profile>] [--baseline <file>] [--fail-on-cvss <score>]
 ```
 
 Running without a command remains non-mutating.
@@ -343,6 +362,60 @@ Repository CI checks:
 - Ubuntu and macOS at the pinned current Bun runtime
 
 Lifecycle-specific tests cover routing ambiguity, schema migration, canonical workspace identity, mutation freshness, scoped evidence boundaries, hook parity, installer idempotency, plugin shape, and holdout-style trap scenarios.
+
+## New components (v1.7.0 / v1.8.0)
+
+### gRPC Worker Service
+
+Source: `proto/fable_worker.proto`, `src/rpc/server.ts`, `src/rpc/client.ts`
+
+The Fable Worker gRPC framework provides high-performance distributed subagent execution:
+
+- Protobuf service definitions: `ExecuteTask`, `StreamLogs`, `GetStatus`, `CancelTask`
+- Start the worker server: `get-fable worker-serve` or `get-fable rpc-serve`
+- Minimal zero-telemetry dependencies: `@grpc/grpc-js`, `@grpc/proto-loader`
+
+### TOON Protocol
+
+Source: `src/core/toon.ts`; dependency: `@toon-format/toon`
+
+Token-Optimized Object Notation achieves 30–50% token reduction across multi-agent communications through high-density tabular serialization. Used in:
+
+- `skills/fable-delegate/templates/delegation-contract.toon` — subagent task delegation
+- `skills/fable-delegate/templates/return-packet.toon` — subagent return packets
+- Durable state compaction and routing manifest output (`arch-eval`)
+
+### Architecture Enforcement Skill
+
+Source: `skills/fable-architecture/`, `hooks/fable_architecture_guard.py`
+
+`fable-architecture` evaluates project specifications at inception and enforces microservices architecture:
+
+- **Deterministic vector scoring**: Scale & Load, Domain Decoupling, Resource Intensity (0–10)
+- **Hard monolith lockout** when thresholds cross (Scale ≥ 7, Domains ≥ 6, Resource ≥ 8, or Composite ≥ 7.0)
+- **Dual-transport standard (ADR 0007)**: North-South HTTP/REST for edge traffic; East-West gRPC Protobuf or message brokers for internal services
+- **Prescriptive language matrix**: Node.js/Bun for high-concurrency gateways; Go/gRPC for high-throughput microservices; Python/FastAPI/PyTorch for AI/ML; Rust/Axum/Tonic for ultra-low-latency systems
+- **CLI command**: `get-fable arch-eval "<spec>"`
+
+### Security Heal Integration
+
+`fable-heal` closes the security loop started by `fable-redteam`. After a red team run, `fable-heal` synthesizes, applies, and verifies remediations against identified findings. The redteam → heal pipeline is tracked through the same CVSS and attestation chain as the original audit.
+
+### no-mistakes Quality Gate
+
+Source: `src/integrations/no-mistakes-installer.ts`
+
+`get-fable install-no-mistakes` (aliased as `get-fable install-quality-gate`) automates:
+
+- Installing and configuring the no-mistakes quality gate
+- Template `.no-mistakes/` configuration in the project
+- Git pre-push hook integration for automated AI review, testing, linting, and docs before remote push
+
+### DSH Web UI & Script Sanitizer
+
+Source: `scripts/build-client.ts`, `dist/client.js`
+
+Prebuilt runtime bundles (`dist/index.js`, `dist/client.js`) enable zero-build installation on DeepSeek Harness / Cordis. The build client script strips ESM export statements for clean Cordis classic-script bundling.
 
 ## Related docs
 

@@ -3,7 +3,8 @@ export type RedTeamProfile =
   | 'api-logic'
   | 'comprehensive'
   | 'orchestrated'
-  | 'playbook';
+  | 'playbook'
+  | 'audit';
 
 export type FindingSeverity = 'critical' | 'high' | 'medium' | 'low' | 'info';
 
@@ -245,7 +246,8 @@ export type ToolAdapterId =
   | 'cyberstrike'
   | 'claude-red'
   | 'pentagi'
-  | 'pentestagent';
+  | 'pentestagent'
+  | 'cloudflare';
 
 export interface ToolAdapterStatus {
   id: ToolAdapterId;
@@ -406,3 +408,166 @@ export interface VerificationResult {
   testFilePath?: string;
   timestamp: string;
 }
+
+// --- Cloudflare Security Audit Native Types ---
+
+export type CloudflareFindingVerdict = 'confirmed' | 'needs_validation' | 'rejected';
+
+export interface CloudflareTraceStep {
+  kind: 'entrypoint' | 'propagation' | 'sink';
+  file: string;
+  line: number;
+  scope: string;
+  description: string;
+}
+
+export interface CloudflareEvidenceItem {
+  file: string;
+  line: number;
+  description: string;
+}
+
+export interface CloudflareConditionItem {
+  kind:
+    | 'authentication_level'
+    | 'authorization_role'
+    | 'user_interaction'
+    | 'system_configuration'
+    | 'network_routing'
+    | 'environmental_dependency'
+    | 'data_state'
+    | 'timing_dependency'
+    | 'third_party_dependency';
+  description: string;
+}
+
+export interface CloudflareFindingExecution {
+  attacker_perspective: string;
+  payloads: string[];
+  instructions: string[];
+  observed_result: string;
+}
+
+export interface CloudflareValidationPlan {
+  local?: string;
+  deployment?: string;
+}
+
+export interface CloudflareConfidence {
+  score: 'low' | 'medium' | 'high';
+  reason: string;
+}
+
+export interface CloudflareSeverity {
+  overall_severity: 'informational' | 'low' | 'medium' | 'high' | 'critical';
+  likelihood: {
+    score: 'informational' | 'low' | 'medium' | 'high' | 'critical';
+    reason: string;
+  };
+  impact: {
+    score: 'informational' | 'low' | 'medium' | 'high' | 'critical';
+    reason: string;
+  };
+}
+
+export interface CloudflareRemediation {
+  strategy: string;
+  code_changes?: Array<{
+    file_name: string;
+    fixed_code: string;
+  }>;
+}
+
+export interface CloudflareFinding {
+  verdict: CloudflareFindingVerdict;
+  fingerprint: string;
+  title: string;
+  description: string;
+  root_cause?: string;
+  claimed_root_cause?: string;
+  intended_behavior?: string;
+  trace: CloudflareTraceStep[];
+  evidence?: CloudflareEvidenceItem[];
+  conditions?: CloudflareConditionItem[];
+  execution?: CloudflareFindingExecution;
+  remediation?: CloudflareRemediation;
+  severity?: CloudflareSeverity;
+  confidence?: CloudflareConfidence;
+  blockers?: string[];
+  validation_plan?: CloudflareValidationPlan;
+  reason?: string;
+}
+
+export interface CloudflareCoverageCheck {
+  agent_id: string;
+  reviewed_paths: string[];
+  invariant: string;
+  method: 'source' | 'local';
+  result: string;
+  artifact: string | null;
+}
+
+export interface CloudflareCoverageUnit {
+  coverage_id: string;
+  canonical_refs: {
+    surface: string;
+    boundary: string;
+    subsystem: string;
+    attack_class: string;
+    lifecycle?: string;
+  };
+  surface: string;
+  boundary: string;
+  subsystem: string;
+  attack_class: string;
+  starting_paths: string[];
+  ordinary_attack_class_block: string | null;
+  selected_companion_blocks: string[];
+  excluded_blocks: Array<{ block: string; reason: string }>;
+  prior_status: string;
+  attempts: any[];
+  wave: number;
+  status: 'planned' | 'in_progress' | 'candidate' | 'covered' | 'blocked' | 'deferred' | 'out_of_scope';
+  agent_id: string | null;
+  reviewed_paths: string[];
+  local_checks: CloudflareCoverageCheck[];
+  result_fingerprints: string[];
+  unresolved: string[];
+}
+
+export interface CloudflareCoverageLedger {
+  version: '1.0.0';
+  target: string;
+  units: CloudflareCoverageUnit[];
+}
+
+export interface AuditRunOptions {
+  target: string;
+  profile?: 'full' | 'quick' | 'deep' | 'guidance';
+  outputDir?: string;
+  format?: 'text' | 'json' | 'sarif' | 'cloudflare';
+  token?: string;
+  secondToken?: string;
+  maxHunters?: number;
+  maxDurationMs?: number;
+  writeArtifacts?: boolean;
+}
+
+export interface AuditRunResult {
+  target: string;
+  outputDir: string;
+  profile: 'full' | 'quick' | 'deep' | 'guidance';
+  architectureMd: string;
+  coverageLedger: CloudflareCoverageLedger;
+  findings: CloudflareFinding[];
+  reportMd: string;
+  findingsDetailMd: string;
+  needsValidationMd: string;
+  validations: {
+    findingsValid: boolean;
+    findingsErrors: string[];
+    ledgerValid: boolean;
+    ledgerErrors: string[];
+  };
+}
+

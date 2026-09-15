@@ -2,6 +2,29 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [1.9.0] - 2026-09-15
+
+### Highlights
+
+- **`fable-heal` Autonomous Security Remediation Skill (`skills/fable-heal/`)**:
+  - **Automated Security Patch Synthesis**: Automatically parses `fable-redteam` findings and SARIF vulnerability reports (`docs/security/REDTEAM_REPORT.sarif`) to synthesize targeted, safe remediation diffs across application and infrastructure code.
+  - **TDD Security Regression Guards**: Generates failing regression test suites that replicate vulnerability proofs (e.g. verifying sensitive file exposure blocks 401/403/404, SQL syntax error reflection mitigations, and credential leak guards) before applying fixes.
+  - **Cryptographic Heal Attestations**: Outputs verifiable attestation records (`.fable/heal-attestation.json`) including SHA-256 fingerprint, CWE reference, CVSS base score, before/after checksums, and execution timestamps.
+  - **CLI Command (`get-fable heal`)**: Shipped full CLI remediation runner with `--dry-run`, `--sarif`, `--auto`, and `--verify` modes.
+
+- **Cloudflare Security Scanner Adapter (`src/core/redteam/adapters/cloudflare.ts`)**:
+  - Native redteam audit adapter for Cloudflare edge configurations: validates SSL/TLS minimum versions, WAF managed rulesets, zone security headers, and DDoS rate limiting.
+
+- **Alibaba OCR Code Review Standards (`src/core/review/` & `skills/fable-review/references/alibaba-ocr-rulesets.md`)**:
+  - Integrated enterprise-grade Alibaba OCR code review rulesets into `fable-review`, enforcing deterministic memory budgets, asynchronous execution safety, input validation boundaries, and structured error handling.
+
+- **Rust Native Core Engine Parity (`crates/fable-core/` & `crates/fable-cli/`)**:
+  - High-performance Rust native engine (`get-fable-native`) implementing task routing, state schema v3 inspection, and status reporting with 100% semantic parity against the TypeScript reference harness.
+
+- **29 Canonical Skills & Universal 32-Platform Distribution**:
+  - Reached 29 canonical skills across 8 lifecycle packs with complete schema v2 package manifests and Deep Playbook V2 documentation.
+  - Synchronized and verified native integrations across all 32 supported AI coding hosts and IDE environments.
+
 ## [1.8.0] - 2026-09-14
 
 ### Highlights

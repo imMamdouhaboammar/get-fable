@@ -113,20 +113,21 @@ Look for:
 
 Avoid style-only comments unless repository rules make them blocking or they materially reduce readability/correctness.
 
-### Stage 6 — Calibrate findings
-Each finding must include:
-- severity: blocking / important / suggestion;
-- exact file/line or changed symbol;
-- concrete failure scenario;
-- why existing evidence does not rule it out;
-- minimal repair direction where useful.
+### Stage 6 — Calibrate findings (Alibaba OCR Line-Level Anchoring)
+Each finding must adhere to the Alibaba OCR schema and exact line anchoring:
+- **path**: relative file path
+- **start_line** / **end_line**: exact line numbers in the new file (both 0 means unanchored positioning, requiring fallback inspection)
+- **severity**: `critical` / `high` / `medium` / `low`
+- **category**: `bug` / `security` / `performance` / `maintainability` / `test` / `style` / `documentation` / `other`
+- **concrete failure scenario**: why this code will fail or breach invariants
+- **suggestion_code**: actionable code replacement
 
-If you cannot describe a plausible failure mode, it is probably not a defect finding.
+Discard trivial low-severity style nits or noise. If you cannot describe a plausible failure mode, it is not a defect.
 
 ### Stage 7 — Produce verdict
-- **APPROVE**: no blocking/important correctness issues found; remaining suggestions are optional.
-- **CHANGES_REQUIRED**: at least one grounded issue can cause incorrect behavior, contract violation, or unacceptable risk.
-- **INCOMPLETE**: review cannot establish correctness because required context/diff/evidence is missing.
+- **APPROVE**: no critical or high severity defects found; remaining suggestions are optional.
+- **CHANGES_REQUIRED**: at least one critical or high issue can cause incorrect behavior, data corruption, vulnerability, or contract violation.
+- **INCOMPLETE**: review cannot establish correctness because required context/diff/evidence is missing or coverage rate is incomplete.
 
 ## Decision Rules
 - Never approve without reading the actual diff against a known base.
@@ -179,8 +180,10 @@ Many cosmetic suggestions obscure a real defect. Prioritize by impact and remove
 ## Finding Template
 
 ```text
-Severity:
-Location:
+Path: src/example.ts
+Lines: L42-L46
+Severity: critical | high | medium | low
+Category: bug | security | performance | maintainability | test
 Changed behavior/invariant:
 Failure scenario:
 Why current evidence does not cover it:
@@ -197,6 +200,8 @@ Review completes when:
 - verdict is APPROVE, CHANGES_REQUIRED, or INCOMPLETE with evidence.
 
 ## Progressive Resources
+- Alibaba OCR Rulesets & Delegation Guide: `references/alibaba-ocr-rulesets.md`
 - Deep guide: `references/behavioral-diff-review-playbook.md`
 - Existing checklist: `references/diff-review-checklist.md`
 - Example: `examples/code-review-finding.md`
+

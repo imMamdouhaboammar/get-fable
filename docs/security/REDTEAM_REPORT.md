@@ -1,12 +1,12 @@
 # Fable RedTeam Security Audit Report
 
-- **Target:** `http://127.0.0.1:58506`
+- **Target:** `http://127.0.0.1:52240`
 - **Scan Profile:** `orchestrated`
-- **Execution Period:** 2026-09-14T10:44:07.060Z to 2026-09-14T10:44:08.260Z
+- **Execution Period:** 2026-09-15T01:35:51.529Z to 2026-09-15T01:35:52.629Z
 - **Enterprise Security Posture Grade:** **`F`**
 - **Estimated Remediation Effort (MTTR):** ~11 engineering hours
-- **Participating Adapters:** `native`, `cyberstrike`
-- **Cryptographic Attestation Hash:** `f213cd4627555f846468998c62b8b7419ea34943c3f95be31239935ddd2ec09a`
+- **Participating Adapters:** `native`, `cyberstrike`, `cloudflare`
+- **Cryptographic Attestation Hash:** `707eb6c066d8c80ce0251f8208ed5e72c640e6efe3488bdef8e0973aa1cdba8e`
 
 ## Executive Summary & Scorecard
 
@@ -41,14 +41,14 @@
 - **CVSS v3.1:** `5.3 (Medium)` — `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N`
 - **Compliance:** OWASP API: API8:2023-Security Misconfiguration | PCI-DSS: Req 6.4.3-Web Application Headers and Scripts | SOC 2: CC6.6-Boundary Protection
 - **CWE:** [CWE-1021](https://cwe.mitre.org/data/definitions/1021.html)
-- **Vulnerable Target:** `http://127.0.0.1:58506`
+- **Vulnerable Target:** `http://127.0.0.1:52240`
 
 **Description:**
 The response does not specify a Content-Security-Policy header, increasing risk of XSS and data injection.
 
 **Reproduction Proof-of-Concept:**
 ```bash
-curl -i -s "http://127.0.0.1:58506"
+curl -i -s "http://127.0.0.1:52240"
 ```
 
 **Remediation Recommendation:**
@@ -61,14 +61,14 @@ Add a strict 'Content-Security-Policy' HTTP response header restricting script a
 - **Finding ID:** `SEC-HEADER-XCTO`
 - **Category:** `security-headers`
 - **CWE:** [CWE-79](https://cwe.mitre.org/data/definitions/79.html)
-- **Vulnerable Target:** `http://127.0.0.1:58506`
+- **Vulnerable Target:** `http://127.0.0.1:52240`
 
 **Description:**
 Without X-Content-Type-Options: nosniff, browsers may MIME-sniff response bodies into executable scripts.
 
 **Reproduction Proof-of-Concept:**
 ```bash
-curl -i -s "http://127.0.0.1:58506"
+curl -i -s "http://127.0.0.1:52240"
 ```
 
 **Remediation Recommendation:**
@@ -81,14 +81,14 @@ Set 'X-Content-Type-Options: nosniff' header on all HTTP responses.
 - **Finding ID:** `EXPOSURE-__ENV`
 - **Category:** `sensitive-exposure`
 - **CWE:** [CWE-200](https://cwe.mitre.org/data/definitions/200.html)
-- **Vulnerable Target:** `http://127.0.0.1:58506/.env`
+- **Vulnerable Target:** `http://127.0.0.1:52240/.env`
 
 **Description:**
 The path /.env returned HTTP 200 and contained verified sensitive indicators, potentially leaking credentials or source structure.
 
 **Reproduction Proof-of-Concept:**
 ```bash
-curl -i -s "http://127.0.0.1:58506/.env"
+curl -i -s "http://127.0.0.1:52240/.env"
 ```
 
 **Response Snippet:**

@@ -1,37 +1,40 @@
 # Get Fable Installation Guide
 
-Complete installation, configuration, and host integration guide for **Get Fable** — the evidence-driven coding lifecycle and situational awareness engine for AI coding agents.
+Complete installation, configuration, and host integration guide for **get-fable** — the evidence-driven coding lifecycle and situational awareness engine for AI coding agents.
 
 ---
 
 ## Quick Start Matrix
 
-| Target / Platform | Recommended Command | Output / Integration |
+| Target / Platform | Command | Notes |
 |---|---|---|
-| **Vercel / skills.sh CLI** | \`npx skills add imMamdouhaboammar/get-fable\` | Full 25-skill canonical pack in local \`.skills/\` |
-| **Homebrew (macOS/Linux)** | \`brew tap imMamdouhaboammar/get-fable && brew install get-fable\` | Global CLI binary + shell completions + man |
-| **Bun (Mandatory JS/TS)** | \`bun add -g get-fable\` | Global \`get-fable\` CLI binary |
-| **npm Global CLI** | \`npm install -g get-fable\` | Global \`get-fable\` CLI binary |
-| **Universal Curl Script** | \`curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh \| bash\` | Automated clone, build, and global installation |
-| **All AI Coding Agents** | \`get-fable install all\` | Configures Claude, Antigravity, Codex, Cursor, etc. |
+| **Bun (recommended)** | `bun add -g get-fable` | Global CLI binary — mandatory for JS/TS projects |
+| **npm** | `npm install -g get-fable` | Global CLI binary |
+| **Homebrew (macOS/Linux)** | `brew tap imMamdouhaboammar/get-fable && brew install get-fable` | CLI binary + shell completions + man page |
+| **One-line shell installer** | `curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh \| bash` | CI, Docker, bare metal — clone + build + install |
+| **Vercel / skills.sh pack** | `bunx skills add imMamdouhaboammar/get-fable` | 28-skill canonical pack into `.skills/` |
+| **All AI coding agents** | `get-fable install all` | Configures all 32 supported hosts at once |
+| **DeepSeek Harness (DSH)** | `dsh plugin add imMamdouhaboammar/get-fable` | Cordis plugin bundle + prebuilt Web UI |
+| **Claude Code Marketplace** | `/plugin marketplace add imMamdouhaboammar/get-fable` then `/plugin install get-fable@get-fable` | Full lifecycle hooks + skills |
+| **no-mistakes quality gate** | `get-fable install-no-mistakes` | Git pre-push hook + AI review pipeline |
 
 ---
 
 ## 1. Vercel / skills.sh CLI Installation
 
-Install Get Fable skills directly into your current project or workspace using the official skills package manager:
+Install get-fable skills directly into your current project or workspace using the official skills package manager:
 
-\`\`\`bash
+```bash
+# Using bunx (preferred)
+bunx skills add imMamdouhaboammar/get-fable
+
 # Using npx
 npx skills add imMamdouhaboammar/get-fable
-
-# Or using bunx
-bunx skills add imMamdouhaboammar/get-fable
-\`\`\`
+```
 
 ### What happens:
-1. Resolves \`skills.sh.json\` from the repository.
-2. Installs the complete 25-skill canonical library across all 8 lifecycle packs (Core, Intelligence, Build, Proof, Delivery, Evolution, System, Creator).
+1. Resolves `skills.sh.json` from the repository.
+2. Installs the complete 28-skill canonical library across all 8 lifecycle packs (Core, Intelligence, Build, Proof, Delivery, Evolution, System, Creator).
 3. Configures each skill with valid frontmatter, Deep Playbook V2 documentation, progressive references, templates, and evaluation benchmarks.
 
 ---
@@ -40,7 +43,7 @@ bunx skills add imMamdouhaboammar/get-fable
 
 Install the official Homebrew package formula for system-wide availability:
 
-\`\`\`bash
+```bash
 # 1. Tap the repository
 brew tap imMamdouhaboammar/get-fable
 
@@ -50,41 +53,41 @@ brew install get-fable
 # 3. Verify installation
 get-fable --version
 get-fable doctor
-\`\`\`
+```
 
 ### Shell Integrations & Situational Awareness Prompt Hooks
 Add real-time prompt hints and aliases to your shell profile:
 
-#### **Zsh** (\`~/.zshrc\`):
-\`\`\`zsh
+#### **Zsh** (`~/.zshrc`):
+```zsh
 eval "$(get-fable shell zsh)"
-\`\`\`
+```
 
-#### **Bash** (\`~/.bashrc\` or \`~/.bash_profile\`):
-\`\`\`bash
+#### **Bash** (`~/.bashrc` or `~/.bash_profile`):
+```bash
 eval "$(get-fable shell bash)"
-\`\`\`
+```
 
-#### **Fish** (\`~/.config/fish/config.fish\`):
-\`\`\`fish
+#### **Fish** (`~/.config/fish/config.fish`):
+```fish
 get-fable shell fish | source
-\`\`\`
+```
 
-*Enables handy aliases (\`gfr\`, \`gfs\`, \`gfe\`, \`gfc\`, \`gfl\`, \`gfd\`, \`gfm\`, \`gfst\`) and real-time prompt updates when mutations occur.*
+*Enables aliases (`gfr`, `gfs`, `gfe`, `gfc`, `gfl`, `gfd`, `gfm`, `gfst`) and real-time prompt updates when mutations occur.*
 
 ---
 
 ## 3. Global Package Manager Installation
 
 ### Via Bun (Preferred)
-\`\`\`bash
+```bash
 bun add -g get-fable
-\`\`\`
+```
 
 ### Via npm
-\`\`\`bash
+```bash
 npm install -g get-fable
-\`\`\`
+```
 
 ---
 
@@ -92,15 +95,15 @@ npm install -g get-fable
 
 For automated environments, CI/CD runners, and Docker containers:
 
-\`\`\`bash
+```bash
 curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh | bash
 ```
 
 ---
 
-## 5. AI Coding Agent & IDE Setup Matrix (30 Platforms)
+## 5. AI Coding Agent & IDE Setup Matrix (32 Platforms)
 
-Get Fable provides native integrations for all 30 major AI coding assistants and IDEs. Run `get-fable install <host>` or `get-fable install all`.
+get-fable provides native integrations for all 32 major AI coding assistants and IDEs. Run `get-fable install <host>` or `get-fable install all`.
 
 ### Proprietary & Commercial Markets
 
@@ -141,7 +144,7 @@ Get Fable provides native integrations for all 30 major AI coding assistants and
 | <img src="../assets/logos/autogpt.svg" width="20" height="20" alt="" /> **AutoGPT** | Advisory Rule | `get-fable install autogpt` | `~/.autogpt/rules/fable.md` |
 | <img src="../assets/logos/hermes.svg" width="20" height="20" alt="" /> **Hermes Agent** | Skill + Rule | `get-fable install hermes` | `~/.hermes/rules/fable.md`, `skills/` |
 | <img src="../assets/logos/kiro.svg" width="20" height="20" alt="" /> **Kiro** | Rule + Hooks | `get-fable install kiro` | `~/.kiro/rules/fable.md`, lifecycle hooks |
-| <img src="../assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | Advisory Rule | `get-fable install deepseek` | `~/.deepseek/rules/fable.md` |
+| <img src="../assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | Cordis Plugin + Web UI | `dsh plugin add imMamdouhaboammar/get-fable` | `cordis.patch.yml`, `dsh.plugin.json`, prebuilt `dist/client.js` |
 | <img src="../assets/logos/pi.svg" width="20" height="20" alt="" /> **Pi Code** | Advisory Rule | `get-fable install pi` | `~/.pi/rules/fable.md` |
 
 ---
@@ -151,28 +154,37 @@ Get Fable provides native integrations for all 30 major AI coding assistants and
 ### Initialize Project State
 In any repository root, initialize the Fable lifecycle:
 
-\`\`\`bash
+```bash
 get-fable init
-\`\`\`
+```
 
 Creates the durable tracking files:
-- \`.fable/state.json\` (Schema version 3 state machine)
-- \`.fable/LEDGER.md\` (Work card checklist with required machine-checkable tests)
-- \`.fable/PROGRESS.md\` (Human-readable progress log)
-- \`docs/SPEC.md\` (Technical specification with measured claims)
+- `.fable/state.json` (Schema version 3 state machine)
+- `.fable/LEDGER.md` (Work card checklist with required machine-checkable tests)
+- `.fable/PROGRESS.md` (Human-readable progress log)
+- `docs/SPEC.md` (Technical specification with measured claims)
 
 ### Install Universal Git Hooks
 Enforce lifecycle verification at commit and push boundaries:
 
-\`\`\`bash
+```bash
 get-fable githooks install
-\`\`\`
+```
 
 Installs:
-- \`pre-commit\`: Verifies state integrity and blocks unverified substantial commits.
-- \`post-commit\`: Advances mutation generation and resets stale verification flags.
-- \`post-checkout\`: Re-syncs workspace ID across branch switches.
-- \`pre-push\`: Ensures full test gate is green before pushing to remote.
+- `pre-commit`: Verifies state integrity and blocks unverified substantial commits.
+- `post-commit`: Advances mutation generation and resets stale verification flags.
+- `post-checkout`: Re-syncs workspace ID across branch switches.
+- `pre-push`: Ensures full test gate is green before pushing to remote.
+
+### Install no-mistakes Quality Gate
+For an automated pre-push AI review + test + lint pipeline:
+
+```bash
+get-fable install-no-mistakes
+# aliased as:
+get-fable install-quality-gate
+```
 
 ---
 
@@ -180,13 +192,20 @@ Installs:
 
 Inspect the full health of your installation across all hosts, skills, and projects:
 
-\`\`\`bash
-# Human-readable summary
+```bash
+# Human-readable summary (42 system checks)
 get-fable doctor
 
-# Machine-readable JSON diagnostic
+# Machine-readable versioned JSON diagnostic envelope
+get-fable doctor --json-v1
+
+# Legacy JSON output (still supported)
 get-fable doctor --json
 
 # Run project lint checks
 get-fable lint
-\`\`\`
+
+# Current lifecycle state
+get-fable status
+get-fable status --json-v1
+```

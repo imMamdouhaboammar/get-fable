@@ -40,7 +40,7 @@ function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
   if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator') return 'review';
-  if (skill === 'fable-security' || skill === 'fable-redteam') return 'security';
+  if (skill === 'fable-security' || skill === 'fable-redteam' || skill === 'fable-heal') return 'security';
   if (skill === 'fable-release') return 'release';
   if (skill === 'fable-handoff') return 'handoff';
   if (skill === 'fable-eval' || skill === 'fable-loop' || skill === 'fable-learning') return 'eval';
@@ -152,6 +152,15 @@ export function routeTask(
     )
   ) {
     addSignal(scores, reasons, 'fable-redteam', 10, 'task asks for offensive security testing, penetration testing, or red teaming');
+  }
+
+  if (
+    has(
+      text,
+      /\bheal\b|\bauto-heal\b|remediate(?:\s+vulnerability)?|security(?:\s+remediation|\s+patch|\s+fix)|patch(?:\s+vulnerability|\s+security)/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-heal', 11, 'task asks to heal or remediate security vulnerabilities');
   }
 
   if (

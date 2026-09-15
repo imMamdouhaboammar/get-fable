@@ -1,4 +1,6 @@
+import path from 'node:path';
 import { getAdapterStatusMatrix } from './adapters/index.js';
+import { runSecurityAudit, validateFindingsFile, validateCoverageLedgerFile } from './audit/index.js';
 import { runRedTeamScan } from './engine.js';
 import { listPlaybooks } from './playbooks/index.js';
 import { createRemediationCards, writeRemediationToLedger } from './remediation.js';
@@ -7,6 +9,7 @@ import { generateSarifReport } from './sarif.js';
 import { runDiagnostics, runRedTeamSetup } from './setup.js';
 import type { RedTeamProfile, ScanOptions, VerificationOptions } from './types.js';
 import { runRedTeamVerify } from './verify.js';
+import { runHealing } from './heal.js';
 
 export function printRedTeamHelp(): void {
   console.log(`get-fable redteam (or pentest) - Unified Master Offensive Security Orchestrator
@@ -17,9 +20,11 @@ Usage:
 
 Subcommands:
   scan               Execute security scan across target (default subcommand)
+  audit              Execute native Cloudflare multi-phase coverage-led security audit
   verify             Replay attack vectors to verify that previous vulnerabilities are closed
   fix                Convert identified vulnerabilities into .fable/LEDGER.md remediation work cards
-  status             Show readiness matrix of all 6 integrated security tools + native probe
+  heal               Synthesize and apply code patches, TDD guards, and cryptographic attestations
+  status             Show readiness matrix of all 7 integrated security tools + native probe
   setup              Diagnose environment, verify runtime (Colima forbidden), and provision sandbox/MCP
   playbooks          List available tactical reasoning playbooks (OWASP, Injection, LLM, Auth)
 
@@ -49,6 +54,12 @@ Scan Options:
   --json                  Shorthand for --format json
   -h, --help              Show this help message
 
+Audit Options:
+  --target <path|url>     Target codebase directory or HTTP/HTTPS endpoint to audit (defaults to current dir)
+  --profile <name>        Audit profile: full (default), quick, deep, guidance
+  --output <dir>          Output directory for audit artifacts (default: .fable/audit/run-<timestamp>)
+  validate <file>         Validate a findings.json or coverage-ledger.json file against schemas
+
 Verify Options:
   --target <url>          Target URL to verify fixes against (optional if loaded from findings)
   --report <path>         Path to previous report or findings JSON
@@ -60,6 +71,9 @@ Examples:
   get-fable redteam setup
   get-fable redteam status
   get-fable redteam playbooks
+  get-fable redteam audit --target ./src
+  get-fable redteam audit --target http://localhost:3000 --profile full
+  get-fable redteam audit validate .fable/audit/run-1/findings.json
   get-fable redteam --target http://localhost:3000
   get-fable redteam scan --target http://localhost:3000 --token "Bearer A" --second-token "Bearer B"
   get-fable redteam scan --target https://staging.example.com --sarif --output report.sarif
@@ -86,9 +100,97 @@ export async function handleRedTeamCli(argv: string[]): Promise<number> {
   }
 
   const firstArg = argv[0];
-  const isSubcommand = ['setup', 'status', 'scan', 'fix', 'verify', 'playbooks'].includes(firstArg);
+  const isSubcommand = ['setup', 'status', 'scan', 'fix', 'heal', 'verify', 'playbooks', 'audit'].includes(firstArg);
   const subcommand = isSubcommand ? firstArg : 'scan';
   const remainingArgs = isSubcommand ? argv.slice(1) : argv;
+
+  // --- Subcommand: audit ---
+  if (subcommand === 'audit') {
+    if (remainingArgs.includes('-h') || remainingArgs.includes('--help')) {
+      printRedTeamHelp();
+      return 0;
+    }
+
+    // Check if validating an existing file
+    const validateIdx = remainingArgs.indexOf('validate');
+    if (validateIdx !== -1 && validateIdx + 1 < remainingArgs.length) {
+      const fileToValidate = remainingArgs[validateIdx + 1];
+      const isFindings = fileToValidate.endsWith('findings.json');
+      const isLedger = fileToValidate.endsWith('coverage-ledger.json');
+
+      let valResult;
+      if (isFindings) {
+        valResult = validateFindingsFile(fileToValidate);
+      } else if (isLedger) {
+        valResult = validateCoverageLedgerFile(fileToValidate);
+      } else {
+        valResult = validateFindingsFile(fileToValidate);
+        if (!valResult.valid) {
+          const ledgerAttempt = validateCoverageLedgerFile(fileToValidate);
+          if (ledgerAttempt.valid) valResult = ledgerAttempt;
+        }
+      }
+
+      if (outputFormat === 'json') {
+        console.log(JSON.stringify(valResult, null, 2));
+      } else if (valResult.valid) {
+        console.log(`✔ PASS: ${fileToValidate} is valid (${valResult.totalChecked ?? 0} items)`);
+      } else {
+        console.error(`❌ FAIL: ${valResult.errors.length} validation error(s):`);
+        for (const err of valResult.errors) console.error(`  - ${err}`);
+      }
+      return valResult.valid ? 0 : 1;
+    }
+
+    let auditTarget: string | undefined;
+    let auditProfile: 'full' | 'quick' | 'deep' | 'guidance' = 'full';
+    let auditOutputDir: string | undefined;
+
+    for (let i = 0; i < remainingArgs.length; i++) {
+      if ((remainingArgs[i] === '--target' || remainingArgs[i] === '-t') && i + 1 < remainingArgs.length) {
+        auditTarget = remainingArgs[++i];
+      } else if (remainingArgs[i] === '--profile' && i + 1 < remainingArgs.length) {
+        const p = remainingArgs[++i].toLowerCase();
+        if (['full', 'quick', 'deep', 'guidance'].includes(p)) {
+          auditProfile = p as 'full' | 'quick' | 'deep' | 'guidance';
+        }
+      } else if (remainingArgs[i] === '--output' && i + 1 < remainingArgs.length) {
+        auditOutputDir = remainingArgs[++i];
+      }
+    }
+
+    if (!auditTarget) {
+      auditTarget = process.cwd();
+    }
+
+    console.log(`\n🛡 Starting Cloudflare Coverage-Led Security Audit on: ${auditTarget}`);
+    console.log(`Profile: ${auditProfile} | Output: ${auditOutputDir || '.fable/audit/run-<timestamp>'}\n`);
+
+    const auditResult = await runSecurityAudit({
+      target: auditTarget,
+      profile: auditProfile,
+      outputDir: auditOutputDir,
+      writeArtifacts: true,
+    });
+
+    if (outputFormat === 'json') {
+      console.log(JSON.stringify(auditResult, null, 2));
+    } else {
+      console.log(`✔ Reconnaissance completed -> ${path.join(auditResult.outputDir, 'architecture.md')}`);
+      console.log(`✔ Coverage ledger created -> ${path.join(auditResult.outputDir, 'coverage-ledger.json')}`);
+      console.log(`✔ Validated findings saved -> ${path.join(auditResult.outputDir, 'findings.json')}`);
+      console.log(`✔ Final reports generated -> ${path.join(auditResult.outputDir, 'REPORT.md')}\n`);
+      const confirmedCount = auditResult.findings.filter((f) => f.verdict === 'confirmed').length;
+      console.log(`Findings Summary: ${auditResult.findings.length} findings (${confirmedCount} confirmed)`);
+      if (!auditResult.validations.findingsValid) {
+        console.warn(`⚠ Findings schema validation warnings: ${auditResult.validations.findingsErrors.length}`);
+      }
+      if (!auditResult.validations.ledgerValid) {
+        console.warn(`⚠ Coverage ledger validation warnings: ${auditResult.validations.ledgerErrors.length}`);
+      }
+    }
+    return 0;
+  }
 
   // --- Subcommand: playbooks ---
   if (subcommand === 'playbooks') {
@@ -216,6 +318,55 @@ export async function handleRedTeamCli(argv: string[]): Promise<number> {
     }
 
     return verifyResult.regressions > 0 ? 1 : 0;
+  }
+
+  // --- Subcommand: heal ---
+  if (subcommand === 'heal' || (subcommand === 'fix' && remainingArgs.includes('--heal'))) {
+    let healTarget: string | undefined;
+    let findingsFile: string | undefined;
+    const dryRun = remainingArgs.includes('--dry-run');
+    const autoApply = remainingArgs.includes('--auto-apply') || remainingArgs.includes('--apply');
+    const verifyFix = remainingArgs.includes('--verify');
+    const generateTests = remainingArgs.includes('--generate-tests');
+
+    for (let i = 0; i < remainingArgs.length; i++) {
+      if (remainingArgs[i] === '--target' && i + 1 < remainingArgs.length) {
+        healTarget = remainingArgs[++i];
+      } else if (remainingArgs[i] === '--findings' && i + 1 < remainingArgs.length) {
+        findingsFile = remainingArgs[++i];
+      }
+    }
+
+    const healReport = await runHealing({
+      target: healTarget,
+      findingsFile,
+      dryRun: dryRun && !autoApply,
+      autoApply,
+      verify: verifyFix,
+      generateTests,
+      outputFormat,
+    });
+
+    if (outputFormat === 'json') {
+      console.log(JSON.stringify(healReport, null, 2));
+    } else {
+      console.log('\n=== Fable RedTeam Security Healing & Remediation Engine ===');
+      console.log(`Total Findings Evaluated: ${healReport.totalFindings}`);
+      console.log(`Patches Synthesized:      ${healReport.patchesGenerated}`);
+      console.log(`Patches Applied:          ${healReport.patchesApplied}`);
+      console.log(`Mode:                     ${healReport.dryRun ? 'DRY RUN (preview only)' : 'APPLIED'}`);
+      console.log(`Attestation Seal:         ${healReport.attestationSha256}`);
+      if (healReport.testFilePath) {
+        console.log(`✔ Continuous regression test suite written to: ${healReport.testFilePath}`);
+      }
+      for (const p of healReport.patches) {
+        const status = p.applied ? '✔ APPLIED' : healReport.dryRun ? 'ℹ PREVIEW' : '⚠ NOT APPLIED';
+        console.log(`\n${status} [${p.findingId}] ${p.strategy} (${p.severity.toUpperCase()})`);
+        if (p.filePath) console.log(`   File: ${p.filePath}`);
+        if (p.diff) console.log(`   ${p.diff.split('\n').slice(0, 4).join('\n   ')}`);
+      }
+    }
+    return 0;
   }
 
   // --- Subcommand: fix ---

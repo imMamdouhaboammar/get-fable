@@ -62,6 +62,9 @@ _get_fable() {
         announcements)
           _values 'announcement action' list show dismiss refresh
           ;;
+        redteam|pentest)
+          _values 'redteam subcommand' scan audit verify fix status setup playbooks
+          ;;
       esac
       ;;
   esac
