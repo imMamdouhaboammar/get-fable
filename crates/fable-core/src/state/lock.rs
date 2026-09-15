@@ -1,9 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::thread;
 use std::time::{Duration, Instant, SystemTime};
-use serde::{Deserialize, Serialize};
 
 const STATE_LOCK_TIMEOUT_MS: u64 = 2000;
 const STATE_LOCK_STALE_SECS: u64 = 30;
@@ -28,7 +28,8 @@ impl Drop for StateLockGuard {
 pub fn acquire_state_lock(target_dir: &Path) -> Result<StateLockGuard, String> {
     let fable_dir = target_dir.join(".fable");
     if !fable_dir.exists() {
-        fs::create_dir_all(&fable_dir).map_err(|e| format!("Failed to create .fable dir: {}", e))?;
+        fs::create_dir_all(&fable_dir)
+            .map_err(|e| format!("Failed to create .fable dir: {}", e))?;
     }
 
     let lock_file = fable_dir.join("state.lock");

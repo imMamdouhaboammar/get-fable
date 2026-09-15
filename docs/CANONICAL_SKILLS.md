@@ -33,3 +33,4 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 200 | system | `fable-spark` | idle | Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence. |
 | 210 | creator | `fable-skill-creator` | executing | Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. |
 | 220 | system | `fable-architecture` | planned | Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture. |
+| 230 | system | `fable-eco` | planned | Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts. |

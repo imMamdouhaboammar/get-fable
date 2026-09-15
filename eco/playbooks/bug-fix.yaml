@@ -1,0 +1,23 @@
+schema_version: 1
+id: bug-fix
+match:
+  task_shape: bug_fix
+  selected_skill: fable-tdd
+steps:
+  - id: locate-fault
+    requires_feature: code.graph.query
+    required: false
+    minimum_grade: C
+    evidence: research
+  - id: reduce-output
+    requires_feature: shell.output.compaction
+    required: false
+    minimum_grade: C
+  - id: verify-regression
+    builtin_fable_gate: test
+    required: true
+    minimum_grade: A
+    evidence: test
+fallback_policy:
+  allow_provider_fallback: true
+  allow_grade_downgrade: true

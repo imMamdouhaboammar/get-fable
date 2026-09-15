@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Transaction Journal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "transaction_id",
+    "state_root_digest",
+    "opened_at",
+    "commit_marker",
+    "operations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "state_root_digest": {
+      "type": "string"
+    },
+    "opened_at": {
+      "type": "string"
+    },
+    "commit_marker": {
+      "type": "boolean"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "state",
+          "reversible"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "pending",
+              "staged",
+              "applied",
+              "verified",
+              "rolled_back",
+              "rollback_failed"
+            ]
+          },
+          "reversible": {
+            "type": "boolean"
+          },
+          "before_digest": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "after_digest": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rollback_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

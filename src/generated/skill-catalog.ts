@@ -30,7 +30,8 @@ export const CANONICAL_SKILLS = [
   "fable-cowork",
   "fable-spark",
   "fable-skill-creator",
-  "fable-architecture"
+  "fable-architecture",
+  "fable-eco"
 ] as const;
 export type FableSkillId = (typeof CANONICAL_SKILLS)[number];
 
@@ -76,6 +77,7 @@ export const SKILL_PHASE = {
   'fable-spark': 'idle',
   'fable-skill-creator': 'executing',
   'fable-architecture': 'planned',
+  'fable-eco': 'planned',
 } as const;
 
 export const SKILL_PACK = {
@@ -108,4 +110,5 @@ export const SKILL_PACK = {
   'fable-spark': 'system',
   'fable-skill-creator': 'creator',
   'fable-architecture': 'system',
+  'fable-eco': 'system',
 } as const;

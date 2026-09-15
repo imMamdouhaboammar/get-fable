@@ -23043,9 +23043,9 @@ var require_src3 = __commonJS(function(exports) {
 });
 
 // src/cli.ts
-import fs37 from "node:fs";
+import fs38 from "node:fs";
 import os8 from "node:os";
-import path39 from "node:path";
+import path40 from "node:path";
 import { fileURLToPath as fileURLToPath7 } from "node:url";
 
 // src/installer.ts
@@ -23291,7 +23291,8 @@ var CANONICAL_SKILLS = [
   "fable-cowork",
   "fable-spark",
   "fable-skill-creator",
-  "fable-architecture"
+  "fable-architecture",
+  "fable-eco"
 ];
 var FABLE_PACKS = [
   "core",
@@ -23332,7 +23333,8 @@ var SKILL_PHASE = {
   "fable-cowork": "executing",
   "fable-spark": "idle",
   "fable-skill-creator": "executing",
-  "fable-architecture": "planned"
+  "fable-architecture": "planned",
+  "fable-eco": "planned"
 };
 var SKILL_PACK = {
   "get-fable": "core",
@@ -23363,7 +23365,8 @@ var SKILL_PACK = {
   "fable-cowork": "system",
   "fable-spark": "system",
   "fable-skill-creator": "creator",
-  "fable-architecture": "system"
+  "fable-architecture": "system",
+  "fable-eco": "system"
 };
 
 // src/core/types.ts
@@ -25754,7 +25757,7 @@ function has(text, pattern) {
 function taskShapeFor(skill, text) {
   if (skill === "fable-research" || skill === "fable-memory")
     return "research";
-  if (skill === "fable-plan" || skill === "fable-artifact" || skill === "fable-config" || skill === "fable-spark" || skill === "fable-architecture")
+  if (skill === "fable-plan" || skill === "fable-artifact" || skill === "fable-config" || skill === "fable-spark" || skill === "fable-architecture" || skill === "fable-eco")
     return "architecture";
   if (skill === "fable-delegate")
     return "delegation";
@@ -25902,6 +25905,9 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
   }
   if (has(text, /\b(?:microservices?|distributed architecture|decoupled (?:services|domains)|tech stack matrix|architecture enforcement|evaluate architecture|scaffold microservices|grpc east[- ]west)\b/i)) {
     addSignal(scores, reasons, "fable-architecture", 13, "task requests architecture evaluation or microservices enforcement");
+  }
+  if (has(text, /\b(?:fable-eco|eco\b|capability provisioning|curated capabilities|provision capabilities|plan capabilities|install capabilities|discover environment|update capabilities|repair capabilities|reproducible locks)\b/i)) {
+    addSignal(scores, reasons, "fable-eco", 12, "task requests capability provisioning or ecosystem management");
   }
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
     addSignal(scores, reasons, "fable-tdd", 10, "task describes a testable behavior change");
@@ -38397,6 +38403,61 @@ To generate new remediation work cards directly from target, run:`);
     return 1;
   }
 }
+// src/eco/native-bridge.ts
+import fs36 from "node:fs";
+import path38 from "node:path";
+import { spawnSync as spawnSync6 } from "node:child_process";
+function findNativeBinary(repoRoot) {
+  const candidates = [
+    path38.join(repoRoot, "target", "release", "get-fable-native"),
+    path38.join(repoRoot, "target", "debug", "get-fable-native")
+  ];
+  for (const c of candidates) {
+    if (fs36.existsSync(c)) {
+      return c;
+    }
+  }
+  return null;
+}
+function runNativeEco(repoRoot, args) {
+  const binary = findNativeBinary(repoRoot);
+  if (!binary) {
+    throw new Error("Native get-fable binary not found. Build with `cargo build -p fable-cli`.");
+  }
+  const finalArgs = ["eco", ...args];
+  if (!finalArgs.includes("--json-v1")) {
+    finalArgs.push("--json-v1");
+  }
+  const proc = spawnSync6(binary, finalArgs, {
+    cwd: process.cwd(),
+    encoding: "utf-8"
+  });
+  if (proc.error) {
+    throw proc.error;
+  }
+  try {
+    const parsed = JSON.parse(proc.stdout);
+    if (parsed.schema_version !== 1) {
+      throw new Error(`Unsupported Eco JSON schema version: ${parsed.schema_version}`);
+    }
+    return parsed;
+  } catch (err) {
+    throw new Error(`Failed to parse native eco output: ${err?.message || err}. Stdout was:
+${proc.stdout}
+Stderr was:
+${proc.stderr}`);
+  }
+}
+// src/eco/index.ts
+function runEcoCli(repoRoot, args) {
+  try {
+    const envelope = runNativeEco(repoRoot, args);
+    console.log(JSON.stringify(envelope, null, 2));
+  } catch (err) {
+    console.error(`Error executing eco command: ${err?.message || err}`);
+    process.exit(1);
+  }
+}
 
 // src/core/review/rulesets.ts
 var BUILTIN_OCR_RULESETS = [
@@ -38600,8 +38661,8 @@ var BUILTIN_OCR_RULESETS = [
   }
 ];
 // src/core/review/ocr-engine.ts
-import fs36 from "node:fs";
-import path38 from "node:path";
+import fs37 from "node:fs";
+import path39 from "node:path";
 import { execSync as execSync6 } from "node:child_process";
 var DEFAULT_EXCLUDED_PATTERNS = [
   "**/bun.lockb",
@@ -38681,7 +38742,7 @@ function isFileExcluded(filePath, patterns) {
   return patterns.some((pattern) => {
     try {
       const regex = globToRegExp(pattern);
-      return regex.test(normalized) || regex.test(path38.basename(normalized));
+      return regex.test(normalized) || regex.test(path39.basename(normalized));
     } catch {
       return false;
     }
@@ -38697,14 +38758,14 @@ function isOcrCliAvailable() {
 }
 function loadCustomRuleConfig(repoRoot, customPath) {
   const candidates = [
-    customPath ? path38.resolve(repoRoot, customPath) : null,
-    path38.join(repoRoot, ".opencodereview", "rule.json"),
-    path38.join(repoRoot, ".fable", "review-rules.json")
+    customPath ? path39.resolve(repoRoot, customPath) : null,
+    path39.join(repoRoot, ".opencodereview", "rule.json"),
+    path39.join(repoRoot, ".fable", "review-rules.json")
   ].filter(Boolean);
   for (const candidate of candidates) {
-    if (fs36.existsSync(candidate)) {
+    if (fs37.existsSync(candidate)) {
       try {
-        const raw = fs36.readFileSync(candidate, "utf-8");
+        const raw = fs37.readFileSync(candidate, "utf-8");
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.rules)) {
           return parsed;
@@ -38724,7 +38785,7 @@ function resolveRulesForFile(filePath, repoRoot = process.cwd(), customPath) {
     for (let index = 0;index < customConfig.rules.length; index++) {
       const rule = customConfig.rules[index];
       const regex = globToRegExp(rule.path);
-      if (regex.test(normalized) || regex.test(path38.basename(normalized))) {
+      if (regex.test(normalized) || regex.test(path39.basename(normalized))) {
         matchedUserRule = true;
         if (rule.merge_system_rule === false) {
           mergeSystemRule = false;
@@ -38745,7 +38806,7 @@ function resolveRulesForFile(filePath, repoRoot = process.cwd(), customPath) {
   if (!matchedUserRule || mergeSystemRule) {
     for (const rule of BUILTIN_OCR_RULESETS) {
       const regex = globToRegExp(rule.path);
-      if (regex.test(normalized) || regex.test(path38.basename(normalized))) {
+      if (regex.test(normalized) || regex.test(path39.basename(normalized))) {
         matchedRules.push(rule);
       }
     }
@@ -38819,9 +38880,9 @@ function getReviewableFiles(options = {}) {
             continue;
           let lineCount = 0;
           try {
-            const fullPath = path38.resolve(repoRoot, filePath);
-            if (fs36.existsSync(fullPath) && fs36.statSync(fullPath).isFile()) {
-              lineCount = fs36.readFileSync(fullPath, "utf-8").split(`
+            const fullPath = path39.resolve(repoRoot, filePath);
+            if (fs37.existsSync(fullPath) && fs37.statSync(fullPath).isFile()) {
+              lineCount = fs37.readFileSync(fullPath, "utf-8").split(`
 `).length;
             }
           } catch {
@@ -38851,7 +38912,7 @@ function bundleReviewFiles(files) {
     if (changedLines >= PLAN_MODE_LINE_THRESHOLD) {
       bundles.push({
         id: `bundle-large-${bundles.length + 1}`,
-        name: `High-Density File: ${path38.basename(file.path)}`,
+        name: `High-Density File: ${path39.basename(file.path)}`,
         files: [file],
         totalLines: changedLines,
         sharedRules: file.rules,
@@ -38863,7 +38924,7 @@ function bundleReviewFiles(files) {
   }
   const byDir = new Map;
   for (const file of regularFiles) {
-    const dir = path38.dirname(file.path);
+    const dir = path39.dirname(file.path);
     if (!byDir.has(dir)) {
       byDir.set(dir, []);
     }
@@ -38926,8 +38987,8 @@ var EVIDENCE_KINDS2 = [
 ];
 function getPackageVersion() {
   try {
-    const packagePath = path39.join(getRepoRootDir(), "package.json");
-    const packageJson = JSON.parse(fs37.readFileSync(packagePath, "utf-8"));
+    const packagePath = path40.join(getRepoRootDir(), "package.json");
+    const packageJson = JSON.parse(fs38.readFileSync(packagePath, "utf-8"));
     return typeof packageJson.version === "string" ? packageJson.version : "unknown";
   } catch {
     return "unknown";
@@ -39251,14 +39312,14 @@ function runToonCommand(args) {
     case "encode": {
       let content = "";
       if (target && target !== "-") {
-        if (!fs37.existsSync(target)) {
+        if (!fs38.existsSync(target)) {
           logError(`File not found: ${target}`);
           return 1;
         }
-        content = fs37.readFileSync(target, "utf-8");
+        content = fs38.readFileSync(target, "utf-8");
       } else {
         try {
-          content = fs37.readFileSync(0, "utf-8");
+          content = fs38.readFileSync(0, "utf-8");
         } catch {
           logError("No input provided via file or stdin");
           return 1;
@@ -39277,14 +39338,14 @@ function runToonCommand(args) {
     case "decode": {
       let content = "";
       if (target && target !== "-") {
-        if (!fs37.existsSync(target)) {
+        if (!fs38.existsSync(target)) {
           logError(`File not found: ${target}`);
           return 1;
         }
-        content = fs37.readFileSync(target, "utf-8");
+        content = fs38.readFileSync(target, "utf-8");
       } else {
         try {
-          content = fs37.readFileSync(0, "utf-8");
+          content = fs38.readFileSync(0, "utf-8");
         } catch {
           logError("No input provided via file or stdin");
           return 1;
@@ -39302,14 +39363,14 @@ function runToonCommand(args) {
     case "stats": {
       let content = "";
       if (target && target !== "-") {
-        if (!fs37.existsSync(target)) {
+        if (!fs38.existsSync(target)) {
           logError(`File not found: ${target}`);
           return 1;
         }
-        content = fs37.readFileSync(target, "utf-8");
+        content = fs38.readFileSync(target, "utf-8");
       } else {
         try {
-          content = fs37.readFileSync(0, "utf-8");
+          content = fs38.readFileSync(0, "utf-8");
         } catch {
           logError("No input provided via file or stdin");
           return 1;
@@ -39343,14 +39404,14 @@ function runToonCommand(args) {
     case "validate": {
       let content = "";
       if (target && target !== "-") {
-        if (!fs37.existsSync(target)) {
+        if (!fs38.existsSync(target)) {
           logError(`File not found: ${target}`);
           return 1;
         }
-        content = fs37.readFileSync(target, "utf-8");
+        content = fs38.readFileSync(target, "utf-8");
       } else {
         try {
-          content = fs37.readFileSync(0, "utf-8");
+          content = fs38.readFileSync(0, "utf-8");
         } catch {
           logError("No input provided via file or stdin");
           return 1;
@@ -39382,9 +39443,9 @@ function runSparkCommand(args) {
   const userIntent = stripJsonFlags(args).join(" ").trim() || undefined;
   const state = readFableState(process.cwd()) || createInitialState(new Date().toISOString(), process.cwd());
   let openCards = [];
-  const ledgerPath = path39.join(process.cwd(), ".fable", "LEDGER.md");
-  if (fs37.existsSync(ledgerPath)) {
-    const text = fs37.readFileSync(ledgerPath, "utf-8");
+  const ledgerPath = path40.join(process.cwd(), ".fable", "LEDGER.md");
+  if (fs38.existsSync(ledgerPath)) {
+    const text = fs38.readFileSync(ledgerPath, "utf-8");
     openCards = text.split(`
 `).map((l) => l.trim()).filter((l) => l.startsWith("- [ ]"));
   }
@@ -39413,9 +39474,9 @@ function runShellCommand(args) {
     scriptFile = "fable.bash";
   else if (shellType === "fish")
     scriptFile = "fable.fish";
-  const scriptPath = path39.join(repoRoot, "shell", scriptFile);
-  if (fs37.existsSync(scriptPath)) {
-    console.log(fs37.readFileSync(scriptPath, "utf-8"));
+  const scriptPath = path40.join(repoRoot, "shell", scriptFile);
+  if (fs38.existsSync(scriptPath)) {
+    console.log(fs38.readFileSync(scriptPath, "utf-8"));
     return 0;
   }
   logError(`Shell integration for ${shellType} not found at ${scriptPath}`);
@@ -39557,23 +39618,23 @@ function runInstallCommand(args) {
     case "shell": {
       logHeader("Installing get-fable shell integration");
       const home = os8.homedir();
-      const zshrc = path39.join(home, ".zshrc");
-      const bashrc = path39.join(home, ".bashrc");
+      const zshrc = path40.join(home, ".zshrc");
+      const bashrc = path40.join(home, ".bashrc");
       const line = 'eval "$(get-fable shell init)"';
-      if (fs37.existsSync(zshrc)) {
-        const content = fs37.readFileSync(zshrc, "utf-8");
+      if (fs38.existsSync(zshrc)) {
+        const content = fs38.readFileSync(zshrc, "utf-8");
         if (!content.includes("get-fable shell")) {
-          fs37.appendFileSync(zshrc, `
+          fs38.appendFileSync(zshrc, `
 # get-fable shell integration
 ${line}
 `);
           logSuccess("Added get-fable shell integration to ~/.zshrc");
         }
       }
-      if (fs37.existsSync(bashrc)) {
-        const content = fs37.readFileSync(bashrc, "utf-8");
+      if (fs38.existsSync(bashrc)) {
+        const content = fs38.readFileSync(bashrc, "utf-8");
         if (!content.includes("get-fable shell")) {
-          fs37.appendFileSync(bashrc, `
+          fs38.appendFileSync(bashrc, `
 # get-fable shell integration
 ${line}
 `);
@@ -39871,16 +39932,16 @@ function runPacksCommand(args) {
   const json = hasJsonFlag(args);
   const sub = (args[0] || "list").toLowerCase();
   const repoRoot = getRepoRootDir();
-  const packsDir = path39.join(repoRoot, "packs");
-  if (!fs37.existsSync(packsDir)) {
+  const packsDir = path40.join(repoRoot, "packs");
+  if (!fs38.existsSync(packsDir)) {
     logError("Packs directory not found");
     return 1;
   }
   switch (sub) {
     case "list": {
-      const files = fs37.readdirSync(packsDir).filter((f) => f.endsWith(".json"));
+      const files = fs38.readdirSync(packsDir).filter((f) => f.endsWith(".json"));
       const packs = files.map((f) => {
-        const content = JSON.parse(fs37.readFileSync(path39.join(packsDir, f), "utf-8"));
+        const content = JSON.parse(fs38.readFileSync(path40.join(packsDir, f), "utf-8"));
         return {
           name: content.name,
           version: content.version,
@@ -39904,12 +39965,12 @@ function runPacksCommand(args) {
         logError("packs inspect requires a pack name (e.g. core, build, creator)");
         return 1;
       }
-      const packFile = path39.join(packsDir, `${name}.json`);
-      if (!fs37.existsSync(packFile)) {
+      const packFile = path40.join(packsDir, `${name}.json`);
+      if (!fs38.existsSync(packFile)) {
         logError(`Pack '${name}' not found at ${packFile}`);
         return 1;
       }
-      const content = JSON.parse(fs37.readFileSync(packFile, "utf-8"));
+      const content = JSON.parse(fs38.readFileSync(packFile, "utf-8"));
       if (json) {
         printMachineJson(args, "packs:inspect", content, true);
       } else {
@@ -39934,9 +39995,9 @@ function optionValue(args, flag) {
   return value;
 }
 function writeJsonFile(filePath, payload) {
-  const resolved = path39.resolve(process.cwd(), filePath);
-  fs37.mkdirSync(path39.dirname(resolved), { recursive: true });
-  fs37.writeFileSync(resolved, `${JSON.stringify(payload, null, 2)}
+  const resolved = path40.resolve(process.cwd(), filePath);
+  fs38.mkdirSync(path40.dirname(resolved), { recursive: true });
+  fs38.writeFileSync(resolved, `${JSON.stringify(payload, null, 2)}
 `, "utf-8");
 }
 function runBehaviorEvalCommand(args) {
@@ -39947,7 +40008,7 @@ function runBehaviorEvalCommand(args) {
     const out = optionValue(args, "--out");
     if (out) {
       writeJsonFile(out, bundle);
-      logSuccess(`Wrote oracle-free behavior requests to ${path39.resolve(process.cwd(), out)}`);
+      logSuccess(`Wrote oracle-free behavior requests to ${path40.resolve(process.cwd(), out)}`);
     } else {
       printMachineJson(args, "behavior-eval:export", bundle, true);
     }
@@ -39959,12 +40020,12 @@ function runBehaviorEvalCommand(args) {
       logError("behavior-eval score requires a response bundle path");
       return 1;
     }
-    const responses = JSON.parse(fs37.readFileSync(path39.resolve(process.cwd(), responsePath), "utf-8"));
+    const responses = JSON.parse(fs38.readFileSync(path40.resolve(process.cwd(), responsePath), "utf-8"));
     const scored = scoreAgentBehaviorResponseBundle(responses, plan);
     const out = optionValue(args, "--out") || AGENT_BEHAVIOR_EVIDENCE_PATH;
     writeJsonFile(out, scored);
     logSuccess(`Scored ${scored.passed}/${scored.total} behavior cases for ${scored.providerId}`);
-    console.log(`Evidence: ${path39.resolve(process.cwd(), out)}`);
+    console.log(`Evidence: ${path40.resolve(process.cwd(), out)}`);
     return 0;
   }
   if (sub === "status") {
@@ -39992,9 +40053,9 @@ async function runGrokCommand(args) {
       offlineMode: adapter.isOffline(),
       capabilities: adapter.getCapabilities(),
       configDir: grokDir,
-      rulesInstalled: fs37.existsSync(path39.join(grokDir, "rules", "grok-bot.md")),
-      hooksConfigured: fs37.existsSync(path39.join(grokDir, "hooks.json")),
-      agentSpecInstalled: fs37.existsSync(path39.join(grokDir, "agents", "grok-bot.md"))
+      rulesInstalled: fs38.existsSync(path40.join(grokDir, "rules", "grok-bot.md")),
+      hooksConfigured: fs38.existsSync(path40.join(grokDir, "hooks.json")),
+      agentSpecInstalled: fs38.existsSync(path40.join(grokDir, "agents", "grok-bot.md"))
     };
     if (hasJsonFlag(args)) {
       printMachineJson(args, "grok:status", status);
@@ -40058,6 +40119,11 @@ function runCli(args = process.argv.slice(2)) {
       return runPacksCommand(args.slice(1));
     case "install":
       return runInstallCommand(args.slice(1));
+    case "eco": {
+      const repoRoot = getRepoRootDir();
+      runEcoCli(repoRoot, args.slice(1));
+      return 0;
+    }
     case "skills":
       return runSkillsCommand(args.slice(1));
     case "install-antigravity":
@@ -40205,12 +40271,12 @@ function runCli(args = process.argv.slice(2)) {
       return 0;
     case "prompt": {
       logHeader("Bundled Fable prompt");
-      const promptPath = path39.join(getRepoRootDir(), "prompts", "claude-code-fable-5.md");
-      if (!fs37.existsSync(promptPath)) {
+      const promptPath = path40.join(getRepoRootDir(), "prompts", "claude-code-fable-5.md");
+      if (!fs38.existsSync(promptPath)) {
         logError("Prompt file not found.");
         return 1;
       }
-      console.log(fs37.readFileSync(promptPath, "utf-8"));
+      console.log(fs38.readFileSync(promptPath, "utf-8"));
       return 0;
     }
     case "version":
@@ -40225,15 +40291,15 @@ function runCli(args = process.argv.slice(2)) {
   }
 }
 function listAssets() {
-  const assetsDir = path39.join(getRepoRootDir(), "assets");
-  const countItems = (dir) => fs37.existsSync(dir) ? fs37.readdirSync(dir).length : 0;
-  console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path39.join(assetsDir, "prompts"))} files`);
-  console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path39.join(assetsDir, "agents"))} agents`);
-  console.log(`${colors.green}✔ Claude Code Skills:${colors.reset} ${countItems(path39.join(assetsDir, "skills", "claude-code"))} skills`);
-  console.log(`${colors.green}✔ Claude Design Skills:${colors.reset} ${countItems(path39.join(assetsDir, "skills", "claude-design"))} skills`);
-  console.log(`${colors.green}✔ Slash Commands:${colors.reset} ${countItems(path39.join(assetsDir, "slash-commands"))} commands`);
-  console.log(`${colors.green}✔ Injected Reminders:${colors.reset} ${countItems(path39.join(assetsDir, "injected-reminders"))} reminders`);
-  console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path39.join(assetsDir, "starter-components"))} components`);
+  const assetsDir = path40.join(getRepoRootDir(), "assets");
+  const countItems = (dir) => fs38.existsSync(dir) ? fs38.readdirSync(dir).length : 0;
+  console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path40.join(assetsDir, "prompts"))} files`);
+  console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path40.join(assetsDir, "agents"))} agents`);
+  console.log(`${colors.green}✔ Claude Code Skills:${colors.reset} ${countItems(path40.join(assetsDir, "skills", "claude-code"))} skills`);
+  console.log(`${colors.green}✔ Claude Design Skills:${colors.reset} ${countItems(path40.join(assetsDir, "skills", "claude-design"))} skills`);
+  console.log(`${colors.green}✔ Slash Commands:${colors.reset} ${countItems(path40.join(assetsDir, "slash-commands"))} commands`);
+  console.log(`${colors.green}✔ Injected Reminders:${colors.reset} ${countItems(path40.join(assetsDir, "injected-reminders"))} reminders`);
+  console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path40.join(assetsDir, "starter-components"))} components`);
 }
 function showHelp() {
   console.log(`
@@ -40294,7 +40360,7 @@ async function main() {
 function isDirectExecution() {
   if (!process.argv[1])
     return false;
-  return path39.resolve(process.argv[1]) === fileURLToPath7(import.meta.url);
+  return path40.resolve(process.argv[1]) === fileURLToPath7(import.meta.url);
 }
 if (isDirectExecution())
   main();

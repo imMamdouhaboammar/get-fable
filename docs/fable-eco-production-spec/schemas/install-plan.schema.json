@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Install Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "operations",
+    "selected",
+    "skipped",
+    "warnings"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "selected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "skipped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "capability_id",
+          "reason_code"
+        ],
+        "properties": {
+          "capability_id": {
+            "type": "string"
+          },
+          "reason_code": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "depends_on",
+          "mutation",
+          "reversible",
+          "targets",
+          "network"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "FetchMetadata",
+              "DownloadArtifact",
+              "VerifyDigest",
+              "ExtractArchive",
+              "InstallPackage",
+              "CopyFile",
+              "CreateDirectory",
+              "PatchJson",
+              "PatchToml",
+              "PatchYaml",
+              "PatchTextBlock",
+              "RegisterMcpServer",
+              "InstallSkill",
+              "WriteWrapper",
+              "RunHealthCheck",
+              "WriteInventory",
+              "WriteLock",
+              "NoOp"
+            ]
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mutation": {
+            "type": "boolean"
+          },
+          "reversible": {
+            "type": "boolean"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "network": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requires_elevation": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

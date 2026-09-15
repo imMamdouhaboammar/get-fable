@@ -49,7 +49,8 @@
         "fable-redteam",
         "fable-heal",
         "fable-learning",
-        "fable-architecture"
+        "fable-architecture",
+        "fable-eco"
       ],
       "keywords": [
         "fable",
@@ -1180,6 +1181,53 @@
         "api gateway",
         "decoupled domains",
         "scaffold microservices"
+      ]
+    },
+    {
+      "id": "fable-eco",
+      "order": 230,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.",
+      "intents": [
+        "discover-environment",
+        "plan-capabilities",
+        "install-capabilities",
+        "update-capabilities",
+        "repair-capabilities",
+        "explain-run"
+      ],
+      "requires": [
+        "catalog_metadata"
+      ],
+      "produces": [
+        "install_plan",
+        "execution_contract",
+        "capability_receipt"
+      ],
+      "gates": [
+        "deterministic_resolution",
+        "transaction_journal_committed",
+        "health_check_passed"
+      ],
+      "fallback": "fable-plan",
+      "mutatesWorkspace": false,
+      "parallelSafe": true,
+      "next": [
+        "fable-plan",
+        "fable-execute",
+        "fable-verify"
+      ],
+      "keywords": [
+        "eco",
+        "fable-eco",
+        "capability",
+        "provision",
+        "curated stack",
+        "profiles",
+        "install-plan",
+        "execution-contract",
+        "reproducible locks"
       ]
     }
   ]

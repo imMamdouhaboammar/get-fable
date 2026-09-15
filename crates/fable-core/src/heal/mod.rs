@@ -93,35 +93,63 @@ pub fn generate_suggested_test(category: &str, target: &str, title: &str) -> Str
     }
 }
 
-pub fn synthesize_code_patch(category: &str, source_code: &str) -> Option<(String, String, String)> {
+pub fn synthesize_code_patch(
+    category: &str,
+    source_code: &str,
+) -> Option<(String, String, String)> {
     match category {
         "sql-injection" => {
-            let raw_concat_re = Regex::new(r#"(?s)(query\s*\(\s*`[^`]*\$\{([^}]+)\}[^`]*`\s*\))"#).ok()?;
+            let raw_concat_re =
+                Regex::new(r#"(?s)(query\s*\(\s*`[^`]*\$\{([^}]+)\}[^`]*`\s*\))"#).ok()?;
             if let Some(caps) = raw_concat_re.captures(source_code) {
                 let matched = caps.get(1)?.as_str();
                 let param = caps.get(2)?.as_str().trim();
-                let replacement = format!("queryParameterized($1, [{}]) /* patched: parameterized query */", param);
+                let replacement = format!(
+                    "queryParameterized($1, [{}]) /* patched: parameterized query */",
+                    param
+                );
                 let patched = source_code.replacen(matched, &replacement, 1);
-                return Some(("sql-parameterization".to_string(), matched.to_string(), patched));
+                return Some((
+                    "sql-parameterization".to_string(),
+                    matched.to_string(),
+                    patched,
+                ));
             }
-            let plus_concat_re = Regex::new(r#"(query\s*\(\s*["'][^"']+\s*\+\s*([a-zA-Z0-9_]+)\s*\))"#).ok()?;
+            let plus_concat_re =
+                Regex::new(r#"(query\s*\(\s*["'][^"']+\s*\+\s*([a-zA-Z0-9_]+)\s*\))"#).ok()?;
             if let Some(caps) = plus_concat_re.captures(source_code) {
                 let matched = caps.get(1)?.as_str();
                 let param = caps.get(2)?.as_str().trim();
-                let replacement = format!("queryParameterized($1, [{}]) /* patched: parameterized query */", param);
+                let replacement = format!(
+                    "queryParameterized($1, [{}]) /* patched: parameterized query */",
+                    param
+                );
                 let patched = source_code.replacen(matched, &replacement, 1);
-                return Some(("sql-parameterization".to_string(), matched.to_string(), patched));
+                return Some((
+                    "sql-parameterization".to_string(),
+                    matched.to_string(),
+                    patched,
+                ));
             }
             None
         }
         "cors-misconfiguration" => {
-            let cors_wildcard_re = Regex::new(r#"(?i)(['"]Access-Control-Allow-Origin['"]\s*[:,\,]\s*)['"]\*['"]"#).ok()?;
+            let cors_wildcard_re =
+                Regex::new(r#"(?i)(['"]Access-Control-Allow-Origin['"]\s*[:,\,]\s*)['"]\*['"]"#)
+                    .ok()?;
             if let Some(caps) = cors_wildcard_re.captures(source_code) {
                 let matched = caps.get(0)?.as_str();
                 let prefix = caps.get(1)?.as_str();
-                let replacement = format!("{}process.env.ALLOWED_ORIGIN || 'https://app.example.com'", prefix);
+                let replacement = format!(
+                    "{}process.env.ALLOWED_ORIGIN || 'https://app.example.com'",
+                    prefix
+                );
                 let patched = source_code.replacen(matched, &replacement, 1);
-                return Some(("strict-cors-whitelist".to_string(), matched.to_string(), patched));
+                return Some((
+                    "strict-cors-whitelist".to_string(),
+                    matched.to_string(),
+                    patched,
+                ));
             }
             None
         }
@@ -131,7 +159,11 @@ pub fn synthesize_code_patch(category: &str, source_code: &str) -> Option<(Strin
                 if let Some(pos) = source_code.find("app.listen") {
                     let mut patched = source_code.to_string();
                     patched.insert_str(pos, injection);
-                    return Some(("security-headers-guard".to_string(), "app.listen".to_string(), patched));
+                    return Some((
+                        "security-headers-guard".to_string(),
+                        "app.listen".to_string(),
+                        patched,
+                    ));
                 }
             }
             None
@@ -142,7 +174,11 @@ pub fn synthesize_code_patch(category: &str, source_code: &str) -> Option<(Strin
                 if let Some(pos) = source_code.find("app.listen") {
                     let mut patched = source_code.to_string();
                     patched.insert_str(pos, injection);
-                    return Some(("block-sensitive-routes".to_string(), "app.listen".to_string(), patched));
+                    return Some((
+                        "block-sensitive-routes".to_string(),
+                        "app.listen".to_string(),
+                        patched,
+                    ));
                 }
             }
             None
@@ -154,17 +190,28 @@ pub fn synthesize_code_patch(category: &str, source_code: &str) -> Option<(Strin
                 let url_var = caps.get(2)?.as_str().trim();
                 let guard = format!("validateOutboundUrl({});\n  {}", url_var, matched);
                 let patched = source_code.replacen(matched, &guard, 1);
-                return Some(("ssrf-outbound-url-guard".to_string(), matched.to_string(), patched));
+                return Some((
+                    "ssrf-outbound-url-guard".to_string(),
+                    matched.to_string(),
+                    patched,
+                ));
             }
             None
         }
         "idor-bola" | "auth-bypass" => {
-            let route_re = Regex::new(r#"(app\.(?:get|post|put|delete)\s*\([^,]+,\s*(?:async\s*)?\([^)]*\)\s*=>\s*\{)"#).ok()?;
+            let route_re = Regex::new(
+                r#"(app\.(?:get|post|put|delete)\s*\([^,]+,\s*(?:async\s*)?\([^)]*\)\s*=>\s*\{)"#,
+            )
+            .ok()?;
             if let Some(caps) = route_re.captures(source_code) {
                 let matched = caps.get(1)?.as_str();
                 let guard = format!("{}\n  if (!req.user || !req.user.id) return res.status(401).json({{ error: 'Unauthorized' }});", matched);
                 let patched = source_code.replacen(matched, &guard, 1);
-                return Some(("auth-tenant-guard".to_string(), matched.to_string(), patched));
+                return Some((
+                    "auth-tenant-guard".to_string(),
+                    matched.to_string(),
+                    patched,
+                ));
             }
             None
         }
@@ -189,11 +236,8 @@ pub fn plan_healing(
     let mut applied_count = 0;
 
     for finding in findings {
-        let regression_test = generate_suggested_test(
-            &finding.category,
-            &finding.target,
-            &finding.title,
-        );
+        let regression_test =
+            generate_suggested_test(&finding.category, &finding.target, &finding.title);
 
         let mut patch = HealingPatch {
             finding_id: finding.id.clone(),
@@ -212,18 +256,22 @@ pub fn plan_healing(
         let candidate_files = find_candidate_files(repo_root, &finding.target);
         for file in candidate_files {
             if let Ok(content) = fs::read_to_string(&file) {
-                if let Some((strategy, orig, patched_content)) = synthesize_code_patch(&finding.category, &content) {
-                    let rel_path = file.strip_prefix(repo_root).unwrap_or(&file).to_string_lossy().to_string();
+                if let Some((strategy, orig, patched_content)) =
+                    synthesize_code_patch(&finding.category, &content)
+                {
+                    let rel_path = file
+                        .strip_prefix(repo_root)
+                        .unwrap_or(&file)
+                        .to_string_lossy()
+                        .to_string();
                     patch.file_path = Some(rel_path.clone());
                     patch.strategy = strategy;
                     patch.original_snippet = Some(orig);
                     patch.diff = generate_unified_diff(&content, &patched_content, &rel_path);
 
-                    if !dry_run {
-                        if fs::write(&file, patched_content).is_ok() {
-                            patch.applied = true;
-                            applied_count += 1;
-                        }
+                    if !dry_run && fs::write(&file, patched_content).is_ok() {
+                        patch.applied = true;
+                        applied_count += 1;
                     }
                     break;
                 }
@@ -262,10 +310,22 @@ fn find_candidate_files(root: &Path, target: &str) -> Vec<PathBuf> {
     if files.is_empty() {
         collect_ts_files(root, &mut files);
     }
-    let clean_target = target.trim_start_matches("http://").trim_start_matches("https://");
+    let clean_target = target
+        .trim_start_matches("http://")
+        .trim_start_matches("https://");
     files.sort_by(|a, b| {
-        let a_match = clean_target.contains(&a.file_name().unwrap_or_default().to_string_lossy().to_string());
-        let b_match = clean_target.contains(&b.file_name().unwrap_or_default().to_string_lossy().to_string());
+        let a_match = clean_target.contains(
+            &a.file_name()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .to_string(),
+        );
+        let b_match = clean_target.contains(
+            &b.file_name()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .to_string(),
+        );
         b_match.cmp(&a_match)
     });
     files

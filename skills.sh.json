@@ -154,6 +154,11 @@
       "id": "fable-architecture",
       "path": "skills/fable-architecture/SKILL.md",
       "description": "Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture."
+    },
+    {
+      "id": "fable-eco",
+      "path": "skills/fable-eco/SKILL.md",
+      "description": "Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts."
     }
   ]
 }

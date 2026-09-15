@@ -1,0 +1,6 @@
+schema_version = 1
+id = "security"
+extends = ["core"]
+capabilities = [
+  "fable/strix"
+]

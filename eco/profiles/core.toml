@@ -1,0 +1,14 @@
+schema_version = 1
+id = "core"
+capabilities = [
+  "fable/agent-kernel",
+  "fable/superpowers",
+  "fable/guard-skills",
+  "fable/ponytail",
+  "fable/codegraph",
+  "fable/rtk"
+]
+optional = [
+  "fable/markitdown",
+  "fable/agent-browser"
+]

@@ -29,7 +29,8 @@
     { "id": "fable-redteam", "pack": "proof", "phase": "verifying", "label": "Ethical RedTeam & Pentest Engine" },
     { "id": "fable-heal", "pack": "proof", "phase": "executing", "label": "Security Healing & Fixing Engine" },
     { "id": "fable-learning", "pack": "evolution", "phase": "verifying", "label": "Conversation Analysis & Knowledge Synthesis" },
-    { "id": "fable-architecture", "pack": "system", "phase": "planned", "label": "Microservices Architecture Enforcer" }
+    { "id": "fable-architecture", "pack": "system", "phase": "planned", "label": "Microservices Architecture Enforcer" },
+    { "id": "fable-eco", "pack": "system", "phase": "executing", "label": "Ecosystem Capability Provisioner & Runtime" }
   ],
   "edges": [
     { "source": "get-fable", "target": "fable-discover", "relation": "continuation", "weight": 1.0 },
@@ -90,6 +91,10 @@
     { "source": "fable-learning", "target": "fable-recover", "relation": "recovery", "weight": 1.0 },
     { "source": "fable-architecture", "target": "fable-plan", "relation": "continuation", "weight": 1.0 },
     { "source": "fable-architecture", "target": "fable-delegate", "relation": "continuation", "weight": 0.9 },
-    { "source": "fable-plan", "target": "fable-architecture", "relation": "peer", "weight": 0.9 }
+    { "source": "fable-plan", "target": "fable-architecture", "relation": "peer", "weight": 0.9 },
+    { "source": "fable-eco", "target": "fable-verify", "relation": "continuation", "weight": 1.0 },
+    { "source": "fable-eco", "target": "fable-execute", "relation": "peer", "weight": 0.9 },
+    { "source": "fable-eco", "target": "fable-recover", "relation": "recovery", "weight": 1.0 },
+    { "source": "fable-plan", "target": "fable-eco", "relation": "continuation", "weight": 0.9 }
   ]
 }

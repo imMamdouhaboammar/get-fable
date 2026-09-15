@@ -1,6 +1,6 @@
 # get-fable — Authoritative Agent Rules
 
-Version: **1.9.0** · Schema: **v3** · Skills: **29** · Platforms: **32**
+Version: **1.9.0** · Schema: **v3** · Skills: **30** · Platforms: **32**
 
 Every AI agent operating in or consuming this repository **must** follow these rules. They are not suggestions. They define the contract between the agent, the lifecycle harness, and the evidence state.
 
@@ -96,6 +96,7 @@ The registry at `skills/get-fable/registry.json` is the only authoritative sourc
 | `fable-cowork` | executing | Execute long autonomous scoped work without throwing away lifecycle gates |
 | `fable-spark` | idle | Predict the smallest atomic next move — or stay silent |
 | `fable-architecture` | planned | Evaluate scale/domain/resource vectors; enforce microservices when thresholds cross |
+| `fable-eco` | executing | Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts |
 
 ### Creator pack
 | Skill | Phase | Job |

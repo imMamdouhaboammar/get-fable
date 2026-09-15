@@ -50,7 +50,11 @@ pub fn route_task(
     for skill in &registry.skills {
         scores.insert(
             skill.id.clone(),
-            if skill.id == "fable-execute" { 1.0 } else { 0.0 },
+            if skill.id == "fable-execute" {
+                1.0
+            } else {
+                0.0
+            },
         );
         reasons.insert(skill.id.clone(), Vec::new());
     }
@@ -68,13 +72,21 @@ pub fn route_task(
     let suppress_release = Regex::new(r"do not (?:ship|publish|release|tag)|don't (?:ship|publish|release|tag)|not ready to (?:ship|publish|release)|(?:ship|publish|release) (?:is )?out of scope").unwrap().is_match(&text);
     let suppress_security = Regex::new(r"no security (?:behavior|boundary|logic|change)s?|security (?:work|review) (?:is )?not (?:needed|required)|not (?:a )?security (?:change|task|review)").unwrap().is_match(&text);
     let suppress_tdd = Regex::new(r"no [^.]{0,40}behavior changes?|without (?:changing|a change to) behavior|not (?:a )?behavior change").unwrap().is_match(&text);
-    let suppress_plan = Regex::new(r"do not plan|don't plan|no planning|planning (?:is )?out of scope|skip (?:the )?plan").unwrap().is_match(&text);
+    let suppress_plan = Regex::new(
+        r"do not plan|don't plan|no planning|planning (?:is )?out of scope|skip (?:the )?plan",
+    )
+    .unwrap()
+    .is_match(&text);
     let suppress_review = Regex::new(r"do not review|don't review|no (?:code )?review|review (?:is )?out of scope|skip (?:the )?review").unwrap().is_match(&text);
     let suppress_delegation = Regex::new(r"do not delegate|don't delegate|no delegation|without subagents?|single agent|single worker").unwrap().is_match(&text);
 
     if let Some(st) = state {
         if st.failure_streak >= RECOVERY_FAILURE_THRESHOLD {
-            add_signal("fable-recover", 8.0, "project state records repeated failure");
+            add_signal(
+                "fable-recover",
+                8.0,
+                "project state records repeated failure",
+            );
         }
         if st.phase == FablePhase::Recovering {
             add_signal("fable-recover", 6.0, "project state is already recovering");
@@ -84,7 +96,11 @@ pub fn route_task(
         }
         if let Some(ref current) = st.current_skill {
             if current != "get-fable" {
-                add_signal(current, 2.0, &format!("project state is already active in {}", current));
+                add_signal(
+                    current,
+                    2.0,
+                    &format!("project state is already active in {}", current),
+                );
             }
         }
     }
@@ -146,12 +162,28 @@ pub fn route_task(
         add_signal("fable-dataviz", 10.0, "task creates or modifies data visualizations");
     }
 
-    if Regex::new(r"\bartifact\b|\bdiagram\b|\bmermaid\b|\barchitecture diagram\b|\binteractive component\b").unwrap().is_match(&text) {
-        add_signal("fable-artifact", 12.0, "task designs artifacts or architecture diagrams");
+    if Regex::new(
+        r"\bartifact\b|\bdiagram\b|\bmermaid\b|\barchitecture diagram\b|\binteractive component\b",
+    )
+    .unwrap()
+    .is_match(&text)
+    {
+        add_signal(
+            "fable-artifact",
+            12.0,
+            "task designs artifacts or architecture diagrams",
+        );
     }
 
-    if Regex::new(r"\bsimplify\b|\bclean up\b|\bdead code\b|\bdeduplicate\b|\baltitude\b").unwrap().is_match(&text) {
-        add_signal("fable-simplify", 10.0, "task requests code simplification and altitude cleanup");
+    if Regex::new(r"\bsimplify\b|\bclean up\b|\bdead code\b|\bdeduplicate\b|\baltitude\b")
+        .unwrap()
+        .is_match(&text)
+    {
+        add_signal(
+            "fable-simplify",
+            10.0,
+            "task requests code simplification and altitude cleanup",
+        );
     }
 
     if Regex::new(r"(?i)\b(?:microservices?|distributed architecture|decoupled (?:services|domains)|tech stack matrix|architecture enforcement|evaluate architecture|scaffold microservices|grpc east[- ]west)\b").unwrap().is_match(&text) {
@@ -162,7 +194,12 @@ pub fn route_task(
         add_signal("fable-tdd", 10.0, "task describes a testable behavior change");
     }
 
-    if Regex::new(r"\bimplement\b|\bfix\b|\badd\b|\bupdate\b|\bchange\b|\bbuild\b|\bremove\b|\brename\b").unwrap().is_match(&text) {
+    if Regex::new(
+        r"\bimplement\b|\bfix\b|\badd\b|\bupdate\b|\bchange\b|\bbuild\b|\bremove\b|\brename\b",
+    )
+    .unwrap()
+    .is_match(&text)
+    {
         add_signal("fable-execute", 3.0, "task requests a concrete code change");
     }
 
@@ -202,8 +239,14 @@ pub fn route_task(
     let confidence = (raw_conf.clamp(0.51, 0.99) * 100.0).round() / 100.0;
 
     let selected_entry = get_skill_entry(&selected_skill, registry)?;
-    let default_reason = vec!["bounded execution is the default when no stronger routing signal is present".to_string()];
-    let selected_reasons = reasons.get(&selected_skill).filter(|r| !r.is_empty()).unwrap_or(&default_reason).clone();
+    let default_reason = vec![
+        "bounded execution is the default when no stronger routing signal is present".to_string(),
+    ];
+    let selected_reasons = reasons
+        .get(&selected_skill)
+        .filter(|r| !r.is_empty())
+        .unwrap_or(&default_reason)
+        .clone();
 
     // Parallel candidates
     let allowed_next: std::collections::HashSet<&str> =

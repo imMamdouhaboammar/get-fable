@@ -5,7 +5,12 @@ use std::path::{Path, PathBuf};
 pub fn find_repo_root(start_dir: &Path) -> Option<PathBuf> {
     let mut curr = start_dir.to_path_buf();
     loop {
-        if curr.join("skills").join("get-fable").join("registry.json").exists() {
+        if curr
+            .join("skills")
+            .join("get-fable")
+            .join("registry.json")
+            .exists()
+        {
             return Some(curr);
         }
         if !curr.pop() {
@@ -16,9 +21,15 @@ pub fn find_repo_root(start_dir: &Path) -> Option<PathBuf> {
 }
 
 pub fn load_skill_registry(repo_root: &Path) -> Result<SkillRegistry, String> {
-    let registry_path = repo_root.join("skills").join("get-fable").join("registry.json");
+    let registry_path = repo_root
+        .join("skills")
+        .join("get-fable")
+        .join("registry.json");
     if !registry_path.exists() {
-        return Err(format!("registry.json not found at {}", registry_path.display()));
+        return Err(format!(
+            "registry.json not found at {}",
+            registry_path.display()
+        ));
     }
 
     let content = fs::read_to_string(&registry_path)

@@ -37,7 +37,7 @@ function has(text: string, pattern: RegExp): boolean {
 
 function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-research' || skill === 'fable-memory') return 'research';
-  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture') return 'architecture';
+  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture' || skill === 'fable-eco') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
   if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator') return 'review';
   if (skill === 'fable-security' || skill === 'fable-redteam' || skill === 'fable-heal') return 'security';
@@ -284,6 +284,15 @@ export function routeTask(
     )
   ) {
     addSignal(scores, reasons, 'fable-architecture', 13, 'task requests architecture evaluation or microservices enforcement');
+  }
+
+  if (
+    has(
+      text,
+      /\b(?:fable-eco|eco\b|capability provisioning|curated capabilities|provision capabilities|plan capabilities|install capabilities|discover environment|update capabilities|repair capabilities|reproducible locks)\b/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-eco', 12, 'task requests capability provisioning or ecosystem management');
   }
 
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {

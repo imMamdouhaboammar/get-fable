@@ -2,6 +2,7 @@
 members = [
     "crates/fable-core",
     "crates/fable-cli",
+    "crates/fable-eco",
 ]
 resolver = "2"
 

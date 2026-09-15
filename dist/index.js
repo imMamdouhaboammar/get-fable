@@ -23285,7 +23285,8 @@ var CANONICAL_SKILLS = [
   "fable-cowork",
   "fable-spark",
   "fable-skill-creator",
-  "fable-architecture"
+  "fable-architecture",
+  "fable-eco"
 ];
 var FABLE_PACKS = [
   "core",
@@ -23326,7 +23327,8 @@ var SKILL_PHASE = {
   "fable-cowork": "executing",
   "fable-spark": "idle",
   "fable-skill-creator": "executing",
-  "fable-architecture": "planned"
+  "fable-architecture": "planned",
+  "fable-eco": "planned"
 };
 var SKILL_PACK = {
   "get-fable": "core",
@@ -23357,7 +23359,8 @@ var SKILL_PACK = {
   "fable-cowork": "system",
   "fable-spark": "system",
   "fable-skill-creator": "creator",
-  "fable-architecture": "system"
+  "fable-architecture": "system",
+  "fable-eco": "system"
 };
 
 // src/core/types.ts
@@ -25747,7 +25750,7 @@ function has(text, pattern) {
 function taskShapeFor(skill, text) {
   if (skill === "fable-research" || skill === "fable-memory")
     return "research";
-  if (skill === "fable-plan" || skill === "fable-artifact" || skill === "fable-config" || skill === "fable-spark" || skill === "fable-architecture")
+  if (skill === "fable-plan" || skill === "fable-artifact" || skill === "fable-config" || skill === "fable-spark" || skill === "fable-architecture" || skill === "fable-eco")
     return "architecture";
   if (skill === "fable-delegate")
     return "delegation";
@@ -25895,6 +25898,9 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
   }
   if (has(text, /\b(?:microservices?|distributed architecture|decoupled (?:services|domains)|tech stack matrix|architecture enforcement|evaluate architecture|scaffold microservices|grpc east[- ]west)\b/i)) {
     addSignal(scores, reasons, "fable-architecture", 13, "task requests architecture evaluation or microservices enforcement");
+  }
+  if (has(text, /\b(?:fable-eco|eco\b|capability provisioning|curated capabilities|provision capabilities|plan capabilities|install capabilities|discover environment|update capabilities|repair capabilities|reproducible locks)\b/i)) {
+    addSignal(scores, reasons, "fable-eco", 12, "task requests capability provisioning or ecosystem management");
   }
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
     addSignal(scores, reasons, "fable-tdd", 10, "task describes a testable behavior change");

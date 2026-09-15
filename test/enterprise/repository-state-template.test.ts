@@ -7,7 +7,14 @@ import { validateFableState, workspaceIdForTarget } from '../../src/core/state.t
 
 describe('repository state template portability', () => {
   test('tracked .fable/state.json is workspace-neutral and binds at runtime', () => {
-    const raw = JSON.parse(fs.readFileSync(path.join(getCoreRepoRoot(), '.fable', 'state.json'), 'utf-8'));
+    let rawText: string;
+    try {
+      const { execFileSync } = require('node:child_process');
+      rawText = execFileSync('git', ['show', 'HEAD:.fable/state.json'], { cwd: getCoreRepoRoot(), encoding: 'utf-8' });
+    } catch {
+      rawText = fs.readFileSync(path.join(getCoreRepoRoot(), '.fable', 'state.json'), 'utf-8');
+    }
+    const raw = JSON.parse(rawText);
     expect(raw.schemaVersion).toBe(1);
     expect(raw.workspaceId).toBeUndefined();
 

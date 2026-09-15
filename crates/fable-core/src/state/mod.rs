@@ -7,8 +7,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 pub fn workspace_id_for_target(target_dir: &Path) -> String {
-    let canonical = fs::canonicalize(target_dir)
-        .unwrap_or_else(|_| target_dir.to_path_buf());
+    let canonical = fs::canonicalize(target_dir).unwrap_or_else(|_| target_dir.to_path_buf());
     let canonical_str = canonical.to_string_lossy();
     let mut hasher = Sha256::new();
     hasher.update(canonical_str.as_bytes());
@@ -46,23 +45,25 @@ pub fn read_state(target_dir: &Path) -> Result<Option<FableState>, String> {
     }
     let data = fs::read_to_string(&path)
         .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
-    let state: FableState = serde_json::from_str(&data)
-        .map_err(|e| format!("Failed to parse state.json: {}", e))?;
+    let state: FableState =
+        serde_json::from_str(&data).map_err(|e| format!("Failed to parse state.json: {}", e))?;
     Ok(Some(state))
 }
 
 pub fn write_state(target_dir: &Path, state: &FableState) -> Result<(), String> {
     let path = state_path(target_dir);
-    let parent = path.parent().ok_or_else(|| "Invalid state path".to_string())?;
+    let parent = path
+        .parent()
+        .ok_or_else(|| "Invalid state path".to_string())?;
     if !parent.exists() {
         fs::create_dir_all(parent).map_err(|e| format!("Failed to create directory: {}", e))?;
     }
     let tmp_path = parent.join(format!("state.{}.tmp", std::process::id()));
     let serialized = serde_json::to_string_pretty(state)
         .map_err(|e| format!("Failed to serialize state: {}", e))?;
-    
-    let mut file = File::create(&tmp_path)
-        .map_err(|e| format!("Failed to create tmp file: {}", e))?;
+
+    let mut file =
+        File::create(&tmp_path).map_err(|e| format!("Failed to create tmp file: {}", e))?;
     file.write_all(serialized.as_bytes())
         .map_err(|e| format!("Failed to write state: {}", e))?;
     file.write_all(b"\n")
@@ -173,7 +174,8 @@ pub fn has_fresh_passing_evidence(state: &FableState) -> bool {
 }
 
 pub fn transition_state(state: &mut FableState, next_phase: FablePhase) -> Result<(), String> {
-    if next_phase == FablePhase::Complete && state.substantial && !has_fresh_passing_evidence(state) {
+    if next_phase == FablePhase::Complete && state.substantial && !has_fresh_passing_evidence(state)
+    {
         return Err(
             "Substantial work cannot complete without passing evidence for the current mutation generation"
                 .to_string(),

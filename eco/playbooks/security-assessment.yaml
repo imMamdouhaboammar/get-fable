@@ -1,0 +1,19 @@
+schema_version: 1
+id: security-assessment
+match:
+  task_shape: security_scan
+  selected_skill: fable-redteam
+steps:
+  - id: attack-surface-discovery
+    requires_feature: code.graph.query
+    required: false
+    minimum_grade: C
+    evidence: research
+  - id: verify-findings
+    builtin_fable_gate: security
+    required: true
+    minimum_grade: B
+    evidence: security
+fallback_policy:
+  allow_provider_fallback: true
+  allow_grade_downgrade: false

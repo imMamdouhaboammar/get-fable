@@ -1,0 +1,19 @@
+schema_version: 1
+id: ui-implementation
+match:
+  task_shape: ui_design
+  selected_skill: fable-execute
+steps:
+  - id: component-audit
+    requires_feature: code.graph.query
+    required: false
+    minimum_grade: C
+    evidence: research
+  - id: browser-verify
+    builtin_fable_gate: runtime
+    required: true
+    minimum_grade: B
+    evidence: observation
+fallback_policy:
+  allow_provider_fallback: true
+  allow_grade_downgrade: true

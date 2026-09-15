@@ -1,6 +1,10 @@
 use clap::{Parser, Subcommand};
 use fable_core::*;
 
+mod eco;
+mod eco_tui;
+mod json;
+
 #[derive(Parser)]
 #[command(name = "get-fable-native")]
 #[command(author = "Mamdouh Abo Ammar")]
@@ -68,6 +72,15 @@ enum Commands {
         dry_run: bool,
         /// Output as machine-readable JSON
         #[arg(long, default_value_t = false)]
+        json: bool,
+    },
+    /// Curated capability distribution and execution-control subsystem
+    Eco {
+        #[command(subcommand)]
+        subcommand: Option<eco::EcoCommands>,
+        #[arg(long = "json-v1", default_value_t = false, global = true)]
+        json_v1: bool,
+        #[arg(long, default_value_t = false, global = true)]
         json: bool,
     },
 }
@@ -139,7 +152,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if json {
                 println!("{}", serde_json::to_string_pretty(&updated)?);
             } else {
-                println!("✔ Mutation generation: {} (source: {})", updated.mutation_generation, src);
+                println!(
+                    "✔ Mutation generation: {} (source: {})",
+                    updated.mutation_generation, src
+                );
             }
         }
         Commands::Evidence {
@@ -194,7 +210,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         println!("\n=== get-fable status (Native) ===");
                         println!("Workspace ID:        {}", st.workspace_id);
                         println!("Phase:               {}", st.phase);
-                        println!("Current skill:       {}", st.current_skill.unwrap_or_else(|| "none".to_string()));
+                        println!(
+                            "Current skill:       {}",
+                            st.current_skill.unwrap_or_else(|| "none".to_string())
+                        );
                         println!("Mutation generation: {}", st.mutation_generation);
                         println!("Verified generation: {}", st.verified_generation);
                         println!("Substantial:         {}", st.substantial);
@@ -219,23 +238,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 Ok(())
             })?;
-            println!("Active card: {}", updated.active_card.unwrap_or_else(|| "none".to_string()));
+            println!(
+                "Active card: {}",
+                updated.active_card.unwrap_or_else(|| "none".to_string())
+            );
         }
-        Commands::Heal { findings, target: _, dry_run, json } => {
+        Commands::Heal {
+            findings,
+            target: _,
+            dry_run,
+            json,
+        } => {
             let repo_root = find_repo_root(&cwd).unwrap_or_else(|| cwd.clone());
-            let findings_list: Vec<fable_core::heal::RedTeamFindingInput> = if let Some(path_str) = findings {
-                let p = std::path::PathBuf::from(path_str);
-                let content = std::fs::read_to_string(&p)?;
-                serde_json::from_str(&content)?
-            } else {
-                let default_path = repo_root.join(".fable/redteam-findings.json");
-                if default_path.exists() {
-                    let content = std::fs::read_to_string(&default_path)?;
+            let findings_list: Vec<fable_core::heal::RedTeamFindingInput> =
+                if let Some(path_str) = findings {
+                    let p = std::path::PathBuf::from(path_str);
+                    let content = std::fs::read_to_string(&p)?;
                     serde_json::from_str(&content)?
                 } else {
-                    Vec::new()
-                }
-            };
+                    let default_path = repo_root.join(".fable/redteam-findings.json");
+                    if default_path.exists() {
+                        let content = std::fs::read_to_string(&default_path)?;
+                        serde_json::from_str(&content)?
+                    } else {
+                        Vec::new()
+                    }
+                };
 
             let report = fable_core::heal::plan_healing(&findings_list, &repo_root, dry_run);
             if json {
@@ -254,6 +282,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                     if !p.diff.is_empty() {
                         println!("{}", p.diff);
+                    }
+                }
+            }
+        }
+        Commands::Eco {
+            subcommand,
+            json_v1,
+            json,
+        } => {
+            let is_json = json_v1 || json;
+            match subcommand {
+                Some(cmd) => {
+                    eco::handle_eco_command(cmd, is_json, &cwd)?;
+                }
+                None => {
+                    // Default interactive selector entry
+                    let facts = fable_eco::discover::discover_machine();
+                    if is_json {
+                        println!(
+                            "{}",
+                            serde_json::to_string_pretty(&json::JsonEnvelope::success(
+                                "eco.interactive",
+                                &facts
+                            ))?
+                        );
+                    } else {
+                        println!("\n=== Fable Eco Interactive Selector ===");
+                        println!("Platform: {:?}", facts.platform_string());
+                        println!("Use 'get-fable eco --help' to see all commands, or 'get-fable eco plan core' to generate a plan.");
                     }
                 }
             }

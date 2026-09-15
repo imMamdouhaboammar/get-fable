@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "profile": "frontend",
+  "capabilities": [],
+  "policy": "default",
+  "hosts": ["detected"],
+  "provider_preferences": {
+    "code.graph.query": "fable/codegraph",
+    "browser.deterministic": "fable/agent-browser"
+  },
+  "minimum_contract_version": 1
+}

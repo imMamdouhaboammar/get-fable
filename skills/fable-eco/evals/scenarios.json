@@ -1,0 +1,14 @@
+[
+  {
+    "id": "eco-discover-environment",
+    "prompt": "Discover machine runtimes, package managers, and coding hosts without making any mutations.",
+    "expected_skill": "fable-eco",
+    "expected_output_contains": ["platforms", "runtimes", "hosts"]
+  },
+  {
+    "id": "eco-plan-core-profile",
+    "prompt": "Create an installation plan for the core capability profile.",
+    "expected_skill": "fable-eco",
+    "expected_output_contains": ["install_plan", "operations"]
+  }
+]

@@ -108,6 +108,7 @@ import {
   compareTokens,
   compactFableStateToon,
 } from './core/toon.js';
+import { runEcoCli } from './eco/index.js';
 import {
   getReviewableFiles,
   bundleReviewFiles,
@@ -1351,6 +1352,12 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
 
     case 'install':
       return runInstallCommand(args.slice(1));
+
+    case 'eco': {
+      const repoRoot = getRepoRootDir();
+      runEcoCli(repoRoot, args.slice(1));
+      return 0;
+    }
 
     case 'skills':
       return runSkillsCommand(args.slice(1));

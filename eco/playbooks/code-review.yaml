@@ -1,0 +1,19 @@
+schema_version: 1
+id: code-review
+match:
+  task_shape: review
+  selected_skill: fable-review
+steps:
+  - id: impact-analysis
+    requires_feature: code.impact.analysis
+    required: false
+    minimum_grade: C
+    evidence: review
+  - id: verify-diff
+    builtin_fable_gate: review
+    required: true
+    minimum_grade: B
+    evidence: review
+fallback_policy:
+  allow_provider_fallback: true
+  allow_grade_downgrade: true

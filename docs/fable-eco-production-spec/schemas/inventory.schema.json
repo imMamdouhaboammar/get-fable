@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "revision",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "capability_id",
+          "manifest_digest",
+          "resolved_version",
+          "resolved_revision",
+          "install_driver",
+          "owned_paths",
+          "shared_dependencies",
+          "host_receipt_ids",
+          "installed_transaction_id",
+          "health"
+        ],
+        "properties": {
+          "capability_id": {
+            "type": "string"
+          },
+          "manifest_digest": {
+            "type": "string"
+          },
+          "resolved_version": {
+            "type": "string"
+          },
+          "resolved_revision": {
+            "type": "string"
+          },
+          "install_driver": {
+            "type": "string"
+          },
+          "owned_paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "shared_dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "host_receipt_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "installed_transaction_id": {
+            "type": "string"
+          },
+          "health": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unhealthy",
+                  "unknown"
+                ]
+              },
+              "checked_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

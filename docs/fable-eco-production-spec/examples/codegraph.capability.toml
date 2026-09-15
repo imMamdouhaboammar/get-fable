@@ -1,0 +1,61 @@
+# Planning example only. Production catalog values are populated and verified during adapter qualification.
+schema_version = 1
+id = "fable/codegraph"
+name = "CodeGraph"
+description = "Primary local code intelligence provider"
+kind = "tool"
+classes = ["code-intelligence"]
+provides = ["code.graph.query", "code.impact.analysis"]
+permissions = ["filesystem.read:workspace", "process:spawn"]
+dependencies = []
+platforms = ["macos/arm64", "macos/x86_64", "linux/x86_64", "linux/arm64"]
+
+[source]
+type = "git-revision"
+repository = "https://github.com/colbymchenry/codegraph"
+
+[version]
+strategy = "git-revision"
+channel = "stable"
+revision = "EXACT_COMMIT_SHA_IS_RESOLVED_BY_QUALIFIED_CATALOG_METADATA"
+
+[install]
+driver = "git_checkout"
+target_scope = "eco-managed"
+
+[[conflicts]]
+kind = "primary-provider"
+target = "feature:code.graph.query"
+reason_code = "ECO_PRIMARY_CODEGRAPH_PROVIDER"
+
+[health]
+kind = "command"
+command = ["codegraph", "--help"]
+timeout_ms = 5000
+
+[[hosts]]
+id = "codex"
+mode = "instructions"
+minimum_grade = "C"
+
+[[hosts]]
+id = "claude"
+mode = "instructions"
+minimum_grade = "C"
+
+[runtime]
+intents = ["inspect repository graph", "find impact", "understand dependencies"]
+task_shapes = ["discovery", "implementation", "review", "architecture"]
+mutates_workspace = false
+parallel_safe = true
+network_required = false
+interactive = false
+expected_cost = "free-local"
+fallbacks = ["fable/code-review-graph"]
+
+[governance]
+support_tier = "stable"
+license = "record-from-upstream-during-qualification"
+adapter_owner = "get-fable"
+security_sensitive = false
+qualification_record = "eco/qualification/codegraph.json"

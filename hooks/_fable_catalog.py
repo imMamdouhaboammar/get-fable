@@ -31,4 +31,5 @@ CANONICAL_SKILLS = {
     "fable-spark",
     "fable-skill-creator",
     "fable-architecture",
+    "fable-eco",
 }

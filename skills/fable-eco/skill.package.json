@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-eco",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/capability-distribution-and-execution.md"
+  ],
+  "templates": [
+    "templates/install-plan.template.md"
+  ],
+  "examples": [
+    "examples/eco-provision-and-bind.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

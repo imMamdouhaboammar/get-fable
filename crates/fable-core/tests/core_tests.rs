@@ -50,17 +50,33 @@ fn test_deterministic_router_rules() {
     let repo_root = find_repo_root(&cwd).expect("Should find repo root");
     let registry = load_skill_registry(&repo_root).expect("Should load registry");
 
-    let decision_security = route_task("audit the authentication and oauth endpoints for injection", None, &registry).unwrap();
+    let decision_security = route_task(
+        "audit the authentication and oauth endpoints for injection",
+        None,
+        &registry,
+    )
+    .unwrap();
     assert_eq!(decision_security.selected_skill, "fable-security");
     assert_eq!(decision_security.selected_pack, "proof");
 
-    let decision_redteam = route_task("conduct an ethical redteam penetration test on our api target", None, &registry).unwrap();
+    let decision_redteam = route_task(
+        "conduct an ethical redteam penetration test on our api target",
+        None,
+        &registry,
+    )
+    .unwrap();
     assert_eq!(decision_redteam.selected_skill, "fable-redteam");
 
-    let decision_release = route_task("prepare release and open pr for merge", None, &registry).unwrap();
+    let decision_release =
+        route_task("prepare release and open pr for merge", None, &registry).unwrap();
     assert_eq!(decision_release.selected_skill, "fable-release");
 
-    let decision_plan = route_task("plan the multi-file architecture migration", None, &registry).unwrap();
+    let decision_plan = route_task(
+        "plan the multi-file architecture migration",
+        None,
+        &registry,
+    )
+    .unwrap();
     assert_eq!(decision_plan.selected_skill, "fable-plan");
     assert!(decision_plan.requires_plan);
 }
