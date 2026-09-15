@@ -1,64 +1,9 @@
 {
-  "schemaVersion": 3,
-  "phase": "complete",
+  "schemaVersion": 1,
+  "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
-  "substantial": true,
+  "substantial": false,
   "lastDecision": null,
-  "evidence": [
-    {
-      "kind": "test",
-      "source": "bun test",
-      "result": "pass",
-      "detail": "all 819 tests pass across 123 files",
-      "repositoryRevision": "9ae7d711510a271dd7289c2536a2cdd930ddf9de",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 4,
-      "timestamp": "2026-09-15T08:45:19.280Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "build",
-      "source": "bun run build",
-      "result": "pass",
-      "detail": "production host and client builds pass",
-      "repositoryRevision": "9ae7d711510a271dd7289c2536a2cdd930ddf9de",
-      "commandCategory": "build",
-      "scope": "workspace",
-      "generation": 4,
-      "timestamp": "2026-09-15T08:45:19.395Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "test",
-      "source": "bun test",
-      "result": "pass",
-      "detail": "all 819 tests pass across 123 files",
-      "repositoryRevision": "db687181aa24cf49b0c9927e63a8368d012ab1a0",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 5,
-      "timestamp": "2026-09-15T08:46:27.447Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "build",
-      "source": "bun run build",
-      "result": "pass",
-      "detail": "production host and client builds pass",
-      "repositoryRevision": "db687181aa24cf49b0c9927e63a8368d012ab1a0",
-      "commandCategory": "build",
-      "scope": "workspace",
-      "generation": 5,
-      "timestamp": "2026-09-15T08:46:27.569Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    }
-  ],
-  "stateRevision": 11,
-  "workspaceId": "4d0a9132c2e476001278e544",
-  "mutationGeneration": 5,
-  "verifiedGeneration": 5,
-  "activeCard": null,
-  "updatedAt": "2026-09-15T08:47:09.800Z"
+  "evidence": []
 }

@@ -47,6 +47,9 @@ pub fn read_state(target_dir: &Path) -> Result<Option<FableState>, String> {
         .map_err(|e| format!("Failed to read {}: {}", path.display(), e))?;
     let mut state: FableState =
         serde_json::from_str(&data).map_err(|e| format!("Failed to parse state.json: {}", e))?;
+    if state.schema_version == 1 {
+        state.schema_version = FABLE_STATE_SCHEMA_VERSION;
+    }
     if state.workspace_id.is_empty() {
         state.workspace_id = workspace_id_for_target(target_dir);
     }
