@@ -8,6 +8,7 @@ import {
   configureNoMistakesEcosystem,
   resolveLatestNoMistakesRelease,
 } from '../src/integrations/no-mistakes-installer.ts';
+import { getClaudeDir, getCursorDir } from '../src/utils.ts';
 import { runDoctor, runDoctorFix } from '../src/core/doctor.ts';
 
 describe('no-mistakes collaborative quality gate integration', () => {
@@ -31,8 +32,8 @@ describe('no-mistakes collaborative quality gate integration', () => {
   test('configureNoMistakesEcosystem safely populates agent skills and cursor rules', () => {
     configureNoMistakesEcosystem({ silent: true });
 
-    const claudeSkill = path.join(os.homedir(), '.claude', 'skills', 'no-mistakes', 'SKILL.md');
-    const cursorRule = path.join(os.homedir(), '.cursor', 'rules', 'no-mistakes.mdc');
+    const claudeSkill = path.join(getClaudeDir(), 'skills', 'no-mistakes', 'SKILL.md');
+    const cursorRule = path.join(getCursorDir(), 'rules', 'no-mistakes.mdc');
     const agentsSkill = path.join(os.homedir(), '.agents', 'skills', 'no-mistakes', 'SKILL.md');
 
     expect(fs.existsSync(claudeSkill)).toBe(true);

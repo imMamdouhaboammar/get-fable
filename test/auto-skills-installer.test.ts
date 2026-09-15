@@ -69,23 +69,32 @@ describe('Auto Skills Installer', () => {
     const claudeSkillsDir = path.join(root, 'claude-skills');
     const codexSkillsDir = path.join(root, 'codex-skills');
 
+    const prevClaude = process.env.CLAUDE_CONFIG_DIR;
+    const prevCodex = process.env.FABLE_CODEX_CONFIG_DIR;
     process.env.CLAUDE_CONFIG_DIR = root;
     process.env.FABLE_CODEX_CONFIG_DIR = root;
 
-    const result = autoInstallSkills({
-      packOrSkill: 'build',
-      platforms: ['project'],
-      projectDir: root,
-      global: false,
-    });
+    try {
+      const result = autoInstallSkills({
+        packOrSkill: 'build',
+        platforms: ['project'],
+        projectDir: root,
+        global: false,
+      });
 
-    expect(result.success).toBe(true);
-    expect(result.installedSkills).toContain('fable-tdd');
-    expect(result.installedSkills).toContain('fable-delegate');
+      expect(result.success).toBe(true);
+      expect(result.installedSkills).toContain('fable-tdd');
+      expect(result.installedSkills).toContain('fable-delegate');
 
-    const destDir = path.join(root, '.agents', 'skills');
-    expect(fs.existsSync(path.join(destDir, 'fable-tdd', 'SKILL.md'))).toBe(true);
-    expect(fs.existsSync(path.join(destDir, 'fable-delegate', 'SKILL.md'))).toBe(true);
+      const destDir = path.join(root, '.agents', 'skills');
+      expect(fs.existsSync(path.join(destDir, 'fable-tdd', 'SKILL.md'))).toBe(true);
+      expect(fs.existsSync(path.join(destDir, 'fable-delegate', 'SKILL.md'))).toBe(true);
+    } finally {
+      if (prevClaude === undefined) delete process.env.CLAUDE_CONFIG_DIR;
+      else process.env.CLAUDE_CONFIG_DIR = prevClaude;
+      if (prevCodex === undefined) delete process.env.FABLE_CODEX_CONFIG_DIR;
+      else process.env.FABLE_CODEX_CONFIG_DIR = prevCodex;
+    }
   });
 
   test('runs skills install CLI command cleanly', () => {
