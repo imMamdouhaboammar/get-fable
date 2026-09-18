@@ -80,7 +80,7 @@ The registry at `skills/get-fable/registry.json` is the only authoritative sourc
 | Skill | Phase | Job |
 |---|---|---|
 | `fable-eval` | verifying | Measure agent prompt/skill/router changes against reproducible baselines |
-| `fable-learning` | verifying | Extract structured learnings, patterns, and Playbooks from session transcripts |
+| `fable-learning` | verifying | Convert sessions into durable project engineering knowledge and failure lessons under `Failure-lessons/`, `agent-kernel`, and `gbrain` |
 
 ### System pack
 | Skill | Phase | Job |
@@ -231,6 +231,7 @@ bun ./bin/get-fable.js state <phase> [--substantial]
 bun ./bin/get-fable.js card "<text>" [--clear]
 bun ./bin/get-fable.js mutation [source]
 bun ./bin/get-fable.js evidence <pass|fail> <kind> "<source>" "<detail>"
+bun ./bin/get-fable.js learn [--failure-lessons] [--target <target>] [--format <format>]
 bun ./bin/get-fable.js spark ["<task>"] [--json-v1]
 
 # Diagnostics
@@ -460,15 +461,27 @@ Evidence hashes make older behavioral results stale when skills change materiall
 
 ---
 
-## 18. Durable learning
+## 18. Durable learning & Failure-lessons knowledge base
 
-`fable-learning` and `hooks/fable_session_learn.py` extract learnings at session completion into `.fable/learnings.json`. Learnings must be:
+`fable-learning`, `get-fable learn`, and `hooks/fable_session_learn.py` extract failure lessons and durable project knowledge into `Failure-lessons/`, `.fable/learnings.json`, `agent-kernel`, and `gbrain`.
 
-- **Atomic**: one fact per entry
-- **Evidence-grounded**: tied to an observed outcome, not an assumption
-- **Reusable**: expressed as a pattern applicable to future sessions
+> **Pay for an engineering mistake once. After that, the project should remember it.**
 
-Do not record prompts, credentials, or raw source contents as learnings.
+The canonical failure knowledge base resides in:
+```text
+Failure-lessons/
+├── README.md                     # Knowledge base principles, triggers, and maintenance rules
+├── lessons-index.md              # Compact registry table and "Rules We Now Enforce"
+├── testing-and-verification.md   # Regression test mappings, oracle proofs, and test strategies
+└── <topic-specific-lessons>.md   # Grouped by failure class (e.g. state-management.md)
+```
+
+Learnings must be:
+- **Organized by failure class, not ticket number**: Prefer descriptive failure mechanisms over Jira/GitHub IDs.
+- **Fact vs. hypothesis separated**: Explicitly label root causes as Confirmed, Strongly indicated, Open hypothesis, or Unknown.
+- **14-section schema compliant**: Document context, symptoms, root cause, architectural condition, fix, verification, prevention rule, and regression tests.
+- **Connected to tests**: Map failures to automated regression tests (`failure -> regression test -> invariant being protected`).
+- **Atomic & Secret-safe**: One invariant per rule; strip credentials, tokens, and private host paths.
 
 ---
 

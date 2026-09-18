@@ -9,6 +9,7 @@ Define the multi-target storage protocol across `agent-kernel`, `gbrain`, `docs/
 
 | Layer | System | Role | Scope | Artifact Format |
 |---|---|---|---|---|
+| **L0** | `Failure-lessons/` | Canonical repository failure knowledge base | Codebase root | Markdown: `README.md`, `lessons-index.md`, `testing-and-verification.md`, `<topic>.md` |
 | **L1** | `agent-kernel` | Universal agent policy & critical rules | System-wide across all agents | CLI: `agent-kernel remember` |
 | **L2** | `gbrain` | Associative graph & semantic memory | Cross-session associative recall | CLI: `gbrain remember` |
 | **L3** | `docs/solutions/` | Durable problem & solution codification | Project & codebase root | Markdown: `YYYY-MM-DD-<slug>.md` |
@@ -58,7 +59,19 @@ gbrain add-tag "<chunk-id>" --tag "reusable" --tag "<domain>" --tag "auto-hook"
 
 ---
 
-## 3. Compound Solution Codification (`docs/solutions/`)
+## 3. Failure Lessons Knowledge Base (`Failure-lessons/`)
+
+The primary, durable repository knowledge store for engineering failures, root causes, and prevention invariants is:
+`Failure-lessons/`
+
+- **`README.md`**: Mission, directory principles, update triggers, and directory schema.
+- **`lessons-index.md`**: Quick-discovery index table (`| Lesson | Failure Class | Prevention Rule | System | Status | Document |`) and "Rules We Now Enforce".
+- **`testing-and-verification.md`**: Regression mappings (`failure -> regression test -> invariant being protected`), 3-step verification oracle, and testing patterns.
+- **`<topic-specific-lessons>.md`**: Failure lessons organized strictly by failure class using the 14-section schema (see `references/failure-lessons.md`).
+
+---
+
+## 4. Compound Solution Codification (`docs/solutions/`)
 
 When a session resolves a non-trivial bug, configuration issue, test failure, or architectural challenge, author a durable solution doc in:
 `docs/solutions/YYYY-MM-DD-<problem-slug>.md`

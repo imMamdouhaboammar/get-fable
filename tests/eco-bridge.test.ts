@@ -2,9 +2,10 @@ import { describe, expect, it } from 'bun:test';
 import path from 'node:path';
 import { runNativeEco, findNativeBinary } from '../src/eco/native-bridge.js';
 
-describe('Fable Eco Native Bridge', () => {
-  const repoRoot = path.resolve(__dirname, '..');
+const repoRoot = path.resolve(__dirname, '..');
+const hasNativeBin = Boolean(findNativeBinary(repoRoot));
 
+describe.skipIf(!hasNativeBin)('Fable Eco Native Bridge', () => {
   it('finds native binary', () => {
     const bin = findNativeBinary(repoRoot);
     expect(bin).toBeTruthy();

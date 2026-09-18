@@ -238,6 +238,21 @@ def persist_learnings(learnings, workspace_root, session_id="auto"):
         except Exception:
             pass
 
+    # 4. Workspace Failure-lessons/ if present
+    fl_dir = os.path.join(workspace_root, "Failure-lessons") if workspace_root else None
+    if fl_dir and os.path.isdir(fl_dir):
+        try:
+            from pathlib import Path
+            extract_script = Path(__file__).parent.parent / "skills" / "fable-learning" / "scripts" / "extract_learnings.py"
+            if extract_script.exists():
+                subprocess.run(
+                    [sys.executable, str(extract_script), "--session-id", session_id, "--workspace", workspace_root, "--target", "failure-lessons"],
+                    capture_output=True,
+                    timeout=15
+                )
+        except Exception:
+            pass
+
     return ak_count, gb_count
 
 

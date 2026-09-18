@@ -13,4 +13,4 @@ coverage/
 .fable/redteam-findings.json
 .fable/run-attestation.json
 target/
-
+*.docx

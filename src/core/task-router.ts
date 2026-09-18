@@ -184,7 +184,7 @@ export function routeTask(
   if (
     has(
       text,
-      /\bconvo[- ]learn\b|extract learnings?|synthesize learnings?|what did we learn|playbook generation|session learnings?|analyze (?:this )?conversation|learning synthesis|\bfable-learning\b|\bfable-convo-learn\b|session realities|compound solution|extract (?:decisions|lessons|patterns|surprises)/i
+      /\bconvo[- ]learn\b|extract learnings?|synthesize learnings?|what did we learn|playbook generation|session learnings?|analyze (?:this )?conversation|learning synthesis|\bfable-learning\b|\bfable-convo-learn\b|session realities|compound solution|extract (?:decisions|lessons|patterns|surprises)|failure[- ]lessons?|failure knowledge|convert session into durable|durable project learnings?|rules we now enforce|lesson behind the bug|testing and verification lessons|postmortem lessons?|capture engineering failures?/i
     )
   ) {
     addSignal(scores, reasons, 'fable-learning', 12, 'task extracts or synthesizes durable learnings from session or conversation');

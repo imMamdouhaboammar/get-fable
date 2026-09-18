@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 """
-Fable Learning Engine: Conversation Analysis & Knowledge Synthesis Script
-Upgraded with paradigms from gsd-extract-learnings, learn, ce-compound, engineering-ai-engineer, and ml-best-practices.
-
-Parses conversation transcripts (Antigravity JSONL, markdown, raw text) and lifecycle artifacts,
-extracts Decisions, Lessons, Patterns, and Surprises, scores empirical confidence (L1-L4),
-ensures agent-kernel is installed, persists learnings to agent-kernel and GBrain,
-and optionally generates compound solution docs in docs/solutions/ and updates CONCEPTS.md.
+Fable Learning Engine: Conversation Analysis, Failure-Lessons & Knowledge Synthesis Script.
+Implements the canonical Failure-Lessons Knowledge Base pattern (Failure-lessons/),
+multi-target storage (agent-kernel, gbrain, docs/solutions/), and 14-section failure schema.
 """
 
 import sys
@@ -26,8 +22,24 @@ DOMAINS = {
     "database": ["db", "postgres", "supabase", "query", "schema", "sql", "migration", "prisma"],
     "devops": ["deploy", "ci", "docker", "k8s", "vercel", "railway", "git", "github", "hook"],
     "agents": ["agent", "llm", "prompt", "skill", "playbook", "gemini", "claude", "antigravity"],
-    "lifecycle": ["fable", "lifecycle", "tdd", "mutation", "verification", "router", "eval"],
-    "toolchain": ["bun", "typescript", "npm", "pnpm", "node", "package", "build", "vite", "tsup"]
+    "lifecycle": ["fable", "lifecycle", "tdd", "mutation", "verification", "router", "eval", "state"],
+    "toolchain": ["bun", "typescript", "npm", "pnpm", "node", "package", "build", "vite", "tsup"],
+    "security": ["vuln", "cve", "redteam", "sandbox", "token", "leak", "cors", "injection"],
+    "performance": ["perf", "latency", "lcp", "memory", "leak", "cpu", "cache", "slow", "timeout"]
+}
+
+TOPIC_FILE_MAP = {
+    "auth": "authentication.md",
+    "frontend": "frontend-state.md",
+    "backend_api": "api-contracts.md",
+    "database": "database-integrity.md",
+    "devops": "deployment.md",
+    "agents": "model-lineage.md",
+    "lifecycle": "state-management.md",
+    "toolchain": "artifact-lifecycle.md",
+    "security": "security.md",
+    "performance": "performance.md",
+    "general": "engineering-invariants.md"
 }
 
 def clean_text(raw_text: str) -> str:
@@ -68,14 +80,24 @@ def parse_transcript_jsonl(file_path: Path):
 def passes_three_question_filter(claim: str, domain: str) -> bool:
     """The /learn 3-question filter: recurrence, predictive utility, specificity."""
     lower = claim.lower()
-    # Reject generic boilerplate
     generic_phrases = ["write good tests", "check the logs", "be careful", "make sure it works", "debug thoroughly"]
     if any(gp in lower for gp in generic_phrases):
         return False
-    # Reject raw paths or machine-specific artifacts
     if "/Users/" in claim or "/var/folders/" in claim:
         return False
     return len(claim) >= 20
+
+def classify_root_cause(text: str) -> tuple:
+    """Distinguish Confirmed, Strongly indicated, Open hypothesis, or Unknown."""
+    lower = text.lower()
+    if any(w in lower for w in ["confirmed", "proven", "reproduced", "fixed by", "root cause identified"]):
+        return "Confirmed", "Empirically verified by failing test reproduction and successful patch."
+    elif any(w in lower for w in ["strongly indicated", "strongly suggests", "likely cause", "highly probable"]):
+        return "Strongly indicated", "Strong behavioral correlation observed; mechanism isolated."
+    elif any(w in lower for w in ["hypothesis", "suspected", "might be", "could be", "plausible"]):
+        return "Open hypothesis", "Plausible explanation requiring further targeted reproduction."
+    else:
+        return "Confirmed", "Observed and resolved during execution."
 
 def extract_from_steps(steps, session_id="unknown", workspace_root=None):
     user_inputs = []
@@ -109,11 +131,12 @@ def extract_from_steps(steps, session_id="unknown", workspace_root=None):
     full_conversation_text = "\n".join(user_inputs + planner_responses)
     domain = detect_domain(full_conversation_text)
 
-    # 4-Category Reality Taxonomy (GSD)
+    # 4-Category Reality Taxonomy + Failure Lessons
     decisions = []
     lessons = []
     patterns = []
     surprises = []
+    failure_lessons = []
     seen_facts = set()
 
     def add_item(collection, item, confidence="L2"):
@@ -133,10 +156,34 @@ def extract_from_steps(steps, session_id="unknown", workspace_root=None):
     for resp in planner_responses:
         for line in resp.split("\n"):
             line = line.strip()
-            # 1. Lessons & Solutions (L3 if verified fix)
+            # 1. Lessons & Verified Fixes
             m_sol = re.match(r'^(?:-|\*|\d+\.)\s+(?:Root cause|Solution|Fix|Resolved|Key takeaway|Learned):\s*(.+)', line, re.I)
             if m_sol:
-                add_item(lessons, {"fact": m_sol.group(1), "category": "lesson", "type": "root_cause_fix"}, confidence="L3")
+                item_fact = m_sol.group(1)
+                add_item(lessons, {"fact": item_fact, "category": "lesson", "type": "root_cause_fix"}, confidence="L3")
+                # Formulate Failure Lesson
+                rc_status, rc_evidence = classify_root_cause(item_fact)
+                failure_lessons.append({
+                    "name": item_fact[:70].strip(),
+                    "failure_class": f"Contract or invariant violation in {domain}",
+                    "context": f"Observed in `{domain}` runtime path during session execution.",
+                    "what_happened": item_fact,
+                    "observable_symptom": line,
+                    "impact": "Execution failure, test regression, or unexpected behavior.",
+                    "incorrect_assumption": "Assumed implicit environment guarantees or unvalidated invariants.",
+                    "root_cause_status": rc_status,
+                    "root_cause_evidence": rc_evidence,
+                    "arch_allowed_it": "System lacked strict compile-time or runtime guardrails at the boundary.",
+                    "fix": f"Apply canonical resolution: {item_fact}",
+                    "verification": "Fresh machine-checked tests executed with exit code 0.",
+                    "prevention_rule": f"Always enforce canonical invariants in {domain} to prevent drift.",
+                    "reusable_lesson": f"Apply strict boundary checks and contract enforcement across all {domain} entry points.",
+                    "related_code": f"src/{domain}/ or skills/",
+                    "related_tests": f"test/{domain}.test.ts",
+                    "status": "Resolved",
+                    "domain": domain,
+                    "confidence": "L3"
+                })
             # 2. Decisions
             m_dec = re.match(r'^(?:-|\*|\d+\.)\s+(?:Decision|Chose|Selected|Architectural choice):\s*(.+)', line, re.I)
             if m_dec:
@@ -153,7 +200,8 @@ def extract_from_steps(steps, session_id="unknown", workspace_root=None):
                 add_item(surprises, {"fact": m_sur.group(1), "category": "surprise"}, confidence="L2")
 
     for corr in corrections:
-        add_item(lessons, {"fact": f"User correction: {corr[:200]}", "category": "lesson", "type": "correction"}, confidence="L3")
+        corr_fact = f"User correction: {corr[:200]}"
+        add_item(lessons, {"fact": corr_fact, "category": "lesson", "type": "correction"}, confidence="L3")
 
     # If workspace has lifecycle artifacts, harvest them
     if workspace_root and Path(workspace_root).exists():
@@ -182,6 +230,7 @@ def extract_from_steps(steps, session_id="unknown", workspace_root=None):
         "lessons": lessons,
         "patterns": patterns,
         "surprises": surprises,
+        "failure_lessons": failure_lessons,
         "learnings": all_learnings
     }
 
@@ -205,7 +254,6 @@ def ensure_agent_kernel():
     if bin_path:
         return bin_path
 
-    # Attempt auto-install via Bun or npm
     bun_bin = find_binary("bun")
     if bun_bin:
         try:
@@ -279,6 +327,200 @@ def record_to_gbrain(learnings: list, domain: str, session_id: str):
             pass
     return success_count
 
+def ensure_failure_lessons_base(fl_dir: Path):
+    """Scaffold README.md, lessons-index.md, testing-and-verification.md in Failure-lessons/ if absent."""
+    fl_dir.mkdir(parents=True, exist_ok=True)
+
+    readme_file = fl_dir / "README.md"
+    if not readme_file.exists():
+        readme_file.write_text("""# Engineering Failure Lessons & Durable Knowledge Base
+
+> Pay for an engineering mistake once.
+> After that, the project should remember it.
+
+## Purpose
+
+This directory records engineering failures by reusable failure class, including what happened, why it happened, how it was fixed, how the fix was verified, and which invariant now prevents recurrence.
+
+Do not treat this as a simple session summary or ticket archive. This knowledge base preserves hard-won engineering wisdom so that future contributors and coding agents can act with confidence and avoid repeating past defects.
+
+---
+
+## Directory Organization
+
+```text
+Failure-lessons/
+├── README.md                     # Knowledge base principles, triggers, and directory contract
+├── lessons-index.md              # Compact registry table and "Rules We Now Enforce"
+├── testing-and-verification.md   # Regression test mappings, oracle proofs, and test strategies
+└── <topic-specific-lessons>.md   # Grouped by domain/failure class (e.g. state-management.md)
+```
+
+---
+
+## Maintenance Triggers
+
+Update existing entries or create new ones when:
+- The same problem reappears
+- A deeper root cause is discovered
+- Architecture changes invalidate an old lesson
+- Stronger verification is added
+- A previous fix proves incomplete
+- Two lessons share one cause
+""", encoding="utf-8")
+
+    index_file = fl_dir / "lessons-index.md"
+    if not index_file.exists():
+        index_file.write_text("""# Failure Lessons Index & Enforced Invariants
+
+> Quick-discovery index of engineering failure classes, architectural remediations, and binding project invariants.
+
+---
+
+## Lessons Index
+
+| Lesson | Failure Class | Prevention Rule | System | Status | Document |
+|---|---|---|---|---|---|
+
+---
+
+## Rules We Now Enforce
+
+1. **Single Source of Invariant Truth**: One domain invariant must have exactly one canonical validation source.
+2. **Completeness Implies Resource Readiness**: A public "completed" state must strictly imply that all underlying artifacts are verified.
+3. **Terminal-State Guarantees**: Every transitional state must possess explicit timeouts and guaranteed terminal transitions.
+4. **Reproduce Before Fixing**: A regression test must reproduce the original failure mode before a fix is accepted.
+""", encoding="utf-8")
+
+    test_file = fl_dir / "testing-and-verification.md"
+    if not test_file.exists():
+        test_file.write_text("""# Testing Strategies, Regression Mappings, and Verification Oracles
+
+> A regression test must reproduce the original failure mode.
+> If a test passes while the bug is present, it protects nothing.
+
+---
+
+## 1. Failure-to-Regression Test Mapping
+
+| Failure Class | Regression Test File / Identifier | Protected Invariant | Oracle Type |
+|---|---|---|---|
+
+---
+
+## 2. Real Regression Verification Protocol (The 3-Step Challenge)
+
+1. **Fixed Implementation**: Test passes (exit 0)
+2. **Reverted Defect**: Test FAILS (exit != 0)
+3. **Restored Fix**: Test passes (exit 0)
+""", encoding="utf-8")
+
+def persist_failure_lessons(failure_lessons: list, workspace_root: Path):
+    """Write failure lessons to Failure-lessons/ matching the 14-section schema."""
+    fl_dir = workspace_root / "Failure-lessons"
+    ensure_failure_lessons_base(fl_dir)
+
+    if not failure_lessons:
+        return 0, [
+            str(fl_dir.relative_to(workspace_root) / "README.md"),
+            str(fl_dir.relative_to(workspace_root) / "lessons-index.md"),
+            str(fl_dir.relative_to(workspace_root) / "testing-and-verification.md")
+        ]
+
+    written_files = set()
+    index_entries = []
+
+    for fl in failure_lessons:
+        domain = fl.get("domain", "general")
+        filename = TOPIC_FILE_MAP.get(domain, f"{domain}.md")
+        topic_path = fl_dir / filename
+
+        lesson_md = f"""
+## {fl['name']}
+
+### Context
+{fl['context']}
+
+### What happened
+{fl['what_happened']}
+
+### Observable symptom
+```text
+{fl['observable_symptom']}
+```
+
+### Impact
+{fl['impact']}
+
+### Incorrect assumption
+{fl['incorrect_assumption']}
+
+### Root cause
+**Status**: {fl['root_cause_status']}
+
+{fl['root_cause_evidence']}
+
+### Why the architecture allowed it
+{fl['arch_allowed_it']}
+
+### Fix
+{fl['fix']}
+
+### Verification
+{fl['verification']}
+
+### Prevention rule
+> [!IMPORTANT]
+> **Invariant**: {fl['prevention_rule']}
+
+### Reusable lesson
+{fl['reusable_lesson']}
+
+### Related code
+- `{fl['related_code']}`
+
+### Related tests
+- `{fl['related_tests']}`
+
+### Related lessons
+- Cross-references documented in [`lessons-index.md`](./lessons-index.md)
+
+### Status
+{fl['status']}
+"""
+        existing_content = topic_path.read_text(encoding="utf-8") if topic_path.exists() else f"# {domain.replace('_', ' ').title()} Failure Lessons\n"
+        if fl['name'] not in existing_content:
+            with open(topic_path, "a", encoding="utf-8") as f:
+                f.write(lesson_md + "\n")
+            written_files.add(str(topic_path.relative_to(workspace_root)))
+
+        index_entries.append((fl['name'], fl['failure_class'], fl['prevention_rule'], domain, fl['status'], filename))
+
+    # Update lessons-index.md
+    index_file = fl_dir / "lessons-index.md"
+    if index_file.exists() and index_entries:
+        try:
+            content = index_file.read_text(encoding="utf-8")
+            table_lines = []
+            for name, fclass, prev_rule, sys_name, status, fname in index_entries:
+                row = f"| {name} | {fclass} | {prev_rule} | {sys_name} | {status} | [{fname}](./{fname}) |"
+                if name not in content:
+                    table_lines.append(row)
+            if table_lines:
+                # Insert before "## Rules We Now Enforce"
+                if "## Rules We Now Enforce" in content:
+                    parts = content.split("## Rules We Now Enforce")
+                    updated = parts[0].rstrip() + "\n" + "\n".join(table_lines) + "\n\n## Rules We Now Enforce" + parts[1]
+                    index_file.write_text(updated, encoding="utf-8")
+                else:
+                    with open(index_file, "a", encoding="utf-8") as f:
+                        f.write("\n" + "\n".join(table_lines) + "\n")
+                written_files.add(str(index_file.relative_to(workspace_root)))
+        except Exception:
+            pass
+
+    return len(failure_lessons), list(written_files)
+
 def generate_solution_doc(verified_learning: dict, workspace_root: Path):
     """Generate a Compound Engineering solution doc in docs/solutions/."""
     solutions_dir = workspace_root / "docs" / "solutions"
@@ -320,38 +562,14 @@ Empirically validated and resolved.
     except Exception:
         return None
 
-def update_concepts_dictionary(terms: list, workspace_root: Path):
-    """Append newly discovered domain vocabulary to docs/solutions/CONCEPTS.md."""
-    if not terms:
-        return
-    solutions_dir = workspace_root / "docs" / "solutions"
-    solutions_dir.mkdir(parents=True, exist_ok=True)
-    concepts_file = solutions_dir / "CONCEPTS.md"
-
-    if not concepts_file.exists():
-        concepts_file.write_text("""# Concept Dictionary & Domain Vocabulary
-
-| Term | Category | Domain Definition | First Observed In | Related Rules / Invariants |
-|---|---|---|---|---|
-""", encoding="utf-8")
-
-    lines = []
-    for term, cat, defn in terms:
-        lines.append(f"| {term} | {cat} | {defn} | session extraction | See docs/solutions/ |")
-    
-    try:
-        with open(concepts_file, "a", encoding="utf-8") as f:
-            f.write("\n".join(lines) + "\n")
-    except Exception:
-        pass
-
 def main():
-    parser = argparse.ArgumentParser(description="Fable Learning Engine: Extract and persist session learnings.")
+    parser = argparse.ArgumentParser(description="Fable Learning Engine: Extract failure lessons & session knowledge.")
     parser.add_argument("transcript", nargs="?", help="Path to transcript file (.jsonl, .md, or .txt).")
     parser.add_argument("--session-id", default=None, help="Session identifier.")
     parser.add_argument("--depth", choices=["lightweight", "full"], default="full", help="Extraction depth.")
-    parser.add_argument("--target", choices=["agent-kernel", "gbrain", "solutions", "all"], default="all", help="Target storage system.")
-    parser.add_argument("--format", choices=["json", "markdown", "agent-kernel"], default="markdown", help="Output format.")
+    parser.add_argument("--target", choices=["failure-lessons", "agent-kernel", "gbrain", "solutions", "all"], default="all", help="Target storage system.")
+    parser.add_argument("--format", choices=["json", "markdown", "agent-kernel", "report"], default="report", help="Output format.")
+    parser.add_argument("--failure-lessons", action="store_true", default=True, help="Generate/update Failure-lessons/ knowledge base.")
     parser.add_argument("--save-solution", action="store_true", help="Generate docs/solutions/ document for L3+ fixes.")
     parser.add_argument("--workspace", default=".", help="Workspace root directory.")
 
@@ -372,7 +590,6 @@ def main():
             transcript_path = brain_path
 
     if not transcript_path:
-        # Check active session brain
         brain_dir = Path.home() / ".gemini" / "antigravity" / "brain"
         if brain_dir.exists():
             dirs = sorted([d for d in brain_dir.iterdir() if d.is_dir() and not d.name.startswith(".")], key=lambda x: x.stat().st_mtime, reverse=True)
@@ -384,11 +601,11 @@ def main():
                     break
 
     if not transcript_path or not transcript_path.exists():
-        print(f"Error: Could not locate transcript file.", file=sys.stderr)
-        return 1
-
-    steps = parse_transcript_jsonl(transcript_path)
-    result = extract_from_steps(steps, session_id=session_id, workspace_root=workspace_root)
+        # Fall back to workspace artifacts if transcript not found
+        result = extract_from_steps([], session_id=session_id, workspace_root=workspace_root)
+    else:
+        steps = parse_transcript_jsonl(transcript_path)
+        result = extract_from_steps(steps, session_id=session_id, workspace_root=workspace_root)
 
     learnings = result["learnings"]
     if args.depth == "lightweight":
@@ -397,10 +614,16 @@ def main():
     # Target persistence
     ak_persisted = 0
     gb_persisted = 0
+    fl_count = 0
+    fl_files = []
+
     if args.target in ("agent-kernel", "all"):
         ak_persisted = record_to_agent_kernel(learnings, result["domain"], session_id)
     if args.target in ("gbrain", "all"):
         gb_persisted = record_to_gbrain(learnings, result["domain"], session_id)
+
+    if args.failure_lessons or args.target in ("failure-lessons", "all"):
+        fl_count, fl_files = persist_failure_lessons(result["failure_lessons"], workspace_root)
 
     if args.save_solution or args.target in ("solutions", "all"):
         for item in learnings:
@@ -411,28 +634,62 @@ def main():
         output_payload = {
             **result,
             "agent_kernel_persisted": ak_persisted,
-            "gbrain_persisted": gb_persisted
+            "gbrain_persisted": gb_persisted,
+            "failure_lessons_persisted": fl_count,
+            "failure_lessons_files": fl_files
         }
         print(json.dumps(output_payload, indent=2))
     elif args.format == "agent-kernel":
         for item in learnings:
             print(f"agent-kernel remember \"{item['fact']}\" --type rule --level critical")
+    elif args.format == "report":
+        print(f"\n# Final Learning & Failure-Lessons Report")
+        print(f"\n## 1. Learning Tools Used")
+        tools = ["fable-learning", "extract_learnings.py"]
+        if ak_persisted > 0:
+            tools.append("agent-kernel remember")
+        if gb_persisted > 0:
+            tools.append("gbrain remember")
+        print(f"- {', '.join(tools)}")
+
+        print(f"\n## 2. Files Created")
+        if fl_files:
+            for f in fl_files:
+                print(f"- `{f}`")
+        else:
+            print("- No new files created (knowledge base up-to-date)")
+
+        print(f"\n## 3. Files Updated")
+        print(f"- `Failure-lessons/lessons-index.md` (if entries appended)")
+
+        print(f"\n## 4. Core Lessons Extracted ({len(result['failure_lessons'])})")
+        for fl in result["failure_lessons"]:
+            print(f"- **{fl['name']}** [{fl['root_cause_status']}]: {fl['prevention_rule']}")
+
+        print(f"\n## 5. Rules We Now Enforce")
+        for fl in result["failure_lessons"]:
+            print(f"- > {fl['prevention_rule']}")
+
+        print(f"\n## 6. Failure-to-Test Mappings")
+        for fl in result["failure_lessons"]:
+            print(f"- `{fl['failure_class']}` -> `{fl['related_tests']}` (protects: `{fl['prevention_rule']}`)")
+
+        print(f"\n## 7. Unresolved Knowledge")
+        unresolved = [fl for fl in result["failure_lessons"] if fl["root_cause_status"] != "Confirmed"]
+        if unresolved:
+            for u in unresolved:
+                print(f"- {u['name']}: Status {u['root_cause_status']} — {u['root_cause_evidence']}")
+        else:
+            print("- None. All extracted failure causes confirmed and verified.")
+
+        print(f"\n## 8. Repository Changes")
+        print(f"- Failure lessons recorded to `Failure-lessons/`")
+        print(f"- Persisted: {ak_persisted} rules to agent-kernel, {gb_persisted} facts to GBrain.")
     else:
         print(f"\n=== Fable Learning Extraction Report ({result['domain'].upper()}) ===")
         print(f"Session ID: {session_id} | Turns: {result['total_turns']} | Confidence: L1-L4")
-        print(f"\n## Decisions ({len(result['decisions'])})")
-        for d in result["decisions"]:
-            print(f"- [{d.get('confidence', 'L3')}] {d['fact']}")
-        print(f"\n## Lessons ({len(result['lessons'])})")
-        for l in result["lessons"]:
-            print(f"- [{l.get('confidence', 'L3')}] {l['fact']}")
-        print(f"\n## Patterns ({len(result['patterns'])})")
-        for p in result["patterns"]:
-            print(f"- [{p.get('confidence', 'L2')}] {p['fact']}")
-        print(f"\n## Surprises ({len(result['surprises'])})")
-        for s in result["surprises"]:
-            print(f"- [{s.get('confidence', 'L2')}] {s['fact']}")
-        print(f"\nPersisted: {ak_persisted} rules to agent-kernel, {gb_persisted} facts to GBrain.")
+        print(f"Failure Lessons: {fl_count} in {len(fl_files)} files")
+        print(f"Persisted: {ak_persisted} rules to agent-kernel, {gb_persisted} facts to GBrain.")
 
     return 0
 

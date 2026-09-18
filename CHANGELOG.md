@@ -2,6 +2,18 @@
 
 All notable changes to `get-fable` are documented in this file.
 
+## [1.9.2] - 2026-09-18
+
+### Highlights
+
+- **`fable-learning` Failure-Lessons Knowledge Base Pattern**:
+  - **Canonical `Failure-lessons/` Knowledge Base**: Established `Failure-lessons/` as the project-level durable repository store for failure knowledge, containing `README.md`, `lessons-index.md` (quick-discovery index table & "Rules We Now Enforce"), `testing-and-verification.md` (regression test mappings & 3-step falsifiability verification), and topic-specific files (`<domain>.md`).
+  - **14-Section Failure-Lesson Schema**: Enforced comprehensive schema covering Context, What happened, Observable symptom, Impact, Incorrect assumption, Root cause (Confirmed / Strongly indicated / Open hypothesis / Unknown), Why the architecture allowed it, Fix, Verification, Prevention rule, Reusable lesson, Related code, Related tests, and Status.
+  - **22-Step Learning & Distillation Protocol**: Codified deep Playbook V2 protocol in `skills/fable-learning/SKILL.md` and `references/failure-lessons.md` for turning session failures, debugging discoveries, and fix-time mistakes into durable engineering invariants.
+  - **First-Class CLI Command (`get-fable learn`)**: Added `bun ./bin/get-fable.js learn` with `--failure-lessons`, `--target`, `--depth`, `--format`, and multi-target syncing to `agent-kernel` and `gbrain`.
+  - **Deterministic Task Routing Integration**: Expanded task router in `src/core/task-router.ts` to route failure lessons, postmortems, and durable project learning requests directly to `fable-learning` with 0.99 confidence.
+  - **Lifecycle Hook Synchronization (`hooks/fable_session_learn.py`)**: Synchronizes verified failure lessons to `Failure-lessons/` during session end events without blocking.
+
 ## [1.9.0] - 2026-09-15
 
 ### Highlights

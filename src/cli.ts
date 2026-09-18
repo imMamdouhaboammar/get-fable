@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   installGlobalFable,
@@ -652,6 +653,83 @@ function runSparkCommand(args: string[]): number {
   } else if (result.suggestion) {
     console.log(result.suggestion);
   }
+  return 0;
+}
+
+function runLearnCommand(args: string[]): number {
+  const json = hasJsonFlag(args);
+  const help = hasFlag(args, '--help') || hasFlag(args, '-h');
+
+  if (help) {
+    console.log(`
+get-fable learn — Extract failure lessons and durable project knowledge
+
+Usage:
+  get-fable learn [options]
+  get-fable learn --session-id <id>
+  get-fable learn --transcript <path>
+
+Options:
+  --failure-lessons     Scaffold or update Failure-lessons/ knowledge base (default: true)
+  --target <target>     Target layer: failure-lessons, agent-kernel, gbrain, solutions, all (default: all)
+  --depth <depth>       Extraction depth: full, lightweight (default: full)
+  --format <format>     Output format: report, json, markdown, agent-kernel (default: report)
+  --save-solution       Generate docs/solutions/ document for L3+ fixes
+  --workspace <dir>     Workspace directory (default: current working directory)
+  --json-v1             Emit JSON schema-v1 envelope
+  -h, --help            Show this help message
+`);
+    return 0;
+  }
+
+  const repoRoot = getRepoRootDir();
+  const scriptPath = path.join(repoRoot, 'skills', 'fable-learning', 'scripts', 'extract_learnings.py');
+
+  if (!fs.existsSync(scriptPath)) {
+    logError(`[get-fable learn] extract_learnings.py script not found at ${scriptPath}`);
+    return 1;
+  }
+
+  const pythonBin = process.env.PYTHON || 'python3';
+  const cleanArgs = stripJsonFlags(args).filter((a) => a !== '--json-v1' && a !== '--json');
+
+  if (!cleanArgs.some((a) => a.startsWith('--workspace'))) {
+    cleanArgs.push('--workspace', process.cwd());
+  }
+
+  if (json && !cleanArgs.some((a) => a.startsWith('--format'))) {
+    cleanArgs.push('--format', 'json');
+  }
+
+  const result = spawnSync(pythonBin, [scriptPath, ...cleanArgs], {
+    cwd: process.cwd(),
+    encoding: 'utf-8',
+    stdio: ['inherit', 'pipe', 'pipe'],
+  });
+
+  if (result.error) {
+    logError(`[get-fable learn] Failed to invoke Python runtime: ${result.error.message}`);
+    return 1;
+  }
+
+  if (result.status !== 0) {
+    if (result.stderr) process.stderr.write(result.stderr);
+    return result.status ?? 1;
+  }
+
+  const stdout = result.stdout || '';
+
+  if (json) {
+    try {
+      const parsed = JSON.parse(stdout);
+      printMachineJson(args, 'learn', parsed, true);
+    } catch {
+      printMachineJson(args, 'learn', { raw: stdout }, true);
+    }
+  } else {
+    process.stdout.write(stdout);
+  }
+
   return 0;
 }
 
@@ -1442,6 +1520,10 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'shell':
       return runShellCommand(args.slice(1));
 
+    case 'learn':
+    case 'learning':
+      return runLearnCommand(args.slice(1));
+
     case 'update':
       return runUpdateCommand(args.slice(1));
 
@@ -1592,6 +1674,7 @@ ${colors.bright}CORE WORKFLOW COMMANDS:${colors.reset}
   ${colors.yellow}mutation [source]${colors.reset}    Record a workspace mutation and invalidate older verification
   ${colors.yellow}card <text>${colors.reset}          Set the active work card; use --clear to remove it
   ${colors.yellow}evidence ...${colors.reset}         Record typed evidence: <result> <kind> <source> <detail>
+  ${colors.yellow}learn [options]${colors.reset}       Extract failure lessons and durable project knowledge; add --json
   ${colors.yellow}toon <action>${colors.reset}        Token-Oriented Object Notation: encode, decode, stats, state, validate
   ${colors.yellow}lint${colors.reset}                 Verify ledger acceptance, evidence, and state consistency
   ${colors.yellow}doctor [--fix]${colors.reset}       Validate and auto-repair installation, registry, state, and hooks

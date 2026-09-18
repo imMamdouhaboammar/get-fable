@@ -50,4 +50,11 @@ describe('routing policy v2', () => {
     const decision = routeTask('Release this branch now', state);
     expect(decision.selectedSkill).toBe('fable-recover');
   });
+
+  test('routes failure-lessons and durable project learnings to fable-learning', () => {
+    expect(routeTask('Convert this session into durable project learnings').selectedSkill).toBe('fable-learning');
+    expect(routeTask('Extract failure lessons and update rules we now enforce').selectedSkill).toBe('fable-learning');
+    expect(routeTask('Capture engineering failures and postmortem lessons').selectedSkill).toBe('fable-learning');
+  });
 });
+

@@ -135,6 +135,22 @@ get-fable state complete
 
 Completion is rejected when the current mutation generation has no fresh passing evidence appropriate to the routed claim.
 
+## Extract failure lessons & durable learnings
+
+Extract engineering wisdom, failure classes, root causes, and prevention rules into `Failure-lessons/`, `agent-kernel`, and `gbrain`:
+
+```bash
+get-fable learn
+get-fable learn --target failure-lessons
+get-fable learn --session-id <id> --format report
+```
+
+`Failure-lessons/` preserves hard-won engineering wisdom so future contributors and coding agents avoid repeating past defects:
+- `README.md`: Knowledge base mission, principles, and maintenance triggers
+- `lessons-index.md`: Compact index table and "Rules We Now Enforce"
+- `testing-and-verification.md`: Regression mappings and 3-step test oracle
+- `<topic>.md`: Detailed failure lessons following the 14-section schema
+
 ## Repeated failure
 
 Two consecutive failure-relevant evidence records move active work into `recovering` and select `fable-recover`.

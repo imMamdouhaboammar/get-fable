@@ -12,13 +12,18 @@
     "references/session-sources.md",
     "references/skill-compilation.md",
     "references/confidence-and-drift.md",
-    "references/solution-architecture.md"
+    "references/solution-architecture.md",
+    "references/failure-lessons.md"
   ],
   "templates": [
     "templates/learning-report.template.md",
     "templates/session-learning.template.md",
     "templates/solution.template.md",
-    "templates/concept-dictionary.template.md"
+    "templates/concept-dictionary.template.md",
+    "templates/failure-lesson.template.md",
+    "templates/failure-lessons-readme.template.md",
+    "templates/lessons-index.template.md",
+    "templates/testing-and-verification.template.md"
   ],
   "examples": [
     "examples/learning-walkthrough.md"
