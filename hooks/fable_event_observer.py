@@ -36,14 +36,21 @@ def compact_if_needed(path):
     try:
         if not safe_fable_boundary(os.path.dirname(path), ("events.jsonl", "events.jsonl.tmp")):
             return
-        if not os.path.isfile(path) or os.path.getsize(path) <= MAX_BYTES:
+        base_real = os.path.realpath(os.path.dirname(path))
+        target_real = os.path.realpath(path)
+        if os.path.commonpath([base_real, target_real]) != base_real:
+            raise Exception("Invalid file path")
+        if not os.path.isfile(target_real) or os.path.getsize(target_real) <= MAX_BYTES:
             return
-        with open(path, "r", encoding="utf-8") as handle:
+        with open(target_real, "r", encoding="utf-8") as handle:
             lines = handle.readlines()[-RETAIN_LINES:]
-        temp = path + ".tmp"
-        with open(temp, "w", encoding="utf-8") as handle:
+        temp = target_real + ".tmp"
+        temp_real = os.path.realpath(temp)
+        if os.path.commonpath([base_real, temp_real]) != base_real:
+            raise Exception("Invalid file path")
+        with open(temp_real, "w", encoding="utf-8") as handle:
             handle.writelines(lines)
-        os.replace(temp, path)
+        os.replace(temp_real, target_real)
     except Exception:
         pass
 

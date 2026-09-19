@@ -125,6 +125,8 @@ def extract_learnings_from_session(transcript_path: Path, workspace_root=None):
     # 1. Extract from transcript
     if transcript_path and transcript_path.exists():
         try:
+            if ".." in str(transcript_path):
+                raise Exception("Invalid file path")
             with open(transcript_path, "r", encoding="utf-8", errors="replace") as f:
                 for line in f:
                     line = line.strip()
@@ -215,10 +217,14 @@ def persist_learnings(learnings, workspace_root, session_id="auto"):
     fable_dir = find_fable_dir(workspace_root)
     if fable_dir:
         learnings_file = os.path.join(fable_dir, "learnings.json")
+        base_real = os.path.realpath(fable_dir)
+        target_real = os.path.realpath(learnings_file)
+        if os.path.commonpath([base_real, target_real]) != base_real:
+            raise Exception("Invalid file path")
         existing = []
-        if os.path.exists(learnings_file):
+        if os.path.exists(target_real):
             try:
-                with open(learnings_file, "r", encoding="utf-8") as f:
+                with open(target_real, "r", encoding="utf-8") as f:
                     existing = json.load(f)
             except Exception:
                 existing = []
@@ -233,7 +239,7 @@ def persist_learnings(learnings, workspace_root, session_id="auto"):
             for item in learnings
         ]
         try:
-            with open(learnings_file, "w", encoding="utf-8") as f:
+            with open(target_real, "w", encoding="utf-8") as f:
                 json.dump(existing + new_records, f, indent=2)
         except Exception:
             pass

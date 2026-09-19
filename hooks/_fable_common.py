@@ -335,7 +335,11 @@ def read_state(fable_dir):
     if not safe_fable_boundary(fable_dir):
         return None
     try:
-        with open(state_path(fable_dir), encoding="utf-8") as handle:
+        base_real = os.path.realpath(fable_dir)
+        target_real = os.path.realpath(state_path(fable_dir))
+        if os.path.commonpath([base_real, target_real]) != base_real:
+            return None
+        with open(target_real, encoding="utf-8") as handle:
             state = json.load(handle)
         if not isinstance(state, dict):
             return None
@@ -467,6 +471,8 @@ def _pid_alive(pid):
 
 def _stale_lock_can_be_removed(path):
     try:
+        if ".." in path:
+            return False
         lock_stat = os.lstat(path)
         if not stat.S_ISREG(lock_stat.st_mode):
             return False
@@ -527,14 +533,18 @@ def pending_mutation_tokens(fable_dir, expected_workspace_id):
     except OSError:
         return None
     tokens = []
+    base_real = os.path.realpath(fable_dir)
     for name in names:
         if not PENDING_MUTATION_TOKEN_RE.fullmatch(name):
             return None
         token = os.path.join(directory, name)
         try:
-            if not stat.S_ISREG(os.lstat(token).st_mode):
+            target_real = os.path.realpath(token)
+            if os.path.commonpath([base_real, target_real]) != base_real:
                 return None
-            with open(token, encoding="utf-8") as handle:
+            if not stat.S_ISREG(os.lstat(target_real).st_mode):
+                return None
+            with open(target_real, encoding="utf-8") as handle:
                 payload = json.load(handle)
             if (
                 not isinstance(payload, dict)
@@ -718,7 +728,11 @@ def load_fail_streak(session_id):
     if not session_id:
         return 0
     try:
-        with open(_streak_file(session_id), encoding="utf-8") as handle:
+        base_real = os.path.realpath(_sessions_dir())
+        target_real = os.path.realpath(_streak_file(session_id))
+        if os.path.commonpath([base_real, target_real]) != base_real:
+            return 0
+        with open(target_real, encoding="utf-8") as handle:
             return max(0, int(handle.read().strip() or 0))
     except Exception:
         return 0
@@ -737,7 +751,11 @@ def save_fail_streak(session_id, count):
                     os.remove(candidate)
             except OSError:
                 pass
-        with open(_streak_file(session_id), "w", encoding="utf-8") as handle:
+        base_real = os.path.realpath(directory)
+        target_real = os.path.realpath(_streak_file(session_id))
+        if os.path.commonpath([base_real, target_real]) != base_real:
+            return
+        with open(target_real, "w", encoding="utf-8") as handle:
             handle.write(str(int(count)))
     except Exception:
         pass
@@ -751,7 +769,11 @@ def parse_ledger(path):
     has_any = False
     paused = False
     try:
-        with open(path, "r", encoding="utf-8", errors="replace") as handle:
+        base_real = os.path.realpath(os.path.dirname(path))
+        target_real = os.path.realpath(path)
+        if os.path.commonpath([base_real, target_real]) != base_real:
+            return [], False, False
+        with open(target_real, "r", encoding="utf-8", errors="replace") as handle:
             for line in handle:
                 text = line.strip()
                 if text.upper().startswith("PAUSED"):

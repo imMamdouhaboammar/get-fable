@@ -65,7 +65,10 @@ def parse_transcript_jsonl(file_path: Path):
     if not file_path.exists():
         return steps
 
-    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+    file_path_real = os.path.realpath(file_path)
+    if ".." in str(file_path):
+        raise Exception("Invalid file path")
+    with open(file_path_real, "r", encoding="utf-8", errors="replace") as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -394,6 +397,10 @@ Update existing entries or create new ones when:
 
     test_file = fl_dir / "testing-and-verification.md"
     if not test_file.exists():
+        fl_dir_real = os.path.realpath(fl_dir)
+        test_file_real = os.path.realpath(test_file)
+        if os.path.commonpath([fl_dir_real, test_file_real]) != fl_dir_real:
+            raise Exception("Invalid file path")
         test_file.write_text("""# Testing Strategies, Regression Mappings, and Verification Oracles
 
 > A regression test must reproduce the original failure mode.
@@ -490,7 +497,11 @@ def persist_failure_lessons(failure_lessons: list, workspace_root: Path):
 """
         existing_content = topic_path.read_text(encoding="utf-8") if topic_path.exists() else f"# {domain.replace('_', ' ').title()} Failure Lessons\n"
         if fl['name'] not in existing_content:
-            with open(topic_path, "a", encoding="utf-8") as f:
+            fl_dir_real = os.path.realpath(fl_dir)
+            topic_path_real = os.path.realpath(topic_path)
+            if os.path.commonpath([fl_dir_real, topic_path_real]) != fl_dir_real:
+                raise Exception("Invalid file path")
+            with open(topic_path_real, "a", encoding="utf-8") as f:
                 f.write(lesson_md + "\n")
             written_files.add(str(topic_path.relative_to(workspace_root)))
 
@@ -513,7 +524,11 @@ def persist_failure_lessons(failure_lessons: list, workspace_root: Path):
                     updated = parts[0].rstrip() + "\n" + "\n".join(table_lines) + "\n\n## Rules We Now Enforce" + parts[1]
                     index_file.write_text(updated, encoding="utf-8")
                 else:
-                    with open(index_file, "a", encoding="utf-8") as f:
+                    fl_dir_real = os.path.realpath(fl_dir)
+                    index_file_real = os.path.realpath(index_file)
+                    if os.path.commonpath([fl_dir_real, index_file_real]) != fl_dir_real:
+                        raise Exception("Invalid file path")
+                    with open(index_file_real, "a", encoding="utf-8") as f:
                         f.write("\n" + "\n".join(table_lines) + "\n")
                 written_files.add(str(index_file.relative_to(workspace_root)))
         except Exception:
