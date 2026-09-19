@@ -4,7 +4,7 @@
 // home bound has a single definition instead of one per caller.
 
 import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
-import { dirname, join, parse, relative, resolve, sep } from 'node:path';
+import { dirname, join, parse, relative, resolve, sep, isAbsolute } from 'node:path';
 
 // Normalize to `/` so downstream regexes and split('/') are platform-agnostic.
 // Node fs functions accept `/` on Windows, so the normalized form is usable
@@ -37,14 +37,24 @@ export function gitWorkspaceRoot(base) {
     // UNC shares — where resolve('/') is only the CWD-DRIVE root on Windows
     // and would let a stray D:\.git become the ceiling on another drive.
     if ((home && relative(home, d) === '') || parse(d).root === d) return base;
-    if (existsSync(join(d, '.git'))) return d;
+    const gitPath = resolve(d, '.git');
+    const rel = relative(d, gitPath);
+    if (!rel.startsWith('..') && !parse(rel).root && existsSync(gitPath)) return d;
     const up = dirname(d);
     if (up === d) return base;
     d = up;
   }
 }
 
-export const readText = (p) => (existsSync(p) ? readFileSync(p, 'utf8') : '');
+export const readText = (p) => {
+  if (!existsSync(p)) return '';
+  const resolved = resolve(p);
+  // Validate that the resolved path doesn't escape the current working directory
+  const base = resolve(process.cwd());
+  const rel = relative(base, resolved);
+  if (rel.startsWith('..') || isAbsolute(rel)) throw new Error('Invalid path');
+  return readFileSync(resolved, 'utf8');
+};
 
 export const escapeHtml = (s) =>
   String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -114,6 +124,7 @@ export function walk(dir, accept = () => true, out = []) {
   if (!existsSync(dir)) return out;
   for (const e of ls(dir, { withFileTypes: true })) {
     if (e.name === 'node_modules') continue;
+    if (e.name.includes('..') || isAbsolute(e.name)) continue;
     const p = join(dir, e.name);
     if (e.isDirectory()) walk(p, accept, out);
     else if (accept(e.name)) out.push(slash(p));

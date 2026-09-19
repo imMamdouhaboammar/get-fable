@@ -4,6 +4,7 @@
 
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
+import { resolve } from 'node:path';
 
 // Brand fonts shipped via .storybook/preview-head.html land inline in the
 // built iframe.html, often as base64 data-URI @font-face that no filename
@@ -13,7 +14,11 @@ import { dirname, join, relative, sep } from 'node:path';
 export function inlineFontFacesFromStorybook(sbStatic, existingRules) {
   if (!sbStatic) return [];
   let html;
-  try { html = readFileSync(join(sbStatic, 'iframe.html'), 'utf8'); } catch { return []; }
+  const baseResolved = resolve(sbStatic);
+  const targetResolved = resolve(sbStatic, 'iframe.html');
+  const rel = relative(baseResolved, targetResolved);
+  if (rel.startsWith('..') || resolve(rel) === rel) return [];
+  try { html = readFileSync(targetResolved, 'utf8'); } catch { return []; }
   const familyOf = (block) => /font-family:\s*['"]?([^'";}]+)/i.exec(block)?.[1].trim().toLowerCase();
   const have = new Set(existingRules.map(familyOf).filter(Boolean));
   const out = [];
@@ -35,7 +40,8 @@ export function isPlaceholderCss(p) {
   if (!existsSync(p)) return false;
   const sz = statSync(p).size;
   if (sz > 500) return false;
-  const txt = readFileSync(p, 'utf8');
+  const pResolved = resolve(p);
+  const txt = readFileSync(pResolved, 'utf8');
   // Only @import/@charset/comments/whitespace → no real rules.
   const stripped = txt.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@(import|charset)\b[^;]*;/g, '').trim();
   return stripped.length === 0;
@@ -50,8 +56,12 @@ export function isPlaceholderCss(p) {
 export function fallbackCssFromStorybook({ bundleCss, sbStatic, out }) {
   // A MISSING _ds_bundle.css counts too — DSes that ship styles in a sibling
   // package (compiled JS imports no CSS) emit no css file at all.
-  if ((existsSync(bundleCss) && !isPlaceholderCss(bundleCss)) || !sbStatic || !existsSync(join(sbStatic, 'iframe.html'))) return null;
-  const iframeHtml = readFileSync(join(sbStatic, 'iframe.html'), 'utf8');
+  if ((existsSync(bundleCss) && !isPlaceholderCss(bundleCss)) || !sbStatic) return null;
+  const baseResolved = resolve(sbStatic);
+  const targetResolved = resolve(sbStatic, 'iframe.html');
+  const rel = relative(baseResolved, targetResolved);
+  if (rel.startsWith('..') || resolve(rel) === rel || !existsSync(targetResolved)) return null;
+  const iframeHtml = readFileSync(targetResolved, 'utf8');
   const links = [...iframeHtml.matchAll(/<link\b[^>]*>/gi)]
     .map((m) => m[0])
     .filter((t) => /\brel\s*=\s*["']stylesheet["']/i.test(t))
@@ -82,8 +92,12 @@ export function fallbackCssFromStorybook({ bundleCss, sbStatic, out }) {
 // via .storybook/preview-head.html — that link
 // is then the ONLY static style source. Returns absolute URLs to @import url().
 export function scrapeRemoteImports(sbStatic) {
-  if (!sbStatic || !existsSync(join(sbStatic, 'iframe.html'))) return [];
-  const iframeHtml = readFileSync(join(sbStatic, 'iframe.html'), 'utf8');
+  if (!sbStatic) return [];
+  const baseResolved = resolve(sbStatic);
+  const targetResolved = resolve(sbStatic, 'iframe.html');
+  const rel = relative(baseResolved, targetResolved);
+  if (rel.startsWith('..') || resolve(rel) === rel || !existsSync(targetResolved)) return [];
+  const iframeHtml = readFileSync(targetResolved, 'utf8');
   const out = [...new Set(
     [...iframeHtml.matchAll(/<link\b[^>]*>/gi)]
       .map((m) => m[0])

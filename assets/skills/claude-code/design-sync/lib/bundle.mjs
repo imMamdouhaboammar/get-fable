@@ -5,14 +5,23 @@
 import { build } from 'esbuild';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve, relative, isAbsolute } from 'node:path';
+import * as path from 'node:path';
 import { IIFE_IMPORT_META_DEFINE } from './common.mjs';
 
 // Resolve the package's browser entry. Prefer ESM (tree-shakes cleaner).
 // `soft` → return null on miss instead of exiting (caller synthesizes from src/).
 export function resolveDistEntry({ pkgDir, pkgJson, override, pkgName, soft = false }) {
   if (override) {
-    const p = resolve(override);
+    const base = path.resolve(process.cwd());
+    const target = path.resolve(override);
+    const rel = path.relative(base, target);
+    if (rel.startsWith('..') || path.isAbsolute(rel)) {
+      console.error(`[NO_DIST] --entry ${override} doesn't exist — run the DS's build.`);
+      if (soft) return null;
+      process.exit(1);
+    }
+    const p = target;
     if (!existsSync(p)) {
       console.error(`[NO_DIST] --entry ${override} doesn't exist — run the DS's build.`);
       if (soft) return null;
@@ -29,8 +38,14 @@ export function resolveDistEntry({ pkgDir, pkgJson, override, pkgName, soft = fa
     str(pkgJson.exports?.['.']),
     pkgJson.main,
   ].filter((c) => typeof c === 'string');
+  const basePkgDir = path.resolve(pkgDir);
   for (const c of cand) {
-    const p = join(pkgDir, c);
+    const target = path.resolve(basePkgDir, c);
+    const rel = path.relative(basePkgDir, target);
+    if (rel.startsWith('..') || path.isAbsolute(rel)) {
+      continue;
+    }
+    const p = target;
     if (existsSync(p)) return p;
   }
   if (soft) return null;
@@ -134,7 +149,12 @@ export function tsconfigPathsPlugin(tsconfigPath) {
   const base = resolve(dirname(tsconfigPath), baseUrl);
   const rules = Object.entries(paths).map(([k, v]) => ({
     prefix: k.replace(/\*$/, ''),
-    targets: (Array.isArray(v) ? v : [v]).map((t) => resolve(base, t.replace(/\*$/, ''))),
+    targets: (Array.isArray(v) ? v : [v]).map((t) => {
+      const target = resolve(base, t.replace(/\*$/, ''));
+      const rel = relative(base, target);
+      if (rel.startsWith('..') || isAbsolute(rel)) throw new Error('Invalid path');
+      return target;
+    }),
     wild: k.endsWith('*'),
   }));
   // Filter on the alias prefixes so the plugin only fires for @/-style paths,
@@ -150,7 +170,9 @@ export function tsconfigPathsPlugin(tsconfigPath) {
           if (r.wild ? !args.path.startsWith(r.prefix) : args.path !== r.prefix) continue;
           const tail = r.wild ? args.path.slice(r.prefix.length) : '';
           for (const t of r.targets) {
-            const stem = join(t, tail);
+            const stem = resolve(t, tail);
+            const rel = relative(t, stem);
+            if (rel.startsWith('..') || isAbsolute(rel)) continue;
             for (const ext of exts) {
               if (existsSync(stem + ext)) return { path: stem + ext };
             }
@@ -196,7 +218,7 @@ function sharedBuildOptions({ nodePaths, tsconfig }) {
 }
 
 export async function bundleToIife({ entry, globalName, nodePaths, out, tsconfig }) {
-  const bundleJs = join(out, '_ds_bundle.js');
+  const bundleJs = path.resolve(path.resolve(out), '_ds_bundle.js');
   const bundleCss = join(out, '_ds_bundle.css');
   const shared = sharedBuildOptions({ nodePaths, tsconfig });
   let buildResult;
@@ -223,12 +245,19 @@ export async function bundleToIife({ entry, globalName, nodePaths, out, tsconfig
     // entry points at a dist/ that hasn't been built.
     const unresolved = [...new Set((e.errors ?? []).map((er) => er.text.match(/Could not resolve "([^"]+)"/)?.[1]).filter(Boolean))];
     const siblings = unresolved.filter((p) => {
-      const pj = join(nodePaths, p, 'package.json');
+      const resolvedBase = path.resolve(nodePaths);
+      const resolvedTarget = path.resolve(resolvedBase, p, 'package.json');
+      const rel = path.relative(resolvedBase, resolvedTarget);
+      if (rel.startsWith('..') || path.isAbsolute(rel)) return false;
+      const pj = resolvedTarget;
       if (!existsSync(pj)) return false;
       try {
         const j = JSON.parse(readFileSync(pj, 'utf8'));
         const ent = j.module ?? j.main ?? 'index.js';
-        return !existsSync(join(nodePaths, p, ent));
+        const resolvedEntryTarget = path.resolve(resolvedBase, p, ent);
+        const relEntry = path.relative(resolvedBase, resolvedEntryTarget);
+        if (relEntry.startsWith('..') || path.isAbsolute(relEntry)) return false;
+        return !existsSync(resolvedEntryTarget);
       } catch { return false; }
     });
     if (siblings.length) {
@@ -297,7 +326,7 @@ export async function bundleExportEvidence({ entry, nodePaths, tsconfig }) {
 // sourceHashes + inlinedExternals drive the keep-vs-rebuild decision.
 // `*/` inside the JSON is escaped so the comment can't terminate early.
 export function stampHeader(bundleJs, { namespace, components, inlinedExternals }) {
-  const body = readFileSync(bundleJs, 'utf8');
+  const body = readFileSync(path.resolve(bundleJs), 'utf8');
   const out = dirname(bundleJs);
   // Keyed by per-component output paths — what decideBundleRebuild compares
   // against. Includes .d.ts and .prompt.md so contract/doc-only edits also
@@ -307,8 +336,19 @@ export function stampHeader(bundleJs, { namespace, components, inlinedExternals 
       const base = `components/${c.group}/${c.name}/${c.name}`;
       return ['.jsx', '.d.ts', '.prompt.md']
         .map((ext) => base + ext)
-        .filter((rel) => existsSync(join(out, rel)))
-        .map((rel) => [rel, createHash('sha256').update(readFileSync(join(out, rel))).digest('hex').slice(0, 12)]);
+        .filter((rel) => {
+          const target = path.resolve(out, rel);
+          const relative = path.relative(out, target);
+          return !relative.startsWith('..') && !path.isAbsolute(relative) && existsSync(target);
+        })
+        .map((rel) => {
+          const target = path.resolve(out, rel);
+          const relative = path.relative(out, target);
+          if (relative.startsWith('..') || path.isAbsolute(relative)) {
+            throw new Error('Invalid file path');
+          }
+          return [rel, createHash('sha256').update(readFileSync(target)).digest('hex').slice(0, 12)];
+        });
     }),
   );
   const meta = {
