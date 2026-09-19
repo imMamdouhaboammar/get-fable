@@ -91,9 +91,29 @@ const EXTERNAL_ICONS: Array<{ filename: string; url: string }> = [
   { filename: 'jetbrains.svg', url: `${SIMPLE_BASE}/jetbrains.svg` }
 ];
 
+function buildValidatedUrl(baseUrl: string): string {
+  try {
+    const url = new URL(baseUrl);
+    
+    const allowedDomains = ['unpkg.com', 'raw.githubusercontent.com', 'cdn.jsdelivr.net'];
+    if (!allowedDomains.includes(url.hostname)) {
+      throw new Error('Invalid host');
+    }
+    
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('Invalid protocol');
+    }
+    
+    return url.href;
+  } catch {
+    throw new Error('Invalid URL');
+  }
+}
+
 async function fetchSvg(url: string): Promise<string | null> {
   try {
-    const res = await fetch(url);
+    const validatedUrl = buildValidatedUrl(url);
+    const res = await fetch(validatedUrl);
     if (res.ok) {
       const text = await res.text();
       if (text.includes('<svg') && !text.includes('Cannot GET')) {

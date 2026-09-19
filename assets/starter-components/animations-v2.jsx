@@ -482,15 +482,41 @@ function useInlineFontsInto(svgRef) {
           }
         }
       }
-      const toDataURL = (url) => fetch(url)
-        .then(r => { if (!r.ok) throw 0; return r.blob(); })
-        .then(b => new Promise(res => {
-          const fr = new FileReader();
-          fr.onload = () => res(fr.result);
-          fr.onerror = () => res(url);
-          fr.readAsDataURL(b);
-        }))
-        .catch(() => url);
+      function buildValidatedUrl(baseUrl) {
+        try {
+          const url = new URL(baseUrl);
+          
+          const allowedDomains = ['fonts.googleapis.com', 'fonts.gstatic.com'];
+          if (!allowedDomains.includes(url.hostname)) {
+            throw new Error('Invalid host');
+          }
+          
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            throw new Error('Invalid protocol');
+          }
+          
+          return url.href;
+        } catch {
+          throw new Error('Invalid URL');
+        }
+      }
+      
+      const toDataURL = (url) => {
+        try {
+          const validatedUrl = buildValidatedUrl(url);
+          return fetch(validatedUrl)
+            .then(r => { if (!r.ok) throw 0; return r.blob(); })
+            .then(b => new Promise(res => {
+              const fr = new FileReader();
+              fr.onload = () => res(fr.result);
+              fr.onerror = () => res(url);
+              fr.readAsDataURL(b);
+            }))
+            .catch(() => url);
+        } catch {
+          return Promise.resolve(url);
+        }
+      };
       const parts = await Promise.all(rules.map(async ({ css, base }) => {
         const re = /url\((['"]?)([^'")]+)\1\)/g;
         let out = css, m;
