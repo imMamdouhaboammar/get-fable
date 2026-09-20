@@ -1,6 +1,6 @@
 # get-fable — Authoritative Agent Rules
 
-Version: **1.9.1** · Schema: **v3** · Skills: **30** · Platforms: **32**
+Version: **1.9.1** · Schema: **v3** · Skills: **42** · Platforms: **32**
 
 Every AI agent operating in or consuming this repository **must** follow these rules. They are not suggestions. They define the contract between the agent, the lifecycle harness, and the evidence state.
 
@@ -33,23 +33,24 @@ Every AI agent operating in or consuming this repository **must** follow these r
 3. Check health: `bun ./bin/get-fable.js doctor --json-v1`
 4. Route the task: `bun ./bin/get-fable.js route "<task>" --json-v1`
 
-Only after routing should the agent activate the selected specialist skill. Do not load all 29 skills into context — compile only the selected skill body, routing reasons, required gates, and compact state.
+Only after routing should the agent activate the selected specialist skill. Do not load all 42 skills into context — compile only the selected skill body, routing reasons, required gates, and compact state.
 
 ---
 
-## 3. Canonical skill registry (29 skills)
+## 3. Canonical skill registry (42 skills)
 
 The registry at `skills/get-fable/registry.json` is the only authoritative source. Every routing decision references it by `id`. Skills are organized across 8 packs:
 
 ### Core pack
 | Skill | Phase | Job |
 |---|---|---|
-| `get-fable` | idle | Deterministic routing across all 29 skills with evidence precedence |
+| `get-fable` | idle | Deterministic routing across all 42 skills with evidence precedence |
 | `fable-discover` | discovering | Trace real repository/runtime execution paths before planning |
 | `fable-plan` | planned | Convert evidence into bounded, testable work cards |
 | `fable-execute` | executing | Implement one accepted card with zero scope drift |
 | `fable-verify` | verifying | Falsify implementations with fresh machine-checked evidence |
 | `fable-recover` | recovering | Diagnose harness and execution-path failures before retrying |
+| `fable-method` | executing | Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation |
 
 ### Intelligence pack
 | Skill | Phase | Job |
@@ -61,6 +62,8 @@ The registry at `skills/get-fable/registry.json` is the only authoritative sourc
 |---|---|---|
 | `fable-tdd` | executing | Drive behavior changes through red-green-refactor with observable regression tests |
 | `fable-delegate` | executing | Parallelize only when write, semantic, and verification independence are real |
+| `fable-native-code` | executing | Codebase idiom matching and anti-bloat policy ensuring diffs read like native code |
+| `fable-scope-discipline` | executing | Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests |
 
 ### Proof pack
 | Skill | Phase | Job |
@@ -69,12 +72,17 @@ The registry at `skills/get-fable/registry.json` is the only authoritative sourc
 | `fable-security` | verifying | Trace attacker-controlled input across trust boundaries |
 | `fable-redteam` | verifying | Automated penetration testing with CVSS v3.1, SARIF, circuit breaker, and attestation |
 | `fable-heal` | executing | Synthesize, apply, and verify security remediations from `fable-redteam` findings |
+| `fable-prove-it` | verifying | Evidence precedence and verification rung enforcement preventing unverified claims |
+| `fable-judge` | verifying | Adversarial verification of finished work detecting weakened tests and false completion claims |
 
 ### Delivery pack
 | Skill | Phase | Job |
 |---|---|---|
 | `fable-release` | verifying | Certify release readiness against quality gates and verified distribution artifacts |
 | `fable-handoff` | verifying | Compact session decisions into structured continuation state |
+| `fable-finish-your-turn` | executing | Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs |
+| `fable-outcome-first` | verifying | Response styling policy enforcing direct first-sentence answers and zero sycophancy |
+| `fable-tend` | executing | Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage |
 
 ### Evolution pack
 | Skill | Phase | Job |
@@ -96,12 +104,16 @@ The registry at `skills/get-fable/registry.json` is the only authoritative sourc
 | `fable-cowork` | executing | Execute long autonomous scoped work without throwing away lifecycle gates |
 | `fable-spark` | idle | Predict the smallest atomic next move — or stay silent |
 | `fable-architecture` | planned | Evaluate scale/domain/resource vectors; enforce microservices when thresholds cross |
-| `fable-eco` | executing | Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts |
+| `fable-eco` | planned | Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts |
+| `fable-context-thrift` | discovering | Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups |
+| `fable-council` | planned | Convene multi-agent council across installed CLI agents to deliberate before finalizing plans |
+| `fable-wise` | planned | Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh |
 
 ### Creator pack
 | Skill | Phase | Job |
 |---|---|---|
 | `fable-skill-creator` | executing | Author new Skills to the Deep Playbook V2 standard |
+| `fable-domain` | discovering | Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns |
 
 ---
 

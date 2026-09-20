@@ -415,7 +415,24 @@ Source: `src/integrations/no-mistakes-installer.ts`
 
 Source: `scripts/build-client.ts`, `dist/client.js`
 
-Prebuilt runtime bundles (`dist/index.js`, `dist/client.js`) enable zero-build installation on DeepSeek Harness / Cordis. The build client script strips ESM export statements for clean Cordis classic-script bundling.
+### Fable-Jev Reflex Intelligence & Context Compaction Subsystem
+
+Source: `src/core/reflex/`
+
+Fable-Jev introduces a provider-neutral **Reflex Advisor** and **Context Compactor** powered by TypeSafe Jev System One models:
+
+- **Architectural Boundary**: Deterministic `routeTask()` remains the synchronous fallback and policy authority. Jev operates as an asynchronous semantic advisor without modifying `.fable/state.json` or downgrading hard lifecycle policies (recovery, redteam, heal, release, handoff).
+- **Two-Stage Disambiguation**: When first-pass classification has an ambiguous margin (<0.20) or shares a pack, a focused second-stage query over the top 3 candidates plus `none_of_these` confirms or abstains safely.
+- **Fail-Safe & Circuit Breaker**: Redacts API keys/credentials before dispatch, fails closed to deterministic route on sensitive loss, races timeouts (default 1200ms), and trips after 3 consecutive failures.
+- **Sidecar Reflex Ledger**: Append-only telemetry stored in `.fable/reflex/events.jsonl` with SHA-256 task hashing.
+- **Continuous Context Compaction**: Based on Jev Noul questions (`call_id` and `result_id`), scores tool calls in session transcripts, preserving messages verbatim while dropping or truncating stale tool results without lossy LLM summarization.
+- **CLI Commands**:
+  - `get-fable reflex status`: Subsystem diagnostic status.
+  - `get-fable reflex doctor [--live]`: Configuration and live API connectivity probe.
+  - `get-fable reflex route "<task>" [--live]`: Hybrid routing with probability margins.
+  - `get-fable reflex ledger [--limit N]`: Inspect sidecar event log.
+  - `get-fable reflex eval [--live]`: Measure accuracy, Brier calibration, and override precision.
+  - `get-fable reflex compact <file.jsonl>`: High-fidelity transcript context compaction.
 
 ## Related docs
 
