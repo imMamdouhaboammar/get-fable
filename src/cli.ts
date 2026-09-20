@@ -63,6 +63,7 @@ import {
   writeFableState,
 } from './core/state.js';
 import { routeTask } from './core/task-router.js';
+import type { RoutingDecision } from './core/types.js';
 import { evaluateArchitecture } from './core/architecture-eval.js';
 import { runDoctor, runDoctorFix } from './core/doctor.js';
 import { evaluateFableSpark } from './core/spark.js';
@@ -192,7 +193,10 @@ function printJsonOrSummary(payload: unknown, args: string[], command: string, s
 function runRoute(args: string[]): number {
   const json = hasJsonFlag(args);
   const apply = hasFlag(args, '--apply');
-  const task = stripJsonFlags(args).filter((arg) => arg !== '--apply').join(' ').trim();
+  const task = stripJsonFlags(args)
+    .filter((arg) => arg !== '--apply')
+    .join(' ')
+    .trim();
   if (!task) {
     logError('route requires task text');
     return 1;
@@ -203,6 +207,7 @@ function runRoute(args: string[]): number {
     logError('route --apply requires an initialized project. Run get-fable init first.');
     return 1;
   }
+
   let decision = routeTask(task, currentState || undefined);
   if (apply) {
     withFableStateTransaction(process.cwd(), (state) => {
@@ -1505,6 +1510,9 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
 
     case 'reflex':
       return runReflexCommand(args.slice(1));
+
+    case 'review':
+      return runReflexCommand(['review', ...args.slice(1)]);
 
     case 'arch-eval':
     case 'eval-arch':

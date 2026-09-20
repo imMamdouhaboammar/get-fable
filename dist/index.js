@@ -33960,6 +33960,318 @@ async function compact(messages, asker, options = {}) {
 function compactMessages(messages, options = {}) {
   return compact(messages, new JevClient(options), options);
 }
+// src/core/reflex/client.ts
+var DEFAULT_MODEL2 = "jev-1.13.0";
+function choice(instructions, criteria) {
+  return { type: "choice", instructions, criteria };
+}
+function noul(instructions, criteria) {
+  return { type: "noul", instructions, ...criteria ? { criteria } : {} };
+}
+function score(instructions, levels) {
+  return { type: "score", instructions, criteria: levels };
+}
+
+class TypeSafeClient {
+  apiKey;
+  baseUrl;
+  model;
+  timeoutMs;
+  fetchFn;
+  constructor(options = {}) {
+    this.apiKey = options.apiKey !== undefined ? options.apiKey : process.env.TYPESAFE_API_KEY || "";
+    this.baseUrl = options.baseUrl || TYPESAFE_API_ENDPOINT;
+    this.model = options.model || process.env.JEV_MODEL || DEFAULT_MODEL2;
+    this.timeoutMs = options.timeoutMs || 1e4;
+    this.fetchFn = options.fetchFn || fetch;
+  }
+  async systemOne(req, signal) {
+    if (!this.apiKey) {
+      throw new Error("TYPESAFE_API_KEY is not configured in environment or client options");
+    }
+    const t0 = Date.now();
+    const controller = new AbortController;
+    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+    const onExternalAbort = () => controller.abort();
+    if (signal) {
+      signal.addEventListener("abort", onExternalAbort, { once: true });
+    }
+    try {
+      const response = await this.fetchFn(this.baseUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+          model: req.model || this.model,
+          state: req.state,
+          questions: req.questions
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (signal) {
+        signal.removeEventListener("abort", onExternalAbort);
+      }
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "");
+        throw new Error(`TypeSafe API HTTP ${response.status}: ${errorText.slice(0, 300)}`);
+      }
+      const json = await response.json();
+      return {
+        answers: json.answers || {},
+        usage: json.usage,
+        model: json.model || this.model,
+        latencyMs: Date.now() - t0
+      };
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (signal) {
+        signal.removeEventListener("abort", onExternalAbort);
+      }
+      throw err;
+    }
+  }
+}
+// src/core/reflex/model-router/core/normalise.ts
+function normalizeCosts(costs) {
+  const min = Math.min(...costs);
+  const max = Math.max(...costs);
+  if (max === min)
+    return costs.map(() => 0);
+  return costs.map((cost) => (cost - min) / (max - min));
+}
+
+// src/core/reflex/model-router/jev/classifier.ts
+class JevClassifier {
+  client;
+  constructor(customClient) {
+    this.client = customClient || new TypeSafeClient;
+  }
+  async classify(query, models) {
+    const response = await this.client.systemOne({
+      state: { document: query },
+      questions: {
+        tier: score("Which model tier should handle this query?", models.map((m) => m.description))
+      }
+    });
+    return Object.values(response.answers.tier.probabilities);
+  }
+}
+
+// src/core/reflex/model-router/core/loss.ts
+function calculateLoss(chosenTier, requiredTier, normalizedCost, lambda) {
+  const underProvision = Math.max(0, requiredTier - chosenTier);
+  return normalizedCost + lambda * underProvision ** 2;
+}
+function buildLossMatrix(models, lambda) {
+  const numTiers = models.length;
+  const lossMatrix = [];
+  for (let chosenTier = 0;chosenTier < numTiers; chosenTier++) {
+    const row = [];
+    const chosenModel = models[chosenTier];
+    for (let requiredTier = 0;requiredTier < numTiers; requiredTier++) {
+      row.push(calculateLoss(chosenTier, requiredTier, chosenModel.normalizedCost, lambda));
+    }
+    lossMatrix.push(row);
+  }
+  return lossMatrix;
+}
+function calculateExpectedLoss(probabilities, lossMatrix) {
+  const expectedLosses = [];
+  for (let i = 0;i < lossMatrix.length; i++) {
+    let expectedLoss = 0;
+    for (let j = 0;j < probabilities.length; j++)
+      expectedLoss += probabilities[j] * lossMatrix[i][j];
+    expectedLosses.push(expectedLoss);
+  }
+  return expectedLosses;
+}
+
+// src/core/reflex/model-router/core/selection.ts
+function selectBestTier(expectedLosses) {
+  return expectedLosses.indexOf(Math.min(...expectedLosses));
+}
+
+// src/core/reflex/model-router/router.ts
+class Router {
+  models;
+  classifier;
+  lossMatrix;
+  lambda = 1;
+  constructor(config) {
+    this.validateModels(config.models);
+    const normalizedCosts = normalizeCosts(config.models.map((model) => model.cost));
+    this.models = config.models.map((model, i) => ({
+      ...model,
+      normalizedCost: normalizedCosts[i]
+    }));
+    this.lambda = typeof config.lambda === "number" ? config.lambda : 1;
+    this.classifier = new JevClassifier(config.client);
+    this.lossMatrix = buildLossMatrix(this.models, this.lambda);
+  }
+  async route(query) {
+    const probabilities = await this.classifier.classify(query, this.models);
+    const expectedLosses = calculateExpectedLoss(probabilities, this.lossMatrix);
+    let bestModelIndex = selectBestTier(expectedLosses);
+    let bestModel = this.models[bestModelIndex];
+    let resultProbabilities = {};
+    for (let i = 0;i < this.models.length; i++)
+      resultProbabilities[this.models[i].name] = probabilities[i];
+    return {
+      model: bestModel.name,
+      tier: bestModelIndex,
+      probabilities: resultProbabilities
+    };
+  }
+  validateModels(models) {
+    if (models.length < 2)
+      throw new Error("Router requires at least 2 models");
+    if (models.length > 10)
+      throw new Error("Router supports at most 10 models (Jev's Score primitive limit)");
+    const names = new Set;
+    for (let i = 0;i < models.length; i++) {
+      let model = models[i];
+      if (!model.name.trim())
+        throw new Error("Model name cannot be empty");
+      if (!Number.isFinite(model.cost) || model.cost < 0)
+        throw new Error(`Invalid cost for model: ${model.name}`);
+      if (!model.description.trim())
+        throw new Error(`Description required for model: ${model.name}`);
+      if (names.has(model.name))
+        throw new Error(`Duplicate model: ${model.name}`);
+      if (i > 0 && model.cost < models[i - 1].cost) {
+        console.warn(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${models[i - 1].name}" (cost=${models[i - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`);
+      }
+      names.add(model.name);
+    }
+  }
+}
+
+// src/core/reflex/model-router/index.ts
+var DEFAULT_AGENT_MODELS = [
+  {
+    name: "flash_lite",
+    cost: 1,
+    description: "Quick research lookups, simple file reads, syntax formatting, and fast deterministic checks"
+  },
+  {
+    name: "flash",
+    cost: 3,
+    description: "Standard feature development, unit test creation, bounded bug fixes, and typical coding tasks"
+  },
+  {
+    name: "pro",
+    cost: 10,
+    description: "Complex distributed architecture, large multi-module refactorings, deep debugging, and multi-agent deliberation"
+  }
+];
+async function routeTaskToOptimalModel(task, options) {
+  const models = options?.models || DEFAULT_AGENT_MODELS;
+  const router = new Router({
+    models,
+    client: options?.client,
+    lambda: options?.lambda
+  });
+  return router.route(task);
+}
+// src/core/reflex/recipes-bridge.ts
+class RecipesBridge {
+  client;
+  constructor(customClient) {
+    this.client = customClient || new TypeSafeClient;
+  }
+  async triageErrorLog(logText) {
+    const truncatedLog = logText.slice(-4000);
+    const response = await this.client.systemOne({
+      state: { error_log: truncatedLog },
+      questions: {
+        diagnosis_level: choice("Which root-cause category best explains the failure shown in `error_log`?", {
+          "harness-environment": "Level 1: Environment or harness failure (missing dependency, bad runtime/Bun version, broken binary, permission error, bad PATH)",
+          "execution-path": "Level 2: Execution path failure (stale build cache, generated output mismatch, wrong branch, wrong runtime identity)",
+          "product-logic": "Level 3: Product logic failure (incorrect algorithm, wrong data shape, missing edge cases, assertion failure)",
+          "violated-invariant": "Level 4: Violated system invariant (state contract mismatch, registry inconsistency, schema migration bug, boundary breach)"
+        }),
+        severity: score("How severe is this failure?", [
+          "Routine or transient warning",
+          "Minor test or build assertion failure",
+          "Significant broken functionality or compilation failure",
+          "Critical crash, data corruption, or system lock"
+        ]),
+        actionable: noul("Does this failure require diagnosing and changing code/config rather than simple immediate retry?")
+      }
+    });
+    const levelChoice = response.answers.diagnosis_level?.choice || "product-logic";
+    const confidence = response.answers.diagnosis_level?.confidence ?? 0.7;
+    const severity = response.answers.severity?.score ?? 2;
+    const actionable = (response.answers.actionable?.noul ?? 0.8) >= 0.5;
+    const levelMap = {
+      "harness-environment": { level: "harness-environment", levelNumber: 1 },
+      "execution-path": { level: "execution-path", levelNumber: 2 },
+      "product-logic": { level: "product-logic", levelNumber: 3 },
+      "violated-invariant": { level: "violated-invariant", levelNumber: 4 }
+    };
+    const mapped = levelMap[levelChoice] || { level: "product-logic", levelNumber: 3 };
+    return {
+      level: mapped.level,
+      levelNumber: mapped.levelNumber,
+      confidence,
+      severity,
+      actionable,
+      summary: `Diagnosed as Level ${mapped.levelNumber} (${mapped.level}) with severity ${severity.toFixed(1)}`
+    };
+  }
+  async scanForSecretsAndSecurity(content) {
+    const snippet = content.slice(0, 6000);
+    const response = await this.client.systemOne({
+      state: { content: snippet },
+      questions: {
+        has_secrets: noul("Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?"),
+        has_pii: noul("Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?"),
+        prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
+      }
+    });
+    const secProb = response.answers.has_secrets?.noul ?? 0;
+    const piiProb = response.answers.has_pii?.noul ?? 0;
+    const injProb = response.answers.prompt_injection?.noul ?? 0;
+    const hasSecrets = secProb >= 0.6;
+    const hasPii = piiProb >= 0.6;
+    const isPromptInjection = injProb >= 0.6;
+    return {
+      hasSecrets,
+      secretsConfidence: secProb,
+      hasPii,
+      piiConfidence: piiProb,
+      isPromptInjection,
+      injectionConfidence: injProb,
+      isSafe: !hasSecrets && !hasPii && !isPromptInjection
+    };
+  }
+  async rerankCandidates(query, candidates) {
+    if (candidates.length === 0)
+      return [];
+    if (candidates.length === 1)
+      return [{ item: candidates[0], relevance: 1 }];
+    const batch = candidates.slice(0, 15);
+    const questions = {};
+    batch.forEach((cand, idx) => {
+      questions[`rel_${idx}`] = noul(`Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`);
+    });
+    const response = await this.client.systemOne({
+      state: {
+        query,
+        candidates: batch
+      },
+      questions
+    });
+    const ranked = batch.map((item, idx) => {
+      const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
+      return { item, relevance: rel };
+    });
+    return ranked.sort((a, b) => b.relevance - a.relevance);
+  }
+}
 // src/dsh/api.ts
 import fs25 from "node:fs";
 import path25 from "node:path";
@@ -34632,6 +34944,8 @@ export {
   SYSTEM_ONE_URL as COMPACTION_SYSTEM_ONE_URL,
   JevClient as CompactionJevClient,
   ContextInjector,
+  DEFAULT_AGENT_MODELS,
+  DEFAULT_MODEL2 as DEFAULT_MODEL,
   DEFAULT_REFLEX_MIN_MARGIN,
   DEFAULT_REFLEX_MODE,
   DEFAULT_REFLEX_MODEL,
@@ -34650,13 +34964,16 @@ export {
   MEDIUM_RISK_SKILLS,
   ProviderTranslator,
   RECOVERY_FAILURE_THRESHOLD,
+  RecipesBridge,
   ReflexCircuitBreaker,
   RequestValidationError,
+  Router,
   SKILL_BOUNDARY_CONTRASTS,
   STANDARD_REFLEX_BENCHMARK_CORPUS,
   TECH_STACK_MATRIX,
   TYPESAFE_API_ENDPOINT,
   ToonDecodeError,
+  TypeSafeClient,
   TypeSafeJevAdvisor,
   TypeSafeProviderException,
   addEvidence,
@@ -34683,6 +35000,7 @@ export {
   canonicalSkillIds,
   checkFableStatus,
   checkNoMistakesStatus,
+  choice,
   collectToolCalls,
   colors,
   compact,
@@ -34820,6 +35138,7 @@ export {
   logWarn,
   mergeJsonFile,
   name,
+  noul,
   parseJevResponse as parseCompactionJevResponse,
   phaseForSkill,
   readFableState,
@@ -34832,6 +35151,7 @@ export {
   resolveRoute,
   resolveSkillsToInstall,
   routeTask,
+  routeTaskToOptimalModel,
   runAgentBehaviorEvalPlan,
   runDoctor,
   runDoctorFix,
@@ -34839,6 +35159,7 @@ export {
   runReflexEvaluation,
   runSkillPackageLint,
   sanitizeTaskText,
+  score,
   scoreAgentBehaviorResponseBundle,
   setActiveCard,
   setRoutingDecision,

@@ -17,6 +17,18 @@ import {
   reductionRatio,
   type Message,
 } from '../../core/reflex/compaction/index.js';
+import {
+  reviewChanges,
+  reviewCodebase,
+  saveReport,
+  reportPath,
+  startDashboard,
+} from '../../core/review/jev/index.js';
+import {
+  routeTaskToOptimalModel,
+  DEFAULT_AGENT_MODELS,
+} from '../../core/reflex/model-router/index.js';
+import { RecipesBridge } from '../../core/reflex/recipes-bridge.js';
 
 export async function runReflexCommand(args: string[]): Promise<number> {
   const sub = args[0] || 'status';
@@ -35,8 +47,21 @@ export async function runReflexCommand(args: string[]): Promise<number> {
       return handleReflexEval(subArgs);
     case 'compact':
       return handleReflexCompact(subArgs);
+    case 'review':
+      return handleReflexReview(subArgs);
+    case 'route-model':
+    case 'model-route':
+      return handleReflexRouteModel(subArgs);
+    case 'triage-log':
+    case 'triage':
+      return handleReflexTriageLog(subArgs);
+    case 'security-scan':
+    case 'sec-scan':
+      return handleReflexSecurityScan(subArgs);
     default:
-      console.error(`Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact`);
+      console.error(
+        `Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`
+      );
       return 1;
   }
 }
@@ -365,6 +390,159 @@ async function handleReflexCompact(args: string[]): Promise<number> {
     return 0;
   } catch (err: any) {
     console.error(`Compaction failed: ${err.message}`);
+    return 1;
+  }
+}
+
+export async function handleReflexReview(args: string[]): Promise<number> {
+  const isDashboard = args.includes('--dashboard');
+  if (isDashboard) {
+    const portIdx = args.indexOf('--port');
+    const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
+    console.log(`Starting Jev Review Dashboard on port ${port}...`);
+    await startDashboard(port);
+    return 0;
+  }
+
+  const isCodebase = args.includes('--codebase');
+  const isJson = args.includes('--json') || args.includes('--json-v1');
+  const shouldSave = args.includes('--save') || true;
+  const targetPath = args.filter((a) => !a.startsWith('--'))[0] || process.cwd();
+
+  console.log(`Running Jev ${isCodebase ? 'Codebase Scan' : 'Diff Review'} on ${targetPath}...`);
+  try {
+    const report = isCodebase ? await reviewCodebase(targetPath) : await reviewChanges(targetPath);
+
+    if (shouldSave) {
+      await saveReport(report);
+      console.log(`Saved report to ${reportPath()}`);
+    }
+
+    if (isJson) {
+      console.log(JSON.stringify(report, null, 2));
+      return 0;
+    }
+
+    console.log('\n--- Jev Review Summary ---');
+    console.log(`Mode:            ${report.mode}`);
+    console.log(`Scope:           ${report.scope}`);
+    console.log(`Screened Files:  ${report.screenedFiles}`);
+    console.log(`Signals:         ${report.followedSignals}`);
+    console.log(`Findings:        ${report.findings.length}`);
+
+    let hasBlocking = false;
+    if (report.findings.length > 0) {
+      console.log('\nFindings:');
+      for (const finding of report.findings) {
+        const blocking = finding.action === 'request_changes' || finding.severity >= 2.0;
+        if (blocking) hasBlocking = true;
+        console.log(
+          `  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`
+        );
+      }
+    } else {
+      console.log('Zero high-risk findings detected. Code changes look clean.');
+    }
+
+    return hasBlocking ? 1 : 0;
+  } catch (err: any) {
+    console.error(`Review execution failed: ${err.message}`);
+    return 1;
+  }
+}
+
+export async function handleReflexRouteModel(args: string[]): Promise<number> {
+  const isJson = args.includes('--json') || args.includes('--json-v1');
+  const task = args.filter((a) => !a.startsWith('--')).join(' ').trim();
+  if (!task) {
+    console.error('Error: reflex route-model requires task description');
+    return 1;
+  }
+
+  try {
+    const result = await routeTaskToOptimalModel(task, { models: DEFAULT_AGENT_MODELS });
+    if (isJson) {
+      console.log(JSON.stringify(result, null, 2));
+      return 0;
+    }
+
+    console.log(`\n--- Jev Model Capability & Cost Routing ---`);
+    console.log(`Task:          "${task}"`);
+    console.log(`Optimal Model: ${result.model} (Tier: ${result.tier})`);
+    console.log(`Probabilities:`);
+    for (const [model, prob] of Object.entries(result.probabilities)) {
+      console.log(`  - ${model.padEnd(12)}: ${(prob * 100).toFixed(1)}%`);
+    }
+    return 0;
+  } catch (err: any) {
+    console.error(`Model routing failed: ${err.message}`);
+    return 1;
+  }
+}
+
+export async function handleReflexTriageLog(args: string[]): Promise<number> {
+  const isJson = args.includes('--json') || args.includes('--json-v1');
+  const target = args.filter((a) => !a.startsWith('--'))[0];
+  let logContent = '';
+  if (target && fs.existsSync(target)) {
+    logContent = fs.readFileSync(target, 'utf8');
+  } else if (target) {
+    logContent = target;
+  } else {
+    console.error('Error: triage-log requires a log file path or log text');
+    return 1;
+  }
+
+  try {
+    const bridge = new RecipesBridge();
+    const diagnosis = await bridge.triageErrorLog(logContent);
+    if (isJson) {
+      console.log(JSON.stringify(diagnosis, null, 2));
+      return 0;
+    }
+
+    console.log(`\n--- Jev Error Log Triage (fable-recover) ---`);
+    console.log(`Diagnosis Level: Level ${diagnosis.levelNumber} (${diagnosis.level})`);
+    console.log(`Confidence:      ${(diagnosis.confidence * 100).toFixed(1)}%`);
+    console.log(`Severity:        ${diagnosis.severity.toFixed(1)}`);
+    console.log(`Actionable:      ${diagnosis.actionable ? 'YES (requires fix)' : 'NO (transient)'}`);
+    console.log(`Summary:         ${diagnosis.summary}`);
+    return 0;
+  } catch (err: any) {
+    console.error(`Log triage failed: ${err.message}`);
+    return 1;
+  }
+}
+
+export async function handleReflexSecurityScan(args: string[]): Promise<number> {
+  const isJson = args.includes('--json') || args.includes('--json-v1');
+  const target = args.filter((a) => !a.startsWith('--'))[0];
+  let content = '';
+  if (target && fs.existsSync(target)) {
+    content = fs.readFileSync(target, 'utf8');
+  } else if (target) {
+    content = target;
+  } else {
+    console.error('Error: security-scan requires a file path or text content');
+    return 1;
+  }
+
+  try {
+    const bridge = new RecipesBridge();
+    const scan = await bridge.scanForSecretsAndSecurity(content);
+    if (isJson) {
+      console.log(JSON.stringify(scan, null, 2));
+      return 0;
+    }
+
+    console.log(`\n--- Jev Security & PII Scan (fable-security) ---`);
+    console.log(`Safe:              ${scan.isSafe ? 'PASS' : 'FAIL (Security Alert)'}`);
+    console.log(`Exposed Secrets:   ${scan.hasSecrets ? 'DETECTED' : 'None'} (${(scan.secretsConfidence * 100).toFixed(1)}%)`);
+    console.log(`PII Leaks:         ${scan.hasPii ? 'DETECTED' : 'None'} (${(scan.piiConfidence * 100).toFixed(1)}%)`);
+    console.log(`Prompt Injection:  ${scan.isPromptInjection ? 'DETECTED' : 'None'} (${(scan.injectionConfidence * 100).toFixed(1)}%)`);
+    return scan.isSafe ? 0 : 1;
+  } catch (err: any) {
+    console.error(`Security scan failed: ${err.message}`);
     return 1;
   }
 }

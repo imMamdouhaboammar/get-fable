@@ -10,3 +10,6 @@ export * from './ledger.js';
 export * from './providers/typesafe-jev.js';
 export * from './eval/runner.js';
 export * from './compaction/index.js';
+export * from './client.js';
+export * from './model-router/index.js';
+export * from './recipes-bridge.js';
