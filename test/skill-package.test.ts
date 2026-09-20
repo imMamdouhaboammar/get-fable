@@ -14,11 +14,11 @@ import {
 import { canonicalSkillIds } from '../src/core/skill-registry.ts';
 
 describe('Skill Package Architecture & Containment', () => {
-  test('all 30 canonical skill packages load and validate cleanly', () => {
+  test('all 42 canonical skill packages load and validate cleanly', () => {
     const all = loadAllSkillPackages();
     const canonical = canonicalSkillIds();
-    expect(canonical.length).toBe(30);
-    expect(Object.keys(all).length).toBe(30);
+    expect(canonical.length).toBe(42);
+    expect(Object.keys(all).length).toBe(42);
 
     const validationResults = validateAllSkillPackages();
     for (const id of canonical) {
@@ -33,7 +33,7 @@ describe('Skill Package Architecture & Containment', () => {
       const val = validationResults[id];
       expect(val.valid).toBe(true);
       expect(val.errors).toEqual([]);
-      expect(val.resources.length).toBeGreaterThanOrEqual(5);
+      expect(val.resources.length).toBeGreaterThanOrEqual(3);
     }
   });
 

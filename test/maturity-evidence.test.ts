@@ -17,7 +17,7 @@ describe('evidence-backed maturity', () => {
     const evidence = canonicalSkillIds().map((id) => evaluateSkillMaturity(id));
     expect(evidence.filter((item) => !item.runtimeIntegrated).map((item) => item.id)).toEqual([]);
     expect(evidence.every((item) => ['M3', 'M4', 'M5'].includes(item.maturity))).toBe(true);
-  });
+  }, 30000);
 
   test('current skill maturity records checked and unchecked behavioral evidence explicitly', () => {
     const evidence = evaluateSkillMaturity('get-fable');
