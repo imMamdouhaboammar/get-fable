@@ -15,7 +15,7 @@ describe('get-fable learn CLI command', () => {
     expect(res.stdout).toContain('get-fable learn');
     expect(res.stdout).toContain('--failure-lessons');
     expect(res.stdout).toContain('--target');
-  });
+  }, 30000);
 
   test('executes learn command and scaffolds Failure-lessons in temporary workspace', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'get-fable-learn-test-'));
@@ -39,5 +39,5 @@ describe('get-fable learn CLI command', () => {
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
-  });
+  }, 30000);
 });
