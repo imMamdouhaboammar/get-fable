@@ -17,6 +17,9 @@ export class Router {
             ...model,
             normalizedCost: normalizedCosts[i]!,
         }));
+        if (config.lambda !== undefined && (!Number.isFinite(config.lambda) || config.lambda < 0)) {
+            throw new Error("Lambda must be finite and non-negative");
+        }
         this.lambda = typeof config.lambda === 'number' ? config.lambda : 1;
         this.classifier = new JevClassifier(config.client);
         this.lossMatrix = buildLossMatrix(this.models, this.lambda);
@@ -24,52 +27,50 @@ export class Router {
 
     public async route(query: string): Promise<RouterResult> {
         const probabilities = await this.classifier.classify(query, this.models);
-        const expectedLosses = calculateExpectedLoss(probabilities, this.lossMatrix)
-        let bestModelIndex = selectBestTier(expectedLosses)
-        let bestModel = this.models[bestModelIndex]!
+        const expectedLosses = calculateExpectedLoss(probabilities, this.lossMatrix);
+        const bestModelIndex = selectBestTier(expectedLosses);
+        const bestModel = this.models[bestModelIndex]!;
 
-        let resultProbabilities: Record<string, number> = {};
-        for (let i = 0; i < this.models.length; i++)
-            resultProbabilities[this.models[i]!.name] = probabilities[i]!
+        const resultProbabilities: Record<string, number> = {};
+        for (let i = 0; i < this.models.length; i++) {
+            resultProbabilities[this.models[i]!.name] = probabilities[i]!;
+        }
 
         return {
             model: bestModel.name,
             tier: bestModelIndex,
             probabilities: resultProbabilities
-        }
+        };
     }
 
     private validateModels(models: ModelConfig[]) {
-        if (models.length < 2)
+        if (models.length < 2) {
             throw new Error("Router requires at least 2 models");
+        }
 
-        if (models.length > 10)
+        if (models.length > 10) {
             throw new Error("Router supports at most 10 models (Jev's Score primitive limit)");
+        }
 
         const names = new Set<string>();
         for (let i = 0; i < models.length; i++) {
-            let model = models[i]!;
-            if (!model.name.trim())
-                throw new Error("Model name cannot be empty");
-
-            if (!Number.isFinite(model.cost) || model.cost < 0)
-                throw new Error(`Invalid cost for model: ${model.name}`);
-
-            if (!model.description.trim())
-                throw new Error(`Description required for model: ${model.name}`);
-
-            if (names.has(model.name))
-                throw new Error(`Duplicate model: ${model.name}`);
-
-            if (i > 0 && model.cost < models[i - 1]!.cost) {
-                console.warn(
-                    `"${model.name}" (cost=${model.cost}) is cheaper than ` +
-                    `"${models[i - 1]!.name}" (cost=${models[i - 1]!.cost}) but listed later. ` +
-                    `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`
-                );
-
-            }
-            names.add(model.name)
+            this.validateSingleModel(models[i]!, i, models, names);
         }
+    }
+
+    private validateSingleModel(model: ModelConfig, index: number, allModels: ModelConfig[], names: Set<string>) {
+        if (!model.name.trim()) throw new Error("Model name cannot be empty");
+        if (!Number.isFinite(model.cost) || model.cost < 0) throw new Error(`Invalid cost for model: ${model.name}`);
+        if (!model.description.trim()) throw new Error(`Description required for model: ${model.name}`);
+        if (names.has(model.name)) throw new Error(`Duplicate model: ${model.name}`);
+
+        if (index > 0 && model.cost < allModels[index - 1]!.cost) {
+            console.warn(
+                `"${model.name}" (cost=${model.cost}) is cheaper than ` +
+                `"${allModels[index - 1]!.name}" (cost=${allModels[index - 1]!.cost}) but listed later. ` +
+                `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`
+            );
+        }
+        names.add(model.name);
     }
 }

@@ -50,4 +50,25 @@ describe('TypeSafe Native Client & Question Builders', () => {
     expect(res.model).toBe('jev-1.13.0');
     expect(res.usage?.input_tokens).toBe(42);
   });
+
+  it('aborts immediately when passed an already-aborted signal', async () => {
+    let fetchCalled = false;
+    const mockFetch: typeof fetch = async () => {
+      fetchCalled = true;
+      throw new Error('Should not be called');
+    };
+
+    const client = new TypeSafeClient({ apiKey: 'mock-key', fetchFn: mockFetch });
+    const abortedSignal = AbortSignal.abort();
+
+    await expect(
+      client.systemOne(
+        {
+          state: { input: 'test' },
+          questions: { is_valid: noul('Check') },
+        },
+        abortedSignal
+      )
+    ).rejects.toThrow();
+  });
 });

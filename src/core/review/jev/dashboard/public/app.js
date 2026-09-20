@@ -8,7 +8,7 @@ const DEFAULT_DIMENSIONS = [
   ["security", "Security", "Sec"],
   ["reliability", "Reliability", "Rel"],
   ["compatibility", "Compatibility", "Compat"],
-  ["testGap", "Test gap", "Tests"],
+  ["testGap", "Test gap", "Tests"]
 ];
 
 function dimensionsFor(report) {

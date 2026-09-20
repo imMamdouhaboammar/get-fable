@@ -14,6 +14,20 @@ describe('Jev Model Capability & Cost Router', () => {
           ],
         })
     ).toThrow();
+    expect(
+      () =>
+        new Router({
+          models: DEFAULT_AGENT_MODELS,
+          lambda: -1,
+        })
+    ).toThrow('Lambda must be finite and non-negative');
+    expect(
+      () =>
+        new Router({
+          models: DEFAULT_AGENT_MODELS,
+          lambda: NaN,
+        })
+    ).toThrow('Lambda must be finite and non-negative');
   });
 
   it('calculates expected loss and selects optimal model tier with mock client', async () => {

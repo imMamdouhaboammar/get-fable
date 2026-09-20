@@ -23045,7 +23045,7 @@ var require_src3 = __commonJS(function(exports) {
 // src/cli.ts
 import fs40 from "node:fs";
 import os8 from "node:os";
-import path41 from "node:path";
+import path42 from "node:path";
 import { spawnSync as spawnSync7 } from "node:child_process";
 import { fileURLToPath as fileURLToPath7 } from "node:url";
 
@@ -39715,7 +39715,11 @@ class TypeSafeClient {
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
     const onExternalAbort = () => controller.abort();
     if (signal) {
-      signal.addEventListener("abort", onExternalAbort, { once: true });
+      if (signal.aborted) {
+        controller.abort();
+      } else {
+        signal.addEventListener("abort", onExternalAbort, { once: true });
+      }
     }
     try {
       const response = await this.fetchFn(this.baseUrl, {
@@ -40441,6 +40445,7 @@ async function reviewCodebase(scope = process.cwd(), log) {
 }
 // src/cli/commands/reflex.ts
 import fs39 from "node:fs";
+import path41 from "node:path";
 
 // src/core/reflex/ledger.ts
 import crypto4 from "node:crypto";
@@ -41813,6 +41818,9 @@ class Router {
       ...model,
       normalizedCost: normalizedCosts[i]
     }));
+    if (config.lambda !== undefined && (!Number.isFinite(config.lambda) || config.lambda < 0)) {
+      throw new Error("Lambda must be finite and non-negative");
+    }
     this.lambda = typeof config.lambda === "number" ? config.lambda : 1;
     this.classifier = new JevClassifier(config.client);
     this.lossMatrix = buildLossMatrix(this.models, this.lambda);
@@ -41820,11 +41828,12 @@ class Router {
   async route(query) {
     const probabilities = await this.classifier.classify(query, this.models);
     const expectedLosses = calculateExpectedLoss(probabilities, this.lossMatrix);
-    let bestModelIndex = selectBestTier(expectedLosses);
-    let bestModel = this.models[bestModelIndex];
-    let resultProbabilities = {};
-    for (let i = 0;i < this.models.length; i++)
+    const bestModelIndex = selectBestTier(expectedLosses);
+    const bestModel = this.models[bestModelIndex];
+    const resultProbabilities = {};
+    for (let i = 0;i < this.models.length; i++) {
       resultProbabilities[this.models[i].name] = probabilities[i];
+    }
     return {
       model: bestModel.name,
       tier: bestModelIndex,
@@ -41832,26 +41841,30 @@ class Router {
     };
   }
   validateModels(models) {
-    if (models.length < 2)
+    if (models.length < 2) {
       throw new Error("Router requires at least 2 models");
-    if (models.length > 10)
+    }
+    if (models.length > 10) {
       throw new Error("Router supports at most 10 models (Jev's Score primitive limit)");
+    }
     const names = new Set;
     for (let i = 0;i < models.length; i++) {
-      let model = models[i];
-      if (!model.name.trim())
-        throw new Error("Model name cannot be empty");
-      if (!Number.isFinite(model.cost) || model.cost < 0)
-        throw new Error(`Invalid cost for model: ${model.name}`);
-      if (!model.description.trim())
-        throw new Error(`Description required for model: ${model.name}`);
-      if (names.has(model.name))
-        throw new Error(`Duplicate model: ${model.name}`);
-      if (i > 0 && model.cost < models[i - 1].cost) {
-        console.warn(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${models[i - 1].name}" (cost=${models[i - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`);
-      }
-      names.add(model.name);
+      this.validateSingleModel(models[i], i, models, names);
     }
+  }
+  validateSingleModel(model, index, allModels, names) {
+    if (!model.name.trim())
+      throw new Error("Model name cannot be empty");
+    if (!Number.isFinite(model.cost) || model.cost < 0)
+      throw new Error(`Invalid cost for model: ${model.name}`);
+    if (!model.description.trim())
+      throw new Error(`Description required for model: ${model.name}`);
+    if (names.has(model.name))
+      throw new Error(`Duplicate model: ${model.name}`);
+    if (index > 0 && model.cost < allModels[index - 1].cost) {
+      console.warn(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${allModels[index - 1].name}" (cost=${allModels[index - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`);
+    }
+    names.add(model.name);
   }
 }
 
@@ -41930,28 +41943,62 @@ class RecipesBridge {
     };
   }
   async scanForSecretsAndSecurity(content) {
-    const snippet = content.slice(0, 6000);
-    const response = await this.client.systemOne({
-      state: { content: snippet },
-      questions: {
-        has_secrets: noul("Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?"),
-        has_pii: noul("Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?"),
-        prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
+    if (!content) {
+      return {
+        hasSecrets: false,
+        secretsConfidence: 0,
+        hasPii: false,
+        piiConfidence: 0,
+        isPromptInjection: false,
+        injectionConfidence: 0,
+        isSafe: true
+      };
+    }
+    const chunkSize = 6000;
+    const overlap = 500;
+    const stride = chunkSize - overlap;
+    const chunks = [];
+    if (content.length <= chunkSize) {
+      chunks.push(content);
+    } else {
+      for (let i = 0;i < content.length; i += stride) {
+        chunks.push(content.slice(i, i + chunkSize));
+        if (i + chunkSize >= content.length)
+          break;
       }
-    });
-    const secProb = response.answers.has_secrets?.noul ?? 0;
-    const piiProb = response.answers.has_pii?.noul ?? 0;
-    const injProb = response.answers.prompt_injection?.noul ?? 0;
-    const hasSecrets = secProb >= 0.6;
-    const hasPii = piiProb >= 0.6;
-    const isPromptInjection = injProb >= 0.6;
+    }
+    let maxSecProb = 0;
+    let maxPiiProb = 0;
+    let maxInjProb = 0;
+    for (const chunk of chunks) {
+      const response = await this.client.systemOne({
+        state: { content: chunk },
+        questions: {
+          has_secrets: noul("Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?"),
+          has_pii: noul("Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?"),
+          prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
+        }
+      });
+      const secProb = response.answers.has_secrets?.noul ?? 0;
+      const piiProb = response.answers.has_pii?.noul ?? 0;
+      const injProb = response.answers.prompt_injection?.noul ?? 0;
+      if (secProb > maxSecProb)
+        maxSecProb = secProb;
+      if (piiProb > maxPiiProb)
+        maxPiiProb = piiProb;
+      if (injProb > maxInjProb)
+        maxInjProb = injProb;
+    }
+    const hasSecrets = maxSecProb >= 0.6;
+    const hasPii = maxPiiProb >= 0.6;
+    const isPromptInjection = maxInjProb >= 0.6;
     return {
       hasSecrets,
-      secretsConfidence: secProb,
+      secretsConfidence: maxSecProb,
       hasPii,
-      piiConfidence: piiProb,
+      piiConfidence: maxPiiProb,
       isPromptInjection,
-      injectionConfidence: injProb,
+      injectionConfidence: maxInjProb,
       isSafe: !hasSecrets && !hasPii && !isPromptInjection
     };
   }
@@ -41960,23 +42007,27 @@ class RecipesBridge {
       return [];
     if (candidates.length === 1)
       return [{ item: candidates[0], relevance: 1 }];
-    const batch = candidates.slice(0, 15);
-    const questions = {};
-    batch.forEach((cand, idx) => {
-      questions[`rel_${idx}`] = noul(`Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`);
-    });
-    const response = await this.client.systemOne({
-      state: {
-        query,
-        candidates: batch
-      },
-      questions
-    });
-    const ranked = batch.map((item, idx) => {
-      const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
-      return { item, relevance: rel };
-    });
-    return ranked.sort((a, b) => b.relevance - a.relevance);
+    const batchSize = 15;
+    const allRanked = [];
+    for (let i = 0;i < candidates.length; i += batchSize) {
+      const batch = candidates.slice(i, i + batchSize);
+      const questions = {};
+      batch.forEach((cand, idx) => {
+        questions[`rel_${idx}`] = noul(`Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`);
+      });
+      const response = await this.client.systemOne({
+        state: {
+          query,
+          candidates: batch
+        },
+        questions
+      });
+      for (let idx = 0;idx < batch.length; idx++) {
+        const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
+        allRanked.push({ item: batch[idx], relevance: rel });
+      }
+    }
+    return allRanked.sort((a, b) => b.relevance - a.relevance);
   }
 }
 
@@ -42289,18 +42340,54 @@ async function handleReflexCompact(args) {
     return 1;
   }
 }
+async function runDashboardServer(args) {
+  const portIdx = args.indexOf("--port");
+  const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
+  console.log(`Starting Jev Review Dashboard on port ${port}...`);
+  await startDashboard(port);
+  return 0;
+}
+function printReviewReport(report) {
+  console.log(`
+--- Jev Review Summary ---`);
+  console.log(`Mode:            ${report.mode}`);
+  console.log(`Scope:           ${report.scope}`);
+  console.log(`Screened Files:  ${report.screenedFiles}`);
+  console.log(`Signals:         ${report.followedSignals}`);
+  console.log(`Findings:        ${report.findings.length}`);
+  let hasBlocking = false;
+  if (report.findings.length > 0) {
+    console.log(`
+Findings:`);
+    for (const finding of report.findings) {
+      const blocking = finding.action === "request_changes" || finding.severity >= 2;
+      if (blocking)
+        hasBlocking = true;
+      console.log(`  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`);
+    }
+  } else {
+    console.log("Zero high-risk findings detected. Code changes look clean.");
+  }
+  return hasBlocking;
+}
+function readTargetContentSafely(target) {
+  if (!target)
+    return null;
+  const resolved = path41.resolve(process.cwd(), target);
+  try {
+    if (fs39.existsSync(resolved) && fs39.statSync(resolved).isFile()) {
+      return fs39.readFileSync(resolved, "utf8");
+    }
+  } catch {}
+  return target;
+}
 async function handleReflexReview(args) {
-  const isDashboard = args.includes("--dashboard");
-  if (isDashboard) {
-    const portIdx = args.indexOf("--port");
-    const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
-    console.log(`Starting Jev Review Dashboard on port ${port}...`);
-    await startDashboard(port);
-    return 0;
+  if (args.includes("--dashboard")) {
+    return runDashboardServer(args);
   }
   const isCodebase = args.includes("--codebase");
   const isJson = args.includes("--json") || args.includes("--json-v1");
-  const shouldSave = args.includes("--save") || true;
+  const shouldSave = args.includes("--save");
   const targetPath = args.filter((a) => !a.startsWith("--"))[0] || process.cwd();
   console.log(`Running Jev ${isCodebase ? "Codebase Scan" : "Diff Review"} on ${targetPath}...`);
   try {
@@ -42313,26 +42400,7 @@ async function handleReflexReview(args) {
       console.log(JSON.stringify(report, null, 2));
       return 0;
     }
-    console.log(`
---- Jev Review Summary ---`);
-    console.log(`Mode:            ${report.mode}`);
-    console.log(`Scope:           ${report.scope}`);
-    console.log(`Screened Files:  ${report.screenedFiles}`);
-    console.log(`Signals:         ${report.followedSignals}`);
-    console.log(`Findings:        ${report.findings.length}`);
-    let hasBlocking = false;
-    if (report.findings.length > 0) {
-      console.log(`
-Findings:`);
-      for (const finding of report.findings) {
-        const blocking = finding.action === "request_changes" || finding.severity >= 2;
-        if (blocking)
-          hasBlocking = true;
-        console.log(`  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`);
-      }
-    } else {
-      console.log("Zero high-risk findings detected. Code changes look clean.");
-    }
+    const hasBlocking = printReviewReport(report);
     return hasBlocking ? 1 : 0;
   } catch (err) {
     console.error(`Review execution failed: ${err.message}`);
@@ -42369,12 +42437,8 @@ async function handleReflexRouteModel(args) {
 async function handleReflexTriageLog(args) {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const target = args.filter((a) => !a.startsWith("--"))[0];
-  let logContent = "";
-  if (target && fs39.existsSync(target)) {
-    logContent = fs39.readFileSync(target, "utf8");
-  } else if (target) {
-    logContent = target;
-  } else {
+  const logContent = readTargetContentSafely(target);
+  if (!logContent) {
     console.error("Error: triage-log requires a log file path or log text");
     return 1;
   }
@@ -42401,12 +42465,8 @@ async function handleReflexTriageLog(args) {
 async function handleReflexSecurityScan(args) {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const target = args.filter((a) => !a.startsWith("--"))[0];
-  let content = "";
-  if (target && fs39.existsSync(target)) {
-    content = fs39.readFileSync(target, "utf8");
-  } else if (target) {
-    content = target;
-  } else {
+  const content = readTargetContentSafely(target);
+  if (!content) {
     console.error("Error: security-scan requires a file path or text content");
     return 1;
   }
@@ -42443,7 +42503,7 @@ var EVIDENCE_KINDS2 = [
 ];
 function getPackageVersion() {
   try {
-    const packagePath = path41.join(getRepoRootDir(), "package.json");
+    const packagePath = path42.join(getRepoRootDir(), "package.json");
     const packageJson = JSON.parse(fs40.readFileSync(packagePath, "utf-8"));
     return typeof packageJson.version === "string" ? packageJson.version : "unknown";
   } catch {
@@ -42905,7 +42965,7 @@ function runSparkCommand(args) {
   const userIntent = stripJsonFlags(args).join(" ").trim() || undefined;
   const state = readFableState(process.cwd()) || createInitialState(new Date().toISOString(), process.cwd());
   let openCards = [];
-  const ledgerPath = path41.join(process.cwd(), ".fable", "LEDGER.md");
+  const ledgerPath = path42.join(process.cwd(), ".fable", "LEDGER.md");
   if (fs40.existsSync(ledgerPath)) {
     const text = fs40.readFileSync(ledgerPath, "utf-8");
     openCards = text.split(`
@@ -42953,7 +43013,7 @@ Options:
     return 0;
   }
   const repoRoot = getRepoRootDir();
-  const scriptPath = path41.join(repoRoot, "skills", "fable-learning", "scripts", "extract_learnings.py");
+  const scriptPath = path42.join(repoRoot, "skills", "fable-learning", "scripts", "extract_learnings.py");
   if (!fs40.existsSync(scriptPath)) {
     logError(`[get-fable learn] extract_learnings.py script not found at ${scriptPath}`);
     return 1;
@@ -43001,7 +43061,7 @@ function runShellCommand(args) {
     scriptFile = "fable.bash";
   else if (shellType === "fish")
     scriptFile = "fable.fish";
-  const scriptPath = path41.join(repoRoot, "shell", scriptFile);
+  const scriptPath = path42.join(repoRoot, "shell", scriptFile);
   if (fs40.existsSync(scriptPath)) {
     console.log(fs40.readFileSync(scriptPath, "utf-8"));
     return 0;
@@ -43145,8 +43205,8 @@ function runInstallCommand(args) {
     case "shell": {
       logHeader("Installing get-fable shell integration");
       const home = os8.homedir();
-      const zshrc = path41.join(home, ".zshrc");
-      const bashrc = path41.join(home, ".bashrc");
+      const zshrc = path42.join(home, ".zshrc");
+      const bashrc = path42.join(home, ".bashrc");
       const line = 'eval "$(get-fable shell init)"';
       if (fs40.existsSync(zshrc)) {
         const content = fs40.readFileSync(zshrc, "utf-8");
@@ -43459,7 +43519,7 @@ function runPacksCommand(args) {
   const json = hasJsonFlag(args);
   const sub = (args[0] || "list").toLowerCase();
   const repoRoot = getRepoRootDir();
-  const packsDir = path41.join(repoRoot, "packs");
+  const packsDir = path42.join(repoRoot, "packs");
   if (!fs40.existsSync(packsDir)) {
     logError("Packs directory not found");
     return 1;
@@ -43468,7 +43528,7 @@ function runPacksCommand(args) {
     case "list": {
       const files = fs40.readdirSync(packsDir).filter((f) => f.endsWith(".json"));
       const packs = files.map((f) => {
-        const content = JSON.parse(fs40.readFileSync(path41.join(packsDir, f), "utf-8"));
+        const content = JSON.parse(fs40.readFileSync(path42.join(packsDir, f), "utf-8"));
         return {
           name: content.name,
           version: content.version,
@@ -43492,7 +43552,7 @@ function runPacksCommand(args) {
         logError("packs inspect requires a pack name (e.g. core, build, creator)");
         return 1;
       }
-      const packFile = path41.join(packsDir, `${name}.json`);
+      const packFile = path42.join(packsDir, `${name}.json`);
       if (!fs40.existsSync(packFile)) {
         logError(`Pack '${name}' not found at ${packFile}`);
         return 1;
@@ -43522,8 +43582,8 @@ function optionValue(args, flag) {
   return value;
 }
 function writeJsonFile(filePath, payload) {
-  const resolved = path41.resolve(process.cwd(), filePath);
-  fs40.mkdirSync(path41.dirname(resolved), { recursive: true });
+  const resolved = path42.resolve(process.cwd(), filePath);
+  fs40.mkdirSync(path42.dirname(resolved), { recursive: true });
   fs40.writeFileSync(resolved, `${JSON.stringify(payload, null, 2)}
 `, "utf-8");
 }
@@ -43535,7 +43595,7 @@ function runBehaviorEvalCommand(args) {
     const out = optionValue(args, "--out");
     if (out) {
       writeJsonFile(out, bundle);
-      logSuccess(`Wrote oracle-free behavior requests to ${path41.resolve(process.cwd(), out)}`);
+      logSuccess(`Wrote oracle-free behavior requests to ${path42.resolve(process.cwd(), out)}`);
     } else {
       printMachineJson(args, "behavior-eval:export", bundle, true);
     }
@@ -43547,12 +43607,12 @@ function runBehaviorEvalCommand(args) {
       logError("behavior-eval score requires a response bundle path");
       return 1;
     }
-    const responses = JSON.parse(fs40.readFileSync(path41.resolve(process.cwd(), responsePath), "utf-8"));
+    const responses = JSON.parse(fs40.readFileSync(path42.resolve(process.cwd(), responsePath), "utf-8"));
     const scored = scoreAgentBehaviorResponseBundle(responses, plan);
     const out = optionValue(args, "--out") || AGENT_BEHAVIOR_EVIDENCE_PATH;
     writeJsonFile(out, scored);
     logSuccess(`Scored ${scored.passed}/${scored.total} behavior cases for ${scored.providerId}`);
-    console.log(`Evidence: ${path41.resolve(process.cwd(), out)}`);
+    console.log(`Evidence: ${path42.resolve(process.cwd(), out)}`);
     return 0;
   }
   if (sub === "status") {
@@ -43580,9 +43640,9 @@ async function runGrokCommand(args) {
       offlineMode: adapter.isOffline(),
       capabilities: adapter.getCapabilities(),
       configDir: grokDir,
-      rulesInstalled: fs40.existsSync(path41.join(grokDir, "rules", "grok-bot.md")),
-      hooksConfigured: fs40.existsSync(path41.join(grokDir, "hooks.json")),
-      agentSpecInstalled: fs40.existsSync(path41.join(grokDir, "agents", "grok-bot.md"))
+      rulesInstalled: fs40.existsSync(path42.join(grokDir, "rules", "grok-bot.md")),
+      hooksConfigured: fs40.existsSync(path42.join(grokDir, "hooks.json")),
+      agentSpecInstalled: fs40.existsSync(path42.join(grokDir, "agents", "grok-bot.md"))
     };
     if (hasJsonFlag(args)) {
       printMachineJson(args, "grok:status", status);
@@ -43805,7 +43865,7 @@ function runCli(args = process.argv.slice(2)) {
       return 0;
     case "prompt": {
       logHeader("Bundled Fable prompt");
-      const promptPath = path41.join(getRepoRootDir(), "prompts", "claude-code-fable-5.md");
+      const promptPath = path42.join(getRepoRootDir(), "prompts", "claude-code-fable-5.md");
       if (!fs40.existsSync(promptPath)) {
         logError("Prompt file not found.");
         return 1;
@@ -43825,15 +43885,15 @@ function runCli(args = process.argv.slice(2)) {
   }
 }
 function listAssets() {
-  const assetsDir = path41.join(getRepoRootDir(), "assets");
+  const assetsDir = path42.join(getRepoRootDir(), "assets");
   const countItems = (dir) => fs40.existsSync(dir) ? fs40.readdirSync(dir).length : 0;
-  console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path41.join(assetsDir, "prompts"))} files`);
-  console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path41.join(assetsDir, "agents"))} agents`);
-  console.log(`${colors.green}✔ Claude Code Skills:${colors.reset} ${countItems(path41.join(assetsDir, "skills", "claude-code"))} skills`);
-  console.log(`${colors.green}✔ Claude Design Skills:${colors.reset} ${countItems(path41.join(assetsDir, "skills", "claude-design"))} skills`);
-  console.log(`${colors.green}✔ Slash Commands:${colors.reset} ${countItems(path41.join(assetsDir, "slash-commands"))} commands`);
-  console.log(`${colors.green}✔ Injected Reminders:${colors.reset} ${countItems(path41.join(assetsDir, "injected-reminders"))} reminders`);
-  console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path41.join(assetsDir, "starter-components"))} components`);
+  console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path42.join(assetsDir, "prompts"))} files`);
+  console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path42.join(assetsDir, "agents"))} agents`);
+  console.log(`${colors.green}✔ Claude Code Skills:${colors.reset} ${countItems(path42.join(assetsDir, "skills", "claude-code"))} skills`);
+  console.log(`${colors.green}✔ Claude Design Skills:${colors.reset} ${countItems(path42.join(assetsDir, "skills", "claude-design"))} skills`);
+  console.log(`${colors.green}✔ Slash Commands:${colors.reset} ${countItems(path42.join(assetsDir, "slash-commands"))} commands`);
+  console.log(`${colors.green}✔ Injected Reminders:${colors.reset} ${countItems(path42.join(assetsDir, "injected-reminders"))} reminders`);
+  console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path42.join(assetsDir, "starter-components"))} components`);
 }
 function showHelp() {
   console.log(`
@@ -43895,7 +43955,7 @@ async function main() {
 function isDirectExecution() {
   if (!process.argv[1])
     return false;
-  return path41.resolve(process.argv[1]) === fileURLToPath7(import.meta.url);
+  return path42.resolve(process.argv[1]) === fileURLToPath7(import.meta.url);
 }
 if (isDirectExecution())
   main();

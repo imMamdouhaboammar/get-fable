@@ -394,19 +394,61 @@ async function handleReflexCompact(args: string[]): Promise<number> {
   }
 }
 
+async function runDashboardServer(args: string[]): Promise<number> {
+  const portIdx = args.indexOf('--port');
+  const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
+  console.log(`Starting Jev Review Dashboard on port ${port}...`);
+  await startDashboard(port);
+  return 0;
+}
+
+function printReviewReport(report: any): boolean {
+  console.log('\n--- Jev Review Summary ---');
+  console.log(`Mode:            ${report.mode}`);
+  console.log(`Scope:           ${report.scope}`);
+  console.log(`Screened Files:  ${report.screenedFiles}`);
+  console.log(`Signals:         ${report.followedSignals}`);
+  console.log(`Findings:        ${report.findings.length}`);
+
+  let hasBlocking = false;
+  if (report.findings.length > 0) {
+    console.log('\nFindings:');
+    for (const finding of report.findings) {
+      const blocking = finding.action === 'request_changes' || finding.severity >= 2.0;
+      if (blocking) hasBlocking = true;
+      console.log(
+        `  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`
+      );
+    }
+  } else {
+    console.log('Zero high-risk findings detected. Code changes look clean.');
+  }
+
+  return hasBlocking;
+}
+
+function readTargetContentSafely(target: string | undefined): string | null {
+  if (!target) return null;
+  const resolved = path.resolve(process.cwd(), target);
+  try {
+    if (fs.existsSync(resolved) && fs.statSync(resolved).isFile()) {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      return fs.readFileSync(resolved, 'utf8');
+    }
+  } catch {
+    // If filesystem check throws, treat target as literal string
+  }
+  return target;
+}
+
 export async function handleReflexReview(args: string[]): Promise<number> {
-  const isDashboard = args.includes('--dashboard');
-  if (isDashboard) {
-    const portIdx = args.indexOf('--port');
-    const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
-    console.log(`Starting Jev Review Dashboard on port ${port}...`);
-    await startDashboard(port);
-    return 0;
+  if (args.includes('--dashboard')) {
+    return runDashboardServer(args);
   }
 
   const isCodebase = args.includes('--codebase');
   const isJson = args.includes('--json') || args.includes('--json-v1');
-  const shouldSave = args.includes('--save') || true;
+  const shouldSave = args.includes('--save');
   const targetPath = args.filter((a) => !a.startsWith('--'))[0] || process.cwd();
 
   console.log(`Running Jev ${isCodebase ? 'Codebase Scan' : 'Diff Review'} on ${targetPath}...`);
@@ -423,27 +465,7 @@ export async function handleReflexReview(args: string[]): Promise<number> {
       return 0;
     }
 
-    console.log('\n--- Jev Review Summary ---');
-    console.log(`Mode:            ${report.mode}`);
-    console.log(`Scope:           ${report.scope}`);
-    console.log(`Screened Files:  ${report.screenedFiles}`);
-    console.log(`Signals:         ${report.followedSignals}`);
-    console.log(`Findings:        ${report.findings.length}`);
-
-    let hasBlocking = false;
-    if (report.findings.length > 0) {
-      console.log('\nFindings:');
-      for (const finding of report.findings) {
-        const blocking = finding.action === 'request_changes' || finding.severity >= 2.0;
-        if (blocking) hasBlocking = true;
-        console.log(
-          `  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`
-        );
-      }
-    } else {
-      console.log('Zero high-risk findings detected. Code changes look clean.');
-    }
-
+    const hasBlocking = printReviewReport(report);
     return hasBlocking ? 1 : 0;
   } catch (err: any) {
     console.error(`Review execution failed: ${err.message}`);
@@ -483,12 +505,8 @@ export async function handleReflexRouteModel(args: string[]): Promise<number> {
 export async function handleReflexTriageLog(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const target = args.filter((a) => !a.startsWith('--'))[0];
-  let logContent = '';
-  if (target && fs.existsSync(target)) {
-    logContent = fs.readFileSync(target, 'utf8');
-  } else if (target) {
-    logContent = target;
-  } else {
+  const logContent = readTargetContentSafely(target);
+  if (!logContent) {
     console.error('Error: triage-log requires a log file path or log text');
     return 1;
   }
@@ -517,12 +535,8 @@ export async function handleReflexTriageLog(args: string[]): Promise<number> {
 export async function handleReflexSecurityScan(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const target = args.filter((a) => !a.startsWith('--'))[0];
-  let content = '';
-  if (target && fs.existsSync(target)) {
-    content = fs.readFileSync(target, 'utf8');
-  } else if (target) {
-    content = target;
-  } else {
+  const content = readTargetContentSafely(target);
+  if (!content) {
     console.error('Error: security-scan requires a file path or text content');
     return 1;
   }

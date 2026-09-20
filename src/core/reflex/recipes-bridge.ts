@@ -95,71 +95,112 @@ export class RecipesBridge {
 
   /**
    * Scans content or git diff for exposed secrets, API keys, PII, and prompt injections.
+   * Processes large content in overlapping chunks to ensure complete coverage.
    */
   async scanForSecretsAndSecurity(content: string): Promise<SecurityScanResult> {
-    const snippet = content.slice(0, 6000);
-    const response = await this.client.systemOne({
-      state: { content: snippet },
-      questions: {
-        has_secrets: noul(
-          'Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?'
-        ),
-        has_pii: noul('Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?'),
-        prompt_injection: noul(
-          'Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?'
-        ),
-      },
-    });
+    if (!content) {
+      return {
+        hasSecrets: false,
+        secretsConfidence: 0,
+        hasPii: false,
+        piiConfidence: 0,
+        isPromptInjection: false,
+        injectionConfidence: 0,
+        isSafe: true,
+      };
+    }
 
-    const secProb = response.answers.has_secrets?.noul ?? 0;
-    const piiProb = response.answers.has_pii?.noul ?? 0;
-    const injProb = response.answers.prompt_injection?.noul ?? 0;
+    const chunkSize = 6000;
+    const overlap = 500;
+    const stride = chunkSize - overlap;
+    const chunks: string[] = [];
 
-    const hasSecrets = secProb >= 0.6;
-    const hasPii = piiProb >= 0.6;
-    const isPromptInjection = injProb >= 0.6;
+    if (content.length <= chunkSize) {
+      chunks.push(content);
+    } else {
+      for (let i = 0; i < content.length; i += stride) {
+        chunks.push(content.slice(i, i + chunkSize));
+        if (i + chunkSize >= content.length) break;
+      }
+    }
+
+    let maxSecProb = 0;
+    let maxPiiProb = 0;
+    let maxInjProb = 0;
+
+    for (const chunk of chunks) {
+      const response = await this.client.systemOne({
+        state: { content: chunk },
+        questions: {
+          has_secrets: noul(
+            'Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?'
+          ),
+          has_pii: noul('Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?'),
+          prompt_injection: noul(
+            'Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?'
+          ),
+        },
+      });
+
+      const secProb = response.answers.has_secrets?.noul ?? 0;
+      const piiProb = response.answers.has_pii?.noul ?? 0;
+      const injProb = response.answers.prompt_injection?.noul ?? 0;
+
+      if (secProb > maxSecProb) maxSecProb = secProb;
+      if (piiProb > maxPiiProb) maxPiiProb = piiProb;
+      if (injProb > maxInjProb) maxInjProb = injProb;
+    }
+
+    const hasSecrets = maxSecProb >= 0.6;
+    const hasPii = maxPiiProb >= 0.6;
+    const isPromptInjection = maxInjProb >= 0.6;
 
     return {
       hasSecrets,
-      secretsConfidence: secProb,
+      secretsConfidence: maxSecProb,
       hasPii,
-      piiConfidence: piiProb,
+      piiConfidence: maxPiiProb,
       isPromptInjection,
-      injectionConfidence: injProb,
+      injectionConfidence: maxInjProb,
       isSafe: !hasSecrets && !hasPii && !isPromptInjection,
     };
   }
 
   /**
    * Semantic reranking for candidate files or memories given a query.
+   * Processes all candidates in 15-item batches and merges complete ranking results.
    */
   async rerankCandidates(query: string, candidates: string[]): Promise<RerankedItem[]> {
     if (candidates.length === 0) return [];
     if (candidates.length === 1) return [{ item: candidates[0]!, relevance: 1.0 }];
 
-    // Limit to top 15 candidates per batch
-    const batch = candidates.slice(0, 15);
-    const questions: Record<string, any> = {};
+    const batchSize = 15;
+    const allRanked: RerankedItem[] = [];
 
-    batch.forEach((cand, idx) => {
-      questions[`rel_${idx}`] = noul(
-        `Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`
-      );
-    });
+    for (let i = 0; i < candidates.length; i += batchSize) {
+      const batch = candidates.slice(i, i + batchSize);
+      const questions: Record<string, any> = {};
 
-    const response = await this.client.systemOne({
-      state: {
-        query,
-        candidates: batch,
-      },
-      questions,
-    });
+      batch.forEach((cand, idx) => {
+        questions[`rel_${idx}`] = noul(
+          `Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`
+        );
+      });
 
-    const ranked: RerankedItem[] = batch.map((item, idx) => {
-      const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
-      return { item, relevance: rel };
-    });
+      const response = await this.client.systemOne({
+        state: {
+          query,
+          candidates: batch,
+        },
+        questions,
+      });
 
-    return ranked.sort((a, b) => b.relevance - a.relevance);
+      for (let idx = 0; idx < batch.length; idx++) {
+        const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
+        allRanked.push({ item: batch[idx]!, relevance: rel });
+      }
+    }
+
+    return allRanked.sort((a, b) => b.relevance - a.relevance);
   }
 }

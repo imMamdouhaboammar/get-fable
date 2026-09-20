@@ -74,7 +74,11 @@ export class TypeSafeClient {
 
     const onExternalAbort = () => controller.abort();
     if (signal) {
-      signal.addEventListener('abort', onExternalAbort, { once: true });
+      if (signal.aborted) {
+        controller.abort();
+      } else {
+        signal.addEventListener('abort', onExternalAbort, { once: true });
+      }
     }
 
     try {

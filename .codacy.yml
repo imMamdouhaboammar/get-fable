@@ -5,7 +5,12 @@ engines:
       - "test/**"
       - "eval/**"
       - "evals/**"
+      - "src/core/review/jev/dashboard/public/**"
+  stylelint:
+    exclude_paths:
+      - "src/core/review/jev/dashboard/public/**"
 exclude_paths:
   - "test/**"
   - "eval/**"
   - "evals/**"
+  - "src/core/review/jev/dashboard/public/**"

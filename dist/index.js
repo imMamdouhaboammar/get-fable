@@ -33994,7 +33994,11 @@ class TypeSafeClient {
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
     const onExternalAbort = () => controller.abort();
     if (signal) {
-      signal.addEventListener("abort", onExternalAbort, { once: true });
+      if (signal.aborted) {
+        controller.abort();
+      } else {
+        signal.addEventListener("abort", onExternalAbort, { once: true });
+      }
     }
     try {
       const response = await this.fetchFn(this.baseUrl, {
@@ -34107,6 +34111,9 @@ class Router {
       ...model,
       normalizedCost: normalizedCosts[i]
     }));
+    if (config.lambda !== undefined && (!Number.isFinite(config.lambda) || config.lambda < 0)) {
+      throw new Error("Lambda must be finite and non-negative");
+    }
     this.lambda = typeof config.lambda === "number" ? config.lambda : 1;
     this.classifier = new JevClassifier(config.client);
     this.lossMatrix = buildLossMatrix(this.models, this.lambda);
@@ -34114,11 +34121,12 @@ class Router {
   async route(query) {
     const probabilities = await this.classifier.classify(query, this.models);
     const expectedLosses = calculateExpectedLoss(probabilities, this.lossMatrix);
-    let bestModelIndex = selectBestTier(expectedLosses);
-    let bestModel = this.models[bestModelIndex];
-    let resultProbabilities = {};
-    for (let i = 0;i < this.models.length; i++)
+    const bestModelIndex = selectBestTier(expectedLosses);
+    const bestModel = this.models[bestModelIndex];
+    const resultProbabilities = {};
+    for (let i = 0;i < this.models.length; i++) {
       resultProbabilities[this.models[i].name] = probabilities[i];
+    }
     return {
       model: bestModel.name,
       tier: bestModelIndex,
@@ -34126,26 +34134,30 @@ class Router {
     };
   }
   validateModels(models) {
-    if (models.length < 2)
+    if (models.length < 2) {
       throw new Error("Router requires at least 2 models");
-    if (models.length > 10)
+    }
+    if (models.length > 10) {
       throw new Error("Router supports at most 10 models (Jev's Score primitive limit)");
+    }
     const names = new Set;
     for (let i = 0;i < models.length; i++) {
-      let model = models[i];
-      if (!model.name.trim())
-        throw new Error("Model name cannot be empty");
-      if (!Number.isFinite(model.cost) || model.cost < 0)
-        throw new Error(`Invalid cost for model: ${model.name}`);
-      if (!model.description.trim())
-        throw new Error(`Description required for model: ${model.name}`);
-      if (names.has(model.name))
-        throw new Error(`Duplicate model: ${model.name}`);
-      if (i > 0 && model.cost < models[i - 1].cost) {
-        console.warn(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${models[i - 1].name}" (cost=${models[i - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`);
-      }
-      names.add(model.name);
+      this.validateSingleModel(models[i], i, models, names);
     }
+  }
+  validateSingleModel(model, index, allModels, names) {
+    if (!model.name.trim())
+      throw new Error("Model name cannot be empty");
+    if (!Number.isFinite(model.cost) || model.cost < 0)
+      throw new Error(`Invalid cost for model: ${model.name}`);
+    if (!model.description.trim())
+      throw new Error(`Description required for model: ${model.name}`);
+    if (names.has(model.name))
+      throw new Error(`Duplicate model: ${model.name}`);
+    if (index > 0 && model.cost < allModels[index - 1].cost) {
+      console.warn(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${allModels[index - 1].name}" (cost=${allModels[index - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`);
+    }
+    names.add(model.name);
   }
 }
 
@@ -34223,28 +34235,62 @@ class RecipesBridge {
     };
   }
   async scanForSecretsAndSecurity(content) {
-    const snippet = content.slice(0, 6000);
-    const response = await this.client.systemOne({
-      state: { content: snippet },
-      questions: {
-        has_secrets: noul("Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?"),
-        has_pii: noul("Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?"),
-        prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
+    if (!content) {
+      return {
+        hasSecrets: false,
+        secretsConfidence: 0,
+        hasPii: false,
+        piiConfidence: 0,
+        isPromptInjection: false,
+        injectionConfidence: 0,
+        isSafe: true
+      };
+    }
+    const chunkSize = 6000;
+    const overlap = 500;
+    const stride = chunkSize - overlap;
+    const chunks = [];
+    if (content.length <= chunkSize) {
+      chunks.push(content);
+    } else {
+      for (let i = 0;i < content.length; i += stride) {
+        chunks.push(content.slice(i, i + chunkSize));
+        if (i + chunkSize >= content.length)
+          break;
       }
-    });
-    const secProb = response.answers.has_secrets?.noul ?? 0;
-    const piiProb = response.answers.has_pii?.noul ?? 0;
-    const injProb = response.answers.prompt_injection?.noul ?? 0;
-    const hasSecrets = secProb >= 0.6;
-    const hasPii = piiProb >= 0.6;
-    const isPromptInjection = injProb >= 0.6;
+    }
+    let maxSecProb = 0;
+    let maxPiiProb = 0;
+    let maxInjProb = 0;
+    for (const chunk of chunks) {
+      const response = await this.client.systemOne({
+        state: { content: chunk },
+        questions: {
+          has_secrets: noul("Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?"),
+          has_pii: noul("Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?"),
+          prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
+        }
+      });
+      const secProb = response.answers.has_secrets?.noul ?? 0;
+      const piiProb = response.answers.has_pii?.noul ?? 0;
+      const injProb = response.answers.prompt_injection?.noul ?? 0;
+      if (secProb > maxSecProb)
+        maxSecProb = secProb;
+      if (piiProb > maxPiiProb)
+        maxPiiProb = piiProb;
+      if (injProb > maxInjProb)
+        maxInjProb = injProb;
+    }
+    const hasSecrets = maxSecProb >= 0.6;
+    const hasPii = maxPiiProb >= 0.6;
+    const isPromptInjection = maxInjProb >= 0.6;
     return {
       hasSecrets,
-      secretsConfidence: secProb,
+      secretsConfidence: maxSecProb,
       hasPii,
-      piiConfidence: piiProb,
+      piiConfidence: maxPiiProb,
       isPromptInjection,
-      injectionConfidence: injProb,
+      injectionConfidence: maxInjProb,
       isSafe: !hasSecrets && !hasPii && !isPromptInjection
     };
   }
@@ -34253,23 +34299,27 @@ class RecipesBridge {
       return [];
     if (candidates.length === 1)
       return [{ item: candidates[0], relevance: 1 }];
-    const batch = candidates.slice(0, 15);
-    const questions = {};
-    batch.forEach((cand, idx) => {
-      questions[`rel_${idx}`] = noul(`Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`);
-    });
-    const response = await this.client.systemOne({
-      state: {
-        query,
-        candidates: batch
-      },
-      questions
-    });
-    const ranked = batch.map((item, idx) => {
-      const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
-      return { item, relevance: rel };
-    });
-    return ranked.sort((a, b) => b.relevance - a.relevance);
+    const batchSize = 15;
+    const allRanked = [];
+    for (let i = 0;i < candidates.length; i += batchSize) {
+      const batch = candidates.slice(i, i + batchSize);
+      const questions = {};
+      batch.forEach((cand, idx) => {
+        questions[`rel_${idx}`] = noul(`Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`);
+      });
+      const response = await this.client.systemOne({
+        state: {
+          query,
+          candidates: batch
+        },
+        questions
+      });
+      for (let idx = 0;idx < batch.length; idx++) {
+        const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
+        allRanked.push({ item: batch[idx], relevance: rel });
+      }
+    }
+    return allRanked.sort((a, b) => b.relevance - a.relevance);
   }
 }
 // src/dsh/api.ts
