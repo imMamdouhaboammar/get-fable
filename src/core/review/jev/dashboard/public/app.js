@@ -1,3 +1,4 @@
+(() => {
 // Mirrors SCREEN_THRESHOLD in src/domain/config.ts: signals at or above it are followed.
 const THRESHOLD = 0.7;
 // Severity is an expected score on the 0–3 rubric in src/domain/config.ts.
@@ -506,3 +507,5 @@ document.addEventListener("visibilitychange", () => {
 });
 window.addEventListener("focus", load);
 load();
+
+})();
