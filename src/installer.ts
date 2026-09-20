@@ -507,7 +507,13 @@ export function installDshGlobal(dshHome: string = getDshHomeDir()) {
     const patchFile = path.join(dshHome, 'cordis.patch.yml');
     if (fs.existsSync(patchFile)) {
       const existing = fs.readFileSync(patchFile, 'utf-8');
-      const cleaned = existing.replace(/-\s*insert:[\s\S]*?-\s*id:\s*get-fable[\s\S]*?(?=\n-\s*id:|\n-\s*insert:|$)/g, '').replace(/\n{3,}/g, '\n\n');
+      let cleaned = existing.replace(/(?:#[^\n]*get-fable[^\n]*\n)?/g, '');
+      // Remove only the specific get-fable entry under insert list
+      cleaned = cleaned.replace(/[ \t]*-[ \t]*id:[ \t]*get-fable[^\n]*(?:\n[ \t]+[^\n]+)*/g, '');
+      // Clean dangling empty insert block header if no items remain in it
+      cleaned = cleaned.replace(/[ \t]*-[ \t]*insert:[ \t]*(?:\n[ \t]*)*(?=\n[ \t]*-[ \t]*[a-zA-Z0-9_-]+:|$)/g, '');
+      cleaned = cleaned.replace(/\n{3,}/g, '\n\n').trim();
+      if (cleaned.length > 0) cleaned += '\n';
       if (cleaned !== existing) {
         fs.writeFileSync(patchFile, cleaned, 'utf-8');
         logSuccess('Cleaned redundant get-fable insert from ~/.dsh/cordis.patch.yml');

@@ -5,6 +5,7 @@ import { getReflexDir, readReflexEvents } from '../../core/reflex/ledger.js';
 import { TypeSafeJevAdvisor } from '../../core/reflex/providers/typesafe-jev.js';
 import { globalCircuitBreaker, resolveRoute } from '../../core/reflex/service.js';
 import { runReflexEvaluation } from '../../core/reflex/eval/runner.js';
+import type { ReflexAdvisor, ReflexAdvice, ReflexStateEnvelopeV1 } from '../../core/reflex/types.js';
 import {
   applyRoutingDecision,
   readFableState,
@@ -261,8 +262,28 @@ async function handleReflexEval(args: string[]): Promise<number> {
   const isLive = args.includes('--live');
   const config = loadReflexConfig({ mode: 'guarded', timeoutMs: isLive ? 8000 : 1200 });
 
+  let advisor: ReflexAdvisor | undefined = undefined;
+  if (!isLive) {
+    advisor = {
+      id: 'typesafe-jev',
+      async advise(envelope: ReflexStateEnvelopeV1): Promise<ReflexAdvice> {
+        const skill = envelope.deterministic.selectedSkill;
+        return {
+          provider: 'typesafe-jev',
+          model: 'jev-simulated-offline',
+          selectedSkill: skill,
+          probabilities: { [skill]: 0.95 },
+          confidence: 0.92,
+          signals: {},
+          latencyMs: 5,
+          stage: 1,
+        };
+      },
+    };
+  }
+
   console.log(`Running reflex evaluation (${isLive ? 'LIVE Jev arm' : 'OFFLINE simulated arm'})...`);
-  const report = await runReflexEvaluation(undefined, { config });
+  const report = await runReflexEvaluation(undefined, { config, advisor });
 
   if (isJson) {
     console.log(JSON.stringify(report, null, 2));

@@ -20,8 +20,12 @@ export function buildJevRequest(
   state: JevState,
   questions: JevQuestions,
 ): JevRequest {
+  const targetUrl = params.baseUrl ?? SYSTEM_ONE_URL;
+  if (params.apiKey && !targetUrl.startsWith('https://')) {
+    throw new Error(`Insecure transport rejected: Jev endpoints forwarding credentials must use HTTPS (received: ${targetUrl})`);
+  }
   return {
-    url: params.baseUrl ?? SYSTEM_ONE_URL,
+    url: targetUrl,
     method: 'POST',
     headers: {
       authorization: `Bearer ${params.apiKey}`,
