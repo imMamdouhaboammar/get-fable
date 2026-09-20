@@ -1,3 +1,4 @@
+/* skipcq: JS-0002, JS-0067 */
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadReflexConfig } from '../../core/reflex/config.js';
