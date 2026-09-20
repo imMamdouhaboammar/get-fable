@@ -12,5 +12,8 @@ coverage/
 .fable/learnings.json
 .fable/redteam-findings.json
 .fable/run-attestation.json
+.fable/reflex/
 target/
 *.docx
+uv.lock
+package-lock.json

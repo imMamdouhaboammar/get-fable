@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-prove-it-scenario-1",
+    "name": "Declaring code status honestly when not yet executed",
+    "category": "should-trigger",
+    "prompt": "I edited the authorization middleware but have not run the test suite. How should I report this to the team lead?",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-prove-it-scenario-2",
+    "name": "Unrelated cooking recipe prompt",
+    "category": "should-not-trigger",
+    "prompt": "Give me a recipe for traditional sourdough bread.",
+    "shouldTrigger": false
+  }
+]

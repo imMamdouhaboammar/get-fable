@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-tend-scenario-1",
+    "name": "Triaging and repairing a failing GitHub Actions CI workflow",
+    "category": "should-trigger",
+    "prompt": "GitHub Actions CI failed on the main branch due to an outdated lockfile assertion. Diagnose and open a fix PR.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-tend-scenario-2",
+    "name": "General trivia query",
+    "category": "should-not-trigger",
+    "prompt": "Who wrote the play Hamlet?",
+    "shouldTrigger": false
+  }
+]

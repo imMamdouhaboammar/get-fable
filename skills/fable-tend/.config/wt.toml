@@ -1,0 +1,55 @@
+# Dev server per worktree — each branch gets a deterministic port from
+# `branch | hash_port` (range 10000-19999).
+# https://worktrunk.dev/tips-patterns/#dev-server-per-worktree
+
+# Share node_modules and other untracked files from the primary worktree
+# so cold starts don't pay for a full `npm install`.
+[[post-start]]
+copy = "wt step copy-ignored"
+
+# Virtual envs contain absolute paths in their entry-point shebangs; copying
+# them across worktrees leaves `uv run pytest` (etc.) launching the source
+# worktree's interpreter. `uv sync` recreates the venv with correct shebangs.
+[step.copy-ignored]
+exclude = [".venv/"]
+
+# Restore anything copy-ignored didn't bring over. --prefer-offline keeps it
+# off the network once the shared npm cache is warm; --no-audit/--no-fund
+# skip the slow, noisy bits of an otherwise-empty run.
+[[post-start]]
+install = "cd site && npm install --prefer-offline --no-audit --no-fund"
+
+# Tether owns the whole Astro process group until the worktree is removed.
+# Output lands in `.git/wt/logs/` (find via `wt config state logs`).
+#
+# `ASTRO_DEV_BACKGROUND` keeps the server in the foreground. Astro 7 detects an
+# agent environment (a bare `CLAUDECODE` is enough) and otherwise re-spawns
+# itself detached, which would leave `npm run dev` exiting immediately, the real
+# server outside the tether's process group, and its output in
+# `site/.astro/dev.log` instead. The gate tests presence, not value.
+[[post-start]]
+server = "wt step tether -C site -- env ASTRO_DEV_BACKGROUND=0 npm run dev -- --port {{ branch | hash_port }}"
+
+# Surface the URL in `wt list` — the column dims when nothing is listening.
+[list]
+url = "http://localhost:{{ branch | hash_port }}"
+
+# `wt test` is the whole suite: one pytest from the repo root covers every
+# Python test (generator/, proxy/, shared/steps/, the install-tend scripts),
+# and worker/ runs its vitest suite and typecheck. Arguments narrow pytest
+# (`wt test -k render`) and nothing else — every step still runs, so reach for
+# `uv run pytest` when the Python half is all you want.
+#
+# One command per block makes each child finish and get reaped before the next
+# starts. A step's failure stops the blocks after it.
+[[aliases.test]]
+pytest = "uv run pytest {{ args }}"
+
+[[aliases.test]]
+worker-install = "npm --prefix worker ci --prefer-offline --no-audit --no-fund"
+
+[[aliases.test]]
+worker-test = "npm --prefix worker test"
+
+[[aliases.test]]
+worker-typecheck = "npm --prefix worker run typecheck"

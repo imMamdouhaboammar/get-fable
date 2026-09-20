@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-native-code-scenario-1",
+    "name": "Eliminating redundant docstring and defensive guard",
+    "category": "should-trigger",
+    "prompt": "Review this function addition in a minimalist Go repository that has zero comments in 300 lines.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-native-code-scenario-2",
+    "name": "General non-coding query",
+    "category": "should-not-trigger",
+    "prompt": "What are the core differences between TCP and UDP protocols?",
+    "shouldTrigger": false
+  }
+]

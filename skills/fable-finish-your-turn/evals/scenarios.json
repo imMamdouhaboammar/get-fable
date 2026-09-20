@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-finish-your-turn-scenario-1",
+    "name": "Failing test during execution investigated rather than stopped",
+    "category": "should-trigger",
+    "prompt": "The test failed with exit code 1 after my edit. Should I ask the user if they want me to fix it or fix it now?",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-finish-your-turn-scenario-2",
+    "name": "General non-completion query",
+    "category": "should-not-trigger",
+    "prompt": "What is the capital of France?",
+    "shouldTrigger": false
+  }
+]

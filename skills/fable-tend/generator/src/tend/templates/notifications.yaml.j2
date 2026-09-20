@@ -1,0 +1,31 @@
+<<header>>
+name: tend-notifications
+on:
+  schedule:
+    - cron: "<<cron>>"
+  workflow_dispatch:
+
+jobs:
+  notifications:
+    concurrency:
+      group: tend-notifications
+      cancel-in-progress: false
+    if: <<fork_guard_prefix(cfg)>><<tend_enabled>>
+    runs-on: ubuntu-24.04
+<<environment()>>
+    permissions:
+<<permissions()>>
+    steps:
+<<setup_tend_uv()>>
+      - name: Check for unread notifications and conflicted PRs
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.<<bot_token_secret>> }}
+          TEND_UV: ${{ steps.tend_uv.outputs.uv-path }}
+        run: |
+          "$TEND_UV" run --script - <<heredoc>>'TEND_PY'
+<<check_script|indent(10, first=True)>>
+          TEND_PY
+
+<<checkout(cfg, ref=cfg.default_branch, if_condition=skip_condition)>>
+<<setup>><<agent_step(cfg, block_input('prompt', prompt), if_condition=skip_condition)>>

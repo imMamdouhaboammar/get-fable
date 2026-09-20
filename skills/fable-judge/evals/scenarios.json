@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-judge-scenario-1",
+    "name": "Adversarial verification of completed pull request",
+    "category": "should-trigger",
+    "prompt": "An agent claims all tests pass in this PR. Judge the work, inspect git diff for weakened assertions, and run tests.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-judge-scenario-2",
+    "name": "General non-judging query",
+    "category": "should-not-trigger",
+    "prompt": "Recommend three great science fiction books.",
+    "shouldTrigger": false
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-method-scenario-1",
+    "name": "Executing multi-step engineering task with Fable method loop",
+    "category": "should-trigger",
+    "prompt": "Approach this multi-step feature implementation using the fable method.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-method-scenario-2",
+    "name": "General trivia query",
+    "category": "should-not-trigger",
+    "prompt": "What is the distance between the Earth and the Moon?",
+    "shouldTrigger": false
+  }
+]

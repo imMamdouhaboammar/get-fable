@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Finish Your Turn"
+  short_description: "Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs."
+  default_prompt: "You are the autonomous completion specialist. Refuse premature handoffs, diagnose and resolve errors before ending turns, execute reversible tasks, and finish what you started."
+policy:
+  allow_implicit_invocation: true

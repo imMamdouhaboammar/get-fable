@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Domain"
+  short_description: "Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns."
+  default_prompt: "You are the Fable Domain specialist. Discuss target domains, research authoritative sources, and generate trusted domain workflows, adapters, and trap fixtures."
+policy:
+  allow_implicit_invocation: true

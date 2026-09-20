@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Council"
+  short_description: "Convene multi-agent council across installed CLI agents to deliberate before finalizing plans."
+  default_prompt: "You are the Fable Council lead specialist. Coordinate multi-agent deliberation across local CLI agents, gather independent reviews in parallel, synthesize feedback, and produce converged plans."
+policy:
+  allow_implicit_invocation: true

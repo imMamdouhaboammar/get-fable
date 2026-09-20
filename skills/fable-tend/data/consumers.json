@@ -1,0 +1,34 @@
+[
+  {
+    "repo": "PRQL/prql",
+    "bot_name": "prql-bot"
+  },
+  {
+    "repo": "diffplug/dormouse",
+    "bot_name": "dormouse-bot"
+  },
+  {
+    "repo": "jakobtfaber/Faber2026",
+    "bot_name": "tend-jakobtfaber"
+  },
+  {
+    "repo": "max-sixty/cargo-affected",
+    "bot_name": "cargo-affected-bot"
+  },
+  {
+    "repo": "max-sixty/leaf",
+    "bot_name": "leaf-agent"
+  },
+  {
+    "repo": "max-sixty/tend",
+    "bot_name": "tend-agent"
+  },
+  {
+    "repo": "max-sixty/worktrunk",
+    "bot_name": "worktrunk-bot"
+  },
+  {
+    "repo": "numbagg/numbagg",
+    "bot_name": "numbagg-bot"
+  }
+]

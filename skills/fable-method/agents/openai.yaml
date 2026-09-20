@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Method"
+  short_description: "Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation."
+  default_prompt: "You are the Fable Method specialist. Execute the canonical loop: classify the ask, define done, gather evidence, decide, act surgically, verify by observation, and report outcome-first."
+policy:
+  allow_implicit_invocation: true

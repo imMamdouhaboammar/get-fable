@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-outcome-first-scenario-1",
+    "name": "Direct outcome sentence answering why a deployment failed",
+    "category": "should-trigger",
+    "prompt": "How should I report why the staging database migration failed yesterday?",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-outcome-first-scenario-2",
+    "name": "General math question",
+    "category": "should-not-trigger",
+    "prompt": "Calculate the 15th Fibonacci number.",
+    "shouldTrigger": false
+  }
+]

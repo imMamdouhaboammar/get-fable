@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-method",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/failure-modes.md",
+    "references/examples.md",
+    "references/flowcharts.md",
+    "references/domains/TEMPLATE.md",
+    "references/domains/legal-compliance.md",
+    "references/domains/marketing.md",
+    "references/domains/finance.md",
+    "references/domains/research.md",
+    "references/domains/devops.md",
+    "references/domains/design-ux.md",
+    "references/domains/data-analysis.md",
+    "references/domains/business-ops.md"
+  ],
+  "templates": [],
+  "examples": [],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}
