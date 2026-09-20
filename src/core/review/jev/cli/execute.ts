@@ -5,24 +5,27 @@ import type { Log } from "../review/workflow.js";
 
 type Runner = (scope: string, log: Log) => Promise<ReviewReport>;
 
-export async function printReview(run: Runner): Promise<void> {
-  const scope = resolve(process.argv[2] ?? ".");
-  const report = await run(scope, console.error);
-  console.log(JSON.stringify(report, null, 2));
-}
+const printErr = (msg: string) => process.stderr.write(msg + "\n");
+const printOut = (msg: string) => process.stdout.write(msg + "\n");
 
-export async function saveReview(run: Runner): Promise<void> {
+export const printReview = async (run: Runner): Promise<void> => {
+  const scope = resolve(process.argv[2] ?? ".");
+  const report = await run(scope, printErr);
+  printOut(JSON.stringify(report, null, 2));
+};
+
+export const saveReview = async (run: Runner): Promise<void> => {
   const scope = resolve(process.argv[2] ?? ".");
   const out = reportPath();
   const outLabel = relative(process.cwd(), out) || out;
 
   try {
-    const report = await run(scope, console.error);
+    const report = await run(scope, printErr);
     await saveReport(report, out);
-    console.error("saved " + outLabel);
+    printErr("saved " + outLabel);
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error));
-    console.error("review failed; " + outLabel + " unchanged");
+    printErr(error instanceof Error ? error.message : String(error));
+    printErr("review failed; " + outLabel + " unchanged");
     process.exit(1);
   }
-}
+};

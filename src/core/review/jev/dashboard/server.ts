@@ -54,16 +54,16 @@ export async function handle(req: IncomingMessage, res: ServerResponse) {
   }
 }
 
-export function startDashboard(port = PORT, host = HOST) {
+export const startDashboard = (port = PORT, host = HOST) => {
   const server = createServer(handle);
   return new Promise<{ server: ReturnType<typeof createServer>; port: number; host: string }>((resolve) => {
     server.listen(port, host, () => {
-      console.log(`Jev review dashboard: http://${host}:${port}`);
-      console.log(`report: ${relative(process.cwd(), REPORT) || REPORT}`);
+      process.stdout.write(`Jev review dashboard: http://${host}:${port}\n`);
+      process.stdout.write(`report: ${relative(process.cwd(), REPORT) || REPORT}\n`);
       resolve({ server, port, host });
     });
   });
-}
+};
 
 if (import.meta.main) {
   startDashboard(PORT, HOST);

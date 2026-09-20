@@ -40468,16 +40468,18 @@ async function handle(req, res) {
     send(res, 500, "text/plain; charset=utf-8", "Asset unavailable");
   }
 }
-function startDashboard(port = PORT, host = HOST) {
+var startDashboard = (port = PORT, host = HOST) => {
   const server = createServer(handle);
   return new Promise((resolve) => {
     server.listen(port, host, () => {
-      console.log(`Jev review dashboard: http://${host}:${port}`);
-      console.log(`report: ${relative3(process.cwd(), REPORT) || REPORT}`);
+      process.stdout.write(`Jev review dashboard: http://${host}:${port}
+`);
+      process.stdout.write(`report: ${relative3(process.cwd(), REPORT) || REPORT}
+`);
       resolve({ server, port, host });
     });
   });
-}
+};
 if (false) {}
 
 // src/core/review/jev/index.ts
@@ -41920,7 +41922,8 @@ class Router {
     if (names.has(model.name))
       throw new Error(`Duplicate model: ${model.name}`);
     if (index > 0 && model.cost < allModels[index - 1].cost) {
-      console.warn(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${allModels[index - 1].name}" (cost=${allModels[index - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`);
+      process.stderr.write(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${allModels[index - 1].name}" (cost=${allModels[index - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.
+`);
     }
     names.add(model.name);
   }
@@ -42103,39 +42106,15 @@ class RecipesBridge {
 }
 
 // src/cli/commands/reflex.ts
-async function runReflexCommand(args) {
-  const sub = args[0] || "status";
-  const subArgs = args.slice(1);
-  switch (sub) {
-    case "status":
-      return handleReflexStatus(subArgs);
-    case "doctor":
-      return await handleReflexDoctor(subArgs);
-    case "route":
-      return await handleReflexRoute(subArgs);
-    case "ledger":
-      return handleReflexLedger(subArgs);
-    case "eval":
-      return await handleReflexEval(subArgs);
-    case "compact":
-      return await handleReflexCompact(subArgs);
-    case "review":
-      return await handleReflexReview(subArgs);
-    case "route-model":
-    case "model-route":
-      return await handleReflexRouteModel(subArgs);
-    case "triage-log":
-    case "triage":
-      return await handleReflexTriageLog(subArgs);
-    case "security-scan":
-    case "sec-scan":
-      return await handleReflexSecurityScan(subArgs);
-    default:
-      console.error(`Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`);
-      return 1;
-  }
-}
-function handleReflexStatus(args) {
+var print = (msg = "") => {
+  process.stdout.write(msg + `
+`);
+};
+var printErr = (msg = "") => {
+  process.stderr.write(msg + `
+`);
+};
+var handleReflexStatus = (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const config = loadReflexConfig();
   const events = readReflexEvents({ limit: 1000 });
@@ -42153,104 +42132,116 @@ function handleReflexStatus(args) {
     ledgerEventsCount: events.length
   };
   if (isJson) {
-    console.log(JSON.stringify(status, null, 2));
+    print(JSON.stringify(status, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Subsystem Status ---`);
-  console.log(`Mode:            ${config.mode}`);
-  console.log(`Provider:        ${config.provider}`);
-  console.log(`Model:           ${config.model}`);
-  console.log(`Timeout:         ${config.timeoutMs}ms`);
-  console.log(`Min Margin:      ${config.minMargin}`);
-  console.log(`Telemetry:       ${config.telemetry}`);
-  console.log(`API Key:         ${config.apiKey ? "Configured (present)" : "Missing"}`);
-  console.log(`Circuit Breaker: ${cbState.isOpen ? "OPEN (Tripped)" : "CLOSED (Healthy)"}`);
-  console.log(`Ledger Events:   ${events.length} recorded
+  print(`Mode:            ${config.mode}`);
+  print(`Provider:        ${config.provider}`);
+  print(`Model:           ${config.model}`);
+  print(`Timeout:         ${config.timeoutMs}ms`);
+  print(`Min Margin:      ${config.minMargin}`);
+  print(`Telemetry:       ${config.telemetry}`);
+  print(`API Key:         ${config.apiKey ? "Configured (present)" : "Missing"}`);
+  print(`Circuit Breaker: ${cbState.isOpen ? "OPEN (Tripped)" : "CLOSED (Healthy)"}`);
+  print(`Ledger Events:   ${events.length} recorded
 `);
   return 0;
-}
-async function handleReflexDoctor(args) {
-  const isJson = args.includes("--json") || args.includes("--json-v1");
-  const isLive = args.includes("--live");
-  const config = loadReflexConfig();
-  const checks = [];
+};
+var checkProvider = (config) => {
   if (config.provider === "typesafe-jev") {
-    checks.push({ id: "reflex-provider", status: "PASS", message: "Provider configured: typesafe-jev" });
-  } else {
-    checks.push({ id: "reflex-provider", status: "WARN", message: `Unknown provider: ${config.provider}` });
+    return { id: "reflex-provider", status: "PASS", message: "Provider configured: typesafe-jev" };
   }
+  return { id: "reflex-provider", status: "WARN", message: `Unknown provider: ${config.provider}` };
+};
+var checkCredential = (config) => {
   if (config.apiKey) {
-    checks.push({ id: "reflex-credential", status: "PASS", message: "TypeSafe API credential is present in environment" });
-  } else {
-    const status = config.mode === "off" ? "WARN" : "ERROR";
-    checks.push({ id: "reflex-credential", status, message: "TYPESAFE_API_KEY is not set" });
+    return { id: "reflex-credential", status: "PASS", message: "TypeSafe API credential is present in environment" };
   }
+  const status = config.mode === "off" ? "WARN" : "ERROR";
+  return { id: "reflex-credential", status, message: "TYPESAFE_API_KEY is not set" };
+};
+var checkModel = (config) => {
   if (config.model) {
-    checks.push({ id: "reflex-model", status: "PASS", message: `Model configured: ${config.model}` });
-  } else {
-    checks.push({ id: "reflex-model", status: "ERROR", message: "Model is not configured" });
+    return { id: "reflex-model", status: "PASS", message: `Model configured: ${config.model}` };
   }
+  return { id: "reflex-model", status: "ERROR", message: "Model is not configured" };
+};
+var checkLedger = () => {
   try {
     const reflexDir = getReflexDir();
     if (!fs39.existsSync(reflexDir)) {
       fs39.mkdirSync(reflexDir, { recursive: true });
     }
-    checks.push({ id: "reflex-ledger", status: "PASS", message: "Reflex ledger directory is accessible and safe" });
+    return { id: "reflex-ledger", status: "PASS", message: "Reflex ledger directory is accessible and safe" };
   } catch (err) {
-    checks.push({ id: "reflex-ledger", status: "ERROR", message: `Ledger error: ${err.message}` });
+    return { id: "reflex-ledger", status: "ERROR", message: `Ledger error: ${err.message}` };
   }
+};
+var checkLiveProbe = async (config) => {
+  if (!config.apiKey) {
+    return { id: "reflex-live-probe", status: "ERROR", message: "Cannot perform live probe without TYPESAFE_API_KEY" };
+  }
+  try {
+    const advisor = new TypeSafeJevAdvisor({ ...config, timeoutMs: 1e4 });
+    const testEnvelope = {
+      schemaVersion: 1,
+      task: "Diagnostic connectivity check",
+      lifecycle: { phase: "idle", currentSkill: null, failureState: "none", substantial: false, hasActiveCard: false, verificationFreshness: "none" },
+      deterministic: { selectedSkill: "fable-verify", selectedPack: "core", reasons: [], requiresPlan: false, topCandidates: [] },
+      constraints: { suppressResearch: false, suppressRelease: false, suppressSecurity: false, suppressTdd: false, suppressPlan: false, suppressReview: false, suppressDelegation: false }
+    };
+    const advice = await advisor.advise(testEnvelope);
+    return {
+      id: "reflex-live-probe",
+      status: "PASS",
+      message: `Live probe succeeded against ${advice.model} in ${advice.latencyMs}ms`
+    };
+  } catch (err) {
+    return { id: "reflex-live-probe", status: "ERROR", message: `Live probe failed: ${err.message}` };
+  }
+};
+var handleReflexDoctor = async (args) => {
+  const isJson = args.includes("--json") || args.includes("--json-v1");
+  const isLive = args.includes("--live");
+  const config = loadReflexConfig();
+  const checks = [
+    checkProvider(config),
+    checkCredential(config),
+    checkModel(config),
+    checkLedger()
+  ];
   if (isLive) {
-    if (!config.apiKey) {
-      checks.push({ id: "reflex-live-probe", status: "ERROR", message: "Cannot perform live probe without TYPESAFE_API_KEY" });
-    } else {
-      try {
-        const advisor = new TypeSafeJevAdvisor({ ...config, timeoutMs: 1e4 });
-        const testEnvelope = {
-          schemaVersion: 1,
-          task: "Diagnostic connectivity check",
-          lifecycle: { phase: "idle", currentSkill: null, failureState: "none", substantial: false, hasActiveCard: false, verificationFreshness: "none" },
-          deterministic: { selectedSkill: "fable-verify", selectedPack: "core", reasons: [], requiresPlan: false, topCandidates: [] },
-          constraints: { suppressResearch: false, suppressRelease: false, suppressSecurity: false, suppressTdd: false, suppressPlan: false, suppressReview: false, suppressDelegation: false }
-        };
-        const advice = await advisor.advise(testEnvelope);
-        checks.push({
-          id: "reflex-live-probe",
-          status: "PASS",
-          message: `Live probe succeeded against ${advice.model} in ${advice.latencyMs}ms`
-        });
-      } catch (err) {
-        checks.push({ id: "reflex-live-probe", status: "ERROR", message: `Live probe failed: ${err.message}` });
-      }
-    }
+    checks.push(await checkLiveProbe(config));
   }
   const ok = !checks.some((c) => c.status === "ERROR");
   if (isJson) {
-    console.log(JSON.stringify({ ok, checks }, null, 2));
+    print(JSON.stringify({ ok, checks }, null, 2));
     return ok ? 0 : 1;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Doctor ---`);
   for (const c of checks) {
     const symbol = c.status === "PASS" ? "✔" : c.status === "WARN" ? "⚠" : "✖";
-    console.log(`${symbol} [${c.id}] ${c.message}`);
+    print(`${symbol} [${c.id}] ${c.message}`);
   }
-  console.log("");
+  print("");
   return ok ? 0 : 1;
-}
-async function handleReflexRoute(args) {
+};
+var handleReflexRoute = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const apply = args.includes("--apply");
   const isLive = args.includes("--live");
   const task = args.filter((a) => a !== "--json" && a !== "--json-v1" && a !== "--apply" && a !== "--live").join(" ").trim();
   if (!task) {
-    console.error("Error: reflex route requires task text");
+    printErr("Error: reflex route requires task text");
     return 1;
   }
   const config = loadReflexConfig(isLive ? { mode: "guarded", timeoutMs: 8000 } : undefined);
   const currentState = readFableState(process.cwd());
   if (apply && !currentState) {
-    console.error("Error: reflex route --apply requires an initialized project (.fable/state.json)");
+    printErr("Error: reflex route --apply requires an initialized project (.fable/state.json)");
     return 1;
   }
   const resolution = await resolveRoute(task, currentState, { config });
@@ -42260,57 +42251,57 @@ async function handleReflexRoute(args) {
     });
   }
   if (isJson) {
-    console.log(JSON.stringify(resolution, null, 2));
+    print(JSON.stringify(resolution, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Routing: "${task}" ---`);
-  console.log(`Mode:            ${resolution.mode}`);
-  console.log(`Selected Skill:  ${resolution.decision.selectedSkill}`);
-  console.log(`Pack:            ${resolution.decision.selectedPack}`);
-  console.log(`Task Shape:      ${resolution.decision.taskShape}`);
-  console.log(`Confidence:      ${Math.round(resolution.decision.confidence * 100)}%`);
+  print(`Mode:            ${resolution.mode}`);
+  print(`Selected Skill:  ${resolution.decision.selectedSkill}`);
+  print(`Pack:            ${resolution.decision.selectedPack}`);
+  print(`Task Shape:      ${resolution.decision.taskShape}`);
+  print(`Confidence:      ${Math.round(resolution.decision.confidence * 100)}%`);
   if (resolution.advice) {
-    console.log(`Reflex Advice:   ${resolution.advice.selectedSkill} (${resolution.advice.provider}, ${resolution.advice.model})`);
+    print(`Reflex Advice:   ${resolution.advice.selectedSkill} (${resolution.advice.provider}, ${resolution.advice.model})`);
     if (resolution.advice.latencyMs) {
-      console.log(`Latency:         ${resolution.advice.latencyMs}ms`);
+      print(`Latency:         ${resolution.advice.latencyMs}ms`);
     }
   }
   if (resolution.fallbackReason) {
-    console.log(`Fallback Reason: ${resolution.fallbackReason}`);
+    print(`Fallback Reason: ${resolution.fallbackReason}`);
   }
-  console.log("Reasons:");
+  print("Reasons:");
   for (const r of resolution.decision.reasons) {
-    console.log(`  - ${r}`);
+    print(`  - ${r}`);
   }
   if (apply) {
-    console.log("✔ Applied decision to .fable/state.json");
+    print("✔ Applied decision to .fable/state.json");
   }
-  console.log("");
+  print("");
   return 0;
-}
-function handleReflexLedger(args) {
+};
+var handleReflexLedger = (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const limitArgIndex = args.indexOf("--limit");
   const limit = limitArgIndex !== -1 && args[limitArgIndex + 1] ? parseInt(args[limitArgIndex + 1], 10) : 20;
   const events = readReflexEvents({ limit });
   if (isJson) {
-    console.log(JSON.stringify(events, null, 2));
+    print(JSON.stringify(events, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Reflex Ledger Events (Last ${events.length}) ---`);
   if (events.length === 0) {
-    console.log("No reflex events recorded yet.");
+    print("No reflex events recorded yet.");
     return 0;
   }
   for (const e of events) {
-    console.log(`[${e.timestamp}] [${e.mode}] det: ${e.deterministicSkill} -> fused: ${e.fusedSkill} (model: ${e.model}, latency: ${e.latencyMs}ms)`);
+    print(`[${e.timestamp}] [${e.mode}] det: ${e.deterministicSkill} -> fused: ${e.fusedSkill} (model: ${e.model}, latency: ${e.latencyMs}ms)`);
   }
-  console.log("");
+  print("");
   return 0;
-}
-async function handleReflexEval(args) {
+};
+var handleReflexEval = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const isLive = args.includes("--live");
   const config = loadReflexConfig({ mode: "guarded", timeoutMs: isLive ? 8000 : 1200 });
@@ -42333,36 +42324,36 @@ async function handleReflexEval(args) {
       }
     };
   }
-  console.log(`Running reflex evaluation (${isLive ? "LIVE Jev arm" : "OFFLINE simulated arm"})...`);
+  print(`Running reflex evaluation (${isLive ? "LIVE Jev arm" : "OFFLINE simulated arm"})...`);
   const report = await runReflexEvaluation(undefined, { config, advisor });
   if (isJson) {
-    console.log(JSON.stringify(report, null, 2));
+    print(JSON.stringify(report, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Routing Benchmark Report ---`);
-  console.log(`Timestamp:            ${report.timestamp}`);
-  console.log(`Total Cases:          ${report.totalCases}`);
-  console.log(`Deterministic Top-1:  ${report.deterministic.top1Count}/${report.totalCases} (${(report.deterministic.top1Accuracy * 100).toFixed(1)}%)`);
-  console.log(`Hybrid Guarded Top-1: ${report.hybridGuarded.top1Count}/${report.totalCases} (${(report.hybridGuarded.top1Accuracy * 100).toFixed(1)}%)`);
-  console.log(`Brier Score:          ${report.hybridGuarded.brierScore.toFixed(3)} (lower is better calibrated)`);
-  console.log(`Avg Latency:          ${report.hybridGuarded.avgLatencyMs}ms`);
-  console.log(`Overrides Count:      ${report.overridesCount}`);
-  console.log(`Overrides Won:        ${report.overridesWon}`);
-  console.log(`Overrides Harm:       ${report.overridesHarm}`);
-  console.log(`Override Precision:   ${(report.overridePrecision * 100).toFixed(1)}%
+  print(`Timestamp:            ${report.timestamp}`);
+  print(`Total Cases:          ${report.totalCases}`);
+  print(`Deterministic Top-1:  ${report.deterministic.top1Count}/${report.totalCases} (${(report.deterministic.top1Accuracy * 100).toFixed(1)}%)`);
+  print(`Hybrid Guarded Top-1: ${report.hybridGuarded.top1Count}/${report.totalCases} (${(report.hybridGuarded.top1Accuracy * 100).toFixed(1)}%)`);
+  print(`Brier Score:          ${report.hybridGuarded.brierScore.toFixed(3)} (lower is better calibrated)`);
+  print(`Avg Latency:          ${report.hybridGuarded.avgLatencyMs}ms`);
+  print(`Overrides Count:      ${report.overridesCount}`);
+  print(`Overrides Won:        ${report.overridesWon}`);
+  print(`Overrides Harm:       ${report.overridesHarm}`);
+  print(`Override Precision:   ${(report.overridePrecision * 100).toFixed(1)}%
 `);
   return 0;
-}
-async function handleReflexCompact(args) {
+};
+var handleReflexCompact = async (args) => {
   const filePath = args.find((a) => !a.startsWith("--"));
   if (!filePath) {
-    console.error("Error: reflex compact requires a path to a transcript JSON or JSONL file.");
-    console.log("Usage: get-fable reflex compact <transcript-path> [--out <output-path>] [--threshold 0.5] [--preserve-recent 6]");
+    printErr("Error: reflex compact requires a path to a transcript JSON or JSONL file.");
+    print("Usage: get-fable reflex compact <transcript-path> [--out <output-path>] [--threshold 0.5] [--preserve-recent 6]");
     return 1;
   }
   if (!fs39.existsSync(filePath)) {
-    console.error(`Error: File not found: ${filePath}`);
+    printErr(`Error: File not found: ${filePath}`);
     return 1;
   }
   let messages = [];
@@ -42375,7 +42366,7 @@ async function handleReflexCompact(args) {
 `).filter(Boolean).map((line) => JSON.parse(line));
     }
   } catch (err) {
-    console.error(`Error reading transcript: ${err.message}`);
+    printErr(`Error reading transcript: ${err.message}`);
     return 1;
   }
   const outIdx = args.indexOf("--out");
@@ -42384,64 +42375,71 @@ async function handleReflexCompact(args) {
   const keepThreshold = thresholdIdx !== -1 && args[thresholdIdx + 1] ? parseFloat(args[thresholdIdx + 1]) : 0.5;
   const preserveIdx = args.indexOf("--preserve-recent");
   const preserveRecent = preserveIdx !== -1 && args[preserveIdx + 1] ? parseInt(args[preserveIdx + 1], 10) : 6;
-  console.log(`Compacting transcript (${messages.length} messages) using Jev System One...`);
+  print(`Compacting transcript (${messages.length} messages) using Jev System One...`);
   try {
     const result = await compactMessages(messages, {
       keepThreshold,
       preserveRecentMessages: preserveRecent
     });
     const ratio = (reductionRatio(result) * 100).toFixed(1);
-    console.log(`
+    print(`
 --- Jev Context Compaction Summary ---`);
-    console.log(`Messages:      ${result.stats.messagesBefore} -> ${result.stats.messagesAfter}`);
-    console.log(`Characters:    ${result.stats.charsBefore} -> ${result.stats.charsAfter} (-${ratio}%)`);
-    console.log(`Tool Calls:    ${result.stats.calls} examined`);
-    console.log(`Kept Verbatim: ${result.stats.kept}`);
-    console.log(`Truncated/Out: ${result.stats.resultsDropped}`);
-    console.log(`Dropped Calls: ${result.stats.callsDropped}`);
-    console.log(`Duration:      ${result.stats.ms}ms
+    print(`Messages:      ${result.stats.messagesBefore} -> ${result.stats.messagesAfter}`);
+    print(`Characters:    ${result.stats.charsBefore} -> ${result.stats.charsAfter} (-${ratio}%)`);
+    print(`Tool Calls:    ${result.stats.calls} examined`);
+    print(`Kept Verbatim: ${result.stats.kept}`);
+    print(`Truncated/Out: ${result.stats.resultsDropped}`);
+    print(`Dropped Calls: ${result.stats.callsDropped}`);
+    print(`Duration:      ${result.stats.ms}ms
 `);
     if (outPath) {
       fs39.writeFileSync(outPath, JSON.stringify(result.messages, null, 2), "utf8");
-      console.log(`Compacted transcript written to ${outPath}`);
+      print(`Compacted transcript written to ${outPath}`);
     }
     return 0;
   } catch (err) {
-    console.error(`Compaction failed: ${err.message}`);
+    printErr(`Compaction failed: ${err.message}`);
     return 1;
   }
-}
-async function runDashboardServer(args) {
+};
+var runDashboardServer = async (args) => {
   const portIdx = args.indexOf("--port");
   const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
-  console.log(`Starting Jev Review Dashboard on port ${port}...`);
+  print(`Starting Jev Review Dashboard on port ${port}...`);
   await startDashboard(port);
   return 0;
-}
-function printReviewReport(report) {
-  console.log(`
+};
+var printReviewReport = (report) => {
+  print(`
 --- Jev Review Summary ---`);
-  console.log(`Mode:            ${report.mode}`);
-  console.log(`Scope:           ${report.scope}`);
-  console.log(`Screened Files:  ${report.screenedFiles}`);
-  console.log(`Signals:         ${report.followedSignals}`);
-  console.log(`Findings:        ${report.findings.length}`);
+  print(`Mode:            ${report.mode}`);
+  print(`Scope:           ${report.scope}`);
+  print(`Screened Files:  ${report.screenedFiles}`);
+  print(`Signals:         ${report.followedSignals}`);
+  print(`Findings:        ${report.findings.length}`);
   let hasBlocking = false;
   if (report.findings.length > 0) {
-    console.log(`
+    print(`
 Findings:`);
     for (const finding of report.findings) {
       const blocking = finding.action === "request_changes" || finding.severity >= 2;
       if (blocking)
         hasBlocking = true;
-      console.log(`  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`);
+      print(`  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`);
     }
   } else {
-    console.log("Zero high-risk findings detected. Code changes look clean.");
+    print("Zero high-risk findings detected. Code changes look clean.");
   }
   return hasBlocking;
-}
-function readInputText(target) {
+};
+var isSafeRegularFile = (resolved, cwd) => {
+  if (!resolved.startsWith(cwd))
+    return false;
+  if (!fs39.existsSync(resolved))
+    return false;
+  return fs39.statSync(resolved).isFile();
+};
+var readInputText = (target) => {
   if (!target)
     return null;
   if (target.includes(`
@@ -42451,13 +42449,13 @@ function readInputText(target) {
   try {
     const cwd = process.cwd();
     const resolved = path41.resolve(cwd, target);
-    if (resolved.startsWith(cwd) && fs39.existsSync(resolved) && fs39.statSync(resolved).isFile()) {
+    if (isSafeRegularFile(resolved, cwd)) {
       return fs39.readFileSync(resolved, "utf8");
     }
   } catch {}
   return target;
-}
-async function handleReflexReview(args) {
+};
+var handleReflexReview = async (args) => {
   if (args.includes("--dashboard")) {
     return await runDashboardServer(args);
   }
@@ -42466,110 +42464,134 @@ async function handleReflexReview(args) {
   const shouldSave = args.includes("--save");
   const targetPath = args.filter((a) => !a.startsWith("--"))[0] || process.cwd();
   if (!isJson) {
-    console.log(`Running Jev ${isCodebase ? "Codebase Scan" : "Diff Review"} on ${targetPath}...`);
+    print(`Running Jev ${isCodebase ? "Codebase Scan" : "Diff Review"} on ${targetPath}...`);
   }
   try {
     const report = isCodebase ? await reviewCodebase(targetPath) : await reviewChanges(targetPath);
     if (shouldSave) {
       await saveReport(report);
       if (!isJson) {
-        console.log(`Saved report to ${reportPath()}`);
+        print(`Saved report to ${reportPath()}`);
       }
     }
     const hasBlocking = report.findings.some((finding) => finding.action === "request_changes" || finding.severity >= 2);
     if (isJson) {
-      console.log(JSON.stringify(report, null, 2));
+      print(JSON.stringify(report, null, 2));
       return hasBlocking ? 1 : 0;
     }
     printReviewReport(report);
     return hasBlocking ? 1 : 0;
   } catch (err) {
-    console.error(`Review execution failed: ${err.message}`);
+    printErr(`Review execution failed: ${err.message}`);
     return 1;
   }
-}
-async function handleReflexRouteModel(args) {
+};
+var handleReflexRouteModel = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const task = args.filter((a) => !a.startsWith("--")).join(" ").trim();
   if (!task) {
-    console.error("Error: reflex route-model requires task description");
+    printErr("Error: reflex route-model requires task description");
     return 1;
   }
   try {
     const result = await routeTaskToOptimalModel(task, { models: DEFAULT_AGENT_MODELS });
     if (isJson) {
-      console.log(JSON.stringify(result, null, 2));
+      print(JSON.stringify(result, null, 2));
       return 0;
     }
-    console.log(`
+    print(`
 --- Jev Model Capability & Cost Routing ---`);
-    console.log(`Task:          "${task}"`);
-    console.log(`Optimal Model: ${result.model} (Tier: ${result.tier})`);
-    console.log(`Probabilities:`);
+    print(`Task:          "${task}"`);
+    print(`Optimal Model: ${result.model} (Tier: ${result.tier})`);
+    print(`Probabilities:`);
     for (const [model, prob] of Object.entries(result.probabilities)) {
-      console.log(`  - ${model.padEnd(12)}: ${(prob * 100).toFixed(1)}%`);
+      print(`  - ${model.padEnd(12)}: ${(prob * 100).toFixed(1)}%`);
     }
     return 0;
   } catch (err) {
-    console.error(`Model routing failed: ${err.message}`);
+    printErr(`Model routing failed: ${err.message}`);
     return 1;
   }
-}
-async function handleReflexTriageLog(args) {
+};
+var handleReflexTriageLog = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const target = args.filter((a) => !a.startsWith("--"))[0];
   const logContent = readInputText(target);
   if (!logContent) {
-    console.error("Error: triage-log requires a log file path or log text");
+    printErr("Error: triage-log requires a log file path or log text");
     return 1;
   }
   try {
     const bridge = new RecipesBridge;
     const diagnosis = await bridge.triageErrorLog(logContent);
     if (isJson) {
-      console.log(JSON.stringify(diagnosis, null, 2));
+      print(JSON.stringify(diagnosis, null, 2));
       return 0;
     }
-    console.log(`
+    print(`
 --- Jev Error Log Triage (fable-recover) ---`);
-    console.log(`Diagnosis Level: Level ${diagnosis.levelNumber} (${diagnosis.level})`);
-    console.log(`Confidence:      ${(diagnosis.confidence * 100).toFixed(1)}%`);
-    console.log(`Severity:        ${diagnosis.severity.toFixed(1)}`);
-    console.log(`Actionable:      ${diagnosis.actionable ? "YES (requires fix)" : "NO (transient)"}`);
-    console.log(`Summary:         ${diagnosis.summary}`);
+    print(`Diagnosis Level: Level ${diagnosis.levelNumber} (${diagnosis.level})`);
+    print(`Confidence:      ${(diagnosis.confidence * 100).toFixed(1)}%`);
+    print(`Severity:        ${diagnosis.severity.toFixed(1)}`);
+    print(`Actionable:      ${diagnosis.actionable ? "YES (requires fix)" : "NO (transient)"}`);
+    print(`Summary:         ${diagnosis.summary}`);
     return 0;
   } catch (err) {
-    console.error(`Log triage failed: ${err.message}`);
+    printErr(`Log triage failed: ${err.message}`);
     return 1;
   }
-}
-async function handleReflexSecurityScan(args) {
+};
+var handleReflexSecurityScan = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const target = args.filter((a) => !a.startsWith("--"))[0];
   const content = readInputText(target);
   if (!content) {
-    console.error("Error: security-scan requires a file path or text content");
+    printErr("Error: security-scan requires a file path or text content");
     return 1;
   }
   try {
     const bridge = new RecipesBridge;
     const scan = await bridge.scanForSecretsAndSecurity(content);
     if (isJson) {
-      console.log(JSON.stringify(scan, null, 2));
+      print(JSON.stringify(scan, null, 2));
       return 0;
     }
-    console.log(`
+    print(`
 --- Jev Security & PII Scan (fable-security) ---`);
-    console.log(`Safe:              ${scan.isSafe ? "PASS" : "FAIL (Security Alert)"}`);
-    console.log(`Exposed Secrets:   ${scan.hasSecrets ? "DETECTED" : "None"} (${(scan.secretsConfidence * 100).toFixed(1)}%)`);
-    console.log(`PII Leaks:         ${scan.hasPii ? "DETECTED" : "None"} (${(scan.piiConfidence * 100).toFixed(1)}%)`);
-    console.log(`Prompt Injection:  ${scan.isPromptInjection ? "DETECTED" : "None"} (${(scan.injectionConfidence * 100).toFixed(1)}%)`);
+    print(`Safe:              ${scan.isSafe ? "PASS" : "FAIL (Security Alert)"}`);
+    print(`Exposed Secrets:   ${scan.hasSecrets ? "DETECTED" : "None"} (${(scan.secretsConfidence * 100).toFixed(1)}%)`);
+    print(`PII Leaks:         ${scan.hasPii ? "DETECTED" : "None"} (${(scan.piiConfidence * 100).toFixed(1)}%)`);
+    print(`Prompt Injection:  ${scan.isPromptInjection ? "DETECTED" : "None"} (${(scan.injectionConfidence * 100).toFixed(1)}%)`);
     return scan.isSafe ? 0 : 1;
   } catch (err) {
-    console.error(`Security scan failed: ${err.message}`);
+    printErr(`Security scan failed: ${err.message}`);
     return 1;
   }
-}
+};
+var SUBCOMMAND_HANDLERS = {
+  status: (args) => handleReflexStatus(args),
+  doctor: (args) => handleReflexDoctor(args),
+  route: (args) => handleReflexRoute(args),
+  ledger: (args) => handleReflexLedger(args),
+  eval: (args) => handleReflexEval(args),
+  compact: (args) => handleReflexCompact(args),
+  review: (args) => handleReflexReview(args),
+  "route-model": (args) => handleReflexRouteModel(args),
+  "model-route": (args) => handleReflexRouteModel(args),
+  "triage-log": (args) => handleReflexTriageLog(args),
+  triage: (args) => handleReflexTriageLog(args),
+  "security-scan": (args) => handleReflexSecurityScan(args),
+  "sec-scan": (args) => handleReflexSecurityScan(args)
+};
+var runReflexCommand = async (args) => {
+  const sub = args[0] || "status";
+  const handler = SUBCOMMAND_HANDLERS[sub];
+  if (!handler) {
+    printErr(`Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`);
+    return 1;
+  }
+  return await handler(args.slice(1));
+};
 // src/cli.ts
 var EVIDENCE_KINDS2 = [
   "test",

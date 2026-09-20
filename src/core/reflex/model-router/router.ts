@@ -65,10 +65,10 @@ export class Router {
         if (names.has(model.name)) throw new Error(`Duplicate model: ${model.name}`);
 
         if (index > 0 && model.cost < allModels[index - 1]!.cost) {
-            console.warn(
+            process.stderr.write(
                 `"${model.name}" (cost=${model.cost}) is cheaper than ` +
                 `"${allModels[index - 1]!.name}" (cost=${allModels[index - 1]!.cost}) but listed later. ` +
-                `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.`
+                `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.\n`
             );
         }
         names.add(model.name);
