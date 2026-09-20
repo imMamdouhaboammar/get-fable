@@ -23045,7 +23045,7 @@ var require_src3 = __commonJS(function(exports) {
 // src/cli.ts
 import fs40 from "node:fs";
 import os8 from "node:os";
-import path41 from "node:path";
+import path42 from "node:path";
 import { spawnSync as spawnSync7 } from "node:child_process";
 import { fileURLToPath as fileURLToPath7 } from "node:url";
 
@@ -39103,98 +39103,174 @@ function bundleReviewFiles(files) {
   }
   return bundles;
 }
-// src/cli/commands/reflex.ts
-import fs39 from "node:fs";
+// src/core/review/jev/adapters/git.ts
+import { execFileSync as execFileSync3 } from "node:child_process";
+import { readFileSync, realpathSync } from "node:fs";
+import { relative, resolve } from "node:path";
 
-// src/core/reflex/ledger.ts
-import crypto4 from "node:crypto";
-import fs38 from "node:fs";
-import path40 from "node:path";
-var MAX_REFLEX_LEDGER_LINES = 5000;
-function hashTaskText(text) {
-  return crypto4.createHash("sha256").update(text, "utf8").digest("hex");
-}
-function getReflexDir(repoRoot = process.cwd()) {
-  const fableDir = path40.join(repoRoot, ".fable");
-  if (fs38.existsSync(fableDir)) {
-    const stat = fs38.lstatSync(fableDir);
-    if (stat.isSymbolicLink()) {
-      throw new Error("Reflex security violation: .fable directory must not be a symlink");
+// src/core/review/jev/domain/config.ts
+var SCREEN_THRESHOLD = 0.7;
+var SEVERITY_MAX = 3;
+var ROUTE_SEVERITY = 1.5;
+var BLOCKING_SEVERITY = 2;
+var MIN_LOCATION_CONFIDENCE = 0.55;
+var MAX_FOLLOW_UPS = 8;
+var MAX_PROFILES = 5;
+var CONCURRENCY = 3;
+var SOURCE_FILE = /\.(?:[cm]?[jt]sx?)$/;
+var TEST_FILE = /(?:^|\/)(?:tests?|__tests__)(?:\/|$)|\.(?:spec|test)\.[cm]?[jt]sx?$/;
+var dimensions = {
+  correctness: "The code likely contains incorrect runtime behavior.",
+  security: "The code introduces or weakens a security boundary.",
+  reliability: "The code can cause a crash, race, leak, deadlock, or poor failure recovery.",
+  compatibility: "The code can break a caller, persisted format, protocol, or public behavior.",
+  testGap: "Important behavior lacks adequate targeted test evidence."
+};
+var dimensionMetadata = [
+  { key: "correctness", label: "Correctness", short: "Corr" },
+  { key: "security", label: "Security", short: "Sec" },
+  { key: "reliability", label: "Reliability", short: "Rel" },
+  { key: "compatibility", label: "Compatibility", short: "Compat" },
+  { key: "testGap", label: "Test gap", short: "Tests" }
+];
+var mechanisms = {
+  correctness: {
+    condition: "A condition handles the wrong cases",
+    state: "State is read, updated, or retained incorrectly",
+    dataFlow: "Data is transformed or passed incorrectly",
+    asyncControl: "Asynchronous ordering or error handling is incorrect",
+    other: "Another concrete correctness mechanism",
+    noIssue: "The selected evidence does not support a concrete correctness issue"
+  },
+  security: {
+    authorization: "Authorization or trust boundaries are weakened",
+    injection: "Untrusted input can reach an unsafe interpreter or sink",
+    exposure: "Sensitive data can be disclosed",
+    unsafeDefault: "A default configuration creates avoidable exposure",
+    other: "Another concrete security mechanism",
+    noIssue: "The selected evidence does not support a concrete security issue"
+  },
+  reliability: {
+    cleanup: "A resource or side effect is not cleaned up",
+    concurrency: "Concurrency can race, deadlock, or lose work",
+    recovery: "Failure or cancellation recovery is incomplete",
+    crash: "A realistic path can throw or terminate unexpectedly",
+    other: "Another concrete reliability mechanism",
+    noIssue: "The selected evidence does not support a concrete reliability issue"
+  },
+  compatibility: {
+    api: "A public API or type contract changes incompatibly",
+    behavior: "Existing callers observe changed behavior",
+    dataFormat: "A persisted or exchanged format changes incompatibly",
+    protocol: "An external command or protocol contract changes",
+    other: "Another concrete compatibility mechanism",
+    noIssue: "The selected evidence does not support a concrete compatibility issue"
+  },
+  testGap: {
+    branch: "An important branch lacks targeted coverage",
+    failure: "A failure or cancellation path lacks coverage",
+    boundary: "A boundary or edge case lacks coverage",
+    integration: "An interaction between components lacks coverage",
+    other: "Another concrete test gap",
+    noIssue: "The selected evidence does not support a concrete test gap"
+  }
+};
+var reviewPriorityRubric = [
+  "Routine review is sufficient",
+  "A focused review of the changed behavior is useful",
+  "Careful review is needed before merge",
+  "Specialist or immediate review is needed"
+];
+var severityRubric = [
+  "No meaningful impact or no supported issue",
+  "Minor or narrowly limited impact",
+  "Significant correctness, reliability, compatibility, or security impact",
+  "Critical security, data-loss, or widespread outage impact"
+];
+var owners = {
+  security: "Security, authentication, authorization, or data exposure",
+  api: "Public APIs, compatibility, schemas, or protocols",
+  runtime: "Execution, concurrency, resources, or failure recovery",
+  testing: "Coverage strategy, fixtures, or regression testing",
+  maintainer: "The owning domain or feature maintainer"
+};
+
+// src/core/review/jev/domain/patch.ts
+var UNTRACKED_CHUNK_LINES = 80;
+function parseHunks(patch) {
+  const hunks = [];
+  let current = null;
+  let startLine = 1;
+  const flush = () => {
+    if (current) {
+      hunks.push({
+        id: `hunk_${hunks.length + 1}`,
+        startLine,
+        patch: current.join(`
+`)
+      });
+    }
+  };
+  for (const line of patch.split(`
+`)) {
+    if (line.startsWith("@@ ")) {
+      flush();
+      const match = line.match(/\+(\d+)/);
+      startLine = match ? Number(match[1]) : 1;
+      current = [line];
+    } else if (current) {
+      current.push(line);
     }
   }
-  const reflexDir = path40.join(fableDir, "reflex");
-  if (fs38.existsSync(reflexDir)) {
-    const stat = fs38.lstatSync(reflexDir);
-    if (stat.isSymbolicLink()) {
-      throw new Error("Reflex security violation: .fable/reflex directory must not be a symlink");
-    }
-  }
-  return reflexDir;
+  flush();
+  return hunks;
 }
-function appendReflexEvent(event, repoRoot = process.cwd()) {
-  try {
-    const reflexDir = getReflexDir(repoRoot);
-    if (!fs38.existsSync(reflexDir)) {
-      fs38.mkdirSync(reflexDir, { recursive: true });
-    }
-    const eventsFile = path40.join(reflexDir, "events.jsonl");
-    if (fs38.existsSync(eventsFile)) {
-      const stat = fs38.lstatSync(eventsFile);
-      if (stat.isSymbolicLink() || !stat.isFile()) {
-        return;
-      }
-    }
-    const line = JSON.stringify(event) + `
-`;
-    fs38.appendFileSync(eventsFile, line, "utf8");
-    rotateLedgerIfNecessary(eventsFile);
-  } catch {}
-}
-function readReflexEvents(options) {
-  const limit = options?.limit ?? 100;
-  const repoRoot = options?.repoRoot || process.cwd();
-  try {
-    const reflexDir = getReflexDir(repoRoot);
-    const eventsFile = path40.join(reflexDir, "events.jsonl");
-    if (!fs38.existsSync(eventsFile)) {
-      return [];
-    }
-    const stat = fs38.lstatSync(eventsFile);
-    if (stat.isSymbolicLink() || !stat.isFile()) {
-      return [];
-    }
-    const content = fs38.readFileSync(eventsFile, "utf8");
-    const lines = content.trim().split(`
-`).filter(Boolean);
-    const events = [];
-    for (let i = lines.length - 1;i >= 0 && events.length < limit; i--) {
-      try {
-        const parsed = JSON.parse(lines[i]);
-        if (parsed.schemaVersion === 1) {
-          events.push(parsed);
-        }
-      } catch {}
-    }
-    return events;
-  } catch {
-    return [];
-  }
-}
-function rotateLedgerIfNecessary(eventsFile) {
-  try {
-    const stat = fs38.statSync(eventsFile);
-    if (stat.size > 5 * 1024 * 1024) {
-      const content = fs38.readFileSync(eventsFile, "utf8");
-      const lines = content.trim().split(`
+function patchForNewFile(source) {
+  const lines = source.split(`
 `);
-      if (lines.length > MAX_REFLEX_LEDGER_LINES) {
-        const truncated = lines.slice(-Math.floor(MAX_REFLEX_LEDGER_LINES / 2)).join(`
-`) + `
-`;
-        fs38.writeFileSync(eventsFile, truncated, "utf8");
-      }
-    }
-  } catch {}
+  const chunkCount = Math.ceil(lines.length / UNTRACKED_CHUNK_LINES);
+  return Array.from({ length: chunkCount }, (_, index) => {
+    const start = index * UNTRACKED_CHUNK_LINES;
+    const chunk = lines.slice(start, start + UNTRACKED_CHUNK_LINES);
+    return [
+      `@@ -0,0 +${start + 1},${chunk.length} @@`,
+      ...chunk.map((line) => `+${line}`)
+    ].join(`
+`);
+  }).join(`
+`);
+}
+
+// src/core/review/jev/adapters/git.ts
+function git(cwd, args) {
+  return execFileSync3("git", ["-C", cwd, ...args], {
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024
+  });
+}
+function lines(output) {
+  return output.split(`
+`).filter(Boolean);
+}
+function changedFiles(scope) {
+  const realScope = realpathSync(scope);
+  const repoRoot = git(realScope, ["rev-parse", "--show-toplevel"]).trim();
+  const relativeScope = relative(repoRoot, realScope) || ".";
+  const tracked = lines(git(repoRoot, [
+    "diff",
+    "HEAD",
+    "--name-only",
+    "--diff-filter=ACMRTUXBD",
+    "--",
+    relativeScope
+  ]));
+  const untracked = lines(git(repoRoot, ["ls-files", "--others", "--exclude-standard", "--", relativeScope]));
+  const untrackedSet = new Set(untracked);
+  const paths = [...new Set([...tracked, ...untracked])].filter((path) => SOURCE_FILE.test(path));
+  return paths.map((path) => ({
+    path,
+    patch: untrackedSet.has(path) ? patchForNewFile(readFileSync(resolve(repoRoot, path), "utf8")) : git(repoRoot, ["diff", "HEAD", "--unified=3", "--", path])
+  }));
 }
 
 // src/core/reflex/question-builder.ts
@@ -39603,6 +39679,909 @@ class TypeSafeJevAdvisor {
       } : undefined
     };
   }
+}
+
+// src/core/reflex/client.ts
+var DEFAULT_MODEL = "jev-1.13.0";
+function choice(instructions, criteria) {
+  return { type: "choice", instructions, criteria };
+}
+function noul(instructions, criteria) {
+  return { type: "noul", instructions, ...criteria ? { criteria } : {} };
+}
+function score(instructions, levels) {
+  return { type: "score", instructions, criteria: levels };
+}
+function validateEndpoint(apiKey, baseUrl) {
+  if (!apiKey) {
+    throw new Error("TYPESAFE_API_KEY is not configured in environment or client options");
+  }
+  try {
+    const parsedUrl = new URL(baseUrl);
+    const isLoopback = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "::1";
+    if (parsedUrl.protocol !== "https:" && !isLoopback) {
+      throw new Error(`Insecure endpoint rejected: TypeSafe API endpoint must use HTTPS to forward credentials securely (got ${baseUrl})`);
+    }
+  } catch (err) {
+    if (err.message?.includes("Insecure endpoint rejected"))
+      throw err;
+    throw new Error(`Invalid TypeSafe baseUrl: ${baseUrl}`);
+  }
+}
+function setupAbortBridge(timeoutMs, signal) {
+  const controller = new AbortController;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  const onExternalAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort();
+    } else {
+      signal.addEventListener("abort", onExternalAbort, { once: true });
+    }
+  }
+  return {
+    controller,
+    cleanup: () => {
+      clearTimeout(timeoutId);
+      if (signal) {
+        signal.removeEventListener("abort", onExternalAbort);
+      }
+    }
+  };
+}
+
+class TypeSafeClient {
+  apiKey;
+  baseUrl;
+  model;
+  timeoutMs;
+  fetchFn;
+  constructor(options = {}) {
+    this.apiKey = options.apiKey !== undefined ? options.apiKey : process.env.TYPESAFE_API_KEY || "";
+    this.baseUrl = options.baseUrl || TYPESAFE_API_ENDPOINT;
+    this.model = options.model || process.env.JEV_MODEL || DEFAULT_MODEL;
+    this.timeoutMs = options.timeoutMs || 1e4;
+    this.fetchFn = options.fetchFn || fetch;
+  }
+  async systemOne(req, signal) {
+    validateEndpoint(this.apiKey, this.baseUrl);
+    const t0 = Date.now();
+    const { controller, cleanup } = setupAbortBridge(this.timeoutMs, signal);
+    try {
+      const response = await this.fetchFn(this.baseUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+          model: req.model || this.model,
+          state: req.state,
+          questions: req.questions
+        }),
+        signal: controller.signal
+      });
+      cleanup();
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => "");
+        throw new Error(`TypeSafe API HTTP ${response.status}: ${errorText.slice(0, 300)}`);
+      }
+      const json = await response.json();
+      return {
+        answers: json.answers || {},
+        usage: json.usage,
+        model: json.model || this.model,
+        latencyMs: Date.now() - t0
+      };
+    } catch (err) {
+      cleanup();
+      throw err;
+    }
+  }
+}
+
+// src/core/review/jev/review/judgments.ts
+var client2 = new TypeSafeClient;
+var changeTypes = {
+  behavior: "Adds or changes runtime behavior",
+  interface: "Changes an exported API, type, protocol, or data shape",
+  infrastructure: "Changes execution, scheduling, build, or operational plumbing",
+  observability: "Changes events, logging, monitoring, or diagnostics",
+  refactor: "Restructures implementation without intending behavior changes",
+  routine: "A small routine change that fits none of the other categories"
+};
+function requireNoul(answers, question) {
+  const val = answers?.[question]?.noul;
+  if (typeof val !== "number" || !Number.isFinite(val)) {
+    throw new Error(`Screening answer "${question}" is missing or non-numeric`);
+  }
+  return val;
+}
+function requireChoice(answers, question) {
+  const ans = answers?.[question];
+  if (!ans || typeof ans.choice !== "string") {
+    throw new Error(`Judgment answer "${question}" is missing choice`);
+  }
+  return { choice: ans.choice, confidence: typeof ans.confidence === "number" ? ans.confidence : 1 };
+}
+function requireScore(answers, question) {
+  const ans = answers?.[question];
+  if (!ans || typeof ans.score !== "number" || !Number.isFinite(ans.score)) {
+    throw new Error(`Judgment answer "${question}" is missing score`);
+  }
+  return { score: ans.score, confidence: typeof ans.confidence === "number" ? ans.confidence : 1 };
+}
+async function screenFile(file, changedTests) {
+  const response = await client2.systemOne({
+    state: { file, changedTests },
+    questions: {
+      correctness: noul({
+        question: "Does file.patch directly support that this change likely introduces incorrect runtime behavior?",
+        inspect: "file.patch",
+        focus: "Concrete behavior, state, data-flow, or async errors introduced by added or modified lines",
+        ignore: ["Style preferences", "Naming concerns", "Unsupported speculation"]
+      }, {
+        true: {
+          what: "A changed line introduces a logic, syntax, data-flow, async, or reference error",
+          examples: ["Off-by-one loop bound", "Unhandled null or undefined value", "Race condition"]
+        },
+        false: { what: "The patch is consistent, intentional, and does not exhibit clear logic flaws" }
+      }),
+      security: noul({
+        question: "Does file.patch directly support that this change introduces a security risk or trust boundary violation?",
+        inspect: "file.patch",
+        focus: "Injection, unsafe inputs, privilege escalations, or unintended exposure"
+      }, {
+        true: {
+          what: "A changed path handles untrusted data unsafely or expands attacker reach",
+          examples: ["Unsanitized SQL or command construction", "Missing authorization check"]
+        },
+        false: { what: "The change operates within established security boundaries" }
+      }),
+      reliability: noul({
+        question: "Does file.patch directly support that this change risks process stability, unhandled exceptions, or resource leaks?",
+        inspect: "file.patch",
+        focus: "Resource lifecycle, unhandled rejection paths, timeouts, and invariants"
+      }, {
+        true: {
+          what: "A changed path can lose work, leak resources, hang, crash, or leave inconsistent state",
+          examples: ["Cleanup is skipped after failure", "Concurrent work updates shared state unsafely"]
+        },
+        false: { what: "The patch preserves safe lifecycle and failure handling" }
+      }),
+      compatibility: noul({
+        question: "Does file.patch directly support that this change can break an existing caller, format, protocol, or public behavior?",
+        inspect: "file.patch",
+        focus: "Externally observed contracts rather than internal implementation details"
+      }, {
+        true: {
+          what: "An existing consumer can fail because a contract changed without a safe migration",
+          examples: ["A required field is removed", "A persisted value changes meaning"]
+        },
+        false: { what: "The changed contract remains compatible or is entirely internal" }
+      }),
+      testGap: noul({
+        question: "Does file.patch change important behavior without adequate targeted evidence in changedTests?",
+        compare: ["file.patch", "changedTests"],
+        focus: "New branches, boundaries, failure paths, and component interactions"
+      }, {
+        true: {
+          what: "Important changed behavior has no targeted changed test",
+          examples: ["A new failure branch has no assertion", "A protocol change lacks a compatibility test"]
+        },
+        false: {
+          what: "Changed tests exercise the important behavior, or the patch is non-behavioral",
+          examples: ["A focused regression test covers the branch", "Documentation-only change"]
+        }
+      })
+    }
+  });
+  return {
+    file,
+    probabilities: {
+      correctness: requireNoul(response.answers, "correctness"),
+      security: requireNoul(response.answers, "security"),
+      reliability: requireNoul(response.answers, "reliability"),
+      compatibility: requireNoul(response.answers, "compatibility"),
+      testGap: requireNoul(response.answers, "testGap")
+    }
+  };
+}
+async function profileFile(file, screeningProbabilities) {
+  const response = await client2.systemOne({
+    state: { file, screeningProbabilities },
+    questions: {
+      category: choice({ question: "Which category best describes file.patch?", focus: "Primary purpose of the change" }, changeTypes),
+      reviewPriority: score("Rate how closely a human should review file.patch, considering the code and screeningProbabilities.", [...reviewPriorityRubric])
+    }
+  });
+  const cat = requireChoice(response.answers, "category");
+  const prio = requireScore(response.answers, "reviewPriority");
+  return {
+    file: file.path,
+    category: cat.choice,
+    categoryConfidence: cat.confidence,
+    reviewPriority: prio.score,
+    reviewPriorityConfidence: prio.confidence
+  };
+}
+async function locateSignal(signal) {
+  const hunks = parseHunks(signal.file.patch);
+  if (hunks.length === 0)
+    return null;
+  const suspectedConcern = {
+    dimension: signal.dimension,
+    definition: dimensions[signal.dimension]
+  };
+  const location = await client2.systemOne({
+    state: {
+      file: signal.file.path,
+      suspectedConcern: { ...suspectedConcern, screeningProbability: signal.probability },
+      candidateHunks: hunks
+    },
+    questions: {
+      evidence: choice({
+        question: "Which candidate hunk provides the strongest direct evidence for suspectedConcern?",
+        fallback: "Select noMatch when no hunk provides sufficient evidence"
+      }, {
+        ...Object.fromEntries(hunks.map((hunk) => [hunk.id, "Candidate beginning at changed-file line " + hunk.startLine])),
+        noMatch: "No candidate hunk directly supports the suspected concern"
+      })
+    }
+  });
+  const selected = location.answers?.evidence;
+  if (!selected || typeof selected.choice !== "string" || selected.choice === "noMatch" || (selected.confidence ?? 0) < MIN_LOCATION_CONFIDENCE)
+    return null;
+  const hunk = hunks.find((candidate) => candidate.id === selected.choice);
+  if (!hunk)
+    return null;
+  const classification = await client2.systemOne({
+    state: { file: signal.file.path, suspectedConcern, selectedEvidence: hunk },
+    questions: {
+      mechanism: choice("Which mechanism best describes the suspected concern supported by selectedEvidence?", mechanisms[signal.dimension])
+    }
+  });
+  const mechanism = classification.answers?.mechanism;
+  if (!mechanism || typeof mechanism.choice !== "string" || mechanism.choice === "noIssue")
+    return null;
+  const impact = await client2.systemOne({
+    state: { file: signal.file.path, suspectedConcern, selectedEvidence: hunk },
+    questions: {
+      severity: score("Assuming selectedEvidence exhibits suspectedConcern, rate the likely production impact.", [...severityRubric])
+    }
+  });
+  const severity = impact.answers?.severity;
+  if (!severity || typeof severity.score !== "number" || !Number.isFinite(severity.score))
+    return null;
+  let owner = null;
+  let ownerConfidence = null;
+  if (severity.score >= ROUTE_SEVERITY) {
+    const routing = await client2.systemOne({
+      state: {
+        file: signal.file.path,
+        concern: {
+          dimension: signal.dimension,
+          mechanism: mechanism.choice,
+          severity: severity.score
+        },
+        selectedEvidence: hunk
+      },
+      questions: {
+        owner: choice("Which reviewer is best suited to investigate this concern?", owners)
+      }
+    });
+    owner = routing.answers?.owner?.choice ?? null;
+    ownerConfidence = routing.answers?.owner?.confidence ?? null;
+  }
+  return {
+    ...signal,
+    line: hunk.startLine,
+    locationConfidence: selected.confidence ?? 1,
+    mechanism: mechanism.choice,
+    mechanismConfidence: mechanism.confidence ?? 1,
+    severity: severity.score,
+    severityConfidence: severity.confidence ?? 1,
+    owner,
+    ownerConfidence,
+    action: severity.score >= BLOCKING_SEVERITY ? "request_changes" : "comment"
+  };
+}
+
+// src/core/review/jev/review/workflow.ts
+async function runReview(scope, log, strategy) {
+  const { files, contextFiles } = strategy.discover(scope);
+  if (files.length === 0) {
+    throw new Error("No " + strategy.subject + " JavaScript or TypeScript files found under " + scope);
+  }
+  log("Screening " + files.length + " " + strategy.subject + " files with " + contextFiles.length + " " + strategy.context + " files as context...");
+  const matrix = await mapLimit(files, CONCURRENCY, async (file) => {
+    log("  screen " + file.path);
+    try {
+      return await strategy.screen(file, contextFiles);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error("Screening " + file.path + " failed: " + message, { cause: error });
+    }
+  });
+  const signals = matrix.flatMap(({ file, probabilities }) => Object.entries(probabilities).map(([dimension, probability]) => ({ file, dimension, probability }))).filter((signal) => signal.probability >= SCREEN_THRESHOLD).sort((a, b) => b.probability - a.probability);
+  const profileCandidates = [...matrix].sort((a, b) => maxProbability(b) - maxProbability(a)).slice(0, MAX_PROFILES);
+  log("Profiling " + profileCandidates.length + " files...");
+  const profiles = await mapLimit(profileCandidates, CONCURRENCY, ({ file, probabilities }) => {
+    log("  profile " + file.path);
+    return strategy.profile(file, probabilities);
+  });
+  const followUps = signals.slice(0, MAX_FOLLOW_UPS);
+  log("Following " + followUps.length + " of " + signals.length + " signals at or above " + SCREEN_THRESHOLD + "...");
+  const located = await mapLimit(followUps, CONCURRENCY, (signal) => {
+    log("  inspect " + signal.file.path + " [" + signal.dimension + "=" + signal.probability.toFixed(2) + "]");
+    return strategy.locate(signal);
+  });
+  const findings = located.filter((finding) => finding !== null).sort((a, b) => b.severity - a.severity);
+  return {
+    mode: strategy.mode,
+    scope,
+    dimensions: dimensionMetadata,
+    config: {
+      screenThreshold: SCREEN_THRESHOLD,
+      severityMax: SEVERITY_MAX,
+      maxFollowUps: MAX_FOLLOW_UPS,
+      maxProfiles: MAX_PROFILES
+    },
+    screenedFiles: files.length,
+    contextFiles: contextFiles.map((file) => file.path),
+    matrix: matrix.map(({ file, probabilities }) => ({ file: file.path, ...probabilities })),
+    followedSignals: followUps.length,
+    profiles,
+    workflow: {
+      screenedCells: files.length * Object.keys(dimensions).length,
+      thresholdSignals: signals.length,
+      profiledFiles: profiles.length,
+      followedSignals: followUps.length,
+      locatedFindings: findings.length,
+      routedFindings: findings.filter((finding) => finding.owner !== null).length
+    },
+    findings: findings.map(({ file, ...finding }) => ({ file: file.path, ...finding }))
+  };
+}
+function maxProbability(screening) {
+  return Math.max(...Object.values(screening.probabilities));
+}
+async function mapLimit(items, limit, callback) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  async function worker() {
+    while (nextIndex < items.length) {
+      const index = nextIndex++;
+      results[index] = await callback(items[index]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
+// src/core/review/jev/review/changes.ts
+function runChangeReview(scope, log) {
+  return runReview(scope, log, {
+    mode: "changes",
+    subject: "changed source",
+    context: "changed test",
+    discover: (target) => {
+      const changed = changedFiles(target);
+      const contextFiles = changed.filter((file) => TEST_FILE.test(file.path));
+      return {
+        files: changed.filter((file) => !TEST_FILE.test(file.path)),
+        contextFiles
+      };
+    },
+    screen: screenFile,
+    profile: profileFile,
+    locate: locateSignal
+  });
+}
+
+// src/core/review/jev/adapters/repository-files.ts
+import { execFileSync as execFileSync4 } from "node:child_process";
+import { existsSync, readFileSync as readFileSync2, realpathSync as realpathSync2 } from "node:fs";
+import { relative as relative2, resolve as resolve2 } from "node:path";
+function git2(cwd, args) {
+  return execFileSync4("git", ["-C", cwd, ...args], {
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024
+  });
+}
+function repositoryFiles(scope) {
+  const realScope = realpathSync2(scope);
+  const repoRoot = git2(realScope, ["rev-parse", "--show-toplevel"]).trim();
+  const relativeScope = relative2(repoRoot, realScope) || ".";
+  const paths = git2(repoRoot, [
+    "ls-files",
+    "--cached",
+    "--others",
+    "--exclude-standard",
+    "--",
+    relativeScope
+  ]).split(`
+`).filter((path) => path.length > 0 && SOURCE_FILE.test(path) && existsSync(resolve2(repoRoot, path)));
+  return paths.map((path) => ({
+    path,
+    content: readFileSync2(resolve2(repoRoot, path), "utf8")
+  }));
+}
+
+// src/core/review/jev/review/codebase-judgments.ts
+import { basename, dirname } from "node:path";
+var client3 = new TypeSafeClient;
+var REGION_LINES = 80;
+var SCREEN_REGION_LINES = 160;
+var MAX_RELATED_TESTS = 4;
+var MAX_TEST_SNIPPET_CHARS = 1800;
+var fileRoles = {
+  entrypoint: "Application, command, route, or public package entry point",
+  boundary: "Authentication, validation, serialization, or external-system boundary",
+  domain: "Core business rules, state transitions, or domain behavior",
+  persistence: "Database, cache, filesystem, migration, or durable state",
+  infrastructure: "Runtime, scheduling, networking, build, or operational plumbing",
+  utility: "Shared helper, adapter, formatting, or low-level utility"
+};
+async function screenSourceFile(file, testFiles) {
+  const relatedTests = selectRelatedTests(file, testFiles);
+  const results = [];
+  for (const region of sourceRegions(file.content, SCREEN_REGION_LINES)) {
+    const response = await client3.systemOne({
+      state: {
+        file: { path: file.path, startLine: region.startLine, content: region.content },
+        relatedTests
+      },
+      questions: {
+        correctness: noul({
+          question: "Does file.content directly support that this code contains incorrect runtime behavior?",
+          inspect: "file.content",
+          focus: "Concrete behavior, state, data-flow, or async errors reachable in realistic use",
+          ignore: ["Style preferences", "Naming concerns", "Missing context with no concrete failure path"]
+        }, {
+          true: {
+            what: "The source contains a realistic path to a wrong runtime result",
+            examples: ["A condition handles the opposite case", "State is updated under the wrong key"]
+          },
+          false: {
+            what: "The implementation is coherent or no concrete incorrect path is supported",
+            not_for: "Unusual code that is still internally consistent"
+          }
+        }),
+        security: noul({
+          question: "Does file.content directly support that this code weakens a security boundary?",
+          inspect: "file.content",
+          focus: "Authorization, injection, secret exposure, trust boundaries, and unsafe defaults"
+        }, {
+          true: {
+            what: "The source contains a concrete path around a control or into an unsafe sink",
+            examples: ["A privileged action lacks authorization", "Untrusted input reaches command execution"]
+          },
+          false: {
+            what: "No concrete security weakness is supported by this file",
+            not_for: "Code that merely handles credentials or permissions safely"
+          }
+        }),
+        reliability: noul({
+          question: "Does file.content directly support that this code can crash, race, leak, deadlock, or recover poorly?",
+          inspect: "file.content",
+          focus: "Realistic resource, concurrency, cancellation, and failure paths"
+        }, {
+          true: {
+            what: "A reachable path can lose work, leak resources, hang, crash, or leave inconsistent state",
+            examples: ["Cleanup is skipped after failure", "Concurrent work mutates shared state unsafely"]
+          },
+          false: { what: "Lifecycle and failure handling appear safe, or no concrete failure path is supported" }
+        }),
+        compatibility: noul({
+          question: "Does file.content directly support an internal inconsistency that can break a caller, format, protocol, or documented behavior?",
+          inspect: "file.content",
+          focus: "Contradictions visible in this source, not guesses about unknown historical versions"
+        }, {
+          true: {
+            what: "The source contains conflicting contracts or a concrete caller-facing mismatch",
+            examples: ["A parser and serializer disagree on a required field", "An exported type contradicts runtime behavior"]
+          },
+          false: {
+            what: "The visible contracts are internally consistent",
+            not_for: "Speculation that an API may once have behaved differently"
+          }
+        }),
+        testGap: noul({
+          question: "Does file.content contain important behavior without adequate targeted evidence in relatedTests?",
+          compare: ["file.content", "relatedTests"],
+          focus: "Critical branches, boundaries, failure paths, and component interactions",
+          caution: "A filename mismatch alone is not enough; identify behavior that specifically needs a test"
+        }, {
+          true: {
+            what: "Important behavior is present and the related tests do not exercise it",
+            examples: ["An error-recovery branch has no assertion", "Authorization behavior lacks a denial test"]
+          },
+          false: {
+            what: "Related tests cover the important behavior, or this file has no behavior needing direct tests",
+            examples: ["A focused test covers the boundary", "A declarative constants module"]
+          }
+        })
+      }
+    });
+    results.push({
+      correctness: response.answers.correctness.noul,
+      security: response.answers.security.noul,
+      reliability: response.answers.reliability.noul,
+      compatibility: response.answers.compatibility.noul,
+      testGap: response.answers.testGap.noul
+    });
+  }
+  return {
+    file,
+    probabilities: {
+      correctness: Math.max(...results.map((result) => result.correctness)),
+      security: Math.max(...results.map((result) => result.security)),
+      reliability: Math.max(...results.map((result) => result.reliability)),
+      compatibility: Math.max(...results.map((result) => result.compatibility)),
+      testGap: Math.max(...results.map((result) => result.testGap))
+    }
+  };
+}
+async function profileSourceFile(file, screeningProbabilities) {
+  const response = await client3.systemOne({
+    state: { file, screeningProbabilities },
+    questions: {
+      category: choice({ question: "Which role best describes this source file?", focus: "Primary runtime responsibility" }, fileRoles),
+      reviewPriority: score("Rate how closely a human should review this complete file, considering its role and screeningProbabilities.", [...reviewPriorityRubric])
+    }
+  });
+  return {
+    file: file.path,
+    category: response.answers.category.choice,
+    categoryConfidence: response.answers.category.confidence,
+    reviewPriority: response.answers.reviewPriority.score,
+    reviewPriorityConfidence: response.answers.reviewPriority.confidence
+  };
+}
+async function locateSourceSignal(signal) {
+  const regions = sourceRegions(signal.file.content);
+  if (regions.length === 0)
+    return null;
+  const suspectedConcern = {
+    dimension: signal.dimension,
+    definition: dimensions[signal.dimension]
+  };
+  const location = await client3.systemOne({
+    state: {
+      file: signal.file.path,
+      suspectedConcern: { ...suspectedConcern, screeningProbability: signal.probability },
+      candidateRegions: regions
+    },
+    questions: {
+      evidence: choice({
+        question: "Which candidate region provides the strongest direct evidence for suspectedConcern?",
+        fallback: "Select noMatch when no region provides sufficient evidence"
+      }, {
+        ...Object.fromEntries(regions.map((region) => [region.id, "Source beginning at line " + region.startLine])),
+        noMatch: "No source region directly supports the suspected concern"
+      })
+    }
+  });
+  const selected = location.answers.evidence;
+  if (selected.choice === "noMatch" || selected.confidence < MIN_LOCATION_CONFIDENCE)
+    return null;
+  const region = regions.find((candidate) => candidate.id === selected.choice);
+  if (!region)
+    return null;
+  const classification = await client3.systemOne({
+    state: { file: signal.file.path, suspectedConcern, selectedEvidence: region },
+    questions: {
+      mechanism: choice("Which mechanism best describes the suspected concern supported by selectedEvidence?", mechanisms[signal.dimension])
+    }
+  });
+  const mechanism = classification.answers.mechanism;
+  if (mechanism.choice === "noIssue")
+    return null;
+  const impact = await client3.systemOne({
+    state: { file: signal.file.path, suspectedConcern, selectedEvidence: region },
+    questions: {
+      severity: score("Assuming selectedEvidence exhibits suspectedConcern, rate the likely production impact.", [...severityRubric])
+    }
+  });
+  const severity = impact.answers.severity;
+  let owner = null;
+  let ownerConfidence = null;
+  if (severity.score >= ROUTE_SEVERITY) {
+    const routing = await client3.systemOne({
+      state: {
+        file: signal.file.path,
+        concern: {
+          dimension: signal.dimension,
+          mechanism: mechanism.choice,
+          severity: severity.score
+        },
+        selectedEvidence: region
+      },
+      questions: {
+        owner: choice("Which reviewer is best suited to investigate this concern?", owners)
+      }
+    });
+    owner = routing.answers.owner.choice;
+    ownerConfidence = routing.answers.owner.confidence;
+  }
+  return {
+    ...signal,
+    line: region.startLine,
+    locationConfidence: selected.confidence,
+    mechanism: mechanism.choice,
+    mechanismConfidence: mechanism.confidence,
+    severity: severity.score,
+    severityConfidence: severity.confidence,
+    owner,
+    ownerConfidence,
+    action: severity.score >= BLOCKING_SEVERITY ? "request_changes" : "comment"
+  };
+}
+function sourceRegions(content, linesPerRegion = REGION_LINES) {
+  const lines = content.split(`
+`);
+  const count = Math.ceil(lines.length / linesPerRegion);
+  return Array.from({ length: count }, (_, index) => ({
+    id: "R" + (index + 1),
+    startLine: index * linesPerRegion + 1,
+    content: lines.slice(index * linesPerRegion, (index + 1) * linesPerRegion).join(`
+`)
+  }));
+}
+function selectRelatedTests(file, testFiles) {
+  const stem = basename(file.path).replace(/\.[^.]+$/, "");
+  const directory = dirname(file.path);
+  return testFiles.map((test) => ({
+    test,
+    score: (test.path.includes(stem) ? 2 : 0) + (test.path.startsWith(directory) ? 1 : 0)
+  })).filter(({ score }) => score > 0).sort((a, b) => b.score - a.score || a.test.path.localeCompare(b.test.path)).slice(0, MAX_RELATED_TESTS).map(({ test }) => compactTest(test, stem));
+}
+function compactTest(test, sourceStem) {
+  const lines = test.content.split(`
+`);
+  const selected = new Set;
+  const stem = sourceStem.toLowerCase();
+  for (let index = 0;index < lines.length; index++) {
+    const line = lines[index].toLowerCase();
+    if (line.includes(stem) || line.includes("describe(") || line.includes("describe.") || line.includes("test(") || line.includes("test.") || line.includes("it(") || line.includes("it.")) {
+      for (let nearby = Math.max(0, index - 2);nearby <= Math.min(lines.length - 1, index + 2); nearby++) {
+        selected.add(nearby);
+      }
+    }
+  }
+  let content = [...selected].sort((a, b) => a - b).map((index) => lines[index]).join(`
+`);
+  if (content.length === 0)
+    content = test.content;
+  if (content.length > MAX_TEST_SNIPPET_CHARS) {
+    const side = Math.floor((MAX_TEST_SNIPPET_CHARS - 7) / 2);
+    content = content.slice(0, side) + `
+...
+` + content.slice(-side);
+  }
+  return { path: test.path, content };
+}
+
+// src/core/review/jev/review/codebase.ts
+function runCodebaseReview(scope, log) {
+  return runReview(scope, log, {
+    mode: "codebase",
+    subject: "codebase source",
+    context: "repository test",
+    discover: (target) => {
+      const repository = repositoryFiles(target);
+      const contextFiles = repository.filter((file) => TEST_FILE.test(file.path));
+      return {
+        files: repository.filter((file) => !TEST_FILE.test(file.path)),
+        contextFiles
+      };
+    },
+    screen: screenSourceFile,
+    profile: profileSourceFile,
+    locate: locateSourceSignal
+  });
+}
+
+// src/core/review/jev/domain/types.ts
+function isReviewReport(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return false;
+  const report = value;
+  return typeof report.scope === "string" && typeof report.screenedFiles === "number" && Array.isArray(report.matrix) && typeof report.followedSignals === "number" && Array.isArray(report.findings);
+}
+// src/core/review/jev/adapters/report-store.ts
+import { mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
+import { dirname as dirname2, resolve as resolve3 } from "node:path";
+function reportPath() {
+  return process.env.REVIEW_FILE ? resolve3(process.env.REVIEW_FILE) : resolve3(process.cwd(), ".fable", "reflex", "reviews", "latest.json");
+}
+async function readReport(path = reportPath()) {
+  let text;
+  let savedAt;
+  try {
+    [text, savedAt] = await Promise.all([
+      readFile(path, "utf8"),
+      stat(path).then((info) => info.mtime.toISOString())
+    ]);
+  } catch (error) {
+    if (error.code === "ENOENT")
+      return { status: "empty" };
+    return { status: "error", message: "Report could not be read" };
+  }
+  try {
+    const report = JSON.parse(text);
+    if (isReviewReport(report))
+      return { status: "ok", savedAt, report };
+  } catch {}
+  return { status: "error", message: "Report is not review output" };
+}
+async function saveReport(report, path = reportPath()) {
+  await mkdir(dirname2(path), { recursive: true });
+  const temp = `${path}.${process.pid}.tmp`;
+  await writeFile(temp, `${JSON.stringify(report, null, 2)}
+`);
+  await rename(temp, path);
+}
+// src/core/review/jev/dashboard/server.ts
+import { readFile as readFile2 } from "node:fs/promises";
+import { createServer } from "node:http";
+import { join, relative as relative3 } from "node:path";
+var HOST = "127.0.0.1";
+var PORT = Number(process.env.PORT ?? 4317);
+var REPORT = reportPath();
+var PUBLIC_DIR = join(import.meta.dirname, "public");
+var assets = {
+  "/": ["index.html", "text/html; charset=utf-8"],
+  "/style.css": ["style.css", "text/css; charset=utf-8"],
+  "/app.js": ["app.js", "text/javascript; charset=utf-8"]
+};
+function send(res, status, type, body) {
+  res.writeHead(status, {
+    "Content-Type": type,
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' data:"
+  });
+  res.end(body);
+}
+function json2(res, status, body) {
+  send(res, status, "application/json; charset=utf-8", JSON.stringify(body));
+}
+async function handle(req, res) {
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    return send(res, 405, "text/plain; charset=utf-8", "Method not allowed");
+  }
+  const { pathname } = new URL(req.url ?? "/", "http://localhost");
+  if (pathname === "/api/review") {
+    const source = relative3(process.cwd(), REPORT) || REPORT;
+    return json2(res, 200, { source, ...await readReport(REPORT) });
+  }
+  const asset = assets[pathname];
+  if (!asset)
+    return send(res, 404, "text/plain; charset=utf-8", "Not found");
+  const [file, type] = asset;
+  try {
+    const body = await readFile2(join(PUBLIC_DIR, file));
+    send(res, 200, type, body);
+  } catch {
+    send(res, 500, "text/plain; charset=utf-8", "Asset unavailable");
+  }
+}
+var startDashboard = (port = PORT, host = HOST) => {
+  const server = createServer(handle);
+  return new Promise((resolve) => {
+    server.listen(port, host, () => {
+      process.stdout.write(`Jev review dashboard: http://${host}:${port}
+`);
+      process.stdout.write(`report: ${relative3(process.cwd(), REPORT) || REPORT}
+`);
+      resolve({ server, port, host });
+    });
+  });
+};
+if (false) {}
+
+// src/core/review/jev/index.ts
+async function reviewChanges(scope = process.cwd(), log) {
+  return runChangeReview(scope, log || (() => {}));
+}
+async function reviewCodebase(scope = process.cwd(), log) {
+  return runCodebaseReview(scope, log || (() => {}));
+}
+// src/cli/commands/reflex.ts
+import fs39 from "node:fs";
+import path41 from "node:path";
+
+// src/core/reflex/ledger.ts
+import crypto4 from "node:crypto";
+import fs38 from "node:fs";
+import path40 from "node:path";
+var MAX_REFLEX_LEDGER_LINES = 5000;
+function hashTaskText(text) {
+  return crypto4.createHash("sha256").update(text, "utf8").digest("hex");
+}
+function getReflexDir(repoRoot = process.cwd()) {
+  const fableDir = path40.join(repoRoot, ".fable");
+  if (fs38.existsSync(fableDir)) {
+    const stat = fs38.lstatSync(fableDir);
+    if (stat.isSymbolicLink()) {
+      throw new Error("Reflex security violation: .fable directory must not be a symlink");
+    }
+  }
+  const reflexDir = path40.join(fableDir, "reflex");
+  if (fs38.existsSync(reflexDir)) {
+    const stat = fs38.lstatSync(reflexDir);
+    if (stat.isSymbolicLink()) {
+      throw new Error("Reflex security violation: .fable/reflex directory must not be a symlink");
+    }
+  }
+  return reflexDir;
+}
+function appendReflexEvent(event, repoRoot = process.cwd()) {
+  try {
+    const reflexDir = getReflexDir(repoRoot);
+    if (!fs38.existsSync(reflexDir)) {
+      fs38.mkdirSync(reflexDir, { recursive: true });
+    }
+    const eventsFile = path40.join(reflexDir, "events.jsonl");
+    if (fs38.existsSync(eventsFile)) {
+      const stat = fs38.lstatSync(eventsFile);
+      if (stat.isSymbolicLink() || !stat.isFile()) {
+        return;
+      }
+    }
+    const line = JSON.stringify(event) + `
+`;
+    fs38.appendFileSync(eventsFile, line, "utf8");
+    rotateLedgerIfNecessary(eventsFile);
+  } catch {}
+}
+function readReflexEvents(options) {
+  const limit = options?.limit ?? 100;
+  const repoRoot = options?.repoRoot || process.cwd();
+  try {
+    const reflexDir = getReflexDir(repoRoot);
+    const eventsFile = path40.join(reflexDir, "events.jsonl");
+    if (!fs38.existsSync(eventsFile)) {
+      return [];
+    }
+    const stat = fs38.lstatSync(eventsFile);
+    if (stat.isSymbolicLink() || !stat.isFile()) {
+      return [];
+    }
+    const content = fs38.readFileSync(eventsFile, "utf8");
+    const lines = content.trim().split(`
+`).filter(Boolean);
+    const events = [];
+    for (let i = lines.length - 1;i >= 0 && events.length < limit; i--) {
+      try {
+        const parsed = JSON.parse(lines[i]);
+        if (parsed.schemaVersion === 1) {
+          events.push(parsed);
+        }
+      } catch {}
+    }
+    return events;
+  } catch {
+    return [];
+  }
+}
+function rotateLedgerIfNecessary(eventsFile) {
+  try {
+    const stat = fs38.statSync(eventsFile);
+    if (stat.size > 5 * 1024 * 1024) {
+      const content = fs38.readFileSync(eventsFile, "utf8");
+      const lines = content.trim().split(`
+`);
+      if (lines.length > MAX_REFLEX_LEDGER_LINES) {
+        const truncated = lines.slice(-Math.floor(MAX_REFLEX_LEDGER_LINES / 2)).join(`
+`) + `
+`;
+        fs38.writeFileSync(eventsFile, truncated, "utf8");
+      }
+    }
+  } catch {}
 }
 
 // src/core/reflex/envelope.ts
@@ -40318,7 +41297,7 @@ async function runReflexEvaluation(corpus = STANDARD_REFLEX_BENCHMARK_CORPUS, op
 
 // src/core/reflex/compaction/request.ts
 var SYSTEM_ONE_URL = "https://api.typesafe.ai/v1/systemone";
-var DEFAULT_MODEL = "jev-latest";
+var DEFAULT_MODEL2 = "jev-latest";
 function buildJevRequest(params, state, questions) {
   const targetUrl = params.baseUrl ?? SYSTEM_ONE_URL;
   if (params.apiKey && !targetUrl.startsWith("https://")) {
@@ -40332,7 +41311,7 @@ function buildJevRequest(params, state, questions) {
       "content-type": "application/json"
     },
     body: JSON.stringify({
-      model: params.model ?? DEFAULT_MODEL,
+      model: params.model ?? DEFAULT_MODEL2,
       state,
       questions
     })
@@ -40812,29 +41791,330 @@ async function compact(messages, asker, options = {}) {
 function compactMessages(messages, options = {}) {
   return compact(messages, new JevClient(options), options);
 }
-// src/cli/commands/reflex.ts
-async function runReflexCommand(args) {
-  const sub = args[0] || "status";
-  const subArgs = args.slice(1);
-  switch (sub) {
-    case "status":
-      return handleReflexStatus(subArgs);
-    case "doctor":
-      return handleReflexDoctor(subArgs);
-    case "route":
-      return handleReflexRoute(subArgs);
-    case "ledger":
-      return handleReflexLedger(subArgs);
-    case "eval":
-      return handleReflexEval(subArgs);
-    case "compact":
-      return handleReflexCompact(subArgs);
-    default:
-      console.error(`Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact`);
-      return 1;
+// src/core/reflex/model-router/core/normalise.ts
+function normalizeCosts(costs) {
+  const min = Math.min(...costs);
+  const max = Math.max(...costs);
+  if (max === min)
+    return costs.map(() => 0);
+  return costs.map((cost) => (cost - min) / (max - min));
+}
+
+// src/core/reflex/model-router/jev/classifier.ts
+class JevClassifier {
+  client;
+  constructor(customClient) {
+    this.client = customClient || new TypeSafeClient;
+  }
+  async classify(query, models) {
+    const response = await this.client.systemOne({
+      state: { document: query },
+      questions: {
+        tier: score("Which model tier should handle this query?", models.map((m) => m.description))
+      }
+    });
+    const raw = response.answers?.tier?.probabilities;
+    if (!raw || typeof raw !== "object") {
+      throw new Error("Invalid classifier response: missing tier probabilities from TypeSafe API");
+    }
+    const probabilities = Object.values(raw).map((p) => {
+      const num = Number(p);
+      if (!Number.isFinite(num)) {
+        throw new Error("Invalid classifier response: non-finite probability value received");
+      }
+      return num;
+    });
+    if (probabilities.length !== models.length) {
+      throw new Error(`Classifier response mismatch: expected ${models.length} model probabilities, received ${probabilities.length}`);
+    }
+    return probabilities;
   }
 }
-function handleReflexStatus(args) {
+
+// src/core/reflex/model-router/core/loss.ts
+function calculateLoss(chosenTier, requiredTier, normalizedCost, lambda) {
+  const underProvision = Math.max(0, requiredTier - chosenTier);
+  return normalizedCost + lambda * underProvision ** 2;
+}
+function buildLossMatrix(models, lambda) {
+  const numTiers = models.length;
+  const lossMatrix = [];
+  for (let chosenTier = 0;chosenTier < numTiers; chosenTier++) {
+    const row = [];
+    const chosenModel = models[chosenTier];
+    for (let requiredTier = 0;requiredTier < numTiers; requiredTier++) {
+      row.push(calculateLoss(chosenTier, requiredTier, chosenModel.normalizedCost, lambda));
+    }
+    lossMatrix.push(row);
+  }
+  return lossMatrix;
+}
+function calculateExpectedLoss(probabilities, lossMatrix) {
+  const expectedLosses = [];
+  for (let i = 0;i < lossMatrix.length; i++) {
+    let expectedLoss = 0;
+    for (let j = 0;j < probabilities.length; j++)
+      expectedLoss += probabilities[j] * lossMatrix[i][j];
+    expectedLosses.push(expectedLoss);
+  }
+  return expectedLosses;
+}
+
+// src/core/reflex/model-router/core/selection.ts
+function selectBestTier(expectedLosses) {
+  return expectedLosses.indexOf(Math.min(...expectedLosses));
+}
+
+// src/core/reflex/model-router/router.ts
+class Router {
+  models;
+  classifier;
+  lossMatrix;
+  lambda = 1;
+  constructor(config) {
+    this.validateModels(config.models);
+    const normalizedCosts = normalizeCosts(config.models.map((model) => model.cost));
+    this.models = config.models.map((model, i) => ({
+      ...model,
+      normalizedCost: normalizedCosts[i]
+    }));
+    if (config.lambda !== undefined && (!Number.isFinite(config.lambda) || config.lambda < 0)) {
+      throw new Error("Lambda must be finite and non-negative");
+    }
+    this.lambda = typeof config.lambda === "number" ? config.lambda : 1;
+    this.classifier = new JevClassifier(config.client);
+    this.lossMatrix = buildLossMatrix(this.models, this.lambda);
+  }
+  async route(query) {
+    const probabilities = await this.classifier.classify(query, this.models);
+    const expectedLosses = calculateExpectedLoss(probabilities, this.lossMatrix);
+    const bestModelIndex = selectBestTier(expectedLosses);
+    const bestModel = this.models[bestModelIndex];
+    const resultProbabilities = {};
+    for (let i = 0;i < this.models.length; i++) {
+      resultProbabilities[this.models[i].name] = probabilities[i];
+    }
+    return {
+      model: bestModel.name,
+      tier: bestModelIndex,
+      probabilities: resultProbabilities
+    };
+  }
+  validateModels(models) {
+    if (models.length < 2) {
+      throw new Error("Router requires at least 2 models");
+    }
+    if (models.length > 10) {
+      throw new Error("Router supports at most 10 models (Jev's Score primitive limit)");
+    }
+    const names = new Set;
+    for (let i = 0;i < models.length; i++) {
+      this.validateSingleModel(models[i], i, models, names);
+    }
+  }
+  validateSingleModel(model, index, allModels, names) {
+    if (!model.name.trim())
+      throw new Error("Model name cannot be empty");
+    if (!Number.isFinite(model.cost) || model.cost < 0)
+      throw new Error(`Invalid cost for model: ${model.name}`);
+    if (!model.description.trim())
+      throw new Error(`Description required for model: ${model.name}`);
+    if (names.has(model.name))
+      throw new Error(`Duplicate model: ${model.name}`);
+    if (index > 0 && model.cost < allModels[index - 1].cost) {
+      process.stderr.write(`"${model.name}" (cost=${model.cost}) is cheaper than ` + `"${allModels[index - 1].name}" (cost=${allModels[index - 1].cost}) but listed later. ` + `Models should be ordered weakest to strongest capability — verify this is intentional if costs don't track capability.
+`);
+    }
+    names.add(model.name);
+  }
+}
+
+// src/core/reflex/model-router/index.ts
+var DEFAULT_AGENT_MODELS = [
+  {
+    name: "flash_lite",
+    cost: 1,
+    description: "Quick research lookups, simple file reads, syntax formatting, and fast deterministic checks"
+  },
+  {
+    name: "flash",
+    cost: 3,
+    description: "Standard feature development, unit test creation, bounded bug fixes, and typical coding tasks"
+  },
+  {
+    name: "pro",
+    cost: 10,
+    description: "Complex distributed architecture, large multi-module refactorings, deep debugging, and multi-agent deliberation"
+  }
+];
+async function routeTaskToOptimalModel(task, options) {
+  const models = options?.models || DEFAULT_AGENT_MODELS;
+  const router = new Router({
+    models,
+    client: options?.client,
+    lambda: options?.lambda
+  });
+  return router.route(task);
+}
+
+// src/core/reflex/recipes-bridge.ts
+function sliceContentIntoChunks(content, chunkSize = 6000, overlap = 500) {
+  if (content.length <= chunkSize)
+    return [content];
+  const stride = chunkSize - overlap;
+  const chunks = [];
+  for (let i = 0;i < content.length; i += stride) {
+    chunks.push(content.slice(i, i + chunkSize));
+    if (i + chunkSize >= content.length)
+      break;
+  }
+  return chunks;
+}
+async function evaluateChunkSecurity(client, chunk) {
+  const response = await client.systemOne({
+    state: { content: chunk },
+    questions: {
+      has_secrets: noul("Does `content` contain raw private credentials, API keys, tokens, secret codes, or service keys?"),
+      has_pii: noul("Does `content` contain sensitive personal identifiable information (passwords, private emails, SSN)?"),
+      prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
+    }
+  });
+  const readProb = (key) => {
+    const val = response.answers?.[key]?.noul;
+    if (typeof val !== "number" || !Number.isFinite(val)) {
+      throw new Error(`Security scan answer "${key}" is missing or not a finite number`);
+    }
+    return val;
+  };
+  return {
+    secProb: readProb("has_secrets"),
+    piiProb: readProb("has_pii"),
+    injProb: readProb("prompt_injection")
+  };
+}
+
+class RecipesBridge {
+  client;
+  constructor(customClient) {
+    this.client = customClient || new TypeSafeClient;
+  }
+  async triageErrorLog(logText) {
+    const truncatedLog = logText.slice(-4000);
+    const response = await this.client.systemOne({
+      state: { error_log: truncatedLog },
+      questions: {
+        diagnosis_level: choice("Which root-cause category best explains the failure shown in `error_log`?", {
+          "harness-environment": "Level 1: Environment or harness failure (missing dependency, bad runtime/Bun version, broken binary, permission error, bad PATH)",
+          "execution-path": "Level 2: Execution path failure (stale build cache, generated output mismatch, wrong branch, wrong runtime identity)",
+          "product-logic": "Level 3: Product logic failure (incorrect algorithm, wrong data shape, missing edge cases, assertion failure)",
+          "violated-invariant": "Level 4: Violated system invariant (state contract mismatch, registry inconsistency, schema migration bug, boundary breach)"
+        }),
+        severity: score("How severe is this failure?", [
+          "Routine or transient warning",
+          "Minor test or build assertion failure",
+          "Significant broken functionality or compilation failure",
+          "Critical crash, data corruption, or system lock"
+        ]),
+        actionable: noul("Does this failure require diagnosing and changing code/config rather than simple immediate retry?")
+      }
+    });
+    const levelChoice = response.answers.diagnosis_level?.choice || "product-logic";
+    const confidence = response.answers.diagnosis_level?.confidence ?? 0.7;
+    const severity = response.answers.severity?.score ?? 2;
+    const actionable = (response.answers.actionable?.noul ?? 0.8) >= 0.5;
+    const levelMap = {
+      "harness-environment": { level: "harness-environment", levelNumber: 1 },
+      "execution-path": { level: "execution-path", levelNumber: 2 },
+      "product-logic": { level: "product-logic", levelNumber: 3 },
+      "violated-invariant": { level: "violated-invariant", levelNumber: 4 }
+    };
+    const mapped = levelMap[levelChoice] || { level: "product-logic", levelNumber: 3 };
+    return {
+      level: mapped.level,
+      levelNumber: mapped.levelNumber,
+      confidence,
+      severity,
+      actionable,
+      summary: `Diagnosed as Level ${mapped.levelNumber} (${mapped.level}) with severity ${severity.toFixed(1)}`
+    };
+  }
+  async scanForSecretsAndSecurity(content) {
+    if (!content) {
+      return {
+        hasSecrets: false,
+        secretsConfidence: 0,
+        hasPii: false,
+        piiConfidence: 0,
+        isPromptInjection: false,
+        injectionConfidence: 0,
+        isSafe: true
+      };
+    }
+    const chunks = sliceContentIntoChunks(content);
+    let maxSec = 0;
+    let maxPii = 0;
+    let maxInj = 0;
+    for (const chunk of chunks) {
+      const { secProb, piiProb, injProb } = await evaluateChunkSecurity(this.client, chunk);
+      if (secProb > maxSec)
+        maxSec = secProb;
+      if (piiProb > maxPii)
+        maxPii = piiProb;
+      if (injProb > maxInj)
+        maxInj = injProb;
+    }
+    const hasSecrets = maxSec >= 0.6;
+    const hasPii = maxPii >= 0.6;
+    const isPromptInjection = maxInj >= 0.6;
+    return {
+      hasSecrets,
+      secretsConfidence: maxSec,
+      hasPii,
+      piiConfidence: maxPii,
+      isPromptInjection,
+      injectionConfidence: maxInj,
+      isSafe: !hasSecrets && !hasPii && !isPromptInjection
+    };
+  }
+  async rerankCandidates(query, candidates) {
+    if (candidates.length === 0)
+      return [];
+    if (candidates.length === 1)
+      return [{ item: candidates[0], relevance: 1 }];
+    const batchSize = 15;
+    const allRanked = [];
+    for (let i = 0;i < candidates.length; i += batchSize) {
+      const batch = candidates.slice(i, i + batchSize);
+      const questions = {};
+      batch.forEach((cand, idx) => {
+        questions[`rel_${idx}`] = noul(`Is candidate #${idx} directly relevant and helpful to solve the query: "${query}"?`);
+      });
+      const response = await this.client.systemOne({
+        state: {
+          query,
+          candidates: batch
+        },
+        questions
+      });
+      for (let idx = 0;idx < batch.length; idx++) {
+        const rel = response.answers[`rel_${idx}`]?.noul ?? 0.5;
+        allRanked.push({ item: batch[idx], relevance: rel });
+      }
+    }
+    return allRanked.sort((a, b) => b.relevance - a.relevance);
+  }
+}
+
+// src/cli/commands/reflex.ts
+var print = (msg = "") => {
+  process.stdout.write(msg + `
+`);
+};
+var printErr = (msg = "") => {
+  process.stderr.write(msg + `
+`);
+};
+var handleReflexStatus = (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const config = loadReflexConfig();
   const events = readReflexEvents({ limit: 1000 });
@@ -40852,104 +42132,116 @@ function handleReflexStatus(args) {
     ledgerEventsCount: events.length
   };
   if (isJson) {
-    console.log(JSON.stringify(status, null, 2));
+    print(JSON.stringify(status, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Subsystem Status ---`);
-  console.log(`Mode:            ${config.mode}`);
-  console.log(`Provider:        ${config.provider}`);
-  console.log(`Model:           ${config.model}`);
-  console.log(`Timeout:         ${config.timeoutMs}ms`);
-  console.log(`Min Margin:      ${config.minMargin}`);
-  console.log(`Telemetry:       ${config.telemetry}`);
-  console.log(`API Key:         ${config.apiKey ? "Configured (present)" : "Missing"}`);
-  console.log(`Circuit Breaker: ${cbState.isOpen ? "OPEN (Tripped)" : "CLOSED (Healthy)"}`);
-  console.log(`Ledger Events:   ${events.length} recorded
+  print(`Mode:            ${config.mode}`);
+  print(`Provider:        ${config.provider}`);
+  print(`Model:           ${config.model}`);
+  print(`Timeout:         ${config.timeoutMs}ms`);
+  print(`Min Margin:      ${config.minMargin}`);
+  print(`Telemetry:       ${config.telemetry}`);
+  print(`API Key:         ${config.apiKey ? "Configured (present)" : "Missing"}`);
+  print(`Circuit Breaker: ${cbState.isOpen ? "OPEN (Tripped)" : "CLOSED (Healthy)"}`);
+  print(`Ledger Events:   ${events.length} recorded
 `);
   return 0;
-}
-async function handleReflexDoctor(args) {
-  const isJson = args.includes("--json") || args.includes("--json-v1");
-  const isLive = args.includes("--live");
-  const config = loadReflexConfig();
-  const checks = [];
+};
+var checkProvider = (config) => {
   if (config.provider === "typesafe-jev") {
-    checks.push({ id: "reflex-provider", status: "PASS", message: "Provider configured: typesafe-jev" });
-  } else {
-    checks.push({ id: "reflex-provider", status: "WARN", message: `Unknown provider: ${config.provider}` });
+    return { id: "reflex-provider", status: "PASS", message: "Provider configured: typesafe-jev" };
   }
+  return { id: "reflex-provider", status: "WARN", message: `Unknown provider: ${config.provider}` };
+};
+var checkCredential = (config) => {
   if (config.apiKey) {
-    checks.push({ id: "reflex-credential", status: "PASS", message: "TypeSafe API credential is present in environment" });
-  } else {
-    const status = config.mode === "off" ? "WARN" : "ERROR";
-    checks.push({ id: "reflex-credential", status, message: "TYPESAFE_API_KEY is not set" });
+    return { id: "reflex-credential", status: "PASS", message: "TypeSafe API credential is present in environment" };
   }
+  const status = config.mode === "off" ? "WARN" : "ERROR";
+  return { id: "reflex-credential", status, message: "TYPESAFE_API_KEY is not set" };
+};
+var checkModel = (config) => {
   if (config.model) {
-    checks.push({ id: "reflex-model", status: "PASS", message: `Model configured: ${config.model}` });
-  } else {
-    checks.push({ id: "reflex-model", status: "ERROR", message: "Model is not configured" });
+    return { id: "reflex-model", status: "PASS", message: `Model configured: ${config.model}` };
   }
+  return { id: "reflex-model", status: "ERROR", message: "Model is not configured" };
+};
+var checkLedger = () => {
   try {
     const reflexDir = getReflexDir();
     if (!fs39.existsSync(reflexDir)) {
       fs39.mkdirSync(reflexDir, { recursive: true });
     }
-    checks.push({ id: "reflex-ledger", status: "PASS", message: "Reflex ledger directory is accessible and safe" });
+    return { id: "reflex-ledger", status: "PASS", message: "Reflex ledger directory is accessible and safe" };
   } catch (err) {
-    checks.push({ id: "reflex-ledger", status: "ERROR", message: `Ledger error: ${err.message}` });
+    return { id: "reflex-ledger", status: "ERROR", message: `Ledger error: ${err.message}` };
   }
+};
+var checkLiveProbe = async (config) => {
+  if (!config.apiKey) {
+    return { id: "reflex-live-probe", status: "ERROR", message: "Cannot perform live probe without TYPESAFE_API_KEY" };
+  }
+  try {
+    const advisor = new TypeSafeJevAdvisor({ ...config, timeoutMs: 1e4 });
+    const testEnvelope = {
+      schemaVersion: 1,
+      task: "Diagnostic connectivity check",
+      lifecycle: { phase: "idle", currentSkill: null, failureState: "none", substantial: false, hasActiveCard: false, verificationFreshness: "none" },
+      deterministic: { selectedSkill: "fable-verify", selectedPack: "core", reasons: [], requiresPlan: false, topCandidates: [] },
+      constraints: { suppressResearch: false, suppressRelease: false, suppressSecurity: false, suppressTdd: false, suppressPlan: false, suppressReview: false, suppressDelegation: false }
+    };
+    const advice = await advisor.advise(testEnvelope);
+    return {
+      id: "reflex-live-probe",
+      status: "PASS",
+      message: `Live probe succeeded against ${advice.model} in ${advice.latencyMs}ms`
+    };
+  } catch (err) {
+    return { id: "reflex-live-probe", status: "ERROR", message: `Live probe failed: ${err.message}` };
+  }
+};
+var handleReflexDoctor = async (args) => {
+  const isJson = args.includes("--json") || args.includes("--json-v1");
+  const isLive = args.includes("--live");
+  const config = loadReflexConfig();
+  const checks = [
+    checkProvider(config),
+    checkCredential(config),
+    checkModel(config),
+    checkLedger()
+  ];
   if (isLive) {
-    if (!config.apiKey) {
-      checks.push({ id: "reflex-live-probe", status: "ERROR", message: "Cannot perform live probe without TYPESAFE_API_KEY" });
-    } else {
-      try {
-        const advisor = new TypeSafeJevAdvisor({ ...config, timeoutMs: 1e4 });
-        const testEnvelope = {
-          schemaVersion: 1,
-          task: "Diagnostic connectivity check",
-          lifecycle: { phase: "idle", currentSkill: null, failureState: "none", substantial: false, hasActiveCard: false, verificationFreshness: "none" },
-          deterministic: { selectedSkill: "fable-verify", selectedPack: "core", reasons: [], requiresPlan: false, topCandidates: [] },
-          constraints: { suppressResearch: false, suppressRelease: false, suppressSecurity: false, suppressTdd: false, suppressPlan: false, suppressReview: false, suppressDelegation: false }
-        };
-        const advice = await advisor.advise(testEnvelope);
-        checks.push({
-          id: "reflex-live-probe",
-          status: "PASS",
-          message: `Live probe succeeded against ${advice.model} in ${advice.latencyMs}ms`
-        });
-      } catch (err) {
-        checks.push({ id: "reflex-live-probe", status: "ERROR", message: `Live probe failed: ${err.message}` });
-      }
-    }
+    checks.push(await checkLiveProbe(config));
   }
   const ok = !checks.some((c) => c.status === "ERROR");
   if (isJson) {
-    console.log(JSON.stringify({ ok, checks }, null, 2));
+    print(JSON.stringify({ ok, checks }, null, 2));
     return ok ? 0 : 1;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Doctor ---`);
   for (const c of checks) {
     const symbol = c.status === "PASS" ? "✔" : c.status === "WARN" ? "⚠" : "✖";
-    console.log(`${symbol} [${c.id}] ${c.message}`);
+    print(`${symbol} [${c.id}] ${c.message}`);
   }
-  console.log("");
+  print("");
   return ok ? 0 : 1;
-}
-async function handleReflexRoute(args) {
+};
+var handleReflexRoute = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const apply = args.includes("--apply");
   const isLive = args.includes("--live");
   const task = args.filter((a) => a !== "--json" && a !== "--json-v1" && a !== "--apply" && a !== "--live").join(" ").trim();
   if (!task) {
-    console.error("Error: reflex route requires task text");
+    printErr("Error: reflex route requires task text");
     return 1;
   }
   const config = loadReflexConfig(isLive ? { mode: "guarded", timeoutMs: 8000 } : undefined);
   const currentState = readFableState(process.cwd());
   if (apply && !currentState) {
-    console.error("Error: reflex route --apply requires an initialized project (.fable/state.json)");
+    printErr("Error: reflex route --apply requires an initialized project (.fable/state.json)");
     return 1;
   }
   const resolution = await resolveRoute(task, currentState, { config });
@@ -40959,57 +42251,57 @@ async function handleReflexRoute(args) {
     });
   }
   if (isJson) {
-    console.log(JSON.stringify(resolution, null, 2));
+    print(JSON.stringify(resolution, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Routing: "${task}" ---`);
-  console.log(`Mode:            ${resolution.mode}`);
-  console.log(`Selected Skill:  ${resolution.decision.selectedSkill}`);
-  console.log(`Pack:            ${resolution.decision.selectedPack}`);
-  console.log(`Task Shape:      ${resolution.decision.taskShape}`);
-  console.log(`Confidence:      ${Math.round(resolution.decision.confidence * 100)}%`);
+  print(`Mode:            ${resolution.mode}`);
+  print(`Selected Skill:  ${resolution.decision.selectedSkill}`);
+  print(`Pack:            ${resolution.decision.selectedPack}`);
+  print(`Task Shape:      ${resolution.decision.taskShape}`);
+  print(`Confidence:      ${Math.round(resolution.decision.confidence * 100)}%`);
   if (resolution.advice) {
-    console.log(`Reflex Advice:   ${resolution.advice.selectedSkill} (${resolution.advice.provider}, ${resolution.advice.model})`);
+    print(`Reflex Advice:   ${resolution.advice.selectedSkill} (${resolution.advice.provider}, ${resolution.advice.model})`);
     if (resolution.advice.latencyMs) {
-      console.log(`Latency:         ${resolution.advice.latencyMs}ms`);
+      print(`Latency:         ${resolution.advice.latencyMs}ms`);
     }
   }
   if (resolution.fallbackReason) {
-    console.log(`Fallback Reason: ${resolution.fallbackReason}`);
+    print(`Fallback Reason: ${resolution.fallbackReason}`);
   }
-  console.log("Reasons:");
+  print("Reasons:");
   for (const r of resolution.decision.reasons) {
-    console.log(`  - ${r}`);
+    print(`  - ${r}`);
   }
   if (apply) {
-    console.log("✔ Applied decision to .fable/state.json");
+    print("✔ Applied decision to .fable/state.json");
   }
-  console.log("");
+  print("");
   return 0;
-}
-function handleReflexLedger(args) {
+};
+var handleReflexLedger = (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const limitArgIndex = args.indexOf("--limit");
   const limit = limitArgIndex !== -1 && args[limitArgIndex + 1] ? parseInt(args[limitArgIndex + 1], 10) : 20;
   const events = readReflexEvents({ limit });
   if (isJson) {
-    console.log(JSON.stringify(events, null, 2));
+    print(JSON.stringify(events, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Reflex Ledger Events (Last ${events.length}) ---`);
   if (events.length === 0) {
-    console.log("No reflex events recorded yet.");
+    print("No reflex events recorded yet.");
     return 0;
   }
   for (const e of events) {
-    console.log(`[${e.timestamp}] [${e.mode}] det: ${e.deterministicSkill} -> fused: ${e.fusedSkill} (model: ${e.model}, latency: ${e.latencyMs}ms)`);
+    print(`[${e.timestamp}] [${e.mode}] det: ${e.deterministicSkill} -> fused: ${e.fusedSkill} (model: ${e.model}, latency: ${e.latencyMs}ms)`);
   }
-  console.log("");
+  print("");
   return 0;
-}
-async function handleReflexEval(args) {
+};
+var handleReflexEval = async (args) => {
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const isLive = args.includes("--live");
   const config = loadReflexConfig({ mode: "guarded", timeoutMs: isLive ? 8000 : 1200 });
@@ -41032,36 +42324,36 @@ async function handleReflexEval(args) {
       }
     };
   }
-  console.log(`Running reflex evaluation (${isLive ? "LIVE Jev arm" : "OFFLINE simulated arm"})...`);
+  print(`Running reflex evaluation (${isLive ? "LIVE Jev arm" : "OFFLINE simulated arm"})...`);
   const report = await runReflexEvaluation(undefined, { config, advisor });
   if (isJson) {
-    console.log(JSON.stringify(report, null, 2));
+    print(JSON.stringify(report, null, 2));
     return 0;
   }
-  console.log(`
+  print(`
 --- Fable-Jev Reflex Routing Benchmark Report ---`);
-  console.log(`Timestamp:            ${report.timestamp}`);
-  console.log(`Total Cases:          ${report.totalCases}`);
-  console.log(`Deterministic Top-1:  ${report.deterministic.top1Count}/${report.totalCases} (${(report.deterministic.top1Accuracy * 100).toFixed(1)}%)`);
-  console.log(`Hybrid Guarded Top-1: ${report.hybridGuarded.top1Count}/${report.totalCases} (${(report.hybridGuarded.top1Accuracy * 100).toFixed(1)}%)`);
-  console.log(`Brier Score:          ${report.hybridGuarded.brierScore.toFixed(3)} (lower is better calibrated)`);
-  console.log(`Avg Latency:          ${report.hybridGuarded.avgLatencyMs}ms`);
-  console.log(`Overrides Count:      ${report.overridesCount}`);
-  console.log(`Overrides Won:        ${report.overridesWon}`);
-  console.log(`Overrides Harm:       ${report.overridesHarm}`);
-  console.log(`Override Precision:   ${(report.overridePrecision * 100).toFixed(1)}%
+  print(`Timestamp:            ${report.timestamp}`);
+  print(`Total Cases:          ${report.totalCases}`);
+  print(`Deterministic Top-1:  ${report.deterministic.top1Count}/${report.totalCases} (${(report.deterministic.top1Accuracy * 100).toFixed(1)}%)`);
+  print(`Hybrid Guarded Top-1: ${report.hybridGuarded.top1Count}/${report.totalCases} (${(report.hybridGuarded.top1Accuracy * 100).toFixed(1)}%)`);
+  print(`Brier Score:          ${report.hybridGuarded.brierScore.toFixed(3)} (lower is better calibrated)`);
+  print(`Avg Latency:          ${report.hybridGuarded.avgLatencyMs}ms`);
+  print(`Overrides Count:      ${report.overridesCount}`);
+  print(`Overrides Won:        ${report.overridesWon}`);
+  print(`Overrides Harm:       ${report.overridesHarm}`);
+  print(`Override Precision:   ${(report.overridePrecision * 100).toFixed(1)}%
 `);
   return 0;
-}
-async function handleReflexCompact(args) {
+};
+var handleReflexCompact = async (args) => {
   const filePath = args.find((a) => !a.startsWith("--"));
   if (!filePath) {
-    console.error("Error: reflex compact requires a path to a transcript JSON or JSONL file.");
-    console.log("Usage: get-fable reflex compact <transcript-path> [--out <output-path>] [--threshold 0.5] [--preserve-recent 6]");
+    printErr("Error: reflex compact requires a path to a transcript JSON or JSONL file.");
+    print("Usage: get-fable reflex compact <transcript-path> [--out <output-path>] [--threshold 0.5] [--preserve-recent 6]");
     return 1;
   }
   if (!fs39.existsSync(filePath)) {
-    console.error(`Error: File not found: ${filePath}`);
+    printErr(`Error: File not found: ${filePath}`);
     return 1;
   }
   let messages = [];
@@ -41074,7 +42366,7 @@ async function handleReflexCompact(args) {
 `).filter(Boolean).map((line) => JSON.parse(line));
     }
   } catch (err) {
-    console.error(`Error reading transcript: ${err.message}`);
+    printErr(`Error reading transcript: ${err.message}`);
     return 1;
   }
   const outIdx = args.indexOf("--out");
@@ -41083,33 +42375,223 @@ async function handleReflexCompact(args) {
   const keepThreshold = thresholdIdx !== -1 && args[thresholdIdx + 1] ? parseFloat(args[thresholdIdx + 1]) : 0.5;
   const preserveIdx = args.indexOf("--preserve-recent");
   const preserveRecent = preserveIdx !== -1 && args[preserveIdx + 1] ? parseInt(args[preserveIdx + 1], 10) : 6;
-  console.log(`Compacting transcript (${messages.length} messages) using Jev System One...`);
+  print(`Compacting transcript (${messages.length} messages) using Jev System One...`);
   try {
     const result = await compactMessages(messages, {
       keepThreshold,
       preserveRecentMessages: preserveRecent
     });
     const ratio = (reductionRatio(result) * 100).toFixed(1);
-    console.log(`
+    print(`
 --- Jev Context Compaction Summary ---`);
-    console.log(`Messages:      ${result.stats.messagesBefore} -> ${result.stats.messagesAfter}`);
-    console.log(`Characters:    ${result.stats.charsBefore} -> ${result.stats.charsAfter} (-${ratio}%)`);
-    console.log(`Tool Calls:    ${result.stats.calls} examined`);
-    console.log(`Kept Verbatim: ${result.stats.kept}`);
-    console.log(`Truncated/Out: ${result.stats.resultsDropped}`);
-    console.log(`Dropped Calls: ${result.stats.callsDropped}`);
-    console.log(`Duration:      ${result.stats.ms}ms
+    print(`Messages:      ${result.stats.messagesBefore} -> ${result.stats.messagesAfter}`);
+    print(`Characters:    ${result.stats.charsBefore} -> ${result.stats.charsAfter} (-${ratio}%)`);
+    print(`Tool Calls:    ${result.stats.calls} examined`);
+    print(`Kept Verbatim: ${result.stats.kept}`);
+    print(`Truncated/Out: ${result.stats.resultsDropped}`);
+    print(`Dropped Calls: ${result.stats.callsDropped}`);
+    print(`Duration:      ${result.stats.ms}ms
 `);
     if (outPath) {
       fs39.writeFileSync(outPath, JSON.stringify(result.messages, null, 2), "utf8");
-      console.log(`Compacted transcript written to ${outPath}`);
+      print(`Compacted transcript written to ${outPath}`);
     }
     return 0;
   } catch (err) {
-    console.error(`Compaction failed: ${err.message}`);
+    printErr(`Compaction failed: ${err.message}`);
     return 1;
   }
-}
+};
+var runDashboardServer = async (args) => {
+  const portIdx = args.indexOf("--port");
+  const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
+  print(`Starting Jev Review Dashboard on port ${port}...`);
+  await startDashboard(port);
+  return 0;
+};
+var printReviewReport = (report) => {
+  print(`
+--- Jev Review Summary ---`);
+  print(`Mode:            ${report.mode}`);
+  print(`Scope:           ${report.scope}`);
+  print(`Screened Files:  ${report.screenedFiles}`);
+  print(`Signals:         ${report.followedSignals}`);
+  print(`Findings:        ${report.findings.length}`);
+  let hasBlocking = false;
+  if (report.findings.length > 0) {
+    print(`
+Findings:`);
+    for (const finding of report.findings) {
+      const blocking = finding.action === "request_changes" || finding.severity >= 2;
+      if (blocking)
+        hasBlocking = true;
+      print(`  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`);
+    }
+  } else {
+    print("Zero high-risk findings detected. Code changes look clean.");
+  }
+  return hasBlocking;
+};
+var isSafeRegularFile = (resolved, cwd) => {
+  if (!resolved.startsWith(cwd))
+    return false;
+  if (!fs39.existsSync(resolved))
+    return false;
+  return fs39.statSync(resolved).isFile();
+};
+var readInputText = (target) => {
+  if (!target)
+    return null;
+  if (target.includes(`
+`) || target.length > 256) {
+    return target;
+  }
+  try {
+    const cwd = process.cwd();
+    const resolved = path41.resolve(cwd, target);
+    if (isSafeRegularFile(resolved, cwd)) {
+      return fs39.readFileSync(resolved, "utf8");
+    }
+  } catch {}
+  return target;
+};
+var handleReflexReview = async (args) => {
+  if (args.includes("--dashboard")) {
+    return await runDashboardServer(args);
+  }
+  const isCodebase = args.includes("--codebase");
+  const isJson = args.includes("--json") || args.includes("--json-v1");
+  const shouldSave = args.includes("--save");
+  const targetPath = args.filter((a) => !a.startsWith("--"))[0] || process.cwd();
+  if (!isJson) {
+    print(`Running Jev ${isCodebase ? "Codebase Scan" : "Diff Review"} on ${targetPath}...`);
+  }
+  try {
+    const report = isCodebase ? await reviewCodebase(targetPath) : await reviewChanges(targetPath);
+    if (shouldSave) {
+      await saveReport(report);
+      if (!isJson) {
+        print(`Saved report to ${reportPath()}`);
+      }
+    }
+    const hasBlocking = report.findings.some((finding) => finding.action === "request_changes" || finding.severity >= 2);
+    if (isJson) {
+      print(JSON.stringify(report, null, 2));
+      return hasBlocking ? 1 : 0;
+    }
+    printReviewReport(report);
+    return hasBlocking ? 1 : 0;
+  } catch (err) {
+    printErr(`Review execution failed: ${err.message}`);
+    return 1;
+  }
+};
+var handleReflexRouteModel = async (args) => {
+  const isJson = args.includes("--json") || args.includes("--json-v1");
+  const task = args.filter((a) => !a.startsWith("--")).join(" ").trim();
+  if (!task) {
+    printErr("Error: reflex route-model requires task description");
+    return 1;
+  }
+  try {
+    const result = await routeTaskToOptimalModel(task, { models: DEFAULT_AGENT_MODELS });
+    if (isJson) {
+      print(JSON.stringify(result, null, 2));
+      return 0;
+    }
+    print(`
+--- Jev Model Capability & Cost Routing ---`);
+    print(`Task:          "${task}"`);
+    print(`Optimal Model: ${result.model} (Tier: ${result.tier})`);
+    print(`Probabilities:`);
+    for (const [model, prob] of Object.entries(result.probabilities)) {
+      print(`  - ${model.padEnd(12)}: ${(prob * 100).toFixed(1)}%`);
+    }
+    return 0;
+  } catch (err) {
+    printErr(`Model routing failed: ${err.message}`);
+    return 1;
+  }
+};
+var handleReflexTriageLog = async (args) => {
+  const isJson = args.includes("--json") || args.includes("--json-v1");
+  const target = args.filter((a) => !a.startsWith("--"))[0];
+  const logContent = readInputText(target);
+  if (!logContent) {
+    printErr("Error: triage-log requires a log file path or log text");
+    return 1;
+  }
+  try {
+    const bridge = new RecipesBridge;
+    const diagnosis = await bridge.triageErrorLog(logContent);
+    if (isJson) {
+      print(JSON.stringify(diagnosis, null, 2));
+      return 0;
+    }
+    print(`
+--- Jev Error Log Triage (fable-recover) ---`);
+    print(`Diagnosis Level: Level ${diagnosis.levelNumber} (${diagnosis.level})`);
+    print(`Confidence:      ${(diagnosis.confidence * 100).toFixed(1)}%`);
+    print(`Severity:        ${diagnosis.severity.toFixed(1)}`);
+    print(`Actionable:      ${diagnosis.actionable ? "YES (requires fix)" : "NO (transient)"}`);
+    print(`Summary:         ${diagnosis.summary}`);
+    return 0;
+  } catch (err) {
+    printErr(`Log triage failed: ${err.message}`);
+    return 1;
+  }
+};
+var handleReflexSecurityScan = async (args) => {
+  const isJson = args.includes("--json") || args.includes("--json-v1");
+  const target = args.filter((a) => !a.startsWith("--"))[0];
+  const content = readInputText(target);
+  if (!content) {
+    printErr("Error: security-scan requires a file path or text content");
+    return 1;
+  }
+  try {
+    const bridge = new RecipesBridge;
+    const scan = await bridge.scanForSecretsAndSecurity(content);
+    if (isJson) {
+      print(JSON.stringify(scan, null, 2));
+      return 0;
+    }
+    print(`
+--- Jev Security & PII Scan (fable-security) ---`);
+    print(`Safe:              ${scan.isSafe ? "PASS" : "FAIL (Security Alert)"}`);
+    print(`Exposed Secrets:   ${scan.hasSecrets ? "DETECTED" : "None"} (${(scan.secretsConfidence * 100).toFixed(1)}%)`);
+    print(`PII Leaks:         ${scan.hasPii ? "DETECTED" : "None"} (${(scan.piiConfidence * 100).toFixed(1)}%)`);
+    print(`Prompt Injection:  ${scan.isPromptInjection ? "DETECTED" : "None"} (${(scan.injectionConfidence * 100).toFixed(1)}%)`);
+    return scan.isSafe ? 0 : 1;
+  } catch (err) {
+    printErr(`Security scan failed: ${err.message}`);
+    return 1;
+  }
+};
+var SUBCOMMAND_HANDLERS = {
+  status: (args) => handleReflexStatus(args),
+  doctor: (args) => handleReflexDoctor(args),
+  route: (args) => handleReflexRoute(args),
+  ledger: (args) => handleReflexLedger(args),
+  eval: (args) => handleReflexEval(args),
+  compact: (args) => handleReflexCompact(args),
+  review: (args) => handleReflexReview(args),
+  "route-model": (args) => handleReflexRouteModel(args),
+  "model-route": (args) => handleReflexRouteModel(args),
+  "triage-log": (args) => handleReflexTriageLog(args),
+  triage: (args) => handleReflexTriageLog(args),
+  "security-scan": (args) => handleReflexSecurityScan(args),
+  "sec-scan": (args) => handleReflexSecurityScan(args)
+};
+var runReflexCommand = async (args) => {
+  const sub = args[0] || "status";
+  const handler = SUBCOMMAND_HANDLERS[sub];
+  if (!handler) {
+    printErr(`Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`);
+    return 1;
+  }
+  return await handler(args.slice(1));
+};
 // src/cli.ts
 var EVIDENCE_KINDS2 = [
   "test",
@@ -41124,7 +42606,7 @@ var EVIDENCE_KINDS2 = [
 ];
 function getPackageVersion() {
   try {
-    const packagePath = path41.join(getRepoRootDir(), "package.json");
+    const packagePath = path42.join(getRepoRootDir(), "package.json");
     const packageJson = JSON.parse(fs40.readFileSync(packagePath, "utf-8"));
     return typeof packageJson.version === "string" ? packageJson.version : "unknown";
   } catch {
@@ -41586,7 +43068,7 @@ function runSparkCommand(args) {
   const userIntent = stripJsonFlags(args).join(" ").trim() || undefined;
   const state = readFableState(process.cwd()) || createInitialState(new Date().toISOString(), process.cwd());
   let openCards = [];
-  const ledgerPath = path41.join(process.cwd(), ".fable", "LEDGER.md");
+  const ledgerPath = path42.join(process.cwd(), ".fable", "LEDGER.md");
   if (fs40.existsSync(ledgerPath)) {
     const text = fs40.readFileSync(ledgerPath, "utf-8");
     openCards = text.split(`
@@ -41634,7 +43116,7 @@ Options:
     return 0;
   }
   const repoRoot = getRepoRootDir();
-  const scriptPath = path41.join(repoRoot, "skills", "fable-learning", "scripts", "extract_learnings.py");
+  const scriptPath = path42.join(repoRoot, "skills", "fable-learning", "scripts", "extract_learnings.py");
   if (!fs40.existsSync(scriptPath)) {
     logError(`[get-fable learn] extract_learnings.py script not found at ${scriptPath}`);
     return 1;
@@ -41682,7 +43164,7 @@ function runShellCommand(args) {
     scriptFile = "fable.bash";
   else if (shellType === "fish")
     scriptFile = "fable.fish";
-  const scriptPath = path41.join(repoRoot, "shell", scriptFile);
+  const scriptPath = path42.join(repoRoot, "shell", scriptFile);
   if (fs40.existsSync(scriptPath)) {
     console.log(fs40.readFileSync(scriptPath, "utf-8"));
     return 0;
@@ -41826,8 +43308,8 @@ function runInstallCommand(args) {
     case "shell": {
       logHeader("Installing get-fable shell integration");
       const home = os8.homedir();
-      const zshrc = path41.join(home, ".zshrc");
-      const bashrc = path41.join(home, ".bashrc");
+      const zshrc = path42.join(home, ".zshrc");
+      const bashrc = path42.join(home, ".bashrc");
       const line = 'eval "$(get-fable shell init)"';
       if (fs40.existsSync(zshrc)) {
         const content = fs40.readFileSync(zshrc, "utf-8");
@@ -42140,7 +43622,7 @@ function runPacksCommand(args) {
   const json = hasJsonFlag(args);
   const sub = (args[0] || "list").toLowerCase();
   const repoRoot = getRepoRootDir();
-  const packsDir = path41.join(repoRoot, "packs");
+  const packsDir = path42.join(repoRoot, "packs");
   if (!fs40.existsSync(packsDir)) {
     logError("Packs directory not found");
     return 1;
@@ -42149,7 +43631,7 @@ function runPacksCommand(args) {
     case "list": {
       const files = fs40.readdirSync(packsDir).filter((f) => f.endsWith(".json"));
       const packs = files.map((f) => {
-        const content = JSON.parse(fs40.readFileSync(path41.join(packsDir, f), "utf-8"));
+        const content = JSON.parse(fs40.readFileSync(path42.join(packsDir, f), "utf-8"));
         return {
           name: content.name,
           version: content.version,
@@ -42173,7 +43655,7 @@ function runPacksCommand(args) {
         logError("packs inspect requires a pack name (e.g. core, build, creator)");
         return 1;
       }
-      const packFile = path41.join(packsDir, `${name}.json`);
+      const packFile = path42.join(packsDir, `${name}.json`);
       if (!fs40.existsSync(packFile)) {
         logError(`Pack '${name}' not found at ${packFile}`);
         return 1;
@@ -42203,8 +43685,8 @@ function optionValue(args, flag) {
   return value;
 }
 function writeJsonFile(filePath, payload) {
-  const resolved = path41.resolve(process.cwd(), filePath);
-  fs40.mkdirSync(path41.dirname(resolved), { recursive: true });
+  const resolved = path42.resolve(process.cwd(), filePath);
+  fs40.mkdirSync(path42.dirname(resolved), { recursive: true });
   fs40.writeFileSync(resolved, `${JSON.stringify(payload, null, 2)}
 `, "utf-8");
 }
@@ -42216,7 +43698,7 @@ function runBehaviorEvalCommand(args) {
     const out = optionValue(args, "--out");
     if (out) {
       writeJsonFile(out, bundle);
-      logSuccess(`Wrote oracle-free behavior requests to ${path41.resolve(process.cwd(), out)}`);
+      logSuccess(`Wrote oracle-free behavior requests to ${path42.resolve(process.cwd(), out)}`);
     } else {
       printMachineJson(args, "behavior-eval:export", bundle, true);
     }
@@ -42228,12 +43710,12 @@ function runBehaviorEvalCommand(args) {
       logError("behavior-eval score requires a response bundle path");
       return 1;
     }
-    const responses = JSON.parse(fs40.readFileSync(path41.resolve(process.cwd(), responsePath), "utf-8"));
+    const responses = JSON.parse(fs40.readFileSync(path42.resolve(process.cwd(), responsePath), "utf-8"));
     const scored = scoreAgentBehaviorResponseBundle(responses, plan);
     const out = optionValue(args, "--out") || AGENT_BEHAVIOR_EVIDENCE_PATH;
     writeJsonFile(out, scored);
     logSuccess(`Scored ${scored.passed}/${scored.total} behavior cases for ${scored.providerId}`);
-    console.log(`Evidence: ${path41.resolve(process.cwd(), out)}`);
+    console.log(`Evidence: ${path42.resolve(process.cwd(), out)}`);
     return 0;
   }
   if (sub === "status") {
@@ -42261,9 +43743,9 @@ async function runGrokCommand(args) {
       offlineMode: adapter.isOffline(),
       capabilities: adapter.getCapabilities(),
       configDir: grokDir,
-      rulesInstalled: fs40.existsSync(path41.join(grokDir, "rules", "grok-bot.md")),
-      hooksConfigured: fs40.existsSync(path41.join(grokDir, "hooks.json")),
-      agentSpecInstalled: fs40.existsSync(path41.join(grokDir, "agents", "grok-bot.md"))
+      rulesInstalled: fs40.existsSync(path42.join(grokDir, "rules", "grok-bot.md")),
+      hooksConfigured: fs40.existsSync(path42.join(grokDir, "hooks.json")),
+      agentSpecInstalled: fs40.existsSync(path42.join(grokDir, "agents", "grok-bot.md"))
     };
     if (hasJsonFlag(args)) {
       printMachineJson(args, "grok:status", status);
@@ -42484,7 +43966,7 @@ function runCli(args = process.argv.slice(2)) {
       return 0;
     case "prompt": {
       logHeader("Bundled Fable prompt");
-      const promptPath = path41.join(getRepoRootDir(), "prompts", "claude-code-fable-5.md");
+      const promptPath = path42.join(getRepoRootDir(), "prompts", "claude-code-fable-5.md");
       if (!fs40.existsSync(promptPath)) {
         logError("Prompt file not found.");
         return 1;
@@ -42504,15 +43986,15 @@ function runCli(args = process.argv.slice(2)) {
   }
 }
 function listAssets() {
-  const assetsDir = path41.join(getRepoRootDir(), "assets");
+  const assetsDir = path42.join(getRepoRootDir(), "assets");
   const countItems = (dir) => fs40.existsSync(dir) ? fs40.readdirSync(dir).length : 0;
-  console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path41.join(assetsDir, "prompts"))} files`);
-  console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path41.join(assetsDir, "agents"))} agents`);
-  console.log(`${colors.green}✔ Claude Code Skills:${colors.reset} ${countItems(path41.join(assetsDir, "skills", "claude-code"))} skills`);
-  console.log(`${colors.green}✔ Claude Design Skills:${colors.reset} ${countItems(path41.join(assetsDir, "skills", "claude-design"))} skills`);
-  console.log(`${colors.green}✔ Slash Commands:${colors.reset} ${countItems(path41.join(assetsDir, "slash-commands"))} commands`);
-  console.log(`${colors.green}✔ Injected Reminders:${colors.reset} ${countItems(path41.join(assetsDir, "injected-reminders"))} reminders`);
-  console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path41.join(assetsDir, "starter-components"))} components`);
+  console.log(`${colors.green}✔ System Prompts:${colors.reset} ${countItems(path42.join(assetsDir, "prompts"))} files`);
+  console.log(`${colors.green}✔ Agent Definitions:${colors.reset} ${countItems(path42.join(assetsDir, "agents"))} agents`);
+  console.log(`${colors.green}✔ Claude Code Skills:${colors.reset} ${countItems(path42.join(assetsDir, "skills", "claude-code"))} skills`);
+  console.log(`${colors.green}✔ Claude Design Skills:${colors.reset} ${countItems(path42.join(assetsDir, "skills", "claude-design"))} skills`);
+  console.log(`${colors.green}✔ Slash Commands:${colors.reset} ${countItems(path42.join(assetsDir, "slash-commands"))} commands`);
+  console.log(`${colors.green}✔ Injected Reminders:${colors.reset} ${countItems(path42.join(assetsDir, "injected-reminders"))} reminders`);
+  console.log(`${colors.green}✔ Starter Components:${colors.reset} ${countItems(path42.join(assetsDir, "starter-components"))} components`);
 }
 function showHelp() {
   console.log(`
@@ -42574,7 +44056,7 @@ async function main() {
 function isDirectExecution() {
   if (!process.argv[1])
     return false;
-  return path41.resolve(process.argv[1]) === fileURLToPath7(import.meta.url);
+  return path42.resolve(process.argv[1]) === fileURLToPath7(import.meta.url);
 }
 if (isDirectExecution())
   main();
