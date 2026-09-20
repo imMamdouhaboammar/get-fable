@@ -21,7 +21,7 @@
               "helpUri": "https://cwe.mitre.org/data/definitions/1021.html",
               "help": {
                 "text": "Add a strict 'Content-Security-Policy' HTTP response header restricting script and object sources.",
-                "markdown": "### Remediation\n\nAdd a strict 'Content-Security-Policy' HTTP response header restricting script and object sources.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:56198\"\n```"
+                "markdown": "### Remediation\n\nAdd a strict 'Content-Security-Policy' HTTP response header restricting script and object sources.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:52653\"\n```"
               },
               "properties": {
                 "tags": [
@@ -51,7 +51,7 @@
               "helpUri": "https://cwe.mitre.org/data/definitions/79.html",
               "help": {
                 "text": "Set 'X-Content-Type-Options: nosniff' header on all HTTP responses.",
-                "markdown": "### Remediation\n\nSet 'X-Content-Type-Options: nosniff' header on all HTTP responses.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:56198\"\n```"
+                "markdown": "### Remediation\n\nSet 'X-Content-Type-Options: nosniff' header on all HTTP responses.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:52653\"\n```"
               },
               "properties": {
                 "tags": [
@@ -75,7 +75,7 @@
               "helpUri": "https://cwe.mitre.org/data/definitions/200.html",
               "help": {
                 "text": "Block public access to /.env at the reverse proxy (Nginx, Cloudflare, Caddy) or web server configuration.",
-                "markdown": "### Remediation\n\nBlock public access to /.env at the reverse proxy (Nginx, Cloudflare, Caddy) or web server configuration.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:56198/.env\"\n```"
+                "markdown": "### Remediation\n\nBlock public access to /.env at the reverse proxy (Nginx, Cloudflare, Caddy) or web server configuration.\n\n**Reproduction:**\n```bash\ncurl -i -s \"http://127.0.0.1:52653/.env\"\n```"
               },
               "properties": {
                 "tags": [
@@ -102,7 +102,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "http://127.0.0.1:56198"
+                  "uri": "http://127.0.0.1:52653"
                 }
               }
             }
@@ -114,7 +114,7 @@
             "cwe": "CWE-1021",
             "confidence": 0.99,
             "evidenceLevel": "observed",
-            "reproCurl": "curl -i -s \"http://127.0.0.1:56198\"",
+            "reproCurl": "curl -i -s \"http://127.0.0.1:52653\"",
             "priority": 0.552,
             "cvssScore": 5.3,
             "cvssVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
@@ -138,7 +138,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "http://127.0.0.1:56198"
+                  "uri": "http://127.0.0.1:52653"
                 }
               }
             }
@@ -150,7 +150,7 @@
             "cwe": "CWE-79",
             "confidence": 0.95,
             "evidenceLevel": "observed",
-            "reproCurl": "curl -i -s \"http://127.0.0.1:56198\"",
+            "reproCurl": "curl -i -s \"http://127.0.0.1:52653\"",
             "priority": 0.455
           }
         },
@@ -165,7 +165,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "http://127.0.0.1:56198/.env"
+                  "uri": "http://127.0.0.1:52653/.env"
                 }
               }
             }
@@ -177,7 +177,7 @@
             "cwe": "CWE-200",
             "confidence": 0.98,
             "evidenceLevel": "reproduced",
-            "reproCurl": "curl -i -s \"http://127.0.0.1:56198/.env\"",
+            "reproCurl": "curl -i -s \"http://127.0.0.1:52653/.env\"",
             "priority": 0.9
           }
         }

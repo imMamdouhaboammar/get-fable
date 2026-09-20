@@ -1,0 +1,50 @@
+{
+  "state": {
+    "schemaVersion": 1,
+    "task": "The same fix keeps failing and I suspect we are editing the wrong execution path. Trace the actual path before changing code again.",
+    "lifecycle": {
+      "phase": "executing",
+      "currentSkill": "fable-tdd",
+      "failureState": "repeated-failure",
+      "substantial": true,
+      "hasActiveCard": true,
+      "verificationFreshness": "stale"
+    },
+    "deterministic": {
+      "selectedSkill": "fable-recover",
+      "selectedPack": "core",
+      "reasons": ["project state records repeated failure"],
+      "requiresPlan": false,
+      "topCandidates": [
+        { "skill": "fable-recover", "scoreBucket": "strong" },
+        { "skill": "fable-discover", "scoreBucket": "moderate" }
+      ]
+    },
+    "constraints": {
+      "suppressResearch": false,
+      "suppressRelease": false,
+      "suppressSecurity": false,
+      "suppressTdd": false,
+      "suppressPlan": false,
+      "suppressReview": false,
+      "suppressDelegation": false
+    }
+  },
+  "model": "jev-1.13.0",
+  "questions": {
+    "selected_skill": {
+      "type": "choice",
+      "instructions": "Which canonical get-fable specialist directly owns the primary next job?",
+      "criteria": {
+        "fable-recover": "Diagnose repeated/stale failures before another edit",
+        "fable-discover": "Gather unknown repository/runtime evidence before planning or editing",
+        "fable-tdd": "Make a testable behavior change using red-green-refactor",
+        "fable-execute": "Implement an already bounded accepted change"
+      }
+    },
+    "needs_recovery": {
+      "type": "noul",
+      "instructions": "The task describes repeated failed attempts, stale execution, wrong branch/build/cache, or contradictory evidence that should be diagnosed before another code edit."
+    }
+  }
+}

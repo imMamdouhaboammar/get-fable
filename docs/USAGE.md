@@ -278,6 +278,42 @@ get-fable behavior-eval score /tmp/provider-responses.json --out evals/results/a
 get-fable behavior-eval status
 ```
 
+## Reflex routing & context compaction (Fable-Jev)
+
+Fable-Jev combines fast System One semantic routing and continuous context compaction via TypeSafe Jev models with deterministic lifecycle safety guarantees.
+
+### Diagnostics & status
+
+```bash
+get-fable reflex status
+get-fable reflex doctor
+get-fable reflex doctor --live    # probes live TypeSafe API connectivity
+get-fable reflex ledger           # views append-only shadow telemetry events
+```
+
+### Hybrid semantic routing
+
+```bash
+# Route a task using Jev Reflex advice and probability margins
+get-fable reflex route "Audit OAuth endpoints for vulnerabilities"
+get-fable reflex route "Investigate test failures" --live
+```
+
+### Benchmarking & calibration
+
+```bash
+get-fable reflex eval             # offline benchmark using simulated advice
+get-fable reflex eval --live      # live benchmark with real Jev API calls
+```
+
+### Transcript context compaction
+
+Verbatim context compaction that drops or truncates obsolete tool results using Jev Noul decisions:
+
+```bash
+get-fable reflex compact transcript.jsonl --out compacted.json --threshold 0.5 --preserve-recent 6
+```
+
 ## Feed, graph, recipes, and packs
 
 ```bash

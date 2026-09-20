@@ -1,0 +1,10 @@
+{
+  "reflex": {
+    "mode": "shadow",
+    "provider": "typesafe-jev",
+    "model": "jev-1.13.0",
+    "timeoutMs": 1200,
+    "minMargin": 0.2,
+    "telemetry": "local"
+  }
+}

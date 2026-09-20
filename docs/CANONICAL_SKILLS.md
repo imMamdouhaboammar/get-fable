@@ -34,3 +34,15 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 210 | creator | `fable-skill-creator` | executing | Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. |
 | 220 | system | `fable-architecture` | planned | Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture. |
 | 230 | system | `fable-eco` | planned | Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts. |
+| 240 | system | `fable-context-thrift` | discovering | Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups. |
+| 250 | delivery | `fable-finish-your-turn` | executing | Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs. |
+| 260 | build | `fable-native-code` | executing | Codebase idiom matching and anti-bloat policy ensuring diffs read like native code. |
+| 270 | delivery | `fable-outcome-first` | verifying | Response styling policy enforcing direct first-sentence answers and zero sycophancy. |
+| 280 | proof | `fable-prove-it` | verifying | Evidence precedence and verification rung enforcement preventing unverified claims. |
+| 290 | build | `fable-scope-discipline` | executing | Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests. |
+| 300 | creator | `fable-domain` | discovering | Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns. |
+| 310 | proof | `fable-judge` | verifying | Adversarial verification of finished work detecting weakened tests and false completion claims. |
+| 320 | core | `fable-method` | executing | Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation. |
+| 330 | system | `fable-council` | planned | Convene multi-agent council across installed CLI agents to deliberate before finalizing plans. |
+| 340 | delivery | `fable-tend` | executing | Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage. |
+| 350 | system | `fable-wise` | planned | Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh. |
