@@ -39692,6 +39692,43 @@ function noul(instructions, criteria) {
 function score(instructions, levels) {
   return { type: "score", instructions, criteria: levels };
 }
+function validateEndpoint(apiKey, baseUrl) {
+  if (!apiKey) {
+    throw new Error("TYPESAFE_API_KEY is not configured in environment or client options");
+  }
+  try {
+    const parsedUrl = new URL(baseUrl);
+    const isLoopback = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "::1";
+    if (parsedUrl.protocol !== "https:" && !isLoopback) {
+      throw new Error(`Insecure endpoint rejected: TypeSafe API endpoint must use HTTPS to forward credentials securely (got ${baseUrl})`);
+    }
+  } catch (err) {
+    if (err.message?.includes("Insecure endpoint rejected"))
+      throw err;
+    throw new Error(`Invalid TypeSafe baseUrl: ${baseUrl}`);
+  }
+}
+function setupAbortBridge(timeoutMs, signal) {
+  const controller = new AbortController;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  const onExternalAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort();
+    } else {
+      signal.addEventListener("abort", onExternalAbort, { once: true });
+    }
+  }
+  return {
+    controller,
+    cleanup: () => {
+      clearTimeout(timeoutId);
+      if (signal) {
+        signal.removeEventListener("abort", onExternalAbort);
+      }
+    }
+  };
+}
 
 class TypeSafeClient {
   apiKey;
@@ -39707,31 +39744,9 @@ class TypeSafeClient {
     this.fetchFn = options.fetchFn || fetch;
   }
   async systemOne(req, signal) {
-    if (!this.apiKey) {
-      throw new Error("TYPESAFE_API_KEY is not configured in environment or client options");
-    }
-    try {
-      const parsedUrl = new URL(this.baseUrl);
-      const isLoopback = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "::1";
-      if (parsedUrl.protocol !== "https:" && !isLoopback) {
-        throw new Error(`Insecure endpoint rejected: TypeSafe API endpoint must use HTTPS to forward credentials securely (got ${this.baseUrl})`);
-      }
-    } catch (err) {
-      if (err.message?.includes("Insecure endpoint rejected"))
-        throw err;
-      throw new Error(`Invalid TypeSafe baseUrl: ${this.baseUrl}`);
-    }
+    validateEndpoint(this.apiKey, this.baseUrl);
     const t0 = Date.now();
-    const controller = new AbortController;
-    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
-    const onExternalAbort = () => controller.abort();
-    if (signal) {
-      if (signal.aborted) {
-        controller.abort();
-      } else {
-        signal.addEventListener("abort", onExternalAbort, { once: true });
-      }
-    }
+    const { controller, cleanup } = setupAbortBridge(this.timeoutMs, signal);
     try {
       const response = await this.fetchFn(this.baseUrl, {
         method: "POST",
@@ -39746,10 +39761,7 @@ class TypeSafeClient {
         }),
         signal: controller.signal
       });
-      clearTimeout(timeoutId);
-      if (signal) {
-        signal.removeEventListener("abort", onExternalAbort);
-      }
+      cleanup();
       if (!response.ok) {
         const errorText = await response.text().catch(() => "");
         throw new Error(`TypeSafe API HTTP ${response.status}: ${errorText.slice(0, 300)}`);
@@ -39762,10 +39774,7 @@ class TypeSafeClient {
         latencyMs: Date.now() - t0
       };
     } catch (err) {
-      clearTimeout(timeoutId);
-      if (signal) {
-        signal.removeEventListener("abort", onExternalAbort);
-      }
+      cleanup();
       throw err;
     }
   }

@@ -6,7 +6,8 @@ engines:
       - "eval/**"
       - "evals/**"
       - "src/core/review/jev/**"
-      - "src/cli/commands/reflex.ts"
+      - "src/core/reflex/**"
+      - "src/cli/commands/**"
   stylelint:
     exclude_paths:
       - "src/core/review/jev/**"
@@ -15,4 +16,5 @@ exclude_paths:
   - "eval/**"
   - "evals/**"
   - "src/core/review/jev/**"
-  - "src/cli/commands/reflex.ts"
+  - "src/core/reflex/**"
+  - "src/cli/commands/**"
