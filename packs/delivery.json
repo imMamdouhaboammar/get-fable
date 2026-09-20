@@ -4,6 +4,9 @@
   "description": "Release verification, semantic versioning, and cross-session handoff compaction.",
   "skills": [
     "fable-release",
-    "fable-handoff"
+    "fable-handoff",
+    "fable-finish-your-turn",
+    "fable-outcome-first",
+    "fable-tend"
   ]
 }

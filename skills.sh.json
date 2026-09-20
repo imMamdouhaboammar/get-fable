@@ -159,6 +159,66 @@
       "id": "fable-eco",
       "path": "skills/fable-eco/SKILL.md",
       "description": "Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts."
+    },
+    {
+      "id": "fable-context-thrift",
+      "path": "skills/fable-context-thrift/SKILL.md",
+      "description": "Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups."
+    },
+    {
+      "id": "fable-finish-your-turn",
+      "path": "skills/fable-finish-your-turn/SKILL.md",
+      "description": "Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs."
+    },
+    {
+      "id": "fable-native-code",
+      "path": "skills/fable-native-code/SKILL.md",
+      "description": "Codebase idiom matching and anti-bloat policy ensuring diffs read like native code."
+    },
+    {
+      "id": "fable-outcome-first",
+      "path": "skills/fable-outcome-first/SKILL.md",
+      "description": "Response styling policy enforcing direct first-sentence answers and zero sycophancy."
+    },
+    {
+      "id": "fable-prove-it",
+      "path": "skills/fable-prove-it/SKILL.md",
+      "description": "Evidence precedence and verification rung enforcement preventing unverified claims."
+    },
+    {
+      "id": "fable-scope-discipline",
+      "path": "skills/fable-scope-discipline/SKILL.md",
+      "description": "Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests."
+    },
+    {
+      "id": "fable-domain",
+      "path": "skills/fable-domain/SKILL.md",
+      "description": "Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns."
+    },
+    {
+      "id": "fable-judge",
+      "path": "skills/fable-judge/SKILL.md",
+      "description": "Adversarial verification of finished work detecting weakened tests and false completion claims."
+    },
+    {
+      "id": "fable-method",
+      "path": "skills/fable-method/SKILL.md",
+      "description": "Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation."
+    },
+    {
+      "id": "fable-council",
+      "path": "skills/fable-council/SKILL.md",
+      "description": "Convene multi-agent council across installed CLI agents to deliberate before finalizing plans."
+    },
+    {
+      "id": "fable-tend",
+      "path": "skills/fable-tend/SKILL.md",
+      "description": "Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage."
+    },
+    {
+      "id": "fable-wise",
+      "path": "skills/fable-wise/SKILL.md",
+      "description": "Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh."
     }
   ]
 }

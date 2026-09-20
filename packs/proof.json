@@ -6,6 +6,8 @@
     "fable-review",
     "fable-security",
     "fable-redteam",
-    "fable-heal"
+    "fable-heal",
+    "fable-prove-it",
+    "fable-judge"
   ]
 }

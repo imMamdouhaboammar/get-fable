@@ -119,6 +119,8 @@ import {
   isOcrCliAvailable,
   loadCustomRuleConfig,
 } from './core/review/index.js';
+import { runReflexCommand } from './cli/commands/reflex.js';
+import { loadReflexConfig, resolveRoute } from './core/reflex/index.js';
 
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
@@ -207,6 +209,16 @@ function runRoute(args: string[]): number {
       decision = routeTask(task, state);
       return applyRoutingDecision(state, decision);
     });
+  }
+
+  // Shadow mode integration (JEV-096): record comparison in background without altering output or blocking
+  try {
+    const reflexConfig = loadReflexConfig();
+    if (reflexConfig.mode === 'shadow' && reflexConfig.apiKey) {
+      resolveRoute(task, currentState || undefined, { config: reflexConfig }).catch(() => {});
+    }
+  } catch {
+    // Fail-safe: shadow logging must never crash ordinary routing
   }
 
   recordTelemetry({
@@ -1490,6 +1502,9 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
 
     case 'route':
       return runRoute(args.slice(1));
+
+    case 'reflex':
+      return runReflexCommand(args.slice(1));
 
     case 'arch-eval':
     case 'eval-arch':

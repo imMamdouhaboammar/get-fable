@@ -531,16 +531,36 @@ export const FableDashboard: React.FC<FableDashboardProps> = ({
   );
 };
 
+export const name = 'get-fable';
+
+export function apply(ctx: any) {
+  injectFableStyles();
+  try {
+    const slots = ctx?.get?.('slots') || ctx?.slots;
+    if (slots && typeof slots.inject === 'function') {
+      // Safe slot registration hooks if available
+    }
+  } catch (e) {
+    console.warn('[get-fable client] Notice:', e);
+  }
+}
+
 // DSH Micro-Frontend registration contract
 if (typeof window !== 'undefined') {
   (window as any).__ModuleLoader__?.load?.({
     id: 'get-fable',
     factory: (require: any) => {
+      var module: any = { exports: {} };
+      var exports = module.exports;
       injectFableStyles();
-      return {
-        Widget: FableWidget,
-        Dashboard: FableDashboard,
-      };
+
+      exports.name = 'get-fable';
+      exports.apply = apply;
+      exports.Widget = FableWidget;
+      exports.Dashboard = FableDashboard;
+      exports.FableWidget = FableWidget;
+      exports.FableDashboard = FableDashboard;
+      return module.exports;
     },
   });
 }

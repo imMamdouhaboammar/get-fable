@@ -33,7 +33,7 @@ const EXTENSIONS: Record<SkillResourceType, Set<string>> = {
   template: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon', '.proto']),
   example: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon']),
   eval: new Set(['.json', '.yaml', '.yml']),
-  script: new Set(['.sh', '.bash', '.py', '.js', '.mjs', '.ts']),
+  script: new Set(['.sh', '.bash', '.py', '.js', '.mjs', '.cjs', '.ts']),
 };
 
 export function getSkillPackageDir(id: string, repoRoot: string = getCoreRepoRoot()): string {

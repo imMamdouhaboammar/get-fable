@@ -31,7 +31,19 @@ export const CANONICAL_SKILLS = [
   "fable-spark",
   "fable-skill-creator",
   "fable-architecture",
-  "fable-eco"
+  "fable-eco",
+  "fable-context-thrift",
+  "fable-finish-your-turn",
+  "fable-native-code",
+  "fable-outcome-first",
+  "fable-prove-it",
+  "fable-scope-discipline",
+  "fable-domain",
+  "fable-judge",
+  "fable-method",
+  "fable-council",
+  "fable-tend",
+  "fable-wise"
 ] as const;
 export type FableSkillId = (typeof CANONICAL_SKILLS)[number];
 
@@ -78,6 +90,18 @@ export const SKILL_PHASE = {
   'fable-skill-creator': 'executing',
   'fable-architecture': 'planned',
   'fable-eco': 'planned',
+  'fable-context-thrift': 'discovering',
+  'fable-finish-your-turn': 'executing',
+  'fable-native-code': 'executing',
+  'fable-outcome-first': 'verifying',
+  'fable-prove-it': 'verifying',
+  'fable-scope-discipline': 'executing',
+  'fable-domain': 'discovering',
+  'fable-judge': 'verifying',
+  'fable-method': 'executing',
+  'fable-council': 'planned',
+  'fable-tend': 'executing',
+  'fable-wise': 'planned',
 } as const;
 
 export const SKILL_PACK = {
@@ -111,4 +135,16 @@ export const SKILL_PACK = {
   'fable-skill-creator': 'creator',
   'fable-architecture': 'system',
   'fable-eco': 'system',
+  'fable-context-thrift': 'system',
+  'fable-finish-your-turn': 'delivery',
+  'fable-native-code': 'build',
+  'fable-outcome-first': 'delivery',
+  'fable-prove-it': 'proof',
+  'fable-scope-discipline': 'build',
+  'fable-domain': 'creator',
+  'fable-judge': 'proof',
+  'fable-method': 'core',
+  'fable-council': 'system',
+  'fable-tend': 'delivery',
+  'fable-wise': 'system',
 } as const;

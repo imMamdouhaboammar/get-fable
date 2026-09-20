@@ -8,6 +8,7 @@
     "fable-plan",
     "fable-execute",
     "fable-verify",
-    "fable-recover"
+    "fable-recover",
+    "fable-method"
   ]
 }

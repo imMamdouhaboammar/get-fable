@@ -504,6 +504,15 @@ export function installDshGlobal(dshHome: string = getDshHomeDir()) {
 
   if (isBundle) {
     logInfo('get-fable is already registered as a profile bundle in DSH; skipping cordis.patch.yml duplicate insert.');
+    const patchFile = path.join(dshHome, 'cordis.patch.yml');
+    if (fs.existsSync(patchFile)) {
+      const existing = fs.readFileSync(patchFile, 'utf-8');
+      const cleaned = existing.replace(/-\s*insert:[\s\S]*?-\s*id:\s*get-fable[\s\S]*?(?=\n-\s*id:|\n-\s*insert:|$)/g, '').replace(/\n{3,}/g, '\n\n');
+      if (cleaned !== existing) {
+        fs.writeFileSync(patchFile, cleaned, 'utf-8');
+        logSuccess('Cleaned redundant get-fable insert from ~/.dsh/cordis.patch.yml');
+      }
+    }
     logSuccess('DeepSeek Harness integration configured successfully.');
     return;
   }

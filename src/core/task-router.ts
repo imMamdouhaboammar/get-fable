@@ -36,16 +36,16 @@ function has(text: string, pattern: RegExp): boolean {
 }
 
 function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
-  if (skill === 'fable-research' || skill === 'fable-memory') return 'research';
-  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture' || skill === 'fable-eco') return 'architecture';
+  if (skill === 'fable-research' || skill === 'fable-memory' || skill === 'fable-context-thrift') return 'research';
+  if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture' || skill === 'fable-eco' || skill === 'fable-council' || skill === 'fable-wise') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
-  if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator') return 'review';
+  if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator' || skill === 'fable-judge' || skill === 'fable-prove-it') return 'review';
   if (skill === 'fable-security' || skill === 'fable-redteam' || skill === 'fable-heal') return 'security';
-  if (skill === 'fable-release') return 'release';
-  if (skill === 'fable-handoff') return 'handoff';
+  if (skill === 'fable-release' || skill === 'fable-tend') return 'release';
+  if (skill === 'fable-handoff' || skill === 'fable-outcome-first') return 'handoff';
   if (skill === 'fable-eval' || skill === 'fable-loop' || skill === 'fable-learning') return 'eval';
-  if (skill === 'fable-simplify') return 'bounded-change';
-  if (skill === 'fable-dataviz' || skill === 'fable-cowork' || skill === 'fable-skill-creator') return 'feature';
+  if (skill === 'fable-simplify' || skill === 'fable-native-code' || skill === 'fable-scope-discipline') return 'bounded-change';
+  if (skill === 'fable-dataviz' || skill === 'fable-cowork' || skill === 'fable-skill-creator' || skill === 'fable-domain' || skill === 'fable-method' || skill === 'fable-finish-your-turn') return 'feature';
   if (skill === 'fable-tdd') {
     return has(text, /\bbug\b|\bfix\b|broken|regression|fails?/) ? 'bug-fix' : 'feature';
   }
@@ -197,7 +197,7 @@ export function routeTask(
       /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files|independently critique|critique (?:the )?changed files/
     )
   ) {
-    addSignal(scores, reasons, 'fable-review', 8, 'task requests an independent code or diff review');
+    addSignal(scores, reasons, 'fable-review', 12, 'task requests an independent code or diff review');
   }
 
   if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence/)) {
@@ -293,6 +293,54 @@ export function routeTask(
     )
   ) {
     addSignal(scores, reasons, 'fable-eco', 12, 'task requests capability provisioning or ecosystem management');
+  }
+
+  if (has(text, /\bcontext thrift\b|token budget|conserve context|batch (?:reads|lookups)|too much context|targeted read/i)) {
+    addSignal(scores, reasons, 'fable-context-thrift', 11, 'task requests context conservation or token thrift');
+  }
+
+  if (has(text, /\bfinish (?:your )?turn\b|complete (?:the )?turn|do not stop|finish what you started|premature stop|upward delegation/i)) {
+    addSignal(scores, reasons, 'fable-finish-your-turn', 11, 'task enforces complete turn discipline without premature surrender');
+  }
+
+  if (has(text, /\bnative code\b|match idiom|strip (?:defensive )?comments|no defensive bloat|codebase idiom|clean diff idiom/i)) {
+    addSignal(scores, reasons, 'fable-native-code', 11, 'task enforces codebase idiom matching and zero defensive bloat');
+  }
+
+  if (has(text, /\boutcome[- ]first\b|first sentence answer|direct answer|strip sycophancy|outcome summary|answer directly/i)) {
+    addSignal(scores, reasons, 'fable-outcome-first', 11, 'task enforces outcome-first reporting with direct answers');
+  }
+
+  if (has(text, /\bprove[- ]it\b|\bthree-rung\b|verification rung|should work is rung zero|claim verification|written runs verified|\bclaim only your rung\b/i)) {
+    addSignal(scores, reasons, 'fable-prove-it', 11, 'task enforces three-rung proof and verified evidence');
+  }
+
+  if (has(text, /\bscope discipline\b|prevent scope creep|no scope creep|surgical diff|no drive-bys|adjacency is not scope/i)) {
+    addSignal(scores, reasons, 'fable-scope-discipline', 11, 'task enforces scope discipline and atomic diffs');
+  }
+
+  if (has(text, /\bfable-domain\b|domain adapter|sector workflow|trap fixture|generate domain skill/i)) {
+    addSignal(scores, reasons, 'fable-domain', 12, 'task generates a domain workflow adapter and trap fixture');
+  }
+
+  if (has(text, /\bfable-judge\b|judge (?:this )?work|adversarial verification|hunt frauds|detect weakened tests|verify what it did/i)) {
+    addSignal(scores, reasons, 'fable-judge', 12, 'task requests adversarial verification and fraud detection');
+  }
+
+  if (has(text, /\bfable-method\b|fable method|the fable method|think act prove/i) || (text.toLowerCase().includes('classify the ask') && text.toLowerCase().includes('define done'))) {
+    addSignal(scores, reasons, 'fable-method', 12, 'task requests execution through the canonical Fable method loop');
+  }
+
+  if (has(text, /\bcouncil\b|fable-council|convene (?:the )?council|consult (?:the )?other agents|deliberate before planning|second opinion from other agents/i)) {
+    addSignal(scores, reasons, 'fable-council', 12, 'task convenes a multi-agent deliberation council');
+  }
+
+  if (has(text, /\btend\b|fable-tend|ci-fix|triage ci|resolve (?:git )?conflicts|junior maintainer|nightly sweep/i)) {
+    addSignal(scores, reasons, 'fable-tend', 12, 'task invokes repository maintenance or CI repair');
+  }
+
+  if (has(text, /\bfable-wise\b|paperthin|re0\b|ssotize|autobahn\b|feynman check|strip slop|debloat artifact|contrarian objection/i)) {
+    addSignal(scores, reasons, 'fable-wise', 12, 'task requests Paperthin low-level agentic patterns or slop reduction');
   }
 
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
