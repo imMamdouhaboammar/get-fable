@@ -67,7 +67,7 @@ export async function runReflexCommand(args: string[]): Promise<number> {
   }
 }
 
-function handleReflexStatus(args: string[]): number {
+export function handleReflexStatus(args: string[]): number {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const config = loadReflexConfig();
   const events = readReflexEvents({ limit: 1000 });
@@ -105,7 +105,7 @@ function handleReflexStatus(args: string[]): number {
   return 0;
 }
 
-async function handleReflexDoctor(args: string[]): Promise<number> {
+export async function handleReflexDoctor(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const isLive = args.includes('--live');
   const config = loadReflexConfig();
@@ -152,7 +152,7 @@ async function handleReflexDoctor(args: string[]): Promise<number> {
     } else {
       try {
         const advisor = new TypeSafeJevAdvisor({ ...config, timeoutMs: 10000 });
-        const testEnvelope: any = {
+        const testEnvelope: ReflexStateEnvelopeV1 = {
           schemaVersion: 1,
           task: 'Diagnostic connectivity check',
           lifecycle: { phase: 'idle', currentSkill: null, failureState: 'none', substantial: false, hasActiveCard: false, verificationFreshness: 'none' },
@@ -188,7 +188,7 @@ async function handleReflexDoctor(args: string[]): Promise<number> {
   return ok ? 0 : 1;
 }
 
-async function handleReflexRoute(args: string[]): Promise<number> {
+export async function handleReflexRoute(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const apply = args.includes('--apply');
   const isLive = args.includes('--live');
@@ -255,7 +255,7 @@ async function handleReflexRoute(args: string[]): Promise<number> {
   return 0;
 }
 
-function handleReflexLedger(args: string[]): number {
+export function handleReflexLedger(args: string[]): number {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const limitArgIndex = args.indexOf('--limit');
   const limit = limitArgIndex !== -1 && args[limitArgIndex + 1] ? parseInt(args[limitArgIndex + 1], 10) : 20;
@@ -283,7 +283,7 @@ function handleReflexLedger(args: string[]): number {
   return 0;
 }
 
-async function handleReflexEval(args: string[]): Promise<number> {
+export async function handleReflexEval(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const isLive = args.includes('--live');
   const config = loadReflexConfig({ mode: 'guarded', timeoutMs: isLive ? 8000 : 1200 });
@@ -331,7 +331,7 @@ async function handleReflexEval(args: string[]): Promise<number> {
   return 0;
 }
 
-async function handleReflexCompact(args: string[]): Promise<number> {
+export async function handleReflexCompact(args: string[]): Promise<number> {
   const filePath = args.find((a) => !a.startsWith('--'));
   if (!filePath) {
     console.error('Error: reflex compact requires a path to a transcript JSON or JSONL file.');

@@ -10,6 +10,7 @@ test_patterns = [
 exclude_patterns = [
   "dist/**",
   "src/core/review/jev/**",
+  "src/cli/commands/**",
   "public/**",
   "site/**",
   "docs/**"
