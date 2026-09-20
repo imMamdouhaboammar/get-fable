@@ -1,4 +1,3 @@
-/* skipcq: JS-0002, JS-0067 */
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadReflexConfig } from '../../core/reflex/config.js';
@@ -32,7 +31,7 @@ import {
 } from '../../core/reflex/model-router/index.js';
 import { RecipesBridge } from '../../core/reflex/recipes-bridge.js';
 
-export async function runReflexCommand(args: string[]): Promise<number> {
+export async function runReflexCommand(args: string[]): Promise<number> {  // skipcq: JS-0067
   const sub = args[0] || 'status';
   const subArgs = args.slice(1);
 
@@ -61,14 +60,14 @@ export async function runReflexCommand(args: string[]): Promise<number> {
     case 'sec-scan':
       return await handleReflexSecurityScan(subArgs);
     default:
-      console.error(
+      console.error(  // skipcq: JS-0002
         `Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`
       );
       return 1;
   }
 }
 
-export function handleReflexStatus(args: string[]): number {
+export function handleReflexStatus(args: string[]): number {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const config = loadReflexConfig();
   const events = readReflexEvents({ limit: 1000 });
@@ -88,25 +87,25 @@ export function handleReflexStatus(args: string[]): number {
   };
 
   if (isJson) {
-    console.log(JSON.stringify(status, null, 2));
+    console.log(JSON.stringify(status, null, 2));  // skipcq: JS-0002
     return 0;
   }
 
-  console.log('\n--- Fable-Jev Reflex Subsystem Status ---');
-  console.log(`Mode:            ${config.mode}`);
-  console.log(`Provider:        ${config.provider}`);
-  console.log(`Model:           ${config.model}`);
-  console.log(`Timeout:         ${config.timeoutMs}ms`);
-  console.log(`Min Margin:      ${config.minMargin}`);
-  console.log(`Telemetry:       ${config.telemetry}`);
-  console.log(`API Key:         ${config.apiKey ? 'Configured (present)' : 'Missing'}`);
-  console.log(`Circuit Breaker: ${cbState.isOpen ? 'OPEN (Tripped)' : 'CLOSED (Healthy)'}`);
-  console.log(`Ledger Events:   ${events.length} recorded\n`);
+  console.log('\n--- Fable-Jev Reflex Subsystem Status ---');  // skipcq: JS-0002
+  console.log(`Mode:            ${config.mode}`);  // skipcq: JS-0002
+  console.log(`Provider:        ${config.provider}`);  // skipcq: JS-0002
+  console.log(`Model:           ${config.model}`);  // skipcq: JS-0002
+  console.log(`Timeout:         ${config.timeoutMs}ms`);  // skipcq: JS-0002
+  console.log(`Min Margin:      ${config.minMargin}`);  // skipcq: JS-0002
+  console.log(`Telemetry:       ${config.telemetry}`);  // skipcq: JS-0002
+  console.log(`API Key:         ${config.apiKey ? 'Configured (present)' : 'Missing'}`);  // skipcq: JS-0002
+  console.log(`Circuit Breaker: ${cbState.isOpen ? 'OPEN (Tripped)' : 'CLOSED (Healthy)'}`);  // skipcq: JS-0002
+  console.log(`Ledger Events:   ${events.length} recorded\n`);  // skipcq: JS-0002
 
   return 0;
 }
 
-export async function handleReflexDoctor(args: string[]): Promise<number> {
+export async function handleReflexDoctor(args: string[]): Promise<number> {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const isLive = args.includes('--live');
   const config = loadReflexConfig();
@@ -175,21 +174,21 @@ export async function handleReflexDoctor(args: string[]): Promise<number> {
   const ok = !checks.some((c) => c.status === 'ERROR');
 
   if (isJson) {
-    console.log(JSON.stringify({ ok, checks }, null, 2));
+    console.log(JSON.stringify({ ok, checks }, null, 2));  // skipcq: JS-0002
     return ok ? 0 : 1;
   }
 
-  console.log('\n--- Fable-Jev Reflex Doctor ---');
+  console.log('\n--- Fable-Jev Reflex Doctor ---');  // skipcq: JS-0002
   for (const c of checks) {
     const symbol = c.status === 'PASS' ? '✔' : c.status === 'WARN' ? '⚠' : '✖';
-    console.log(`${symbol} [${c.id}] ${c.message}`);
+    console.log(`${symbol} [${c.id}] ${c.message}`);  // skipcq: JS-0002
   }
-  console.log('');
+  console.log('');  // skipcq: JS-0002
 
   return ok ? 0 : 1;
 }
 
-export async function handleReflexRoute(args: string[]): Promise<number> {
+export async function handleReflexRoute(args: string[]): Promise<number> {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const apply = args.includes('--apply');
   const isLive = args.includes('--live');
@@ -200,7 +199,7 @@ export async function handleReflexRoute(args: string[]): Promise<number> {
     .trim();
 
   if (!task) {
-    console.error('Error: reflex route requires task text');
+    console.error('Error: reflex route requires task text');  // skipcq: JS-0002
     return 1;
   }
 
@@ -208,7 +207,7 @@ export async function handleReflexRoute(args: string[]): Promise<number> {
   const currentState = readFableState(process.cwd());
 
   if (apply && !currentState) {
-    console.error('Error: reflex route --apply requires an initialized project (.fable/state.json)');
+    console.error('Error: reflex route --apply requires an initialized project (.fable/state.json)');  // skipcq: JS-0002
     return 1;
   }
 
@@ -221,42 +220,42 @@ export async function handleReflexRoute(args: string[]): Promise<number> {
   }
 
   if (isJson) {
-    console.log(JSON.stringify(resolution, null, 2));
+    console.log(JSON.stringify(resolution, null, 2));  // skipcq: JS-0002
     return 0;
   }
 
-  console.log(`\n--- Fable-Jev Reflex Routing: "${task}" ---`);
-  console.log(`Mode:            ${resolution.mode}`);
-  console.log(`Selected Skill:  ${resolution.decision.selectedSkill}`);
-  console.log(`Pack:            ${resolution.decision.selectedPack}`);
-  console.log(`Task Shape:      ${resolution.decision.taskShape}`);
-  console.log(`Confidence:      ${Math.round(resolution.decision.confidence * 100)}%`);
+  console.log(`\n--- Fable-Jev Reflex Routing: "${task}" ---`);  // skipcq: JS-0002
+  console.log(`Mode:            ${resolution.mode}`);  // skipcq: JS-0002
+  console.log(`Selected Skill:  ${resolution.decision.selectedSkill}`);  // skipcq: JS-0002
+  console.log(`Pack:            ${resolution.decision.selectedPack}`);  // skipcq: JS-0002
+  console.log(`Task Shape:      ${resolution.decision.taskShape}`);  // skipcq: JS-0002
+  console.log(`Confidence:      ${Math.round(resolution.decision.confidence * 100)}%`);  // skipcq: JS-0002
 
   if (resolution.advice) {
-    console.log(`Reflex Advice:   ${resolution.advice.selectedSkill} (${resolution.advice.provider}, ${resolution.advice.model})`);
+    console.log(`Reflex Advice:   ${resolution.advice.selectedSkill} (${resolution.advice.provider}, ${resolution.advice.model})`);  // skipcq: JS-0002
     if (resolution.advice.latencyMs) {
-      console.log(`Latency:         ${resolution.advice.latencyMs}ms`);
+      console.log(`Latency:         ${resolution.advice.latencyMs}ms`);  // skipcq: JS-0002
     }
   }
 
   if (resolution.fallbackReason) {
-    console.log(`Fallback Reason: ${resolution.fallbackReason}`);
+    console.log(`Fallback Reason: ${resolution.fallbackReason}`);  // skipcq: JS-0002
   }
 
-  console.log('Reasons:');
+  console.log('Reasons:');  // skipcq: JS-0002
   for (const r of resolution.decision.reasons) {
-    console.log(`  - ${r}`);
+    console.log(`  - ${r}`);  // skipcq: JS-0002
   }
 
   if (apply) {
-    console.log('✔ Applied decision to .fable/state.json');
+    console.log('✔ Applied decision to .fable/state.json');  // skipcq: JS-0002
   }
-  console.log('');
+  console.log('');  // skipcq: JS-0002
 
   return 0;
 }
 
-export function handleReflexLedger(args: string[]): number {
+export function handleReflexLedger(args: string[]): number {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const limitArgIndex = args.indexOf('--limit');
   const limit = limitArgIndex !== -1 && args[limitArgIndex + 1] ? parseInt(args[limitArgIndex + 1], 10) : 20;
@@ -264,27 +263,27 @@ export function handleReflexLedger(args: string[]): number {
   const events = readReflexEvents({ limit });
 
   if (isJson) {
-    console.log(JSON.stringify(events, null, 2));
+    console.log(JSON.stringify(events, null, 2));  // skipcq: JS-0002
     return 0;
   }
 
-  console.log(`\n--- Reflex Ledger Events (Last ${events.length}) ---`);
+  console.log(`\n--- Reflex Ledger Events (Last ${events.length}) ---`);  // skipcq: JS-0002
   if (events.length === 0) {
-    console.log('No reflex events recorded yet.');
+    console.log('No reflex events recorded yet.');  // skipcq: JS-0002
     return 0;
   }
 
   for (const e of events) {
-    console.log(
+    console.log(  // skipcq: JS-0002
       `[${e.timestamp}] [${e.mode}] det: ${e.deterministicSkill} -> fused: ${e.fusedSkill} (model: ${e.model}, latency: ${e.latencyMs}ms)`
     );
   }
-  console.log('');
+  console.log('');  // skipcq: JS-0002
 
   return 0;
 }
 
-export async function handleReflexEval(args: string[]): Promise<number> {
+export async function handleReflexEval(args: string[]): Promise<number> {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const isLive = args.includes('--live');
   const config = loadReflexConfig({ mode: 'guarded', timeoutMs: isLive ? 8000 : 1200 });
@@ -309,39 +308,39 @@ export async function handleReflexEval(args: string[]): Promise<number> {
     };
   }
 
-  console.log(`Running reflex evaluation (${isLive ? 'LIVE Jev arm' : 'OFFLINE simulated arm'})...`);
+  console.log(`Running reflex evaluation (${isLive ? 'LIVE Jev arm' : 'OFFLINE simulated arm'})...`);  // skipcq: JS-0002
   const report = await runReflexEvaluation(undefined, { config, advisor });
 
   if (isJson) {
-    console.log(JSON.stringify(report, null, 2));
+    console.log(JSON.stringify(report, null, 2));  // skipcq: JS-0002
     return 0;
   }
 
-  console.log('\n--- Fable-Jev Reflex Routing Benchmark Report ---');
-  console.log(`Timestamp:            ${report.timestamp}`);
-  console.log(`Total Cases:          ${report.totalCases}`);
-  console.log(`Deterministic Top-1:  ${report.deterministic.top1Count}/${report.totalCases} (${(report.deterministic.top1Accuracy * 100).toFixed(1)}%)`);
-  console.log(`Hybrid Guarded Top-1: ${report.hybridGuarded.top1Count}/${report.totalCases} (${(report.hybridGuarded.top1Accuracy * 100).toFixed(1)}%)`);
-  console.log(`Brier Score:          ${report.hybridGuarded.brierScore.toFixed(3)} (lower is better calibrated)`);
-  console.log(`Avg Latency:          ${report.hybridGuarded.avgLatencyMs}ms`);
-  console.log(`Overrides Count:      ${report.overridesCount}`);
-  console.log(`Overrides Won:        ${report.overridesWon}`);
-  console.log(`Overrides Harm:       ${report.overridesHarm}`);
-  console.log(`Override Precision:   ${(report.overridePrecision * 100).toFixed(1)}%\n`);
+  console.log('\n--- Fable-Jev Reflex Routing Benchmark Report ---');  // skipcq: JS-0002
+  console.log(`Timestamp:            ${report.timestamp}`);  // skipcq: JS-0002
+  console.log(`Total Cases:          ${report.totalCases}`);  // skipcq: JS-0002
+  console.log(`Deterministic Top-1:  ${report.deterministic.top1Count}/${report.totalCases} (${(report.deterministic.top1Accuracy * 100).toFixed(1)}%)`);  // skipcq: JS-0002
+  console.log(`Hybrid Guarded Top-1: ${report.hybridGuarded.top1Count}/${report.totalCases} (${(report.hybridGuarded.top1Accuracy * 100).toFixed(1)}%)`);  // skipcq: JS-0002
+  console.log(`Brier Score:          ${report.hybridGuarded.brierScore.toFixed(3)} (lower is better calibrated)`);  // skipcq: JS-0002
+  console.log(`Avg Latency:          ${report.hybridGuarded.avgLatencyMs}ms`);  // skipcq: JS-0002
+  console.log(`Overrides Count:      ${report.overridesCount}`);  // skipcq: JS-0002
+  console.log(`Overrides Won:        ${report.overridesWon}`);  // skipcq: JS-0002
+  console.log(`Overrides Harm:       ${report.overridesHarm}`);  // skipcq: JS-0002
+  console.log(`Override Precision:   ${(report.overridePrecision * 100).toFixed(1)}%\n`);  // skipcq: JS-0002
 
   return 0;
 }
 
-export async function handleReflexCompact(args: string[]): Promise<number> {
+export async function handleReflexCompact(args: string[]): Promise<number> {  // skipcq: JS-0067
   const filePath = args.find((a) => !a.startsWith('--'));
   if (!filePath) {
-    console.error('Error: reflex compact requires a path to a transcript JSON or JSONL file.');
-    console.log('Usage: get-fable reflex compact <transcript-path> [--out <output-path>] [--threshold 0.5] [--preserve-recent 6]');
+    console.error('Error: reflex compact requires a path to a transcript JSON or JSONL file.');  // skipcq: JS-0002
+    console.log('Usage: get-fable reflex compact <transcript-path> [--out <output-path>] [--threshold 0.5] [--preserve-recent 6]');  // skipcq: JS-0002
     return 1;
   }
 
   if (!fs.existsSync(filePath)) {
-    console.error(`Error: File not found: ${filePath}`);
+    console.error(`Error: File not found: ${filePath}`);  // skipcq: JS-0002
     return 1;
   }
 
@@ -354,7 +353,7 @@ export async function handleReflexCompact(args: string[]): Promise<number> {
       messages = raw.split('\n').filter(Boolean).map((line) => JSON.parse(line));
     }
   } catch (err: any) {
-    console.error(`Error reading transcript: ${err.message}`);
+    console.error(`Error reading transcript: ${err.message}`);  // skipcq: JS-0002
     return 1;
   }
 
@@ -367,7 +366,7 @@ export async function handleReflexCompact(args: string[]): Promise<number> {
   const preserveIdx = args.indexOf('--preserve-recent');
   const preserveRecent = preserveIdx !== -1 && args[preserveIdx + 1] ? parseInt(args[preserveIdx + 1], 10) : 6;
 
-  console.log(`Compacting transcript (${messages.length} messages) using Jev System One...`);
+  console.log(`Compacting transcript (${messages.length} messages) using Jev System One...`);  // skipcq: JS-0002
   try {
     const result = await compactMessages(messages, {
       keepThreshold,
@@ -375,71 +374,61 @@ export async function handleReflexCompact(args: string[]): Promise<number> {
     });
 
     const ratio = (reductionRatio(result) * 100).toFixed(1);
-    console.log('\n--- Jev Context Compaction Summary ---');
-    console.log(`Messages:      ${result.stats.messagesBefore} -> ${result.stats.messagesAfter}`);
-    console.log(`Characters:    ${result.stats.charsBefore} -> ${result.stats.charsAfter} (-${ratio}%)`);
-    console.log(`Tool Calls:    ${result.stats.calls} examined`);
-    console.log(`Kept Verbatim: ${result.stats.kept}`);
-    console.log(`Truncated/Out: ${result.stats.resultsDropped}`);
-    console.log(`Dropped Calls: ${result.stats.callsDropped}`);
-    console.log(`Duration:      ${result.stats.ms}ms\n`);
+    console.log('\n--- Jev Context Compaction Summary ---');  // skipcq: JS-0002
+    console.log(`Messages:      ${result.stats.messagesBefore} -> ${result.stats.messagesAfter}`);  // skipcq: JS-0002
+    console.log(`Characters:    ${result.stats.charsBefore} -> ${result.stats.charsAfter} (-${ratio}%)`);  // skipcq: JS-0002
+    console.log(`Tool Calls:    ${result.stats.calls} examined`);  // skipcq: JS-0002
+    console.log(`Kept Verbatim: ${result.stats.kept}`);  // skipcq: JS-0002
+    console.log(`Truncated/Out: ${result.stats.resultsDropped}`);  // skipcq: JS-0002
+    console.log(`Dropped Calls: ${result.stats.callsDropped}`);  // skipcq: JS-0002
+    console.log(`Duration:      ${result.stats.ms}ms\n`);  // skipcq: JS-0002
 
     if (outPath) {
       fs.writeFileSync(outPath, JSON.stringify(result.messages, null, 2), 'utf8');
-      console.log(`Compacted transcript written to ${outPath}`);
+      console.log(`Compacted transcript written to ${outPath}`);  // skipcq: JS-0002
     }
 
     return 0;
   } catch (err: any) {
-    console.error(`Compaction failed: ${err.message}`);
+    console.error(`Compaction failed: ${err.message}`);  // skipcq: JS-0002
     return 1;
   }
 }
 
-export async function runDashboardServer(args: string[]): Promise<number> {
+export async function runDashboardServer(args: string[]): Promise<number> {  // skipcq: JS-0067
   const portIdx = args.indexOf('--port');
   const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
-  // skipcq: JS-0002
-  console.log(`Starting Jev Review Dashboard on port ${port}...`);
+  console.log(`Starting Jev Review Dashboard on port ${port}...`);  // skipcq: JS-0002
   await startDashboard(port);
   return 0;
 }
 
-export function printReviewReport(report: ReviewReport): boolean {
-  // skipcq: JS-0002
-  console.log('\n--- Jev Review Summary ---');
-  // skipcq: JS-0002
-  console.log(`Mode:            ${report.mode}`);
-  // skipcq: JS-0002
-  console.log(`Scope:           ${report.scope}`);
-  // skipcq: JS-0002
-  console.log(`Screened Files:  ${report.screenedFiles}`);
-  // skipcq: JS-0002
-  console.log(`Signals:         ${report.followedSignals}`);
-  // skipcq: JS-0002
-  console.log(`Findings:        ${report.findings.length}`);
+export function printReviewReport(report: ReviewReport): boolean {  // skipcq: JS-0067
+  console.log('\n--- Jev Review Summary ---');  // skipcq: JS-0002
+  console.log(`Mode:            ${report.mode}`);  // skipcq: JS-0002
+  console.log(`Scope:           ${report.scope}`);  // skipcq: JS-0002
+  console.log(`Screened Files:  ${report.screenedFiles}`);  // skipcq: JS-0002
+  console.log(`Signals:         ${report.followedSignals}`);  // skipcq: JS-0002
+  console.log(`Findings:        ${report.findings.length}`);  // skipcq: JS-0002
 
   let hasBlocking = false;
   if (report.findings.length > 0) {
-    // skipcq: JS-0002
-    console.log('\nFindings:');
+    console.log('\nFindings:');  // skipcq: JS-0002
     for (const finding of report.findings) {
       const blocking = finding.action === 'request_changes' || finding.severity >= 2.0;
       if (blocking) hasBlocking = true;
-      // skipcq: JS-0002
-      console.log(
+      console.log(  // skipcq: JS-0002
         `  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`
       );
     }
   } else {
-    // skipcq: JS-0002
-    console.log('Zero high-risk findings detected. Code changes look clean.');
+    console.log('Zero high-risk findings detected. Code changes look clean.');  // skipcq: JS-0002
   }
 
   return hasBlocking;
 }
 
-export function readInputText(target: string | undefined): string | null {
+export function readInputText(target: string | undefined): string | null {  // skipcq: JS-0067
   if (!target) return null;
   if (target.includes('\n') || target.length > 256) {
     return target;
@@ -456,7 +445,7 @@ export function readInputText(target: string | undefined): string | null {
   return target;
 }
 
-export async function handleReflexReview(args: string[]): Promise<number> {
+export async function handleReflexReview(args: string[]): Promise<number> {  // skipcq: JS-0067
   if (args.includes('--dashboard')) {
     return await runDashboardServer(args);
   }
@@ -467,8 +456,7 @@ export async function handleReflexReview(args: string[]): Promise<number> {
   const targetPath = args.filter((a) => !a.startsWith('--'))[0] || process.cwd();
 
   if (!isJson) {
-    // skipcq: JS-0002
-    console.log(`Running Jev ${isCodebase ? 'Codebase Scan' : 'Diff Review'} on ${targetPath}...`);
+    console.log(`Running Jev ${isCodebase ? 'Codebase Scan' : 'Diff Review'} on ${targetPath}...`);  // skipcq: JS-0002
   }
   try {
     const report = isCodebase ? await reviewCodebase(targetPath) : await reviewChanges(targetPath);
@@ -476,8 +464,7 @@ export async function handleReflexReview(args: string[]): Promise<number> {
     if (shouldSave) {
       await saveReport(report);
       if (!isJson) {
-        // skipcq: JS-0002
-        console.log(`Saved report to ${reportPath()}`);
+        console.log(`Saved report to ${reportPath()}`);  // skipcq: JS-0002
       }
     }
 
@@ -486,55 +473,53 @@ export async function handleReflexReview(args: string[]): Promise<number> {
     );
 
     if (isJson) {
-      // skipcq: JS-0002
-      console.log(JSON.stringify(report, null, 2));
+      console.log(JSON.stringify(report, null, 2));  // skipcq: JS-0002
       return hasBlocking ? 1 : 0;
     }
 
     printReviewReport(report);
     return hasBlocking ? 1 : 0;
   } catch (err: any) {
-    // skipcq: JS-0002
-    console.error(`Review execution failed: ${err.message}`);
+    console.error(`Review execution failed: ${err.message}`);  // skipcq: JS-0002
     return 1;
   }
 }
 
-export async function handleReflexRouteModel(args: string[]): Promise<number> {
+export async function handleReflexRouteModel(args: string[]): Promise<number> {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const task = args.filter((a) => !a.startsWith('--')).join(' ').trim();
   if (!task) {
-    console.error('Error: reflex route-model requires task description');
+    console.error('Error: reflex route-model requires task description');  // skipcq: JS-0002
     return 1;
   }
 
   try {
     const result = await routeTaskToOptimalModel(task, { models: DEFAULT_AGENT_MODELS });
     if (isJson) {
-      console.log(JSON.stringify(result, null, 2));
+      console.log(JSON.stringify(result, null, 2));  // skipcq: JS-0002
       return 0;
     }
 
-    console.log(`\n--- Jev Model Capability & Cost Routing ---`);
-    console.log(`Task:          "${task}"`);
-    console.log(`Optimal Model: ${result.model} (Tier: ${result.tier})`);
-    console.log(`Probabilities:`);
+    console.log(`\n--- Jev Model Capability & Cost Routing ---`);  // skipcq: JS-0002
+    console.log(`Task:          "${task}"`);  // skipcq: JS-0002
+    console.log(`Optimal Model: ${result.model} (Tier: ${result.tier})`);  // skipcq: JS-0002
+    console.log(`Probabilities:`);  // skipcq: JS-0002
     for (const [model, prob] of Object.entries(result.probabilities)) {
-      console.log(`  - ${model.padEnd(12)}: ${(prob * 100).toFixed(1)}%`);
+      console.log(`  - ${model.padEnd(12)}: ${(prob * 100).toFixed(1)}%`);  // skipcq: JS-0002
     }
     return 0;
   } catch (err: any) {
-    console.error(`Model routing failed: ${err.message}`);
+    console.error(`Model routing failed: ${err.message}`);  // skipcq: JS-0002
     return 1;
   }
 }
 
-export async function handleReflexTriageLog(args: string[]): Promise<number> {
+export async function handleReflexTriageLog(args: string[]): Promise<number> {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const target = args.filter((a) => !a.startsWith('--'))[0];
   const logContent = readInputText(target);
   if (!logContent) {
-    console.error('Error: triage-log requires a log file path or log text');
+    console.error('Error: triage-log requires a log file path or log text');  // skipcq: JS-0002
     return 1;
   }
 
@@ -542,29 +527,29 @@ export async function handleReflexTriageLog(args: string[]): Promise<number> {
     const bridge = new RecipesBridge();
     const diagnosis = await bridge.triageErrorLog(logContent);
     if (isJson) {
-      console.log(JSON.stringify(diagnosis, null, 2));
+      console.log(JSON.stringify(diagnosis, null, 2));  // skipcq: JS-0002
       return 0;
     }
 
-    console.log(`\n--- Jev Error Log Triage (fable-recover) ---`);
-    console.log(`Diagnosis Level: Level ${diagnosis.levelNumber} (${diagnosis.level})`);
-    console.log(`Confidence:      ${(diagnosis.confidence * 100).toFixed(1)}%`);
-    console.log(`Severity:        ${diagnosis.severity.toFixed(1)}`);
-    console.log(`Actionable:      ${diagnosis.actionable ? 'YES (requires fix)' : 'NO (transient)'}`);
-    console.log(`Summary:         ${diagnosis.summary}`);
+    console.log(`\n--- Jev Error Log Triage (fable-recover) ---`);  // skipcq: JS-0002
+    console.log(`Diagnosis Level: Level ${diagnosis.levelNumber} (${diagnosis.level})`);  // skipcq: JS-0002
+    console.log(`Confidence:      ${(diagnosis.confidence * 100).toFixed(1)}%`);  // skipcq: JS-0002
+    console.log(`Severity:        ${diagnosis.severity.toFixed(1)}`);  // skipcq: JS-0002
+    console.log(`Actionable:      ${diagnosis.actionable ? 'YES (requires fix)' : 'NO (transient)'}`);  // skipcq: JS-0002
+    console.log(`Summary:         ${diagnosis.summary}`);  // skipcq: JS-0002
     return 0;
   } catch (err: any) {
-    console.error(`Log triage failed: ${err.message}`);
+    console.error(`Log triage failed: ${err.message}`);  // skipcq: JS-0002
     return 1;
   }
 }
 
-export async function handleReflexSecurityScan(args: string[]): Promise<number> {
+export async function handleReflexSecurityScan(args: string[]): Promise<number> {  // skipcq: JS-0067
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const target = args.filter((a) => !a.startsWith('--'))[0];
   const content = readInputText(target);
   if (!content) {
-    console.error('Error: security-scan requires a file path or text content');
+    console.error('Error: security-scan requires a file path or text content');  // skipcq: JS-0002
     return 1;
   }
 
@@ -572,18 +557,18 @@ export async function handleReflexSecurityScan(args: string[]): Promise<number> 
     const bridge = new RecipesBridge();
     const scan = await bridge.scanForSecretsAndSecurity(content);
     if (isJson) {
-      console.log(JSON.stringify(scan, null, 2));
+      console.log(JSON.stringify(scan, null, 2));  // skipcq: JS-0002
       return 0;
     }
 
-    console.log(`\n--- Jev Security & PII Scan (fable-security) ---`);
-    console.log(`Safe:              ${scan.isSafe ? 'PASS' : 'FAIL (Security Alert)'}`);
-    console.log(`Exposed Secrets:   ${scan.hasSecrets ? 'DETECTED' : 'None'} (${(scan.secretsConfidence * 100).toFixed(1)}%)`);
-    console.log(`PII Leaks:         ${scan.hasPii ? 'DETECTED' : 'None'} (${(scan.piiConfidence * 100).toFixed(1)}%)`);
-    console.log(`Prompt Injection:  ${scan.isPromptInjection ? 'DETECTED' : 'None'} (${(scan.injectionConfidence * 100).toFixed(1)}%)`);
+    console.log(`\n--- Jev Security & PII Scan (fable-security) ---`);  // skipcq: JS-0002
+    console.log(`Safe:              ${scan.isSafe ? 'PASS' : 'FAIL (Security Alert)'}`);  // skipcq: JS-0002
+    console.log(`Exposed Secrets:   ${scan.hasSecrets ? 'DETECTED' : 'None'} (${(scan.secretsConfidence * 100).toFixed(1)}%)`);  // skipcq: JS-0002
+    console.log(`PII Leaks:         ${scan.hasPii ? 'DETECTED' : 'None'} (${(scan.piiConfidence * 100).toFixed(1)}%)`);  // skipcq: JS-0002
+    console.log(`Prompt Injection:  ${scan.isPromptInjection ? 'DETECTED' : 'None'} (${(scan.injectionConfidence * 100).toFixed(1)}%)`);  // skipcq: JS-0002
     return scan.isSafe ? 0 : 1;
   } catch (err: any) {
-    console.error(`Security scan failed: ${err.message}`);
+    console.error(`Security scan failed: ${err.message}`);  // skipcq: JS-0002
     return 1;
   }
 }
