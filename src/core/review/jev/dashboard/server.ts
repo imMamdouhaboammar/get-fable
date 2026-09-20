@@ -46,7 +46,12 @@ export async function handle(req: IncomingMessage, res: ServerResponse) {
   if (!asset) return send(res, 404, "text/plain; charset=utf-8", "Not found");
 
   const [file, type] = asset;
-  send(res, 200, type, await readFile(join(PUBLIC_DIR, file)));
+  try {
+    const body = await readFile(join(PUBLIC_DIR, file));
+    send(res, 200, type, body);
+  } catch {
+    send(res, 500, "text/plain; charset=utf-8", "Asset unavailable");
+  }
 }
 
 export function startDashboard(port = PORT, host = HOST) {

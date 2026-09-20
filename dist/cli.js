@@ -39260,7 +39260,7 @@ function changedFiles(scope) {
     "diff",
     "HEAD",
     "--name-only",
-    "--diff-filter=ACMRTUXB",
+    "--diff-filter=ACMRTUXBD",
     "--",
     relativeScope
   ]));
@@ -39710,6 +39710,17 @@ class TypeSafeClient {
     if (!this.apiKey) {
       throw new Error("TYPESAFE_API_KEY is not configured in environment or client options");
     }
+    try {
+      const parsedUrl = new URL(this.baseUrl);
+      const isLoopback = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "::1";
+      if (parsedUrl.protocol !== "https:" && !isLoopback) {
+        throw new Error(`Insecure endpoint rejected: TypeSafe API endpoint must use HTTPS to forward credentials securely (got ${this.baseUrl})`);
+      }
+    } catch (err) {
+      if (err.message?.includes("Insecure endpoint rejected"))
+        throw err;
+      throw new Error(`Invalid TypeSafe baseUrl: ${this.baseUrl}`);
+    }
     const t0 = Date.now();
     const controller = new AbortController;
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -39770,6 +39781,27 @@ var changeTypes = {
   refactor: "Restructures implementation without intending behavior changes",
   routine: "A small routine change that fits none of the other categories"
 };
+function requireNoul(answers, question) {
+  const val = answers?.[question]?.noul;
+  if (typeof val !== "number" || !Number.isFinite(val)) {
+    throw new Error(`Screening answer "${question}" is missing or non-numeric`);
+  }
+  return val;
+}
+function requireChoice(answers, question) {
+  const ans = answers?.[question];
+  if (!ans || typeof ans.choice !== "string") {
+    throw new Error(`Judgment answer "${question}" is missing choice`);
+  }
+  return { choice: ans.choice, confidence: typeof ans.confidence === "number" ? ans.confidence : 1 };
+}
+function requireScore(answers, question) {
+  const ans = answers?.[question];
+  if (!ans || typeof ans.score !== "number" || !Number.isFinite(ans.score)) {
+    throw new Error(`Judgment answer "${question}" is missing score`);
+  }
+  return { score: ans.score, confidence: typeof ans.confidence === "number" ? ans.confidence : 1 };
+}
 async function screenFile(file, changedTests) {
   const response = await client2.systemOne({
     state: { file, changedTests },
@@ -39781,32 +39813,26 @@ async function screenFile(file, changedTests) {
         ignore: ["Style preferences", "Naming concerns", "Unsupported speculation"]
       }, {
         true: {
-          what: "The patch contains a realistic path to a wrong runtime result",
-          examples: ["A condition now handles the opposite case", "A value is written to the wrong field"]
+          what: "A changed line introduces a logic, syntax, data-flow, async, or reference error",
+          examples: ["Off-by-one loop bound", "Unhandled null or undefined value", "Race condition"]
         },
-        false: {
-          what: "The patch is correct, non-behavioral, or lacks direct evidence of a bug",
-          examples: ["Formatting only", "A refactor that preserves data flow"]
-        }
+        false: { what: "The patch is consistent, intentional, and does not exhibit clear logic flaws" }
       }),
       security: noul({
-        question: "Does file.patch directly support that this change introduces or weakens a security boundary?",
+        question: "Does file.patch directly support that this change introduces a security risk or trust boundary violation?",
         inspect: "file.patch",
-        focus: "Authorization, injection, secret exposure, trust boundaries, and unsafe defaults"
+        focus: "Injection, unsafe inputs, privilege escalations, or unintended exposure"
       }, {
         true: {
-          what: "The patch creates a concrete path around a security control or into an unsafe sink",
-          examples: ["An authorization check is removed", "Untrusted input reaches command execution"]
+          what: "A changed path handles untrusted data unsafely or expands attacker reach",
+          examples: ["Unsanitized SQL or command construction", "Missing authorization check"]
         },
-        false: {
-          what: "No security boundary is weakened by the patch",
-          not_for: "Code that merely uses security-related names"
-        }
+        false: { what: "The change operates within established security boundaries" }
       }),
       reliability: noul({
-        question: "Does file.patch directly support that this change can crash, race, leak, deadlock, or recover poorly?",
+        question: "Does file.patch directly support that this change risks process stability, unhandled exceptions, or resource leaks?",
         inspect: "file.patch",
-        focus: "Realistic resource, concurrency, cancellation, and failure paths"
+        focus: "Resource lifecycle, unhandled rejection paths, timeouts, and invariants"
       }, {
         true: {
           what: "A changed path can lose work, leak resources, hang, crash, or leave inconsistent state",
@@ -39844,11 +39870,11 @@ async function screenFile(file, changedTests) {
   return {
     file,
     probabilities: {
-      correctness: response.answers.correctness.noul,
-      security: response.answers.security.noul,
-      reliability: response.answers.reliability.noul,
-      compatibility: response.answers.compatibility.noul,
-      testGap: response.answers.testGap.noul
+      correctness: requireNoul(response.answers, "correctness"),
+      security: requireNoul(response.answers, "security"),
+      reliability: requireNoul(response.answers, "reliability"),
+      compatibility: requireNoul(response.answers, "compatibility"),
+      testGap: requireNoul(response.answers, "testGap")
     }
   };
 }
@@ -39860,12 +39886,14 @@ async function profileFile(file, screeningProbabilities) {
       reviewPriority: score("Rate how closely a human should review file.patch, considering the code and screeningProbabilities.", [...reviewPriorityRubric])
     }
   });
+  const cat = requireChoice(response.answers, "category");
+  const prio = requireScore(response.answers, "reviewPriority");
   return {
     file: file.path,
-    category: response.answers.category.choice,
-    categoryConfidence: response.answers.category.confidence,
-    reviewPriority: response.answers.reviewPriority.score,
-    reviewPriorityConfidence: response.answers.reviewPriority.confidence
+    category: cat.choice,
+    categoryConfidence: cat.confidence,
+    reviewPriority: prio.score,
+    reviewPriorityConfidence: prio.confidence
   };
 }
 async function locateSignal(signal) {
@@ -39892,8 +39920,8 @@ async function locateSignal(signal) {
       })
     }
   });
-  const selected = location.answers.evidence;
-  if (selected.choice === "noMatch" || selected.confidence < MIN_LOCATION_CONFIDENCE)
+  const selected = location.answers?.evidence;
+  if (!selected || typeof selected.choice !== "string" || selected.choice === "noMatch" || (selected.confidence ?? 0) < MIN_LOCATION_CONFIDENCE)
     return null;
   const hunk = hunks.find((candidate) => candidate.id === selected.choice);
   if (!hunk)
@@ -39904,8 +39932,8 @@ async function locateSignal(signal) {
       mechanism: choice("Which mechanism best describes the suspected concern supported by selectedEvidence?", mechanisms[signal.dimension])
     }
   });
-  const mechanism = classification.answers.mechanism;
-  if (mechanism.choice === "noIssue")
+  const mechanism = classification.answers?.mechanism;
+  if (!mechanism || typeof mechanism.choice !== "string" || mechanism.choice === "noIssue")
     return null;
   const impact = await client2.systemOne({
     state: { file: signal.file.path, suspectedConcern, selectedEvidence: hunk },
@@ -39913,7 +39941,9 @@ async function locateSignal(signal) {
       severity: score("Assuming selectedEvidence exhibits suspectedConcern, rate the likely production impact.", [...severityRubric])
     }
   });
-  const severity = impact.answers.severity;
+  const severity = impact.answers?.severity;
+  if (!severity || typeof severity.score !== "number" || !Number.isFinite(severity.score))
+    return null;
   let owner = null;
   let ownerConfidence = null;
   if (severity.score >= ROUTE_SEVERITY) {
@@ -39931,17 +39961,17 @@ async function locateSignal(signal) {
         owner: choice("Which reviewer is best suited to investigate this concern?", owners)
       }
     });
-    owner = routing.answers.owner.choice;
-    ownerConfidence = routing.answers.owner.confidence;
+    owner = routing.answers?.owner?.choice ?? null;
+    ownerConfidence = routing.answers?.owner?.confidence ?? null;
   }
   return {
     ...signal,
     line: hunk.startLine,
-    locationConfidence: selected.confidence,
+    locationConfidence: selected.confidence ?? 1,
     mechanism: mechanism.choice,
-    mechanismConfidence: mechanism.confidence,
+    mechanismConfidence: mechanism.confidence ?? 1,
     severity: severity.score,
-    severityConfidence: severity.confidence,
+    severityConfidence: severity.confidence ?? 1,
     owner,
     ownerConfidence,
     action: severity.score >= BLOCKING_SEVERITY ? "request_changes" : "comment"
@@ -40422,7 +40452,12 @@ async function handle(req, res) {
   if (!asset)
     return send(res, 404, "text/plain; charset=utf-8", "Not found");
   const [file, type] = asset;
-  send(res, 200, type, await readFile2(join(PUBLIC_DIR, file)));
+  try {
+    const body = await readFile2(join(PUBLIC_DIR, file));
+    send(res, 200, type, body);
+  } catch {
+    send(res, 500, "text/plain; charset=utf-8", "Asset unavailable");
+  }
 }
 function startDashboard(port = PORT, host = HOST) {
   const server = createServer(handle);
@@ -41767,7 +41802,21 @@ class JevClassifier {
         tier: score("Which model tier should handle this query?", models.map((m) => m.description))
       }
     });
-    return Object.values(response.answers.tier.probabilities);
+    const raw = response.answers?.tier?.probabilities;
+    if (!raw || typeof raw !== "object") {
+      throw new Error("Invalid classifier response: missing tier probabilities from TypeSafe API");
+    }
+    const probabilities = Object.values(raw).map((p) => {
+      const num = Number(p);
+      if (!Number.isFinite(num)) {
+        throw new Error("Invalid classifier response: non-finite probability value received");
+      }
+      return num;
+    });
+    if (probabilities.length !== models.length) {
+      throw new Error(`Classifier response mismatch: expected ${models.length} model probabilities, received ${probabilities.length}`);
+    }
+    return probabilities;
   }
 }
 
@@ -41918,10 +41967,17 @@ async function evaluateChunkSecurity(client, chunk) {
       prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
     }
   });
+  const readProb = (key) => {
+    const val = response.answers?.[key]?.noul;
+    if (typeof val !== "number" || !Number.isFinite(val)) {
+      throw new Error(`Security scan answer "${key}" is missing or not a finite number`);
+    }
+    return val;
+  };
   return {
-    secProb: response.answers.has_secrets?.noul ?? 0,
-    piiProb: response.answers.has_pii?.noul ?? 0,
-    injProb: response.answers.prompt_injection?.noul ?? 0
+    secProb: readProb("has_secrets"),
+    piiProb: readProb("has_pii"),
+    injProb: readProb("prompt_injection")
   };
 }
 
@@ -42045,26 +42101,26 @@ async function runReflexCommand(args) {
     case "status":
       return handleReflexStatus(subArgs);
     case "doctor":
-      return handleReflexDoctor(subArgs);
+      return await handleReflexDoctor(subArgs);
     case "route":
-      return handleReflexRoute(subArgs);
+      return await handleReflexRoute(subArgs);
     case "ledger":
       return handleReflexLedger(subArgs);
     case "eval":
-      return handleReflexEval(subArgs);
+      return await handleReflexEval(subArgs);
     case "compact":
-      return handleReflexCompact(subArgs);
+      return await handleReflexCompact(subArgs);
     case "review":
-      return handleReflexReview(subArgs);
+      return await handleReflexReview(subArgs);
     case "route-model":
     case "model-route":
-      return handleReflexRouteModel(subArgs);
+      return await handleReflexRouteModel(subArgs);
     case "triage-log":
     case "triage":
-      return handleReflexTriageLog(subArgs);
+      return await handleReflexTriageLog(subArgs);
     case "security-scan":
     case "sec-scan":
-      return handleReflexSecurityScan(subArgs);
+      return await handleReflexSecurityScan(subArgs);
     default:
       console.error(`Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`);
       return 1;
@@ -42383,34 +42439,40 @@ function readInputText(target) {
 `) || target.length > 256) {
     return target;
   }
-  const cleanPath = path41.normalize(target).replace(/^(\.\.(\/|\\|$))+/, "");
   try {
-    if (fs39.existsSync(cleanPath) && fs39.statSync(cleanPath).isFile()) {
-      return fs39.readFileSync(cleanPath, "utf8");
+    const cwd = process.cwd();
+    const resolved = path41.resolve(cwd, target);
+    if (resolved.startsWith(cwd) && fs39.existsSync(resolved) && fs39.statSync(resolved).isFile()) {
+      return fs39.readFileSync(resolved, "utf8");
     }
   } catch {}
   return target;
 }
 async function handleReflexReview(args) {
   if (args.includes("--dashboard")) {
-    return runDashboardServer(args);
+    return await runDashboardServer(args);
   }
   const isCodebase = args.includes("--codebase");
   const isJson = args.includes("--json") || args.includes("--json-v1");
   const shouldSave = args.includes("--save");
   const targetPath = args.filter((a) => !a.startsWith("--"))[0] || process.cwd();
-  console.log(`Running Jev ${isCodebase ? "Codebase Scan" : "Diff Review"} on ${targetPath}...`);
+  if (!isJson) {
+    console.log(`Running Jev ${isCodebase ? "Codebase Scan" : "Diff Review"} on ${targetPath}...`);
+  }
   try {
     const report = isCodebase ? await reviewCodebase(targetPath) : await reviewChanges(targetPath);
     if (shouldSave) {
       await saveReport(report);
-      console.log(`Saved report to ${reportPath()}`);
+      if (!isJson) {
+        console.log(`Saved report to ${reportPath()}`);
+      }
     }
+    const hasBlocking = report.findings.some((finding) => finding.action === "request_changes" || finding.severity >= 2);
     if (isJson) {
       console.log(JSON.stringify(report, null, 2));
-      return 0;
+      return hasBlocking ? 1 : 0;
     }
-    const hasBlocking = printReviewReport(report);
+    printReviewReport(report);
     return hasBlocking ? 1 : 0;
   } catch (err) {
     console.error(`Review execution failed: ${err.message}`);
@@ -43766,8 +43828,6 @@ function runCli(args = process.argv.slice(2)) {
       return runRoute(args.slice(1));
     case "reflex":
       return runReflexCommand(args.slice(1));
-    case "review":
-      return runReflexCommand(["review", ...args.slice(1)]);
     case "arch-eval":
     case "eval-arch":
       return runArchEvalCommand(args.slice(1));

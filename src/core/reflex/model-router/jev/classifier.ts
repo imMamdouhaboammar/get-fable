@@ -16,6 +16,20 @@ export class JevClassifier {
             },
         });
 
-        return Object.values(response.answers.tier.probabilities);
+        const raw = response.answers?.tier?.probabilities;
+        if (!raw || typeof raw !== 'object') {
+            throw new Error("Invalid classifier response: missing tier probabilities from TypeSafe API");
+        }
+        const probabilities = Object.values(raw).map((p: any) => {
+            const num = Number(p);
+            if (!Number.isFinite(num)) {
+                throw new Error("Invalid classifier response: non-finite probability value received");
+            }
+            return num;
+        });
+        if (probabilities.length !== models.length) {
+            throw new Error(`Classifier response mismatch: expected ${models.length} model probabilities, received ${probabilities.length}`);
+        }
+        return probabilities;
     }
 }

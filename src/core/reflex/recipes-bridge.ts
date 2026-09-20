@@ -55,10 +55,18 @@ async function evaluateChunkSecurity(
     },
   });
 
+  const readProb = (key: string): number => {
+    const val = response.answers?.[key]?.noul;
+    if (typeof val !== 'number' || !Number.isFinite(val)) {
+      throw new Error(`Security scan answer "${key}" is missing or not a finite number`);
+    }
+    return val;
+  };
+
   return {
-    secProb: response.answers.has_secrets?.noul ?? 0,
-    piiProb: response.answers.has_pii?.noul ?? 0,
-    injProb: response.answers.prompt_injection?.noul ?? 0,
+    secProb: readProb('has_secrets'),
+    piiProb: readProb('has_pii'),
+    injProb: readProb('prompt_injection'),
   };
 }
 

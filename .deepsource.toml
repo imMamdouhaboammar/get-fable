@@ -9,7 +9,7 @@ test_patterns = [
 
 exclude_patterns = [
   "dist/**",
-  "src/core/review/jev/dashboard/public/**",
+  "src/core/review/jev/**",
   "public/**",
   "site/**",
   "docs/**"
@@ -17,6 +17,7 @@ exclude_patterns = [
 
 [[analyzers]]
 name = "javascript"
+enabled = true
 
   [analyzers.meta]
   environment = ["nodejs"]

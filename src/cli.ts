@@ -1511,9 +1511,6 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'reflex':
       return runReflexCommand(args.slice(1));
 
-    case 'review':
-      return runReflexCommand(['review', ...args.slice(1)]);
-
     case 'arch-eval':
     case 'eval-arch':
       return runArchEvalCommand(args.slice(1));

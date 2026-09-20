@@ -30,6 +30,30 @@ const changeTypes = {
   routine: "A small routine change that fits none of the other categories",
 };
 
+function requireNoul(answers: Record<string, any> | undefined, question: string): number {
+  const val = answers?.[question]?.noul;
+  if (typeof val !== "number" || !Number.isFinite(val)) {
+    throw new Error(`Screening answer "${question}" is missing or non-numeric`);
+  }
+  return val;
+}
+
+function requireChoice(answers: Record<string, any> | undefined, question: string): { choice: string; confidence: number } {
+  const ans = answers?.[question];
+  if (!ans || typeof ans.choice !== "string") {
+    throw new Error(`Judgment answer "${question}" is missing choice`);
+  }
+  return { choice: ans.choice, confidence: typeof ans.confidence === "number" ? ans.confidence : 1.0 };
+}
+
+function requireScore(answers: Record<string, any> | undefined, question: string): { score: number; confidence: number } {
+  const ans = answers?.[question];
+  if (!ans || typeof ans.score !== "number" || !Number.isFinite(ans.score)) {
+    throw new Error(`Judgment answer "${question}" is missing score`);
+  }
+  return { score: ans.score, confidence: typeof ans.confidence === "number" ? ans.confidence : 1.0 };
+}
+
 export async function screenFile(
   file: ChangedFile,
   changedTests: ChangedFile[],
@@ -46,37 +70,31 @@ export async function screenFile(
         },
         {
           true: {
-            what: "The patch contains a realistic path to a wrong runtime result",
-            examples: ["A condition now handles the opposite case", "A value is written to the wrong field"],
+            what: "A changed line introduces a logic, syntax, data-flow, async, or reference error",
+            examples: ["Off-by-one loop bound", "Unhandled null or undefined value", "Race condition"],
           },
-          false: {
-            what: "The patch is correct, non-behavioral, or lacks direct evidence of a bug",
-            examples: ["Formatting only", "A refactor that preserves data flow"],
-          },
+          false: { what: "The patch is consistent, intentional, and does not exhibit clear logic flaws" },
         },
       ),
       security: noul(
         {
-          question: "Does file.patch directly support that this change introduces or weakens a security boundary?",
+          question: "Does file.patch directly support that this change introduces a security risk or trust boundary violation?",
           inspect: "file.patch",
-          focus: "Authorization, injection, secret exposure, trust boundaries, and unsafe defaults",
+          focus: "Injection, unsafe inputs, privilege escalations, or unintended exposure",
         },
         {
           true: {
-            what: "The patch creates a concrete path around a security control or into an unsafe sink",
-            examples: ["An authorization check is removed", "Untrusted input reaches command execution"],
+            what: "A changed path handles untrusted data unsafely or expands attacker reach",
+            examples: ["Unsanitized SQL or command construction", "Missing authorization check"],
           },
-          false: {
-            what: "No security boundary is weakened by the patch",
-            not_for: "Code that merely uses security-related names",
-          },
+          false: { what: "The change operates within established security boundaries" },
         },
       ),
       reliability: noul(
         {
-          question: "Does file.patch directly support that this change can crash, race, leak, deadlock, or recover poorly?",
+          question: "Does file.patch directly support that this change risks process stability, unhandled exceptions, or resource leaks?",
           inspect: "file.patch",
-          focus: "Realistic resource, concurrency, cancellation, and failure paths",
+          focus: "Resource lifecycle, unhandled rejection paths, timeouts, and invariants",
         },
         {
           true: {
@@ -123,11 +141,11 @@ export async function screenFile(
   return {
     file,
     probabilities: {
-      correctness: response.answers.correctness.noul,
-      security: response.answers.security.noul,
-      reliability: response.answers.reliability.noul,
-      compatibility: response.answers.compatibility.noul,
-      testGap: response.answers.testGap.noul,
+      correctness: requireNoul(response.answers, "correctness"),
+      security: requireNoul(response.answers, "security"),
+      reliability: requireNoul(response.answers, "reliability"),
+      compatibility: requireNoul(response.answers, "compatibility"),
+      testGap: requireNoul(response.answers, "testGap"),
     },
   };
 }
@@ -150,12 +168,15 @@ export async function profileFile(
     },
   });
 
+  const cat = requireChoice(response.answers, "category");
+  const prio = requireScore(response.answers, "reviewPriority");
+
   return {
     file: file.path,
-    category: response.answers.category.choice,
-    categoryConfidence: response.answers.category.confidence,
-    reviewPriority: response.answers.reviewPriority.score,
-    reviewPriorityConfidence: response.answers.reviewPriority.confidence,
+    category: cat.choice as any,
+    categoryConfidence: cat.confidence,
+    reviewPriority: prio.score,
+    reviewPriorityConfidence: prio.confidence,
   };
 }
 
@@ -191,8 +212,8 @@ export async function locateSignal(
     },
   });
 
-  const selected = location.answers.evidence;
-  if (selected.choice === "noMatch" || selected.confidence < MIN_LOCATION_CONFIDENCE) return null;
+  const selected = location.answers?.evidence;
+  if (!selected || typeof selected.choice !== "string" || selected.choice === "noMatch" || (selected.confidence ?? 0) < MIN_LOCATION_CONFIDENCE) return null;
   const hunk = hunks.find((candidate) => candidate.id === selected.choice);
   if (!hunk) return null;
 
@@ -205,8 +226,8 @@ export async function locateSignal(
       ),
     },
   });
-  const mechanism = classification.answers.mechanism;
-  if (mechanism.choice === "noIssue") return null;
+  const mechanism = classification.answers?.mechanism;
+  if (!mechanism || typeof mechanism.choice !== "string" || mechanism.choice === "noIssue") return null;
 
   const impact = await client.systemOne({
     state: { file: signal.file.path, suspectedConcern, selectedEvidence: hunk },
@@ -218,7 +239,9 @@ export async function locateSignal(
     },
   });
 
-  const severity = impact.answers.severity;
+  const severity = impact.answers?.severity;
+  if (!severity || typeof severity.score !== "number" || !Number.isFinite(severity.score)) return null;
+
   let owner: string | null = null;
   let ownerConfidence: number | null = null;
   if (severity.score >= ROUTE_SEVERITY) {
@@ -236,18 +259,18 @@ export async function locateSignal(
         owner: choice("Which reviewer is best suited to investigate this concern?", owners),
       },
     });
-    owner = routing.answers.owner.choice;
-    ownerConfidence = routing.answers.owner.confidence;
+    owner = routing.answers?.owner?.choice ?? null;
+    ownerConfidence = routing.answers?.owner?.confidence ?? null;
   }
 
   return {
     ...signal,
     line: hunk.startLine,
-    locationConfidence: selected.confidence,
+    locationConfidence: selected.confidence ?? 1.0,
     mechanism: mechanism.choice,
-    mechanismConfidence: mechanism.confidence,
+    mechanismConfidence: mechanism.confidence ?? 1.0,
     severity: severity.score,
-    severityConfidence: severity.confidence,
+    severityConfidence: severity.confidence ?? 1.0,
     owner,
     ownerConfidence,
     action: severity.score >= BLOCKING_SEVERITY ? "request_changes" : "comment",

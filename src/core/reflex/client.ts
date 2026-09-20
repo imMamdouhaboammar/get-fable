@@ -68,6 +68,20 @@ export class TypeSafeClient {
       throw new Error('TYPESAFE_API_KEY is not configured in environment or client options');
     }
 
+    try {
+      const parsedUrl = new URL(this.baseUrl);
+      const isLoopback =
+        parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1' || parsedUrl.hostname === '::1';
+      if (parsedUrl.protocol !== 'https:' && !isLoopback) {
+        throw new Error(
+          `Insecure endpoint rejected: TypeSafe API endpoint must use HTTPS to forward credentials securely (got ${this.baseUrl})`
+        );
+      }
+    } catch (err: any) {
+      if (err.message?.includes('Insecure endpoint rejected')) throw err;
+      throw new Error(`Invalid TypeSafe baseUrl: ${this.baseUrl}`);
+    }
+
     const t0 = Date.now();
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);

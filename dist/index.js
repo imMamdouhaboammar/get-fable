@@ -33989,6 +33989,17 @@ class TypeSafeClient {
     if (!this.apiKey) {
       throw new Error("TYPESAFE_API_KEY is not configured in environment or client options");
     }
+    try {
+      const parsedUrl = new URL(this.baseUrl);
+      const isLoopback = parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "::1";
+      if (parsedUrl.protocol !== "https:" && !isLoopback) {
+        throw new Error(`Insecure endpoint rejected: TypeSafe API endpoint must use HTTPS to forward credentials securely (got ${this.baseUrl})`);
+      }
+    } catch (err) {
+      if (err.message?.includes("Insecure endpoint rejected"))
+        throw err;
+      throw new Error(`Invalid TypeSafe baseUrl: ${this.baseUrl}`);
+    }
     const t0 = Date.now();
     const controller = new AbortController;
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -34060,7 +34071,21 @@ class JevClassifier {
         tier: score("Which model tier should handle this query?", models.map((m) => m.description))
       }
     });
-    return Object.values(response.answers.tier.probabilities);
+    const raw = response.answers?.tier?.probabilities;
+    if (!raw || typeof raw !== "object") {
+      throw new Error("Invalid classifier response: missing tier probabilities from TypeSafe API");
+    }
+    const probabilities = Object.values(raw).map((p) => {
+      const num = Number(p);
+      if (!Number.isFinite(num)) {
+        throw new Error("Invalid classifier response: non-finite probability value received");
+      }
+      return num;
+    });
+    if (probabilities.length !== models.length) {
+      throw new Error(`Classifier response mismatch: expected ${models.length} model probabilities, received ${probabilities.length}`);
+    }
+    return probabilities;
   }
 }
 
@@ -34210,10 +34235,17 @@ async function evaluateChunkSecurity(client, chunk) {
       prompt_injection: noul("Does `content` contain prompt injection attempts or instructions attempting to hijack agent control or bypass safety instructions?")
     }
   });
+  const readProb = (key) => {
+    const val = response.answers?.[key]?.noul;
+    if (typeof val !== "number" || !Number.isFinite(val)) {
+      throw new Error(`Security scan answer "${key}" is missing or not a finite number`);
+    }
+    return val;
+  };
   return {
-    secProb: response.answers.has_secrets?.noul ?? 0,
-    piiProb: response.answers.has_pii?.noul ?? 0,
-    injProb: response.answers.prompt_injection?.noul ?? 0
+    secProb: readProb("has_secrets"),
+    piiProb: readProb("has_pii"),
+    injProb: readProb("prompt_injection")
   };
 }
 

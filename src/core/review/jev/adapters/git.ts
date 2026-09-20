@@ -28,7 +28,7 @@ export function changedFiles(scope: string): ChangedFile[] {
       "diff",
       "HEAD",
       "--name-only",
-      "--diff-filter=ACMRTUXB",
+      "--diff-filter=ACMRTUXBD",
       "--",
       relativeScope,
     ]),

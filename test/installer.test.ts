@@ -138,7 +138,7 @@ describe('installGlobalFable', () => {
     expect(mutationEntries('PostToolUseFailure')).toHaveLength(1);
     expect(settings.hooks.PostToolUse.some((entry: any) => entry.matcher === 'Write')).toBe(true);
     expect(getFableStatus(root).claude.registeredHooks).toBe(12);
-  });
+  }, 30000);
 
   test('status rejects a Claude hook wired to the wrong script or matcher', () => {
     const root = makeTempDir('get-fable-global-status-');

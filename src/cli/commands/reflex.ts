@@ -24,6 +24,7 @@ import {
   reportPath,
   startDashboard,
 } from '../../core/review/jev/index.js';
+import type { ReviewReport } from '../../core/review/jev/domain/types.js';
 import {
   routeTaskToOptimalModel,
   DEFAULT_AGENT_MODELS,
@@ -38,26 +39,26 @@ export async function runReflexCommand(args: string[]): Promise<number> {
     case 'status':
       return handleReflexStatus(subArgs);
     case 'doctor':
-      return handleReflexDoctor(subArgs);
+      return await handleReflexDoctor(subArgs);
     case 'route':
-      return handleReflexRoute(subArgs);
+      return await handleReflexRoute(subArgs);
     case 'ledger':
       return handleReflexLedger(subArgs);
     case 'eval':
-      return handleReflexEval(subArgs);
+      return await handleReflexEval(subArgs);
     case 'compact':
-      return handleReflexCompact(subArgs);
+      return await handleReflexCompact(subArgs);
     case 'review':
-      return handleReflexReview(subArgs);
+      return await handleReflexReview(subArgs);
     case 'route-model':
     case 'model-route':
-      return handleReflexRouteModel(subArgs);
+      return await handleReflexRouteModel(subArgs);
     case 'triage-log':
     case 'triage':
-      return handleReflexTriageLog(subArgs);
+      return await handleReflexTriageLog(subArgs);
     case 'security-scan':
     case 'sec-scan':
-      return handleReflexSecurityScan(subArgs);
+      return await handleReflexSecurityScan(subArgs);
     default:
       console.error(
         `Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`
@@ -394,48 +395,59 @@ async function handleReflexCompact(args: string[]): Promise<number> {
   }
 }
 
-async function runDashboardServer(args: string[]): Promise<number> {
+export async function runDashboardServer(args: string[]): Promise<number> {
   const portIdx = args.indexOf('--port');
   const port = portIdx !== -1 && args[portIdx + 1] ? parseInt(args[portIdx + 1], 10) : 4317;
+  // skipcq: JS-0002
   console.log(`Starting Jev Review Dashboard on port ${port}...`);
   await startDashboard(port);
   return 0;
 }
 
-function printReviewReport(report: any): boolean {
+export function printReviewReport(report: ReviewReport): boolean {
+  // skipcq: JS-0002
   console.log('\n--- Jev Review Summary ---');
+  // skipcq: JS-0002
   console.log(`Mode:            ${report.mode}`);
+  // skipcq: JS-0002
   console.log(`Scope:           ${report.scope}`);
+  // skipcq: JS-0002
   console.log(`Screened Files:  ${report.screenedFiles}`);
+  // skipcq: JS-0002
   console.log(`Signals:         ${report.followedSignals}`);
+  // skipcq: JS-0002
   console.log(`Findings:        ${report.findings.length}`);
 
   let hasBlocking = false;
   if (report.findings.length > 0) {
+    // skipcq: JS-0002
     console.log('\nFindings:');
     for (const finding of report.findings) {
       const blocking = finding.action === 'request_changes' || finding.severity >= 2.0;
       if (blocking) hasBlocking = true;
+      // skipcq: JS-0002
       console.log(
         `  [${finding.action.toUpperCase()}] ${finding.file}:${finding.line} (${finding.dimension} - ${finding.mechanism}) Sev: ${finding.severity.toFixed(1)}`
       );
     }
   } else {
+    // skipcq: JS-0002
     console.log('Zero high-risk findings detected. Code changes look clean.');
   }
 
   return hasBlocking;
 }
 
-function readInputText(target: string | undefined): string | null {
+export function readInputText(target: string | undefined): string | null {
   if (!target) return null;
   if (target.includes('\n') || target.length > 256) {
     return target;
   }
-  const cleanPath = path.normalize(target).replace(/^(\.\.(\/|\\|$))+/, '');
   try {
-    if (fs.existsSync(cleanPath) && fs.statSync(cleanPath).isFile()) {
-      return fs.readFileSync(cleanPath, 'utf8');
+    const cwd = process.cwd();
+    const resolved = path.resolve(cwd, target);
+    if (resolved.startsWith(cwd) && fs.existsSync(resolved) && fs.statSync(resolved).isFile()) {
+      return fs.readFileSync(resolved, 'utf8');
     }
   } catch {
     // fallback to literal string
@@ -445,7 +457,7 @@ function readInputText(target: string | undefined): string | null {
 
 export async function handleReflexReview(args: string[]): Promise<number> {
   if (args.includes('--dashboard')) {
-    return runDashboardServer(args);
+    return await runDashboardServer(args);
   }
 
   const isCodebase = args.includes('--codebase');
@@ -453,23 +465,35 @@ export async function handleReflexReview(args: string[]): Promise<number> {
   const shouldSave = args.includes('--save');
   const targetPath = args.filter((a) => !a.startsWith('--'))[0] || process.cwd();
 
-  console.log(`Running Jev ${isCodebase ? 'Codebase Scan' : 'Diff Review'} on ${targetPath}...`);
+  if (!isJson) {
+    // skipcq: JS-0002
+    console.log(`Running Jev ${isCodebase ? 'Codebase Scan' : 'Diff Review'} on ${targetPath}...`);
+  }
   try {
     const report = isCodebase ? await reviewCodebase(targetPath) : await reviewChanges(targetPath);
 
     if (shouldSave) {
       await saveReport(report);
-      console.log(`Saved report to ${reportPath()}`);
+      if (!isJson) {
+        // skipcq: JS-0002
+        console.log(`Saved report to ${reportPath()}`);
+      }
     }
+
+    const hasBlocking = report.findings.some(
+      (finding) => finding.action === 'request_changes' || finding.severity >= 2.0
+    );
 
     if (isJson) {
+      // skipcq: JS-0002
       console.log(JSON.stringify(report, null, 2));
-      return 0;
+      return hasBlocking ? 1 : 0;
     }
 
-    const hasBlocking = printReviewReport(report);
+    printReviewReport(report);
     return hasBlocking ? 1 : 0;
   } catch (err: any) {
+    // skipcq: JS-0002
     console.error(`Review execution failed: ${err.message}`);
     return 1;
   }
