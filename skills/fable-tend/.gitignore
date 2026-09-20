@@ -1,0 +1,10 @@
+# Runtime artifact written by the harness composite action at CI time
+# (claude/action.yaml). Never commit it.
+.claude/settings.local.json
+
+# Python bytecode caches (generator/).
+__pycache__/
+*.py[cod]
+
+# uv's environment for the workspace root.
+.venv/

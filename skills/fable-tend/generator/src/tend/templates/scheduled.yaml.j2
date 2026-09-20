@@ -1,0 +1,18 @@
+<<header>>
+name: tend-<<name>>
+on:
+  schedule:
+    - cron: "<<cron>>"
+  workflow_dispatch:
+
+jobs:
+  <<name>>:
+    if: <<fork_guard_prefix(cfg)>><<tend_enabled>>
+    runs-on: ubuntu-24.04
+<<environment()>>
+    permissions:
+<<permissions()>>
+    steps:
+<<checkout(cfg, ref=cfg.default_branch)>>
+<<setup>>
+<<agent_step(cfg, block_input('prompt', prompt))>>

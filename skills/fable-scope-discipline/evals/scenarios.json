@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-scope-discipline-scenario-1",
+    "name": "Rejecting unrequested drive-by refactor while fixing an off-by-one bug",
+    "category": "should-trigger",
+    "prompt": "I was asked to fix an off-by-one error in pagination. While here, should I rewrite the legacy database query helper?",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-scope-discipline-scenario-2",
+    "name": "General non-scope question",
+    "category": "should-not-trigger",
+    "prompt": "What is the boiling point of water at sea level?",
+    "shouldTrigger": false
+  }
+]

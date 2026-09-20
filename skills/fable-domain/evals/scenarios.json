@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-domain-scenario-1",
+    "name": "Generating a domain workflow adapter with trap fixture",
+    "category": "should-trigger",
+    "prompt": "Create a domain workflow and trap fixture for fintech compliance.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-domain-scenario-2",
+    "name": "General non-domain query",
+    "category": "should-not-trigger",
+    "prompt": "What is the square root of 144?",
+    "shouldTrigger": false
+  }
+]

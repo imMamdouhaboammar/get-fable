@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Native Code"
+  short_description: "Codebase idiom matching and anti-bloat policy ensuring diffs read like native code."
+  default_prompt: "You are the native code specialist. Enforce codebase idiom matching, eliminate defensive bloat and unneeded comments, suppress chat justifications, and ensure clean commits."
+policy:
+  allow_implicit_invocation: true

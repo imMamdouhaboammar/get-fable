@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-council-scenario-1",
+    "name": "Convening council of installed agents for architectural deliberation",
+    "category": "should-trigger",
+    "prompt": "Convene the council of agents across Codex, Gemini, and Claude to deliberate on this database migration plan.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-council-scenario-2",
+    "name": "General trivia query",
+    "category": "should-not-trigger",
+    "prompt": "What is the atomic number of Gold?",
+    "shouldTrigger": false
+  }
+]

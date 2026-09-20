@@ -1,0 +1,16 @@
+[
+  {
+    "id": "fable-context-thrift-scenario-1",
+    "name": "Targeted line read over whole file read",
+    "category": "should-trigger",
+    "prompt": "How should I inspect a 2000-line file when I only need function formatResponse?",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-context-thrift-scenario-2",
+    "name": "Irrelevant non-context query",
+    "category": "should-not-trigger",
+    "prompt": "Explain what a binary search tree is in computer science.",
+    "shouldTrigger": false
+  }
+]

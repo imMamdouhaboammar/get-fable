@@ -1,0 +1,217 @@
+"""Unit coverage for sandbox setup policy that does not need a second UID."""
+
+from __future__ import annotations
+
+import os
+import pwd
+import subprocess
+from pathlib import Path
+
+import pytest
+import setup_sandbox
+
+
+def _paths(tmp_path: Path) -> setup_sandbox.Paths:
+    runner_home = tmp_path / "runner"
+    runner_workspace = runner_home / "work/repo"
+    runner_workspace.mkdir(parents=True)
+    runner_temp = tmp_path / "temp"
+    runner_temp.mkdir()
+    runtime_root = tmp_path / "runtime"
+    runtime_root.mkdir()
+    workspace = runner_temp / "agent-repo"
+    workspace.mkdir()
+    action = tmp_path / "action"
+    action.mkdir()
+    uv = tmp_path / "uv"
+    uv.mkdir()
+    return setup_sandbox.Paths(
+        workspace=workspace.resolve(),
+        runner_workspace=runner_workspace.resolve(),
+        runner_temp=runner_temp.resolve(),
+        runtime_root=runtime_root.resolve(),
+        action_path=action.resolve(),
+        tend_uv_dir=uv.resolve(),
+        github_env=tmp_path / "github-env",
+        runner_home=runner_home.resolve(),
+    )
+
+
+def test_configured_path_accepts_the_checkout_and_refuses_the_runner_home(
+    tmp_path: Path,
+) -> None:
+    paths = _paths(tmp_path)
+
+    assert setup_sandbox.configured_paths(
+        str(paths.workspace / "bin"), paths=paths
+    ) == [str(paths.workspace / "bin")]
+    with pytest.raises(ValueError, match="under the runner's home"):
+        setup_sandbox.configured_paths(str(paths.runner_home / "bin"), paths=paths)
+
+
+def test_workspace_path_keeps_precedence_over_runner_home_rewrite(
+    tmp_path: Path,
+) -> None:
+    paths = _paths(tmp_path)
+    workspace_bin = paths.workspace / "bin"
+    workspace_bin.mkdir()
+
+    plan = setup_sandbox.plan_agent_path(
+        runner_tool_path=str(workspace_bin),
+        extras=[],
+        paths=paths,
+        can_execute=lambda _: False,
+    )
+
+    assert str(workspace_bin) in plan.agent_path
+    assert plan.dropped_home_paths == []
+
+
+def test_agent_uv_fallback_trails_consumer_paths_and_needs_no_blocker(
+    tmp_path: Path,
+) -> None:
+    paths = _paths(tmp_path)
+    runner_bin = paths.runner_home / "bin"
+    runner_bin.mkdir()
+    for name in ("uv", "uvx", "tend-probe"):
+        executable = runner_bin / name
+        executable.touch(mode=0o755)
+    consumer_bin = tmp_path / "consumer-bin"
+
+    plan = setup_sandbox.plan_agent_path(
+        runner_tool_path=str(runner_bin),
+        extras=[str(consumer_bin)],
+        paths=paths,
+        can_execute=lambda _: False,
+    )
+
+    assert plan.agent_path[0] == str(consumer_bin)
+    assert plan.agent_path[-1] == str(setup_sandbox.TEND_AGENT_UV_DIR)
+    assert plan.blocked_commands == ["tend-probe"]
+
+
+@pytest.mark.parametrize(
+    ("raw", "message"),
+    [
+        ("PATH=/tmp/bin", "reserved key 'PATH'"),
+        ("TMPDIR=/somewhere", "reserved key 'TMPDIR'"),
+        ("NOT_AN_ASSIGNMENT", "not NAME=VALUE"),
+    ],
+)
+def test_consumer_environment_rejects_unsafe_records(raw: str, message: str) -> None:
+    with pytest.raises(ValueError, match=message):
+        setup_sandbox.consumer_env(raw)
+
+
+def test_consumer_environment_preserves_values_after_the_first_equals() -> None:
+    assert setup_sandbox.consumer_env("TEND_VALUE=a=b\n") == ["TEND_VALUE=a=b"]
+
+
+def test_every_fixed_agent_assignment_is_reserved() -> None:
+    assignments = setup_sandbox.base_agent_env(
+        "/usr/bin", ("ANTHROPIC_API_KEY", "dummy"), workspace=Path("/agent")
+    )
+    assert {line.split("=", 1)[0] for line in assignments} <= (
+        setup_sandbox.RESERVED_SANDBOX_ENV
+    )
+    assert f"TMPDIR={setup_sandbox.AGENT_TMP_DIR}" in assignments
+
+
+def test_agent_environment_keeps_zsh_heredoc_scratch_writable() -> None:
+    """zsh names here-document temp files from TMPPREFIX, which ignores TMPDIR.
+
+    Left at its `/tmp/zsh` default every heredoc fails against the sandbox's
+    read-only root `/tmp` — after the shell has already truncated the
+    redirection target to zero bytes.
+    """
+    assignments = setup_sandbox.base_agent_env(
+        "/usr/bin", None, workspace=Path("/agent")
+    )
+
+    assert f"TMPPREFIX={setup_sandbox.AGENT_TMP_DIR / 'zsh'}" in assignments
+
+
+def test_github_only_agent_environment_has_no_model_credential() -> None:
+    assignments = setup_sandbox.base_agent_env(
+        "/usr/bin", None, workspace=Path("/agent")
+    )
+
+    assert not any(
+        line.startswith(("ANTHROPIC_API_KEY=", "CLAUDE_CODE_OAUTH_TOKEN="))
+        for line in assignments
+    )
+    assert "OPENAI_API_KEY" in setup_sandbox.RESERVED_SANDBOX_ENV
+    assert "CODEX_API_KEY" in setup_sandbox.RESERVED_SANDBOX_ENV
+    assert "CODEX_AUTH_JSON" in setup_sandbox.RESERVED_SANDBOX_ENV
+    assert "CODEX_HOME" in setup_sandbox.RESERVED_SANDBOX_ENV
+    assert "GITHUB_WORKSPACE=/agent" in assignments
+    assert not any(line.startswith(("NO_PROXY=", "no_proxy=")) for line in assignments)
+
+
+def test_workspace_handoff_never_dereferences_pr_symlinks(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    paths = _paths(tmp_path)
+    calls: list[tuple[str, ...]] = []
+
+    def sudo(*args: str, **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 0)
+
+    monkeypatch.setattr(setup_sandbox, "sudo", sudo)
+
+    assert setup_sandbox.handoff_workspace(paths)
+    assert calls[0] == (
+        "/usr/bin/chown",
+        "--recursive",
+        "--no-dereference",
+        f"{setup_sandbox.SANDBOX}:{setup_sandbox.SANDBOX}",
+        str(paths.workspace),
+    )
+
+
+def test_proxy_uvx_isolated_from_consumer_python_and_uv_configuration(
+    tmp_path: Path,
+) -> None:
+    command = setup_sandbox.uvx_command(
+        _paths(tmp_path), version="1.2.3", args=["--version"]
+    )
+
+    assert command[1:6] == [
+        "--no-config",
+        "--no-python-downloads",
+        "--python",
+        "/usr/bin/python3",
+        "--from",
+    ]
+    assert command[-3:] == ["mitmproxy==1.2.3", "mitmdump", "--version"]
+
+
+def test_runner_home_does_not_trust_an_empty_environment_value(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("HOME", "")
+
+    assert (
+        setup_sandbox.runner_home() == Path(pwd.getpwuid(os.getuid()).pw_dir).resolve()
+    )
+
+
+def test_global_git_config_carries_the_bot_commit_identity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[str, ...]] = []
+
+    def sudo(*args: str, **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 0)
+
+    monkeypatch.setattr(setup_sandbox, "sudo", sudo)
+
+    setup_sandbox.configure_global_git(login="tend-agent", bot_id="42")
+
+    settings = {args[-2]: args[-1] for args in calls if "config" in args}
+    assert settings["user.name"] == "tend-agent"
+    assert settings["user.email"] == "42+tend-agent@users.noreply.github.com"
+    assert settings["core.excludesFile"].endswith("/.config/git/ignore")
+    assert all("--global" in args for args in calls if "config" in args)
