@@ -23286,7 +23286,19 @@ var CANONICAL_SKILLS = [
   "fable-spark",
   "fable-skill-creator",
   "fable-architecture",
-  "fable-eco"
+  "fable-eco",
+  "fable-context-thrift",
+  "fable-finish-your-turn",
+  "fable-native-code",
+  "fable-outcome-first",
+  "fable-prove-it",
+  "fable-scope-discipline",
+  "fable-domain",
+  "fable-judge",
+  "fable-method",
+  "fable-council",
+  "fable-tend",
+  "fable-wise"
 ];
 var FABLE_PACKS = [
   "core",
@@ -23328,7 +23340,19 @@ var SKILL_PHASE = {
   "fable-spark": "idle",
   "fable-skill-creator": "executing",
   "fable-architecture": "planned",
-  "fable-eco": "planned"
+  "fable-eco": "planned",
+  "fable-context-thrift": "discovering",
+  "fable-finish-your-turn": "executing",
+  "fable-native-code": "executing",
+  "fable-outcome-first": "verifying",
+  "fable-prove-it": "verifying",
+  "fable-scope-discipline": "executing",
+  "fable-domain": "discovering",
+  "fable-judge": "verifying",
+  "fable-method": "executing",
+  "fable-council": "planned",
+  "fable-tend": "executing",
+  "fable-wise": "planned"
 };
 var SKILL_PACK = {
   "get-fable": "core",
@@ -23360,7 +23384,19 @@ var SKILL_PACK = {
   "fable-spark": "system",
   "fable-skill-creator": "creator",
   "fable-architecture": "system",
-  "fable-eco": "system"
+  "fable-eco": "system",
+  "fable-context-thrift": "system",
+  "fable-finish-your-turn": "delivery",
+  "fable-native-code": "build",
+  "fable-outcome-first": "delivery",
+  "fable-prove-it": "proof",
+  "fable-scope-discipline": "build",
+  "fable-domain": "creator",
+  "fable-judge": "proof",
+  "fable-method": "core",
+  "fable-council": "system",
+  "fable-tend": "delivery",
+  "fable-wise": "system"
 };
 
 // src/core/types.ts
@@ -24831,6 +24867,17 @@ function installDshGlobal(dshHome = getDshHomeDir()) {
   }
   if (isBundle) {
     logInfo("get-fable is already registered as a profile bundle in DSH; skipping cordis.patch.yml duplicate insert.");
+    const patchFile = path8.join(dshHome, "cordis.patch.yml");
+    if (fs8.existsSync(patchFile)) {
+      const existing = fs8.readFileSync(patchFile, "utf-8");
+      const cleaned = existing.replace(/-\s*insert:[\s\S]*?-\s*id:\s*get-fable[\s\S]*?(?=\n-\s*id:|\n-\s*insert:|$)/g, "").replace(/\n{3,}/g, `
+
+`);
+      if (cleaned !== existing) {
+        fs8.writeFileSync(patchFile, cleaned, "utf-8");
+        logSuccess("Cleaned redundant get-fable insert from ~/.dsh/cordis.patch.yml");
+      }
+    }
     logSuccess("DeepSeek Harness integration configured successfully.");
     return;
   }
@@ -25748,25 +25795,25 @@ function has(text, pattern) {
   return pattern.test(text);
 }
 function taskShapeFor(skill, text) {
-  if (skill === "fable-research" || skill === "fable-memory")
+  if (skill === "fable-research" || skill === "fable-memory" || skill === "fable-context-thrift")
     return "research";
-  if (skill === "fable-plan" || skill === "fable-artifact" || skill === "fable-config" || skill === "fable-spark" || skill === "fable-architecture" || skill === "fable-eco")
+  if (skill === "fable-plan" || skill === "fable-artifact" || skill === "fable-config" || skill === "fable-spark" || skill === "fable-architecture" || skill === "fable-eco" || skill === "fable-council" || skill === "fable-wise")
     return "architecture";
   if (skill === "fable-delegate")
     return "delegation";
-  if (skill === "fable-review" || skill === "fable-verify" || skill === "fable-run" || skill === "fable-simulator")
+  if (skill === "fable-review" || skill === "fable-verify" || skill === "fable-run" || skill === "fable-simulator" || skill === "fable-judge" || skill === "fable-prove-it")
     return "review";
   if (skill === "fable-security" || skill === "fable-redteam" || skill === "fable-heal")
     return "security";
-  if (skill === "fable-release")
+  if (skill === "fable-release" || skill === "fable-tend")
     return "release";
-  if (skill === "fable-handoff")
+  if (skill === "fable-handoff" || skill === "fable-outcome-first")
     return "handoff";
   if (skill === "fable-eval" || skill === "fable-loop" || skill === "fable-learning")
     return "eval";
-  if (skill === "fable-simplify")
+  if (skill === "fable-simplify" || skill === "fable-native-code" || skill === "fable-scope-discipline")
     return "bounded-change";
-  if (skill === "fable-dataviz" || skill === "fable-cowork" || skill === "fable-skill-creator")
+  if (skill === "fable-dataviz" || skill === "fable-cowork" || skill === "fable-skill-creator" || skill === "fable-domain" || skill === "fable-method" || skill === "fable-finish-your-turn")
     return "feature";
   if (skill === "fable-tdd") {
     return has(text, /\bbug\b|\bfix\b|broken|regression|fails?/) ? "bug-fix" : "feature";
@@ -25845,7 +25892,7 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
     addSignal(scores, reasons, "fable-learning", 12, "task extracts or synthesizes durable learnings from session or conversation");
   }
   if (!suppressReview && has(text, /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files|independently critique|critique (?:the )?changed files/)) {
-    addSignal(scores, reasons, "fable-review", 8, "task requests an independent code or diff review");
+    addSignal(scores, reasons, "fable-review", 12, "task requests an independent code or diff review");
   }
   if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence/)) {
     addSignal(scores, reasons, "fable-verify", 7, "task explicitly asks for behavior verification");
@@ -25901,6 +25948,42 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
   }
   if (has(text, /\b(?:fable-eco|eco\b|capability provisioning|curated capabilities|provision capabilities|plan capabilities|install capabilities|discover environment|update capabilities|repair capabilities|reproducible locks)\b/i)) {
     addSignal(scores, reasons, "fable-eco", 12, "task requests capability provisioning or ecosystem management");
+  }
+  if (has(text, /\bcontext thrift\b|token budget|conserve context|batch (?:reads|lookups)|too much context|targeted read/i)) {
+    addSignal(scores, reasons, "fable-context-thrift", 11, "task requests context conservation or token thrift");
+  }
+  if (has(text, /\bfinish (?:your )?turn\b|complete (?:the )?turn|do not stop|finish what you started|premature stop|upward delegation/i)) {
+    addSignal(scores, reasons, "fable-finish-your-turn", 11, "task enforces complete turn discipline without premature surrender");
+  }
+  if (has(text, /\bnative code\b|match idiom|strip (?:defensive )?comments|no defensive bloat|codebase idiom|clean diff idiom/i)) {
+    addSignal(scores, reasons, "fable-native-code", 11, "task enforces codebase idiom matching and zero defensive bloat");
+  }
+  if (has(text, /\boutcome[- ]first\b|first sentence answer|direct answer|strip sycophancy|outcome summary|answer directly/i)) {
+    addSignal(scores, reasons, "fable-outcome-first", 11, "task enforces outcome-first reporting with direct answers");
+  }
+  if (has(text, /\bprove[- ]it\b|\bthree-rung\b|verification rung|should work is rung zero|claim verification|written runs verified|\bclaim only your rung\b/i)) {
+    addSignal(scores, reasons, "fable-prove-it", 11, "task enforces three-rung proof and verified evidence");
+  }
+  if (has(text, /\bscope discipline\b|prevent scope creep|no scope creep|surgical diff|no drive-bys|adjacency is not scope/i)) {
+    addSignal(scores, reasons, "fable-scope-discipline", 11, "task enforces scope discipline and atomic diffs");
+  }
+  if (has(text, /\bfable-domain\b|domain adapter|sector workflow|trap fixture|generate domain skill/i)) {
+    addSignal(scores, reasons, "fable-domain", 12, "task generates a domain workflow adapter and trap fixture");
+  }
+  if (has(text, /\bfable-judge\b|judge (?:this )?work|adversarial verification|hunt frauds|detect weakened tests|verify what it did/i)) {
+    addSignal(scores, reasons, "fable-judge", 12, "task requests adversarial verification and fraud detection");
+  }
+  if (has(text, /\bfable-method\b|fable method|the fable method|think act prove/i) || text.toLowerCase().includes("classify the ask") && text.toLowerCase().includes("define done")) {
+    addSignal(scores, reasons, "fable-method", 12, "task requests execution through the canonical Fable method loop");
+  }
+  if (has(text, /\bcouncil\b|fable-council|convene (?:the )?council|consult (?:the )?other agents|deliberate before planning|second opinion from other agents/i)) {
+    addSignal(scores, reasons, "fable-council", 12, "task convenes a multi-agent deliberation council");
+  }
+  if (has(text, /\btend\b|fable-tend|ci-fix|triage ci|resolve (?:git )?conflicts|junior maintainer|nightly sweep/i)) {
+    addSignal(scores, reasons, "fable-tend", 12, "task invokes repository maintenance or CI repair");
+  }
+  if (has(text, /\bfable-wise\b|paperthin|re0\b|ssotize|autobahn\b|feynman check|strip slop|debloat artifact|contrarian objection/i)) {
+    addSignal(scores, reasons, "fable-wise", 12, "task requests Paperthin low-level agentic patterns or slop reduction");
   }
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
     addSignal(scores, reasons, "fable-tdd", 10, "task describes a testable behavior change");
@@ -25977,7 +26060,7 @@ var EXTENSIONS = {
   template: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon", ".proto"]),
   example: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon"]),
   eval: new Set([".json", ".yaml", ".yml"]),
-  script: new Set([".sh", ".bash", ".py", ".js", ".mjs", ".ts"])
+  script: new Set([".sh", ".bash", ".py", ".js", ".mjs", ".cjs", ".ts"])
 };
 function getSkillPackageDir(id, repoRoot = getCoreRepoRoot()) {
   return path9.join(repoRoot, "skills", id);
@@ -31106,6 +31189,36 @@ function evaluateHostInstallerParity() {
   };
 }
 
+// src/core/reflex/config.ts
+var DEFAULT_REFLEX_MODE = "off";
+var DEFAULT_REFLEX_PROVIDER = "typesafe-jev";
+var DEFAULT_REFLEX_MODEL = "jev-1.13.0";
+var DEFAULT_REFLEX_TIMEOUT_MS = 1200;
+var DEFAULT_REFLEX_MIN_MARGIN = 0.2;
+var DEFAULT_REFLEX_TELEMETRY = "local";
+function loadReflexConfig(overrides) {
+  const env = process.env;
+  const rawMode = (overrides?.mode || env.FABLE_REFLEX_MODE || DEFAULT_REFLEX_MODE).toLowerCase();
+  const validModes = ["off", "shadow", "recommend", "guarded", "authority"];
+  const mode = validModes.includes(rawMode) ? rawMode : "off";
+  const provider = overrides?.provider || env.FABLE_REFLEX_PROVIDER || DEFAULT_REFLEX_PROVIDER;
+  const model = overrides?.model || env.FABLE_REFLEX_MODEL || DEFAULT_REFLEX_MODEL;
+  const timeoutMs = overrides?.timeoutMs ?? (env.FABLE_REFLEX_TIMEOUT_MS ? parseInt(env.FABLE_REFLEX_TIMEOUT_MS, 10) : DEFAULT_REFLEX_TIMEOUT_MS);
+  const minMargin = overrides?.minMargin ?? (env.FABLE_REFLEX_MIN_MARGIN ? parseFloat(env.FABLE_REFLEX_MIN_MARGIN) : DEFAULT_REFLEX_MIN_MARGIN);
+  const rawTelemetry = (overrides?.telemetry || env.FABLE_REFLEX_TELEMETRY || DEFAULT_REFLEX_TELEMETRY).toLowerCase();
+  const telemetry = rawTelemetry === "off" ? "off" : "local";
+  const apiKey = overrides?.apiKey || env.TYPESAFE_API_KEY || undefined;
+  return {
+    mode,
+    provider,
+    model,
+    timeoutMs: isNaN(timeoutMs) || timeoutMs <= 0 ? DEFAULT_REFLEX_TIMEOUT_MS : timeoutMs,
+    minMargin: isNaN(minMargin) || minMargin < 0 || minMargin > 1 ? DEFAULT_REFLEX_MIN_MARGIN : minMargin,
+    telemetry,
+    apiKey
+  };
+}
+
 // src/core/doctor.ts
 function check(id, status, message) {
   return { id, status, message };
@@ -31590,6 +31703,14 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
     checks.push(check("quality-gate-no-mistakes", "PASS", `no-mistakes proxy available at ${nmBinary} (${daemonMsg})`));
   } else {
     checks.push(check("quality-gate-no-mistakes", "WARN", "no-mistakes quality gate proxy not found; install with get-fable install-quality-gate or get-fable doctor --fix"));
+  }
+  try {
+    const reflexConfig = loadReflexConfig();
+    const hasKey = Boolean(reflexConfig.apiKey);
+    const keyInfo = hasKey ? "credential present" : "no credential";
+    checks.push(check("reflex-advisor", "PASS", `Reflex advisor mode: ${reflexConfig.mode}, provider: ${reflexConfig.provider}, model: ${reflexConfig.model} (${keyInfo})`));
+  } catch (error) {
+    checks.push(check("reflex-advisor", "WARN", `Reflex advisor check: ${error instanceof Error ? error.message : String(error)}`));
   }
   return {
     schemaVersion: 1,
@@ -32132,25 +32253,1714 @@ class GrokBotAdapter {
     };
   }
 }
-// src/dsh/api.ts
+// src/core/reflex/envelope.ts
+var MAX_REFLEX_TASK_LENGTH = 2048;
+var SECRET_PATTERNS = [
+  /Bearer\s+[A-Za-z0-9\-_.]+/gi,
+  /apikey_[A-Za-z0-9_]{20,}/gi,
+  /(?:sk|pk)_(?:live|test)_[A-Za-z0-9]{20,}/gi,
+  /gh[pousr]_[A-Za-z0-9_]{36,}/gi,
+  /AIzaSy[A-Za-z0-9\-_]{33}/gi,
+  /-----BEGIN (?:RSA )?PRIVATE KEY-----[^-]+-----END (?:RSA )?PRIVATE KEY-----/gi,
+  /(?:password|secret|token|api[_-]?key)\s*[:=]\s*["']?[^\s"';,]{8,}["']?/gi
+];
+function redactSecrets(text) {
+  let sanitized = text;
+  let redactedCount = 0;
+  for (const pattern of SECRET_PATTERNS) {
+    sanitized = sanitized.replace(pattern, (match) => {
+      redactedCount++;
+      const kvMatch = match.match(/^((?:password|secret|token|api[_-]?key)\s*[:=]\s*)(.+)$/i);
+      if (kvMatch) {
+        return `${kvMatch[1]}[REDACTED_SECRET]`;
+      }
+      return "[REDACTED_SECRET]";
+    });
+  }
+  return { sanitized, redactedCount };
+}
+function sanitizeTaskText(task) {
+  const cleaned = task.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").trim();
+  const rawLength = cleaned.length;
+  const truncated = rawLength > MAX_REFLEX_TASK_LENGTH;
+  const text = truncated ? cleaned.slice(0, MAX_REFLEX_TASK_LENGTH) : cleaned;
+  return { text, rawLength, truncated };
+}
+function extractTaskConstraints(taskText) {
+  const text = taskText.toLowerCase();
+  return {
+    suppressResearch: /(?:external|web) research (?:is )?not needed|do not (?:use|do|perform) (?:external|web) research|no (?:external|web) research/.test(text),
+    suppressRelease: /do not (?:ship|publish|release|tag)|don't (?:ship|publish|release|tag)|not ready to (?:ship|publish|release)|(?:ship|publish|release) (?:is )?out of scope/.test(text),
+    suppressSecurity: /no security (?:behavior|boundary|logic|change)s?|security (?:work|review) (?:is )?not (?:needed|required)|not (?:a )?security (?:change|task|review)/.test(text),
+    suppressTdd: /no [^.]{0,40}behavior changes?|without (?:changing|a change to) behavior|not (?:a )?behavior change/.test(text),
+    suppressPlan: /do not plan|don't plan|no planning|planning (?:is )?out of scope|skip (?:the )?plan|without planning/.test(text),
+    suppressReview: /do not review|don't review|no (?:code )?review|review (?:is )?out of scope|skip (?:the )?review/.test(text),
+    suppressDelegation: /do not delegate|don't delegate|no delegation|without subagents?|single agent|single worker/.test(text)
+  };
+}
+function calculateFailureState(state) {
+  const streak = state?.failureStreak || 0;
+  if (streak >= 2 || state?.phase === "recovering")
+    return "repeated-failure";
+  if (streak === 1)
+    return "single-failure";
+  return "none";
+}
+function calculateVerificationFreshness(state) {
+  if (!state?.evidence || state.evidence.length === 0)
+    return "none";
+  const verifiedGen = state.verifiedGeneration || 0;
+  const mutationGen = state.mutationGeneration || 0;
+  return verifiedGen >= mutationGen ? "fresh" : "stale";
+}
+function bucketTopCandidates(scores, selectedSkill) {
+  const entries = Object.entries(scores);
+  return entries.filter(([skill, score]) => skill !== "get-fable" && score > 0).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([skill, score]) => {
+    let scoreBucket = "weak";
+    if (score >= 6 || skill === selectedSkill) {
+      scoreBucket = "strong";
+    } else if (score >= 3) {
+      scoreBucket = "moderate";
+    }
+    return { skill, scoreBucket };
+  });
+}
+function buildReflexEnvelope(rawTask, state, deterministic) {
+  const { text: sanitizedTask } = sanitizeTaskText(rawTask);
+  const { sanitized: redactedTask, redactedCount } = redactSecrets(sanitizedTask);
+  if (!redactedTask.trim() || redactedCount > 0 && redactedTask.replace(/\[REDACTED_SECRET\]/g, "").trim().length === 0) {
+    return {
+      envelope: {
+        schemaVersion: 1,
+        task: "[REDACTED]",
+        lifecycle: {
+          phase: state?.phase || "idle",
+          currentSkill: state?.currentSkill || null,
+          failureState: calculateFailureState(state),
+          substantial: Boolean(state?.substantial),
+          hasActiveCard: Boolean(state?.activeCard),
+          verificationFreshness: calculateVerificationFreshness(state)
+        },
+        deterministic: {
+          selectedSkill: deterministic.selectedSkill,
+          selectedPack: deterministic.selectedPack,
+          reasons: deterministic.reasons,
+          requiresPlan: deterministic.requiresPlan,
+          topCandidates: bucketTopCandidates(deterministic.scores, deterministic.selectedSkill)
+        },
+        constraints: extractTaskConstraints(rawTask)
+      },
+      failClosed: true,
+      reason: "Task content was entirely redacted as secret; failing closed to deterministic route"
+    };
+  }
+  const envelope = {
+    schemaVersion: 1,
+    task: redactedTask,
+    lifecycle: {
+      phase: state?.phase || "idle",
+      currentSkill: state?.currentSkill || null,
+      failureState: calculateFailureState(state),
+      substantial: Boolean(state?.substantial),
+      hasActiveCard: Boolean(state?.activeCard),
+      verificationFreshness: calculateVerificationFreshness(state)
+    },
+    deterministic: {
+      selectedSkill: deterministic.selectedSkill,
+      selectedPack: deterministic.selectedPack,
+      reasons: deterministic.reasons,
+      requiresPlan: deterministic.requiresPlan,
+      topCandidates: bucketTopCandidates(deterministic.scores, deterministic.selectedSkill)
+    },
+    constraints: extractTaskConstraints(rawTask)
+  };
+  return { envelope, failClosed: false };
+}
+// src/core/reflex/policy-snapshot.ts
+function extractHardPolicy(task, state, deterministic) {
+  const suppressions = extractTaskConstraints(task);
+  const reasons = [];
+  const failureStreak = state?.failureStreak || 0;
+  const isRecoveringPhase = state?.phase === "recovering";
+  const isRecoveryTask = /failed twice|fails twice|same (?:test|command|fix|failure)|retry(?:ing|ied)?|still fail|keeps? failing|doesn['’]?t work|didn['’]?t work|stale|cache|wrong branch|wrong build|no effect/i.test(task);
+  const recoveryLocked = failureStreak >= RECOVERY_FAILURE_THRESHOLD || isRecoveringPhase || deterministic.selectedSkill === "fable-recover";
+  if (recoveryLocked) {
+    reasons.push("recovery-lock: deterministic recovery cannot be downgraded");
+  }
+  const isRedteam = deterministic.selectedSkill === "fable-redteam";
+  const isHeal = deterministic.selectedSkill === "fable-heal";
+  const isSecurity = deterministic.selectedSkill === "fable-security";
+  const securityLocked = isRedteam || isHeal || isSecurity;
+  if (securityLocked) {
+    reasons.push(`security-lock: explicit ${deterministic.selectedSkill} cannot be downgraded`);
+  }
+  const releaseLocked = deterministic.selectedSkill === "fable-release";
+  if (releaseLocked) {
+    reasons.push("release-lock: explicit release/delivery route cannot be downgraded");
+  }
+  const handoffLocked = deterministic.selectedSkill === "fable-handoff";
+  if (handoffLocked) {
+    reasons.push("handoff-lock: explicit handoff continuation cannot be downgraded");
+  }
+  const evalLocked = deterministic.selectedSkill === "fable-eval";
+  if (evalLocked) {
+    reasons.push("eval-lock: explicit agent evaluation cannot be downgraded");
+  }
+  return {
+    recoveryLocked,
+    securityLocked,
+    releaseLocked,
+    handoffLocked,
+    evalLocked,
+    reasons,
+    suppressions
+  };
+}
+function isHardPolicyViolation(policy, deterministic, proposedSkill) {
+  if (policy.recoveryLocked && proposedSkill !== "fable-recover") {
+    return {
+      violated: true,
+      reason: "Violates recovery lock: cannot downgrade fable-recover to another skill"
+    };
+  }
+  if (policy.securityLocked && deterministic.selectedSkill === "fable-redteam" && proposedSkill !== "fable-redteam") {
+    return {
+      violated: true,
+      reason: "Violates security lock: cannot downgrade fable-redteam to another skill"
+    };
+  }
+  if (policy.securityLocked && deterministic.selectedSkill === "fable-heal" && proposedSkill !== "fable-heal") {
+    return {
+      violated: true,
+      reason: "Violates security lock: cannot downgrade fable-heal to another skill"
+    };
+  }
+  if (policy.releaseLocked && proposedSkill !== "fable-release") {
+    return {
+      violated: true,
+      reason: "Violates release lock: cannot downgrade fable-release to another skill"
+    };
+  }
+  if (policy.handoffLocked && proposedSkill !== "fable-handoff") {
+    return {
+      violated: true,
+      reason: "Violates handoff lock: cannot downgrade fable-handoff to another skill"
+    };
+  }
+  if (policy.suppressions.suppressResearch && proposedSkill === "fable-research") {
+    return { violated: true, reason: "Violates user constraint: research is suppressed" };
+  }
+  if (policy.suppressions.suppressRelease && proposedSkill === "fable-release") {
+    return { violated: true, reason: "Violates user constraint: release is suppressed" };
+  }
+  if (policy.suppressions.suppressSecurity && (proposedSkill === "fable-security" || proposedSkill === "fable-redteam" || proposedSkill === "fable-heal")) {
+    return { violated: true, reason: "Violates user constraint: security is suppressed" };
+  }
+  if (policy.suppressions.suppressTdd && proposedSkill === "fable-tdd") {
+    return { violated: true, reason: "Violates user constraint: tdd/behavior-change is suppressed" };
+  }
+  if (policy.suppressions.suppressPlan && proposedSkill === "fable-plan") {
+    return { violated: true, reason: "Violates user constraint: planning is suppressed" };
+  }
+  if (policy.suppressions.suppressReview && proposedSkill === "fable-review") {
+    return { violated: true, reason: "Violates user constraint: review is suppressed" };
+  }
+  if (policy.suppressions.suppressDelegation && proposedSkill === "fable-delegate") {
+    return { violated: true, reason: "Violates user constraint: delegation is suppressed" };
+  }
+  return { violated: false };
+}
+// src/core/reflex/question-builder.ts
+var SKILL_BOUNDARY_CONTRASTS = {
+  "fable-discover": {
+    useWhen: "Investigating unknown local repository code, runtime execution paths, or project layout.",
+    notWhen: "Looking up external official third-party API documentation or when a card is already bounded."
+  },
+  "fable-research": {
+    useWhen: "Checking current official external documentation, library APIs, release notes, or web facts.",
+    notWhen: "Exploring the existing local codebase or executing local test suites."
+  },
+  "fable-plan": {
+    useWhen: "Designing architecture, multi-step work breakdowns, or preparing implementation cards.",
+    notWhen: "Executing a single already-bounded task or immediate quick fixes."
+  },
+  "fable-tdd": {
+    useWhen: "Writing test-first regression tests for bug fixes or testable behavior changes.",
+    notWhen: "Refactoring with unchanged behavior or non-code documentation changes."
+  },
+  "fable-execute": {
+    useWhen: "Implementing a single, well-scoped accepted card with zero scope drift.",
+    notWhen: "Broad planning, repeated failures needing diagnosis, or test-first behavior changes."
+  },
+  "fable-review": {
+    useWhen: "Critiquing an existing diff, pull request, or changed code for failure scenarios.",
+    notWhen: "Verifying completion evidence with automated tests or running build gates."
+  },
+  "fable-verify": {
+    useWhen: "Validating implementations with fresh automated tests, builds, and machine-checked evidence.",
+    notWhen: "Giving qualitative diff feedback or investigating unknown codebase paths."
+  },
+  "fable-security": {
+    useWhen: "Auditing authentication, authorization, secrets, trust boundaries, and input validation.",
+    notWhen: "Offensive penetration testing (redteam) or automated vulnerability remediation (heal)."
+  },
+  "fable-redteam": {
+    useWhen: "Executing offensive penetration testing, CVSS scoring, attack graphs, and automated scanning.",
+    notWhen: "Defensive code review or applying security patches."
+  },
+  "fable-heal": {
+    useWhen: "Synthesizing and applying patches/remediations for identified security vulnerabilities.",
+    notWhen: "Discovering new vulnerabilities or general non-security bug fixes."
+  },
+  "fable-recover": {
+    useWhen: "Diagnosing repeated failures, broken environments, stale caches, or build failures.",
+    notWhen: "Normal first-attempt task execution."
+  },
+  "fable-release": {
+    useWhen: "Packaging, certifying release readiness, publishing npm/binaries, or tagging releases.",
+    notWhen: "Normal feature development or in-progress implementation."
+  },
+  "fable-handoff": {
+    useWhen: "Creating durable continuation state across agent sessions or pausing work cleanly.",
+    notWhen: "Completing all work in the current session."
+  },
+  "fable-delegate": {
+    useWhen: "Splitting independent work items across subagents with write & verification independence.",
+    notWhen: "Single-agent execution or tightly-coupled sequential tasks."
+  },
+  "fable-simplify": {
+    useWhen: "Simplifying settled code to reduce cognitive and cyclomatic complexity without changing behavior.",
+    notWhen: "Fixing bugs, adding new features, or changing runtime semantics."
+  },
+  "fable-eval": {
+    useWhen: "Benchmarking agent routing, prompt variations, or skill performance against test suites.",
+    notWhen: "Normal repository coding tasks."
+  }
+};
+function buildSkillSelectionCriteria(registry = loadSkillRegistry()) {
+  const criteria = {};
+  for (const skillId of canonicalSkillIds()) {
+    if (skillId === "get-fable")
+      continue;
+    const entry = getSkillEntry(skillId, registry);
+    const contrast = SKILL_BOUNDARY_CONTRASTS[skillId];
+    let desc = entry.description;
+    if (contrast) {
+      desc += ` Use when: ${contrast.useWhen} Not when: ${contrast.notWhen}`;
+    }
+    criteria[skillId] = desc;
+  }
+  return criteria;
+}
+function buildTaskShapeCriteria() {
+  return {
+    research: "Investigating external docs, APIs, or existing repository behavior",
+    architecture: "High-level system design, multi-step planning, or capability composition",
+    "bug-fix": "Repairing a bug, error, defect, or broken test",
+    feature: "Implementing new functionality or extending existing features",
+    delegation: "Splitting work across multiple independent parallel workers",
+    review: "Reviewing diffs, code quality, or verifying behavior",
+    security: "Security analysis, penetration testing, or vulnerability remediation",
+    release: "Packaging, publishing, tagging, or release preparation",
+    handoff: "Context transfer or session continuation packaging",
+    eval: "Benchmarking or evaluating agents, prompts, or skills",
+    "bounded-change": "Small atomic edits, simplification, or maintenance without feature expansion",
+    unknown: "Unclear or underspecified task shape"
+  };
+}
+function buildFirstPassQuestions(registry = loadSkillRegistry()) {
+  return {
+    selected_skill: {
+      type: "choice",
+      instructions: "Which specialist Fable skill is the single best fit to own the primary user intent described in the state?",
+      criteria: buildSkillSelectionCriteria(registry)
+    },
+    task_shape: {
+      type: "choice",
+      instructions: "What is the primary architectural shape or category of this task?",
+      criteria: buildTaskShapeCriteria()
+    },
+    needs_recovery: {
+      type: "noul",
+      instructions: "Does the task describe a repeated failed attempt, stale execution path, wrong build/cache, or diagnostic failure that requires recovery before further code edits?",
+      criteria: {
+        true: "Explicit or repeated failures needing diagnosis/recovery",
+        false: "Normal forward task execution or first attempt"
+      }
+    },
+    security_relevant: {
+      type: "noul",
+      instructions: "Is the primary requested work an explicit security audit, penetration test, vulnerability remediation, or trust-boundary modification?",
+      criteria: {
+        true: "Explicit security work or trust boundary",
+        false: "General software engineering, even if it touches endpoints"
+      }
+    },
+    needs_current_external_research: {
+      type: "noul",
+      instructions: "Does fulfilling this task responsibly require consulting external official documentation, API specifications, or release notes?",
+      criteria: {
+        true: "Requires external documentation lookup or web research",
+        false: "Can be resolved entirely from local repository knowledge"
+      }
+    },
+    needs_planning: {
+      type: "noul",
+      instructions: "Does the requested work have enough cross-file, architectural, or multi-step complexity that a bounded plan should precede code mutation?",
+      criteria: {
+        true: "Requires a formal multi-step implementation plan",
+        false: "Direct atomic execution or single-card fix is appropriate"
+      }
+    },
+    needs_behavior_verification: {
+      type: "noul",
+      instructions: "Is the primary request to prove, validate, or falsify current behavior rather than to write new code?",
+      criteria: {
+        true: "Primary goal is behavior verification or test evidence",
+        false: "Primary goal is code mutation or implementation"
+      }
+    },
+    is_behavior_change: {
+      type: "noul",
+      instructions: "Does the request alter observable runtime or product behavior in a way that warrants test-driven regression coverage?",
+      criteria: {
+        true: "Modifies observable product or runtime behavior",
+        false: "Refactoring, cleanup, docs, or non-functional edits"
+      }
+    },
+    benefits_from_delegation: {
+      type: "noul",
+      instructions: "Does the request comprise multiple independent subtasks with disjoint write and verification boundaries that can be parallelized?",
+      criteria: {
+        true: "Multiple independent parallelizable work streams",
+        false: "Single coherent task or sequentially dependent steps"
+      }
+    }
+  };
+}
+// src/core/reflex/disambiguation.ts
+function calculateProbabilityMargin(probabilities) {
+  const sorted = Object.entries(probabilities).filter(([_, prob]) => typeof prob === "number" && !isNaN(prob)).sort((a, b) => b[1] - a[1]);
+  if (sorted.length === 0) {
+    return { topSkill: null, topProb: 0, secondSkill: null, secondProb: 0, margin: 0 };
+  }
+  const [topSkill, topProb] = sorted[0];
+  const [secondSkill, secondProb] = sorted.length > 1 ? sorted[1] : [null, 0];
+  const margin = topProb - secondProb;
+  return {
+    topSkill,
+    topProb,
+    secondSkill,
+    secondProb,
+    margin: Math.max(0, margin)
+  };
+}
+function isAmbiguous(advice, envelope, config, registry = loadSkillRegistry()) {
+  if (!advice.selectedSkill || advice.confidence === null)
+    return true;
+  const { topSkill, secondSkill, margin } = calculateProbabilityMargin(advice.probabilities);
+  if (margin < config.minMargin)
+    return true;
+  if (advice.confidence < 0.75)
+    return true;
+  if (envelope.lifecycle.substantial && advice.selectedSkill !== envelope.deterministic.selectedSkill) {
+    return true;
+  }
+  if (topSkill && secondSkill) {
+    try {
+      const topPack = getSkillEntry(topSkill, registry).pack;
+      const secondPack = getSkillEntry(secondSkill, registry).pack;
+      if (topPack === secondPack)
+        return true;
+    } catch {}
+  }
+  return false;
+}
+function buildSecondStageQuestions(candidates, registry = loadSkillRegistry()) {
+  const topCandidates = candidates.slice(0, 3);
+  const choiceCriteria = {};
+  for (const skill of topCandidates) {
+    try {
+      const entry = getSkillEntry(skill, registry);
+      const contrast = SKILL_BOUNDARY_CONTRASTS[skill];
+      let desc = `${entry.description} (Pack: ${entry.pack}, Phase: ${entry.phase}). Intents: ${entry.intents.slice(0, 3).join(", ")}.`;
+      if (contrast) {
+        desc += ` Use when: ${contrast.useWhen} Not when: ${contrast.notWhen}`;
+      }
+      choiceCriteria[skill] = desc;
+    } catch {
+      choiceCriteria[skill] = "Candidate skill";
+    }
+  }
+  choiceCriteria["none_of_these"] = "None of the candidate skills are an appropriate fit; default fallback should be used.";
+  const bestCandidateQuestion = {
+    type: "choice",
+    instructions: "Given the ambiguous or close classification between these candidate skills, which one definitively fits the primary user intent?",
+    criteria: choiceCriteria
+  };
+  const candidateFitsQuestion = {
+    type: "noul",
+    instructions: "Does the selected candidate skill directly and safely address the user request without violating lifecycle or safety gates?",
+    criteria: {
+      true: "Candidate skill is a direct and safe fit",
+      false: "Candidate skill is poorly matched, incomplete, or unsafe"
+    }
+  };
+  return {
+    best_candidate: bestCandidateQuestion,
+    candidate_fits: candidateFitsQuestion
+  };
+}
+// src/core/reflex/fusion.ts
+var HIGH_RISK_SKILLS = new Set([
+  "fable-recover",
+  "fable-security",
+  "fable-redteam",
+  "fable-heal",
+  "fable-release",
+  "fable-handoff",
+  "fable-run",
+  "fable-cowork",
+  "fable-loop",
+  "fable-config",
+  "fable-architecture",
+  "fable-eco"
+]);
+var MEDIUM_RISK_SKILLS = new Set([
+  "fable-tdd",
+  "fable-delegate",
+  "fable-review",
+  "fable-verify",
+  "fable-simplify"
+]);
+function getSkillRiskTier(skill) {
+  if (HIGH_RISK_SKILLS.has(skill))
+    return "high";
+  if (MEDIUM_RISK_SKILLS.has(skill))
+    return "medium";
+  return "low";
+}
+function getRequiredConfidence(tier) {
+  switch (tier) {
+    case "high":
+      return 0.88;
+    case "medium":
+      return 0.8;
+    case "low":
+      return 0.72;
+  }
+}
+function fuseRoute(params) {
+  const { deterministic, policy, mode, config, advice } = params;
+  const registry = params.registry || loadSkillRegistry();
+  if (mode === "off" || !advice) {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      policySnapshot: policy
+    };
+  }
+  if (mode === "shadow") {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      policySnapshot: policy
+    };
+  }
+  if (mode === "recommend") {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      policySnapshot: policy
+    };
+  }
+  const proposedSkill = advice.selectedSkill;
+  if (!proposedSkill) {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      fallbackReason: "Reflex advice did not select a skill; falling back to deterministic route",
+      policySnapshot: policy
+    };
+  }
+  try {
+    getSkillEntry(proposedSkill, registry);
+  } catch {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      fallbackReason: `Reflex proposed unknown skill '${proposedSkill}'; falling back to deterministic route`,
+      policySnapshot: policy
+    };
+  }
+  const violation = isHardPolicyViolation(policy, deterministic, proposedSkill);
+  if (violation.violated) {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      fallbackReason: violation.reason,
+      policySnapshot: policy
+    };
+  }
+  const tier = getSkillRiskTier(proposedSkill);
+  const requiredConfidence = getRequiredConfidence(tier);
+  const confidence = advice.confidence ?? 0;
+  if (confidence < requiredConfidence) {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      fallbackReason: `Reflex confidence ${confidence.toFixed(2)} does not meet ${tier}-risk threshold ${requiredConfidence}`,
+      policySnapshot: policy
+    };
+  }
+  const { margin } = calculateProbabilityMargin(advice.probabilities);
+  if (margin < config.minMargin) {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      fallbackReason: `Reflex candidate margin ${margin.toFixed(2)} is below minimum margin ${config.minMargin}`,
+      policySnapshot: policy
+    };
+  }
+  if (mode === "guarded" && tier === "high" && deterministic.selectedSkill !== proposedSkill) {
+    return {
+      decision: deterministic,
+      mode,
+      deterministicDecision: deterministic,
+      advice,
+      fallbackReason: `Guarded mode prohibits override to high-risk skill '${proposedSkill}'`,
+      policySnapshot: policy
+    };
+  }
+  const entry = getSkillEntry(proposedSkill, registry);
+  const fusedDecision = {
+    selectedSkill: proposedSkill,
+    selectedPack: entry.pack,
+    taskShape: advice.taskShape || deterministic.taskShape,
+    confidence,
+    reasons: [
+      `[reflex-fuse] semantic override by ${advice.provider} (${advice.model}) with confidence ${confidence.toFixed(2)} (margin ${margin.toFixed(2)})`,
+      ...deterministic.reasons
+    ],
+    requiresPlan: entry.requires.includes("plan") || entry.gates.includes("plan"),
+    requiredGates: entry.gates,
+    fallbackSkill: entry.fallback,
+    parallelCandidates: deterministic.parallelCandidates,
+    nextSkills: entry.next,
+    scores: deterministic.scores
+  };
+  return {
+    decision: fusedDecision,
+    mode,
+    deterministicDecision: deterministic,
+    advice,
+    policySnapshot: policy
+  };
+}
+// src/core/reflex/ledger.ts
+import crypto from "node:crypto";
 import fs24 from "node:fs";
 import path24 from "node:path";
+var MAX_REFLEX_LEDGER_LINES = 5000;
+function hashTaskText(text) {
+  return crypto.createHash("sha256").update(text, "utf8").digest("hex");
+}
+function getReflexDir(repoRoot = process.cwd()) {
+  const fableDir = path24.join(repoRoot, ".fable");
+  if (fs24.existsSync(fableDir)) {
+    const stat = fs24.lstatSync(fableDir);
+    if (stat.isSymbolicLink()) {
+      throw new Error("Reflex security violation: .fable directory must not be a symlink");
+    }
+  }
+  const reflexDir = path24.join(fableDir, "reflex");
+  if (fs24.existsSync(reflexDir)) {
+    const stat = fs24.lstatSync(reflexDir);
+    if (stat.isSymbolicLink()) {
+      throw new Error("Reflex security violation: .fable/reflex directory must not be a symlink");
+    }
+  }
+  return reflexDir;
+}
+function appendReflexEvent(event, repoRoot = process.cwd()) {
+  try {
+    const reflexDir = getReflexDir(repoRoot);
+    if (!fs24.existsSync(reflexDir)) {
+      fs24.mkdirSync(reflexDir, { recursive: true });
+    }
+    const eventsFile = path24.join(reflexDir, "events.jsonl");
+    if (fs24.existsSync(eventsFile)) {
+      const stat = fs24.lstatSync(eventsFile);
+      if (stat.isSymbolicLink() || !stat.isFile()) {
+        return;
+      }
+    }
+    const line = JSON.stringify(event) + `
+`;
+    fs24.appendFileSync(eventsFile, line, "utf8");
+    rotateLedgerIfNecessary(eventsFile);
+  } catch {}
+}
+function readReflexEvents(options) {
+  const limit = options?.limit ?? 100;
+  const repoRoot = options?.repoRoot || process.cwd();
+  try {
+    const reflexDir = getReflexDir(repoRoot);
+    const eventsFile = path24.join(reflexDir, "events.jsonl");
+    if (!fs24.existsSync(eventsFile)) {
+      return [];
+    }
+    const stat = fs24.lstatSync(eventsFile);
+    if (stat.isSymbolicLink() || !stat.isFile()) {
+      return [];
+    }
+    const content = fs24.readFileSync(eventsFile, "utf8");
+    const lines = content.trim().split(`
+`).filter(Boolean);
+    const events = [];
+    for (let i = lines.length - 1;i >= 0 && events.length < limit; i--) {
+      try {
+        const parsed = JSON.parse(lines[i]);
+        if (parsed.schemaVersion === 1) {
+          events.push(parsed);
+        }
+      } catch {}
+    }
+    return events;
+  } catch {
+    return [];
+  }
+}
+function rotateLedgerIfNecessary(eventsFile) {
+  try {
+    const stat = fs24.statSync(eventsFile);
+    if (stat.size > 5 * 1024 * 1024) {
+      const content = fs24.readFileSync(eventsFile, "utf8");
+      const lines = content.trim().split(`
+`);
+      if (lines.length > MAX_REFLEX_LEDGER_LINES) {
+        const truncated = lines.slice(-Math.floor(MAX_REFLEX_LEDGER_LINES / 2)).join(`
+`) + `
+`;
+        fs24.writeFileSync(eventsFile, truncated, "utf8");
+      }
+    }
+  } catch {}
+}
+
+// src/core/reflex/providers/typesafe-jev.ts
+var TYPESAFE_API_ENDPOINT = "https://api.typesafe.ai/v1/systemone";
+
+class TypeSafeProviderException extends Error {
+  kind;
+  retryable;
+  constructor(kind, message, retryable = false) {
+    super(message);
+    this.name = "TypeSafeProviderException";
+    this.kind = kind;
+    this.retryable = retryable;
+  }
+}
+
+class TypeSafeJevAdvisor {
+  id = "typesafe-jev";
+  apiKey;
+  model;
+  timeoutMs;
+  fetchFn;
+  constructor(config, customFetch = fetch) {
+    this.apiKey = config.apiKey;
+    this.model = config.model || "jev-1.13.0";
+    this.timeoutMs = config.timeoutMs || 1200;
+    this.fetchFn = customFetch;
+  }
+  async advise(input, externalSignal) {
+    const questions = buildFirstPassQuestions();
+    const { data, latencyMs } = await this.postQuestions(input, questions, externalSignal);
+    return this.normalizeResponse(data, latencyMs);
+  }
+  async adviseSecondStage(input, candidates, externalSignal) {
+    const questions = buildSecondStageQuestions(candidates);
+    const { data, latencyMs } = await this.postQuestions(input, questions, externalSignal);
+    return this.normalizeSecondStageResponse(data, latencyMs);
+  }
+  async postQuestions(state, questions, externalSignal) {
+    if (!this.apiKey) {
+      throw new TypeSafeProviderException("missing-credential", "TYPESAFE_API_KEY is not configured", false);
+    }
+    const startTime = Date.now();
+    const requestBody = {
+      state,
+      model: this.model,
+      questions
+    };
+    let attempt = 0;
+    const maxAttempts = 2;
+    while (attempt < maxAttempts) {
+      attempt++;
+      const remainingTimeout = Math.max(200, this.timeoutMs - (Date.now() - startTime));
+      const controller = new AbortController;
+      const timeoutId = setTimeout(() => controller.abort(), remainingTimeout);
+      const onExternalAbort = () => controller.abort();
+      if (externalSignal) {
+        externalSignal.addEventListener("abort", onExternalAbort, { once: true });
+      }
+      try {
+        const response = await this.fetchFn(TYPESAFE_API_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${this.apiKey}`
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (externalSignal) {
+          externalSignal.removeEventListener("abort", onExternalAbort);
+        }
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            throw new TypeSafeProviderException("authentication", `TypeSafe API authentication failed (${response.status})`, false);
+          }
+          if (response.status === 429 || response.status === 529) {
+            if (attempt < maxAttempts && remainingTimeout > 500) {
+              await new Promise((resolve) => setTimeout(resolve, 250));
+              continue;
+            }
+            throw new TypeSafeProviderException("rate-limit", `TypeSafe API rate limit or overloaded (${response.status})`, true);
+          }
+          const errorBody = await response.text().catch(() => "");
+          throw new TypeSafeProviderException("bad-response", `TypeSafe API returned HTTP ${response.status}: ${errorBody.slice(0, 200)}`, false);
+        }
+        const data = await response.json();
+        const latencyMs = Date.now() - startTime;
+        return { data, latencyMs };
+      } catch (err) {
+        clearTimeout(timeoutId);
+        if (externalSignal) {
+          externalSignal.removeEventListener("abort", onExternalAbort);
+        }
+        if (err instanceof TypeSafeProviderException) {
+          throw err;
+        }
+        if (controller.signal.aborted) {
+          if (externalSignal?.aborted) {
+            throw new TypeSafeProviderException("aborted", "Request aborted by caller", false);
+          }
+          throw new TypeSafeProviderException("timeout", `TypeSafe API request timed out after ${this.timeoutMs}ms`, true);
+        }
+        throw new TypeSafeProviderException("network", `TypeSafe network error: ${err?.message || "unknown error"}`, true);
+      }
+    }
+    throw new TypeSafeProviderException("timeout", "Exceeded retry budget", false);
+  }
+  normalizeResponse(data, latencyMs) {
+    if (!data || typeof data !== "object" || !data.answers) {
+      throw new TypeSafeProviderException("bad-response", "TypeSafe response missing required answers field", false);
+    }
+    const answers = data.answers;
+    const skillAnswer = answers.selected_skill;
+    const shapeAnswer = answers.task_shape;
+    const selectedSkill = skillAnswer?.choice || null;
+    const probabilities = skillAnswer?.probabilities || {};
+    const confidence = typeof skillAnswer?.confidence === "number" ? skillAnswer.confidence : null;
+    const taskShape = shapeAnswer?.choice || undefined;
+    const signals = {};
+    for (const [key, answer] of Object.entries(answers)) {
+      if (key !== "selected_skill" && key !== "task_shape" && typeof answer?.noul === "number") {
+        signals[key] = answer.noul;
+      }
+    }
+    return {
+      provider: this.id,
+      model: data.model || this.model,
+      selectedSkill,
+      probabilities,
+      confidence,
+      taskShape,
+      signals,
+      usage: data.usage ? {
+        inputTokens: data.usage.input_tokens,
+        outputTokens: data.usage.output_tokens
+      } : undefined,
+      latencyMs,
+      stage: 1
+    };
+  }
+  normalizeSecondStageResponse(data, latencyMs) {
+    if (!data || typeof data !== "object" || !data.answers) {
+      throw new TypeSafeProviderException("bad-response", "TypeSafe response missing required answers field", false);
+    }
+    const answers = data.answers;
+    const bestAnswer = answers.best_candidate;
+    const fitsAnswer = answers.candidate_fits;
+    const bestCandidate = bestAnswer?.choice || "none_of_these";
+    const confidence = typeof bestAnswer?.confidence === "number" ? bestAnswer.confidence : null;
+    const probabilities = bestAnswer?.probabilities || {};
+    const candidateFits = typeof fitsAnswer?.noul === "number" ? fitsAnswer.noul : 0;
+    return {
+      bestCandidate,
+      confidence,
+      probabilities,
+      candidateFits,
+      latencyMs,
+      usage: data.usage ? {
+        inputTokens: data.usage.input_tokens,
+        outputTokens: data.usage.output_tokens
+      } : undefined
+    };
+  }
+}
+
+// src/core/reflex/service.ts
+var CIRCUIT_BREAKER_THRESHOLD = 3;
+var CIRCUIT_BREAKER_COOLDOWN_MS = 30000;
+
+class ReflexCircuitBreaker {
+  failureCount = 0;
+  lastFailureTime = 0;
+  recordSuccess() {
+    this.failureCount = 0;
+    this.lastFailureTime = 0;
+  }
+  recordFailure() {
+    this.failureCount++;
+    this.lastFailureTime = Date.now();
+  }
+  isOpen() {
+    if (this.failureCount < CIRCUIT_BREAKER_THRESHOLD) {
+      return false;
+    }
+    const elapsed = Date.now() - this.lastFailureTime;
+    if (elapsed > CIRCUIT_BREAKER_COOLDOWN_MS) {
+      return false;
+    }
+    return true;
+  }
+  reset() {
+    this.failureCount = 0;
+    this.lastFailureTime = 0;
+  }
+  getState() {
+    return {
+      failureCount: this.failureCount,
+      lastFailureTime: this.lastFailureTime,
+      isOpen: this.isOpen()
+    };
+  }
+}
+var globalCircuitBreaker = new ReflexCircuitBreaker;
+async function resolveRoute(task, state, options) {
+  const registry = options?.registry || loadSkillRegistry();
+  const config = options?.config || loadReflexConfig();
+  const circuitBreaker = options?.circuitBreaker || globalCircuitBreaker;
+  const deterministic = routeTask(task, state, registry);
+  const policy = extractHardPolicy(task, state, deterministic);
+  if (config.mode === "off") {
+    return {
+      decision: deterministic,
+      mode: "off",
+      deterministicDecision: deterministic,
+      policySnapshot: policy
+    };
+  }
+  const { envelope, failClosed, reason: failClosedReason } = buildReflexEnvelope(task, state, deterministic);
+  if (failClosed) {
+    return {
+      decision: deterministic,
+      mode: config.mode,
+      deterministicDecision: deterministic,
+      fallbackReason: failClosedReason,
+      policySnapshot: policy
+    };
+  }
+  if (circuitBreaker.isOpen()) {
+    return {
+      decision: deterministic,
+      mode: config.mode,
+      deterministicDecision: deterministic,
+      fallbackReason: `Reflex circuit breaker is OPEN due to ${CIRCUIT_BREAKER_THRESHOLD} consecutive failures; falling back to deterministic route`,
+      policySnapshot: policy
+    };
+  }
+  let advisor = options?.advisor;
+  if (!advisor) {
+    try {
+      advisor = new TypeSafeJevAdvisor(config);
+    } catch (err) {
+      return {
+        decision: deterministic,
+        mode: config.mode,
+        deterministicDecision: deterministic,
+        fallbackReason: `Could not instantiate advisor: ${err.message}`,
+        policySnapshot: policy
+      };
+    }
+  }
+  try {
+    const advice = await advisor.advise(envelope);
+    circuitBreaker.recordSuccess();
+    let finalAdvice = advice;
+    if ((config.mode === "guarded" || config.mode === "authority") && typeof advisor.adviseSecondStage === "function" && isAmbiguous(advice, envelope, config, registry)) {
+      const { topSkill, secondSkill } = calculateProbabilityMargin(advice.probabilities);
+      const candidates = [];
+      if (topSkill)
+        candidates.push(topSkill);
+      if (secondSkill && !candidates.includes(secondSkill))
+        candidates.push(secondSkill);
+      if (deterministic.selectedSkill && !candidates.includes(deterministic.selectedSkill)) {
+        candidates.push(deterministic.selectedSkill);
+      }
+      if (candidates.length > 0) {
+        try {
+          const secondStage = await advisor.adviseSecondStage(envelope, candidates);
+          if (secondStage.bestCandidate !== "none_of_these" && secondStage.candidateFits >= 0.7 && (secondStage.confidence ?? 0) >= config.minMargin) {
+            finalAdvice = {
+              ...advice,
+              selectedSkill: secondStage.bestCandidate,
+              probabilities: secondStage.probabilities,
+              confidence: secondStage.confidence,
+              stage: 2,
+              latencyMs: advice.latencyMs + secondStage.latencyMs
+            };
+          } else {
+            finalAdvice = {
+              ...advice,
+              selectedSkill: null,
+              confidence: null,
+              stage: 2,
+              latencyMs: advice.latencyMs + secondStage.latencyMs
+            };
+          }
+        } catch {}
+      }
+    }
+    const resolution = fuseRoute({
+      deterministic,
+      policy,
+      mode: config.mode,
+      config,
+      advice: finalAdvice,
+      registry
+    });
+    if (config.telemetry === "local") {
+      appendReflexEvent({
+        schemaVersion: 1,
+        timestamp: new Date().toISOString(),
+        taskHash: hashTaskText(task),
+        taskLength: task.length,
+        mode: config.mode,
+        provider: config.provider,
+        model: advice.model,
+        deterministicSkill: deterministic.selectedSkill,
+        reflexSkill: advice.selectedSkill,
+        fusedSkill: resolution.decision.selectedSkill,
+        confidence: advice.confidence,
+        margin: advice.probabilities && advice.selectedSkill ? advice.probabilities[advice.selectedSkill] ?? null : null,
+        latencyMs: advice.latencyMs,
+        usage: advice.usage
+      });
+    }
+    return resolution;
+  } catch (err) {
+    circuitBreaker.recordFailure();
+    const resolution = {
+      decision: deterministic,
+      mode: config.mode,
+      deterministicDecision: deterministic,
+      fallbackReason: `Provider error (${err?.kind || "unknown"}): ${err?.message || "unknown failure"}; falling back to deterministic route`,
+      policySnapshot: policy
+    };
+    if (config.telemetry === "local") {
+      appendReflexEvent({
+        schemaVersion: 1,
+        timestamp: new Date().toISOString(),
+        taskHash: hashTaskText(task),
+        taskLength: task.length,
+        mode: config.mode,
+        provider: config.provider,
+        model: config.model,
+        deterministicSkill: deterministic.selectedSkill,
+        reflexSkill: null,
+        fusedSkill: deterministic.selectedSkill,
+        confidence: null,
+        margin: null,
+        latencyMs: 0,
+        fallbackReason: resolution.fallbackReason
+      });
+    }
+    return resolution;
+  }
+}
+// src/core/reflex/eval/runner.ts
+var STANDARD_REFLEX_BENCHMARK_CORPUS = [
+  {
+    id: "sec-1",
+    task: "Audit OAuth2 token exchange and session cookies for vulnerabilities",
+    expectedSkill: "fable-security",
+    category: "security"
+  },
+  {
+    id: "red-1",
+    task: "Run automated IDOR and SQL injection attack graph against API",
+    expectedSkill: "fable-redteam",
+    category: "security"
+  },
+  {
+    id: "heal-1",
+    task: "Remediate vulnerability in auth middleware and patch security flaw",
+    expectedSkill: "fable-heal",
+    category: "security"
+  },
+  {
+    id: "rec-1",
+    task: "Failing twice with stale cache and wrong build on master",
+    expectedSkill: "fable-recover",
+    category: "recovery"
+  },
+  {
+    id: "res-1",
+    task: "Check official primary source documentation for latest Stripe SDK release notes",
+    expectedSkill: "fable-research",
+    category: "research"
+  },
+  {
+    id: "disc-1",
+    task: "Inspect local repository execution path and trace function callers in core",
+    expectedSkill: "fable-discover",
+    category: "discovery"
+  },
+  {
+    id: "plan-1",
+    task: "Plan the multi-file architecture migration from REST to gRPC",
+    expectedSkill: "fable-plan",
+    category: "architecture"
+  },
+  {
+    id: "tdd-1",
+    task: "Write failing regression test and fix the bug in calculator",
+    expectedSkill: "fable-tdd",
+    category: "build"
+  },
+  {
+    id: "del-1",
+    task: "Delegate independent subtasks across parallel subagents with disjoint files",
+    expectedSkill: "fable-delegate",
+    category: "delegation"
+  },
+  {
+    id: "rel-1",
+    task: "Prepare release v2.0.0, generate tag, and publish npm package",
+    expectedSkill: "fable-release",
+    category: "delivery"
+  },
+  {
+    id: "hand-1",
+    task: "Create durable context handoff to continue this task in next session",
+    expectedSkill: "fable-handoff",
+    category: "delivery"
+  },
+  {
+    id: "simp-1",
+    task: "Clean up dead code, deduplicate logic, and simplify helper without changing behavior",
+    expectedSkill: "fable-simplify",
+    category: "system"
+  }
+];
+async function runReflexEvaluation(corpus = STANDARD_REFLEX_BENCHMARK_CORPUS, options) {
+  const config = options?.config || loadReflexConfig({ mode: "guarded" });
+  let detTop1 = 0;
+  let guardedTop1 = 0;
+  let totalLatency = 0;
+  let overridesCount = 0;
+  let overridesWon = 0;
+  let overridesHarm = 0;
+  let brierSum = 0;
+  for (const tc of corpus) {
+    const start = Date.now();
+    const detDecision = routeTask(tc.task);
+    const detMatch = detDecision.selectedSkill === tc.expectedSkill;
+    if (detMatch)
+      detTop1++;
+    const res = await resolveRoute(tc.task, null, {
+      config,
+      advisor: options?.advisor
+    });
+    const latency = Date.now() - start;
+    totalLatency += latency;
+    const guardedMatch = res.decision.selectedSkill === tc.expectedSkill;
+    if (guardedMatch)
+      guardedTop1++;
+    const outcome = guardedMatch ? 1 : 0;
+    const conf = res.decision.confidence;
+    brierSum += Math.pow(conf - outcome, 2);
+    if (res.decision.selectedSkill !== detDecision.selectedSkill) {
+      overridesCount++;
+      if (guardedMatch && !detMatch) {
+        overridesWon++;
+      } else if (!guardedMatch && detMatch) {
+        overridesHarm++;
+      }
+    }
+  }
+  const n = corpus.length;
+  const detAccuracy = n > 0 ? detTop1 / n : 0;
+  const guardedAccuracy = n > 0 ? guardedTop1 / n : 0;
+  const avgLatency = n > 0 ? totalLatency / n : 0;
+  const brierScore = n > 0 ? brierSum / n : 0;
+  const overridePrecision = overridesCount > 0 ? overridesWon / (overridesWon + overridesHarm || 1) : 1;
+  return {
+    timestamp: new Date().toISOString(),
+    totalCases: n,
+    deterministic: {
+      armName: "deterministic",
+      totalCases: n,
+      top1Count: detTop1,
+      top1Accuracy: Math.round(detAccuracy * 1000) / 1000,
+      avgLatencyMs: 0,
+      brierScore: 0
+    },
+    hybridGuarded: {
+      armName: "hybrid-guarded",
+      totalCases: n,
+      top1Count: guardedTop1,
+      top1Accuracy: Math.round(guardedAccuracy * 1000) / 1000,
+      avgLatencyMs: Math.round(avgLatency),
+      brierScore: Math.round(brierScore * 1000) / 1000
+    },
+    overridesCount,
+    overridesWon,
+    overridesHarm,
+    overridePrecision: Math.round(overridePrecision * 1000) / 1000
+  };
+}
+// src/core/reflex/compaction/request.ts
+var SYSTEM_ONE_URL = "https://api.typesafe.ai/v1/systemone";
+var DEFAULT_MODEL = "jev-latest";
+function buildJevRequest(params, state, questions) {
+  return {
+    url: params.baseUrl ?? SYSTEM_ONE_URL,
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${params.apiKey}`,
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      model: params.model ?? DEFAULT_MODEL,
+      state,
+      questions
+    })
+  };
+}
+function parseJevResponse(status, ok, text) {
+  if (!ok) {
+    throw new Error(`Jev request failed (${status}): ${text.slice(0, 200)}`);
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error("Jev returned malformed JSON");
+  }
+  if (parsed === null || typeof parsed !== "object" || !("answers" in parsed) || parsed.answers === null || typeof parsed.answers !== "object") {
+    throw new Error("Jev response is missing answers");
+  }
+  return parsed;
+}
+function noulAnswer(answers, name) {
+  const answer = answers[name];
+  if (!answer || !("noul" in answer) || typeof answer.noul !== "number" || !Number.isFinite(answer.noul)) {
+    throw new Error(`Invalid Jev answer for ${name}`);
+  }
+  return answer.noul;
+}
+// src/core/reflex/compaction/client.ts
+class JevClient {
+  apiKey;
+  model;
+  baseUrl;
+  fetcher;
+  constructor(options = {}) {
+    this.apiKey = options.apiKey ?? process.env.TYPESAFE_API_KEY ?? "";
+    this.model = options.model;
+    this.baseUrl = options.baseUrl;
+    this.fetcher = options.fetch ?? fetch;
+  }
+  async ask(state, questions) {
+    if (!this.apiKey)
+      throw new Error("TYPESAFE_API_KEY is not configured");
+    const request = buildJevRequest({ apiKey: this.apiKey, model: this.model, baseUrl: this.baseUrl }, state, questions);
+    const response = await this.fetcher(request.url, {
+      method: request.method,
+      headers: request.headers,
+      body: request.body
+    });
+    return parseJevResponse(response.status, response.ok, await response.text());
+  }
+}
+// src/core/reflex/compaction/state.ts
+var STATE_CONTEXT = "A coding assistant conversation is being compacted to free context. `history` is the whole conversation so far, oldest first; tool outputs are replaced by a short `result` note and long texts may be abridged. Each question asks whether one tool call, or the full output of that call, still needs to stay in the history verbatim. Whatever is not kept is deleted permanently, but the assistant can always re-run a tool or re-read a file.";
+var INPUT_CHARS = [1000, 200, 60];
+var TEXT_HEAD = 400;
+var TEXT_TAIL = 150;
+var TOKEN_PIECES = /[A-Za-z]+|\d+|[^\sA-Za-z\d]/g;
+function estimateTokens2(text) {
+  let tokens = 0;
+  for (const [piece] of text.matchAll(TOKEN_PIECES)) {
+    const first = piece.charCodeAt(0);
+    if (first >= 48 && first <= 57)
+      tokens += piece.length / 2;
+    else if (first >= 65 && first <= 90 || first >= 97 && first <= 122) {
+      tokens += 1 + Math.floor((piece.length - 1) / 6);
+    } else
+      tokens += 0.9;
+  }
+  return Math.ceil(tokens);
+}
+function truncate(text, limit) {
+  return text.length <= limit ? text : `${text.slice(0, Math.max(0, limit - 1))}…`;
+}
+function abridge(text, head, tail) {
+  if (text.length <= head + tail + 40)
+    return text;
+  const omitted = text.length - head - tail;
+  return `${text.slice(0, head)}
+[… ${omitted} chars omitted …]
+${text.slice(-tail)}`;
+}
+function isPinned(index, total, preserveRecentMessages) {
+  return index === 0 || index >= total - preserveRecentMessages;
+}
+function collectToolCalls(messages, preserveRecentMessages) {
+  const results = new Map;
+  messages.forEach((message, index) => {
+    for (const result of message.toolResults ?? []) {
+      results.set(result.tool_use_id, { index, result });
+    }
+  });
+  const calls = [];
+  messages.forEach((message, callIndex) => {
+    for (const tool of message.toolUses) {
+      const found = results.get(tool.tool_use_id);
+      if (!found)
+        continue;
+      calls.push({
+        id: `t${calls.length + 1}`,
+        tool_use_id: tool.tool_use_id,
+        tool: tool.tool,
+        input: tool.input,
+        callIndex,
+        resultIndex: found.index,
+        resultChars: found.result.text.length,
+        isError: found.result.isError ?? false,
+        pinned: isPinned(callIndex, messages.length, preserveRecentMessages) || isPinned(found.index, messages.length, preserveRecentMessages)
+      });
+    }
+  });
+  return calls;
+}
+function inputText(input, limit) {
+  let json = "";
+  try {
+    json = JSON.stringify(input);
+  } catch {
+    json = "[unserializable input]";
+  }
+  return truncate(json, limit);
+}
+function resultNote(call) {
+  return `${call.isError ? "error" : "ok"}, ${call.resultChars} chars (omitted)`;
+}
+function compactCall(call) {
+  const input = Object.entries(call.input).map(([key, value]) => {
+    const text = typeof value === "string" ? value : inputText({ [key]: value }, 200);
+    return `${key}=${text.replace(/\s+/g, " ")}`;
+  }).join(" ");
+  return `${call.id} ${call.tool} ${truncate(input, INPUT_CHARS[2])} → ${call.isError ? "error" : "ok"} ${call.resultChars}ch`;
+}
+function mergeCallRuns(history, pinned) {
+  const merged = [];
+  for (const entry of history) {
+    const previous = merged[merged.length - 1];
+    const foldable = (e) => !pinned(e) && e.text.length === 0 && typeof e.tool_calls?.[0] === "string";
+    if (previous && foldable(previous) && foldable(entry) && previous.role === entry.role) {
+      previous.tool_calls = [...previous.tool_calls, ...entry.tool_calls];
+      continue;
+    }
+    merged.push({ ...entry });
+  }
+  return merged;
+}
+function callsByMessage(calls) {
+  const byMessage = new Map;
+  for (const call of calls) {
+    const list = byMessage.get(call.callIndex) ?? [];
+    list.push(call);
+    byMessage.set(call.callIndex, list);
+  }
+  return byMessage;
+}
+function historyEntries(messages, calls, inputChars) {
+  const byMessage = callsByMessage(calls);
+  const entries = [];
+  messages.forEach((message, i) => {
+    const toolCalls = (byMessage.get(i) ?? []).map((call) => ({
+      id: call.id,
+      tool: call.tool,
+      input: inputText(call.input, inputChars),
+      result: resultNote(call)
+    }));
+    if (message.text.trim().length === 0 && toolCalls.length === 0)
+      return;
+    const entry = { i, role: message.role, text: message.text };
+    if (toolCalls.length > 0)
+      entry.tool_calls = toolCalls;
+    entries.push(entry);
+  });
+  return entries;
+}
+function goalFromMessages(messages) {
+  return messages.filter((message) => message.role === "user" && message.text.trim().length > 0 && (message.toolResults ?? []).length === 0).slice(-3).map((message) => truncate(message.text, 500)).join(`
+`);
+}
+function fitState(messages, calls, options) {
+  const goal = options.goal || goalFromMessages(messages);
+  const stateOf = (history) => ({
+    context: STATE_CONTEXT,
+    goal,
+    history
+  });
+  const entryTokens = (entry) => estimateTokens2(JSON.stringify(entry)) + 1;
+  const baseTokens = estimateTokens2(JSON.stringify(stateOf([])));
+  const fitted = (history, tokens, stage) => ({
+    state: stateOf(history),
+    tokens,
+    stage
+  });
+  let history = [];
+  let perEntry = [];
+  let tokens = 0;
+  const rebuild = (inputChars) => {
+    history = historyEntries(messages, calls, inputChars);
+    perEntry = history.map(entryTokens);
+    tokens = baseTokens + perEntry.reduce((sum, n) => sum + n, 0);
+  };
+  const fits = () => tokens <= options.maxStateTokens;
+  const shrink = (index, change) => {
+    const entry = history[index];
+    if (!entry)
+      return;
+    change(entry);
+    const now = entryTokens(entry);
+    tokens += now - (perEntry[index] ?? 0);
+    perEntry[index] = now;
+  };
+  rebuild(INPUT_CHARS[0]);
+  if (fits())
+    return fitted(history, tokens, "full");
+  for (const limit of INPUT_CHARS.slice(1)) {
+    rebuild(limit);
+    if (fits())
+      return fitted(history, tokens, `inputs<=${limit}`);
+  }
+  const pinned = (entry) => isPinned(entry.i, messages.length, options.preserveRecentMessages);
+  const indices = history.map((_, index) => index);
+  const order = [
+    ...indices.filter((index) => !pinned(history[index])),
+    ...indices.filter((index) => pinned(history[index]))
+  ];
+  for (const index of order) {
+    const entry = history[index];
+    if (entry.text.length <= TEXT_HEAD + TEXT_TAIL + 40)
+      continue;
+    shrink(index, (e) => {
+      e.text = abridge(e.text, TEXT_HEAD, TEXT_TAIL);
+    });
+    if (fits())
+      return fitted(history, tokens, "texts abridged");
+  }
+  for (const index of order) {
+    const entry = history[index];
+    if (pinned(entry) || entry.text.length === 0)
+      continue;
+    const original = messages[entry.i]?.text.length ?? entry.text.length;
+    shrink(index, (e) => {
+      e.text = `[… ${original} chars omitted …]`;
+    });
+    if (fits())
+      return fitted(history, tokens, "old messages collapsed");
+  }
+  const byMessage = callsByMessage(calls);
+  for (const index of order) {
+    const entry = history[index];
+    const own = byMessage.get(entry.i);
+    if (pinned(entry) || !own)
+      continue;
+    shrink(index, (e) => {
+      e.tool_calls = own.map(compactCall);
+    });
+    if (fits())
+      return fitted(history, tokens, "old calls compacted");
+  }
+  const left = new Set;
+  for (const index of order) {
+    const entry = history[index];
+    if (pinned(entry) || entry.tool_calls)
+      continue;
+    left.add(index);
+    tokens -= perEntry[index] ?? 0;
+    if (fits()) {
+      return fitted(history.filter((_, i) => !left.has(i)), tokens, "old messages left out");
+    }
+  }
+  history = mergeCallRuns(history.filter((_, i) => !left.has(i)), pinned);
+  perEntry = history.map(entryTokens);
+  tokens = baseTokens + perEntry.reduce((sum, n) => sum + n, 0);
+  if (fits())
+    return fitted(history, tokens, "old calls merged");
+  throw new Error(`history too large for Jev (~${tokens} tokens after truncation, limit ${options.maxStateTokens})`);
+}
+// src/core/reflex/compaction/compact.ts
+var DEFAULT_OPTIONS = {
+  goal: "",
+  keepThreshold: 0.5,
+  preserveRecentMessages: 6,
+  maxStateTokens: 25000,
+  maxRequestTokens: 30000,
+  truncateHeadChars: 300
+};
+var REQUEST_OVERHEAD_TOKENS = 20;
+function finite(value, fallback) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+function resolveOptions3(options = {}) {
+  return {
+    goal: options.goal ?? DEFAULT_OPTIONS.goal,
+    keepThreshold: finite(options.keepThreshold, DEFAULT_OPTIONS.keepThreshold),
+    preserveRecentMessages: Math.max(0, Math.floor(finite(options.preserveRecentMessages, DEFAULT_OPTIONS.preserveRecentMessages))),
+    maxStateTokens: Math.max(1, finite(options.maxStateTokens, DEFAULT_OPTIONS.maxStateTokens)),
+    maxRequestTokens: Math.max(1, finite(options.maxRequestTokens, DEFAULT_OPTIONS.maxRequestTokens)),
+    truncateHeadChars: Math.max(0, Math.floor(finite(options.truncateHeadChars, DEFAULT_OPTIONS.truncateHeadChars)))
+  };
+}
+function questionsFor(call) {
+  return {
+    [`call_${call.id}`]: {
+      type: "noul",
+      instructions: `Tool call ${call.id} (${call.tool}) should stay in the history: knowing this call was made, with its input, still matters for what the assistant does next`
+    },
+    [`result_${call.id}`]: {
+      type: "noul",
+      instructions: `The full output of tool call ${call.id} (${call.tool}, ${call.resultChars} chars) should stay in the history verbatim: the assistant still needs its contents and re-running the tool would not do`
+    }
+  };
+}
+function batchCalls(calls, stateTokens, options) {
+  const budget = options.maxRequestTokens - stateTokens - REQUEST_OVERHEAD_TOKENS;
+  const batches = [];
+  let current = [];
+  let currentTokens = 0;
+  for (const call of calls) {
+    const tokens = estimateTokens2(JSON.stringify(questionsFor(call)));
+    if (current.length > 0 && currentTokens + tokens > budget) {
+      batches.push(current);
+      current = [];
+      currentTokens = 0;
+    }
+    if (current.length === 0 && tokens > budget) {
+      throw new Error(`state leaves no room for questions (~${stateTokens} of ${options.maxRequestTokens} tokens)`);
+    }
+    current.push(call);
+    currentTokens += tokens;
+  }
+  if (current.length > 0)
+    batches.push(current);
+  return batches;
+}
+function decideCall(call, answer, options) {
+  const base = { id: call.id, tool: call.tool, ...answer };
+  if (call.pinned)
+    return { ...base, action: "keep", reason: "pinned" };
+  if (answer.keepResult >= options.keepThreshold) {
+    return { ...base, action: "keep", reason: "kept" };
+  }
+  if (answer.keepCall >= options.keepThreshold) {
+    return { ...base, action: "drop_result", reason: "result_dropped" };
+  }
+  return { ...base, action: "drop_call", reason: "call_dropped" };
+}
+async function askBatch(asker, state, batch) {
+  const questions = Object.assign({}, ...batch.map(questionsFor));
+  const { answers } = await asker.ask(state, questions);
+  return new Map(batch.map((call) => [
+    call.id,
+    {
+      keepCall: noulAnswer(answers, `call_${call.id}`),
+      keepResult: noulAnswer(answers, `result_${call.id}`)
+    }
+  ]));
+}
+function truncatedResultText(text, isError, headChars) {
+  if (text.length <= headChars + 120)
+    return text;
+  const head = headChars > 0 ? `${text.slice(0, headChars)}
+` : "";
+  return `${head}[fast-jev-compaction truncated ${text.length - headChars} chars of this tool result${isError ? " (error)" : ""}; re-run the tool if needed]`;
+}
+function applyDecisions(messages, decisions, calls, headChars) {
+  const byId = new Map(calls.map((call) => [call.id, call]));
+  const actions = new Map;
+  for (const decision of decisions) {
+    const call = byId.get(decision.id);
+    if (call && decision.action !== "keep")
+      actions.set(call.tool_use_id, decision.action);
+  }
+  const kept = [];
+  for (const message of messages) {
+    const touched = message.toolUses.some((tool) => actions.has(tool.tool_use_id)) || (message.toolResults ?? []).some((result) => actions.has(result.tool_use_id));
+    if (!touched) {
+      kept.push(message);
+      continue;
+    }
+    const toolUses = message.toolUses.filter((tool) => actions.get(tool.tool_use_id) !== "drop_call").map((tool) => {
+      if (actions.get(tool.tool_use_id) !== "drop_result")
+        return tool;
+      const text = truncatedResultText(tool.text ?? "", tool.isError ?? false, headChars);
+      if ((tool.text ?? "") === text)
+        return tool;
+      const copy = {
+        tool_use_id: tool.tool_use_id,
+        tool: tool.tool,
+        input: tool.input,
+        text
+      };
+      if (tool.isError)
+        copy.isError = true;
+      return copy;
+    });
+    const toolResults = (message.toolResults ?? []).filter((result) => actions.get(result.tool_use_id) !== "drop_call").map((result) => {
+      if (actions.get(result.tool_use_id) !== "drop_result")
+        return result;
+      const text = truncatedResultText(result.text, result.isError ?? false, headChars);
+      return text === result.text ? result : {
+        tool_use_id: result.tool_use_id,
+        text,
+        isError: result.isError
+      };
+    });
+    if (!message.toolUses.some((tool) => actions.get(tool.tool_use_id) === "drop_call") && !(message.toolResults ?? []).some((result) => actions.get(result.tool_use_id) === "drop_call") && toolUses.every((tool, index) => tool === message.toolUses[index]) && toolResults.every((result, index) => result === message.toolResults?.[index])) {
+      kept.push(message);
+      continue;
+    }
+    if (message.text.trim().length === 0 && toolUses.length === 0 && toolResults.length === 0) {
+      continue;
+    }
+    const rebuilt = { role: message.role, text: message.text, toolUses };
+    if (toolResults.length > 0)
+      rebuilt.toolResults = toolResults;
+    kept.push(rebuilt);
+  }
+  return kept;
+}
+function messageChars(message) {
+  let total = message.text.length;
+  for (const tool of message.toolUses) {
+    try {
+      total += JSON.stringify(tool.input).length;
+    } catch {
+      total += 20;
+    }
+  }
+  for (const result of message.toolResults ?? [])
+    total += result.text.length;
+  return total;
+}
+function reductionRatio(result) {
+  const { charsBefore, charsAfter } = result.stats;
+  return charsBefore === 0 ? 0 : (charsBefore - charsAfter) / charsBefore;
+}
+function count(decisions, reason) {
+  return decisions.filter((decision) => decision.reason === reason).length;
+}
+async function compact(messages, asker, options = {}) {
+  const started = Date.now();
+  const resolved = resolveOptions3(options);
+  const calls = collectToolCalls(messages, resolved.preserveRecentMessages);
+  const candidates = calls.filter((call) => !call.pinned);
+  const charsBefore = messages.reduce((sum, message) => sum + messageChars(message), 0);
+  let fitted = { tokens: 0, stage: "" };
+  let batches = [];
+  const answers = new Map;
+  if (candidates.length > 0) {
+    const state = fitState(messages, calls, resolved);
+    fitted = state;
+    batches = batchCalls(candidates, state.tokens, resolved);
+    const answered = await Promise.all(batches.map((batch) => askBatch(asker, state.state, batch)));
+    for (const map of answered)
+      for (const [id, answer] of map)
+        answers.set(id, answer);
+  }
+  const decisions = calls.map((call) => decideCall(call, answers.get(call.id) ?? { keepCall: 1, keepResult: 1 }, resolved));
+  const kept = applyDecisions(messages, decisions, calls, resolved.truncateHeadChars);
+  return {
+    messages: kept,
+    decisions,
+    stats: {
+      messagesBefore: messages.length,
+      messagesAfter: kept.length,
+      charsBefore,
+      charsAfter: kept.reduce((sum, message) => sum + messageChars(message), 0),
+      calls: calls.length,
+      kept: count(decisions, "kept"),
+      resultsDropped: count(decisions, "result_dropped"),
+      callsDropped: count(decisions, "call_dropped"),
+      pinned: count(decisions, "pinned"),
+      stateTokens: fitted.tokens,
+      stateStage: fitted.stage,
+      requests: batches.length,
+      ms: Date.now() - started
+    }
+  };
+}
+// src/core/reflex/compaction/messages.ts
+function compactMessages(messages, options = {}) {
+  return compact(messages, new JevClient(options), options);
+}
+// src/dsh/api.ts
+import fs25 from "node:fs";
+import path25 from "node:path";
 function readPlanStatus(projectRoot) {
-  const taskPlanPath = path24.join(projectRoot, "task_plan.md");
-  const progressPath = path24.join(projectRoot, "progress.md");
-  const findingsPath = path24.join(projectRoot, "findings.md");
-  const modePath = path24.join(projectRoot, ".mode");
-  const attestationPath = path24.join(projectRoot, ".attestation");
-  const legacyAttestationPath = path24.join(projectRoot, ".plan-attestation");
-  const hasPlan = fs24.existsSync(taskPlanPath);
-  const hasProgress = fs24.existsSync(progressPath);
-  const hasFindings = fs24.existsSync(findingsPath);
-  const planContent = hasPlan ? fs24.readFileSync(taskPlanPath, "utf-8") : null;
-  const progressContent = hasProgress ? fs24.readFileSync(progressPath, "utf-8") : null;
-  const findingsContent = hasFindings ? fs24.readFileSync(findingsPath, "utf-8") : null;
+  const taskPlanPath = path25.join(projectRoot, "task_plan.md");
+  const progressPath = path25.join(projectRoot, "progress.md");
+  const findingsPath = path25.join(projectRoot, "findings.md");
+  const modePath = path25.join(projectRoot, ".mode");
+  const attestationPath = path25.join(projectRoot, ".attestation");
+  const legacyAttestationPath = path25.join(projectRoot, ".plan-attestation");
+  const hasPlan = fs25.existsSync(taskPlanPath);
+  const hasProgress = fs25.existsSync(progressPath);
+  const hasFindings = fs25.existsSync(findingsPath);
+  const planContent = hasPlan ? fs25.readFileSync(taskPlanPath, "utf-8") : null;
+  const progressContent = hasProgress ? fs25.readFileSync(progressPath, "utf-8") : null;
+  const findingsContent = hasFindings ? fs25.readFileSync(findingsPath, "utf-8") : null;
   let mode = null;
-  if (fs24.existsSync(modePath)) {
-    const rawMode = fs24.readFileSync(modePath, "utf-8").trim();
+  if (fs25.existsSync(modePath)) {
+    const rawMode = fs25.readFileSync(modePath, "utf-8").trim();
     if (rawMode.includes("gate"))
       mode = "gated";
     else if (rawMode.includes("autonomous"))
@@ -32159,10 +33969,10 @@ function readPlanStatus(projectRoot) {
       mode = "legacy";
   }
   let attestationSha = null;
-  if (fs24.existsSync(attestationPath)) {
-    attestationSha = fs24.readFileSync(attestationPath, "utf-8").trim();
-  } else if (fs24.existsSync(legacyAttestationPath)) {
-    attestationSha = fs24.readFileSync(legacyAttestationPath, "utf-8").trim();
+  if (fs25.existsSync(attestationPath)) {
+    attestationSha = fs25.readFileSync(attestationPath, "utf-8").trim();
+  } else if (fs25.existsSync(legacyAttestationPath)) {
+    attestationSha = fs25.readFileSync(legacyAttestationPath, "utf-8").trim();
   }
   const phases = [];
   if (planContent) {
@@ -32206,15 +34016,15 @@ function readPlanStatus(projectRoot) {
 function getAllSkills(repoRoot) {
   const canonical = canonicalSkillIds();
   const results = [];
-  const skillsDir = path24.join(repoRoot, "skills");
-  if (fs24.existsSync(skillsDir)) {
-    const entries = fs24.readdirSync(skillsDir, { withFileTypes: true });
+  const skillsDir = path25.join(repoRoot, "skills");
+  if (fs25.existsSync(skillsDir)) {
+    const entries = fs25.readdirSync(skillsDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) {
         const skillId = entry.name;
-        const skillMdPath = path24.join(skillsDir, skillId, "SKILL.md");
-        if (fs24.existsSync(skillMdPath)) {
-          const content = fs24.readFileSync(skillMdPath, "utf-8");
+        const skillMdPath = path25.join(skillsDir, skillId, "SKILL.md");
+        if (fs25.existsSync(skillMdPath)) {
+          const content = fs25.readFileSync(skillMdPath, "utf-8");
           let name = skillId;
           let description = "";
           let version = "1.0.0";
@@ -32255,14 +34065,14 @@ function createFableApiHandler(projectRoot = process.cwd()) {
       const plan = readPlanStatus(projectRoot);
       let healthy = true;
       let issuesCount = 0;
-      if (!state && fs24.existsSync(path24.join(projectRoot, ".fable"))) {
+      if (!state && fs25.existsSync(path25.join(projectRoot, ".fable"))) {
         healthy = false;
         issuesCount = 1;
       }
       const unverifiedMutations = state && state.mutationGeneration > 0 ? Math.max(0, state.mutationGeneration - Math.max(0, state.verifiedGeneration)) : 0;
       let pkgVersion = "1.8.0";
       try {
-        const pkg = JSON.parse(fs24.readFileSync(path24.join(projectRoot, "package.json"), "utf-8"));
+        const pkg = JSON.parse(fs25.readFileSync(path25.join(projectRoot, "package.json"), "utf-8"));
         if (pkg.version)
           pkgVersion = pkg.version;
       } catch {}
@@ -32481,18 +34291,18 @@ function apply(ctx, config = {}) {
 // src/rpc/server.ts
 var grpc = __toESM(require_src3(), 1);
 var protoLoader = __toESM(require_src2(), 1);
-import path25 from "node:path";
+import path26 from "node:path";
 import { fileURLToPath as fileURLToPath4 } from "node:url";
-import fs25 from "node:fs";
+import fs26 from "node:fs";
 function resolveDefaultProtoPath() {
-  const currentDir = path25.dirname(fileURLToPath4(import.meta.url));
-  const candidateLocal = path25.resolve(currentDir, "../../proto/fable_worker.proto");
-  if (fs25.existsSync(candidateLocal))
+  const currentDir = path26.dirname(fileURLToPath4(import.meta.url));
+  const candidateLocal = path26.resolve(currentDir, "../../proto/fable_worker.proto");
+  if (fs26.existsSync(candidateLocal))
     return candidateLocal;
-  const candidateDist = path25.resolve(currentDir, "../proto/fable_worker.proto");
-  if (fs25.existsSync(candidateDist))
+  const candidateDist = path26.resolve(currentDir, "../proto/fable_worker.proto");
+  if (fs26.existsSync(candidateDist))
     return candidateDist;
-  return path25.resolve(process.cwd(), "proto/fable_worker.proto");
+  return path26.resolve(process.cwd(), "proto/fable_worker.proto");
 }
 
 class FableWorkerServer {
@@ -32511,7 +34321,7 @@ class FableWorkerServer {
     this.workerId = options.workerId || `worker-${process.pid}-${Date.now().toString(36)}`;
     this.server = new grpc.Server;
     const protoFile = options.protoPath || resolveDefaultProtoPath();
-    if (!fs25.existsSync(protoFile)) {
+    if (!fs26.existsSync(protoFile)) {
       throw new Error(`Protobuf file not found at ${protoFile}`);
     }
     const packageDefinition = protoLoader.loadSync(protoFile, {
@@ -32685,25 +34495,25 @@ class FableWorkerServer {
 // src/rpc/client.ts
 var grpc2 = __toESM(require_src3(), 1);
 var protoLoader2 = __toESM(require_src2(), 1);
-import path26 from "node:path";
+import path27 from "node:path";
 import { fileURLToPath as fileURLToPath5 } from "node:url";
-import fs26 from "node:fs";
+import fs27 from "node:fs";
 function resolveDefaultProtoPath2() {
-  const currentDir = path26.dirname(fileURLToPath5(import.meta.url));
-  const candidateLocal = path26.resolve(currentDir, "../../proto/fable_worker.proto");
-  if (fs26.existsSync(candidateLocal))
+  const currentDir = path27.dirname(fileURLToPath5(import.meta.url));
+  const candidateLocal = path27.resolve(currentDir, "../../proto/fable_worker.proto");
+  if (fs27.existsSync(candidateLocal))
     return candidateLocal;
-  const candidateDist = path26.resolve(currentDir, "../proto/fable_worker.proto");
-  if (fs26.existsSync(candidateDist))
+  const candidateDist = path27.resolve(currentDir, "../proto/fable_worker.proto");
+  if (fs27.existsSync(candidateDist))
     return candidateDist;
-  return path26.resolve(process.cwd(), "proto/fable_worker.proto");
+  return path27.resolve(process.cwd(), "proto/fable_worker.proto");
 }
 
 class FableWorkerClient {
   client;
   constructor(options) {
     const protoFile = options.protoPath || resolveDefaultProtoPath2();
-    if (!fs26.existsSync(protoFile)) {
+    if (!fs27.existsSync(protoFile)) {
       throw new Error(`Protobuf file not found at ${protoFile}`);
     }
     const packageDefinition = protoLoader2.loadSync(protoFile, {
@@ -32798,33 +34608,70 @@ class FableWorkerClient {
 export {
   AGENT_BEHAVIOR_EVIDENCE_PATH,
   AssetsManager,
+  CIRCUIT_BREAKER_COOLDOWN_MS,
+  CIRCUIT_BREAKER_THRESHOLD,
+  DEFAULT_MODEL as COMPACTION_DEFAULT_MODEL,
+  SYSTEM_ONE_URL as COMPACTION_SYSTEM_ONE_URL,
+  JevClient as CompactionJevClient,
   ContextInjector,
+  DEFAULT_REFLEX_MIN_MARGIN,
+  DEFAULT_REFLEX_MODE,
+  DEFAULT_REFLEX_MODEL,
+  DEFAULT_REFLEX_PROVIDER,
+  DEFAULT_REFLEX_TELEMETRY,
+  DEFAULT_REFLEX_TIMEOUT_MS,
   FABLE_REGISTRY_SCHEMA_VERSION,
   FABLE_SKILL_PACKAGE_SCHEMA_VERSION,
   FABLE_STATE_SCHEMA_VERSION,
   FableWorkerClient,
   FableWorkerServer,
   GrokBotAdapter,
+  HIGH_RISK_SKILLS,
+  MAX_REFLEX_LEDGER_LINES,
+  MAX_REFLEX_TASK_LENGTH,
+  MEDIUM_RISK_SKILLS,
   ProviderTranslator,
   RECOVERY_FAILURE_THRESHOLD,
+  ReflexCircuitBreaker,
   RequestValidationError,
+  SKILL_BOUNDARY_CONTRASTS,
+  STANDARD_REFLEX_BENCHMARK_CORPUS,
   TECH_STACK_MATRIX,
+  TYPESAFE_API_ENDPOINT,
   ToonDecodeError,
+  TypeSafeJevAdvisor,
+  TypeSafeProviderException,
   addEvidence,
   allowedTransitions,
+  appendReflexEvent,
   apply,
   applyRoutingDecision,
   assignTechStackForDomain,
   atomicWriteFileSync,
   autoInstallSkills,
+  bucketTopCandidates,
   buildAgentBehaviorEvalPlan,
   buildAgentBehaviorRequestBundle,
+  buildJevRequest as buildCompactionJevRequest,
   buildEnterpriseAgentBehaviorEvalPlan,
+  buildFirstPassQuestions,
+  buildReflexEnvelope,
+  buildSecondStageQuestions,
+  buildSkillSelectionCriteria,
+  buildTaskShapeCriteria,
+  calculateFailureState,
+  calculateProbabilityMargin,
+  calculateVerificationFreshness,
   canonicalSkillIds,
   checkFableStatus,
   checkNoMistakesStatus,
+  collectToolCalls,
   colors,
+  compact,
   compactFableStateToon,
+  compact as compactHistory,
+  compactMessages,
+  noulAnswer as compactionNoulAnswer,
   compareTokens,
   compileFableDirective,
   configureNoMistakesEcosystem,
@@ -32839,14 +34686,19 @@ export {
   encodeReturnPacket,
   encodeToon,
   ensureNoMistakesInstalled,
+  estimateTokens2 as estimateCompactionTokens,
   estimateTokens,
   evaluateArchitecture,
   evaluateDomainDecoupling,
   evaluateFableSpark,
   evaluateResourceIntensity,
   evaluateScaleAndLoad,
+  extractHardPolicy,
+  extractTaskConstraints,
   extractToonFences,
+  fitState as fitCompactionState,
   formatArchitectureManifestToon,
+  fuseRoute,
   getAgentKernelDir,
   getAiderDir,
   getAllSkills,
@@ -32880,17 +34732,22 @@ export {
   getPlandexDir,
   getPlatformSkillsDirs,
   getQodoDir,
+  getReflexDir,
   getReplitDir,
   getRepoRootDir,
   getRepositoryRevision,
+  getRequiredConfidence,
   getRooDir,
   getSkillEntry,
+  getSkillRiskTier,
   getTraeDir,
   getVellumDir,
   getWarpDir,
   getWindsurfDir,
+  globalCircuitBreaker,
   hasFreshPassingEvidence,
   hasPassingEvidence,
+  hashTaskText,
   initProjectFable,
   initProjectNoMistakes,
   inject,
@@ -32930,10 +34787,13 @@ export {
   installVellumGlobal,
   installWarpGlobal,
   installWindsurfGlobal,
+  isAmbiguous,
   isFablePhase,
   isGrokModel,
+  isHardPolicyViolation,
   latestUserIntent,
   loadAgentBehaviorEvidenceSnapshot,
+  loadReflexConfig,
   loadSkillRegistry,
   logError,
   logHeader,
@@ -32942,18 +34802,25 @@ export {
   logWarn,
   mergeJsonFile,
   name,
+  parseJevResponse as parseCompactionJevResponse,
   phaseForSkill,
   readFableState,
   readPlanStatus,
+  readReflexEvents,
   readSkillBody,
   recordMutation,
+  redactSecrets,
+  reductionRatio,
+  resolveRoute,
   resolveSkillsToInstall,
   routeTask,
   runAgentBehaviorEvalPlan,
   runDoctor,
   runDoctorFix,
   runFableLint,
+  runReflexEvaluation,
   runSkillPackageLint,
+  sanitizeTaskText,
   scoreAgentBehaviorResponseBundle,
   setActiveCard,
   setRoutingDecision,

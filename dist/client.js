@@ -2074,15 +2074,30 @@ var FableDashboard = ({
     doctorReport
   });
 };
+var name = "get-fable";
+function apply(ctx) {
+  injectFableStyles();
+  try {
+    const slots = ctx?.get?.("slots") || ctx?.slots;
+    if (slots && typeof slots.inject === "function") {}
+  } catch (e) {
+    console.warn("[get-fable client] Notice:", e);
+  }
+}
 if (typeof window !== "undefined") {
   window.__ModuleLoader__?.load?.({
     id: "get-fable",
     factory: (require2) => {
+      var module = { exports: {} };
+      var exports = module.exports;
       injectFableStyles();
-      return {
-        Widget: FableWidget,
-        Dashboard: FableDashboard
-      };
+      exports.name = "get-fable";
+      exports.apply = apply;
+      exports.Widget = FableWidget;
+      exports.Dashboard = FableDashboard;
+      exports.FableWidget = FableWidget;
+      exports.FableDashboard = FableDashboard;
+      return module.exports;
     }
   });
 }
