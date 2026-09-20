@@ -3,6 +3,7 @@
   "version": "1.9.1",
   "description": "Skill creation, iterative benchmarking, eval suites, description optimization, and packaging.",
   "skills": [
-    "fable-skill-creator"
+    "fable-skill-creator",
+    "fable-domain"
   ]
 }
