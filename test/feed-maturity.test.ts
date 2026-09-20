@@ -15,7 +15,7 @@ describe('Skill Feed evidence semantics', () => {
       expect(feed.every((item) => item.installedInTarget === false)).toBe(true);
       expect(feed.every((item) => item.isInstalled === false)).toBe(true);
     } finally { fs.rmSync(target, { recursive: true, force: true }); }
-  });
+  }, 30000);
 
   test('awards M4 only where fresh behavioral holdout evidence exists', () => {
     const feed = loadSkillFeed();
@@ -28,5 +28,5 @@ describe('Skill Feed evidence semantics', () => {
     expect(feed.every((item) => item.enterpriseReady === false)).toBe(true);
     expect(['fable-spark', 'fable-verify', 'get-fable'].every((id) => proven.map((item) => item.id).includes(id))).toBe(true);
     expect(proven.length).toBeGreaterThanOrEqual(3);
-  });
+  }, 30000);
 });

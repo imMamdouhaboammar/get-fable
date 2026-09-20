@@ -26,6 +26,7 @@ import {
   installOrUpdateNoMistakes,
   configureNoMistakesEcosystem,
 } from '../integrations/no-mistakes-installer.js';
+import { loadReflexConfig } from './reflex/config.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -707,6 +708,23 @@ export function runDoctor(
     checks.push(check('quality-gate-no-mistakes', 'PASS', `no-mistakes proxy available at ${nmBinary} (${daemonMsg})`));
   } else {
     checks.push(check('quality-gate-no-mistakes', 'WARN', 'no-mistakes quality gate proxy not found; install with get-fable install-quality-gate or get-fable doctor --fix'));
+  }
+
+  try {
+    const reflexConfig = loadReflexConfig();
+    const hasKey = Boolean(reflexConfig.apiKey);
+    const keyInfo = hasKey ? 'credential present' : 'no credential';
+    checks.push(
+      check(
+        'reflex-advisor',
+        'PASS',
+        `Reflex advisor mode: ${reflexConfig.mode}, provider: ${reflexConfig.provider}, model: ${reflexConfig.model} (${keyInfo})`
+      )
+    );
+  } catch (error) {
+    checks.push(
+      check('reflex-advisor', 'WARN', `Reflex advisor check: ${error instanceof Error ? error.message : String(error)}`)
+    );
   }
 
   return {

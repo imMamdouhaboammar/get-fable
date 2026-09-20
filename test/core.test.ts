@@ -46,6 +46,18 @@ describe('canonical skill registry', () => {
       'fable-skill-creator',
       'fable-architecture',
       'fable-eco',
+      'fable-context-thrift',
+      'fable-finish-your-turn',
+      'fable-native-code',
+      'fable-outcome-first',
+      'fable-prove-it',
+      'fable-scope-discipline',
+      'fable-domain',
+      'fable-judge',
+      'fable-method',
+      'fable-council',
+      'fable-tend',
+      'fable-wise',
     ]);
     expect(registry.skills.find((skill) => skill.id === 'fable-security')?.pack).toBe('proof');
     expect(registry.skills.find((skill) => skill.id === 'fable-tdd')?.gates).toContain('red-observed');

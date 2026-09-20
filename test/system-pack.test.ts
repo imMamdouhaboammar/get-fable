@@ -65,7 +65,7 @@ describe('System Pack and Harness Integration', () => {
     expect(decision.selectedPack).toBe('system');
   });
 
-  test('resolves all 12 system pack skills correctly', () => {
+  test('resolves all 15 system pack skills correctly', () => {
     const systemSkills = resolveSkillsToInstall('system');
     expect(systemSkills).toEqual([
       'fable-dataviz',
@@ -80,6 +80,9 @@ describe('System Pack and Harness Integration', () => {
       'fable-spark',
       'fable-architecture',
       'fable-eco',
+      'fable-context-thrift',
+      'fable-council',
+      'fable-wise',
     ]);
   });
 
