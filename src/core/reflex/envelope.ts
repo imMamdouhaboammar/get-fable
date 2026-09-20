@@ -17,7 +17,7 @@ const SECRET_PATTERNS: RegExp[] = [
   /(?:sk|pk)_(?:live|test)_[A-Za-z0-9]{20,}/gi,
   /gh[pousr]_[A-Za-z0-9_]{36,}/gi,
   /AIzaSy[A-Za-z0-9\-_]{33}/gi,
-  /-----BEGIN (?:RSA )?PRIVATE KEY-----[^-]+-----END (?:RSA )?PRIVATE KEY-----/gi,
+  /-----BEGIN (?:RSA )?PRIVATE KEY-----[A-Za-z0-9+/=\s]+-----END (?:RSA )?PRIVATE KEY-----/gi,
   /(?:password|secret|token|api[_-]?key)\s*[:=]\s*["']?[^\s"';,]{8,}["']?/gi,
 ];
 

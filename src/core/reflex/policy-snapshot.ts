@@ -88,6 +88,13 @@ export function isHardPolicyViolation(
     };
   }
 
+  if (policy.securityLocked && deterministic.selectedSkill === 'fable-security' && proposedSkill !== 'fable-security') {
+    return {
+      violated: true,
+      reason: 'Violates security lock: cannot downgrade fable-security to another skill',
+    };
+  }
+
   if (policy.securityLocked && deterministic.selectedSkill === 'fable-redteam' && proposedSkill !== 'fable-redteam') {
     return {
       violated: true,

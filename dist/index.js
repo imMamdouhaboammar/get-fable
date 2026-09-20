@@ -24870,9 +24870,15 @@ function installDshGlobal(dshHome = getDshHomeDir()) {
     const patchFile = path8.join(dshHome, "cordis.patch.yml");
     if (fs8.existsSync(patchFile)) {
       const existing = fs8.readFileSync(patchFile, "utf-8");
-      const cleaned = existing.replace(/-\s*insert:[\s\S]*?-\s*id:\s*get-fable[\s\S]*?(?=\n-\s*id:|\n-\s*insert:|$)/g, "").replace(/\n{3,}/g, `
+      let cleaned = existing.replace(/(?:#[^\n]*get-fable[^\n]*\n)?/g, "");
+      cleaned = cleaned.replace(/[ \t]*-[ \t]*id:[ \t]*get-fable[^\n]*(?:\n[ \t]+[^\n]+)*/g, "");
+      cleaned = cleaned.replace(/[ \t]*-[ \t]*insert:[ \t]*(?:\n[ \t]*)*(?=\n[ \t]*-[ \t]*[a-zA-Z0-9_-]+:|$)/g, "");
+      cleaned = cleaned.replace(/\n{3,}/g, `
 
-`);
+`).trim();
+      if (cleaned.length > 0)
+        cleaned += `
+`;
       if (cleaned !== existing) {
         fs8.writeFileSync(patchFile, cleaned, "utf-8");
         logSuccess("Cleaned redundant get-fable insert from ~/.dsh/cordis.patch.yml");
@@ -25892,7 +25898,9 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
     addSignal(scores, reasons, "fable-learning", 12, "task extracts or synthesizes durable learnings from session or conversation");
   }
   if (!suppressReview && has(text, /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files|independently critique|critique (?:the )?changed files/)) {
-    addSignal(scores, reasons, "fable-review", 12, "task requests an independent code or diff review");
+    const isSecurityReview = !suppressSecurity && has(text, /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauthentication\b|\bauthorization\b|\boauth\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/);
+    const reviewWeight = isSecurityReview ? 8 : 12;
+    addSignal(scores, reasons, "fable-review", reviewWeight, "task requests an independent code or diff review");
   }
   if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence/)) {
     addSignal(scores, reasons, "fable-verify", 7, "task explicitly asks for behavior verification");
@@ -32261,7 +32269,7 @@ var SECRET_PATTERNS = [
   /(?:sk|pk)_(?:live|test)_[A-Za-z0-9]{20,}/gi,
   /gh[pousr]_[A-Za-z0-9_]{36,}/gi,
   /AIzaSy[A-Za-z0-9\-_]{33}/gi,
-  /-----BEGIN (?:RSA )?PRIVATE KEY-----[^-]+-----END (?:RSA )?PRIVATE KEY-----/gi,
+  /-----BEGIN (?:RSA )?PRIVATE KEY-----[A-Za-z0-9+/=\s]+-----END (?:RSA )?PRIVATE KEY-----/gi,
   /(?:password|secret|token|api[_-]?key)\s*[:=]\s*["']?[^\s"';,]{8,}["']?/gi
 ];
 function redactSecrets(text) {
@@ -32421,6 +32429,12 @@ function isHardPolicyViolation(policy, deterministic, proposedSkill) {
     return {
       violated: true,
       reason: "Violates recovery lock: cannot downgrade fable-recover to another skill"
+    };
+  }
+  if (policy.securityLocked && deterministic.selectedSkill === "fable-security" && proposedSkill !== "fable-security") {
+    return {
+      violated: true,
+      reason: "Violates security lock: cannot downgrade fable-security to another skill"
     };
   }
   if (policy.securityLocked && deterministic.selectedSkill === "fable-redteam" && proposedSkill !== "fable-redteam") {
@@ -33454,8 +33468,12 @@ async function runReflexEvaluation(corpus = STANDARD_REFLEX_BENCHMARK_CORPUS, op
 var SYSTEM_ONE_URL = "https://api.typesafe.ai/v1/systemone";
 var DEFAULT_MODEL = "jev-latest";
 function buildJevRequest(params, state, questions) {
+  const targetUrl = params.baseUrl ?? SYSTEM_ONE_URL;
+  if (params.apiKey && !targetUrl.startsWith("https://")) {
+    throw new Error(`Insecure transport rejected: Jev endpoints forwarding credentials must use HTTPS (received: ${targetUrl})`);
+  }
   return {
-    url: params.baseUrl ?? SYSTEM_ONE_URL,
+    url: targetUrl,
     method: "POST",
     headers: {
       authorization: `Bearer ${params.apiKey}`,

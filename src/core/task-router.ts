@@ -197,7 +197,14 @@ export function routeTask(
       /code review|review (?:the |this )?(?:diff|branch|commit|pr)|standards review|spec review|review changed files|independently critique|critique (?:the )?changed files/
     )
   ) {
-    addSignal(scores, reasons, 'fable-review', 12, 'task requests an independent code or diff review');
+    const isSecurityReview =
+      !suppressSecurity &&
+      has(
+        text,
+        /\bsecurity\b|\bvulnerab(?:ility|ilities)\b|threat model|\bauthentication\b|\bauthorization\b|\boauth\b|\bsecrets?\b|untrusted input|\binjection\b|\bxss\b|\bcsrf\b|\bssrf\b/
+      );
+    const reviewWeight = isSecurityReview ? 8 : 12;
+    addSignal(scores, reasons, 'fable-review', reviewWeight, 'task requests an independent code or diff review');
   }
 
   if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence/)) {

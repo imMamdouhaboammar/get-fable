@@ -116,7 +116,7 @@ export function toEmail(msg, you) {
   const parts = walk(msg.payload ?? {});
   const text = parts.find((p) => p.mimeType === 'text/plain' && p.body?.data);
   const html = parts.find((p) => p.mimeType === 'text/html' && p.body?.data);
-  let body = text ? decode(text.body.data) : html ? decode(html.body.data).replace(/<style[\s\S]*?<\/style\s*>|<script[\s\S]*?<\/script\s*>/gi, ' ').replace(/<[^>]+>/g, ' ') : msg.snippet ?? '';
+  let body = text ? decode(text.body.data) : html ? decode(html.body.data).replace(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/gi, ' ').replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, ' ').replace(/<[^>]+>/g, ' ') : msg.snippet ?? '';
   body = body.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
   const from = headers.from ?? '';
   const replyTo = headers['reply-to'];
