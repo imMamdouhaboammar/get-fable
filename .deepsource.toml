@@ -1,0 +1,22 @@
+version = 1
+
+test_patterns = [
+  "test/**",
+  "tests/**",
+  "eval/**",
+  "evals/**"
+]
+
+exclude_patterns = [
+  "dist/**",
+  "src/core/review/jev/dashboard/public/**",
+  "public/**",
+  "site/**",
+  "docs/**"
+]
+
+[[analyzers]]
+name = "javascript"
+
+  [analyzers.meta]
+  environment = ["nodejs"]

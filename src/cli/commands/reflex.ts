@@ -427,16 +427,18 @@ function printReviewReport(report: any): boolean {
   return hasBlocking;
 }
 
-function readTargetContentSafely(target: string | undefined): string | null {
+function readInputText(target: string | undefined): string | null {
   if (!target) return null;
-  const resolved = path.resolve(process.cwd(), target);
+  if (target.includes('\n') || target.length > 256) {
+    return target;
+  }
+  const cleanPath = path.normalize(target).replace(/^(\.\.(\/|\\|$))+/, '');
   try {
-    if (fs.existsSync(resolved) && fs.statSync(resolved).isFile()) {
-      // eslint-disable-next-line security/detect-non-literal-fs-filename
-      return fs.readFileSync(resolved, 'utf8');
+    if (fs.existsSync(cleanPath) && fs.statSync(cleanPath).isFile()) {
+      return fs.readFileSync(cleanPath, 'utf8');
     }
   } catch {
-    // If filesystem check throws, treat target as literal string
+    // fallback to literal string
   }
   return target;
 }
@@ -505,7 +507,7 @@ export async function handleReflexRouteModel(args: string[]): Promise<number> {
 export async function handleReflexTriageLog(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const target = args.filter((a) => !a.startsWith('--'))[0];
-  const logContent = readTargetContentSafely(target);
+  const logContent = readInputText(target);
   if (!logContent) {
     console.error('Error: triage-log requires a log file path or log text');
     return 1;
@@ -535,7 +537,7 @@ export async function handleReflexTriageLog(args: string[]): Promise<number> {
 export async function handleReflexSecurityScan(args: string[]): Promise<number> {
   const isJson = args.includes('--json') || args.includes('--json-v1');
   const target = args.filter((a) => !a.startsWith('--'))[0];
-  const content = readTargetContentSafely(target);
+  const content = readInputText(target);
   if (!content) {
     console.error('Error: security-scan requires a file path or text content');
     return 1;
