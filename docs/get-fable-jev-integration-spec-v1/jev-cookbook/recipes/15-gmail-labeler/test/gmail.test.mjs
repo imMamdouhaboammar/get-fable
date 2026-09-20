@@ -76,7 +76,10 @@ function runLabeler(args) {
   return { ...r, log };
 }
 
-test('dry run reads mail and classifies it with Jev, but changes nothing in Gmail', { skip: !process.env.OPENROUTER_API_KEY && 'needs OPENROUTER_API_KEY' }, () => {
+const ifKey = process.env.OPENROUTER_API_KEY ? test : test.skip;
+
+ifKey('dry run reads mail and classifies it with Jev, but changes nothing in Gmail', () => {
+  if (!process.env.OPENROUTER_API_KEY) return;
   writeFileSync(TOKEN, JSON.stringify({ refresh_token: 'test-refresh-token', scope: SCOPES.read }));
   const r = runLabeler(['--max', '8']);
   assert.equal(r.status, 0, r.stderr);
@@ -85,7 +88,8 @@ test('dry run reads mail and classifies it with Jev, but changes nothing in Gmai
   assert.equal(r.log.calls.filter((c) => c.path?.match(/^\/messages\/m\d+$/)).length, 8);
 });
 
-test('--apply creates Jev/ labels and adds them to each message, and never deletes, trashes or sends', { skip: !process.env.OPENROUTER_API_KEY && 'needs OPENROUTER_API_KEY' }, () => {
+ifKey('--apply creates Jev/ labels and adds them to each message, and never deletes, trashes or sends', () => {
+  if (!process.env.OPENROUTER_API_KEY) return;
   writeFileSync(TOKEN, JSON.stringify({ refresh_token: 'test-refresh-token', scope: SCOPES.modify }));
   const r = runLabeler(['--max', '8', '--apply']);
   assert.equal(r.status, 0, r.stderr);
