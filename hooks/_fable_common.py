@@ -412,7 +412,78 @@ def write_state(fable_dir, state):
         return False
 
 
-def has_fresh_passing_state_evidence(state):
+def compute_repo_state_identity(workspace_dir):
+    if not workspace_dir or not os.path.isdir(workspace_dir):
+        return None
+    try:
+        import subprocess
+        proc = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=workspace_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+            check=False,
+        )
+        head = proc.stdout.strip()
+        if re.match(r"^[0-9a-f]{40}$", head, re.I):
+            branch = "detached"
+            try:
+                b_proc = subprocess.run(
+                    ["git", "symbolic-ref", "-q", "--short", "HEAD"],
+                    cwd=workspace_dir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    text=True,
+                    check=False,
+                )
+                b = b_proc.stdout.strip()
+                if b:
+                    branch = b
+            except Exception:
+                pass
+            status_proc = subprocess.run(
+                ["git", "status", "--porcelain=v1", "-unormal", "--ignored=no"],
+                cwd=workspace_dir,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                check=False,
+            )
+            dirty_lines = []
+            for line in status_proc.stdout.splitlines():
+                line = line.rstrip()
+                if len(line) > 3:
+                    fpath = line[3:].strip()
+                    if not fpath.startswith(".fable/") and fpath != ".fable":
+                        dirty_lines.append(line)
+            dirty_lines.sort()
+            dirty_hash = "clean" if not dirty_lines else hashlib.sha256("\n".join(dirty_lines).encode("utf-8")).hexdigest()[:16]
+            return f"git:{head}:{branch}:{dirty_hash}"
+    except Exception:
+        pass
+
+    try:
+        files = []
+        for root, dirs, fnames in os.walk(workspace_dir):
+            dirs[:] = [d for d in dirs if d not in (".fable", "node_modules", ".git")]
+            rel_root = os.path.relpath(root, workspace_dir)
+            for fname in fnames:
+                full = os.path.join(root, fname)
+                rel = os.path.normpath(os.path.join(rel_root, fname))
+                try:
+                    st = os.stat(full)
+                    files.append(f"{rel}:{st.st_size}:{st.st_mtime_ns}")
+                except Exception:
+                    pass
+        files.sort()
+        tree_hash = hashlib.sha256("\n".join(files).encode("utf-8")).hexdigest()[:16]
+        return f"nongit:{tree_hash}"
+    except Exception:
+        return None
+
+
+def has_fresh_passing_state_evidence(state, workspace_dir=None):
     if not isinstance(state, dict):
         return False
     mutation_generation = state.get("mutationGeneration")
@@ -436,13 +507,20 @@ def has_fresh_passing_state_evidence(state):
             latest = record
             break
     detail = latest.get("detail") if isinstance(latest, dict) else None
-    return (
+    if not (
         isinstance(latest, dict)
         and latest.get("workspaceId") == state.get("workspaceId")
         and latest.get("result") == "pass"
         and isinstance(detail, str)
         and bool(detail.strip())
-    )
+    ):
+        return False
+
+    if state.get("substantial") and workspace_dir:
+        current_repo_state = compute_repo_state_identity(workspace_dir)
+        if not current_repo_state or not latest.get("repoState") or latest.get("repoState") != current_repo_state:
+            return False
+    return True
 
 
 STATE_LOCK_TIMEOUT_SECONDS = 2.0

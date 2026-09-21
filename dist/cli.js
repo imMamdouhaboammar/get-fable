@@ -34,7 +34,7 @@ var __toESM = (mod, isNodeMode, target) => {
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/constants.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/constants.js
 var require_constants = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = exports.DEFAULT_MAX_SEND_MESSAGE_LENGTH = exports.Propagate = exports.LogVerbosity = exports.Status = undefined;
@@ -77,7 +77,7 @@ var require_constants = __commonJS(function(exports) {
   exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = 4 * 1024 * 1024;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/package.json
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/package.json
 var require_package = __commonJS(function(exports, module) {
   module.exports = {
     name: "@grpc/grpc-js",
@@ -170,7 +170,7 @@ var require_package = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/logging.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/logging.js
 var require_logging = __commonJS(function(exports) {
   var _a;
   var _b;
@@ -268,7 +268,7 @@ var require_logging = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/error.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/error.js
 var require_error = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getErrorMessage = getErrorMessage;
@@ -289,7 +289,7 @@ var require_error = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/metadata.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/metadata.js
 var require_metadata = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Metadata = undefined;
@@ -467,7 +467,7 @@ var require_metadata = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-credentials.js
 var require_call_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CallCredentials = undefined;
@@ -589,7 +589,7 @@ var require_call_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/tls-helpers.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/tls-helpers.js
 var require_tls_helpers = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CIPHER_SUITES = undefined;
@@ -609,7 +609,7 @@ var require_tls_helpers = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/uri-parser.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/uri-parser.js
 var require_uri_parser = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.parseUri = parseUri;
@@ -700,7 +700,7 @@ var require_uri_parser = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver.js
 var require_resolver = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CHANNEL_ARGS_CONFIG_SELECTOR_KEY = undefined;
@@ -749,7 +749,7 @@ var require_resolver = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channel-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel-credentials.js
 var require_channel_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChannelCredentials = undefined;
@@ -1118,7 +1118,7 @@ var require_channel_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer.js
 var require_load_balancer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.createChildChannelControlHelper = createChildChannelControlHelper;
@@ -1206,7 +1206,7 @@ var require_load_balancer = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/service-config.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/service-config.js
 var require_service_config = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.validateRetryThrottling = validateRetryThrottling;
@@ -1546,7 +1546,7 @@ var require_service_config = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/connectivity-state.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/connectivity-state.js
 var require_connectivity_state = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ConnectivityState = undefined;
@@ -1560,7 +1560,7 @@ var require_connectivity_state = __commonJS(function(exports) {
   })(ConnectivityState || (exports.ConnectivityState = ConnectivityState = {}));
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/picker.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/picker.js
 var require_picker = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.QueuePicker = exports.UnavailablePicker = exports.PickResultType = undefined;
@@ -1619,7 +1619,7 @@ var require_picker = __commonJS(function(exports) {
   exports.QueuePicker = QueuePicker;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/backoff-timeout.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/backoff-timeout.js
 var require_backoff_timeout = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BackoffTimeout = undefined;
@@ -1736,7 +1736,7 @@ var require_backoff_timeout = __commonJS(function(exports) {
   BackoffTimeout.nextId = 0;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-child-handler.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-child-handler.js
 var require_load_balancer_child_handler = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChildLoadBalancerHandler = undefined;
@@ -1858,7 +1858,7 @@ var require_load_balancer_child_handler = __commonJS(function(exports) {
   exports.ChildLoadBalancerHandler = ChildLoadBalancerHandler;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolving-load-balancer.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolving-load-balancer.js
 var require_resolving_load_balancer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ResolvingLoadBalancer = undefined;
@@ -2092,7 +2092,7 @@ var require_resolving_load_balancer = __commonJS(function(exports) {
   exports.ResolvingLoadBalancer = ResolvingLoadBalancer;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channel-options.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel-options.js
 var require_channel_options = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.recognizedOptions = undefined;
@@ -2147,7 +2147,7 @@ var require_channel_options = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-address.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-address.js
 var require_subchannel_address = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.EndpointMap = undefined;
@@ -3166,7 +3166,7 @@ var require_cjs = __commonJS(function(exports) {
   exports.OrderedMap = OrderedMap;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/admin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/admin.js
 var require_admin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.registerAdminService = registerAdminService;
@@ -3182,7 +3182,7 @@ var require_admin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call.js
 var require_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ClientDuplexStreamImpl = exports.ClientWritableStreamImpl = exports.ClientReadableStreamImpl = exports.ClientUnaryCallImpl = undefined;
@@ -3320,7 +3320,7 @@ ${callerStack}`;
   exports.ClientDuplexStreamImpl = ClientDuplexStreamImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call-interface.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-interface.js
 var require_call_interface = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InterceptingListenerImpl = undefined;
@@ -3401,7 +3401,7 @@ var require_call_interface = __commonJS(function(exports) {
   exports.InterceptingListenerImpl = InterceptingListenerImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/client-interceptors.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/client-interceptors.js
 var require_client_interceptors = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.InterceptorConfigurationError = undefined;
@@ -3748,7 +3748,7 @@ var require_client_interceptors = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/client.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/client.js
 var require_client = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Client = undefined;
@@ -4119,7 +4119,7 @@ var require_client = __commonJS(function(exports) {
   exports.Client = Client;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/make-client.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/make-client.js
 var require_make_client = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.makeClientConstructor = makeClientConstructor;
@@ -5046,7 +5046,7 @@ var require_pool = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/longbits.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/longbits.js
 var require_longbits = __commonJS(function(exports, module) {
   module.exports = LongBits;
   var util = require_minimal();
@@ -6050,7 +6050,7 @@ var require_umd = __commonJS(function(exports, module) {
   });
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/minimal.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/minimal.js
 var require_minimal = __commonJS(function(exports) {
   var util = exports;
   util.asPromise = require_aspromise();
@@ -6223,7 +6223,7 @@ var require_minimal = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/writer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/writer.js
 var require_writer = __commonJS(function(exports, module) {
   module.exports = Writer;
   var util = require_minimal();
@@ -6408,7 +6408,7 @@ var require_writer = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/writer_buffer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/writer_buffer.js
 var require_writer_buffer = __commonJS(function(exports, module) {
   module.exports = BufferWriter;
   var Writer = require_writer();
@@ -6456,7 +6456,7 @@ var require_writer_buffer = __commonJS(function(exports, module) {
   BufferWriter._configure();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/reader.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/reader.js
 var require_reader = __commonJS(function(exports, module) {
   module.exports = Reader;
   var util = require_minimal();
@@ -6700,7 +6700,7 @@ var require_reader = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/reader_buffer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/reader_buffer.js
 var require_reader_buffer = __commonJS(function(exports, module) {
   module.exports = BufferReader;
   var Reader = require_reader();
@@ -6720,7 +6720,7 @@ var require_reader_buffer = __commonJS(function(exports, module) {
   BufferReader._configure();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/rpc/service.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/rpc/service.js
 var require_service = __commonJS(function(exports, module) {
   module.exports = Service;
   var util = require_minimal();
@@ -6785,18 +6785,18 @@ var require_service = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/rpc.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/rpc.js
 var require_rpc = __commonJS(function(exports) {
   var rpc = exports;
   rpc.Service = require_service();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/roots.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/roots.js
 var require_roots = __commonJS(function(exports, module) {
   module.exports = Object.create(null);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/index-minimal.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index-minimal.js
 var require_index_minimal = __commonJS(function(exports) {
   var protobuf = exports;
   protobuf.build = "minimal";
@@ -6984,7 +6984,7 @@ var require_path = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/patterns.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/patterns.js
 var require_patterns = __commonJS(function(exports) {
   var patterns = exports;
   patterns.numberRe = /^(?![eE])[0-9]*(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?$/;
@@ -6992,7 +6992,7 @@ var require_patterns = __commonJS(function(exports) {
   patterns.reservedRe = /^(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$/;
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/fs.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/fs.js
 var require_fs2 = __commonJS(function(exports, module) {
   var fs = null;
   try {
@@ -7003,7 +7003,7 @@ var require_fs2 = __commonJS(function(exports, module) {
   module.exports = fs;
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/namespace.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/namespace.js
 var require_namespace = __commonJS(function(exports, module) {
   module.exports = Namespace;
   var ReflectionObject = require_object();
@@ -7278,7 +7278,7 @@ var require_namespace = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/mapfield.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/mapfield.js
 var require_mapfield = __commonJS(function(exports, module) {
   module.exports = MapField;
   var Field = require_field();
@@ -7331,7 +7331,7 @@ var require_mapfield = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/method.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/method.js
 var require_method = __commonJS(function(exports, module) {
   module.exports = Method;
   var ReflectionObject = require_object();
@@ -7395,7 +7395,7 @@ var require_method = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/service.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/service.js
 var require_service2 = __commonJS(function(exports, module) {
   module.exports = Service;
   var Namespace = require_namespace();
@@ -7505,7 +7505,7 @@ var require_service2 = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/message.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/message.js
 var require_message = __commonJS(function(exports, module) {
   module.exports = Message;
   var util = require_minimal();
@@ -7547,7 +7547,7 @@ var require_message = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/decoder.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/decoder.js
 var require_decoder = __commonJS(function(exports, module) {
   module.exports = decoder;
   var Enum = require_enum();
@@ -7612,7 +7612,7 @@ var require_decoder = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/verifier.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/verifier.js
 var require_verifier = __commonJS(function(exports, module) {
   module.exports = verifier;
   var Enum = require_enum();
@@ -7718,7 +7718,7 @@ var require_verifier = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/converter.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/converter.js
 var require_converter = __commonJS(function(exports) {
   var converter = exports;
   var Enum = require_enum();
@@ -7897,7 +7897,7 @@ var require_converter = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/wrappers.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/wrappers.js
 var require_wrappers = __commonJS(function(exports) {
   var wrappers = exports;
   var Message = require_message();
@@ -7954,7 +7954,7 @@ var require_wrappers = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/type.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/type.js
 var require_type = __commonJS(function(exports, module) {
   module.exports = Type;
   var Namespace = require_namespace();
@@ -8273,7 +8273,7 @@ var require_type = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/root.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/root.js
 var require_root = __commonJS(function(exports, module) {
   module.exports = Root;
   var Namespace = require_namespace();
@@ -8515,7 +8515,7 @@ var require_root = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util.js
 var require_util = __commonJS(function(exports, module) {
   var util = module.exports = require_minimal();
   var roots = require_roots();
@@ -8634,7 +8634,7 @@ var require_util = __commonJS(function(exports, module) {
   });
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/types.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/types.js
 var require_types = __commonJS(function(exports) {
   var types = exports;
   var util = require_util();
@@ -8735,7 +8735,7 @@ var require_types = __commonJS(function(exports) {
   ]);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/field.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/field.js
 var require_field = __commonJS(function(exports, module) {
   module.exports = Field;
   var ReflectionObject = require_object();
@@ -8924,7 +8924,7 @@ var require_field = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/oneof.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/oneof.js
 var require_oneof = __commonJS(function(exports, module) {
   module.exports = OneOf;
   var ReflectionObject = require_object();
@@ -9029,7 +9029,7 @@ var require_oneof = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/object.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/object.js
 var require_object = __commonJS(function(exports, module) {
   module.exports = ReflectionObject;
   ReflectionObject.className = "ReflectionObject";
@@ -9213,7 +9213,7 @@ var require_object = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/enum.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/enum.js
 var require_enum = __commonJS(function(exports, module) {
   module.exports = Enum;
   var ReflectionObject = require_object();
@@ -9321,7 +9321,7 @@ var require_enum = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/encoder.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/encoder.js
 var require_encoder = __commonJS(function(exports, module) {
   module.exports = encoder;
   var Enum = require_enum();
@@ -9369,7 +9369,7 @@ var require_encoder = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/index-light.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index-light.js
 var require_index_light = __commonJS(function(exports, module) {
   var protobuf = module.exports = require_index_minimal();
   protobuf.build = "light";
@@ -9412,7 +9412,7 @@ var require_index_light = __commonJS(function(exports, module) {
   protobuf.Field._configure(protobuf.Type);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/tokenize.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/tokenize.js
 var require_tokenize = __commonJS(function(exports, module) {
   module.exports = tokenize;
   var delimRe = /[\s{}=;:[\],'"()<>]/g;
@@ -9663,7 +9663,7 @@ var require_tokenize = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/parse.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/parse.js
 var require_parse = __commonJS(function(exports, module) {
   module.exports = parse;
   parse.filename = null;
@@ -10393,7 +10393,7 @@ var require_parse = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/common.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/common.js
 var require_common = __commonJS(function(exports, module) {
   module.exports = common;
   var commonRe = /\/|\./;
@@ -10596,7 +10596,7 @@ var require_common = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/index.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index.js
 var require_src = __commonJS(function(exports, module) {
   var protobuf = module.exports = require_index_light();
   protobuf.build = "full";
@@ -10606,7 +10606,7 @@ var require_src = __commonJS(function(exports, module) {
   protobuf.Root._configure(protobuf.Type, protobuf.parse, protobuf.common);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/descriptor.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/descriptor.json
 var require_descriptor = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -11992,7 +11992,7 @@ var require_descriptor = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/ext/descriptor/index.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/ext/descriptor/index.js
 var require_descriptor2 = __commonJS(function(exports, module) {
   var $protobuf = require_src();
   module.exports = exports = $protobuf.descriptor = $protobuf.Root.fromJSON(require_descriptor()).lookup(".google.protobuf");
@@ -12539,7 +12539,7 @@ var require_descriptor2 = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/api.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/api.json
 var require_api = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12661,7 +12661,7 @@ var require_api = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/source_context.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/source_context.json
 var require_source_context = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12685,7 +12685,7 @@ var require_source_context = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/type.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/type.json
 var require_type2 = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12891,7 +12891,7 @@ var require_type2 = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-538e799f91a079d1/node_modules/@grpc/proto-loader/build/src/util.js
+// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-28eceb0e4dcb771e/node_modules/@grpc/proto-loader/build/src/util.js
 var require_util2 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.addCommonProtos = exports.loadProtosWithOptionsSync = exports.loadProtosWithOptions = undefined;
@@ -12958,7 +12958,7 @@ var require_util2 = __commonJS(function(exports) {
   exports.addCommonProtos = addCommonProtos;
 });
 
-// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-538e799f91a079d1/node_modules/@grpc/proto-loader/build/src/index.js
+// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-28eceb0e4dcb771e/node_modules/@grpc/proto-loader/build/src/index.js
 var require_src2 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.loadFileDescriptorSetFromObject = exports.loadFileDescriptorSetFromBuffer = exports.fromJSON = exports.loadSync = exports.load = exports.IdempotencyLevel = exports.isAnyExtension = exports.Long = undefined;
@@ -13144,9 +13144,9 @@ var require_src2 = __commonJS(function(exports) {
   (0, util_1.addCommonProtos)();
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channelz.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channelz.js
 var require_channelz = __commonJS(function(exports) {
-  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src";
+  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src";
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.registerChannelzSocket = exports.registerChannelzServer = exports.registerChannelzSubchannel = exports.registerChannelzChannel = exports.ChannelzCallTrackerStub = exports.ChannelzCallTracker = exports.ChannelzChildrenTrackerStub = exports.ChannelzChildrenTracker = exports.ChannelzTrace = exports.ChannelzTraceStub = undefined;
   exports.unregisterChannelzRef = unregisterChannelzRef;
@@ -13672,7 +13672,7 @@ var require_channelz = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call-number.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-number.js
 var require_call_number = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getNextCallNumber = getNextCallNumber;
@@ -13682,7 +13682,7 @@ var require_call_number = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/compression-algorithms.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/compression-algorithms.js
 var require_compression_algorithms = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CompressionAlgorithms = undefined;
@@ -13694,7 +13694,7 @@ var require_compression_algorithms = __commonJS(function(exports) {
   })(CompressionAlgorithms || (exports.CompressionAlgorithms = CompressionAlgorithms = {}));
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/filter.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/filter.js
 var require_filter = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseFilter = undefined;
@@ -13719,7 +13719,7 @@ var require_filter = __commonJS(function(exports) {
   exports.BaseFilter = BaseFilter;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/compression-filter.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/compression-filter.js
 var require_compression_filter = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CompressionFilterFactory = exports.CompressionFilter = undefined;
@@ -13983,7 +13983,7 @@ var require_compression_filter = __commonJS(function(exports) {
   exports.CompressionFilterFactory = CompressionFilterFactory;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/control-plane-status.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/control-plane-status.js
 var require_control_plane_status = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.restrictControlPlaneStatusCode = restrictControlPlaneStatusCode;
@@ -14010,7 +14010,7 @@ var require_control_plane_status = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/deadline.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/deadline.js
 var require_deadline = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.minDeadline = minDeadline;
@@ -14078,7 +14078,7 @@ var require_deadline = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/filter-stack.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/filter-stack.js
 var require_filter_stack = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.FilterStackFactory = exports.FilterStack = undefined;
@@ -14148,7 +14148,7 @@ var require_filter_stack = __commonJS(function(exports) {
   exports.FilterStackFactory = FilterStackFactory;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/single-subchannel-channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/single-subchannel-channel.js
 var require_single_subchannel_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SingleSubchannelChannel = undefined;
@@ -14367,7 +14367,7 @@ var require_single_subchannel_channel = __commonJS(function(exports) {
   exports.SingleSubchannelChannel = SingleSubchannelChannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel.js
 var require_subchannel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Subchannel = undefined;
@@ -14649,7 +14649,7 @@ var require_subchannel = __commonJS(function(exports) {
   exports.Subchannel = Subchannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/environment.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/environment.js
 var require_environment = __commonJS(function(exports) {
   var _a;
   Object.defineProperty(exports, "__esModule", { value: true });
@@ -14657,7 +14657,7 @@ var require_environment = __commonJS(function(exports) {
   exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER = ((_a = process.env.GRPC_NODE_USE_ALTERNATIVE_RESOLVER) !== null && _a !== undefined ? _a : "false") === "true";
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver-dns.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-dns.js
 var require_resolver_dns = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DEFAULT_PORT = undefined;
@@ -14921,7 +14921,7 @@ var require_resolver_dns = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/http_proxy.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/http_proxy.js
 var require_http_proxy = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.parseCIDR = parseCIDR;
@@ -15137,7 +15137,7 @@ var require_http_proxy = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/stream-decoder.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/stream-decoder.js
 var require_stream_decoder = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.StreamDecoder = undefined;
@@ -15220,7 +15220,7 @@ var require_stream_decoder = __commonJS(function(exports) {
   exports.StreamDecoder = StreamDecoder;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-call.js
 var require_subchannel_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Http2SubchannelCall = undefined;
@@ -15622,7 +15622,7 @@ var require_subchannel_call = __commonJS(function(exports) {
   exports.Http2SubchannelCall = Http2SubchannelCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/transport.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/transport.js
 var require_transport = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Http2SubchannelConnector = undefined;
@@ -16123,7 +16123,7 @@ var require_transport = __commonJS(function(exports) {
   exports.Http2SubchannelConnector = Http2SubchannelConnector;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-pool.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-pool.js
 var require_subchannel_pool = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SubchannelPool = undefined;
@@ -16200,7 +16200,7 @@ var require_subchannel_pool = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancing-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancing-call.js
 var require_load_balancing_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.LoadBalancingCall = undefined;
@@ -16441,7 +16441,7 @@ var require_load_balancing_call = __commonJS(function(exports) {
   exports.LoadBalancingCall = LoadBalancingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolving-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolving-call.js
 var require_resolving_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ResolvingCall = undefined;
@@ -16723,7 +16723,7 @@ var require_resolving_call = __commonJS(function(exports) {
   exports.ResolvingCall = ResolvingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/retrying-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/retrying-call.js
 var require_retrying_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.RetryingCall = exports.MessageBufferTracker = exports.RetryThrottler = undefined;
@@ -17349,7 +17349,7 @@ var require_retrying_call = __commonJS(function(exports) {
   exports.RetryingCall = RetryingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-interface.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-interface.js
 var require_subchannel_interface = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseSubchannelWrapper = undefined;
@@ -17446,7 +17446,7 @@ var require_subchannel_interface = __commonJS(function(exports) {
   exports.BaseSubchannelWrapper = BaseSubchannelWrapper;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/internal-channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/internal-channel.js
 var require_internal_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InternalChannel = exports.SUBCHANNEL_ARGS_EXCLUDE_KEY_PREFIX = undefined;
@@ -17957,7 +17957,7 @@ var require_internal_channel = __commonJS(function(exports) {
   exports.InternalChannel = InternalChannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel.js
 var require_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChannelImplementation = undefined;
@@ -18007,7 +18007,7 @@ var require_channel = __commonJS(function(exports) {
   exports.ChannelImplementation = ChannelImplementation;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-call.js
 var require_server_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ServerDuplexStreamImpl = exports.ServerWritableStreamImpl = exports.ServerReadableStreamImpl = exports.ServerUnaryCallImpl = undefined;
@@ -18215,7 +18215,7 @@ var require_server_call = __commonJS(function(exports) {
   exports.ServerDuplexStreamImpl = ServerDuplexStreamImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-credentials.js
 var require_server_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ServerCredentials = undefined;
@@ -18501,7 +18501,7 @@ var require_server_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/duration.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/duration.js
 var require_duration = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.durationMessageToDuration = durationMessageToDuration;
@@ -18559,9 +18559,9 @@ var require_duration = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/orca.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/orca.js
 var require_orca = __commonJS(function(exports) {
-  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src";
+  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src";
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.OrcaOobMetricsSubchannelWrapper = exports.GRPC_METRICS_HEADER = exports.ServerMetricRecorder = exports.PerRequestMetricRecorder = undefined;
   exports.createOrcaClient = createOrcaClient;
@@ -18822,7 +18822,7 @@ var require_orca = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server-interceptors.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-interceptors.js
 var require_server_interceptors = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseServerInterceptingCall = exports.ServerInterceptingCall = exports.ResponderBuilder = exports.ServerListenerBuilder = undefined;
@@ -19563,7 +19563,7 @@ var require_server_interceptors = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server.js
 var require_server = __commonJS(function(exports) {
   var __runInitializers = exports && exports.__runInitializers || function(thisArg, initializers, value) {
     var useValue = arguments.length > 2;
@@ -20983,7 +20983,7 @@ var require_server = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/status-builder.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/status-builder.js
 var require_status_builder = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.StatusBuilder = undefined;
@@ -21023,7 +21023,7 @@ var require_status_builder = __commonJS(function(exports) {
   exports.StatusBuilder = StatusBuilder;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-pick-first.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-pick-first.js
 var require_load_balancer_pick_first = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.LeafLoadBalancer = exports.PickFirstLoadBalancer = exports.PickFirstLoadBalancingConfig = undefined;
@@ -21416,7 +21416,7 @@ var require_load_balancer_pick_first = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/certificate-provider.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/certificate-provider.js
 var require_certificate_provider = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.FileWatcherCertificateProvider = undefined;
@@ -21537,7 +21537,7 @@ var require_certificate_provider = __commonJS(function(exports) {
   exports.FileWatcherCertificateProvider = FileWatcherCertificateProvider;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/experimental.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/experimental.js
 var require_experimental = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SUBCHANNEL_ARGS_EXCLUDE_KEY_PREFIX = exports.createCertificateProviderChannelCredentials = exports.FileWatcherCertificateProvider = exports.createCertificateProviderServerCredentials = exports.createServerCredentialsWithInterceptors = exports.BaseSubchannelWrapper = exports.registerAdminService = exports.FilterStackFactory = exports.BaseFilter = exports.statusOrFromError = exports.statusOrFromValue = exports.PickResultType = exports.QueuePicker = exports.UnavailablePicker = exports.ChildLoadBalancerHandler = exports.EndpointMap = exports.endpointHasAddress = exports.endpointToString = exports.subchannelAddressToString = exports.LeafLoadBalancer = exports.isLoadBalancerNameRegistered = exports.parseLoadBalancingConfig = exports.selectLbConfigFromList = exports.registerLoadBalancerType = exports.createChildChannelControlHelper = exports.BackoffTimeout = exports.parseDuration = exports.durationToMs = exports.splitHostPort = exports.uriToString = exports.CHANNEL_ARGS_CONFIG_SELECTOR_KEY = exports.createResolver = exports.registerResolver = exports.log = exports.trace = undefined;
@@ -21667,7 +21667,7 @@ var require_experimental = __commonJS(function(exports) {
   } });
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver-uds.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-uds.js
 var require_resolver_uds = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.setup = setup;
@@ -21705,7 +21705,7 @@ var require_resolver_uds = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver-ip.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-ip.js
 var require_resolver_ip = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.setup = setup;
@@ -21794,7 +21794,7 @@ var require_resolver_ip = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-round-robin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-round-robin.js
 var require_load_balancer_round_robin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.RoundRobinLoadBalancer = undefined;
@@ -21960,7 +21960,7 @@ var require_load_balancer_round_robin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-outlier-detection.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-outlier-detection.js
 var require_load_balancer_outlier_detection = __commonJS(function(exports) {
   var _a;
   Object.defineProperty(exports, "__esModule", { value: true });
@@ -22458,7 +22458,7 @@ var require_load_balancer_outlier_detection = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/priority-queue.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/priority-queue.js
 var require_priority_queue = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.PriorityQueue = undefined;
@@ -22529,7 +22529,7 @@ var require_priority_queue = __commonJS(function(exports) {
   exports.PriorityQueue = PriorityQueue;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-weighted-round-robin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-weighted-round-robin.js
 var require_load_balancer_weighted_round_robin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.WeightedRoundRobinLoadBalancingConfig = undefined;
@@ -22879,7 +22879,7 @@ var require_load_balancer_weighted_round_robin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/index.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/index.js
 var require_src3 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.experimental = exports.ServerMetricRecorder = exports.ServerInterceptingCall = exports.ResponderBuilder = exports.ServerListenerBuilder = exports.addAdminServicesToServer = exports.getChannelzHandlers = exports.getChannelzServiceDefinition = exports.InterceptorConfigurationError = exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.StatusBuilder = exports.getClientChannel = exports.ServerCredentials = exports.Server = exports.setLogVerbosity = exports.setLogger = exports.load = exports.loadObject = exports.CallCredentials = exports.ChannelCredentials = exports.waitForClientReady = exports.closeClient = exports.Channel = exports.makeGenericClientConstructor = exports.makeClientConstructor = exports.loadPackageDefinition = exports.Client = exports.compressionAlgorithms = exports.propagate = exports.connectivityState = exports.status = exports.logVerbosity = exports.Metadata = exports.credentials = undefined;
@@ -23731,7 +23731,7 @@ function validateEvidenceRecord(value, index, workspaceId) {
   }
   if (!isNonEmptyString(value.timestamp))
     throw new Error(`Fable state ${field}.timestamp is required`);
-  for (const key of ["workspaceId", "repositoryRevision", "commandCategory", "scope", "receiptId"]) {
+  for (const key of ["workspaceId", "repositoryRevision", "repoState", "commandCategory", "scope", "receiptId"]) {
     if (value[key] !== undefined && !isNonEmptyString(value[key])) {
       throw new Error(`Fable state ${field}.${key} must be a non-empty string when provided`);
     }
@@ -23840,6 +23840,11 @@ function migrateV1State(value, targetDir) {
     };
     if (record.workspaceId !== undefined) {
       migratedRecord.workspaceId = record.workspaceId;
+      if (migratedRecord.workspaceId === ownerWorkspaceId) {
+        const repoState = computeRepoStateIdentity(targetDir);
+        if (repoState)
+          migratedRecord.repoState = repoState;
+      }
     }
     return migratedRecord;
   });
@@ -23932,6 +23937,84 @@ function getRepositoryRevision(targetDir = process.cwd()) {
   } catch {
     return null;
   }
+}
+function parseDirtyEntries(statusOutput) {
+  return statusOutput.split(`
+`).map((line) => line.trimEnd()).filter((line) => line.length > 3).filter((line) => {
+    const filePath = line.slice(3).trim();
+    return !filePath.startsWith(".fable/") && filePath !== ".fable";
+  }).sort();
+}
+function getGitRepoState(targetDir) {
+  try {
+    const head = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: targetDir,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"]
+    }).trim();
+    if (!/^[0-9a-f]{40}$/i.test(head))
+      return null;
+    let branch = "detached";
+    try {
+      const ref = execFileSync("git", ["symbolic-ref", "-q", "--short", "HEAD"], {
+        cwd: targetDir,
+        encoding: "utf-8",
+        stdio: ["ignore", "pipe", "ignore"]
+      }).trim();
+      if (ref)
+        branch = ref;
+    } catch {
+      branch = "detached";
+    }
+    const statusOut = execFileSync("git", ["status", "--porcelain=v1", "-unormal", "--ignored=no"], {
+      cwd: targetDir,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+    const dirtyEntries = parseDirtyEntries(statusOut);
+    const dirtyHash = dirtyEntries.length === 0 ? "clean" : createHash("sha256").update(dirtyEntries.join(`
+`)).digest("hex").slice(0, 16);
+    return `git:${head}:${branch}:${dirtyHash}`;
+  } catch {
+    return null;
+  }
+}
+function getNonGitRepoState(targetDir) {
+  try {
+    let scan = function(dir, depth) {
+      if (depth > 5)
+        return;
+      const entries = fs4.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.name === ".fable" || entry.name === "node_modules" || entry.name === ".git")
+          continue;
+        const full = path4.join(dir, entry.name);
+        const rel = path4.relative(targetDir, full);
+        if (entry.isDirectory()) {
+          scan(full, depth + 1);
+        } else if (entry.isFile()) {
+          const stat = fs4.statSync(full);
+          files.push(`${rel}:${stat.size}:${stat.mtimeMs}`);
+        }
+      }
+    };
+    if (!fs4.existsSync(targetDir) || !fs4.statSync(targetDir).isDirectory())
+      return null;
+    const files = [];
+    scan(targetDir, 0);
+    files.sort();
+    const hash = createHash("sha256").update(files.join(`
+`)).digest("hex").slice(0, 16);
+    return `nongit:${hash}`;
+  } catch {
+    return null;
+  }
+}
+function computeRepoStateIdentity(targetDir = process.cwd()) {
+  const gitState = getGitRepoState(targetDir);
+  if (gitState)
+    return gitState;
+  return getNonGitRepoState(targetDir);
 }
 function statePath(targetDir = process.cwd()) {
   return path4.join(targetDir, ".fable", "state.json");
@@ -24100,7 +24183,7 @@ function setActiveCard(state, activeCard, now = new Date().toISOString()) {
     throw new Error("Active card must be non-empty when provided");
   return { ...state, activeCard, updatedAt: now };
 }
-function addEvidence(state, evidence) {
+function addEvidence(state, evidence, targetDir = process.cwd()) {
   if (evidence.workspaceId !== undefined && evidence.workspaceId !== state.workspaceId) {
     throw new Error("Evidence workspaceId does not match the owning workspace");
   }
@@ -24118,6 +24201,8 @@ function addEvidence(state, evidence) {
     currentSkill = "fable-recover";
   }
   const advancesVerification = evidence.result === "pass" && completionEvidenceKinds(state).includes(evidence.kind) && generation === state.mutationGeneration;
+  const repoState = evidence.repoState !== undefined ? evidence.repoState : computeRepoStateIdentity(targetDir) || undefined;
+  const repositoryRevision = evidence.repositoryRevision !== undefined ? evidence.repositoryRevision : getRepositoryRevision(targetDir) || undefined;
   return {
     ...state,
     phase,
@@ -24130,7 +24215,9 @@ function addEvidence(state, evidence) {
         ...evidence,
         generation,
         timestamp,
-        workspaceId: state.workspaceId
+        workspaceId: state.workspaceId,
+        ...repoState ? { repoState } : {},
+        ...repositoryRevision ? { repositoryRevision } : {}
       }
     ],
     failureStreak: nextFailureStreak,
@@ -24140,9 +24227,10 @@ function addEvidence(state, evidence) {
 function hasPassingEvidence(state) {
   return state.evidence.some((record) => record.result === "pass" && record.detail.trim().length > 0);
 }
-function hasFreshPassingEvidence(state) {
+function hasFreshPassingEvidence(state, targetDir = process.cwd()) {
   if (state.verifiedGeneration < state.mutationGeneration)
     return false;
+  const currentRepoState = computeRepoStateIdentity(targetDir);
   const acceptedKinds = completionEvidenceKinds(state);
   for (const record of [...state.evidence].reverse()) {
     if (record.generation !== state.mutationGeneration)
@@ -24152,15 +24240,23 @@ function hasFreshPassingEvidence(state) {
     }
     if (!acceptedKinds.includes(record.kind))
       continue;
-    return record.workspaceId === state.workspaceId && record.result === "pass" && record.detail.trim().length > 0;
+    if (record.workspaceId !== state.workspaceId || record.result !== "pass" || !record.detail.trim()) {
+      continue;
+    }
+    if (state.substantial) {
+      if (!currentRepoState || !record.repoState || record.repoState !== currentRepoState) {
+        return false;
+      }
+    }
+    return true;
   }
   return false;
 }
 function skillMatchesPhase(skill, phase) {
   return Boolean(skill && phaseForSkill(skill) === phase);
 }
-function transitionState(state, nextPhase, now = new Date().toISOString()) {
-  if (nextPhase === "complete" && state.substantial && !hasFreshPassingEvidence(state)) {
+function transitionState(state, nextPhase, now = new Date().toISOString(), targetDir = process.cwd()) {
+  if (nextPhase === "complete" && state.substantial && !hasFreshPassingEvidence(state, targetDir)) {
     throw new Error("Substantial work cannot complete without passing evidence for the current mutation generation");
   }
   if (nextPhase === state.phase) {
@@ -26887,7 +26983,7 @@ function runFableLint(targetDir = process.cwd()) {
       const state = readFableState(targetDir);
       if (!state)
         throw new Error(".fable/state.json could not be loaded");
-      if (state.phase === "complete" && state.substantial && !hasFreshPassingEvidence(state)) {
+      if (state.phase === "complete" && state.substantial && !hasFreshPassingEvidence(state, targetDir)) {
         logError("state.json: substantial work is complete without fresh passing evidence");
         hasErrors = true;
       }
@@ -42744,7 +42840,7 @@ function runStateCommand(args) {
     return 1;
   }
   requireState();
-  const nextState = withFableStateTransaction(process.cwd(), (state) => transitionState(substantial ? { ...state, substantial: true } : state, targetPhase));
+  const nextState = withFableStateTransaction(process.cwd(), (state) => transitionState(substantial ? { ...state, substantial: true } : state, targetPhase, undefined, process.cwd()));
   recordTelemetry({
     eventType: "command",
     commandName: `state:${targetPhase}`,
@@ -42821,7 +42917,7 @@ function runEvidenceCommand(args) {
     repositoryRevision: revision || undefined,
     commandCategory: kind,
     scope: state.activeCard || state.currentSkill || "workspace"
-  }));
+  }, process.cwd()));
   recordTelemetry({
     eventType: "evidence_added",
     phase: nextState.phase,

@@ -259,7 +259,7 @@ export function runFableLint(targetDir: string = process.cwd()): boolean {
     try {
       const state = readFableState(targetDir);
       if (!state) throw new Error('.fable/state.json could not be loaded');
-      if (state.phase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
+      if (state.phase === 'complete' && state.substantial && !hasFreshPassingEvidence(state, targetDir)) {
         logError('state.json: substantial work is complete without fresh passing evidence');
         hasErrors = true;
       }

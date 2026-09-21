@@ -54,6 +54,7 @@ export interface EvidenceRecord {
   timestamp: string;
   workspaceId?: string;
   repositoryRevision?: string;
+  repoState?: string;
   commandCategory?: string;
   scope?: string;
   receiptId?: string;

@@ -65,11 +65,11 @@ def block_invalid_state(path):
     return 2
 
 
-def block_state_if_needed(state):
+def block_state_if_needed(state, workspace_dir=None):
     if not isinstance(state, dict) or not state.get("substantial"):
         return 0
 
-    if not has_fresh_passing_state_evidence(state):
+    if not has_fresh_passing_state_evidence(state, workspace_dir):
         sys.stderr.write(
             "[get-fable] BLOCKED stop: substantial work has no fresh passing completion evidence for the current mutation generation. "
             "Record proof with `get-fable evidence pass <kind> <source> <detail>` after verifying the requested behavior.\n"
@@ -121,9 +121,10 @@ def main():
     if blocked is not None:
         return blocked
 
+    workspace_dir = os.path.dirname(fable_dir)
     path = ledger_path(fable_dir)
     if not os.path.isfile(path):
-        return block_state_if_needed(state)
+        return block_state_if_needed(state, workspace_dir)
 
     open_items, _has_any, paused = parse_ledger(path)
     if paused:
@@ -135,7 +136,7 @@ def main():
     if bad:
         return block_missing_ledger_evidence(path, bad)
 
-    return block_state_if_needed(state)
+    return block_state_if_needed(state, workspace_dir)
 
 
 if __name__ == "__main__":

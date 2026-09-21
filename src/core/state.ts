@@ -163,7 +163,7 @@ function validateEvidenceRecord(value: unknown, index: number, workspaceId: stri
     throw new Error(`Fable state ${field}.generation must be a non-negative integer`);
   }
   if (!isNonEmptyString(value.timestamp)) throw new Error(`Fable state ${field}.timestamp is required`);
-  for (const key of ['workspaceId', 'repositoryRevision', 'commandCategory', 'scope', 'receiptId'] as const) {
+  for (const key of ['workspaceId', 'repositoryRevision', 'repoState', 'commandCategory', 'scope', 'receiptId'] as const) {
     if (value[key] !== undefined && !isNonEmptyString(value[key])) {
       throw new Error(`Fable state ${field}.${key} must be a non-empty string when provided`);
     }
@@ -275,6 +275,10 @@ function migrateV1State(value: Record<string, unknown>, targetDir: string): Fabl
     } as EvidenceRecord;
     if (record.workspaceId !== undefined) {
       migratedRecord.workspaceId = record.workspaceId as string;
+      if (migratedRecord.workspaceId === ownerWorkspaceId) {
+        const repoState = computeRepoStateIdentity(targetDir);
+        if (repoState) migratedRecord.repoState = repoState;
+      }
     }
     return migratedRecord;
   });
@@ -376,6 +380,89 @@ export function getRepositoryRevision(targetDir: string = process.cwd()): string
   } catch {
     return null;
   }
+}
+
+function parseDirtyEntries(statusOutput: string): string[] {
+  return statusOutput
+    .split('\n')
+    .map((line) => line.trimEnd())
+    .filter((line) => line.length > 3)
+    .filter((line) => {
+      const filePath = line.slice(3).trim();
+      return !filePath.startsWith('.fable/') && filePath !== '.fable';
+    })
+    .sort();
+}
+
+function getGitRepoState(targetDir: string): string | null {
+  try {
+    const head = execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: targetDir,
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    if (!/^[0-9a-f]{40}$/i.test(head)) return null;
+
+    let branch = 'detached';
+    try {
+      const ref = execFileSync('git', ['symbolic-ref', '-q', '--short', 'HEAD'], {
+        cwd: targetDir,
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+      if (ref) branch = ref;
+    } catch {
+      branch = 'detached';
+    }
+
+    const statusOut = execFileSync('git', ['status', '--porcelain=v1', '-unormal', '--ignored=no'], {
+      cwd: targetDir,
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    const dirtyEntries = parseDirtyEntries(statusOut);
+    const dirtyHash = dirtyEntries.length === 0
+      ? 'clean'
+      : createHash('sha256').update(dirtyEntries.join('\n')).digest('hex').slice(0, 16);
+
+    return `git:${head}:${branch}:${dirtyHash}`;
+  } catch {
+    return null;
+  }
+}
+
+function getNonGitRepoState(targetDir: string): string | null {
+  try {
+    if (!fs.existsSync(targetDir) || !fs.statSync(targetDir).isDirectory()) return null;
+    const files: string[] = [];
+    function scan(dir: string, depth: number) {
+      if (depth > 5) return;
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.name === '.fable' || entry.name === 'node_modules' || entry.name === '.git') continue;
+        const full = path.join(dir, entry.name);
+        const rel = path.relative(targetDir, full);
+        if (entry.isDirectory()) {
+          scan(full, depth + 1);
+        } else if (entry.isFile()) {
+          const stat = fs.statSync(full);
+          files.push(`${rel}:${stat.size}:${stat.mtimeMs}`);
+        }
+      }
+    }
+    scan(targetDir, 0);
+    files.sort();
+    const hash = createHash('sha256').update(files.join('\n')).digest('hex').slice(0, 16);
+    return `nongit:${hash}`;
+  } catch {
+    return null;
+  }
+}
+
+export function computeRepoStateIdentity(targetDir: string = process.cwd()): string | null {
+  const gitState = getGitRepoState(targetDir);
+  if (gitState) return gitState;
+  return getNonGitRepoState(targetDir);
 }
 
 export function statePath(targetDir: string = process.cwd()): string {
@@ -580,7 +667,8 @@ export function setActiveCard(
 
 export function addEvidence(
   state: FableState,
-  evidence: Omit<EvidenceRecord, 'timestamp' | 'generation'> & { timestamp?: string; generation?: number }
+  evidence: Omit<EvidenceRecord, 'timestamp' | 'generation'> & { timestamp?: string; generation?: number },
+  targetDir: string = process.cwd()
 ): FableState {
   if (evidence.workspaceId !== undefined && evidence.workspaceId !== state.workspaceId) {
     throw new Error('Evidence workspaceId does not match the owning workspace');
@@ -610,6 +698,13 @@ export function addEvidence(
     completionEvidenceKinds(state).includes(evidence.kind) &&
     generation === state.mutationGeneration;
 
+  const repoState = evidence.repoState !== undefined
+    ? evidence.repoState
+    : computeRepoStateIdentity(targetDir) || undefined;
+  const repositoryRevision = evidence.repositoryRevision !== undefined
+    ? evidence.repositoryRevision
+    : getRepositoryRevision(targetDir) || undefined;
+
   return {
     ...state,
     phase,
@@ -625,6 +720,8 @@ export function addEvidence(
         generation,
         timestamp,
         workspaceId: state.workspaceId,
+        ...(repoState ? { repoState } : {}),
+        ...(repositoryRevision ? { repositoryRevision } : {}),
       },
     ],
     failureStreak: nextFailureStreak,
@@ -636,8 +733,12 @@ export function hasPassingEvidence(state: FableState): boolean {
   return state.evidence.some((record) => record.result === 'pass' && record.detail.trim().length > 0);
 }
 
-export function hasFreshPassingEvidence(state: FableState): boolean {
+export function hasFreshPassingEvidence(
+  state: FableState,
+  targetDir: string = process.cwd()
+): boolean {
   if (state.verifiedGeneration < state.mutationGeneration) return false;
+  const currentRepoState = computeRepoStateIdentity(targetDir);
   const acceptedKinds = completionEvidenceKinds(state);
   for (const record of [...state.evidence].reverse()) {
     if (record.generation !== state.mutationGeneration) continue;
@@ -645,11 +746,19 @@ export function hasFreshPassingEvidence(state: FableState): boolean {
       return false;
     }
     if (!acceptedKinds.includes(record.kind)) continue;
-    return (
-      record.workspaceId === state.workspaceId &&
-      record.result === 'pass' &&
-      record.detail.trim().length > 0
-    );
+    if (
+      record.workspaceId !== state.workspaceId ||
+      record.result !== 'pass' ||
+      !record.detail.trim()
+    ) {
+      continue;
+    }
+    if (state.substantial) {
+      if (!currentRepoState || !record.repoState || record.repoState !== currentRepoState) {
+        return false;
+      }
+    }
+    return true;
   }
   return false;
 }
@@ -661,9 +770,10 @@ function skillMatchesPhase(skill: FableSkillId | null, phase: FablePhase): boole
 export function transitionState(
   state: FableState,
   nextPhase: FablePhase,
-  now: string = new Date().toISOString()
+  now: string = new Date().toISOString(),
+  targetDir: string = process.cwd()
 ): FableState {
-  if (nextPhase === 'complete' && state.substantial && !hasFreshPassingEvidence(state)) {
+  if (nextPhase === 'complete' && state.substantial && !hasFreshPassingEvidence(state, targetDir)) {
     throw new Error('Substantial work cannot complete without passing evidence for the current mutation generation');
   }
   if (nextPhase === state.phase) {

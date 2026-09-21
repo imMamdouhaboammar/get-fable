@@ -291,7 +291,7 @@ function runStateCommand(args: string[]): number {
 
   requireState();
   const nextState = withFableStateTransaction(process.cwd(), (state) =>
-    transitionState(substantial ? { ...state, substantial: true } : state, targetPhase)
+    transitionState(substantial ? { ...state, substantial: true } : state, targetPhase, undefined, process.cwd())
   );
 
   recordTelemetry({
@@ -379,7 +379,7 @@ function runEvidenceCommand(args: string[]): number {
       repositoryRevision: revision || undefined,
       commandCategory: kind,
       scope: state.activeCard || state.currentSkill || 'workspace',
-    })
+    }, process.cwd())
   );
 
   recordTelemetry({
