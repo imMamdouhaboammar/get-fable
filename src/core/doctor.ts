@@ -537,7 +537,7 @@ function validateEnterpriseConfiguration(repoRoot: string): DoctorCheck[] {
       : check('supply-chain-config', 'ERROR', 'CI/release supply-chain configuration is incomplete or mutable'));
 
     const securityReady = security.includes('github/codeql-action') && security.includes('actions/dependency-review-action') &&
-      security.includes('trufflesecurity/trufflehog') && security.includes('version: 3.97.0');
+      security.includes('trufflesecurity/trufflehog') && /version:\s*3\.97\.\d+/.test(security);
     checks.push(securityReady
       ? check('security-ci-config', 'PASS', 'Security workflow configures CodeQL, dependency review, and TruffleHog OSS with scoped permissions')
       : check('security-ci-config', 'ERROR', 'Security CI is missing CodeQL, dependency review, or TruffleHog secret scanning'));
