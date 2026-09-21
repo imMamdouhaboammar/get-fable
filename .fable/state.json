@@ -1,40 +1,9 @@
 {
-  "schemaVersion": 3,
-  "stateRevision": 2,
-  "workspaceId": "4d0a9132c2e476001278e544",
+  "schemaVersion": 1,
   "phase": "idle",
   "currentSkill": null,
   "failureStreak": 0,
   "substantial": false,
-  "mutationGeneration": 0,
-  "verifiedGeneration": 0,
-  "activeCard": null,
   "lastDecision": null,
-  "evidence": [
-    {
-      "kind": "test",
-      "source": "bun test",
-      "result": "pass",
-      "detail": "all installer and atomic write tests pass",
-      "repositoryRevision": "22b60fba1c6d1325f1b94dbfd200bb71e0b40c11",
-      "commandCategory": "test",
-      "scope": "workspace",
-      "generation": 0,
-      "timestamp": "2026-09-21T10:11:07.510Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    },
-    {
-      "kind": "build",
-      "source": "bun run build",
-      "result": "pass",
-      "detail": "production build succeeds",
-      "repositoryRevision": "22b60fba1c6d1325f1b94dbfd200bb71e0b40c11",
-      "commandCategory": "build",
-      "scope": "workspace",
-      "generation": 0,
-      "timestamp": "2026-09-21T10:11:13.138Z",
-      "workspaceId": "4d0a9132c2e476001278e544"
-    }
-  ],
-  "updatedAt": "2026-09-21T10:11:13.138Z"
+  "evidence": []
 }
