@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload analysis results to GitHub
         if: ${{ always() && steps.eslint-config.outputs.present == 'true' && hashFiles('eslint-results.sarif') != '' }}
-        uses: github/codeql-action/upload-sarif@faaca9a8f6edddba5725ffe5adefdab6669a2eca # v3
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: eslint-results.sarif
           wait-for-processing: true
