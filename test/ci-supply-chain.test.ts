@@ -43,8 +43,8 @@ describe('CI and release supply-chain contract', () => {
 
   test('runs pinned TruffleHog secret scanning in the security workflow', () => {
     const security = read('.github/workflows/security.yml');
-    expect(security).toContain('trufflesecurity/trufflehog@bcfcf73aaf4759d4dadc2783177c245a02792318 # v3.97.0');
-    expect(security).toContain('version: 3.97.0');
+    expect(security).toContain('trufflesecurity/trufflehog@363923b901c911a9164f50b6c423f47c15372b1c # v3.97.4');
+    expect(security).toContain('version: 3.97.4');
   });
 
   test('enables Debricked SCA only when its credential is configured', () => {
