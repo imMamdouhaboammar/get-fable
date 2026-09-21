@@ -186,20 +186,31 @@ export function copyDirSync(src: string, dest: string) {
   }
 }
 
-function replaceTempFileSync(tempPath: string, filePath: string, mode: number) {
-  try {
-    fs.renameSync(tempPath, filePath);
-  } catch (error) {
-    const code = (error as NodeJS.ErrnoException)?.code;
-    if (code !== 'EEXIST' && code !== 'EPERM' && code !== 'EACCES') {
-      throw error;
-    }
+function sleepSync(ms: number) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
 
-    fs.copyFileSync(tempPath, filePath);
-    fs.unlinkSync(tempPath);
+function replaceTempFileSync(tempPath: string, filePath: string, mode: number) {
+  const retryDelays = [20, 40, 80, 160, 200];
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
+    try {
+      fs.renameSync(tempPath, filePath);
+      fs.chmodSync(filePath, mode);
+      return;
+    } catch (error) {
+      lastError = error;
+      const code = (error as NodeJS.ErrnoException)?.code;
+      const isLockError = code === 'EEXIST' || code === 'EPERM' || code === 'EACCES' || code === 'EBUSY';
+      if (!isLockError || attempt === retryDelays.length) {
+        throw error;
+      }
+      sleepSync(retryDelays[attempt]);
+    }
   }
 
-  fs.chmodSync(filePath, mode);
+  if (lastError) throw lastError;
 }
 
 export function atomicWriteFileSync(filePath: string, content: string) {

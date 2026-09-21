@@ -25,6 +25,7 @@ import {
   logWarn,
 } from '../utils.js';
 import { loadSkillRegistry, getCoreRepoRoot, canonicalSkillIds } from './skill-registry.js';
+import { validateSkillPackageDir } from './skill-package.js';
 import { FABLE_PACKS } from '../generated/skill-catalog.js';
 import type { FablePack, FableSkillId, SkillRegistryEntry } from './types.js';
 
@@ -113,19 +114,76 @@ export function resolveSkillsToInstall(
 }
 
 
-function rejectSymlinkPath(filePath: string, label: string) {
-  try {
-    if (fs.lstatSync(filePath).isSymbolicLink()) {
-      throw new Error(`Refusing ${label}: ${filePath}`);
+function sleepSync(ms: number) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function safeRenameSync(source: string, target: string): void {
+  const retryDelays = [20, 40, 80, 160, 200];
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
+    try {
+      fs.renameSync(source, target);
+      return;
+    } catch (error) {
+      lastError = error;
+      const code = (error as NodeJS.ErrnoException)?.code;
+      const isLockError = code === 'EEXIST' || code === 'EPERM' || code === 'EACCES' || code === 'EBUSY';
+      if (!isLockError || attempt === retryDelays.length) {
+        throw error;
+      }
+      sleepSync(retryDelays[attempt]);
     }
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') return;
-    throw error;
+  }
+  if (lastError) throw lastError;
+}
+
+function checkSymlinksRecursive(dirPath: string, label: string): void {
+  if (!fs.existsSync(dirPath)) return;
+  const stat = fs.lstatSync(dirPath);
+  if (stat.isSymbolicLink()) {
+    throw new Error(`Refusing ${label}: symlink detected at ${dirPath}`);
+  }
+  if (stat.isDirectory()) {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isSymbolicLink()) {
+        throw new Error(`Refusing ${label}: symlink detected at ${fullPath}`);
+      }
+      if (entry.isDirectory()) {
+        checkSymlinksRecursive(fullPath, label);
+      }
+    }
+  }
+}
+
+function pruneUndeclaredFiles(dir: string, declaredRelativePaths: Set<string>, rootDir: string = dir): void {
+  if (!fs.existsSync(dir)) return;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    const relFromRoot = path.relative(rootDir, fullPath).split(path.sep).join('/');
+    if (entry.isDirectory()) {
+      pruneUndeclaredFiles(fullPath, declaredRelativePaths, rootDir);
+      try {
+        if (fs.readdirSync(fullPath).length === 0) {
+          fs.rmdirSync(fullPath);
+        }
+      } catch {}
+    } else {
+      if (!declaredRelativePaths.has(relFromRoot)) {
+        try {
+          fs.unlinkSync(fullPath);
+        } catch {}
+      }
+    }
   }
 }
 
 /**
  * Universal safe recursive copy primitive for Skill Packages.
+ * Validates the skill package before copying and copies only declared resources.
  */
 export function copySkillDirectory(
   skillId: string,
@@ -134,33 +192,67 @@ export function copySkillDirectory(
   overwrite: boolean = true
 ): boolean {
   if (!fs.existsSync(sourceSkillDir)) return false;
-  rejectSymlinkPath(sourceSkillDir, `source symlink from skill package ${skillId}`);
-  rejectSymlinkPath(destSkillDir, `destination symlink for skill package ${skillId}`);
-  if (!fs.existsSync(destSkillDir)) {
-    fs.mkdirSync(destSkillDir, { recursive: true });
+  checkSymlinksRecursive(sourceSkillDir, `source symlink from skill package ${skillId}`);
+  if (fs.existsSync(destSkillDir)) {
+    checkSymlinksRecursive(destSkillDir, `destination symlink for skill package ${skillId}`);
   }
 
-  const entries = fs.readdirSync(sourceSkillDir, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = path.join(sourceSkillDir, entry.name);
-    const destPath = path.join(destSkillDir, entry.name);
-    rejectSymlinkPath(destPath, `destination symlink for skill package ${skillId}`);
-
-    if (entry.isSymbolicLink()) {
-      throw new Error(`Refusing to install symlink from skill package ${skillId}: ${srcPath}`);
-    }
-    if (entry.isDirectory()) {
-      copySkillDirectory(skillId, srcPath, destPath, overwrite);
-    } else if (entry.isFile()) {
-      if (!overwrite && fs.existsSync(destPath)) continue;
-      fs.mkdirSync(path.dirname(destPath), { recursive: true });
-      fs.copyFileSync(srcPath, destPath);
-      const mode = fs.statSync(srcPath).mode & 0o777;
-      fs.chmodSync(destPath, mode & ~0o022);
-    } else {
-      throw new Error(`Refusing to install special file from skill package ${skillId}: ${srcPath}`);
-    }
+  const validation = validateSkillPackageDir(skillId, sourceSkillDir);
+  if (!validation.valid || !validation.manifest) {
+    const reason = (validation.errors || []).join('; ');
+    throw new Error(`Refusing to install invalid skill package "${skillId}": ${reason}`);
   }
+
+  const manifest = validation.manifest;
+  const declaredRelativePaths = new Set<string>([
+    'skill.package.json',
+    manifest.entry,
+    ...manifest.agents,
+    ...manifest.references,
+    ...manifest.templates,
+    ...manifest.examples,
+    ...manifest.evals,
+    ...manifest.scripts,
+  ]);
+
+  if (skillId === 'get-fable' && fs.existsSync(path.join(sourceSkillDir, 'registry.json'))) {
+    declaredRelativePaths.add('registry.json');
+  }
+
+  const destResolved = path.resolve(destSkillDir);
+
+  if (fs.existsSync(destSkillDir) && overwrite) {
+    pruneUndeclaredFiles(destSkillDir, declaredRelativePaths);
+  }
+
+  for (const relPath of declaredRelativePaths) {
+    const srcPath = path.join(sourceSkillDir, ...relPath.split('/'));
+    const destPath = path.join(destSkillDir, ...relPath.split('/'));
+
+    const destPathResolved = path.resolve(destPath);
+    if (!destPathResolved.startsWith(destResolved + path.sep) && destPathResolved !== destResolved) {
+      throw new Error(`Destination path "${relPath}" resolves outside destination directory`);
+    }
+
+    if (!overwrite && fs.existsSync(destPath)) {
+      continue;
+    }
+
+    if (!fs.existsSync(srcPath)) {
+      throw new Error(`Declared resource file "${relPath}" does not exist in source: ${srcPath}`);
+    }
+
+    const srcStat = fs.lstatSync(srcPath);
+    if (srcStat.isSymbolicLink() || !srcStat.isFile()) {
+      throw new Error(`Declared resource "${relPath}" must be a regular file, not a symlink or directory`);
+    }
+
+    fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    fs.copyFileSync(srcPath, destPath);
+    const mode = srcStat.mode & 0o777;
+    fs.chmodSync(destPath, mode & ~0o022);
+  }
+
   return true;
 }
 
@@ -171,8 +263,10 @@ export function installSkillDirectoryAtomic(
   overwrite: boolean = true
 ): boolean {
   if (!fs.existsSync(sourceSkillDir)) return false;
-  rejectSymlinkPath(sourceSkillDir, `source symlink from skill package ${skillId}`);
-  rejectSymlinkPath(destSkillDir, `destination symlink for skill package ${skillId}`);
+  checkSymlinksRecursive(sourceSkillDir, `source symlink from skill package ${skillId}`);
+  if (fs.existsSync(destSkillDir)) {
+    checkSymlinksRecursive(destSkillDir, `destination symlink for skill package ${skillId}`);
+  }
   const parent = path.dirname(destSkillDir);
   fs.mkdirSync(parent, { recursive: true });
   if (!overwrite && fs.existsSync(destSkillDir)) return false;
@@ -184,10 +278,10 @@ export function installSkillDirectoryAtomic(
   try {
     copySkillDirectory(skillId, sourceSkillDir, staging, true);
     if (fs.existsSync(destSkillDir)) {
-      fs.renameSync(destSkillDir, backup);
+      safeRenameSync(destSkillDir, backup);
       movedExisting = true;
     }
-    fs.renameSync(staging, destSkillDir);
+    safeRenameSync(staging, destSkillDir);
     if (movedExisting) fs.rmSync(backup, { recursive: true, force: true });
     return true;
   } catch (error) {
@@ -195,7 +289,7 @@ export function installSkillDirectoryAtomic(
     if (movedExisting) {
       try {
         if (fs.existsSync(destSkillDir)) fs.rmSync(destSkillDir, { recursive: true, force: true });
-        fs.renameSync(backup, destSkillDir);
+        safeRenameSync(backup, destSkillDir);
       } catch (rollbackError) {
         throw new Error(`Skill install failed and rollback also failed for ${skillId}: ${rollbackError instanceof Error ? rollbackError.message : String(rollbackError)}`, { cause: error });
       }
