@@ -27,7 +27,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Cypress.io
-        uses: cypress-io/github-action@c32f12761482a282d24ca0fd7466d8ae86f54ba8 # v7.4.2
+        uses: cypress-io/github-action@01e3b659a495b41649cdd0aa82e1d1624e26520b # v7.4.4
         with:
           install: false
           start: bun run serve:web
