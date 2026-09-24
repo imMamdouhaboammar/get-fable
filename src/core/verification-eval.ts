@@ -125,25 +125,48 @@ export interface VerificationHoldoutEvidenceValidation {
   snapshot?: VerificationHoldoutEvidenceSnapshot;
 }
 
-export function validateVerificationHoldoutEvidenceSnapshot(
-  snapshot: any,
-  expected: { corpusSha256: string; stateSha256: string; evaluatorSha256: string }
-): VerificationHoldoutEvidenceValidation {
-  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== 'enterprise-verification-holdout') {
-    return { status: 'NOT_CHECKED', fresh: false, reason: 'verification holdout evidence schema is missing or invalid' };
-  }
-  for (const field of ['corpusSha256', 'stateSha256'] as const) {
-    if (typeof snapshot[field] !== 'string' || snapshot[field] !== expected[field]) {
-      return { status: 'NOT_CHECKED', fresh: false, reason: `verification holdout evidence is stale for ${field}` };
+export const checkStaleHash = (
+  snap: Record<string, unknown>,
+  expected: Record<string, string>,
+  fields: readonly string[]
+): string | null => {
+  for (const field of fields) {
+    if (typeof snap[field] !== 'string' || snap[field] !== expected[field]) {
+      return field;
     }
   }
-  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+  return null;
+};
+
+export const areCountsValid = (total: unknown, passed: unknown): boolean =>
+  Number.isInteger(total) &&
+  (total as number) > 0 &&
+  Number.isInteger(passed) &&
+  (passed as number) >= 0 &&
+  (passed as number) <= (total as number);
+
+export function validateVerificationHoldoutEvidenceSnapshot(
+  snapshot: unknown,
+  expected: { corpusSha256: string; stateSha256: string; evaluatorSha256: string }
+): VerificationHoldoutEvidenceValidation {
+  if (!snapshot || typeof snapshot !== 'object') {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'verification holdout evidence schema is missing or invalid' };
+  }
+  const snap = snapshot as Record<string, unknown>;
+  if (snap.schemaVersion !== 1 || snap.metric !== 'enterprise-verification-holdout') {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'verification holdout evidence schema is missing or invalid' };
+  }
+  const staleField = checkStaleHash(snap, expected, ['corpusSha256', 'stateSha256', 'evaluatorSha256']);
+  if (staleField) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: `verification holdout evidence is stale for ${staleField}` };
+  }
+  if (!areCountsValid(snap.total, snap.passed)) {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'verification holdout evidence counts are invalid' };
   }
-  if (typeof snapshot.passRate !== 'number' || snapshot.passRate !== snapshot.passed / snapshot.total) {
+  if (typeof snap.passRate !== 'number' || snap.passRate !== (snap.passed as number) / (snap.total as number)) {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'verification holdout evidence metrics are invalid' };
   }
-  const typed = snapshot as VerificationHoldoutEvidenceSnapshot;
+  const typed = snap as unknown as VerificationHoldoutEvidenceSnapshot;
   const passed = typed.passRate >= 0.9;
   return {
     status: passed ? 'PASS' : 'FAIL',

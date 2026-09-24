@@ -22,12 +22,12 @@ describe('frozen verification holdout evidence', () => {
     expect(result.fresh).toBe(false);
   });
 
-  test('keeps evidence fresh when only evaluator tooling provenance changes', () => {
+  test('marks evidence stale when evaluator tooling provenance changes', () => {
     const result = validateVerificationHoldoutEvidenceSnapshot({
       schemaVersion: 1, metric: 'enterprise-verification-holdout', capturedAt: '2026-08-19T12:00:00.000Z',
       ...hashes, total: 20, passed: 19, passRate: 0.95,
     }, { ...hashes, evaluatorSha256: 'e'.repeat(64) });
-    expect(result.status).toBe('PASS');
-    expect(result.fresh).toBe(true);
+    expect(result.status).toBe('NOT_CHECKED');
+    expect(result.fresh).toBe(false);
   });
 });

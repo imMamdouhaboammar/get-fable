@@ -32,7 +32,7 @@ const EXTENSIONS: Record<SkillResourceType, Set<string>> = {
   reference: new Set(['.md', '.json', '.yaml', '.yml', '.txt', '.proto']),
   template: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon', '.proto']),
   example: new Set(['.md', '.json', '.yaml', '.yml', '.ts', '.js', '.txt', '.toon']),
-  eval: new Set(['.json', '.yaml', '.yml']),
+  eval: new Set(['.json']),
   script: new Set(['.sh', '.bash', '.py', '.js', '.mjs', '.cjs', '.ts']),
 };
 
