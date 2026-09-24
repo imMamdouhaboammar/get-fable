@@ -93,13 +93,12 @@ function symlinkSegment(baseDir: string, segments: string[]): string | null {
   return null;
 }
 
-export function resolveSkillResourcePath(
+export function resolveSkillResourcePathFromDir(
   id: string,
-  relativePath: string,
-  repoRoot: string = getCoreRepoRoot()
+  skillDir: string,
+  relativePath: string
 ): { safe: boolean; absolutePath: string; error?: string } {
   const policy = pathPolicy(relativePath);
-  const skillDir = getSkillPackageDir(id, repoRoot);
   if (!policy.safe) return { safe: false, absolutePath: '', error: policy.error };
   const resolved = path.resolve(skillDir, ...policy.segments);
   if (!isPathInside(resolved, path.resolve(skillDir))) {
@@ -118,11 +117,18 @@ export function resolveSkillResourcePath(
     }
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
-    if (code !== 'ENOENT' && code !== 'ENOTDIR') {
-      return { safe: false, absolutePath: resolved, error: `Unable to verify resource path safely: "${relativePath}" (${code || 'unknown'})` };
-    }
+    if (code !== 'ENOENT') throw error;
   }
   return { safe: true, absolutePath: resolved };
+}
+
+export function resolveSkillResourcePath(
+  id: string,
+  relativePath: string,
+  repoRoot: string = getCoreRepoRoot()
+): { safe: boolean; absolutePath: string; error?: string } {
+  const skillDir = getSkillPackageDir(id, repoRoot);
+  return resolveSkillResourcePathFromDir(id, skillDir, relativePath);
 }
 
 function asObject(value: unknown, label: string): Record<string, unknown> {
@@ -180,16 +186,20 @@ export function migrateSkillPackageManifestV1(value: unknown): SkillPackageManif
   return parseManifestObject(id, { ...obj, schemaVersion: 2, scriptPolicy: 'data-only' });
 }
 
-export function loadSkillPackage(id: string, repoRoot: string = getCoreRepoRoot()): SkillPackageManifest {
-  const manifestPath = getSkillManifestPath(id, repoRoot);
-  if (!fs.existsSync(manifestPath)) throw new Error(`Skill package manifest not found: skills/${id}/skill.package.json`);
+export function loadSkillPackageDir(id: string, skillDir: string): SkillPackageManifest {
+  const manifestPath = path.join(skillDir, 'skill.package.json');
+  if (!fs.existsSync(manifestPath)) throw new Error(`Skill package manifest not found: ${id}/skill.package.json`);
   const stat = fs.statSync(manifestPath);
-  if (!stat.isFile()) throw new Error(`Skill package manifest is not a file: skills/${id}/skill.package.json`);
+  if (!stat.isFile()) throw new Error(`Skill package manifest is not a file: ${id}/skill.package.json`);
   if (stat.size > SKILL_PACKAGE_LIMITS.maxManifestBytes) throw new Error(`Skill package manifest exceeds ${SKILL_PACKAGE_LIMITS.maxManifestBytes} bytes`);
   let parsed: unknown;
   try { parsed = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')); }
-  catch (error) { throw new Error(`Malformed JSON in skills/${id}/skill.package.json: ${error instanceof Error ? error.message : String(error)}`); }
+  catch (error) { throw new Error(`Malformed JSON in ${id}/skill.package.json: ${error instanceof Error ? error.message : String(error)}`); }
   return parseManifestObject(id, parsed);
+}
+
+export function loadSkillPackage(id: string, repoRoot: string = getCoreRepoRoot()): SkillPackageManifest {
+  return loadSkillPackageDir(id, getSkillPackageDir(id, repoRoot));
 }
 
 function declaredResources(manifest: SkillPackageManifest): Array<[SkillResourceType, string, string]> {
@@ -276,28 +286,27 @@ function validateStructuredResource(type: SkillResourceType, relPath: string, ab
   }
 }
 
-export function validateSkillPackage(id: string, repoRoot: string = getCoreRepoRoot()): SkillPackageValidationResult {
+export function validateSkillPackageDir(id: string, skillDir: string): SkillPackageValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
   const resources: SkillResourceEntry[] = [];
-  const skillDir = getSkillPackageDir(id, repoRoot);
-  if (!fs.existsSync(skillDir)) return { id, valid: false, errors: [`Skill directory missing: skills/${id}`], warnings, resources };
+  if (!fs.existsSync(skillDir)) return { id, valid: false, errors: [`Skill directory missing: ${id}`], warnings, resources };
   let manifest: SkillPackageManifest;
-  try { manifest = loadSkillPackage(id, repoRoot); }
+  try { manifest = loadSkillPackageDir(id, skillDir); }
   catch (error) { return { id, valid: false, errors: [error instanceof Error ? error.message : String(error)], warnings, resources }; }
 
   let totalBytes = 0;
   for (const [type, relPath, prefix] of declaredResources(manifest)) {
     if (prefix && !relPath.startsWith(prefix)) errors.push(`Resource "${relPath}" in group "${type}" must start with "${prefix}"`);
     if (!EXTENSIONS[type].has(path.extname(relPath).toLowerCase())) errors.push(`Resource "${relPath}" has an invalid extension for category "${type}"`);
-    const check = resolveSkillResourcePath(id, relPath, repoRoot);
+    const check = resolveSkillResourcePathFromDir(id, skillDir, relPath);
     if (!check.safe) { errors.push(`Unsafe resource path "${relPath}": ${check.error}`); continue; }
     let stat: fs.Stats;
     try { stat = fs.lstatSync(check.absolutePath); }
-    catch { errors.push(`Referenced resource missing: skills/${id}/${relPath}`); continue; }
-    if (stat.isSymbolicLink()) { errors.push(`Referenced resource is a symlink: skills/${id}/${relPath}`); continue; }
-    if (!stat.isFile()) { errors.push(`Referenced resource is not a regular file: skills/${id}/${relPath}`); continue; }
-    if (stat.size === 0) { errors.push(`Referenced resource is empty: skills/${id}/${relPath}`); continue; }
+    catch { errors.push(`Referenced resource missing: ${id}/${relPath}`); continue; }
+    if (stat.isSymbolicLink()) { errors.push(`Referenced resource is a symlink: ${id}/${relPath}`); continue; }
+    if (!stat.isFile()) { errors.push(`Referenced resource is not a regular file: ${id}/${relPath}`); continue; }
+    if (stat.size === 0) { errors.push(`Referenced resource is empty: ${id}/${relPath}`); continue; }
     if (stat.size > SKILL_PACKAGE_LIMITS.maxResourceBytes) { errors.push(`Resource ${relPath} exceeds maximum size ${SKILL_PACKAGE_LIMITS.maxResourceBytes} bytes`); continue; }
     totalBytes += stat.size;
     resources.push({ type, path: relPath, relativePath: relPath, absolutePath: check.absolutePath, byteSize: stat.size, sizeBytes: stat.size, exists: true });
@@ -305,6 +314,10 @@ export function validateSkillPackage(id: string, repoRoot: string = getCoreRepoR
   }
   if (totalBytes > SKILL_PACKAGE_LIMITS.maxTotalBytes) errors.push(`Skill package total resource size exceeds ${SKILL_PACKAGE_LIMITS.maxTotalBytes} bytes`);
   return { id, valid: errors.length === 0, errors, warnings, manifest, resources };
+}
+
+export function validateSkillPackage(id: string, repoRoot: string = getCoreRepoRoot()): SkillPackageValidationResult {
+  return validateSkillPackageDir(id, getSkillPackageDir(id, repoRoot));
 }
 
 export function getSkillPackageSummary(id: string, repoRoot: string = getCoreRepoRoot()): SkillPackageSummary {

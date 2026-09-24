@@ -11,11 +11,27 @@ describe('skill installer byte and path safety', () => {
     const root = fresh('fable-copy-bytes-');
     try {
       const src = path.join(root, 'src'); const dst = path.join(root, 'dst');
-      fs.mkdirSync(path.join(src, 'assets'), { recursive: true });
+      fs.mkdirSync(path.join(src, 'references'), { recursive: true });
+      fs.writeFileSync(path.join(src, 'SKILL.md'), '# Fixture\n');
+      fs.writeFileSync(
+        path.join(src, 'skill.package.json'),
+        JSON.stringify({
+          schemaVersion: 2,
+          id: 'fixture',
+          entry: 'SKILL.md',
+          agents: [],
+          references: ['references/fixture.txt'],
+          templates: [],
+          examples: [],
+          evals: [],
+          scripts: [],
+          scriptPolicy: 'data-only',
+        })
+      );
       const bytes = Buffer.from([0, 255, 1, 128, 10, 13, 42]);
-      fs.writeFileSync(path.join(src, 'assets', 'fixture.bin'), bytes);
+      fs.writeFileSync(path.join(src, 'references', 'fixture.txt'), bytes);
       expect(copySkillDirectory('fixture', src, dst)).toBe(true);
-      expect(fs.readFileSync(path.join(dst, 'assets', 'fixture.bin'))).toEqual(bytes);
+      expect(fs.readFileSync(path.join(dst, 'references', 'fixture.txt'))).toEqual(bytes);
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   });
 

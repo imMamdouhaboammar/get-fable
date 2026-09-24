@@ -34,7 +34,7 @@ var __toESM = (mod, isNodeMode, target) => {
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/constants.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/constants.js
 var require_constants = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = exports.DEFAULT_MAX_SEND_MESSAGE_LENGTH = exports.Propagate = exports.LogVerbosity = exports.Status = undefined;
@@ -77,7 +77,7 @@ var require_constants = __commonJS(function(exports) {
   exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = 4 * 1024 * 1024;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/package.json
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/package.json
 var require_package = __commonJS(function(exports, module) {
   module.exports = {
     name: "@grpc/grpc-js",
@@ -170,7 +170,7 @@ var require_package = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/logging.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/logging.js
 var require_logging = __commonJS(function(exports) {
   var _a;
   var _b;
@@ -268,7 +268,7 @@ var require_logging = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/error.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/error.js
 var require_error = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getErrorMessage = getErrorMessage;
@@ -289,7 +289,7 @@ var require_error = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/metadata.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/metadata.js
 var require_metadata = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Metadata = undefined;
@@ -467,7 +467,7 @@ var require_metadata = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-credentials.js
 var require_call_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CallCredentials = undefined;
@@ -589,7 +589,7 @@ var require_call_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/tls-helpers.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/tls-helpers.js
 var require_tls_helpers = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CIPHER_SUITES = undefined;
@@ -609,7 +609,7 @@ var require_tls_helpers = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/uri-parser.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/uri-parser.js
 var require_uri_parser = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.parseUri = parseUri;
@@ -700,7 +700,7 @@ var require_uri_parser = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver.js
 var require_resolver = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CHANNEL_ARGS_CONFIG_SELECTOR_KEY = undefined;
@@ -749,7 +749,7 @@ var require_resolver = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channel-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel-credentials.js
 var require_channel_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChannelCredentials = undefined;
@@ -1118,7 +1118,7 @@ var require_channel_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer.js
 var require_load_balancer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.createChildChannelControlHelper = createChildChannelControlHelper;
@@ -1206,7 +1206,7 @@ var require_load_balancer = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/service-config.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/service-config.js
 var require_service_config = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.validateRetryThrottling = validateRetryThrottling;
@@ -1546,7 +1546,7 @@ var require_service_config = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/connectivity-state.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/connectivity-state.js
 var require_connectivity_state = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ConnectivityState = undefined;
@@ -1560,7 +1560,7 @@ var require_connectivity_state = __commonJS(function(exports) {
   })(ConnectivityState || (exports.ConnectivityState = ConnectivityState = {}));
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/picker.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/picker.js
 var require_picker = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.QueuePicker = exports.UnavailablePicker = exports.PickResultType = undefined;
@@ -1619,7 +1619,7 @@ var require_picker = __commonJS(function(exports) {
   exports.QueuePicker = QueuePicker;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/backoff-timeout.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/backoff-timeout.js
 var require_backoff_timeout = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BackoffTimeout = undefined;
@@ -1736,7 +1736,7 @@ var require_backoff_timeout = __commonJS(function(exports) {
   BackoffTimeout.nextId = 0;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-child-handler.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-child-handler.js
 var require_load_balancer_child_handler = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChildLoadBalancerHandler = undefined;
@@ -1858,7 +1858,7 @@ var require_load_balancer_child_handler = __commonJS(function(exports) {
   exports.ChildLoadBalancerHandler = ChildLoadBalancerHandler;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolving-load-balancer.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolving-load-balancer.js
 var require_resolving_load_balancer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ResolvingLoadBalancer = undefined;
@@ -2092,7 +2092,7 @@ var require_resolving_load_balancer = __commonJS(function(exports) {
   exports.ResolvingLoadBalancer = ResolvingLoadBalancer;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channel-options.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel-options.js
 var require_channel_options = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.recognizedOptions = undefined;
@@ -2147,7 +2147,7 @@ var require_channel_options = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-address.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-address.js
 var require_subchannel_address = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.EndpointMap = undefined;
@@ -3166,7 +3166,7 @@ var require_cjs = __commonJS(function(exports) {
   exports.OrderedMap = OrderedMap;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/admin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/admin.js
 var require_admin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.registerAdminService = registerAdminService;
@@ -3182,7 +3182,7 @@ var require_admin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call.js
 var require_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ClientDuplexStreamImpl = exports.ClientWritableStreamImpl = exports.ClientReadableStreamImpl = exports.ClientUnaryCallImpl = undefined;
@@ -3320,7 +3320,7 @@ ${callerStack}`;
   exports.ClientDuplexStreamImpl = ClientDuplexStreamImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call-interface.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-interface.js
 var require_call_interface = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InterceptingListenerImpl = undefined;
@@ -3401,7 +3401,7 @@ var require_call_interface = __commonJS(function(exports) {
   exports.InterceptingListenerImpl = InterceptingListenerImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/client-interceptors.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/client-interceptors.js
 var require_client_interceptors = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.InterceptorConfigurationError = undefined;
@@ -3748,7 +3748,7 @@ var require_client_interceptors = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/client.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/client.js
 var require_client = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Client = undefined;
@@ -4119,7 +4119,7 @@ var require_client = __commonJS(function(exports) {
   exports.Client = Client;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/make-client.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/make-client.js
 var require_make_client = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.makeClientConstructor = makeClientConstructor;
@@ -5046,7 +5046,7 @@ var require_pool = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/longbits.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/longbits.js
 var require_longbits = __commonJS(function(exports, module) {
   module.exports = LongBits;
   var util = require_minimal();
@@ -6050,7 +6050,7 @@ var require_umd = __commonJS(function(exports, module) {
   });
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/minimal.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/minimal.js
 var require_minimal = __commonJS(function(exports) {
   var util = exports;
   util.asPromise = require_aspromise();
@@ -6223,7 +6223,7 @@ var require_minimal = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/writer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/writer.js
 var require_writer = __commonJS(function(exports, module) {
   module.exports = Writer;
   var util = require_minimal();
@@ -6408,7 +6408,7 @@ var require_writer = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/writer_buffer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/writer_buffer.js
 var require_writer_buffer = __commonJS(function(exports, module) {
   module.exports = BufferWriter;
   var Writer = require_writer();
@@ -6456,7 +6456,7 @@ var require_writer_buffer = __commonJS(function(exports, module) {
   BufferWriter._configure();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/reader.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/reader.js
 var require_reader = __commonJS(function(exports, module) {
   module.exports = Reader;
   var util = require_minimal();
@@ -6700,7 +6700,7 @@ var require_reader = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/reader_buffer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/reader_buffer.js
 var require_reader_buffer = __commonJS(function(exports, module) {
   module.exports = BufferReader;
   var Reader = require_reader();
@@ -6720,7 +6720,7 @@ var require_reader_buffer = __commonJS(function(exports, module) {
   BufferReader._configure();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/rpc/service.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/rpc/service.js
 var require_service = __commonJS(function(exports, module) {
   module.exports = Service;
   var util = require_minimal();
@@ -6785,18 +6785,18 @@ var require_service = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/rpc.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/rpc.js
 var require_rpc = __commonJS(function(exports) {
   var rpc = exports;
   rpc.Service = require_service();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/roots.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/roots.js
 var require_roots = __commonJS(function(exports, module) {
   module.exports = Object.create(null);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/index-minimal.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index-minimal.js
 var require_index_minimal = __commonJS(function(exports) {
   var protobuf = exports;
   protobuf.build = "minimal";
@@ -6984,7 +6984,7 @@ var require_path = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/patterns.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/patterns.js
 var require_patterns = __commonJS(function(exports) {
   var patterns = exports;
   patterns.numberRe = /^(?![eE])[0-9]*(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?$/;
@@ -6992,7 +6992,7 @@ var require_patterns = __commonJS(function(exports) {
   patterns.reservedRe = /^(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$/;
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util/fs.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/fs.js
 var require_fs2 = __commonJS(function(exports, module) {
   var fs = null;
   try {
@@ -7003,7 +7003,7 @@ var require_fs2 = __commonJS(function(exports, module) {
   module.exports = fs;
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/namespace.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/namespace.js
 var require_namespace = __commonJS(function(exports, module) {
   module.exports = Namespace;
   var ReflectionObject = require_object();
@@ -7278,7 +7278,7 @@ var require_namespace = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/mapfield.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/mapfield.js
 var require_mapfield = __commonJS(function(exports, module) {
   module.exports = MapField;
   var Field = require_field();
@@ -7331,7 +7331,7 @@ var require_mapfield = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/method.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/method.js
 var require_method = __commonJS(function(exports, module) {
   module.exports = Method;
   var ReflectionObject = require_object();
@@ -7395,7 +7395,7 @@ var require_method = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/service.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/service.js
 var require_service2 = __commonJS(function(exports, module) {
   module.exports = Service;
   var Namespace = require_namespace();
@@ -7505,7 +7505,7 @@ var require_service2 = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/message.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/message.js
 var require_message = __commonJS(function(exports, module) {
   module.exports = Message;
   var util = require_minimal();
@@ -7547,7 +7547,7 @@ var require_message = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/decoder.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/decoder.js
 var require_decoder = __commonJS(function(exports, module) {
   module.exports = decoder;
   var Enum = require_enum();
@@ -7612,7 +7612,7 @@ var require_decoder = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/verifier.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/verifier.js
 var require_verifier = __commonJS(function(exports, module) {
   module.exports = verifier;
   var Enum = require_enum();
@@ -7718,7 +7718,7 @@ var require_verifier = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/converter.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/converter.js
 var require_converter = __commonJS(function(exports) {
   var converter = exports;
   var Enum = require_enum();
@@ -7897,7 +7897,7 @@ var require_converter = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/wrappers.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/wrappers.js
 var require_wrappers = __commonJS(function(exports) {
   var wrappers = exports;
   var Message = require_message();
@@ -7954,7 +7954,7 @@ var require_wrappers = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/type.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/type.js
 var require_type = __commonJS(function(exports, module) {
   module.exports = Type;
   var Namespace = require_namespace();
@@ -8273,7 +8273,7 @@ var require_type = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/root.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/root.js
 var require_root = __commonJS(function(exports, module) {
   module.exports = Root;
   var Namespace = require_namespace();
@@ -8515,7 +8515,7 @@ var require_root = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/util.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util.js
 var require_util = __commonJS(function(exports, module) {
   var util = module.exports = require_minimal();
   var roots = require_roots();
@@ -8634,7 +8634,7 @@ var require_util = __commonJS(function(exports, module) {
   });
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/types.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/types.js
 var require_types = __commonJS(function(exports) {
   var types = exports;
   var util = require_util();
@@ -8735,7 +8735,7 @@ var require_types = __commonJS(function(exports) {
   ]);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/field.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/field.js
 var require_field = __commonJS(function(exports, module) {
   module.exports = Field;
   var ReflectionObject = require_object();
@@ -8924,7 +8924,7 @@ var require_field = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/oneof.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/oneof.js
 var require_oneof = __commonJS(function(exports, module) {
   module.exports = OneOf;
   var ReflectionObject = require_object();
@@ -9029,7 +9029,7 @@ var require_oneof = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/object.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/object.js
 var require_object = __commonJS(function(exports, module) {
   module.exports = ReflectionObject;
   ReflectionObject.className = "ReflectionObject";
@@ -9213,7 +9213,7 @@ var require_object = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/enum.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/enum.js
 var require_enum = __commonJS(function(exports, module) {
   module.exports = Enum;
   var ReflectionObject = require_object();
@@ -9321,7 +9321,7 @@ var require_enum = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/encoder.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/encoder.js
 var require_encoder = __commonJS(function(exports, module) {
   module.exports = encoder;
   var Enum = require_enum();
@@ -9369,7 +9369,7 @@ var require_encoder = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/index-light.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index-light.js
 var require_index_light = __commonJS(function(exports, module) {
   var protobuf = module.exports = require_index_minimal();
   protobuf.build = "light";
@@ -9412,7 +9412,7 @@ var require_index_light = __commonJS(function(exports, module) {
   protobuf.Field._configure(protobuf.Type);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/tokenize.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/tokenize.js
 var require_tokenize = __commonJS(function(exports, module) {
   module.exports = tokenize;
   var delimRe = /[\s{}=;:[\],'"()<>]/g;
@@ -9663,7 +9663,7 @@ var require_tokenize = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/parse.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/parse.js
 var require_parse = __commonJS(function(exports, module) {
   module.exports = parse;
   parse.filename = null;
@@ -10393,7 +10393,7 @@ var require_parse = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/common.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/common.js
 var require_common = __commonJS(function(exports, module) {
   module.exports = common;
   var commonRe = /\/|\./;
@@ -10596,7 +10596,7 @@ var require_common = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/src/index.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index.js
 var require_src = __commonJS(function(exports, module) {
   var protobuf = module.exports = require_index_light();
   protobuf.build = "full";
@@ -10606,7 +10606,7 @@ var require_src = __commonJS(function(exports, module) {
   protobuf.Root._configure(protobuf.Type, protobuf.parse, protobuf.common);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/descriptor.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/descriptor.json
 var require_descriptor = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -11992,7 +11992,7 @@ var require_descriptor = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/ext/descriptor/index.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/ext/descriptor/index.js
 var require_descriptor2 = __commonJS(function(exports, module) {
   var $protobuf = require_src();
   module.exports = exports = $protobuf.descriptor = $protobuf.Root.fromJSON(require_descriptor()).lookup(".google.protobuf");
@@ -12539,7 +12539,7 @@ var require_descriptor2 = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/api.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/api.json
 var require_api = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12661,7 +12661,7 @@ var require_api = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/source_context.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/source_context.json
 var require_source_context = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12685,7 +12685,7 @@ var require_source_context = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-4d934b1e6a2d387d/node_modules/protobufjs/google/protobuf/type.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/type.json
 var require_type2 = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12891,7 +12891,7 @@ var require_type2 = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-538e799f91a079d1/node_modules/@grpc/proto-loader/build/src/util.js
+// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-28eceb0e4dcb771e/node_modules/@grpc/proto-loader/build/src/util.js
 var require_util2 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.addCommonProtos = exports.loadProtosWithOptionsSync = exports.loadProtosWithOptions = undefined;
@@ -12958,7 +12958,7 @@ var require_util2 = __commonJS(function(exports) {
   exports.addCommonProtos = addCommonProtos;
 });
 
-// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-538e799f91a079d1/node_modules/@grpc/proto-loader/build/src/index.js
+// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-28eceb0e4dcb771e/node_modules/@grpc/proto-loader/build/src/index.js
 var require_src2 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.loadFileDescriptorSetFromObject = exports.loadFileDescriptorSetFromBuffer = exports.fromJSON = exports.loadSync = exports.load = exports.IdempotencyLevel = exports.isAnyExtension = exports.Long = undefined;
@@ -13144,9 +13144,9 @@ var require_src2 = __commonJS(function(exports) {
   (0, util_1.addCommonProtos)();
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channelz.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channelz.js
 var require_channelz = __commonJS(function(exports) {
-  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src";
+  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src";
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.registerChannelzSocket = exports.registerChannelzServer = exports.registerChannelzSubchannel = exports.registerChannelzChannel = exports.ChannelzCallTrackerStub = exports.ChannelzCallTracker = exports.ChannelzChildrenTrackerStub = exports.ChannelzChildrenTracker = exports.ChannelzTrace = exports.ChannelzTraceStub = undefined;
   exports.unregisterChannelzRef = unregisterChannelzRef;
@@ -13672,7 +13672,7 @@ var require_channelz = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/call-number.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-number.js
 var require_call_number = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getNextCallNumber = getNextCallNumber;
@@ -13682,7 +13682,7 @@ var require_call_number = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/compression-algorithms.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/compression-algorithms.js
 var require_compression_algorithms = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CompressionAlgorithms = undefined;
@@ -13694,7 +13694,7 @@ var require_compression_algorithms = __commonJS(function(exports) {
   })(CompressionAlgorithms || (exports.CompressionAlgorithms = CompressionAlgorithms = {}));
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/filter.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/filter.js
 var require_filter = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseFilter = undefined;
@@ -13719,7 +13719,7 @@ var require_filter = __commonJS(function(exports) {
   exports.BaseFilter = BaseFilter;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/compression-filter.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/compression-filter.js
 var require_compression_filter = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CompressionFilterFactory = exports.CompressionFilter = undefined;
@@ -13983,7 +13983,7 @@ var require_compression_filter = __commonJS(function(exports) {
   exports.CompressionFilterFactory = CompressionFilterFactory;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/control-plane-status.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/control-plane-status.js
 var require_control_plane_status = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.restrictControlPlaneStatusCode = restrictControlPlaneStatusCode;
@@ -14010,7 +14010,7 @@ var require_control_plane_status = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/deadline.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/deadline.js
 var require_deadline = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.minDeadline = minDeadline;
@@ -14078,7 +14078,7 @@ var require_deadline = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/filter-stack.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/filter-stack.js
 var require_filter_stack = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.FilterStackFactory = exports.FilterStack = undefined;
@@ -14148,7 +14148,7 @@ var require_filter_stack = __commonJS(function(exports) {
   exports.FilterStackFactory = FilterStackFactory;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/single-subchannel-channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/single-subchannel-channel.js
 var require_single_subchannel_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SingleSubchannelChannel = undefined;
@@ -14367,7 +14367,7 @@ var require_single_subchannel_channel = __commonJS(function(exports) {
   exports.SingleSubchannelChannel = SingleSubchannelChannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel.js
 var require_subchannel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Subchannel = undefined;
@@ -14649,7 +14649,7 @@ var require_subchannel = __commonJS(function(exports) {
   exports.Subchannel = Subchannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/environment.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/environment.js
 var require_environment = __commonJS(function(exports) {
   var _a;
   Object.defineProperty(exports, "__esModule", { value: true });
@@ -14657,7 +14657,7 @@ var require_environment = __commonJS(function(exports) {
   exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER = ((_a = process.env.GRPC_NODE_USE_ALTERNATIVE_RESOLVER) !== null && _a !== undefined ? _a : "false") === "true";
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver-dns.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-dns.js
 var require_resolver_dns = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DEFAULT_PORT = undefined;
@@ -14921,7 +14921,7 @@ var require_resolver_dns = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/http_proxy.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/http_proxy.js
 var require_http_proxy = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.parseCIDR = parseCIDR;
@@ -15137,7 +15137,7 @@ var require_http_proxy = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/stream-decoder.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/stream-decoder.js
 var require_stream_decoder = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.StreamDecoder = undefined;
@@ -15220,7 +15220,7 @@ var require_stream_decoder = __commonJS(function(exports) {
   exports.StreamDecoder = StreamDecoder;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-call.js
 var require_subchannel_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Http2SubchannelCall = undefined;
@@ -15622,7 +15622,7 @@ var require_subchannel_call = __commonJS(function(exports) {
   exports.Http2SubchannelCall = Http2SubchannelCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/transport.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/transport.js
 var require_transport = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Http2SubchannelConnector = undefined;
@@ -16123,7 +16123,7 @@ var require_transport = __commonJS(function(exports) {
   exports.Http2SubchannelConnector = Http2SubchannelConnector;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-pool.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-pool.js
 var require_subchannel_pool = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SubchannelPool = undefined;
@@ -16200,7 +16200,7 @@ var require_subchannel_pool = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancing-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancing-call.js
 var require_load_balancing_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.LoadBalancingCall = undefined;
@@ -16441,7 +16441,7 @@ var require_load_balancing_call = __commonJS(function(exports) {
   exports.LoadBalancingCall = LoadBalancingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolving-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolving-call.js
 var require_resolving_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ResolvingCall = undefined;
@@ -16723,7 +16723,7 @@ var require_resolving_call = __commonJS(function(exports) {
   exports.ResolvingCall = ResolvingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/retrying-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/retrying-call.js
 var require_retrying_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.RetryingCall = exports.MessageBufferTracker = exports.RetryThrottler = undefined;
@@ -17349,7 +17349,7 @@ var require_retrying_call = __commonJS(function(exports) {
   exports.RetryingCall = RetryingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/subchannel-interface.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-interface.js
 var require_subchannel_interface = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseSubchannelWrapper = undefined;
@@ -17446,7 +17446,7 @@ var require_subchannel_interface = __commonJS(function(exports) {
   exports.BaseSubchannelWrapper = BaseSubchannelWrapper;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/internal-channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/internal-channel.js
 var require_internal_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InternalChannel = exports.SUBCHANNEL_ARGS_EXCLUDE_KEY_PREFIX = undefined;
@@ -17957,7 +17957,7 @@ var require_internal_channel = __commonJS(function(exports) {
   exports.InternalChannel = InternalChannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel.js
 var require_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChannelImplementation = undefined;
@@ -18007,7 +18007,7 @@ var require_channel = __commonJS(function(exports) {
   exports.ChannelImplementation = ChannelImplementation;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-call.js
 var require_server_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ServerDuplexStreamImpl = exports.ServerWritableStreamImpl = exports.ServerReadableStreamImpl = exports.ServerUnaryCallImpl = undefined;
@@ -18215,7 +18215,7 @@ var require_server_call = __commonJS(function(exports) {
   exports.ServerDuplexStreamImpl = ServerDuplexStreamImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-credentials.js
 var require_server_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ServerCredentials = undefined;
@@ -18501,7 +18501,7 @@ var require_server_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/duration.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/duration.js
 var require_duration = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.durationMessageToDuration = durationMessageToDuration;
@@ -18559,9 +18559,9 @@ var require_duration = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/orca.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/orca.js
 var require_orca = __commonJS(function(exports) {
-  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src";
+  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src";
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.OrcaOobMetricsSubchannelWrapper = exports.GRPC_METRICS_HEADER = exports.ServerMetricRecorder = exports.PerRequestMetricRecorder = undefined;
   exports.createOrcaClient = createOrcaClient;
@@ -18822,7 +18822,7 @@ var require_orca = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server-interceptors.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-interceptors.js
 var require_server_interceptors = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseServerInterceptingCall = exports.ServerInterceptingCall = exports.ResponderBuilder = exports.ServerListenerBuilder = undefined;
@@ -19563,7 +19563,7 @@ var require_server_interceptors = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/server.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server.js
 var require_server = __commonJS(function(exports) {
   var __runInitializers = exports && exports.__runInitializers || function(thisArg, initializers, value) {
     var useValue = arguments.length > 2;
@@ -20983,7 +20983,7 @@ var require_server = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/status-builder.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/status-builder.js
 var require_status_builder = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.StatusBuilder = undefined;
@@ -21023,7 +21023,7 @@ var require_status_builder = __commonJS(function(exports) {
   exports.StatusBuilder = StatusBuilder;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-pick-first.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-pick-first.js
 var require_load_balancer_pick_first = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.LeafLoadBalancer = exports.PickFirstLoadBalancer = exports.PickFirstLoadBalancingConfig = undefined;
@@ -21416,7 +21416,7 @@ var require_load_balancer_pick_first = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/certificate-provider.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/certificate-provider.js
 var require_certificate_provider = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.FileWatcherCertificateProvider = undefined;
@@ -21537,7 +21537,7 @@ var require_certificate_provider = __commonJS(function(exports) {
   exports.FileWatcherCertificateProvider = FileWatcherCertificateProvider;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/experimental.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/experimental.js
 var require_experimental = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SUBCHANNEL_ARGS_EXCLUDE_KEY_PREFIX = exports.createCertificateProviderChannelCredentials = exports.FileWatcherCertificateProvider = exports.createCertificateProviderServerCredentials = exports.createServerCredentialsWithInterceptors = exports.BaseSubchannelWrapper = exports.registerAdminService = exports.FilterStackFactory = exports.BaseFilter = exports.statusOrFromError = exports.statusOrFromValue = exports.PickResultType = exports.QueuePicker = exports.UnavailablePicker = exports.ChildLoadBalancerHandler = exports.EndpointMap = exports.endpointHasAddress = exports.endpointToString = exports.subchannelAddressToString = exports.LeafLoadBalancer = exports.isLoadBalancerNameRegistered = exports.parseLoadBalancingConfig = exports.selectLbConfigFromList = exports.registerLoadBalancerType = exports.createChildChannelControlHelper = exports.BackoffTimeout = exports.parseDuration = exports.durationToMs = exports.splitHostPort = exports.uriToString = exports.CHANNEL_ARGS_CONFIG_SELECTOR_KEY = exports.createResolver = exports.registerResolver = exports.log = exports.trace = undefined;
@@ -21667,7 +21667,7 @@ var require_experimental = __commonJS(function(exports) {
   } });
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver-uds.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-uds.js
 var require_resolver_uds = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.setup = setup;
@@ -21705,7 +21705,7 @@ var require_resolver_uds = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/resolver-ip.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-ip.js
 var require_resolver_ip = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.setup = setup;
@@ -21794,7 +21794,7 @@ var require_resolver_ip = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-round-robin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-round-robin.js
 var require_load_balancer_round_robin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.RoundRobinLoadBalancer = undefined;
@@ -21960,7 +21960,7 @@ var require_load_balancer_round_robin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-outlier-detection.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-outlier-detection.js
 var require_load_balancer_outlier_detection = __commonJS(function(exports) {
   var _a;
   Object.defineProperty(exports, "__esModule", { value: true });
@@ -22458,7 +22458,7 @@ var require_load_balancer_outlier_detection = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/priority-queue.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/priority-queue.js
 var require_priority_queue = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.PriorityQueue = undefined;
@@ -22529,7 +22529,7 @@ var require_priority_queue = __commonJS(function(exports) {
   exports.PriorityQueue = PriorityQueue;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/load-balancer-weighted-round-robin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-weighted-round-robin.js
 var require_load_balancer_weighted_round_robin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.WeightedRoundRobinLoadBalancingConfig = undefined;
@@ -22879,7 +22879,7 @@ var require_load_balancer_weighted_round_robin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-8070d61e574073c1/node_modules/@grpc/grpc-js/build/src/index.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/index.js
 var require_src3 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.experimental = exports.ServerMetricRecorder = exports.ServerInterceptingCall = exports.ResponderBuilder = exports.ServerListenerBuilder = exports.addAdminServicesToServer = exports.getChannelzHandlers = exports.getChannelzServiceDefinition = exports.InterceptorConfigurationError = exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.StatusBuilder = exports.getClientChannel = exports.ServerCredentials = exports.Server = exports.setLogVerbosity = exports.setLogger = exports.load = exports.loadObject = exports.CallCredentials = exports.ChannelCredentials = exports.waitForClientReady = exports.closeClient = exports.Channel = exports.makeGenericClientConstructor = exports.makeClientConstructor = exports.loadPackageDefinition = exports.Client = exports.compressionAlgorithms = exports.propagate = exports.connectivityState = exports.status = exports.logVerbosity = exports.Metadata = exports.credentials = undefined;
@@ -23043,8 +23043,8 @@ var require_src3 = __commonJS(function(exports) {
 });
 
 // src/installer.ts
-import fs8 from "node:fs";
-import path8 from "node:path";
+import fs9 from "node:fs";
+import path9 from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // src/utils.ts
@@ -23193,18 +23193,29 @@ function copyDirSync(src, dest) {
     }
   }
 }
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
 function replaceTempFileSync(tempPath, filePath, mode) {
-  try {
-    fs.renameSync(tempPath, filePath);
-  } catch (error) {
-    const code = error?.code;
-    if (code !== "EEXIST" && code !== "EPERM" && code !== "EACCES") {
-      throw error;
+  const retryDelays = [20, 40, 80, 160, 200];
+  let lastError;
+  for (let attempt = 0;attempt <= retryDelays.length; attempt++) {
+    try {
+      fs.renameSync(tempPath, filePath);
+      fs.chmodSync(filePath, mode);
+      return;
+    } catch (error) {
+      lastError = error;
+      const code = error?.code;
+      const isLockError = code === "EEXIST" || code === "EPERM" || code === "EACCES" || code === "EBUSY";
+      if (!isLockError || attempt === retryDelays.length) {
+        throw error;
+      }
+      sleepSync(retryDelays[attempt]);
     }
-    fs.copyFileSync(tempPath, filePath);
-    fs.unlinkSync(tempPath);
   }
-  fs.chmodSync(filePath, mode);
+  if (lastError)
+    throw lastError;
 }
 function atomicWriteFileSync(filePath, content) {
   const dir = path.dirname(filePath);
@@ -23940,7 +23951,7 @@ function readFableState(targetDir = process.cwd()) {
 }
 var STATE_LOCK_TIMEOUT_MS = 2000;
 var STATE_LOCK_STALE_MS = 30000;
-function sleepSync(milliseconds) {
+function sleepSync2(milliseconds) {
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
 }
 function lockPath(targetDir) {
@@ -23998,7 +24009,7 @@ function acquireStateLock(targetDir) {
       }
       if (Date.now() >= deadline)
         throw new Error("Timed out waiting for Fable state lock");
-      sleepSync(10);
+      sleepSync2(10);
     }
   }
 }
@@ -24179,52 +24190,435 @@ function allowedTransitions(phase) {
 }
 
 // src/core/skill-installer.ts
-import fs5 from "node:fs";
+import fs6 from "node:fs";
 import os2 from "node:os";
+import path6 from "node:path";
+
+// src/core/skill-package.ts
+import fs5 from "node:fs";
 import path5 from "node:path";
+var FABLE_SKILL_PACKAGE_SCHEMA_VERSION2 = 2;
+var SKILL_PACKAGE_LIMITS = {
+  maxManifestBytes: 256 * 1024,
+  maxResourceBytes: 1024 * 1024,
+  maxTotalBytes: 8 * 1024 * 1024,
+  maxResources: 128,
+  maxDepth: 8
+};
+var MANIFEST_FIELDS = new Set([
+  "$schema",
+  "schemaVersion",
+  "id",
+  "entry",
+  "agents",
+  "references",
+  "templates",
+  "examples",
+  "evals",
+  "scripts",
+  "scriptPolicy"
+]);
+var REQUIRED_FIELDS = [
+  "schemaVersion",
+  "id",
+  "entry",
+  "agents",
+  "references",
+  "templates",
+  "examples",
+  "evals",
+  "scripts",
+  "scriptPolicy"
+];
+var EXTENSIONS = {
+  entry: new Set([".md"]),
+  agent: new Set([".yaml", ".yml", ".json"]),
+  reference: new Set([".md", ".json", ".yaml", ".yml", ".txt", ".proto"]),
+  template: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon", ".proto"]),
+  example: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon"]),
+  eval: new Set([".json", ".yaml", ".yml"]),
+  script: new Set([".sh", ".bash", ".py", ".js", ".mjs", ".cjs", ".ts"])
+};
+function getSkillPackageDir(id, repoRoot = getCoreRepoRoot()) {
+  return path5.join(repoRoot, "skills", id);
+}
+function getSkillManifestPath(id, repoRoot = getCoreRepoRoot()) {
+  return path5.join(getSkillPackageDir(id, repoRoot), "skill.package.json");
+}
+function isPathInside(targetPath, parentDir) {
+  const rel = path5.relative(parentDir, targetPath);
+  return rel !== "" && rel !== ".." && !rel.startsWith(`..${path5.sep}`) && !path5.isAbsolute(rel);
+}
+function pathPolicy(relativePath) {
+  if (!relativePath || relativePath.includes("\x00"))
+    return { safe: false, segments: [], error: "Resource path must be a non-empty path without NUL bytes" };
+  if (path5.posix.isAbsolute(relativePath) || path5.win32.isAbsolute(relativePath)) {
+    return { safe: false, segments: [], error: `Absolute resource paths are forbidden: "${relativePath}"` };
+  }
+  let decoded = relativePath;
+  try {
+    decoded = decodeURIComponent(relativePath);
+  } catch {
+    return { safe: false, segments: [], error: `Malformed percent encoding in resource path: "${relativePath}"` };
+  }
+  for (const candidate of [relativePath, decoded]) {
+    const normalized = candidate.replace(/\\/g, "/");
+    if (normalized.startsWith("/") || /^[A-Za-z]:\//.test(normalized)) {
+      return { safe: false, segments: [], error: `Absolute resource paths are forbidden: "${relativePath}"` };
+    }
+    const segments = normalized.split("/");
+    if (segments.some((segment) => segment === "" || segment === "." || segment === "..")) {
+      return { safe: false, segments: [], error: `Unsafe path segment in skill package resource: "${relativePath}"` };
+    }
+    if (segments.length > SKILL_PACKAGE_LIMITS.maxDepth) {
+      return { safe: false, segments: [], error: `Resource path exceeds maximum nesting depth ${SKILL_PACKAGE_LIMITS.maxDepth}: "${relativePath}"` };
+    }
+  }
+  if (relativePath.includes("\\")) {
+    return { safe: false, segments: [], error: `Backslash separators are forbidden in portable skill package paths: "${relativePath}"` };
+  }
+  return { safe: true, segments: relativePath.split("/") };
+}
+function symlinkSegment(baseDir, segments) {
+  let current = baseDir;
+  for (const segment of segments) {
+    current = path5.join(current, segment);
+    try {
+      const stat = fs5.lstatSync(current);
+      if (stat.isSymbolicLink())
+        return current;
+    } catch (error) {
+      const code = error.code;
+      if (code === "ENOENT" || code === "ENOTDIR")
+        return null;
+      throw error;
+    }
+  }
+  return null;
+}
+function resolveSkillResourcePathFromDir(id, skillDir, relativePath) {
+  const policy = pathPolicy(relativePath);
+  if (!policy.safe)
+    return { safe: false, absolutePath: "", error: policy.error };
+  const resolved = path5.resolve(skillDir, ...policy.segments);
+  if (!isPathInside(resolved, path5.resolve(skillDir))) {
+    return { safe: false, absolutePath: resolved, error: `Resource resolves outside skill package directory: "${relativePath}"` };
+  }
+  const link = symlinkSegment(skillDir, policy.segments);
+  if (link)
+    return { safe: false, absolutePath: resolved, error: `Symlink resources are forbidden: "${relativePath}"` };
+  try {
+    const stat = fs5.lstatSync(resolved);
+    if (stat.isSymbolicLink())
+      return { safe: false, absolutePath: resolved, error: `Symlink resources are forbidden: "${relativePath}"` };
+    const realSkill = fs5.realpathSync(skillDir);
+    const realResource = fs5.realpathSync(resolved);
+    if (!isPathInside(realResource, realSkill)) {
+      return { safe: false, absolutePath: resolved, error: `Resource realpath escapes skill package: "${relativePath}"` };
+    }
+  } catch (error) {
+    const code = error.code;
+    if (code !== "ENOENT")
+      throw error;
+  }
+  return { safe: true, absolutePath: resolved };
+}
+function resolveSkillResourcePath(id, relativePath, repoRoot = getCoreRepoRoot()) {
+  const skillDir = getSkillPackageDir(id, repoRoot);
+  return resolveSkillResourcePathFromDir(id, skillDir, relativePath);
+}
+function asObject(value, label) {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error(`${label} must contain a JSON object`);
+  return value;
+}
+function parseStringArray(obj, field) {
+  const value = obj[field];
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string" || !item.trim())) {
+    throw new Error(`Field "${field}" must be an array of non-empty strings`);
+  }
+  if (new Set(value).size !== value.length)
+    throw new Error(`Field "${field}" contains duplicate resource paths`);
+  return value;
+}
+function parseManifestObject(id, value) {
+  const obj = asObject(value, `skills/${id}/skill.package.json`);
+  for (const field of Object.keys(obj)) {
+    if (!MANIFEST_FIELDS.has(field))
+      throw new Error(`Unknown field "${field}" in skills/${id}/skill.package.json`);
+  }
+  for (const field of REQUIRED_FIELDS) {
+    if (!(field in obj))
+      throw new Error(`Missing required field "${field}" in skills/${id}/skill.package.json`);
+  }
+  if (obj.schemaVersion !== FABLE_SKILL_PACKAGE_SCHEMA_VERSION2) {
+    throw new Error(`Unsupported schemaVersion in skills/${id}/skill.package.json: ${String(obj.schemaVersion)}; current is ${FABLE_SKILL_PACKAGE_SCHEMA_VERSION2}`);
+  }
+  if (obj.id !== id || typeof obj.id !== "string" || !/^[a-z0-9-]+$/.test(obj.id)) {
+    throw new Error(`Manifest ID mismatch or invalid ID for skills/${id}/skill.package.json`);
+  }
+  if (obj.entry !== "SKILL.md")
+    throw new Error(`Manifest entry must be "SKILL.md" in skills/${id}/skill.package.json`);
+  if (obj.scriptPolicy !== "data-only")
+    throw new Error(`scriptPolicy must be "data-only" in skills/${id}/skill.package.json`);
+  const manifest = {
+    schemaVersion: 2,
+    id,
+    entry: "SKILL.md",
+    agents: parseStringArray(obj, "agents"),
+    references: parseStringArray(obj, "references"),
+    templates: parseStringArray(obj, "templates"),
+    examples: parseStringArray(obj, "examples"),
+    evals: parseStringArray(obj, "evals"),
+    scripts: parseStringArray(obj, "scripts"),
+    scriptPolicy: "data-only"
+  };
+  const all = [manifest.entry, ...manifest.agents, ...manifest.references, ...manifest.templates, ...manifest.examples, ...manifest.evals, ...manifest.scripts];
+  if (all.length > SKILL_PACKAGE_LIMITS.maxResources)
+    throw new Error(`Skill package resource count ${all.length} exceeds maximum ${SKILL_PACKAGE_LIMITS.maxResources}`);
+  if (new Set(all).size !== all.length)
+    throw new Error("Duplicate resource path across skill package categories");
+  return manifest;
+}
+function loadSkillPackageDir(id, skillDir) {
+  const manifestPath = path5.join(skillDir, "skill.package.json");
+  if (!fs5.existsSync(manifestPath))
+    throw new Error(`Skill package manifest not found: ${id}/skill.package.json`);
+  const stat = fs5.statSync(manifestPath);
+  if (!stat.isFile())
+    throw new Error(`Skill package manifest is not a file: ${id}/skill.package.json`);
+  if (stat.size > SKILL_PACKAGE_LIMITS.maxManifestBytes)
+    throw new Error(`Skill package manifest exceeds ${SKILL_PACKAGE_LIMITS.maxManifestBytes} bytes`);
+  let parsed;
+  try {
+    parsed = JSON.parse(fs5.readFileSync(manifestPath, "utf-8"));
+  } catch (error) {
+    throw new Error(`Malformed JSON in ${id}/skill.package.json: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  return parseManifestObject(id, parsed);
+}
+function loadSkillPackage(id, repoRoot = getCoreRepoRoot()) {
+  return loadSkillPackageDir(id, getSkillPackageDir(id, repoRoot));
+}
+function declaredResources(manifest) {
+  return [
+    ["entry", manifest.entry, ""],
+    ...manifest.agents.map((p) => ["agent", p, "agents/"]),
+    ...manifest.references.map((p) => ["reference", p, "references/"]),
+    ...manifest.templates.map((p) => ["template", p, "templates/"]),
+    ...manifest.examples.map((p) => ["example", p, "examples/"]),
+    ...manifest.evals.map((p) => ["eval", p, "evals/"]),
+    ...manifest.scripts.map((p) => ["script", p, "scripts/"])
+  ];
+}
+function resourceEntry(id, type, relPath, repoRoot) {
+  const check = resolveSkillResourcePath(id, relPath, repoRoot);
+  let exists = false;
+  let byteSize = 0;
+  if (check.safe) {
+    try {
+      const stat = fs5.lstatSync(check.absolutePath);
+      exists = stat.isFile() && !stat.isSymbolicLink();
+      if (exists)
+        byteSize = stat.size;
+    } catch {}
+  }
+  return { type, path: relPath, relativePath: relPath, absolutePath: check.absolutePath, byteSize, sizeBytes: byteSize, exists };
+}
+function listSkillResources(id, repoRoot = getCoreRepoRoot()) {
+  const manifest = loadSkillPackage(id, repoRoot);
+  return declaredResources(manifest).map(([type, relPath]) => resourceEntry(id, type, relPath, repoRoot));
+}
+function readSkillResource(id, relativePath, repoRoot = getCoreRepoRoot()) {
+  const manifest = loadSkillPackage(id, repoRoot);
+  const declared = new Set(declaredResources(manifest).map(([, resource]) => resource));
+  if (!declared.has(relativePath))
+    throw new Error(`Resource "${relativePath}" is not declared by skill package "${id}"`);
+  const check = resolveSkillResourcePath(id, relativePath, repoRoot);
+  if (!check.safe)
+    throw new Error(`Security restriction: ${check.error}`);
+  const stat = fs5.lstatSync(check.absolutePath);
+  if (stat.isSymbolicLink())
+    throw new Error(`Resource "${relativePath}" is a symlink`);
+  if (!stat.isFile())
+    throw new Error(`Resource "${relativePath}" is not a file`);
+  if (stat.size > SKILL_PACKAGE_LIMITS.maxResourceBytes)
+    throw new Error(`Resource "${relativePath}" exceeds maximum size`);
+  const noFollow = typeof fs5.constants.O_NOFOLLOW === "number" ? fs5.constants.O_NOFOLLOW : 0;
+  const fd = fs5.openSync(check.absolutePath, fs5.constants.O_RDONLY | noFollow);
+  try {
+    const opened = fs5.fstatSync(fd);
+    if (!opened.isFile() || opened.size > SKILL_PACKAGE_LIMITS.maxResourceBytes)
+      throw new Error(`Resource "${relativePath}" changed during secure open`);
+    return fs5.readFileSync(fd, "utf-8");
+  } finally {
+    fs5.closeSync(fd);
+  }
+}
+function validateStructuredResource(type, relPath, absolutePath, errors) {
+  if (type === "agent" && /\.ya?ml$/i.test(relPath)) {
+    try {
+      const content = fs5.readFileSync(absolutePath, "utf-8");
+      const lines = content.split(`
+`);
+      const index = lines.findIndex((line) => /^\s*default_prompt:/.test(line));
+      if (index >= 0) {
+        const after = lines[index].replace(/^\s*default_prompt:\s*/, "").trim();
+        if (!after && lines[index + 1] && /^\s+/.test(lines[index + 1]) || after.startsWith("[") || after.startsWith("{")) {
+          errors.push(`Agent ${relPath} default_prompt must be a string, not an object or array`);
+        }
+      }
+      const hasDisplayName = lines.some((line) => /^\s*display_name:\s*\S+/.test(line));
+      if (!hasDisplayName) {
+        errors.push(`Agent ${relPath} interface.display_name is required and must not be empty`);
+      }
+      const hasShortDescription = lines.some((line) => /^\s*short_description:\s*\S+/.test(line));
+      if (!hasShortDescription) {
+        errors.push(`Agent ${relPath} interface.short_description is required and must not be empty`);
+      }
+    } catch (error) {
+      errors.push(`Failed to read agent YAML ${relPath}: ${error}`);
+    }
+  }
+  if (type === "eval" && relPath.endsWith(".json")) {
+    try {
+      const parsed = JSON.parse(fs5.readFileSync(absolutePath, "utf-8"));
+      const scenarios = Array.isArray(parsed) ? parsed : parsed?.scenarios;
+      if (!Array.isArray(scenarios) || scenarios.length === 0)
+        errors.push(`Eval file ${relPath} must contain a non-empty array of scenarios`);
+      else
+        scenarios.forEach((scenario, index) => {
+          if (!scenario || typeof scenario !== "object" || typeof scenario.id !== "string")
+            errors.push(`Scenario [${index}] in ${relPath} is missing string id`);
+        });
+    } catch (error) {
+      errors.push(`Failed to parse eval JSON in ${relPath}: ${error}`);
+    }
+  }
+}
+function validateSkillPackageDir(id, skillDir) {
+  const errors = [];
+  const warnings = [];
+  const resources = [];
+  if (!fs5.existsSync(skillDir))
+    return { id, valid: false, errors: [`Skill directory missing: ${id}`], warnings, resources };
+  let manifest;
+  try {
+    manifest = loadSkillPackageDir(id, skillDir);
+  } catch (error) {
+    return { id, valid: false, errors: [error instanceof Error ? error.message : String(error)], warnings, resources };
+  }
+  let totalBytes = 0;
+  for (const [type, relPath, prefix] of declaredResources(manifest)) {
+    if (prefix && !relPath.startsWith(prefix))
+      errors.push(`Resource "${relPath}" in group "${type}" must start with "${prefix}"`);
+    if (!EXTENSIONS[type].has(path5.extname(relPath).toLowerCase()))
+      errors.push(`Resource "${relPath}" has an invalid extension for category "${type}"`);
+    const check = resolveSkillResourcePathFromDir(id, skillDir, relPath);
+    if (!check.safe) {
+      errors.push(`Unsafe resource path "${relPath}": ${check.error}`);
+      continue;
+    }
+    let stat;
+    try {
+      stat = fs5.lstatSync(check.absolutePath);
+    } catch {
+      errors.push(`Referenced resource missing: ${id}/${relPath}`);
+      continue;
+    }
+    if (stat.isSymbolicLink()) {
+      errors.push(`Referenced resource is a symlink: ${id}/${relPath}`);
+      continue;
+    }
+    if (!stat.isFile()) {
+      errors.push(`Referenced resource is not a regular file: ${id}/${relPath}`);
+      continue;
+    }
+    if (stat.size === 0) {
+      errors.push(`Referenced resource is empty: ${id}/${relPath}`);
+      continue;
+    }
+    if (stat.size > SKILL_PACKAGE_LIMITS.maxResourceBytes) {
+      errors.push(`Resource ${relPath} exceeds maximum size ${SKILL_PACKAGE_LIMITS.maxResourceBytes} bytes`);
+      continue;
+    }
+    totalBytes += stat.size;
+    resources.push({ type, path: relPath, relativePath: relPath, absolutePath: check.absolutePath, byteSize: stat.size, sizeBytes: stat.size, exists: true });
+    validateStructuredResource(type, relPath, check.absolutePath, errors);
+  }
+  if (totalBytes > SKILL_PACKAGE_LIMITS.maxTotalBytes)
+    errors.push(`Skill package total resource size exceeds ${SKILL_PACKAGE_LIMITS.maxTotalBytes} bytes`);
+  return { id, valid: errors.length === 0, errors, warnings, manifest, resources };
+}
+function validateSkillPackage(id, repoRoot = getCoreRepoRoot()) {
+  return validateSkillPackageDir(id, getSkillPackageDir(id, repoRoot));
+}
+function getSkillPackageSummary(id, repoRoot = getCoreRepoRoot()) {
+  const result = validateSkillPackage(id, repoRoot);
+  const manifest = result.manifest;
+  return {
+    id,
+    valid: result.valid,
+    entryExists: result.resources.some((resource) => resource.type === "entry" && resource.exists),
+    agentCount: manifest?.agents.length || 0,
+    referenceCount: manifest?.references.length || 0,
+    templateCount: manifest?.templates.length || 0,
+    exampleCount: manifest?.examples.length || 0,
+    evalCount: manifest?.evals.length || 0,
+    scriptCount: manifest?.scripts.length || 0,
+    totalResources: result.resources.length,
+    resources: result.resources,
+    errors: result.errors
+  };
+}
+function validateAllSkillPackages(repoRoot = getCoreRepoRoot()) {
+  return Object.fromEntries(canonicalSkillIds().map((id) => [id, validateSkillPackage(id, repoRoot)]));
+}
+
+// src/core/skill-installer.ts
 function getPlatformSkillsDirs(platforms = ["all"], global2 = true, projectDir = process.cwd()) {
   const dirs = {};
   const want = (name) => platforms.includes("all") || platforms.includes(name);
   if (global2) {
     if (want("claude"))
-      dirs.claude = path5.join(getClaudeDir(), "skills");
+      dirs.claude = path6.join(getClaudeDir(), "skills");
     if (want("codex"))
-      dirs.codex = path5.join(getCodexDir(), "skills");
+      dirs.codex = path6.join(getCodexDir(), "skills");
     if (want("antigravity") || want("gemini"))
-      dirs.antigravity = path5.join(getGeminiConfigDir(), "skills");
+      dirs.antigravity = path6.join(getGeminiConfigDir(), "skills");
     if (want("devin"))
-      dirs.devin = path5.join(getDevinDir(), "skills");
+      dirs.devin = path6.join(getDevinDir(), "skills");
     if (want("grok") || want("xai"))
-      dirs.grok = path5.join(getGrokDir(), "skills");
+      dirs.grok = path6.join(getGrokDir(), "skills");
     if (want("roocode") || want("roo"))
-      dirs.roocode = path5.join(getRooDir(), "skills");
+      dirs.roocode = path6.join(getRooDir(), "skills");
     if (want("cline"))
-      dirs.cline = path5.join(getClineDir(), "skills");
+      dirs.cline = path6.join(getClineDir(), "skills");
     if (want("openhands"))
-      dirs.openhands = path5.join(getOpenHandsDir(), "skills");
+      dirs.openhands = path6.join(getOpenHandsDir(), "skills");
     if (want("opencode"))
-      dirs.opencode = path5.join(getOpenCodeDir(), "skills");
+      dirs.opencode = path6.join(getOpenCodeDir(), "skills");
     if (want("kilo"))
-      dirs.kilo = path5.join(getKiloDir(), "skills");
+      dirs.kilo = path6.join(getKiloDir(), "skills");
     if (want("hermes"))
-      dirs.hermes = path5.join(getHermesDir(), "skills");
+      dirs.hermes = path6.join(getHermesDir(), "skills");
     if (want("cursor"))
-      dirs.cursor = path5.join(getCursorDir(), "skills");
+      dirs.cursor = path6.join(getCursorDir(), "skills");
     if (want("kimi"))
-      dirs.kimi = path5.join(getKimiDir(), "skills");
+      dirs.kimi = path6.join(getKimiDir(), "skills");
     if (want("deepseek"))
-      dirs.deepseek = path5.join(getDeepSeekDir(), "skills");
+      dirs.deepseek = path6.join(getDeepSeekDir(), "skills");
     if (want("kiro"))
-      dirs.kiro = path5.join(getKiroDir(), "skills");
+      dirs.kiro = path6.join(getKiroDir(), "skills");
     if (want("pi"))
-      dirs.pi = path5.join(getPiDir(), "skills");
+      dirs.pi = path6.join(getPiDir(), "skills");
     if (want("agent-kernel")) {
-      dirs.agentKernel = path5.join(getAgentKernelDir(), "skills");
-      dirs.globalAgents = path5.join(os2.homedir(), ".agents", "skills");
+      dirs.agentKernel = path6.join(getAgentKernelDir(), "skills");
+      dirs.globalAgents = path6.join(os2.homedir(), ".agents", "skills");
     }
   }
   if (want("project")) {
-    dirs.project = path5.join(projectDir, ".agents", "skills");
+    dirs.project = path6.join(projectDir, ".agents", "skills");
   }
   return dirs;
 }
@@ -24248,83 +24642,163 @@ function resolveSkillsToInstall(packOrSkill = "all", repoRoot = getCoreRepoRoot(
     return matches;
   throw new Error(`Unknown skill or pack: ${packOrSkill}`);
 }
-function rejectSymlinkPath(filePath, label) {
-  try {
-    if (fs5.lstatSync(filePath).isSymbolicLink()) {
-      throw new Error(`Refusing ${label}: ${filePath}`);
-    }
-  } catch (error) {
-    if (error?.code === "ENOENT")
+function sleepSync3(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+function safeRenameSync(source, target) {
+  const retryDelays = [20, 40, 80, 160, 200];
+  let lastError;
+  for (let attempt = 0;attempt <= retryDelays.length; attempt++) {
+    try {
+      fs6.renameSync(source, target);
       return;
-    throw error;
+    } catch (error) {
+      lastError = error;
+      const code = error?.code;
+      const isLockError = code === "EEXIST" || code === "EPERM" || code === "EACCES" || code === "EBUSY";
+      if (!isLockError || attempt === retryDelays.length) {
+        throw error;
+      }
+      sleepSync3(retryDelays[attempt]);
+    }
+  }
+  if (lastError)
+    throw lastError;
+}
+function checkSymlinksRecursive(dirPath, label) {
+  if (!fs6.existsSync(dirPath))
+    return;
+  const stat = fs6.lstatSync(dirPath);
+  if (stat.isSymbolicLink()) {
+    throw new Error(`Refusing ${label}: symlink detected at ${dirPath}`);
+  }
+  if (stat.isDirectory()) {
+    const entries = fs6.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path6.join(dirPath, entry.name);
+      if (entry.isSymbolicLink()) {
+        throw new Error(`Refusing ${label}: symlink detected at ${fullPath}`);
+      }
+      if (entry.isDirectory()) {
+        checkSymlinksRecursive(fullPath, label);
+      }
+    }
+  }
+}
+function pruneUndeclaredFiles(dir, declaredRelativePaths, rootDir = dir) {
+  if (!fs6.existsSync(dir))
+    return;
+  const entries = fs6.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path6.join(dir, entry.name);
+    const relFromRoot = path6.relative(rootDir, fullPath).split(path6.sep).join("/");
+    if (entry.isDirectory()) {
+      pruneUndeclaredFiles(fullPath, declaredRelativePaths, rootDir);
+      try {
+        if (fs6.readdirSync(fullPath).length === 0) {
+          fs6.rmdirSync(fullPath);
+        }
+      } catch {}
+    } else {
+      if (!declaredRelativePaths.has(relFromRoot)) {
+        try {
+          fs6.unlinkSync(fullPath);
+        } catch {}
+      }
+    }
   }
 }
 function copySkillDirectory(skillId, sourceSkillDir, destSkillDir, overwrite = true) {
-  if (!fs5.existsSync(sourceSkillDir))
+  if (!fs6.existsSync(sourceSkillDir))
     return false;
-  rejectSymlinkPath(sourceSkillDir, `source symlink from skill package ${skillId}`);
-  rejectSymlinkPath(destSkillDir, `destination symlink for skill package ${skillId}`);
-  if (!fs5.existsSync(destSkillDir)) {
-    fs5.mkdirSync(destSkillDir, { recursive: true });
+  checkSymlinksRecursive(sourceSkillDir, `source symlink from skill package ${skillId}`);
+  if (fs6.existsSync(destSkillDir)) {
+    checkSymlinksRecursive(destSkillDir, `destination symlink for skill package ${skillId}`);
   }
-  const entries = fs5.readdirSync(sourceSkillDir, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = path5.join(sourceSkillDir, entry.name);
-    const destPath = path5.join(destSkillDir, entry.name);
-    rejectSymlinkPath(destPath, `destination symlink for skill package ${skillId}`);
-    if (entry.isSymbolicLink()) {
-      throw new Error(`Refusing to install symlink from skill package ${skillId}: ${srcPath}`);
+  const validation = validateSkillPackageDir(skillId, sourceSkillDir);
+  if (!validation.valid || !validation.manifest) {
+    const reason = (validation.errors || []).join("; ");
+    throw new Error(`Refusing to install invalid skill package "${skillId}": ${reason}`);
+  }
+  const manifest = validation.manifest;
+  const declaredRelativePaths = new Set([
+    "skill.package.json",
+    manifest.entry,
+    ...manifest.agents,
+    ...manifest.references,
+    ...manifest.templates,
+    ...manifest.examples,
+    ...manifest.evals,
+    ...manifest.scripts
+  ]);
+  if (skillId === "get-fable" && fs6.existsSync(path6.join(sourceSkillDir, "registry.json"))) {
+    declaredRelativePaths.add("registry.json");
+  }
+  const destResolved = path6.resolve(destSkillDir);
+  if (fs6.existsSync(destSkillDir) && overwrite) {
+    pruneUndeclaredFiles(destSkillDir, declaredRelativePaths);
+  }
+  for (const relPath of declaredRelativePaths) {
+    const srcPath = path6.join(sourceSkillDir, ...relPath.split("/"));
+    const destPath = path6.join(destSkillDir, ...relPath.split("/"));
+    const destPathResolved = path6.resolve(destPath);
+    if (!destPathResolved.startsWith(destResolved + path6.sep) && destPathResolved !== destResolved) {
+      throw new Error(`Destination path "${relPath}" resolves outside destination directory`);
     }
-    if (entry.isDirectory()) {
-      copySkillDirectory(skillId, srcPath, destPath, overwrite);
-    } else if (entry.isFile()) {
-      if (!overwrite && fs5.existsSync(destPath))
-        continue;
-      fs5.mkdirSync(path5.dirname(destPath), { recursive: true });
-      fs5.copyFileSync(srcPath, destPath);
-      const mode = fs5.statSync(srcPath).mode & 511;
-      fs5.chmodSync(destPath, mode & ~18);
-    } else {
-      throw new Error(`Refusing to install special file from skill package ${skillId}: ${srcPath}`);
+    if (!overwrite && fs6.existsSync(destPath)) {
+      continue;
     }
+    if (!fs6.existsSync(srcPath)) {
+      throw new Error(`Declared resource file "${relPath}" does not exist in source: ${srcPath}`);
+    }
+    const srcStat = fs6.lstatSync(srcPath);
+    if (srcStat.isSymbolicLink() || !srcStat.isFile()) {
+      throw new Error(`Declared resource "${relPath}" must be a regular file, not a symlink or directory`);
+    }
+    fs6.mkdirSync(path6.dirname(destPath), { recursive: true });
+    fs6.copyFileSync(srcPath, destPath);
+    const mode = srcStat.mode & 511;
+    fs6.chmodSync(destPath, mode & ~18);
   }
   return true;
 }
 function installSkillDirectoryAtomic(skillId, sourceSkillDir, destSkillDir, overwrite = true) {
-  if (!fs5.existsSync(sourceSkillDir))
+  if (!fs6.existsSync(sourceSkillDir))
     return false;
-  rejectSymlinkPath(sourceSkillDir, `source symlink from skill package ${skillId}`);
-  rejectSymlinkPath(destSkillDir, `destination symlink for skill package ${skillId}`);
-  const parent = path5.dirname(destSkillDir);
-  fs5.mkdirSync(parent, { recursive: true });
-  if (!overwrite && fs5.existsSync(destSkillDir))
+  checkSymlinksRecursive(sourceSkillDir, `source symlink from skill package ${skillId}`);
+  if (fs6.existsSync(destSkillDir)) {
+    checkSymlinksRecursive(destSkillDir, `destination symlink for skill package ${skillId}`);
+  }
+  const parent = path6.dirname(destSkillDir);
+  fs6.mkdirSync(parent, { recursive: true });
+  if (!overwrite && fs6.existsSync(destSkillDir))
     return false;
   const nonce = `${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-  const staging = path5.join(parent, `.${path5.basename(destSkillDir)}.staging-${nonce}`);
-  const backup = path5.join(parent, `.${path5.basename(destSkillDir)}.backup-${nonce}`);
+  const staging = path6.join(parent, `.${path6.basename(destSkillDir)}.staging-${nonce}`);
+  const backup = path6.join(parent, `.${path6.basename(destSkillDir)}.backup-${nonce}`);
   let movedExisting = false;
   try {
     copySkillDirectory(skillId, sourceSkillDir, staging, true);
-    if (fs5.existsSync(destSkillDir)) {
-      fs5.renameSync(destSkillDir, backup);
+    if (fs6.existsSync(destSkillDir)) {
+      safeRenameSync(destSkillDir, backup);
       movedExisting = true;
     }
-    fs5.renameSync(staging, destSkillDir);
+    safeRenameSync(staging, destSkillDir);
     if (movedExisting)
-      fs5.rmSync(backup, { recursive: true, force: true });
+      fs6.rmSync(backup, { recursive: true, force: true });
     return true;
   } catch (error) {
-    fs5.rmSync(staging, { recursive: true, force: true });
+    fs6.rmSync(staging, { recursive: true, force: true });
     if (movedExisting) {
       try {
-        if (fs5.existsSync(destSkillDir))
-          fs5.rmSync(destSkillDir, { recursive: true, force: true });
-        fs5.renameSync(backup, destSkillDir);
+        if (fs6.existsSync(destSkillDir))
+          fs6.rmSync(destSkillDir, { recursive: true, force: true });
+        safeRenameSync(backup, destSkillDir);
       } catch (rollbackError) {
         throw new Error(`Skill install failed and rollback also failed for ${skillId}: ${rollbackError instanceof Error ? rollbackError.message : String(rollbackError)}`, { cause: error });
       }
     }
-    fs5.rmSync(backup, { recursive: true, force: true });
+    fs6.rmSync(backup, { recursive: true, force: true });
     throw error;
   }
 }
@@ -24340,12 +24814,12 @@ function autoInstallSkills(options = {}) {
   const installedSkills = [];
   const targetPaths = [];
   for (const [platformName, destDir] of Object.entries(targetDirs)) {
-    if (!fs5.existsSync(destDir)) {
-      fs5.mkdirSync(destDir, { recursive: true });
+    if (!fs6.existsSync(destDir)) {
+      fs6.mkdirSync(destDir, { recursive: true });
     }
     for (const skillId of skills) {
-      const srcSkillDir = path5.join(repoRoot, "skills", skillId);
-      const destSkillDir = path5.join(destDir, skillId);
+      const srcSkillDir = path6.join(repoRoot, "skills", skillId);
+      const destSkillDir = path6.join(destDir, skillId);
       const success = installSkillDirectoryAtomic(skillId, srcSkillDir, destSkillDir, overwrite);
       if (success) {
         if (!installedSkills.includes(skillId))
@@ -24363,8 +24837,8 @@ function autoInstallSkills(options = {}) {
 }
 
 // src/core/git-hooks-path.ts
-import fs6 from "node:fs";
-import path6 from "node:path";
+import fs7 from "node:fs";
+import path7 from "node:path";
 import { spawnSync } from "node:child_process";
 var CANONICAL_GIT_HOOKS = [
   "pre-commit",
@@ -24373,10 +24847,10 @@ var CANONICAL_GIT_HOOKS = [
   "pre-push"
 ];
 function resolveGitHooksPath(targetDir) {
-  const gitMarker = path6.join(targetDir, ".git");
+  const gitMarker = path7.join(targetDir, ".git");
   let marker;
   try {
-    marker = fs6.lstatSync(gitMarker);
+    marker = fs7.lstatSync(gitMarker);
   } catch (error) {
     if (error.code === "ENOENT")
       return { kind: "none" };
@@ -24388,16 +24862,16 @@ function resolveGitHooksPath(targetDir) {
   const result = spawnSync("git", ["rev-parse", "--path-format=absolute", "--git-path", "hooks"], { cwd: targetDir, encoding: "utf-8", env: { ...process.env } });
   const output = result.stdout?.trim();
   if (result.status === 0 && output) {
-    if (!path6.isAbsolute(output)) {
+    if (!path7.isAbsolute(output)) {
       return {
         kind: "error",
         message: `Git returned a non-absolute hooks path for ${targetDir}: ${output}`
       };
     }
-    return validateHooksDirectory(path6.normalize(output), targetDir);
+    return validateHooksDirectory(path7.normalize(output), targetDir);
   }
   if (marker.isDirectory() && isSyntheticGitDirectory(gitMarker)) {
-    return { kind: "resolved", hooksDir: path6.join(gitMarker, "hooks") };
+    return { kind: "resolved", hooksDir: path7.join(gitMarker, "hooks") };
   }
   const detail = result.error ? formatProcessError(result.error) : result.stderr?.trim() || `git exited with status ${result.status ?? "unknown"}`;
   return {
@@ -24408,7 +24882,7 @@ function resolveGitHooksPath(targetDir) {
 function areCanonicalGitHooksInstalled(hooksDir) {
   return CANONICAL_GIT_HOOKS.every((hook) => {
     try {
-      return fs6.statSync(path6.join(hooksDir, hook)).isFile();
+      return fs7.statSync(path7.join(hooksDir, hook)).isFile();
     } catch {
       return false;
     }
@@ -24416,7 +24890,7 @@ function areCanonicalGitHooksInstalled(hooksDir) {
 }
 function validateHooksDirectory(hooksDir, targetDir) {
   try {
-    if (fs6.statSync(hooksDir).isDirectory())
+    if (fs7.statSync(hooksDir).isDirectory())
       return { kind: "resolved", hooksDir };
     return {
       kind: "error",
@@ -24434,7 +24908,7 @@ function validateHooksDirectory(hooksDir, targetDir) {
 }
 function isSyntheticGitDirectory(directory) {
   try {
-    const entries = fs6.readdirSync(directory, { withFileTypes: true });
+    const entries = fs7.readdirSync(directory, { withFileTypes: true });
     if (entries.length === 0)
       return true;
     if (entries.length !== 1)
@@ -24450,14 +24924,14 @@ function formatProcessError(error) {
 }
 
 // src/integrations/no-mistakes-installer.ts
-import fs7 from "node:fs";
-import path7 from "node:path";
+import fs8 from "node:fs";
+import path8 from "node:path";
 import os3 from "node:os";
 import { execSync, spawnSync as spawnSync2 } from "node:child_process";
 import { fileURLToPath as fileURLToPath2 } from "node:url";
 function getRepoRoot() {
   const currentFile = fileURLToPath2(import.meta.url);
-  return path7.resolve(path7.dirname(currentFile), "..", "..");
+  return path8.resolve(path8.dirname(currentFile), "..", "..");
 }
 async function resolveLatestNoMistakesRelease() {
   try {
@@ -24483,29 +24957,29 @@ async function resolveLatestNoMistakesRelease() {
 }
 function findNoMistakesBinary() {
   const candidates = [
-    path7.join(os3.homedir(), ".local", "bin", "no-mistakes"),
-    path7.join(os3.homedir(), ".no-mistakes", "bin", "no-mistakes"),
+    path8.join(os3.homedir(), ".local", "bin", "no-mistakes"),
+    path8.join(os3.homedir(), ".no-mistakes", "bin", "no-mistakes"),
     "/usr/local/bin/no-mistakes",
     "/opt/homebrew/bin/no-mistakes"
   ];
   for (const candidate of candidates) {
-    if (fs7.existsSync(candidate))
+    if (fs8.existsSync(candidate))
       return candidate;
   }
   try {
     const bin = execSync("which no-mistakes", { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"], timeout: 2000 }).trim();
-    if (bin && fs7.existsSync(bin))
+    if (bin && fs8.existsSync(bin))
       return bin;
   } catch {}
   return null;
 }
 function isNoMistakesDaemonRunning() {
   try {
-    const pidFile = path7.join(os3.homedir(), ".no-mistakes", "daemon.pid");
-    const socketFile = path7.join(os3.homedir(), ".no-mistakes", "socket");
-    if (!fs7.existsSync(pidFile) || !fs7.existsSync(socketFile))
+    const pidFile = path8.join(os3.homedir(), ".no-mistakes", "daemon.pid");
+    const socketFile = path8.join(os3.homedir(), ".no-mistakes", "socket");
+    if (!fs8.existsSync(pidFile) || !fs8.existsSync(socketFile))
       return false;
-    const content = fs7.readFileSync(pidFile, "utf-8");
+    const content = fs8.readFileSync(pidFile, "utf-8");
     const parsed = JSON.parse(content);
     if (parsed.pid && typeof parsed.pid === "number") {
       process.kill(parsed.pid, 0);
@@ -24573,27 +25047,27 @@ function installOrUpdateNoMistakes(options) {
 }
 function configureNoMistakesEcosystem(options) {
   const repoRoot = getRepoRoot();
-  const templateSkillPath = path7.join(repoRoot, "templates", "no-mistakes", "SKILL.md");
+  const templateSkillPath = path8.join(repoRoot, "templates", "no-mistakes", "SKILL.md");
   let skillContent = "";
-  if (fs7.existsSync(templateSkillPath)) {
-    skillContent = fs7.readFileSync(templateSkillPath, "utf-8");
+  if (fs8.existsSync(templateSkillPath)) {
+    skillContent = fs8.readFileSync(templateSkillPath, "utf-8");
   }
   if (skillContent) {
     const skillTargets = [
-      path7.join(getClaudeDir(), "skills", "no-mistakes", "SKILL.md"),
-      path7.join(getCodexDir(), "skills", "no-mistakes", "SKILL.md"),
-      path7.join(getCursorDir(), "skills", "no-mistakes", "SKILL.md"),
-      path7.join(getGeminiConfigDir(), "skills", "no-mistakes", "SKILL.md"),
-      path7.join(getAgentKernelDir(), "skills", "no-mistakes", "SKILL.md"),
-      path7.join(os3.homedir(), ".agents", "skills", "no-mistakes", "SKILL.md")
+      path8.join(getClaudeDir(), "skills", "no-mistakes", "SKILL.md"),
+      path8.join(getCodexDir(), "skills", "no-mistakes", "SKILL.md"),
+      path8.join(getCursorDir(), "skills", "no-mistakes", "SKILL.md"),
+      path8.join(getGeminiConfigDir(), "skills", "no-mistakes", "SKILL.md"),
+      path8.join(getAgentKernelDir(), "skills", "no-mistakes", "SKILL.md"),
+      path8.join(os3.homedir(), ".agents", "skills", "no-mistakes", "SKILL.md")
     ];
     for (const target of skillTargets) {
       try {
-        fs7.mkdirSync(path7.dirname(target), { recursive: true });
-        fs7.writeFileSync(target, skillContent, "utf-8");
+        fs8.mkdirSync(path8.dirname(target), { recursive: true });
+        fs8.writeFileSync(target, skillContent, "utf-8");
       } catch {}
     }
-    const cursorRulePath = path7.join(getCursorDir(), "rules", "no-mistakes.mdc");
+    const cursorRulePath = path8.join(getCursorDir(), "rules", "no-mistakes.mdc");
     const cursorRuleContent = `---
 description: Default AI validation pipeline and Git push gate using no-mistakes
 globs: *
@@ -24612,8 +25086,8 @@ Use \`no-mistakes\` as the default quality gate and Git push mechanism for all c
 - **Handle Approval Gates**: On \`gate:\` prompts during \`axi run\`, auto-fix safe findings (\`no-mistakes axi respond --action fix --findings <ids>\`) and escalate \`ask-user\` findings directly to the user.
 `;
     try {
-      fs7.mkdirSync(path7.dirname(cursorRulePath), { recursive: true });
-      fs7.writeFileSync(cursorRulePath, cursorRuleContent, "utf-8");
+      fs8.mkdirSync(path8.dirname(cursorRulePath), { recursive: true });
+      fs8.writeFileSync(cursorRulePath, cursorRuleContent, "utf-8");
     } catch {}
     if (!options?.silent) {
       logSuccess("Distributed /no-mistakes skill and Cursor rules across all agent platforms");
@@ -24642,8 +25116,8 @@ function initProjectNoMistakes(projectDir = process.cwd(), options) {
   const binary = findNoMistakesBinary();
   if (!binary)
     return false;
-  const gitDir = path7.join(projectDir, ".git");
-  if (!fs7.existsSync(gitDir))
+  const gitDir = path8.join(projectDir, ".git");
+  if (!fs8.existsSync(gitDir))
     return false;
   try {
     const remotes = execSync("git remote", { cwd: projectDir, encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] });
@@ -24676,7 +25150,7 @@ async function ensureNoMistakesInstalled(options) {
 // src/installer.ts
 function getRepoRootDir() {
   const currentFile = fileURLToPath3(import.meta.url);
-  return path8.resolve(path8.dirname(currentFile), "..");
+  return path9.resolve(path9.dirname(currentFile), "..");
 }
 var FABLE_HOOK_MARKERS = [
   "fable_hook_dispatch.py",
@@ -24703,7 +25177,7 @@ function entryHasFableHook(entry) {
   });
 }
 function registerClaudeHooks(settingsPath, hooksDest) {
-  const dispatcher = path8.join(hooksDest, "fable_hook_dispatch.py");
+  const dispatcher = path9.join(hooksDest, "fable_hook_dispatch.py");
   const command = (event, handler) => `python3 "${dispatcher}" --host claude --event ${event} --handler ${handler}`;
   const desired = {
     SessionStart: [
@@ -24742,28 +25216,28 @@ function registerClaudeHooks(settingsPath, hooksDest) {
 }
 function installCanonicalSkillPack(repoRoot, targetSkillsDir, skipExisting) {
   for (const skillId of canonicalSkillIds()) {
-    const src = path8.join(repoRoot, "skills", skillId);
-    const dest = path8.join(targetSkillsDir, skillId);
+    const src = path9.join(repoRoot, "skills", skillId);
+    const dest = path9.join(targetSkillsDir, skillId);
     copySkillDirectory(skillId, src, dest, !skipExisting);
   }
 }
 function installClaudeGlobal(claudeDir = getClaudeDir()) {
   const repoRoot = getRepoRootDir();
-  const fableSkillDir = path8.join(claudeDir, "skills", "fable-mode");
+  const fableSkillDir = path9.join(claudeDir, "skills", "fable-mode");
   logInfo(`Installing get-fable into Claude Code (${claudeDir})...`);
-  installCanonicalSkillPack(repoRoot, path8.join(claudeDir, "skills"), false);
+  installCanonicalSkillPack(repoRoot, path9.join(claudeDir, "skills"), false);
   logSuccess("Installed canonical get-fable skills for Claude Code");
-  fs8.mkdirSync(fableSkillDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "fable-mode-skill.md"), path8.join(fableSkillDir, "SKILL.md"));
-  const hooksSrc = path8.join(repoRoot, "hooks");
-  const hooksDest = path8.join(fableSkillDir, "hooks");
+  fs9.mkdirSync(fableSkillDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "fable-mode-skill.md"), path9.join(fableSkillDir, "SKILL.md"));
+  const hooksSrc = path9.join(repoRoot, "hooks");
+  const hooksDest = path9.join(fableSkillDir, "hooks");
   copyDirSync(hooksSrc, hooksDest);
-  const settingsPath = path8.join(claudeDir, "settings.json");
+  const settingsPath = path9.join(claudeDir, "settings.json");
   registerClaudeHooks(settingsPath, hooksDest);
   logSuccess("Claude Code lifecycle hooks registered through the canonical dispatcher");
-  const claudeMdPath = path8.join(claudeDir, "CLAUDE.md");
-  const fableRuleText = fs8.readFileSync(path8.join(repoRoot, "prompts", "fable5-rules.md"), "utf-8");
-  const existingClaudeMd = fs8.existsSync(claudeMdPath) ? fs8.readFileSync(claudeMdPath, "utf-8") : "";
+  const claudeMdPath = path9.join(claudeDir, "CLAUDE.md");
+  const fableRuleText = fs9.readFileSync(path9.join(repoRoot, "prompts", "fable5-rules.md"), "utf-8");
+  const existingClaudeMd = fs9.existsSync(claudeMdPath) ? fs9.readFileSync(claudeMdPath, "utf-8") : "";
   if (!existingClaudeMd.includes("Fable 5 Mythos System Directive")) {
     const updated = `${existingClaudeMd.trim()}
 
@@ -24774,92 +25248,92 @@ ${fableRuleText}`.trim() + `
   }
 }
 function renderAntigravityHooks(repoRoot, pluginDir) {
-  const template = fs8.readFileSync(path8.join(repoRoot, "assets", "antigravity", "hooks.json"), "utf-8");
+  const template = fs9.readFileSync(path9.join(repoRoot, "assets", "antigravity", "hooks.json"), "utf-8");
   const escapedPluginDir = pluginDir.replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
   return template.replaceAll("__FABLE_PLUGIN_DIR__", escapedPluginDir);
 }
 function installAntigravityGlobal(geminiConfigDir = getGeminiConfigDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable into Antigravity (${geminiConfigDir})...`);
-  fs8.mkdirSync(geminiConfigDir, { recursive: true });
-  const rulesDir = path8.join(geminiConfigDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "fable5-rules.md"), path8.join(rulesDir, "fable5-mode.md"));
+  fs9.mkdirSync(geminiConfigDir, { recursive: true });
+  const rulesDir = path9.join(geminiConfigDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "fable5-rules.md"), path9.join(rulesDir, "fable5-mode.md"));
   logSuccess("Installed Antigravity rule: fable5-mode.md");
-  const pluginDir = path8.join(geminiConfigDir, "plugins", "get-fable");
-  fs8.mkdirSync(pluginDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "assets", "antigravity", "plugin.json"), path8.join(pluginDir, "plugin.json"));
-  copyDirSync(path8.join(repoRoot, "skills"), path8.join(pluginDir, "skills"));
-  fs8.mkdirSync(path8.join(pluginDir, "rules"), { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "fable5-rules.md"), path8.join(pluginDir, "rules", "fable5-mode.md"));
-  const pluginHooksDir = path8.join(pluginDir, "hooks");
-  copyDirSync(path8.join(repoRoot, "hooks"), pluginHooksDir);
-  atomicWriteFileSync(path8.join(pluginDir, "hooks.json"), renderAntigravityHooks(repoRoot, pluginDir));
+  const pluginDir = path9.join(geminiConfigDir, "plugins", "get-fable");
+  fs9.mkdirSync(pluginDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "assets", "antigravity", "plugin.json"), path9.join(pluginDir, "plugin.json"));
+  copyDirSync(path9.join(repoRoot, "skills"), path9.join(pluginDir, "skills"));
+  fs9.mkdirSync(path9.join(pluginDir, "rules"), { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "fable5-rules.md"), path9.join(pluginDir, "rules", "fable5-mode.md"));
+  const pluginHooksDir = path9.join(pluginDir, "hooks");
+  copyDirSync(path9.join(repoRoot, "hooks"), pluginHooksDir);
+  atomicWriteFileSync(path9.join(pluginDir, "hooks.json"), renderAntigravityHooks(repoRoot, pluginDir));
   logSuccess("Installed Antigravity plugin with native Pre/Post tool, invocation, and Stop hooks");
-  const globalSkillsDir = path8.join(geminiConfigDir, "skills");
+  const globalSkillsDir = path9.join(geminiConfigDir, "skills");
   installCanonicalSkillPack(repoRoot, globalSkillsDir, false);
-  const globalFableSkillDir = path8.join(globalSkillsDir, "fable-mode");
-  fs8.mkdirSync(globalFableSkillDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "fable-mode-skill.md"), path8.join(globalFableSkillDir, "SKILL.md"));
+  const globalFableSkillDir = path9.join(globalSkillsDir, "fable-mode");
+  fs9.mkdirSync(globalFableSkillDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "fable-mode-skill.md"), path9.join(globalFableSkillDir, "SKILL.md"));
   logSuccess("Installed canonical Antigravity skills and legacy fable-mode compatibility skill");
 }
 function installCodexGlobal(codexDir = getCodexDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Codex (${codexDir})...`);
-  const rulesDir = path8.join(codexDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "codex-fable-rules.md"), path8.join(rulesDir, "fable5-mode.md"));
-  const skillsDir = path8.join(codexDir, "skills");
+  const rulesDir = path9.join(codexDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "codex-fable-rules.md"), path9.join(rulesDir, "fable5-mode.md"));
+  const skillsDir = path9.join(codexDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
-  const pluginDir = path8.join(codexDir, "plugins", "get-fable");
-  fs8.mkdirSync(path8.join(pluginDir, ".codex-plugin"), { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, ".codex-plugin", "plugin.json"), path8.join(pluginDir, ".codex-plugin", "plugin.json"));
-  copyDirSync(path8.join(repoRoot, "skills"), path8.join(pluginDir, "skills"));
-  copyDirSync(path8.join(repoRoot, "hooks"), path8.join(pluginDir, "hooks"));
-  copyDirSync(path8.join(repoRoot, "assets"), path8.join(pluginDir, "assets"));
-  const legacyManifest = path8.join(pluginDir, "plugin.json");
-  if (fs8.existsSync(legacyManifest)) {
-    fs8.rmSync(legacyManifest, { force: true });
+  const pluginDir = path9.join(codexDir, "plugins", "get-fable");
+  fs9.mkdirSync(path9.join(pluginDir, ".codex-plugin"), { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, ".codex-plugin", "plugin.json"), path9.join(pluginDir, ".codex-plugin", "plugin.json"));
+  copyDirSync(path9.join(repoRoot, "skills"), path9.join(pluginDir, "skills"));
+  copyDirSync(path9.join(repoRoot, "hooks"), path9.join(pluginDir, "hooks"));
+  copyDirSync(path9.join(repoRoot, "assets"), path9.join(pluginDir, "assets"));
+  const legacyManifest = path9.join(pluginDir, "plugin.json");
+  if (fs9.existsSync(legacyManifest)) {
+    fs9.rmSync(legacyManifest, { force: true });
   }
   logSuccess("Installed Codex rules, skills, and universal plugin package with lifecycle hooks");
 }
 function installCursorGlobal(cursorDir = getCursorDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Cursor (${cursorDir})...`);
-  const rulesDir = path8.join(cursorDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "cursor-fable-rules.mdc"), path8.join(rulesDir, "fable-lifecycle.mdc"));
+  const rulesDir = path9.join(cursorDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "cursor-fable-rules.mdc"), path9.join(rulesDir, "fable-lifecycle.mdc"));
   logSuccess("Installed Cursor rules in ~/.cursor/rules/fable-lifecycle.mdc");
 }
 function installOpenCodeGlobal(opencodeDir = getOpenCodeDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for OpenCode (${opencodeDir})...`);
-  const rulesDir = path8.join(opencodeDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "opencode-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const skillsDir = path8.join(opencodeDir, "skills");
+  const rulesDir = path9.join(opencodeDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "opencode-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const skillsDir = path9.join(opencodeDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed OpenCode rules and canonical skills");
 }
 function installKimiGlobal(kimiDir = getKimiDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Kimi (${kimiDir})...`);
-  const rulesDir = path8.join(kimiDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "kimi-fable-directive.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(kimiDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "kimi-fable-directive.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Kimi rules in ~/.kimi/rules/fable.md");
 }
 function getDshHomeDir() {
-  return process.env.DSH_HOME || path8.join(process.env.HOME || "~", ".dsh");
+  return process.env.DSH_HOME || path9.join(process.env.HOME || "~", ".dsh");
 }
 function installDshGlobal(dshHome = getDshHomeDir()) {
   logInfo(`Installing get-fable for DeepSeek Harness (${dshHome})...`);
-  fs8.mkdirSync(dshHome, { recursive: true });
-  const webPkgPath = path8.join(dshHome, "profiles", "web", "package.json");
+  fs9.mkdirSync(dshHome, { recursive: true });
+  const webPkgPath = path9.join(dshHome, "profiles", "web", "package.json");
   let isBundle = false;
-  if (fs8.existsSync(webPkgPath)) {
+  if (fs9.existsSync(webPkgPath)) {
     try {
-      const webPkg = JSON.parse(fs8.readFileSync(webPkgPath, "utf-8"));
+      const webPkg = JSON.parse(fs9.readFileSync(webPkgPath, "utf-8"));
       if (webPkg?.dsh?.profile?.bundles?.includes("get-fable")) {
         isBundle = true;
       }
@@ -24867,9 +25341,9 @@ function installDshGlobal(dshHome = getDshHomeDir()) {
   }
   if (isBundle) {
     logInfo("get-fable is already registered as a profile bundle in DSH; skipping cordis.patch.yml duplicate insert.");
-    const patchFile = path8.join(dshHome, "cordis.patch.yml");
-    if (fs8.existsSync(patchFile)) {
-      const existing = fs8.readFileSync(patchFile, "utf-8");
+    const patchFile = path9.join(dshHome, "cordis.patch.yml");
+    if (fs9.existsSync(patchFile)) {
+      const existing = fs9.readFileSync(patchFile, "utf-8");
       let cleaned = existing.replace(/(?:#[^\n]*get-fable[^\n]*\n)?/g, "");
       cleaned = cleaned.replace(/[ \t]*-[ \t]*id:[ \t]*get-fable[^\n]*(?:\n[ \t]+[^\n]+)*/g, "");
       cleaned = cleaned.replace(/[ \t]*-[ \t]*insert:[ \t]*(?:\n[ \t]*)*(?=\n[ \t]*-[ \t]*[a-zA-Z0-9_-]+:|$)/g, "");
@@ -24880,30 +25354,30 @@ function installDshGlobal(dshHome = getDshHomeDir()) {
         cleaned += `
 `;
       if (cleaned !== existing) {
-        fs8.writeFileSync(patchFile, cleaned, "utf-8");
+        fs9.writeFileSync(patchFile, cleaned, "utf-8");
         logSuccess("Cleaned redundant get-fable insert from ~/.dsh/cordis.patch.yml");
       }
     }
     logSuccess("DeepSeek Harness integration configured successfully.");
     return;
   }
-  const patchFile = path8.join(dshHome, "cordis.patch.yml");
+  const patchFile = path9.join(dshHome, "cordis.patch.yml");
   const patchEntry = `
 # get-fable bundle patch
 - insert:
     - id: get-fable
       name: get-fable
 `;
-  if (fs8.existsSync(patchFile)) {
-    const existing = fs8.readFileSync(patchFile, "utf-8");
+  if (fs9.existsSync(patchFile)) {
+    const existing = fs9.readFileSync(patchFile, "utf-8");
     if (!existing.includes("id: get-fable")) {
-      fs8.appendFileSync(patchFile, patchEntry);
+      fs9.appendFileSync(patchFile, patchEntry);
       logSuccess("Appended get-fable plugin entry to ~/.dsh/cordis.patch.yml");
     } else {
       logWarn("get-fable entry already present in ~/.dsh/cordis.patch.yml");
     }
   } else {
-    fs8.writeFileSync(patchFile, `# DeepSeek Harness Global Cordis Patch
+    fs9.writeFileSync(patchFile, `# DeepSeek Harness Global Cordis Patch
 ${patchEntry}`);
     logSuccess("Created ~/.dsh/cordis.patch.yml with get-fable plugin bundle");
   }
@@ -24912,65 +25386,65 @@ ${patchEntry}`);
 function installDeepSeekGlobal(deepseekDir = getDeepSeekDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for DeepSeek (${deepseekDir})...`);
-  const rulesDir = path8.join(deepseekDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "deepseek-fable-directive.md"), path8.join(rulesDir, "fable.md"));
-  const dshDir = deepseekDir === getDeepSeekDir() ? getDshHomeDir() : path8.join(path8.dirname(deepseekDir), "dsh");
+  const rulesDir = path9.join(deepseekDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "deepseek-fable-directive.md"), path9.join(rulesDir, "fable.md"));
+  const dshDir = deepseekDir === getDeepSeekDir() ? getDshHomeDir() : path9.join(path9.dirname(deepseekDir), "dsh");
   installDshGlobal(dshDir);
   logSuccess("Installed DeepSeek rules in ~/.deepseek/rules/fable.md");
 }
 function installKiroGlobal(kiroDir = getKiroDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Kiro (${kiroDir})...`);
-  const rulesDir = path8.join(kiroDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "kiro-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const hooksDir = path8.join(kiroDir, "hooks");
-  copyDirSync(path8.join(repoRoot, "hooks"), hooksDir);
+  const rulesDir = path9.join(kiroDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "kiro-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const hooksDir = path9.join(kiroDir, "hooks");
+  copyDirSync(path9.join(repoRoot, "hooks"), hooksDir);
   logSuccess("Installed Kiro rules and lifecycle hooks");
 }
 function installPiCodeGlobal(piDir = getPiDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Pi Code (${piDir})...`);
-  const rulesDir = path8.join(piDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "pi-code-fable-directive.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(piDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "pi-code-fable-directive.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Pi Code rules in ~/.pi/rules/fable.md");
 }
 function installGrokGlobal(grokDir = getGrokDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable into Grok & Grok Bot (${grokDir})...`);
-  fs8.mkdirSync(grokDir, { recursive: true });
-  const rulesDir = path8.join(grokDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "grok-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "grok-fable-rules.md"), path8.join(rulesDir, "fable5-mode.md"));
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "grok-bot-directive.md"), path8.join(rulesDir, "grok-bot.md"));
-  const grokAgentsDir = path8.join(grokDir, "agents");
-  fs8.mkdirSync(grokAgentsDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "agents", "grok-bot.md"), path8.join(grokAgentsDir, "grok-bot.md"));
+  fs9.mkdirSync(grokDir, { recursive: true });
+  const rulesDir = path9.join(grokDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "grok-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "grok-fable-rules.md"), path9.join(rulesDir, "fable5-mode.md"));
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "grok-bot-directive.md"), path9.join(rulesDir, "grok-bot.md"));
+  const grokAgentsDir = path9.join(grokDir, "agents");
+  fs9.mkdirSync(grokAgentsDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "agents", "grok-bot.md"), path9.join(grokAgentsDir, "grok-bot.md"));
   logSuccess("Installed Grok rules: fable.md, fable5-mode.md, and grok-bot.md");
-  const pluginDir = path8.join(grokDir, "plugins", "get-fable");
-  fs8.mkdirSync(pluginDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, ".grok-plugin", "plugin.json"), path8.join(pluginDir, "plugin.json"));
-  copyDirSync(path8.join(repoRoot, "skills"), path8.join(pluginDir, "skills"));
-  fs8.mkdirSync(path8.join(pluginDir, "rules"), { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "grok-fable-rules.md"), path8.join(pluginDir, "rules", "fable5-mode.md"));
-  const pluginHooksDir = path8.join(pluginDir, "hooks");
-  copyDirSync(path8.join(repoRoot, "hooks"), pluginHooksDir);
-  const hostHooksDir = path8.join(grokDir, "hooks");
-  copyDirSync(path8.join(repoRoot, "hooks"), hostHooksDir);
+  const pluginDir = path9.join(grokDir, "plugins", "get-fable");
+  fs9.mkdirSync(pluginDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, ".grok-plugin", "plugin.json"), path9.join(pluginDir, "plugin.json"));
+  copyDirSync(path9.join(repoRoot, "skills"), path9.join(pluginDir, "skills"));
+  fs9.mkdirSync(path9.join(pluginDir, "rules"), { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "grok-fable-rules.md"), path9.join(pluginDir, "rules", "fable5-mode.md"));
+  const pluginHooksDir = path9.join(pluginDir, "hooks");
+  copyDirSync(path9.join(repoRoot, "hooks"), pluginHooksDir);
+  const hostHooksDir = path9.join(grokDir, "hooks");
+  copyDirSync(path9.join(repoRoot, "hooks"), hostHooksDir);
   logSuccess("Installed Grok plugin and lifecycle hooks: get-fable");
-  const globalSkillsDir = path8.join(grokDir, "skills");
+  const globalSkillsDir = path9.join(grokDir, "skills");
   installCanonicalSkillPack(repoRoot, globalSkillsDir, false);
-  const globalFableSkillDir = path8.join(globalSkillsDir, "fable-mode");
-  fs8.mkdirSync(globalFableSkillDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "fable-mode-skill.md"), path8.join(globalFableSkillDir, "SKILL.md"));
-  const grokBotSkillDir = path8.join(globalSkillsDir, "grok-bot");
-  fs8.mkdirSync(grokBotSkillDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "grok-bot-directive.md"), path8.join(grokBotSkillDir, "SKILL.md"));
+  const globalFableSkillDir = path9.join(globalSkillsDir, "fable-mode");
+  fs9.mkdirSync(globalFableSkillDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "fable-mode-skill.md"), path9.join(globalFableSkillDir, "SKILL.md"));
+  const grokBotSkillDir = path9.join(globalSkillsDir, "grok-bot");
+  fs9.mkdirSync(grokBotSkillDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "grok-bot-directive.md"), path9.join(grokBotSkillDir, "SKILL.md"));
   logSuccess("Installed canonical Grok skills and grok-bot agent skill");
-  const hooksJsonPath = path8.join(grokDir, "hooks.json");
+  const hooksJsonPath = path9.join(grokDir, "hooks.json");
   mergeJsonFile(hooksJsonPath, (existing) => {
     const config = existing;
     const hooksList = Array.isArray(config.hooks) ? config.hooks : [];
@@ -24978,27 +25452,27 @@ function installGrokGlobal(grokDir = getGrokDir()) {
       {
         name: "fable5-profile-inject",
         events: ["SessionStart"],
-        command: `python3 ${path8.join(pluginHooksDir, "fable_profile_inject.py")}`
+        command: `python3 ${path9.join(pluginHooksDir, "fable_profile_inject.py")}`
       },
       {
         name: "fable5-spawn-guard",
         events: ["PreToolUse"],
-        command: `python3 ${path8.join(pluginHooksDir, "fable_spawn_guard.py")}`
+        command: `python3 ${path9.join(pluginHooksDir, "fable_spawn_guard.py")}`
       },
       {
         name: "fable5-fail-streak",
         events: ["PostToolUse", "PostToolUseFailure"],
-        command: `python3 ${path8.join(pluginHooksDir, "fable_fail_streak.py")}`
+        command: `python3 ${path9.join(pluginHooksDir, "fable_fail_streak.py")}`
       },
       {
         name: "fable5-mutation",
         events: ["PostToolUse", "PostToolUseFailure"],
-        command: `python3 ${path8.join(pluginHooksDir, "fable_mutation.py")}`
+        command: `python3 ${path9.join(pluginHooksDir, "fable_mutation.py")}`
       },
       {
         name: "fable5-close-guard",
         events: ["Stop", "SessionEnd"],
-        command: `python3 ${path8.join(pluginHooksDir, "fable_close_guard.py")}`
+        command: `python3 ${path9.join(pluginHooksDir, "fable_close_guard.py")}`
       }
     ];
     for (const fableHook of fableHooks) {
@@ -25011,200 +25485,200 @@ function installGrokGlobal(grokDir = getGrokDir()) {
     config.hooks = hooksList;
     return config;
   });
-  const settingsPath = path8.join(grokDir, "settings.json");
+  const settingsPath = path9.join(grokDir, "settings.json");
   registerClaudeHooks(settingsPath, pluginHooksDir);
   logSuccess("Registered Grok lifecycle hooks in hooks.json and settings.json");
 }
 function installCopilotGlobal(copilotDir = getCopilotDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for GitHub Copilot (${copilotDir})...`);
-  const rulesDir = path8.join(copilotDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "copilot-fable-instructions.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(copilotDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "copilot-fable-instructions.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed GitHub Copilot rules in ~/.copilot/rules/fable.md");
 }
 function installDevinGlobal(devinDir = getDevinDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Devin (${devinDir})...`);
-  const rulesDir = path8.join(devinDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "devin-fable-instructions.md"), path8.join(rulesDir, "fable.md"));
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "devin-fable-instructions.md"), path8.join(devinDir, "instructions.md"));
-  const skillsDir = path8.join(devinDir, "skills");
+  const rulesDir = path9.join(devinDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "devin-fable-instructions.md"), path9.join(rulesDir, "fable.md"));
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "devin-fable-instructions.md"), path9.join(devinDir, "instructions.md"));
+  const skillsDir = path9.join(devinDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed Devin instructions, rules, and canonical skills");
 }
 function installWindsurfGlobal(windsurfDir = getWindsurfDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Windsurf (${windsurfDir})...`);
-  const rulesDir = path8.join(windsurfDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "windsurf-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "windsurf-fable-rules.md"), path8.join(windsurfDir, "rules.md"));
+  const rulesDir = path9.join(windsurfDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "windsurf-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "windsurf-fable-rules.md"), path9.join(windsurfDir, "rules.md"));
   logSuccess("Installed Windsurf rules in ~/.codeium/windsurf/rules.md");
 }
 function installReplitGlobal(replitDir = getReplitDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Replit (${replitDir})...`);
-  const rulesDir = path8.join(replitDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "replit-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(replitDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "replit-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Replit rules in ~/.replit/rules/fable.md");
 }
 function installAmazonQGlobal(amazonqDir = getAmazonQDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Amazon Q Dev (${amazonqDir})...`);
-  const rulesDir = path8.join(amazonqDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "amazon-q-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(amazonqDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "amazon-q-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Amazon Q Dev rules in ~/.aws/amazon-q/rules/fable.md");
 }
 function installTraeGlobal(traeDir = getTraeDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Trae (${traeDir})...`);
-  const rulesDir = path8.join(traeDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "trae-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(traeDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "trae-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Trae rules in ~/.trae/rules/fable.md");
 }
 function installWarpGlobal(warpDir = getWarpDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Warp AI (${warpDir})...`);
-  const rulesDir = path8.join(warpDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "warp-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(warpDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "warp-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Warp rules in ~/.warp/rules/fable.md");
 }
 function installAtlarixGlobal(atlarixDir = getAtlarixDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Atlarix (${atlarixDir})...`);
-  const rulesDir = path8.join(atlarixDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "atlarix-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(atlarixDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "atlarix-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Atlarix rules in ~/.atlarix/rules/fable.md");
 }
 function installVellumGlobal(vellumDir = getVellumDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Vellum (${vellumDir})...`);
-  const rulesDir = path8.join(vellumDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "vellum-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(vellumDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "vellum-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Vellum rules in ~/.vellum/rules/fable.md");
 }
 function installCodegenGlobal(codegenDir = getCodegenDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Codegen (${codegenDir})...`);
-  const rulesDir = path8.join(codegenDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "codegen-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(codegenDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "codegen-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Codegen rules in ~/.codegen/rules/fable.md");
 }
 function installMuseGlobal(museDir = getMuseDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Muse Code (${museDir})...`);
-  const rulesDir = path8.join(museDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "muse-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(museDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "muse-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Muse Code rules in ~/.muse/rules/fable.md");
 }
 function installJunieGlobal(junieDir = getJunieDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Junie (${junieDir})...`);
-  const rulesDir = path8.join(junieDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "junie-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(junieDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "junie-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed JetBrains Junie rules in ~/.junie/rules/fable.md");
 }
 function installQodoGlobal(qodoDir = getQodoDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Qodo (${qodoDir})...`);
-  const rulesDir = path8.join(qodoDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "qodo-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(qodoDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "qodo-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Qodo rules in ~/.qodo/rules/fable.md");
 }
 function installRooCodeGlobal(rooDir = getRooDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Roo Code (${rooDir})...`);
-  const rulesDir = path8.join(rooDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "roocode-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const skillsDir = path8.join(rooDir, "skills");
+  const rulesDir = path9.join(rooDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "roocode-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const skillsDir = path9.join(rooDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed Roo Code rules and canonical skills in ~/.roo/");
 }
 function installAiderGlobal(aiderDir = getAiderDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Aider (${aiderDir})...`);
-  const rulesDir = path8.join(aiderDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "aider-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(aiderDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "aider-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Aider rules in ~/.aider/rules/fable.md");
 }
 function installClineGlobal(clineDir = getClineDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Cline (${clineDir})...`);
-  const rulesDir = path8.join(clineDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "cline-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const skillsDir = path8.join(clineDir, "skills");
+  const rulesDir = path9.join(clineDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "cline-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const skillsDir = path9.join(clineDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed Cline rules and canonical skills in ~/.cline/");
 }
 function installOpenHandsGlobal(openhandsDir = getOpenHandsDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for OpenHands (${openhandsDir})...`);
-  const rulesDir = path8.join(openhandsDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "openhands-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const microagentsDir = path8.join(openhandsDir, "microagents");
-  fs8.mkdirSync(microagentsDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "openhands-fable-rules.md"), path8.join(microagentsDir, "fable.md"));
-  const skillsDir = path8.join(openhandsDir, "skills");
+  const rulesDir = path9.join(openhandsDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "openhands-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const microagentsDir = path9.join(openhandsDir, "microagents");
+  fs9.mkdirSync(microagentsDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "openhands-fable-rules.md"), path9.join(microagentsDir, "fable.md"));
+  const skillsDir = path9.join(openhandsDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed OpenHands rules and canonical skills in ~/.openhands/");
 }
 function installContinueGlobal(continueDir = getContinueDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Continue (${continueDir})...`);
-  const rulesDir = path8.join(continueDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "continue-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(continueDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "continue-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Continue rules in ~/.continue/rules/fable.md");
 }
 function installKiloGlobal(kiloDir = getKiloDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Kilo Code (${kiloDir})...`);
-  const rulesDir = path8.join(kiloDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "kilo-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const skillsDir = path8.join(kiloDir, "skills");
+  const rulesDir = path9.join(kiloDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "kilo-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const skillsDir = path9.join(kiloDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed Kilo Code rules and canonical skills in ~/.kilo/");
 }
 function installPlandexGlobal(plandexDir = getPlandexDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Plandex (${plandexDir})...`);
-  const rulesDir = path8.join(plandexDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "plandex-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(plandexDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "plandex-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed Plandex rules in ~/.plandex/rules/fable.md");
 }
 function installAutoGPTGlobal(autogptDir = getAutoGPTDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for AutoGPT (${autogptDir})...`);
-  const rulesDir = path8.join(autogptDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "autogpt-fable-rules.md"), path8.join(rulesDir, "fable.md"));
+  const rulesDir = path9.join(autogptDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "autogpt-fable-rules.md"), path9.join(rulesDir, "fable.md"));
   logSuccess("Installed AutoGPT rules in ~/.autogpt/rules/fable.md");
 }
 function installHermesGlobal(hermesDir = getHermesDir()) {
   const repoRoot = getRepoRootDir();
   logInfo(`Installing get-fable for Hermes Agent (${hermesDir})...`);
-  const rulesDir = path8.join(hermesDir, "rules");
-  fs8.mkdirSync(rulesDir, { recursive: true });
-  fs8.copyFileSync(path8.join(repoRoot, "prompts", "hermes-fable-rules.md"), path8.join(rulesDir, "fable.md"));
-  const skillsDir = path8.join(hermesDir, "skills");
+  const rulesDir = path9.join(hermesDir, "rules");
+  fs9.mkdirSync(rulesDir, { recursive: true });
+  fs9.copyFileSync(path9.join(repoRoot, "prompts", "hermes-fable-rules.md"), path9.join(rulesDir, "fable.md"));
+  const skillsDir = path9.join(hermesDir, "skills");
   installCanonicalSkillPack(repoRoot, skillsDir, false);
   logSuccess("Installed Hermes Agent rules and canonical skills in ~/.hermes/");
 }
@@ -25221,17 +25695,17 @@ function installGitHooks(targetDir = process.cwd()) {
   }
   const gitHooksDir = hooksPath.hooksDir;
   try {
-    fs8.mkdirSync(gitHooksDir, { recursive: true });
+    fs9.mkdirSync(gitHooksDir, { recursive: true });
     for (const hookFile of CANONICAL_GIT_HOOKS) {
-      const src = path8.join(repoRoot, "hooks", "git", hookFile);
-      const dest = path8.join(gitHooksDir, hookFile);
-      if (!fs8.existsSync(src)) {
+      const src = path9.join(repoRoot, "hooks", "git", hookFile);
+      const dest = path9.join(gitHooksDir, hookFile);
+      if (!fs9.existsSync(src)) {
         logWarn(`Missing get-fable git hook source: ${src}. Git hooks installation is incomplete.`);
         return false;
       }
-      fs8.copyFileSync(src, dest);
+      fs9.copyFileSync(src, dest);
       try {
-        fs8.chmodSync(dest, 493);
+        fs9.chmodSync(dest, 493);
       } catch {}
     }
   } catch (error) {
@@ -25277,10 +25751,10 @@ function installGlobalFable() {
   installPiCodeGlobal();
   const repoRoot = getRepoRootDir();
   const kernelDir = getAgentKernelDir();
-  if (fs8.existsSync(kernelDir)) {
-    const kernelRulesDir = path8.join(kernelDir, "rules");
-    fs8.mkdirSync(kernelRulesDir, { recursive: true });
-    fs8.copyFileSync(path8.join(repoRoot, "prompts", "fable5-rules.md"), path8.join(kernelRulesDir, "fable5-mode.md"));
+  if (fs9.existsSync(kernelDir)) {
+    const kernelRulesDir = path9.join(kernelDir, "rules");
+    fs9.mkdirSync(kernelRulesDir, { recursive: true });
+    fs9.copyFileSync(path9.join(repoRoot, "prompts", "fable5-rules.md"), path9.join(kernelRulesDir, "fable5-mode.md"));
     logSuccess("Updated Agent Kernel rules");
   }
   try {
@@ -25291,131 +25765,131 @@ function installGlobalFable() {
   logSuccess("Installed get-fable across all supported AI coding platforms");
 }
 function copyIfMissing(src, dest, targetDir) {
-  if (fs8.existsSync(dest)) {
-    logWarn(`Skipped existing file ${path8.relative(targetDir, dest)}`);
+  if (fs9.existsSync(dest)) {
+    logWarn(`Skipped existing file ${path9.relative(targetDir, dest)}`);
     return;
   }
-  fs8.mkdirSync(path8.dirname(dest), { recursive: true });
-  fs8.copyFileSync(src, dest);
-  logSuccess(`Created ${path8.relative(targetDir, dest)}`);
+  fs9.mkdirSync(path9.dirname(dest), { recursive: true });
+  fs9.copyFileSync(src, dest);
+  logSuccess(`Created ${path9.relative(targetDir, dest)}`);
 }
 function initProjectFable(targetDir = process.cwd()) {
   const repoRoot = getRepoRootDir();
-  const fableDir = path8.join(targetDir, ".fable");
-  const docsDir = path8.join(targetDir, "docs");
-  const agentsDir = path8.join(targetDir, ".agents");
-  const cursorRulesDir = path8.join(targetDir, ".cursor", "rules");
-  const githubDir = path8.join(targetDir, ".github");
-  const devinDir = path8.join(targetDir, ".devin");
-  const traeDir = path8.join(targetDir, ".trae", "rules");
-  const continueDir = path8.join(targetDir, ".continue", "rules");
-  const junieDir = path8.join(targetDir, ".junie", "rules");
-  const qodoDir = path8.join(targetDir, ".qodo", "rules");
-  const amazonqDir = path8.join(targetDir, ".amazonq");
-  const openhandsDir = path8.join(targetDir, ".openhands", "microagents");
-  const kiloDir = path8.join(targetDir, ".kilo", "rules");
-  const plandexDir = path8.join(targetDir, ".plandex");
-  const templatesDir = path8.join(repoRoot, "templates");
+  const fableDir = path9.join(targetDir, ".fable");
+  const docsDir = path9.join(targetDir, "docs");
+  const agentsDir = path9.join(targetDir, ".agents");
+  const cursorRulesDir = path9.join(targetDir, ".cursor", "rules");
+  const githubDir = path9.join(targetDir, ".github");
+  const devinDir = path9.join(targetDir, ".devin");
+  const traeDir = path9.join(targetDir, ".trae", "rules");
+  const continueDir = path9.join(targetDir, ".continue", "rules");
+  const junieDir = path9.join(targetDir, ".junie", "rules");
+  const qodoDir = path9.join(targetDir, ".qodo", "rules");
+  const amazonqDir = path9.join(targetDir, ".amazonq");
+  const openhandsDir = path9.join(targetDir, ".openhands", "microagents");
+  const kiloDir = path9.join(targetDir, ".kilo", "rules");
+  const plandexDir = path9.join(targetDir, ".plandex");
+  const templatesDir = path9.join(repoRoot, "templates");
   assertSafeFableBoundary(targetDir, true);
-  fs8.mkdirSync(docsDir, { recursive: true });
-  fs8.mkdirSync(cursorRulesDir, { recursive: true });
-  fs8.mkdirSync(githubDir, { recursive: true });
-  fs8.mkdirSync(devinDir, { recursive: true });
-  fs8.mkdirSync(traeDir, { recursive: true });
-  fs8.mkdirSync(continueDir, { recursive: true });
-  fs8.mkdirSync(junieDir, { recursive: true });
-  fs8.mkdirSync(qodoDir, { recursive: true });
-  fs8.mkdirSync(amazonqDir, { recursive: true });
-  fs8.mkdirSync(openhandsDir, { recursive: true });
-  fs8.mkdirSync(kiloDir, { recursive: true });
-  fs8.mkdirSync(plandexDir, { recursive: true });
+  fs9.mkdirSync(docsDir, { recursive: true });
+  fs9.mkdirSync(cursorRulesDir, { recursive: true });
+  fs9.mkdirSync(githubDir, { recursive: true });
+  fs9.mkdirSync(devinDir, { recursive: true });
+  fs9.mkdirSync(traeDir, { recursive: true });
+  fs9.mkdirSync(continueDir, { recursive: true });
+  fs9.mkdirSync(junieDir, { recursive: true });
+  fs9.mkdirSync(qodoDir, { recursive: true });
+  fs9.mkdirSync(amazonqDir, { recursive: true });
+  fs9.mkdirSync(openhandsDir, { recursive: true });
+  fs9.mkdirSync(kiloDir, { recursive: true });
+  fs9.mkdirSync(plandexDir, { recursive: true });
   const filesToCopy = [
-    { src: path8.join(templatesDir, "LEDGER.template.md"), dest: path8.join(fableDir, "LEDGER.md") },
-    { src: path8.join(templatesDir, "PROGRESS.template.md"), dest: path8.join(fableDir, "PROGRESS.md") },
-    { src: path8.join(templatesDir, "VERIFIER_PROMPT.md"), dest: path8.join(fableDir, "VERIFIER_PROMPT.md") },
-    { src: path8.join(templatesDir, "SPEC.template.md"), dest: path8.join(docsDir, "SPEC.md") },
+    { src: path9.join(templatesDir, "LEDGER.template.md"), dest: path9.join(fableDir, "LEDGER.md") },
+    { src: path9.join(templatesDir, "PROGRESS.template.md"), dest: path9.join(fableDir, "PROGRESS.md") },
+    { src: path9.join(templatesDir, "VERIFIER_PROMPT.md"), dest: path9.join(fableDir, "VERIFIER_PROMPT.md") },
+    { src: path9.join(templatesDir, "SPEC.template.md"), dest: path9.join(docsDir, "SPEC.md") },
     {
-      src: path8.join(repoRoot, "prompts", "fable-mode-skill.md"),
-      dest: path8.join(agentsDir, "skills", "fable-mode", "SKILL.md")
+      src: path9.join(repoRoot, "prompts", "fable-mode-skill.md"),
+      dest: path9.join(agentsDir, "skills", "fable-mode", "SKILL.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "fable5-rules.md"),
-      dest: path8.join(agentsDir, "rules", "fable5-mode.md")
+      src: path9.join(repoRoot, "prompts", "fable5-rules.md"),
+      dest: path9.join(agentsDir, "rules", "fable5-mode.md")
     },
     {
-      src: path8.join(repoRoot, "agents", "grok-bot.md"),
-      dest: path8.join(agentsDir, "agents", "grok-bot.md")
+      src: path9.join(repoRoot, "agents", "grok-bot.md"),
+      dest: path9.join(agentsDir, "agents", "grok-bot.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "cursor-fable-rules.mdc"),
-      dest: path8.join(cursorRulesDir, "fable-lifecycle.mdc")
+      src: path9.join(repoRoot, "prompts", "cursor-fable-rules.mdc"),
+      dest: path9.join(cursorRulesDir, "fable-lifecycle.mdc")
     },
     {
-      src: path8.join(repoRoot, "prompts", "copilot-fable-instructions.md"),
-      dest: path8.join(githubDir, "copilot-instructions.md")
+      src: path9.join(repoRoot, "prompts", "copilot-fable-instructions.md"),
+      dest: path9.join(githubDir, "copilot-instructions.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "cline-fable-rules.md"),
-      dest: path8.join(targetDir, ".clinerules")
+      src: path9.join(repoRoot, "prompts", "cline-fable-rules.md"),
+      dest: path9.join(targetDir, ".clinerules")
     },
     {
-      src: path8.join(repoRoot, "prompts", "windsurf-fable-rules.md"),
-      dest: path8.join(targetDir, ".windsurfrules")
+      src: path9.join(repoRoot, "prompts", "windsurf-fable-rules.md"),
+      dest: path9.join(targetDir, ".windsurfrules")
     },
     {
-      src: path8.join(repoRoot, "prompts", "roocode-fable-rules.md"),
-      dest: path8.join(targetDir, ".roomodes")
+      src: path9.join(repoRoot, "prompts", "roocode-fable-rules.md"),
+      dest: path9.join(targetDir, ".roomodes")
     },
     {
-      src: path8.join(repoRoot, "prompts", "devin-fable-instructions.md"),
-      dest: path8.join(devinDir, "instructions.md")
+      src: path9.join(repoRoot, "prompts", "devin-fable-instructions.md"),
+      dest: path9.join(devinDir, "instructions.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "aider-fable-rules.md"),
-      dest: path8.join(targetDir, ".aider.prompt.md")
+      src: path9.join(repoRoot, "prompts", "aider-fable-rules.md"),
+      dest: path9.join(targetDir, ".aider.prompt.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "trae-fable-rules.md"),
-      dest: path8.join(traeDir, "fable.md")
+      src: path9.join(repoRoot, "prompts", "trae-fable-rules.md"),
+      dest: path9.join(traeDir, "fable.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "continue-fable-rules.md"),
-      dest: path8.join(continueDir, "fable.md")
+      src: path9.join(repoRoot, "prompts", "continue-fable-rules.md"),
+      dest: path9.join(continueDir, "fable.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "junie-fable-rules.md"),
-      dest: path8.join(junieDir, "fable.md")
+      src: path9.join(repoRoot, "prompts", "junie-fable-rules.md"),
+      dest: path9.join(junieDir, "fable.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "qodo-fable-rules.md"),
-      dest: path8.join(qodoDir, "fable.md")
+      src: path9.join(repoRoot, "prompts", "qodo-fable-rules.md"),
+      dest: path9.join(qodoDir, "fable.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "replit-fable-rules.md"),
-      dest: path8.join(targetDir, ".replit.md")
+      src: path9.join(repoRoot, "prompts", "replit-fable-rules.md"),
+      dest: path9.join(targetDir, ".replit.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "amazon-q-fable-rules.md"),
-      dest: path8.join(amazonqDir, "rules.md")
+      src: path9.join(repoRoot, "prompts", "amazon-q-fable-rules.md"),
+      dest: path9.join(amazonqDir, "rules.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "openhands-fable-rules.md"),
-      dest: path8.join(openhandsDir, "fable.md")
+      src: path9.join(repoRoot, "prompts", "openhands-fable-rules.md"),
+      dest: path9.join(openhandsDir, "fable.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "kilo-fable-rules.md"),
-      dest: path8.join(kiloDir, "fable.md")
+      src: path9.join(repoRoot, "prompts", "kilo-fable-rules.md"),
+      dest: path9.join(kiloDir, "fable.md")
     },
     {
-      src: path8.join(repoRoot, "prompts", "plandex-fable-rules.md"),
-      dest: path8.join(plandexDir, "context.md")
+      src: path9.join(repoRoot, "prompts", "plandex-fable-rules.md"),
+      dest: path9.join(plandexDir, "context.md")
     }
   ];
   for (const item of filesToCopy)
     copyIfMissing(item.src, item.dest, targetDir);
-  installCanonicalSkillPack(repoRoot, path8.join(agentsDir, "skills"), true);
-  const projectStatePath = path8.join(fableDir, "state.json");
-  if (!fs8.existsSync(projectStatePath)) {
+  installCanonicalSkillPack(repoRoot, path9.join(agentsDir, "skills"), true);
+  const projectStatePath = path9.join(fableDir, "state.json");
+  if (!fs9.existsSync(projectStatePath)) {
     writeFableState(targetDir, createInitialState(new Date().toISOString(), targetDir));
     logSuccess("Created .fable/state.json");
   } else {
@@ -25428,10 +25902,10 @@ function initProjectFable(targetDir = process.cwd()) {
   logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }
 function hookCommandPresent(settingsPath, event, commandFragment, matcher) {
-  if (!fs8.existsSync(settingsPath))
+  if (!fs9.existsSync(settingsPath))
     return false;
   try {
-    const settings = JSON.parse(fs8.readFileSync(settingsPath, "utf-8"));
+    const settings = JSON.parse(fs9.readFileSync(settingsPath, "utf-8"));
     const hooks = settings.hooks || {};
     const list = Array.isArray(hooks[event]) ? hooks[event] : [];
     return list.some((entry) => {
@@ -25483,10 +25957,10 @@ function jsonContainsCommand(value, fragment) {
   return false;
 }
 function countAntigravityHookRegistrations(pluginHooksPath) {
-  if (!fs8.existsSync(pluginHooksPath))
+  if (!fs9.existsSync(pluginHooksPath))
     return 0;
   try {
-    const config = JSON.parse(fs8.readFileSync(pluginHooksPath, "utf-8"));
+    const config = JSON.parse(fs9.readFileSync(pluginHooksPath, "utf-8"));
     return [
       "--handler profile",
       "--handler spawn",
@@ -25501,9 +25975,9 @@ function countAntigravityHookRegistrations(pluginHooksPath) {
 }
 function countGrokHookRegistrations(hooksJsonPath, settingsPath) {
   let count = 0;
-  if (fs8.existsSync(hooksJsonPath)) {
+  if (fs9.existsSync(hooksJsonPath)) {
     try {
-      const config = JSON.parse(fs8.readFileSync(hooksJsonPath, "utf-8"));
+      const config = JSON.parse(fs9.readFileSync(hooksJsonPath, "utf-8"));
       const hooks = Array.isArray(config.hooks) ? config.hooks : [];
       const expected = [
         { name: "fable5-profile-inject", file: "fable_profile_inject.py" },
@@ -25517,19 +25991,19 @@ function countGrokHookRegistrations(hooksJsonPath, settingsPath) {
       count = 0;
     }
   }
-  if (count === 0 && settingsPath && fs8.existsSync(settingsPath)) {
+  if (count === 0 && settingsPath && fs9.existsSync(settingsPath)) {
     count = countClaudeHookRegistrations(settingsPath);
   }
   return count;
 }
 function getFableStatus(targetDir = process.cwd()) {
   const claudeDir = getClaudeDir();
-  const settingsPath = path8.join(claudeDir, "settings.json");
+  const settingsPath = path9.join(claudeDir, "settings.json");
   const geminiConfig = getGeminiConfigDir();
-  const antigravityPluginDir = path8.join(geminiConfig, "plugins", "get-fable");
-  const antigravityHooks = path8.join(antigravityPluginDir, "hooks.json");
+  const antigravityPluginDir = path9.join(geminiConfig, "plugins", "get-fable");
+  const antigravityHooks = path9.join(antigravityPluginDir, "hooks.json");
   const codexDir = getCodexDir();
-  const codexPluginDir = path8.join(codexDir, "plugins", "get-fable");
+  const codexPluginDir = path9.join(codexDir, "plugins", "get-fable");
   const cursorDir = getCursorDir();
   const copilotDir = getCopilotDir();
   const devinDir = getDevinDir();
@@ -25539,8 +26013,8 @@ function getFableStatus(targetDir = process.cwd()) {
   const traeDir = getTraeDir();
   const warpDir = getWarpDir();
   const grokDir = getGrokDir();
-  const grokHooks = path8.join(grokDir, "hooks.json");
-  const grokSettings = path8.join(grokDir, "settings.json");
+  const grokHooks = path9.join(grokDir, "hooks.json");
+  const grokSettings = path9.join(grokDir, "settings.json");
   const kimiDir = getKimiDir();
   const atlarixDir = getAtlarixDir();
   const vellumDir = getVellumDir();
@@ -25562,7 +26036,7 @@ function getFableStatus(targetDir = process.cwd()) {
   const kiroDir = getKiroDir();
   const piDir = getPiDir();
   const kernelDir = getAgentKernelDir();
-  const active = fs8.lstatSync(path8.join(targetDir, ".fable"), { throwIfNoEntry: false }) !== undefined;
+  const active = fs9.lstatSync(path9.join(targetDir, ".fable"), { throwIfNoEntry: false }) !== undefined;
   const hooksPath = resolveGitHooksPath(targetDir);
   const gitHooksInstalled = hooksPath.kind === "resolved" && areCanonicalGitHooksInstalled(hooksPath.hooksDir);
   let stateSchemaVersion = null;
@@ -25580,153 +26054,153 @@ function getFableStatus(targetDir = process.cwd()) {
   return {
     claude: {
       configDir: claudeDir,
-      legacySkillInstalled: fs8.existsSync(path8.join(claudeDir, "skills", "fable-mode", "SKILL.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(claudeDir, "skills", "get-fable", "SKILL.md")),
+      legacySkillInstalled: fs9.existsSync(path9.join(claudeDir, "skills", "fable-mode", "SKILL.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(claudeDir, "skills", "get-fable", "SKILL.md")),
       registeredHooks: countClaudeHookRegistrations(settingsPath)
     },
     antigravity: {
       configDir: geminiConfig,
-      ruleInstalled: fs8.existsSync(path8.join(geminiConfig, "rules", "fable5-mode.md")),
-      pluginInstalled: fs8.existsSync(path8.join(antigravityPluginDir, "plugin.json")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(geminiConfig, "skills", "get-fable", "SKILL.md")),
+      ruleInstalled: fs9.existsSync(path9.join(geminiConfig, "rules", "fable5-mode.md")),
+      pluginInstalled: fs9.existsSync(path9.join(antigravityPluginDir, "plugin.json")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(geminiConfig, "skills", "get-fable", "SKILL.md")),
       registeredHooks: countAntigravityHookRegistrations(antigravityHooks)
     },
     codex: {
       configDir: codexDir,
-      ruleInstalled: fs8.existsSync(path8.join(codexDir, "rules", "fable5-mode.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(codexDir, "skills", "get-fable", "SKILL.md")),
-      pluginInstalled: fs8.existsSync(path8.join(codexPluginDir, ".codex-plugin", "plugin.json")),
-      hooksInstalled: fs8.existsSync(path8.join(codexPluginDir, "hooks", "hooks.codex.json"))
+      ruleInstalled: fs9.existsSync(path9.join(codexDir, "rules", "fable5-mode.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(codexDir, "skills", "get-fable", "SKILL.md")),
+      pluginInstalled: fs9.existsSync(path9.join(codexPluginDir, ".codex-plugin", "plugin.json")),
+      hooksInstalled: fs9.existsSync(path9.join(codexPluginDir, "hooks", "hooks.codex.json"))
     },
     cursor: {
       configDir: cursorDir,
-      ruleInstalled: fs8.existsSync(path8.join(cursorDir, "rules", "fable-lifecycle.mdc"))
+      ruleInstalled: fs9.existsSync(path9.join(cursorDir, "rules", "fable-lifecycle.mdc"))
     },
     copilot: {
       configDir: copilotDir,
-      ruleInstalled: fs8.existsSync(path8.join(copilotDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(copilotDir, "rules", "fable.md"))
     },
     devin: {
       configDir: devinDir,
-      ruleInstalled: fs8.existsSync(path8.join(devinDir, "rules", "fable.md")) || fs8.existsSync(path8.join(devinDir, "instructions.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(devinDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(devinDir, "rules", "fable.md")) || fs9.existsSync(path9.join(devinDir, "instructions.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(devinDir, "skills", "get-fable", "SKILL.md"))
     },
     windsurf: {
       configDir: windsurfDir,
-      ruleInstalled: fs8.existsSync(path8.join(windsurfDir, "rules", "fable.md")) || fs8.existsSync(path8.join(windsurfDir, "rules.md"))
+      ruleInstalled: fs9.existsSync(path9.join(windsurfDir, "rules", "fable.md")) || fs9.existsSync(path9.join(windsurfDir, "rules.md"))
     },
     replit: {
       configDir: replitDir,
-      ruleInstalled: fs8.existsSync(path8.join(replitDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(replitDir, "rules", "fable.md"))
     },
     amazonq: {
       configDir: amazonqDir,
-      ruleInstalled: fs8.existsSync(path8.join(amazonqDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(amazonqDir, "rules", "fable.md"))
     },
     trae: {
       configDir: traeDir,
-      ruleInstalled: fs8.existsSync(path8.join(traeDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(traeDir, "rules", "fable.md"))
     },
     warp: {
       configDir: warpDir,
-      ruleInstalled: fs8.existsSync(path8.join(warpDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(warpDir, "rules", "fable.md"))
     },
     grok: {
       configDir: grokDir,
-      ruleInstalled: fs8.existsSync(path8.join(grokDir, "rules", "fable.md")) || fs8.existsSync(path8.join(grokDir, "rules", "fable5-mode.md")),
-      pluginInstalled: fs8.existsSync(path8.join(grokDir, "plugins", "get-fable", "plugin.json")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(grokDir, "skills", "get-fable", "SKILL.md")),
+      ruleInstalled: fs9.existsSync(path9.join(grokDir, "rules", "fable.md")) || fs9.existsSync(path9.join(grokDir, "rules", "fable5-mode.md")),
+      pluginInstalled: fs9.existsSync(path9.join(grokDir, "plugins", "get-fable", "plugin.json")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(grokDir, "skills", "get-fable", "SKILL.md")),
       registeredHooks: countGrokHookRegistrations(grokHooks, grokSettings)
     },
     kimi: {
       configDir: kimiDir,
-      ruleInstalled: fs8.existsSync(path8.join(kimiDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(kimiDir, "rules", "fable.md"))
     },
     atlarix: {
       configDir: atlarixDir,
-      ruleInstalled: fs8.existsSync(path8.join(atlarixDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(atlarixDir, "rules", "fable.md"))
     },
     vellum: {
       configDir: vellumDir,
-      ruleInstalled: fs8.existsSync(path8.join(vellumDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(vellumDir, "rules", "fable.md"))
     },
     codegen: {
       configDir: codegenDir,
-      ruleInstalled: fs8.existsSync(path8.join(codegenDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(codegenDir, "rules", "fable.md"))
     },
     muse: {
       configDir: museDir,
-      ruleInstalled: fs8.existsSync(path8.join(museDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(museDir, "rules", "fable.md"))
     },
     junie: {
       configDir: junieDir,
-      ruleInstalled: fs8.existsSync(path8.join(junieDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(junieDir, "rules", "fable.md"))
     },
     qodo: {
       configDir: qodoDir,
-      ruleInstalled: fs8.existsSync(path8.join(qodoDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(qodoDir, "rules", "fable.md"))
     },
     roocode: {
       configDir: rooDir,
-      ruleInstalled: fs8.existsSync(path8.join(rooDir, "rules", "fable.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(rooDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(rooDir, "rules", "fable.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(rooDir, "skills", "get-fable", "SKILL.md"))
     },
     aider: {
       configDir: aiderDir,
-      ruleInstalled: fs8.existsSync(path8.join(aiderDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(aiderDir, "rules", "fable.md"))
     },
     cline: {
       configDir: clineDir,
-      ruleInstalled: fs8.existsSync(path8.join(clineDir, "rules", "fable.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(clineDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(clineDir, "rules", "fable.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(clineDir, "skills", "get-fable", "SKILL.md"))
     },
     openhands: {
       configDir: openhandsDir,
-      ruleInstalled: fs8.existsSync(path8.join(openhandsDir, "rules", "fable.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(openhandsDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(openhandsDir, "rules", "fable.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(openhandsDir, "skills", "get-fable", "SKILL.md"))
     },
     opencode: {
       configDir: opencodeDir,
-      ruleInstalled: fs8.existsSync(path8.join(opencodeDir, "rules", "fable.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(opencodeDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(opencodeDir, "rules", "fable.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(opencodeDir, "skills", "get-fable", "SKILL.md"))
     },
     continue: {
       configDir: continueDir,
-      ruleInstalled: fs8.existsSync(path8.join(continueDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(continueDir, "rules", "fable.md"))
     },
     kilo: {
       configDir: kiloDir,
-      ruleInstalled: fs8.existsSync(path8.join(kiloDir, "rules", "fable.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(kiloDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(kiloDir, "rules", "fable.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(kiloDir, "skills", "get-fable", "SKILL.md"))
     },
     plandex: {
       configDir: plandexDir,
-      ruleInstalled: fs8.existsSync(path8.join(plandexDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(plandexDir, "rules", "fable.md"))
     },
     autogpt: {
       configDir: autogptDir,
-      ruleInstalled: fs8.existsSync(path8.join(autogptDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(autogptDir, "rules", "fable.md"))
     },
     hermes: {
       configDir: hermesDir,
-      ruleInstalled: fs8.existsSync(path8.join(hermesDir, "rules", "fable.md")),
-      canonicalSkillInstalled: fs8.existsSync(path8.join(hermesDir, "skills", "get-fable", "SKILL.md"))
+      ruleInstalled: fs9.existsSync(path9.join(hermesDir, "rules", "fable.md")),
+      canonicalSkillInstalled: fs9.existsSync(path9.join(hermesDir, "skills", "get-fable", "SKILL.md"))
     },
     deepseek: {
       configDir: deepseekDir,
-      ruleInstalled: fs8.existsSync(path8.join(deepseekDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(deepseekDir, "rules", "fable.md"))
     },
     kiro: {
       configDir: kiroDir,
-      ruleInstalled: fs8.existsSync(path8.join(kiroDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(kiroDir, "rules", "fable.md"))
     },
     pi: {
       configDir: piDir,
-      ruleInstalled: fs8.existsSync(path8.join(piDir, "rules", "fable.md"))
+      ruleInstalled: fs9.existsSync(path9.join(piDir, "rules", "fable.md"))
     },
     agentKernel: {
       configDir: kernelDir,
-      ruleInstalled: fs8.existsSync(path8.join(kernelDir, "rules", "fable5-mode.md"))
+      ruleInstalled: fs9.existsSync(path9.join(kernelDir, "rules", "fable5-mode.md"))
     },
     gitHooks: {
       installed: gitHooksInstalled
@@ -26023,380 +26497,6 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
     nextSkills: entry.next,
     scores
   };
-}
-
-// src/core/skill-package.ts
-import fs9 from "node:fs";
-import path9 from "node:path";
-var FABLE_SKILL_PACKAGE_SCHEMA_VERSION2 = 2;
-var SKILL_PACKAGE_LIMITS = {
-  maxManifestBytes: 256 * 1024,
-  maxResourceBytes: 1024 * 1024,
-  maxTotalBytes: 8 * 1024 * 1024,
-  maxResources: 128,
-  maxDepth: 8
-};
-var MANIFEST_FIELDS = new Set([
-  "$schema",
-  "schemaVersion",
-  "id",
-  "entry",
-  "agents",
-  "references",
-  "templates",
-  "examples",
-  "evals",
-  "scripts",
-  "scriptPolicy"
-]);
-var REQUIRED_FIELDS = [
-  "schemaVersion",
-  "id",
-  "entry",
-  "agents",
-  "references",
-  "templates",
-  "examples",
-  "evals",
-  "scripts",
-  "scriptPolicy"
-];
-var EXTENSIONS = {
-  entry: new Set([".md"]),
-  agent: new Set([".yaml", ".yml", ".json"]),
-  reference: new Set([".md", ".json", ".yaml", ".yml", ".txt", ".proto"]),
-  template: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon", ".proto"]),
-  example: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon"]),
-  eval: new Set([".json", ".yaml", ".yml"]),
-  script: new Set([".sh", ".bash", ".py", ".js", ".mjs", ".cjs", ".ts"])
-};
-function getSkillPackageDir(id, repoRoot = getCoreRepoRoot()) {
-  return path9.join(repoRoot, "skills", id);
-}
-function getSkillManifestPath(id, repoRoot = getCoreRepoRoot()) {
-  return path9.join(getSkillPackageDir(id, repoRoot), "skill.package.json");
-}
-function isPathInside(targetPath, parentDir) {
-  const rel = path9.relative(parentDir, targetPath);
-  return rel !== "" && rel !== ".." && !rel.startsWith(`..${path9.sep}`) && !path9.isAbsolute(rel);
-}
-function pathPolicy(relativePath) {
-  if (!relativePath || relativePath.includes("\x00"))
-    return { safe: false, segments: [], error: "Resource path must be a non-empty path without NUL bytes" };
-  if (path9.posix.isAbsolute(relativePath) || path9.win32.isAbsolute(relativePath)) {
-    return { safe: false, segments: [], error: `Absolute resource paths are forbidden: "${relativePath}"` };
-  }
-  let decoded = relativePath;
-  try {
-    decoded = decodeURIComponent(relativePath);
-  } catch {
-    return { safe: false, segments: [], error: `Malformed percent encoding in resource path: "${relativePath}"` };
-  }
-  for (const candidate of [relativePath, decoded]) {
-    const normalized = candidate.replace(/\\/g, "/");
-    if (normalized.startsWith("/") || /^[A-Za-z]:\//.test(normalized)) {
-      return { safe: false, segments: [], error: `Absolute resource paths are forbidden: "${relativePath}"` };
-    }
-    const segments = normalized.split("/");
-    if (segments.some((segment) => segment === "" || segment === "." || segment === "..")) {
-      return { safe: false, segments: [], error: `Unsafe path segment in skill package resource: "${relativePath}"` };
-    }
-    if (segments.length > SKILL_PACKAGE_LIMITS.maxDepth) {
-      return { safe: false, segments: [], error: `Resource path exceeds maximum nesting depth ${SKILL_PACKAGE_LIMITS.maxDepth}: "${relativePath}"` };
-    }
-  }
-  if (relativePath.includes("\\")) {
-    return { safe: false, segments: [], error: `Backslash separators are forbidden in portable skill package paths: "${relativePath}"` };
-  }
-  return { safe: true, segments: relativePath.split("/") };
-}
-function symlinkSegment(baseDir, segments) {
-  let current = baseDir;
-  for (const segment of segments) {
-    current = path9.join(current, segment);
-    try {
-      const stat = fs9.lstatSync(current);
-      if (stat.isSymbolicLink())
-        return current;
-    } catch (error) {
-      const code = error.code;
-      if (code === "ENOENT" || code === "ENOTDIR")
-        return null;
-      throw error;
-    }
-  }
-  return null;
-}
-function resolveSkillResourcePath(id, relativePath, repoRoot = getCoreRepoRoot()) {
-  const policy = pathPolicy(relativePath);
-  const skillDir = getSkillPackageDir(id, repoRoot);
-  if (!policy.safe)
-    return { safe: false, absolutePath: "", error: policy.error };
-  const resolved = path9.resolve(skillDir, ...policy.segments);
-  if (!isPathInside(resolved, path9.resolve(skillDir))) {
-    return { safe: false, absolutePath: resolved, error: `Resource resolves outside skill package directory: "${relativePath}"` };
-  }
-  const link = symlinkSegment(skillDir, policy.segments);
-  if (link)
-    return { safe: false, absolutePath: resolved, error: `Symlink resources are forbidden: "${relativePath}"` };
-  try {
-    const stat = fs9.lstatSync(resolved);
-    if (stat.isSymbolicLink())
-      return { safe: false, absolutePath: resolved, error: `Symlink resources are forbidden: "${relativePath}"` };
-    const realSkill = fs9.realpathSync(skillDir);
-    const realResource = fs9.realpathSync(resolved);
-    if (!isPathInside(realResource, realSkill)) {
-      return { safe: false, absolutePath: resolved, error: `Resource realpath escapes skill package: "${relativePath}"` };
-    }
-  } catch (error) {
-    const code = error.code;
-    if (code !== "ENOENT" && code !== "ENOTDIR") {
-      return { safe: false, absolutePath: resolved, error: `Unable to verify resource path safely: "${relativePath}" (${code || "unknown"})` };
-    }
-  }
-  return { safe: true, absolutePath: resolved };
-}
-function asObject(value, label) {
-  if (!value || typeof value !== "object" || Array.isArray(value))
-    throw new Error(`${label} must contain a JSON object`);
-  return value;
-}
-function parseStringArray(obj, field) {
-  const value = obj[field];
-  if (!Array.isArray(value) || value.some((item) => typeof item !== "string" || !item.trim())) {
-    throw new Error(`Field "${field}" must be an array of non-empty strings`);
-  }
-  if (new Set(value).size !== value.length)
-    throw new Error(`Field "${field}" contains duplicate resource paths`);
-  return value;
-}
-function parseManifestObject(id, value) {
-  const obj = asObject(value, `skills/${id}/skill.package.json`);
-  for (const field of Object.keys(obj)) {
-    if (!MANIFEST_FIELDS.has(field))
-      throw new Error(`Unknown field "${field}" in skills/${id}/skill.package.json`);
-  }
-  for (const field of REQUIRED_FIELDS) {
-    if (!(field in obj))
-      throw new Error(`Missing required field "${field}" in skills/${id}/skill.package.json`);
-  }
-  if (obj.schemaVersion !== FABLE_SKILL_PACKAGE_SCHEMA_VERSION2) {
-    throw new Error(`Unsupported schemaVersion in skills/${id}/skill.package.json: ${String(obj.schemaVersion)}; current is ${FABLE_SKILL_PACKAGE_SCHEMA_VERSION2}`);
-  }
-  if (obj.id !== id || typeof obj.id !== "string" || !/^[a-z0-9-]+$/.test(obj.id)) {
-    throw new Error(`Manifest ID mismatch or invalid ID for skills/${id}/skill.package.json`);
-  }
-  if (obj.entry !== "SKILL.md")
-    throw new Error(`Manifest entry must be "SKILL.md" in skills/${id}/skill.package.json`);
-  if (obj.scriptPolicy !== "data-only")
-    throw new Error(`scriptPolicy must be "data-only" in skills/${id}/skill.package.json`);
-  const manifest = {
-    schemaVersion: 2,
-    id,
-    entry: "SKILL.md",
-    agents: parseStringArray(obj, "agents"),
-    references: parseStringArray(obj, "references"),
-    templates: parseStringArray(obj, "templates"),
-    examples: parseStringArray(obj, "examples"),
-    evals: parseStringArray(obj, "evals"),
-    scripts: parseStringArray(obj, "scripts"),
-    scriptPolicy: "data-only"
-  };
-  const all = [manifest.entry, ...manifest.agents, ...manifest.references, ...manifest.templates, ...manifest.examples, ...manifest.evals, ...manifest.scripts];
-  if (all.length > SKILL_PACKAGE_LIMITS.maxResources)
-    throw new Error(`Skill package resource count ${all.length} exceeds maximum ${SKILL_PACKAGE_LIMITS.maxResources}`);
-  if (new Set(all).size !== all.length)
-    throw new Error("Duplicate resource path across skill package categories");
-  return manifest;
-}
-function loadSkillPackage(id, repoRoot = getCoreRepoRoot()) {
-  const manifestPath = getSkillManifestPath(id, repoRoot);
-  if (!fs9.existsSync(manifestPath))
-    throw new Error(`Skill package manifest not found: skills/${id}/skill.package.json`);
-  const stat = fs9.statSync(manifestPath);
-  if (!stat.isFile())
-    throw new Error(`Skill package manifest is not a file: skills/${id}/skill.package.json`);
-  if (stat.size > SKILL_PACKAGE_LIMITS.maxManifestBytes)
-    throw new Error(`Skill package manifest exceeds ${SKILL_PACKAGE_LIMITS.maxManifestBytes} bytes`);
-  let parsed;
-  try {
-    parsed = JSON.parse(fs9.readFileSync(manifestPath, "utf-8"));
-  } catch (error) {
-    throw new Error(`Malformed JSON in skills/${id}/skill.package.json: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  return parseManifestObject(id, parsed);
-}
-function declaredResources(manifest) {
-  return [
-    ["entry", manifest.entry, ""],
-    ...manifest.agents.map((p) => ["agent", p, "agents/"]),
-    ...manifest.references.map((p) => ["reference", p, "references/"]),
-    ...manifest.templates.map((p) => ["template", p, "templates/"]),
-    ...manifest.examples.map((p) => ["example", p, "examples/"]),
-    ...manifest.evals.map((p) => ["eval", p, "evals/"]),
-    ...manifest.scripts.map((p) => ["script", p, "scripts/"])
-  ];
-}
-function resourceEntry(id, type, relPath, repoRoot) {
-  const check = resolveSkillResourcePath(id, relPath, repoRoot);
-  let exists = false;
-  let byteSize = 0;
-  if (check.safe) {
-    try {
-      const stat = fs9.lstatSync(check.absolutePath);
-      exists = stat.isFile() && !stat.isSymbolicLink();
-      if (exists)
-        byteSize = stat.size;
-    } catch {}
-  }
-  return { type, path: relPath, relativePath: relPath, absolutePath: check.absolutePath, byteSize, sizeBytes: byteSize, exists };
-}
-function listSkillResources(id, repoRoot = getCoreRepoRoot()) {
-  const manifest = loadSkillPackage(id, repoRoot);
-  return declaredResources(manifest).map(([type, relPath]) => resourceEntry(id, type, relPath, repoRoot));
-}
-function readSkillResource(id, relativePath, repoRoot = getCoreRepoRoot()) {
-  const manifest = loadSkillPackage(id, repoRoot);
-  const declared = new Set(declaredResources(manifest).map(([, resource]) => resource));
-  if (!declared.has(relativePath))
-    throw new Error(`Resource "${relativePath}" is not declared by skill package "${id}"`);
-  const check = resolveSkillResourcePath(id, relativePath, repoRoot);
-  if (!check.safe)
-    throw new Error(`Security restriction: ${check.error}`);
-  const stat = fs9.lstatSync(check.absolutePath);
-  if (stat.isSymbolicLink())
-    throw new Error(`Resource "${relativePath}" is a symlink`);
-  if (!stat.isFile())
-    throw new Error(`Resource "${relativePath}" is not a file`);
-  if (stat.size > SKILL_PACKAGE_LIMITS.maxResourceBytes)
-    throw new Error(`Resource "${relativePath}" exceeds maximum size`);
-  const noFollow = typeof fs9.constants.O_NOFOLLOW === "number" ? fs9.constants.O_NOFOLLOW : 0;
-  const fd = fs9.openSync(check.absolutePath, fs9.constants.O_RDONLY | noFollow);
-  try {
-    const opened = fs9.fstatSync(fd);
-    if (!opened.isFile() || opened.size > SKILL_PACKAGE_LIMITS.maxResourceBytes)
-      throw new Error(`Resource "${relativePath}" changed during secure open`);
-    return fs9.readFileSync(fd, "utf-8");
-  } finally {
-    fs9.closeSync(fd);
-  }
-}
-function validateStructuredResource(type, relPath, absolutePath, errors) {
-  if (type === "agent" && /\.ya?ml$/i.test(relPath)) {
-    try {
-      const content = fs9.readFileSync(absolutePath, "utf-8");
-      const lines = content.split(`
-`);
-      const index = lines.findIndex((line) => /^\s*default_prompt:/.test(line));
-      if (index >= 0) {
-        const after = lines[index].replace(/^\s*default_prompt:\s*/, "").trim();
-        if (!after && lines[index + 1] && /^\s+/.test(lines[index + 1]) || after.startsWith("[") || after.startsWith("{")) {
-          errors.push(`Agent ${relPath} default_prompt must be a string, not an object or array`);
-        }
-      }
-      const hasDisplayName = lines.some((line) => /^\s*display_name:\s*\S+/.test(line));
-      if (!hasDisplayName) {
-        errors.push(`Agent ${relPath} interface.display_name is required and must not be empty`);
-      }
-      const hasShortDescription = lines.some((line) => /^\s*short_description:\s*\S+/.test(line));
-      if (!hasShortDescription) {
-        errors.push(`Agent ${relPath} interface.short_description is required and must not be empty`);
-      }
-    } catch (error) {
-      errors.push(`Failed to read agent YAML ${relPath}: ${error}`);
-    }
-  }
-  if (type === "eval" && relPath.endsWith(".json")) {
-    try {
-      const parsed = JSON.parse(fs9.readFileSync(absolutePath, "utf-8"));
-      const scenarios = Array.isArray(parsed) ? parsed : parsed?.scenarios;
-      if (!Array.isArray(scenarios) || scenarios.length === 0)
-        errors.push(`Eval file ${relPath} must contain a non-empty array of scenarios`);
-      else
-        scenarios.forEach((scenario, index) => {
-          if (!scenario || typeof scenario !== "object" || typeof scenario.id !== "string")
-            errors.push(`Scenario [${index}] in ${relPath} is missing string id`);
-        });
-    } catch (error) {
-      errors.push(`Failed to parse eval JSON in ${relPath}: ${error}`);
-    }
-  }
-}
-function validateSkillPackage(id, repoRoot = getCoreRepoRoot()) {
-  const errors = [];
-  const warnings = [];
-  const resources = [];
-  const skillDir = getSkillPackageDir(id, repoRoot);
-  if (!fs9.existsSync(skillDir))
-    return { id, valid: false, errors: [`Skill directory missing: skills/${id}`], warnings, resources };
-  let manifest;
-  try {
-    manifest = loadSkillPackage(id, repoRoot);
-  } catch (error) {
-    return { id, valid: false, errors: [error instanceof Error ? error.message : String(error)], warnings, resources };
-  }
-  let totalBytes = 0;
-  for (const [type, relPath, prefix] of declaredResources(manifest)) {
-    if (prefix && !relPath.startsWith(prefix))
-      errors.push(`Resource "${relPath}" in group "${type}" must start with "${prefix}"`);
-    if (!EXTENSIONS[type].has(path9.extname(relPath).toLowerCase()))
-      errors.push(`Resource "${relPath}" has an invalid extension for category "${type}"`);
-    const check = resolveSkillResourcePath(id, relPath, repoRoot);
-    if (!check.safe) {
-      errors.push(`Unsafe resource path "${relPath}": ${check.error}`);
-      continue;
-    }
-    let stat;
-    try {
-      stat = fs9.lstatSync(check.absolutePath);
-    } catch {
-      errors.push(`Referenced resource missing: skills/${id}/${relPath}`);
-      continue;
-    }
-    if (stat.isSymbolicLink()) {
-      errors.push(`Referenced resource is a symlink: skills/${id}/${relPath}`);
-      continue;
-    }
-    if (!stat.isFile()) {
-      errors.push(`Referenced resource is not a regular file: skills/${id}/${relPath}`);
-      continue;
-    }
-    if (stat.size === 0) {
-      errors.push(`Referenced resource is empty: skills/${id}/${relPath}`);
-      continue;
-    }
-    if (stat.size > SKILL_PACKAGE_LIMITS.maxResourceBytes) {
-      errors.push(`Resource ${relPath} exceeds maximum size ${SKILL_PACKAGE_LIMITS.maxResourceBytes} bytes`);
-      continue;
-    }
-    totalBytes += stat.size;
-    resources.push({ type, path: relPath, relativePath: relPath, absolutePath: check.absolutePath, byteSize: stat.size, sizeBytes: stat.size, exists: true });
-    validateStructuredResource(type, relPath, check.absolutePath, errors);
-  }
-  if (totalBytes > SKILL_PACKAGE_LIMITS.maxTotalBytes)
-    errors.push(`Skill package total resource size exceeds ${SKILL_PACKAGE_LIMITS.maxTotalBytes} bytes`);
-  return { id, valid: errors.length === 0, errors, warnings, manifest, resources };
-}
-function getSkillPackageSummary(id, repoRoot = getCoreRepoRoot()) {
-  const result = validateSkillPackage(id, repoRoot);
-  const manifest = result.manifest;
-  return {
-    id,
-    valid: result.valid,
-    entryExists: result.resources.some((resource) => resource.type === "entry" && resource.exists),
-    agentCount: manifest?.agents.length || 0,
-    referenceCount: manifest?.references.length || 0,
-    templateCount: manifest?.templates.length || 0,
-    exampleCount: manifest?.examples.length || 0,
-    evalCount: manifest?.evals.length || 0,
-    scriptCount: manifest?.scripts.length || 0,
-    totalResources: result.resources.length,
-    resources: result.resources,
-    errors: result.errors
-  };
-}
-function validateAllSkillPackages(repoRoot = getCoreRepoRoot()) {
-  return Object.fromEntries(canonicalSkillIds().map((id) => [id, validateSkillPackage(id, repoRoot)]));
 }
 
 // src/core/catalog-generator.ts
@@ -31617,7 +31717,7 @@ function validateEnterpriseConfiguration(repoRoot) {
     const docsPreview = workflow("docs-preview.yml");
     const supplyChain = pinned && ci.includes("bun install --frozen-lockfile") && release.includes("id-token: write") && release.includes("environment: npm") && !/NPM_TOKEN|NODE_AUTH_TOKEN/.test(release);
     checks.push(supplyChain ? check("supply-chain-config", "PASS", `All ${actionRefs.length} third-party Action references across ${workflows.length} workflows are full commit SHAs; CI uses frozen Bun resolution and npm publishing uses OIDC`) : check("supply-chain-config", "ERROR", "CI/release supply-chain configuration is incomplete or mutable"));
-    const securityReady = security.includes("github/codeql-action") && security.includes("actions/dependency-review-action") && security.includes("trufflesecurity/trufflehog") && security.includes("version: 3.97.0");
+    const securityReady = security.includes("github/codeql-action") && security.includes("actions/dependency-review-action") && security.includes("trufflesecurity/trufflehog") && /version:\s*3\.97\.\d+/.test(security);
     checks.push(securityReady ? check("security-ci-config", "PASS", "Security workflow configures CodeQL, dependency review, and TruffleHog OSS with scoped permissions") : check("security-ci-config", "ERROR", "Security CI is missing CodeQL, dependency review, or TruffleHog secret scanning"));
     const e2eReady = e2e.includes("cypress-io/github-action") && e2e.includes("bun install --frozen-lockfile") && e2e.includes("start: bun run serve:web") && e2e.includes("wait-on: http://127.0.0.1:3000") && e2e.includes("cypress/e2e/site.cy.ts");
     checks.push(e2eReady ? check("e2e-ci-config", "PASS", "Cypress E2E workflow runs the pinned site smoke suite against a bounded local server") : check("e2e-ci-config", "ERROR", "Cypress E2E workflow is missing or incomplete"));
