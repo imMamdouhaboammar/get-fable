@@ -55,7 +55,7 @@ describe('CI and release supply-chain contract', () => {
 
   test('runs pinned Cypress end-to-end smoke tests against the static site', () => {
     const workflow = read('.github/workflows/e2e.yml');
-    expect(workflow).toContain('cypress-io/github-action@c32f12761482a282d24ca0fd7466d8ae86f54ba8 # v7.4.2');
+    expect(workflow).toContain('cypress-io/github-action@01e3b659a495b41649cdd0aa82e1d1624e26520b # v7.4.4');
     expect(workflow).toContain('start: bun run serve:web');
     expect(workflow).toContain('wait-on: http://127.0.0.1:3000');
     expect(read('package.json')).toContain('"cypress"');
