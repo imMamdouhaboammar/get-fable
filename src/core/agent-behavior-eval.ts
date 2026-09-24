@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { canonicalSkillIds, getCoreRepoRoot } from './skill-registry.js';
 import { loadSkillPackage, readSkillResource } from './skill-package.js';
+import { loadSkillScenarios } from './eval-loader.js';
+import type { FableSkillId } from './types.js';
 import type { SkillBehaviorProvider, SkillBehaviorRequest, SkillBehaviorResponse } from '../integrations/providers.js';
 
 export interface AgentBehaviorOracle {
@@ -65,46 +67,59 @@ function matchesOracle(response: SkillBehaviorResponse, oracle: Partial<AgentBeh
   return true;
 }
 
-export function buildAgentBehaviorEvalPlan(repoRoot: string = getCoreRepoRoot()): AgentBehaviorEvalCase[] {
+export const isValidScenario = (scenario: unknown): scenario is Record<string, unknown> => {
+  if (!scenario || typeof scenario !== 'object') return false;
+  const rec = scenario as Record<string, unknown>;
+  const expected = rec.expected as Record<string, unknown> | undefined;
+  if (typeof rec.id !== 'string' || typeof expected?.action !== 'string') return false;
+  return typeof expected.selectedSkill !== 'string';
+};
+
+export const buildCaseExpected = (expected: Record<string, unknown>) => ({
+  action: String(expected.action),
+  selectedSkill: typeof expected.selectedSkill === 'string' ? expected.selectedSkill : undefined,
+  produces: typeof expected.produces === 'string' ? expected.produces : undefined,
+  gates: Array.isArray(expected.gates) ? expected.gates : undefined,
+  structure: Array.isArray(expected.structure) ? expected.structure : undefined,
+});
+
+export const toEvalCase = (
+  skillId: FableSkillId,
+  instruction: string,
+  scenario: unknown
+): AgentBehaviorEvalCase | null => {
+  if (!isValidScenario(scenario)) return null;
+  const expected = scenario.expected as Record<string, unknown>;
+  const given = (scenario.given && typeof scenario.given === 'object' && !Array.isArray(scenario.given))
+    ? (scenario.given as Record<string, unknown>)
+    : {};
+  const forbidden = scenario.forbidden as Record<string, unknown> | undefined;
+  return {
+    category: 'known',
+    skillId,
+    caseId: String(scenario.id),
+    instruction,
+    given,
+    expected: buildCaseExpected(expected),
+    forbidden: typeof forbidden?.action === 'string'
+      ? { action: forbidden.action }
+      : undefined,
+  };
+};
+
+export const buildAgentBehaviorEvalPlan = (repoRoot: string = getCoreRepoRoot()): AgentBehaviorEvalCase[] => {
   const plan: AgentBehaviorEvalCase[] = [];
   for (const skillId of canonicalSkillIds()) {
     const manifest = loadSkillPackage(skillId, repoRoot);
     const instruction = readSkillResource(skillId, manifest.entry, repoRoot);
-    for (const evalPath of manifest.evals.filter((item) => item.endsWith('.json'))) {
-      let scenarios: any[] = [];
-      try {
-        const parsed = JSON.parse(readSkillResource(skillId, evalPath, repoRoot));
-        scenarios = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.scenarios) ? parsed.scenarios : [];
-      } catch { continue; }
-      for (const scenario of scenarios) {
-        const expected = scenario?.expected;
-        if (typeof scenario?.id !== 'string' || typeof expected?.action !== 'string') continue;
-        if (typeof expected?.selectedSkill === 'string') continue;
-        const given = scenario?.given && typeof scenario.given === 'object' && !Array.isArray(scenario.given)
-          ? scenario.given as Record<string, unknown>
-          : {};
-        plan.push({
-          category: 'known',
-          skillId,
-          caseId: scenario.id,
-          instruction,
-          given,
-          expected: {
-            action: expected.action,
-            selectedSkill: typeof expected.selectedSkill === 'string' ? expected.selectedSkill : undefined,
-            produces: typeof expected.produces === 'string' ? expected.produces : undefined,
-            gates: Array.isArray(expected.gates) ? expected.gates : undefined,
-            structure: Array.isArray(expected.structure) ? expected.structure : undefined,
-          },
-          forbidden: typeof scenario?.forbidden?.action === 'string'
-            ? { action: scenario.forbidden.action }
-            : undefined,
-        });
-      }
+    const scenarios = loadSkillScenarios(skillId, repoRoot);
+    for (const scenario of scenarios) {
+      const evalCase = toEvalCase(skillId, instruction, scenario);
+      if (evalCase) plan.push(evalCase);
     }
   }
   return plan;
-}
+};
 
 
 function chooseBehaviorDistractor(

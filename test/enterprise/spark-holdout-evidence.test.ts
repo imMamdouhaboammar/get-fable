@@ -21,14 +21,14 @@ describe('frozen Spark holdout evidence', () => {
     expect(result.status).toBe('NOT_CHECKED');
     expect(result.fresh).toBe(false);
   });
-  test('keeps Spark evidence fresh when only evaluator tooling provenance changes', () => {
+  test('marks Spark evidence stale when evaluator tooling provenance changes', () => {
     const snapshot = {
       schemaVersion: 1, metric: 'enterprise-spark-holdout', capturedAt: '2026-08-19T12:00:00.000Z',
       ...hashes, total: 20, passed: 19, passRate: 0.95, forbiddenViolations: 0,
     } as const;
     const result = validateSparkHoldoutEvidenceSnapshot(snapshot, { ...hashes, runnerSha256: 'e'.repeat(64) });
-    expect(result.status).toBe('PASS');
-    expect(result.fresh).toBe(true);
+    expect(result.status).toBe('NOT_CHECKED');
+    expect(result.fresh).toBe(false);
   });
 
 });

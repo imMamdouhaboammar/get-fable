@@ -329,26 +329,63 @@ export function sha256File(filePath: string): string {
   return createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
-export function validateRoutingHoldoutEvidenceSnapshot(
-  snapshot: any,
-  expected: { corpusSha256: string; routerSha256: string; runnerSha256: string }
-): RoutingHoldoutEvidenceValidation {
-  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== 'enterprise-routing-holdout') {
-    return { status: 'NOT_CHECKED', fresh: false, reason: 'holdout evidence schema is missing or invalid' };
-  }
-  const hashFields = ['corpusSha256', 'routerSha256'] as const;
-  for (const field of hashFields) {
-    if (typeof snapshot[field] !== 'string' || snapshot[field] !== expected[field]) {
-      return { status: 'NOT_CHECKED', fresh: false, reason: `holdout evidence is stale for ${field}` };
+export const checkStaleHash = (
+  snap: Record<string, unknown>,
+  expected: Record<string, string>,
+  fields: readonly string[]
+): string | null => {
+  for (const field of fields) {
+    if (typeof snap[field] !== 'string' || snap[field] !== expected[field]) {
+      return field;
     }
   }
-  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+  return null;
+};
+
+export const areCountsValid = (total: unknown, passed: unknown): boolean =>
+  Number.isInteger(total) &&
+  (total as number) > 0 &&
+  Number.isInteger(passed) &&
+  (passed as number) >= 0 &&
+  (passed as number) <= (total as number);
+
+export const areMetricsValid = (
+  passRate: unknown,
+  passed: unknown,
+  total: unknown,
+  forbiddenViolations?: unknown
+): boolean => {
+  if (typeof passRate !== 'number' || passRate !== (passed as number) / (total as number)) {
+    return false;
+  }
+  if (forbiddenViolations !== undefined) {
+    return Number.isInteger(forbiddenViolations) && (forbiddenViolations as number) >= 0;
+  }
+  return true;
+};
+
+export function validateRoutingHoldoutEvidenceSnapshot(
+  snapshot: unknown,
+  expected: { corpusSha256: string; routerSha256: string; runnerSha256: string }
+): RoutingHoldoutEvidenceValidation {
+  if (!snapshot || typeof snapshot !== 'object') {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'holdout evidence schema is missing or invalid' };
+  }
+  const snap = snapshot as Record<string, unknown>;
+  if (snap.schemaVersion !== 1 || snap.metric !== 'enterprise-routing-holdout') {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'holdout evidence schema is missing or invalid' };
+  }
+  const staleField = checkStaleHash(snap, expected, ['corpusSha256', 'routerSha256', 'runnerSha256']);
+  if (staleField) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: `holdout evidence is stale for ${staleField}` };
+  }
+  if (!areCountsValid(snap.total, snap.passed)) {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'holdout evidence counts are invalid' };
   }
-  if (typeof snapshot.passRate !== 'number' || snapshot.passRate !== snapshot.passed / snapshot.total || !Number.isInteger(snapshot.forbiddenViolations) || snapshot.forbiddenViolations < 0) {
+  if (!areMetricsValid(snap.passRate, snap.passed, snap.total, snap.forbiddenViolations)) {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'holdout evidence metrics are invalid' };
   }
-  const typed = snapshot as RoutingHoldoutEvidenceSnapshot;
+  const typed = snap as unknown as RoutingHoldoutEvidenceSnapshot;
   const passed = typed.passRate >= 0.9 && typed.forbiddenViolations === 0;
   return {
     status: passed ? 'PASS' : 'FAIL',
@@ -514,24 +551,27 @@ export interface SparkHoldoutEvidenceValidation {
 }
 
 export function validateSparkHoldoutEvidenceSnapshot(
-  snapshot: any,
+  snapshot: unknown,
   expected: { corpusSha256: string; sparkSha256: string; runnerSha256: string }
 ): SparkHoldoutEvidenceValidation {
-  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== 'enterprise-spark-holdout') {
+  if (!snapshot || typeof snapshot !== 'object') {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence schema is missing or invalid' };
   }
-  for (const field of ['corpusSha256', 'sparkSha256'] as const) {
-    if (typeof snapshot[field] !== 'string' || snapshot[field] !== expected[field]) {
-      return { status: 'NOT_CHECKED', fresh: false, reason: `Spark holdout evidence is stale for ${field}` };
-    }
+  const snap = snapshot as Record<string, unknown>;
+  if (snap.schemaVersion !== 1 || snap.metric !== 'enterprise-spark-holdout') {
+    return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence schema is missing or invalid' };
   }
-  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+  const staleField = checkStaleHash(snap, expected, ['corpusSha256', 'sparkSha256', 'runnerSha256']);
+  if (staleField) {
+    return { status: 'NOT_CHECKED', fresh: false, reason: `Spark holdout evidence is stale for ${staleField}` };
+  }
+  if (!areCountsValid(snap.total, snap.passed)) {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence counts are invalid' };
   }
-  if (typeof snapshot.passRate !== 'number' || snapshot.passRate !== snapshot.passed / snapshot.total || !Number.isInteger(snapshot.forbiddenViolations) || snapshot.forbiddenViolations < 0) {
+  if (!areMetricsValid(snap.passRate, snap.passed, snap.total, snap.forbiddenViolations)) {
     return { status: 'NOT_CHECKED', fresh: false, reason: 'Spark holdout evidence metrics are invalid' };
   }
-  const typed = snapshot as SparkHoldoutEvidenceSnapshot;
+  const typed = snap as unknown as SparkHoldoutEvidenceSnapshot;
   const passed = typed.passRate >= 0.9 && typed.forbiddenViolations === 0;
   return {
     status: passed ? 'PASS' : 'FAIL',

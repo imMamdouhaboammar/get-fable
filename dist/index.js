@@ -24236,7 +24236,7 @@ var EXTENSIONS = {
   reference: new Set([".md", ".json", ".yaml", ".yml", ".txt", ".proto"]),
   template: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon", ".proto"]),
   example: new Set([".md", ".json", ".yaml", ".yml", ".ts", ".js", ".txt", ".toon"]),
-  eval: new Set([".json", ".yaml", ".yml"]),
+  eval: new Set([".json"]),
   script: new Set([".sh", ".bash", ".py", ".js", ".mjs", ".cjs", ".ts"])
 };
 function getSkillPackageDir(id, repoRoot = getCoreRepoRoot()) {
@@ -30217,23 +30217,43 @@ function runEnterpriseRoutingBenchmark(repoRoot = getCoreRepoRoot(), options = {
 function sha256File(filePath) {
   return createHash2("sha256").update(fs16.readFileSync(filePath)).digest("hex");
 }
-function validateRoutingHoldoutEvidenceSnapshot(snapshot, expected) {
-  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== "enterprise-routing-holdout") {
-    return { status: "NOT_CHECKED", fresh: false, reason: "holdout evidence schema is missing or invalid" };
-  }
-  const hashFields = ["corpusSha256", "routerSha256"];
-  for (const field of hashFields) {
-    if (typeof snapshot[field] !== "string" || snapshot[field] !== expected[field]) {
-      return { status: "NOT_CHECKED", fresh: false, reason: `holdout evidence is stale for ${field}` };
+var checkStaleHash = (snap, expected, fields) => {
+  for (const field of fields) {
+    if (typeof snap[field] !== "string" || snap[field] !== expected[field]) {
+      return field;
     }
   }
-  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+  return null;
+};
+var areCountsValid = (total, passed) => Number.isInteger(total) && total > 0 && Number.isInteger(passed) && passed >= 0 && passed <= total;
+var areMetricsValid = (passRate, passed, total, forbiddenViolations) => {
+  if (typeof passRate !== "number" || passRate !== passed / total) {
+    return false;
+  }
+  if (forbiddenViolations !== undefined) {
+    return Number.isInteger(forbiddenViolations) && forbiddenViolations >= 0;
+  }
+  return true;
+};
+function validateRoutingHoldoutEvidenceSnapshot(snapshot, expected) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return { status: "NOT_CHECKED", fresh: false, reason: "holdout evidence schema is missing or invalid" };
+  }
+  const snap = snapshot;
+  if (snap.schemaVersion !== 1 || snap.metric !== "enterprise-routing-holdout") {
+    return { status: "NOT_CHECKED", fresh: false, reason: "holdout evidence schema is missing or invalid" };
+  }
+  const staleField = checkStaleHash(snap, expected, ["corpusSha256", "routerSha256", "runnerSha256"]);
+  if (staleField) {
+    return { status: "NOT_CHECKED", fresh: false, reason: `holdout evidence is stale for ${staleField}` };
+  }
+  if (!areCountsValid(snap.total, snap.passed)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "holdout evidence counts are invalid" };
   }
-  if (typeof snapshot.passRate !== "number" || snapshot.passRate !== snapshot.passed / snapshot.total || !Number.isInteger(snapshot.forbiddenViolations) || snapshot.forbiddenViolations < 0) {
+  if (!areMetricsValid(snap.passRate, snap.passed, snap.total, snap.forbiddenViolations)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "holdout evidence metrics are invalid" };
   }
-  const typed = snapshot;
+  const typed = snap;
   const passed = typed.passRate >= 0.9 && typed.forbiddenViolations === 0;
   return {
     status: passed ? "PASS" : "FAIL",
@@ -30337,21 +30357,24 @@ function runEnterpriseSparkBenchmark(repoRoot = getCoreRepoRoot(), options = {})
   };
 }
 function validateSparkHoldoutEvidenceSnapshot(snapshot, expected) {
-  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== "enterprise-spark-holdout") {
+  if (!snapshot || typeof snapshot !== "object") {
     return { status: "NOT_CHECKED", fresh: false, reason: "Spark holdout evidence schema is missing or invalid" };
   }
-  for (const field of ["corpusSha256", "sparkSha256"]) {
-    if (typeof snapshot[field] !== "string" || snapshot[field] !== expected[field]) {
-      return { status: "NOT_CHECKED", fresh: false, reason: `Spark holdout evidence is stale for ${field}` };
-    }
+  const snap = snapshot;
+  if (snap.schemaVersion !== 1 || snap.metric !== "enterprise-spark-holdout") {
+    return { status: "NOT_CHECKED", fresh: false, reason: "Spark holdout evidence schema is missing or invalid" };
   }
-  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+  const staleField = checkStaleHash(snap, expected, ["corpusSha256", "sparkSha256", "runnerSha256"]);
+  if (staleField) {
+    return { status: "NOT_CHECKED", fresh: false, reason: `Spark holdout evidence is stale for ${staleField}` };
+  }
+  if (!areCountsValid(snap.total, snap.passed)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "Spark holdout evidence counts are invalid" };
   }
-  if (typeof snapshot.passRate !== "number" || snapshot.passRate !== snapshot.passed / snapshot.total || !Number.isInteger(snapshot.forbiddenViolations) || snapshot.forbiddenViolations < 0) {
+  if (!areMetricsValid(snap.passRate, snap.passed, snap.total, snap.forbiddenViolations)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "Spark holdout evidence metrics are invalid" };
   }
-  const typed = snapshot;
+  const typed = snap;
   const passed = typed.passRate >= 0.9 && typed.forbiddenViolations === 0;
   return {
     status: passed ? "PASS" : "FAIL",
@@ -30457,22 +30480,34 @@ function runEnterpriseVerificationBenchmark(repoRoot = getCoreRepoRoot(), option
 function verificationFileSha256(filePath) {
   return createHash3("sha256").update(fs17.readFileSync(filePath)).digest("hex");
 }
-function validateVerificationHoldoutEvidenceSnapshot(snapshot, expected) {
-  if (!snapshot || snapshot.schemaVersion !== 1 || snapshot.metric !== "enterprise-verification-holdout") {
-    return { status: "NOT_CHECKED", fresh: false, reason: "verification holdout evidence schema is missing or invalid" };
-  }
-  for (const field of ["corpusSha256", "stateSha256"]) {
-    if (typeof snapshot[field] !== "string" || snapshot[field] !== expected[field]) {
-      return { status: "NOT_CHECKED", fresh: false, reason: `verification holdout evidence is stale for ${field}` };
+var checkStaleHash2 = (snap, expected, fields) => {
+  for (const field of fields) {
+    if (typeof snap[field] !== "string" || snap[field] !== expected[field]) {
+      return field;
     }
   }
-  if (!Number.isInteger(snapshot.total) || snapshot.total <= 0 || !Number.isInteger(snapshot.passed) || snapshot.passed < 0 || snapshot.passed > snapshot.total) {
+  return null;
+};
+var areCountsValid2 = (total, passed) => Number.isInteger(total) && total > 0 && Number.isInteger(passed) && passed >= 0 && passed <= total;
+function validateVerificationHoldoutEvidenceSnapshot(snapshot, expected) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return { status: "NOT_CHECKED", fresh: false, reason: "verification holdout evidence schema is missing or invalid" };
+  }
+  const snap = snapshot;
+  if (snap.schemaVersion !== 1 || snap.metric !== "enterprise-verification-holdout") {
+    return { status: "NOT_CHECKED", fresh: false, reason: "verification holdout evidence schema is missing or invalid" };
+  }
+  const staleField = checkStaleHash2(snap, expected, ["corpusSha256", "stateSha256", "evaluatorSha256"]);
+  if (staleField) {
+    return { status: "NOT_CHECKED", fresh: false, reason: `verification holdout evidence is stale for ${staleField}` };
+  }
+  if (!areCountsValid2(snap.total, snap.passed)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "verification holdout evidence counts are invalid" };
   }
-  if (typeof snapshot.passRate !== "number" || snapshot.passRate !== snapshot.passed / snapshot.total) {
+  if (typeof snap.passRate !== "number" || snap.passRate !== snap.passed / snap.total) {
     return { status: "NOT_CHECKED", fresh: false, reason: "verification holdout evidence metrics are invalid" };
   }
-  const typed = snapshot;
+  const typed = snap;
   const passed = typed.passRate >= 0.9;
   return {
     status: passed ? "PASS" : "FAIL",
@@ -30505,6 +30540,98 @@ function loadFrozenVerificationHoldoutEvidence(repoRoot = getCoreRepoRoot()) {
 import { createHash as createHash4 } from "node:crypto";
 import fs18 from "node:fs";
 import path18 from "node:path";
+
+// src/core/eval-loader.ts
+var validateObjectField = (obj, field, skillId, resourcePath) => {
+  const val = obj[field];
+  if (val !== undefined && (!val || typeof val !== "object" || Array.isArray(val))) {
+    throw new Error(`Failed to validate eval scenario "${obj.id}" in "${resourcePath}" for skill "${skillId}": invalid "${field}" field: must be an object.`);
+  }
+};
+var TESTABLE_SCENARIO_KEYS = [
+  "expected",
+  "prompt",
+  "given",
+  "expected_skill",
+  "shouldTrigger",
+  "category"
+];
+var assertScenarioObject = (raw, skillId, resourcePath, index) => {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    throw new Error(`Failed to validate eval scenario at index ${index} in "${resourcePath}" for skill "${skillId}": expected an object.`);
+  }
+  return raw;
+};
+var assertScenarioId = (obj, skillId, resourcePath, index) => {
+  if (typeof obj.id !== "string" || !obj.id.trim()) {
+    throw new Error(`Failed to validate eval scenario at index ${index} in "${resourcePath}" for skill "${skillId}": missing a valid string "id".`);
+  }
+};
+var assertScenarioHasTestable = (obj, skillId, resourcePath) => {
+  const hasTestable = TESTABLE_SCENARIO_KEYS.some((key) => obj[key] !== undefined);
+  if (!hasTestable) {
+    throw new Error(`Failed to validate eval scenario "${obj.id}" in "${resourcePath}" for skill "${skillId}": has no valid testable fields (expected, prompt, given, expected_skill, shouldTrigger, category).`);
+  }
+};
+var validateScenario = (raw, skillId, resourcePath, index) => {
+  const obj = assertScenarioObject(raw, skillId, resourcePath, index);
+  assertScenarioId(obj, skillId, resourcePath, index);
+  assertScenarioHasTestable(obj, skillId, resourcePath);
+  validateObjectField(obj, "expected", skillId, resourcePath);
+  validateObjectField(obj, "given", skillId, resourcePath);
+  validateObjectField(obj, "forbidden", skillId, resourcePath);
+  return obj;
+};
+var readAndParseEvalResource = (id, resource, repoRoot) => {
+  if (!resource.endsWith(".json")) {
+    throw new Error(`Unsupported eval format for "${resource}" in skill "${id}". Only .json is supported.`);
+  }
+  const rawContent = readSkillResource(id, resource, repoRoot);
+  try {
+    return JSON.parse(rawContent);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`Failed to parse eval resource "${resource}" in skill "${id}": ${message}`);
+  }
+};
+var extractScenariosArray = (parsed, id, resource) => {
+  if (Array.isArray(parsed)) {
+    return parsed;
+  }
+  if (parsed && typeof parsed === "object") {
+    const obj = parsed;
+    if (Array.isArray(obj.scenarios)) {
+      return obj.scenarios;
+    }
+  }
+  throw new Error(`Eval resource "${resource}" in skill "${id}" must contain an array of scenarios or an object with a "scenarios" array.`);
+};
+var loadSkillScenarios2 = (id, repoRoot = getCoreRepoRoot()) => {
+  const manifest = loadSkillPackage(id, repoRoot);
+  const allScenarios = [];
+  for (const resource of manifest.evals) {
+    const parsed = readAndParseEvalResource(id, resource, repoRoot);
+    const rawArray = extractScenariosArray(parsed, id, resource);
+    rawArray.forEach((item, index) => {
+      allScenarios.push(validateScenario(item, id, resource, index));
+    });
+  }
+  return allScenarios;
+};
+var countSkillScenarios = (id, repoRoot = getCoreRepoRoot()) => {
+  try {
+    const manifest = loadSkillPackage(id, repoRoot);
+    if (!manifest.evals || manifest.evals.length === 0) {
+      return 0;
+    }
+    const scenarios = loadSkillScenarios2(id, repoRoot);
+    return scenarios.length;
+  } catch {
+    return null;
+  }
+};
+
+// src/core/agent-behavior-eval.ts
 function arraysEqual(left, right) {
   if (left === undefined)
     return true;
@@ -30527,46 +30654,52 @@ function matchesOracle(response, oracle) {
     return false;
   return true;
 }
-function buildAgentBehaviorEvalPlan(repoRoot = getCoreRepoRoot()) {
+var isValidScenario = (scenario) => {
+  if (!scenario || typeof scenario !== "object")
+    return false;
+  const rec = scenario;
+  const expected = rec.expected;
+  if (typeof rec.id !== "string" || typeof expected?.action !== "string")
+    return false;
+  return typeof expected.selectedSkill !== "string";
+};
+var buildCaseExpected = (expected) => ({
+  action: String(expected.action),
+  selectedSkill: typeof expected.selectedSkill === "string" ? expected.selectedSkill : undefined,
+  produces: typeof expected.produces === "string" ? expected.produces : undefined,
+  gates: Array.isArray(expected.gates) ? expected.gates : undefined,
+  structure: Array.isArray(expected.structure) ? expected.structure : undefined
+});
+var toEvalCase = (skillId, instruction, scenario) => {
+  if (!isValidScenario(scenario))
+    return null;
+  const expected = scenario.expected;
+  const given = scenario.given && typeof scenario.given === "object" && !Array.isArray(scenario.given) ? scenario.given : {};
+  const forbidden = scenario.forbidden;
+  return {
+    category: "known",
+    skillId,
+    caseId: String(scenario.id),
+    instruction,
+    given,
+    expected: buildCaseExpected(expected),
+    forbidden: typeof forbidden?.action === "string" ? { action: forbidden.action } : undefined
+  };
+};
+var buildAgentBehaviorEvalPlan = (repoRoot = getCoreRepoRoot()) => {
   const plan = [];
   for (const skillId of canonicalSkillIds()) {
     const manifest = loadSkillPackage(skillId, repoRoot);
     const instruction = readSkillResource(skillId, manifest.entry, repoRoot);
-    for (const evalPath of manifest.evals.filter((item) => item.endsWith(".json"))) {
-      let scenarios = [];
-      try {
-        const parsed = JSON.parse(readSkillResource(skillId, evalPath, repoRoot));
-        scenarios = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.scenarios) ? parsed.scenarios : [];
-      } catch {
-        continue;
-      }
-      for (const scenario of scenarios) {
-        const expected = scenario?.expected;
-        if (typeof scenario?.id !== "string" || typeof expected?.action !== "string")
-          continue;
-        if (typeof expected?.selectedSkill === "string")
-          continue;
-        const given = scenario?.given && typeof scenario.given === "object" && !Array.isArray(scenario.given) ? scenario.given : {};
-        plan.push({
-          category: "known",
-          skillId,
-          caseId: scenario.id,
-          instruction,
-          given,
-          expected: {
-            action: expected.action,
-            selectedSkill: typeof expected.selectedSkill === "string" ? expected.selectedSkill : undefined,
-            produces: typeof expected.produces === "string" ? expected.produces : undefined,
-            gates: Array.isArray(expected.gates) ? expected.gates : undefined,
-            structure: Array.isArray(expected.structure) ? expected.structure : undefined
-          },
-          forbidden: typeof scenario?.forbidden?.action === "string" ? { action: scenario.forbidden.action } : undefined
-        });
-      }
+    const scenarios = loadSkillScenarios2(skillId, repoRoot);
+    for (const scenario of scenarios) {
+      const evalCase = toEvalCase(skillId, instruction, scenario);
+      if (evalCase)
+        plan.push(evalCase);
     }
   }
   return plan;
-}
+};
 function chooseBehaviorDistractor(item, actionVocabulary, salt) {
   const candidates = actionVocabulary.filter((action) => action !== item.expected.action && action !== item.forbidden?.action);
   if (candidates.length === 0)
@@ -30979,21 +31112,9 @@ function evaluateSkillMaturity(id, repoRoot = getCoreRepoRoot(), options = {}) {
 }
 
 // src/core/feed.ts
-function countEvalScenarios(id, repoRoot) {
-  try {
-    const manifest = loadSkillPackage(id, repoRoot);
-    let count = 0;
-    for (const evalPath of manifest.evals) {
-      if (!evalPath.endsWith(".json"))
-        continue;
-      const parsed = JSON.parse(readSkillResource(id, evalPath, repoRoot));
-      count += Array.isArray(parsed) ? parsed.length : Array.isArray(parsed?.scenarios) ? parsed.scenarios.length : 0;
-    }
-    return count;
-  } catch {
-    return 0;
-  }
-}
+var countEvalScenarios = (id, repoRoot) => {
+  return countSkillScenarios(id, repoRoot);
+};
 function loadSkillFeed(repoRoot = getCoreRepoRoot(), targetDir = process.cwd()) {
   const registry = loadSkillRegistry(repoRoot);
   const revision = repositoryRevision(repoRoot);
@@ -35185,6 +35306,7 @@ export {
   bucketTopCandidates,
   buildAgentBehaviorEvalPlan,
   buildAgentBehaviorRequestBundle,
+  buildCaseExpected,
   buildJevRequest as buildCompactionJevRequest,
   buildEnterpriseAgentBehaviorEvalPlan,
   buildFirstPassQuestions,
@@ -35325,6 +35447,7 @@ export {
   isFablePhase,
   isGrokModel,
   isHardPolicyViolation,
+  isValidScenario,
   latestUserIntent,
   loadAgentBehaviorEvidenceSnapshot,
   loadReflexConfig,
@@ -35364,6 +35487,7 @@ export {
   setupAbortBridge,
   startMythosRouterServer,
   statePath,
+  toEvalCase,
   transitionState,
   validateAgentBehaviorEvidenceSnapshot,
   validateEndpoint,

@@ -5,11 +5,10 @@ import {
   getSkillPackageSummary,
   getSkillManifestPath,
   listSkillResources,
-  loadSkillPackage,
-  readSkillResource,
 } from './skill-package.js';
 import { evaluateSkillMaturity, type EvidenceSlice, type SkillMaturity } from './maturity.js';
 import { repositoryRevision } from './eval-runner.js';
+import { countSkillScenarios } from './eval-loader.js';
 import type { FableSkillId, SkillResourceEntry } from './types.js';
 
 export interface SkillFeedItem {
@@ -43,25 +42,16 @@ export interface SkillFeedItem {
     scripts: number;
     total: number;
   };
-  evalScenariosCount: number;
+  evalScenariosCount: number | null;
   knownCases: { executed: number; passed: number; passRate: number | null; status: EvidenceSlice['status'] };
   holdout: EvidenceSlice;
   lastEvalVerdict: EvidenceSlice['status'];
   lastEvaluatedRevision: string | null;
 }
 
-function countEvalScenarios(id: FableSkillId, repoRoot: string): number {
-  try {
-    const manifest = loadSkillPackage(id, repoRoot);
-    let count = 0;
-    for (const evalPath of manifest.evals) {
-      if (!evalPath.endsWith('.json')) continue;
-      const parsed = JSON.parse(readSkillResource(id, evalPath, repoRoot));
-      count += Array.isArray(parsed) ? parsed.length : Array.isArray(parsed?.scenarios) ? parsed.scenarios.length : 0;
-    }
-    return count;
-  } catch { return 0; }
-}
+const countEvalScenarios = (id: FableSkillId, repoRoot: string): number | null => {
+  return countSkillScenarios(id, repoRoot);
+};
 
 export function loadSkillFeed(
   repoRoot: string = getCoreRepoRoot(),
