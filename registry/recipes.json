@@ -1,5 +1,5 @@
 {
-  "version": "1.9.1",
+  "version": "1.10.0",
   "recipes": [
     { "id": "bug-fix", "path": "recipes/bug-fix.yaml", "targetShape": "bug-fix" },
     { "id": "build-feature", "path": "recipes/build-feature.yaml", "targetShape": "feature" },

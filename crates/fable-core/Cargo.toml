@@ -1,6 +1,6 @@
 [package]
 name = "fable-core"
-version = "1.9.1"
+version = "1.10.0"
 edition = "2021"
 authors = ["Mamdouh Abo Ammar"]
 description = "Core deterministic coding lifecycle engine for get-fable"

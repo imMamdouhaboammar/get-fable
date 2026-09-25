@@ -1,6 +1,6 @@
 {
   "name": "get-fable",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "A portable coding lifecycle for AI agents with deterministic routing across 30 skills, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
   "main": "src/index.ts",
@@ -13,12 +13,14 @@
       "default": "./dist/index.js"
     },
     "./client": "./dist/client.js",
+    "./standalone": "./src/dsh/standalone.ts",
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./dsh.plugin.json": "./dsh.plugin.json",
     "./package.json": "./package.json"
   },
   "bin": {
-    "get-fable": "bin/get-fable.js"
+    "get-fable": "bin/get-fable.js",
+    "fable-dsh": "bin/fable-dsh.js"
   },
   "dsh": {
     "bundle": {
@@ -84,6 +86,7 @@
     "check": "bun run check:generated && bun run check:llms && bun run typecheck && bun run test && bun run build",
     "lint": "bun ./bin/get-fable.js lint",
     "serve:web": "bun ./bin/serve-web.js",
+    "fable-dsh": "bun ./bin/fable-dsh.js",
     "prepack": "bun run check",
     "generate:catalog": "bun scripts/generate-catalog.ts",
     "check:generated": "bun scripts/generate-catalog.ts --check",

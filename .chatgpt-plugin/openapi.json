@@ -3,7 +3,7 @@
   "info": {
     "title": "get-fable API Proxy",
     "description": "Coding lifecycle governance, routing, state tracking, and spark next-move prediction.",
-    "version": "1.9.1"
+    "version": "1.10.0"
   },
   "servers": [
     {

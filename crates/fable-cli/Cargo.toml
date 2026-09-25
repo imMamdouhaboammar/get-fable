@@ -1,6 +1,6 @@
 [package]
 name = "fable-cli"
-version = "1.9.1"
+version = "1.10.0"
 edition = "2021"
 authors = ["Mamdouh Abo Ammar"]
 description = "High-performance native CLI binary for get-fable"

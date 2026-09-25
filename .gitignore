@@ -17,3 +17,7 @@ target/
 *.docx
 uv.lock
 package-lock.json
+.planning/
+dist/release/
+dist/*.zip
+dist/get-fable-*/

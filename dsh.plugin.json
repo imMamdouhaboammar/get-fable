@@ -1,7 +1,7 @@
 {
   "id": "get-fable",
   "name": "get-fable",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "main": "./dist/index.js",
   "description": "Modular frontier execution discipline for DSH: evidence-first routing across 29 skills, Manus-style file planning, verification gates, fail-streak recovery, and an interactive web dashboard.",
   "engines": {

@@ -1,6 +1,6 @@
 # get-fable — Authoritative Agent Rules
 
-Version: **1.9.1** · Schema: **v3** · Skills: **42** · Platforms: **32**
+Version: **1.10.0** · Schema: **v3** · Skills: **42** · Platforms: **32**
 
 Every AI agent operating in or consuming this repository **must** follow these rules. They are not suggestions. They define the contract between the agent, the lifecycle harness, and the evidence state.
 
