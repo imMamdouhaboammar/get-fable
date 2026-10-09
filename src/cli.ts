@@ -121,6 +121,7 @@ import {
   loadCustomRuleConfig,
 } from './core/review/index.js';
 import { runReflexCommand } from './cli/commands/reflex.js';
+import { runUiPolishCommand } from './cli/commands/ui-polish.js';
 import { loadReflexConfig, resolveRoute } from './core/reflex/index.js';
 
 
@@ -1560,6 +1561,10 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'heal':
       return handleRedTeamCli(['heal', ...args.slice(1)]);
 
+    case 'ui-polish':
+    case 'polish':
+      return runUiPolishCommand(args.slice(1));
+
     case 'guide':
     case 'help':
       if (args[1]) {
@@ -1709,6 +1714,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}update [--check]${colors.reset}     Check and apply automatic updates
   ${colors.yellow}redteam --target <url>${colors.reset}Execute native agentic ethical penetration audit
   ${colors.yellow}heal [options]${colors.reset}        Synthesize and apply code patches, TDD guards, and attestations
+  ${colors.yellow}ui-polish [url]${colors.reset}       Autonomous E2E & pixel-by-pixel UI/UX polish round; add --json
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
   ${colors.yellow}grok [task|--status]${colors.reset} Invoke Grok Bot adapter for task routing, status, and skill eval

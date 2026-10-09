@@ -8,7 +8,7 @@ mod json;
 #[derive(Parser)]
 #[command(name = "get-fable-native")]
 #[command(author = "Mamdouh Abo Ammar")]
-#[command(version = "1.10.0")]
+#[command(version = "1.11.0")]
 #[command(about = "Ultra-fast native coding lifecycle engine for AI agents", long_about = None)]
 struct Cli {
     #[command(subcommand)]

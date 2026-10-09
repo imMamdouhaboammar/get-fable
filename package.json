@@ -1,6 +1,6 @@
 {
   "name": "get-fable",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "A portable coding lifecycle for AI agents with deterministic routing across 30 skills, durable state, mutation-aware verification, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
   "main": "src/index.ts",
@@ -147,9 +147,11 @@
     "@toon-format/toon": "^4.1.1"
   },
   "devDependencies": {
+    "@e2e-dev/web": "^0.13.0",
     "@types/node": "^26.5.1",
     "@types/react": "^19.2.0",
     "cypress": "15.21.0",
+    "e2e": "^0.18.0",
     "react": "^19.2.0",
     "typescript": "^5.7.0"
   }
