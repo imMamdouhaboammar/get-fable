@@ -444,6 +444,70 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
       }>(receipt.returnPacketToon).returnPacket.verified === false)).toBe(true);
     });
 
+    test('rejects completed events lacking verified evidence from an external worker', async () => {
+      const server = new FableWorkerServer({
+        host: '127.0.0.1',
+        port: 0,
+        taskHandler: async (request, emitEvent) => {
+          emitEvent({
+            event_id: 'unverified-fixture',
+            task_id: request.task_id,
+            run_id: request.run_id,
+            timestamp: Date.now(),
+            event_type: 'completed',
+            message: 'A false completion without evidence',
+            payload_json: JSON.stringify({ success: true }),
+            is_terminal: true,
+          });
+        },
+      });
+      const port = await server.start();
+      try {
+        const plan = await orchestrateSubagentsWithJev('Audit the unverified completion', {
+          preferNative: false,
+        });
+        const report = await executeDelegationWavePlanWithGrpc(plan, {
+          workerAddress: `127.0.0.1:${port}`,
+        });
+        expect(report.allSucceeded).toBe(false);
+        expect(report.receipts[0]!.status).toBe('failed');
+        const packet = decodeToon<{ returnPacket: { verified: boolean } }>(
+          report.receipts[0]!.returnPacketToon
+        );
+        expect(packet.returnPacket.verified).toBe(false);
+      } finally {
+        await server.stop();
+      }
+    });
+
+    test('stops dependent waves when a required predecessor fails', async () => {
+      const plan = await orchestrateSubagentsWithJev('Two dependent tasks', {
+        preferNative: false,
+        subtasks: [
+          {
+            id: 'dependent-first',
+            description: 'Implement Foo in src/foo.ts',
+            writeScope: ['src/foo.ts'],
+            sharedContracts: ['Foo'],
+            verificationCmd: 'bun test test/foo.test.ts',
+          },
+          {
+            id: 'dependent-second',
+            description: 'Extend Foo in src/foo.ts',
+            writeScope: ['src/foo.ts'],
+            sharedContracts: ['Foo'],
+            verificationCmd: 'bun test test/foo.test.ts',
+          },
+        ],
+      });
+      expect(plan.totalWaves).toBe(2);
+      const report = await executeDelegationWavePlanWithGrpc(plan);
+      expect(report.allSucceeded).toBe(false);
+      expect(report.totalWavesExecuted).toBe(1);
+      expect(report.totalSubtasksExecuted).toBe(1);
+      expect(report.receipts[0]!.status).toBe('failed');
+    });
+
     test('connects to an explicit external FableWorkerServer when workerAddress is provided', async () => {
       const externalServer = new FableWorkerServer({ host: '127.0.0.1', port: 0, taskHandler: fixtureTaskHandler });
       const port = await externalServer.start();
