@@ -207,7 +207,7 @@ describe('TypeSafe Jev API .env Installer Tool', () => {
       'install',
       'jev',
       '--typesafe-api-key',
-      'ts_cli_install_key_1',
+      'FABLE_TEST_ONLY_INVALID_INSTALL_KEY',
       '--reflex-mode',
       'shadow',
       '--target-dir',
@@ -215,16 +215,16 @@ describe('TypeSafe Jev API .env Installer Tool', () => {
       '--json-v1',
     ]);
     expect(code1).toBe(0);
-    expect(readTypesafeApiKeyFromEnvFile(dir)).toBe('ts_cli_install_key_1');
+    expect(readTypesafeApiKeyFromEnvFile(dir)).toBe('FABLE_TEST_ONLY_INVALID_INSTALL_KEY');
 
     const code2 = await runCli([
       'setup-jev',
-      '--jev-api-key=ts_cli_setup_key_2',
+      '--jev-api-key=FABLE_TEST_ONLY_INVALID_SETUP_KEY',
       `--target-dir=${dir}`,
       '--json',
     ]);
     expect(code2).toBe(0);
-    expect(readTypesafeApiKeyFromEnvFile(dir)).toBe('ts_cli_setup_key_2');
+    expect(readTypesafeApiKeyFromEnvFile(dir)).toBe('FABLE_TEST_ONLY_INVALID_SETUP_KEY');
 
     const initDir = makeTempDir('get-fable-init-jev-');
     initProjectFable(initDir, {
