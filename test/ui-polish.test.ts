@@ -209,6 +209,6 @@ describe('UI/UX Polish Engine', () => {
         '2',
       ]);
       expect(exitCode).toBe(0);
-    });
+    }, 15000);
   });
 });

@@ -44354,7 +44354,7 @@ ${colors2.cyan}${colors2.bright}=== Fable Autonomous UI/UX Polish Round ===${col
     headed,
     dryRun,
     maxLoops,
-    autoInstall: !noInstall,
+    autoInstall: !noInstall && !dryRun,
     projectDir: process.cwd()
   });
   if (jsonMode) {

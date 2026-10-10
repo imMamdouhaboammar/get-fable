@@ -55,7 +55,7 @@ export async function runUiPolishCommand(args: string[]): Promise<number> {
     headed,
     dryRun,
     maxLoops,
-    autoInstall: !noInstall,
+    autoInstall: !noInstall && !dryRun,
     projectDir: process.cwd(),
   });
 
