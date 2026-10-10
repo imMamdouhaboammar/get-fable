@@ -19,5 +19,7 @@ export * from './integrations/providers.js';
 export * from './core/agent-behavior-eval.js';
 export * from './core/reflex/index.js';
 export * from './core/test-value/index.js';
+export * from './core/mythos/index.js';
+export * from './core/orchestrator/index.js';
 export * from './dsh/index.js';
 export * from './rpc/index.js';

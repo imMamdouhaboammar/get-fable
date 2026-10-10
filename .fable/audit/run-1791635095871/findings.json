@@ -1,0 +1,73 @@
+[
+  {
+    "verdict": "confirmed",
+    "fingerprint": "11f0eae606beaeda",
+    "title": "Sensitive Secret File Detected: .env",
+    "description": "A credential or private key file is present in the repository tree at .env.",
+    "root_cause": "Sensitive configuration file was committed to repository storage without exclusion rules.",
+    "intended_behavior": "Credentials and private keys must be stored in secure environment vaults or Secret Manager.",
+    "trace": [
+      {
+        "kind": "entrypoint",
+        "file": ".env",
+        "line": 1,
+        "scope": "file-storage",
+        "description": "Sensitive file stored at repository path .env"
+      },
+      {
+        "kind": "sink",
+        "file": ".env",
+        "line": 1,
+        "scope": "file-exposure",
+        "description": "Repository file exposure sink"
+      }
+    ],
+    "evidence": [
+      {
+        "file": ".env",
+        "line": 1,
+        "description": "Credential file found on disk with non-zero byte length"
+      }
+    ],
+    "conditions": [
+      {
+        "kind": "system_configuration",
+        "description": "Local repository clone or unauthenticated workspace access"
+      }
+    ],
+    "execution": {
+      "attacker_perspective": "unauthenticated repository inspector",
+      "payloads": [
+        "cat .env"
+      ],
+      "instructions": [
+        "Inspect repository working tree for .env"
+      ],
+      "observed_result": "File exists and contains sensitive credentials in the working tree."
+    },
+    "remediation": {
+      "strategy": "Add .env to .gitignore and rotate any exposed credentials immediately.",
+      "code_changes": [
+        {
+          "file_name": ".gitignore",
+          "fixed_code": "\n.env\n"
+        }
+      ]
+    },
+    "severity": {
+      "overall_severity": "high",
+      "likelihood": {
+        "score": "high",
+        "reason": "File is plainly visible in repository working tree without authentication."
+      },
+      "impact": {
+        "score": "high",
+        "reason": "Exposes database credentials or private keys."
+      }
+    },
+    "confidence": {
+      "score": "high",
+      "reason": "Direct source inspection verified credential file on disk."
+    }
+  }
+]

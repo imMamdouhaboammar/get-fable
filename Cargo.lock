@@ -232,6 +232,9 @@ dependencies = [
  "clap",
  "fable-core",
  "fable-eco",
+ "fable-jev",
+ "fable-toon",
+ "regex",
  "serde",
  "serde_json",
  "thiserror",
@@ -267,6 +270,31 @@ dependencies = [
  "tempfile",
  "thiserror",
  "toml",
+]
+
+[[package]]
+name = "fable-jev"
+version = "1.11.1"
+dependencies = [
+ "chrono",
+ "fable-core",
+ "fable-toon",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+]
+
+[[package]]
+name = "fable-toon"
+version = "1.11.1"
+dependencies = [
+ "fable-core",
+ "regex",
+ "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]
@@ -580,6 +608,7 @@ version = "1.0.151"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c841b55ecdae098c80dcae9cf767f6f8a0c2cdb3416bbef72181df4d0fe73f14"
 dependencies = [
+ "indexmap",
  "itoa",
  "memchr",
  "serde",

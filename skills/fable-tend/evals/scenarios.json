@@ -12,5 +12,43 @@
     "category": "should-not-trigger",
     "prompt": "Who wrote the play Hamlet?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-tend-repair-ci-failure-surgically",
+    "description": "Inspect failing CI logs, reproduce locally, apply a minimal targeted fix, and verify checks pass",
+    "given": {
+      "intent": "Repair failing GitHub Actions CI check caused by a lockfile and typecheck mismatch on the PR branch",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "reproduce-and-repair-ci-check-failure",
+      "produces": "verified-ci-repair-commit",
+      "gates": [
+        "ci-failure-reproduced-locally",
+        "local-verification-green"
+      ]
+    },
+    "forbidden": {
+      "action": "disable-failing-ci-check-or-force-push-blindly"
+    }
+  },
+  {
+    "id": "fable-tend-resolve-pr-merge-conflict-safely",
+    "description": "Reconcile branch merge conflicts while preserving both sides' behavioral contracts and running full test verification",
+    "given": {
+      "intent": "Tend blocked PR #42 by resolving merge conflicts in registry/skills.json and verifying the build",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "resolve-conflict-and-verify-branch-health",
+      "produces": "conflict-free-verified-branch",
+      "gates": [
+        "conflict-markers-cleared",
+        "local-verification-green"
+      ]
+    },
+    "forbidden": {
+      "action": "discard-upstream-changes-without-running-tests"
+    }
   }
 ]

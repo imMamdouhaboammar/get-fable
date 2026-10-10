@@ -118,5 +118,45 @@
     "forbidden": {
       "action": "use-untyped-http-json-for-internal-calls"
     }
+  },
+  {
+    "id": "fable-architecture-enforce-microservices-decomposition",
+    "description": "Enforce microservices decomposition and prohibit monolith scaffolding when scale or domain vectors cross lockout thresholds",
+    "given": {
+      "intent": "Evaluate architecture for a 25k concurrent user payment platform across auth, billing, and ledger domains",
+      "scaleScore": 8,
+      "domainScore": 7
+    },
+    "expected": {
+      "action": "enforce-microservices-decomposition",
+      "produces": "architecture-evaluation-contract",
+      "gates": [
+        "microservices-threshold-evaluated",
+        "monolith-prohibited-if-distributed",
+        "east-west-grpc-or-broker-enforced"
+      ]
+    },
+    "forbidden": {
+      "action": "scaffold-single-process-monolith-above-threshold"
+    }
+  },
+  {
+    "id": "fable-architecture-enforce-east-west-grpc-contract",
+    "description": "Mandate Protobuf gRPC or message broker transport for internal service-to-service communication",
+    "given": {
+      "intent": "Define internal synchronous RPC boundary between order-gateway and inventory-engine",
+      "trafficDirection": "east-west"
+    },
+    "expected": {
+      "action": "mandate-east-west-grpc-protobuf-transport",
+      "produces": "transport-boundary-spec",
+      "gates": [
+        "east-west-grpc-or-broker-enforced",
+        "proto-contract-verified"
+      ]
+    },
+    "forbidden": {
+      "action": "allow-internal-http-json-mesh-calls"
+    }
   }
 ]

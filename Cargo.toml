@@ -3,6 +3,8 @@ members = [
     "crates/fable-core",
     "crates/fable-cli",
     "crates/fable-eco",
+    "crates/fable-toon",
+    "crates/fable-jev",
 ]
 resolver = "2"
 

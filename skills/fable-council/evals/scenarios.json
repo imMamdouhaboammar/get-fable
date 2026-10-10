@@ -12,5 +12,43 @@
     "category": "should-not-trigger",
     "prompt": "What is the atomic number of Gold?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-council-convene-multi-agent-deliberation",
+    "description": "Collect independent architectural positions across installed CLI agents and synthesize consensus and dissent before planning",
+    "given": {
+      "intent": "Convene the council across installed CLI agents to deliberate on zero-downtime schema migration tradeoffs",
+      "phase": "planned"
+    },
+    "expected": {
+      "action": "convene-council-and-synthesize-dissent",
+      "produces": "council-deliberation-synthesis",
+      "gates": [
+        "independent-perspectives-collected",
+        "tradeoffs-and-dissent-recorded"
+      ]
+    },
+    "forbidden": {
+      "action": "fabricate-unanimous-consensus-without-polling-agents"
+    }
+  },
+  {
+    "id": "fable-council-resolve-architectural-deadlock",
+    "description": "Weigh opposing agent proposals against repository evidence and concrete constraints to produce an actionable decision",
+    "given": {
+      "intent": "Resolve council split between event-sourcing and transactional outbox for the state journal",
+      "phase": "planned"
+    },
+    "expected": {
+      "action": "adjudicate-council-proposals-against-constraints",
+      "produces": "council-decision-record",
+      "gates": [
+        "constraints-evaluated",
+        "dissenting-risks-documented"
+      ]
+    },
+    "forbidden": {
+      "action": "adopt-majority-vote-ignoring-load-bearing-constraint"
+    }
   }
 ]

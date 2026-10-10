@@ -12,5 +12,44 @@
     "category": "should-not-trigger",
     "prompt": "What is the capital of France?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-finish-your-turn-resolve-regression-autonomously",
+    "description": "Diagnose and repair a test failure introduced during the current turn instead of stopping to ask permission",
+    "given": {
+      "intent": "Complete the pagination fix after unit test exited with code 1 on an off-by-one boundary",
+      "phase": "executing",
+      "testExitCode": 1
+    },
+    "expected": {
+      "action": "diagnose-and-repair-in-turn-regression",
+      "produces": "verified-passing-implementation",
+      "gates": [
+        "all-acceptance-criteria-executed",
+        "verification-green-before-yield"
+      ]
+    },
+    "forbidden": {
+      "action": "yield-turn-with-unfixed-regression-or-todo"
+    }
+  },
+  {
+    "id": "fable-finish-your-turn-eliminate-placeholder-todos",
+    "description": "Implement remaining bounded card steps completely rather than leaving TODO placeholders or delegating upward",
+    "given": {
+      "intent": "Finish wiring the CLI subcommand and run verification before ending the turn",
+      "remainingItems": ["wire-cli-flag", "run-unit-test"]
+    },
+    "expected": {
+      "action": "execute-remaining-card-steps-to-completion",
+      "produces": "completed-card-deliverable",
+      "gates": [
+        "zero-unexecuted-todos",
+        "verification-green-before-yield"
+      ]
+    },
+    "forbidden": {
+      "action": "delegate-routine-verification-upward-to-user"
+    }
   }
 ]

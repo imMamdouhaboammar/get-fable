@@ -1,0 +1,14 @@
+[package]
+name = "fable-toon"
+version = "1.11.1"
+edition = "2021"
+authors = ["Mamdouh Abo Ammar"]
+description = "Zero-allocation TOON (Token-Oriented Object Notation) codec, token estimator, and context compaction engine for get-fable"
+license = "MIT"
+
+[dependencies]
+fable-core = { path = "../fable-core" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+regex = "1.10"
+thiserror = "2.0"

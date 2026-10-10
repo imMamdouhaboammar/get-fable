@@ -5,7 +5,8 @@ import { getReflexDir, readReflexEvents } from '../../core/reflex/ledger.js';
 import { TypeSafeJevAdvisor } from '../../core/reflex/providers/typesafe-jev.js';
 import { globalCircuitBreaker, resolveRoute } from '../../core/reflex/service.js';
 import { runReflexEvaluation } from '../../core/reflex/eval/runner.js';
-import type { ReflexAdvisor, ReflexAdvice, ReflexStateEnvelopeV1 } from '../../core/reflex/types.js';
+import type { ReflexAdvisor, ReflexAdvice, ReflexMode, ReflexStateEnvelopeV1 } from '../../core/reflex/types.js';
+import { setupTypesafeJevEnv } from '../../integrations/jev-env-installer.js';
 import {
   applyRoutingDecision,
   readFableState,
@@ -561,6 +562,53 @@ export const handleReflexSecurityScan = async (args: string[]): Promise<number> 
   }
 };
 
+export const handleReflexSetup = async (args: string[]): Promise<number> => {
+  const isJson = args.includes('--json') || args.includes('--json-v1');
+  let apiKey: string | undefined;
+  let reflexMode: ReflexMode | undefined;
+  let reflexModel: string | undefined;
+  let targetDir: string | undefined;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--typesafe-api-key' || arg === '--jev-api-key' || arg === '--api-key') {
+      apiKey = args[++i];
+    } else if (
+      arg.startsWith('--typesafe-api-key=') ||
+      arg.startsWith('--jev-api-key=') ||
+      arg.startsWith('--api-key=')
+    ) {
+      apiKey = arg.slice(arg.indexOf('=') + 1);
+    } else if (arg === '--reflex-mode' || arg === '--mode') {
+      reflexMode = args[++i] as ReflexMode;
+    } else if (arg.startsWith('--reflex-mode=') || arg.startsWith('--mode=')) {
+      reflexMode = arg.slice(arg.indexOf('=') + 1) as ReflexMode;
+    } else if (arg === '--reflex-model' || arg === '--model') {
+      reflexModel = args[++i];
+    } else if (arg.startsWith('--reflex-model=') || arg.startsWith('--model=')) {
+      reflexModel = arg.slice(arg.indexOf('=') + 1);
+    } else if (arg === '--target-dir' || arg === '--env-dir') {
+      targetDir = args[++i];
+    } else if (arg.startsWith('--target-dir=') || arg.startsWith('--env-dir=')) {
+      targetDir = arg.slice(arg.indexOf('=') + 1);
+    }
+  }
+
+  const result = await setupTypesafeJevEnv({
+    targetDir: targetDir || process.cwd(),
+    apiKey,
+    reflexMode,
+    reflexModel,
+    forcePrompt: apiKey === undefined,
+    silent: isJson,
+  });
+
+  if (isJson) {
+    print(JSON.stringify(result, null, 2));
+  }
+  return result.status === 'invalid' ? 1 : 0;
+};
+
 type ReflexHandler = (args: string[]) => Promise<number> | number;
 
 const SUBCOMMAND_HANDLERS: Record<string, ReflexHandler> = {
@@ -577,6 +625,9 @@ const SUBCOMMAND_HANDLERS: Record<string, ReflexHandler> = {
   triage: (args) => handleReflexTriageLog(args),
   'security-scan': (args) => handleReflexSecurityScan(args),
   'sec-scan': (args) => handleReflexSecurityScan(args),
+  setup: (args) => handleReflexSetup(args),
+  init: (args) => handleReflexSetup(args),
+  env: (args) => handleReflexSetup(args),
 };
 
 export const runReflexCommand = async (args: string[]): Promise<number> => {
@@ -584,7 +635,7 @@ export const runReflexCommand = async (args: string[]): Promise<number> => {
   const handler = SUBCOMMAND_HANDLERS[sub];
   if (!handler) {
     printErr(
-      `Unknown reflex subcommand: ${sub}. Available: status, doctor, route, ledger, eval, compact, review, route-model, triage-log, security-scan`
+      `Unknown reflex subcommand: ${sub}. Available: status, doctor, setup, route, ledger, eval, compact, review, route-model, triage-log, security-scan`
     );
     return 1;
   }

@@ -1,0 +1,24 @@
+name: redteam-heal-attestation
+version: 1.11.1
+description: Offensive redteam penetration scan, automated security patch synthesis, adversarial verification, and cryptographic attestation workflow.
+targetShape: security
+steps:
+  - skill: fable-redteam
+    gate: scope_verified
+    description: Execute scoped non-destructive penetration testing and emit CVSS-scored findings
+  - skill: fable-heal
+    gate: repro_neutralized
+    description: Synthesize and apply security remediations with regression tests neutralizing exploit payloads
+  - skill: fable-security
+    gate: threat-surface-checked
+    description: Audit trust boundaries, authentication flows, and secret hygiene across patched surfaces
+  - skill: fable-prove-it
+    gate: machine-checked-proof
+    description: Enforce verification rungs and record machine-checked remediation evidence
+  - skill: fable-judge
+    gate: adversarial-proof
+    description: Adversarially audit remediation diffs to detect weakened tests or incomplete fixes
+  - skill: fable-recover
+    gate: diagnosis-changed
+    optional: true
+    description: Diagnose harness or patch failures if the remediation circuit breaker trips

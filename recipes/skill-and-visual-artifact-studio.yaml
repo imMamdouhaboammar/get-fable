@@ -1,0 +1,17 @@
+name: skill-and-visual-artifact-studio
+version: 1.11.1
+description: Studio workflow for authoring Deep Playbook V2 skills, accessible SVG data visualizations, interactive architecture artifacts, and holdout evaluations.
+targetShape: feature
+steps:
+  - skill: fable-skill-creator
+    gate: lack-of-surprise
+    description: Author structured skill packages with Deep Playbook V2 instructions and schemas
+  - skill: fable-dataviz
+    gate: theme-contrast-valid
+    description: Generate accessible, theme-adaptive SVG charts and metric dashboard tiles
+  - skill: fable-artifact
+    gate: hierarchy-clear
+    description: Author technical proposals, Mermaid architecture diagrams, and interactive UI components
+  - skill: fable-eval
+    gate: holdout-tested
+    description: Benchmark skill and artifact quality against reproducible holdout suites

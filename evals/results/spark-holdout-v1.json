@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "metric": "enterprise-spark-holdout",
-  "capturedAt": "2026-09-24T06:54:01.907Z",
-  "repositoryRevision": "710059c4131c842272b88687e0f89af8c6276fcc",
+  "capturedAt": "2026-10-10T11:44:37.803Z",
+  "repositoryRevision": "5a0e2505d89130ce8523a535b985b2c0fa144ec4",
   "corpusSha256": "2ce5d722d5a0a884d2fcc574cdbcaa093e24262b2a58c961caf85050a02f9197",
-  "sparkSha256": "5f560557ff85e08ca7b93015533f68223ae57634d3dcc2ed732d825c631afbc4",
+  "sparkSha256": "3a57f4789e97c9ad3b039ce8d7e25521d65c75287b344c4d7255a57939224380",
   "runnerSha256": "52453c588703fc8d1a5fac377d166402e1020d0fd5200e3d7a375cdd7e98ec6f",
   "total": 20,
   "passed": 20,

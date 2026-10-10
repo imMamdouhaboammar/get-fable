@@ -43,7 +43,7 @@ def normalized_tool_name(value):
 def mutating_tool(data):
     name = data.get("tool_name") or data.get("toolName") or data.get("tool")
     if name is None:
-        return True
+        return False
     normalized = normalized_tool_name(name)
     return normalized in {normalized_tool_name(item) for item in MUTATING_TOOLS}
 

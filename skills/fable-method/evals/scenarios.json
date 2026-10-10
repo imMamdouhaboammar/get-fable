@@ -12,5 +12,44 @@
     "category": "should-not-trigger",
     "prompt": "What is the distance between the Earth and the Moon?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-method-classify-and-define-done-before-mutation",
+    "description": "Classify the request, define explicit observable done criteria, and act surgically before verifying by observation",
+    "given": {
+      "intent": "Execute a bounded CLI flag addition using the step-by-step Fable problem-solving method",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "classify-ask-define-done-act-surgically-verify",
+      "produces": "observed-completion-proof",
+      "gates": [
+        "done-criteria-defined",
+        "surgical-diff-applied",
+        "verified-by-observation"
+      ]
+    },
+    "forbidden": {
+      "action": "mutate-files-before-defining-observable-done-criteria"
+    }
+  },
+  {
+    "id": "fable-method-verify-by-direct-observation",
+    "description": "Verify the surgical change by observing real command output rather than assuming correctness from code structure",
+    "given": {
+      "intent": "Complete the Fable method loop after updating the JSON status formatter",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "verify-surgical-change-via-direct-observation",
+      "produces": "observed-completion-proof",
+      "gates": [
+        "verified-by-observation",
+        "zero-scope-drift"
+      ]
+    },
+    "forbidden": {
+      "action": "declare-done-without-observing-runtime-output"
+    }
   }
 ]

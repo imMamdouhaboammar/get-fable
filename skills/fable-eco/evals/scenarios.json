@@ -10,5 +10,43 @@
     "prompt": "Create an installation plan for the core capability profile.",
     "expected_skill": "fable-eco",
     "expected_output_contains": ["install_plan", "operations"]
+  },
+  {
+    "id": "fable-eco-compile-capability-lockfile",
+    "description": "Audit host runtimes and compile a deterministic capability lockfile before provisioning",
+    "given": {
+      "intent": "Provision the core capability profile across installed coding hosts with reproducible lockfile digests",
+      "phase": "planned"
+    },
+    "expected": {
+      "action": "compile-reproducible-capability-lock",
+      "produces": "capability-lock-manifest",
+      "gates": [
+        "host-environment-probed",
+        "lockfile-digest-verified"
+      ]
+    },
+    "forbidden": {
+      "action": "mutate-host-toolchains-without-capability-plan"
+    }
+  },
+  {
+    "id": "fable-eco-verify-host-capability-contracts",
+    "description": "Verify installed capability contracts against host integration tiers without unapproved global mutations",
+    "given": {
+      "intent": "Verify capability parity and execution contracts for Claude Code and Antigravity hosts",
+      "phase": "planned"
+    },
+    "expected": {
+      "action": "verify-host-capability-contracts",
+      "produces": "capability-verification-report",
+      "gates": [
+        "capability-contract-checked",
+        "least-privilege-verified"
+      ]
+    },
+    "forbidden": {
+      "action": "install-unpinned-third-party-plugins-blindly"
+    }
   }
 ]

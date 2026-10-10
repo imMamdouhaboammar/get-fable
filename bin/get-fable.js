@@ -1,13 +1,4 @@
 #!/usr/bin/env bun
-import { getPackageVersion, main } from '../src/cli.ts';
-import { getRepoRootDir } from '../src/installer.ts';
-import { runUpdateCli } from '../src/core/update/cli-command.ts';
-import {
-  runDefaultAnnouncementsCli,
-  runDefaultPassiveAnnouncements,
-  runDefaultPassiveUpdateAwareness,
-} from '../src/core/update/passive-runtime.ts';
-
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -15,8 +6,24 @@ import { execFileSync } from 'node:child_process';
 const args = process.argv.slice(2);
 const command = args[0];
 
+const FAST_PATH_NATIVE_COMMANDS = new Set([
+  'route',
+  'state',
+  'mutation',
+  'evidence',
+  'card',
+  'status',
+  'arch-eval',
+  'spark',
+  'toon',
+  'hook',
+  'heal',
+  'eco',
+  'jev-orchestrate',
+]);
+
 const nativeReleasePath = path.resolve(import.meta.dir, '..', 'target', 'release', 'get-fable-native');
-if (fs.existsSync(nativeReleasePath)) {
+if (process.env.FABLE_DISABLE_NATIVE !== '1' && fs.existsSync(nativeReleasePath)) {
   if (command === 'native') {
     try {
       execFileSync(nativeReleasePath, args.slice(1), { stdio: 'inherit' });
@@ -26,7 +33,10 @@ if (fs.existsSync(nativeReleasePath)) {
         process.exit(err.status);
       }
     }
-  } else if (process.env.FABLE_NATIVE === '1' && ['route', 'state', 'mutation', 'evidence', 'card'].includes(command)) {
+  } else if (
+    command === 'hook' ||
+    (process.env.FABLE_NATIVE === '1' && command && FAST_PATH_NATIVE_COMMANDS.has(command))
+  ) {
     try {
       execFileSync(nativeReleasePath, args, { stdio: 'inherit' });
       process.exit(0);
@@ -38,7 +48,13 @@ if (fs.existsSync(nativeReleasePath)) {
   }
 }
 
+const [{ getPackageVersion, main }, { getRepoRootDir }] = await Promise.all([
+  import('../src/cli.ts'),
+  import('../src/installer.ts'),
+]);
+
 if (command === 'update') {
+  const { runUpdateCli } = await import('../src/core/update/cli-command.ts');
   try {
     process.exitCode = await runUpdateCli(args.slice(1), {
       currentVersion: getPackageVersion(),
@@ -50,6 +66,7 @@ if (command === 'update') {
     process.exitCode = 1;
   }
 } else if (command === 'announcements') {
+  const { runDefaultAnnouncementsCli } = await import('../src/core/update/passive-runtime.ts');
   process.exitCode = await runDefaultAnnouncementsCli(args.slice(1), getPackageVersion());
 } else if (command === 'redteam' || command === 'pentest') {
   const { handleRedTeamCli } = await import('../src/core/redteam/cli.ts');
@@ -59,6 +76,10 @@ if (command === 'update') {
 
   const primarySucceeded = process.exitCode === undefined || Number(process.exitCode) === 0;
   if (primarySucceeded) {
+    const {
+      runDefaultPassiveAnnouncements,
+      runDefaultPassiveUpdateAwareness,
+    } = await import('../src/core/update/passive-runtime.ts');
     const passiveContext = {
       currentVersion: getPackageVersion(),
       command: command ?? 'help',

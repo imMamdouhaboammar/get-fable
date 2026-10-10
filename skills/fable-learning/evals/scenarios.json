@@ -59,5 +59,43 @@
     "expected_skill": "fable-learning",
     "expected_pack": "evolution",
     "type": "positive"
+  },
+  {
+    "id": "fable-learning-extract-failure-lesson",
+    "description": "Extract a root-caused debugging session into a durable Failure-lessons markdown record with prevention rule",
+    "given": {
+      "intent": "Convert our root-caused race condition fix into a durable lesson in Failure-lessons/",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "codify-durable-failure-lesson",
+      "produces": "failure-lesson-artifact",
+      "gates": [
+        "root-cause-verified",
+        "secret-redaction-checked"
+      ]
+    },
+    "forbidden": {
+      "action": "persist-ephemeral-chat-diary-without-prevention-rule"
+    }
+  },
+  {
+    "id": "fable-learning-redact-secrets-before-persisting",
+    "description": "Strip credentials and raw tokens before writing extracted session learnings to persistent stores",
+    "given": {
+      "intent": "Persist session learnings from the auth debugging transcript into .fable/learnings.json",
+      "transcriptContains": "Bearer eyJhbGciOiJIUzI1NiIs..."
+    },
+    "expected": {
+      "action": "sanitize-and-persist-session-learnings",
+      "produces": "redacted-learning-record",
+      "gates": [
+        "secret-redaction-checked",
+        "provenance-attached"
+      ]
+    },
+    "forbidden": {
+      "action": "write-raw-credentials-to-learning-store"
+    }
   }
 ]

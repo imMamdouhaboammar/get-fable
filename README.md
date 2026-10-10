@@ -434,8 +434,10 @@ Claude Code marketplace installation:
 # Bun (recommended)
 bun add -g get-fable
 
-# npm
+# npm (automatically installs skills via npx skills add imMamdouhaboammar/get-fable)
 npm install -g get-fable
+# or locally in your project:
+npm install get-fable
 
 # Homebrew (macOS & Linux)
 brew tap imMamdouhaboammar/get-fable && brew install get-fable

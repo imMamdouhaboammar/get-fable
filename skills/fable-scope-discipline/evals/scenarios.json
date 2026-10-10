@@ -12,5 +12,43 @@
     "category": "should-not-trigger",
     "prompt": "What is the boiling point of water at sea level?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-scope-discipline-reject-drive-by-refactor",
+    "description": "Confine the diff strictly to the requested pagination bug fix and reject unrequested refactors of adjacent modules",
+    "given": {
+      "intent": "Fix off-by-one error in pagination calculation without rewriting the legacy database query helper",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "restrict-diff-to-requested-card-boundary",
+      "produces": "atomic-scoped-diff",
+      "gates": [
+        "zero-unrelated-file-touches",
+        "no-drive-by-refactoring"
+      ]
+    },
+    "forbidden": {
+      "action": "bundle-unrequested-legacy-refactor-into-bugfix"
+    }
+  },
+  {
+    "id": "fable-scope-discipline-preserve-unrelated-formatting",
+    "description": "Avoid reformatting untouched lines or renaming unrelated symbols outside the active card's blast radius",
+    "given": {
+      "intent": "Update a single timeout constant in src/config.ts",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "apply-surgical-single-purpose-edit",
+      "produces": "atomic-scoped-diff",
+      "gates": [
+        "untouched-lines-preserved",
+        "card-scope-verified"
+      ]
+    },
+    "forbidden": {
+      "action": "reformat-entire-file-during-single-line-fix"
+    }
   }
 ]

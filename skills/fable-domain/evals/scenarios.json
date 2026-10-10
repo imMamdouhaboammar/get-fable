@@ -12,5 +12,43 @@
     "category": "should-not-trigger",
     "prompt": "What is the square root of 144?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-domain-synthesize-sector-workflow-adapter",
+    "description": "Ground sector terminology in primary domain standards and generate a domain workflow adapter with a trap fixture",
+    "given": {
+      "intent": "Create a fintech payment reconciliation domain adapter with double-entry ledger invariants and trap fixtures",
+      "phase": "discovering"
+    },
+    "expected": {
+      "action": "compile-domain-workflow-and-trap-fixture",
+      "produces": "domain-adapter-package",
+      "gates": [
+        "sector-invariants-grounded",
+        "domain-trap-fixture-included"
+      ]
+    },
+    "forbidden": {
+      "action": "emit-generic-boilerplate-without-sector-invariants"
+    }
+  },
+  {
+    "id": "fable-domain-validate-regulatory-trap-fixture",
+    "description": "Verify that the domain trap fixture catches subtle sector-specific compliance violations",
+    "given": {
+      "intent": "Validate healthcare HIPAA audit trail adapter against PHI leakage trap scenarios",
+      "domain": "healthcare-compliance"
+    },
+    "expected": {
+      "action": "verify-domain-trap-catches-sector-violation",
+      "produces": "domain-trap-verification",
+      "gates": [
+        "domain-trap-fixture-included",
+        "compliance-boundary-tested"
+      ]
+    },
+    "forbidden": {
+      "action": "approve-domain-adapter-without-adversarial-trap"
+    }
   }
 ]

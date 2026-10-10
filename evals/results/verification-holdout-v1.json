@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "metric": "enterprise-verification-holdout",
-  "capturedAt": "2026-09-24T06:54:01.951Z",
-  "repositoryRevision": "710059c4131c842272b88687e0f89af8c6276fcc",
+  "capturedAt": "2026-10-10T11:44:37.974Z",
+  "repositoryRevision": "5a0e2505d89130ce8523a535b985b2c0fa144ec4",
   "corpusSha256": "b71d4e4c952dcf6ce87cb89d3b3b1b33b2922ad72668acafa8317efd39eb6f1f",
   "stateSha256": "0bfa9bd48ed0811937b8ca67e0879820644d4690fb485b11993a435b49f868c8",
   "evaluatorSha256": "9caf2f914d6ca09606370a885ba1f4abdaf04171c411a31281eab5956a6bc445",

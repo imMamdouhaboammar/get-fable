@@ -21,3 +21,5 @@ package-lock.json
 dist/release/
 dist/*.zip
 dist/get-fable-*/
+.agents/
+*.skill

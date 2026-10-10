@@ -6,72 +6,368 @@
       "name": "Orchestrator",
       "role": "Autonomous Pipeline Manager & Task Delegator",
       "autonomy_level": "high",
-      "primary_skills": ["get-fable", "fable-spark", "fable-delegate", "fable-handoff"],
-      "supporting_skills": ["fable-discover", "fable-plan", "fable-recover"]
+      "primary_skills": [
+        "get-fable",
+        "fable-spark",
+        "fable-delegate",
+        "fable-handoff",
+        "fable-outcome-first"
+      ],
+      "supporting_skills": [
+        "fable-discover",
+        "fable-plan",
+        "fable-recover",
+        "fable-finish-your-turn"
+      ],
+      "defaultSkills": [
+        "get-fable",
+        "fable-spark",
+        "fable-delegate",
+        "fable-handoff",
+        "fable-outcome-first"
+      ],
+      "fallbackSkills": [
+        "fable-discover",
+        "fable-plan",
+        "fable-recover",
+        "fable-finish-your-turn"
+      ]
     },
     {
       "id": "researcher",
       "name": "Researcher",
       "role": "Primary Source Investigator & Facts Grounder",
       "autonomy_level": "read-only",
-      "primary_skills": ["fable-research", "fable-discover", "fable-memory"],
-      "supporting_skills": ["fable-artifact", "fable-config"]
+      "primary_skills": [
+        "fable-research",
+        "fable-discover",
+        "fable-memory",
+        "fable-context-thrift"
+      ],
+      "supporting_skills": [
+        "fable-artifact",
+        "fable-config",
+        "fable-domain"
+      ],
+      "defaultSkills": [
+        "fable-research",
+        "fable-discover",
+        "fable-memory",
+        "fable-context-thrift"
+      ],
+      "fallbackSkills": [
+        "fable-artifact",
+        "fable-config",
+        "fable-domain"
+      ]
     },
     {
       "id": "architect",
       "name": "Architect",
       "role": "System Designer & Work Card Decomposer",
       "autonomy_level": "supervised",
-      "primary_skills": ["fable-plan", "fable-artifact", "fable-dataviz"],
-      "supporting_skills": ["fable-discover", "fable-config"]
+      "primary_skills": [
+        "fable-plan",
+        "fable-artifact",
+        "fable-dataviz",
+        "fable-architecture"
+      ],
+      "supporting_skills": [
+        "fable-discover",
+        "fable-config",
+        "fable-council",
+        "fable-wise"
+      ],
+      "defaultSkills": [
+        "fable-plan",
+        "fable-artifact",
+        "fable-dataviz",
+        "fable-architecture"
+      ],
+      "fallbackSkills": [
+        "fable-discover",
+        "fable-config",
+        "fable-council",
+        "fable-wise"
+      ]
     },
     {
       "id": "executor",
       "name": "Executor",
       "role": "Bounded TDD & Code Implementer",
       "autonomy_level": "bounded",
-      "primary_skills": ["fable-execute", "fable-tdd", "fable-cowork", "fable-simplify"],
-      "supporting_skills": ["fable-loop", "fable-recover"]
+      "primary_skills": [
+        "fable-execute",
+        "fable-tdd",
+        "fable-cowork",
+        "fable-simplify",
+        "fable-method",
+        "fable-native-code",
+        "fable-scope-discipline",
+        "fable-finish-your-turn"
+      ],
+      "supporting_skills": [
+        "fable-loop",
+        "fable-recover",
+        "fable-tend"
+      ],
+      "defaultSkills": [
+        "fable-execute",
+        "fable-tdd",
+        "fable-cowork",
+        "fable-simplify",
+        "fable-method",
+        "fable-native-code",
+        "fable-scope-discipline",
+        "fable-finish-your-turn"
+      ],
+      "fallbackSkills": [
+        "fable-loop",
+        "fable-recover",
+        "fable-tend"
+      ]
     },
     {
       "id": "verifier",
       "name": "Verifier",
       "role": "Independent Test Runner & Causal Proof Validator",
       "autonomy_level": "bounded",
-      "primary_skills": ["fable-verify", "fable-run", "fable-release"],
-      "supporting_skills": ["fable-recover", "fable-eval"]
+      "primary_skills": [
+        "fable-verify",
+        "fable-run",
+        "fable-release",
+        "fable-prove-it",
+        "fable-judge"
+      ],
+      "supporting_skills": [
+        "fable-recover",
+        "fable-eval",
+        "fable-outcome-first"
+      ],
+      "defaultSkills": [
+        "fable-verify",
+        "fable-run",
+        "fable-release",
+        "fable-prove-it",
+        "fable-judge"
+      ],
+      "fallbackSkills": [
+        "fable-recover",
+        "fable-eval",
+        "fable-outcome-first"
+      ]
     },
     {
       "id": "reviewer",
       "name": "Reviewer",
       "role": "Independent Diff & Standards Auditor",
       "autonomy_level": "read-only",
-      "primary_skills": ["fable-review", "fable-eval"],
-      "supporting_skills": ["fable-security", "fable-discover"]
+      "primary_skills": [
+        "fable-review",
+        "fable-eval",
+        "fable-judge"
+      ],
+      "supporting_skills": [
+        "fable-security",
+        "fable-discover",
+        "fable-prove-it",
+        "fable-native-code",
+        "fable-scope-discipline"
+      ],
+      "defaultSkills": [
+        "fable-review",
+        "fable-eval",
+        "fable-judge"
+      ],
+      "fallbackSkills": [
+        "fable-security",
+        "fable-discover",
+        "fable-prove-it",
+        "fable-native-code",
+        "fable-scope-discipline"
+      ]
     },
     {
       "id": "security-auditor",
       "name": "Security Auditor",
       "role": "Threat Modeler & Vulnerability Analyst",
       "autonomy_level": "bounded",
-      "primary_skills": ["fable-security", "fable-review"],
-      "supporting_skills": ["fable-discover", "fable-config"]
+      "primary_skills": [
+        "fable-security",
+        "fable-review",
+        "fable-redteam"
+      ],
+      "supporting_skills": [
+        "fable-discover",
+        "fable-config",
+        "fable-heal",
+        "fable-prove-it"
+      ],
+      "defaultSkills": [
+        "fable-security",
+        "fable-review",
+        "fable-redteam"
+      ],
+      "fallbackSkills": [
+        "fable-discover",
+        "fable-config",
+        "fable-heal",
+        "fable-prove-it"
+      ]
     },
     {
       "id": "simulator",
       "name": "Simulator",
       "role": "Headless Browser Inspector & Truthfulness Validator",
       "autonomy_level": "bounded",
-      "primary_skills": ["fable-simulator", "fable-verify", "fable-run"],
-      "supporting_skills": ["fable-recover", "fable-artifact"]
+      "primary_skills": [
+        "fable-simulator",
+        "fable-verify",
+        "fable-run",
+        "fable-tend"
+      ],
+      "supporting_skills": [
+        "fable-recover",
+        "fable-artifact",
+        "fable-loop"
+      ],
+      "defaultSkills": [
+        "fable-simulator",
+        "fable-verify",
+        "fable-run",
+        "fable-tend"
+      ],
+      "fallbackSkills": [
+        "fable-recover",
+        "fable-artifact",
+        "fable-loop"
+      ]
     },
     {
       "id": "author",
       "name": "Author",
       "role": "Skill Engineer & Prompt Optimizer",
       "autonomy_level": "bounded",
-      "primary_skills": ["fable-skill-creator", "fable-eval", "fable-verify"],
-      "supporting_skills": ["fable-artifact", "fable-config"]
+      "primary_skills": [
+        "fable-skill-creator",
+        "fable-eval",
+        "fable-verify",
+        "fable-learning",
+        "fable-domain"
+      ],
+      "supporting_skills": [
+        "fable-artifact",
+        "fable-config",
+        "fable-wise"
+      ],
+      "defaultSkills": [
+        "fable-skill-creator",
+        "fable-eval",
+        "fable-verify",
+        "fable-learning",
+        "fable-domain"
+      ],
+      "fallbackSkills": [
+        "fable-artifact",
+        "fable-config",
+        "fable-wise"
+      ]
+    },
+    {
+      "id": "grok-bot",
+      "name": "Grok Bot",
+      "role": "Autonomous xAI Grok Truth-Seeking Engineering Subagent & Adapter",
+      "autonomy_level": "bounded",
+      "primary_skills": [
+        "fable-discover",
+        "fable-execute",
+        "fable-tdd",
+        "fable-verify",
+        "fable-method",
+        "fable-prove-it"
+      ],
+      "supporting_skills": [
+        "fable-research",
+        "fable-recover",
+        "fable-handoff",
+        "fable-delegate",
+        "fable-context-thrift",
+        "fable-outcome-first"
+      ],
+      "defaultSkills": [
+        "fable-discover",
+        "fable-execute",
+        "fable-tdd",
+        "fable-verify",
+        "fable-method",
+        "fable-prove-it"
+      ],
+      "fallbackSkills": [
+        "fable-research",
+        "fable-recover",
+        "fable-handoff",
+        "fable-delegate",
+        "fable-context-thrift",
+        "fable-outcome-first"
+      ]
+    },
+    {
+      "id": "redteam-healer",
+      "name": "Redteam Healer",
+      "role": "Offensive Penetration Tester & Automated Security Remediation Synthesizer",
+      "autonomy_level": "bounded",
+      "primary_skills": [
+        "fable-redteam",
+        "fable-heal",
+        "fable-security",
+        "fable-prove-it"
+      ],
+      "supporting_skills": [
+        "fable-judge",
+        "fable-verify",
+        "fable-recover"
+      ],
+      "defaultSkills": [
+        "fable-redteam",
+        "fable-heal",
+        "fable-security",
+        "fable-prove-it"
+      ],
+      "fallbackSkills": [
+        "fable-judge",
+        "fable-verify",
+        "fable-recover"
+      ]
+    },
+    {
+      "id": "architecture-steward",
+      "name": "Architecture Steward",
+      "role": "Inception Architecture Evaluator, Capability Provisioner & Council Convener",
+      "autonomy_level": "supervised",
+      "primary_skills": [
+        "fable-architecture",
+        "fable-eco",
+        "fable-domain",
+        "fable-council",
+        "fable-wise"
+      ],
+      "supporting_skills": [
+        "fable-plan",
+        "fable-config",
+        "fable-research"
+      ],
+      "defaultSkills": [
+        "fable-architecture",
+        "fable-eco",
+        "fable-domain",
+        "fable-council",
+        "fable-wise"
+      ],
+      "fallbackSkills": [
+        "fable-plan",
+        "fable-config",
+        "fable-research"
+      ]
     }
   ]
 }
