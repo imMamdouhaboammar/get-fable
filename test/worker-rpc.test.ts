@@ -9,7 +9,38 @@ describe('Fable gRPC Worker Transport', () => {
 
   beforeAll(async () => {
     // Bind to port 0 for ephemeral port allocation
-    server = new FableWorkerServer({ host: '127.0.0.1', port: 0 });
+    server = new FableWorkerServer({
+      host: '127.0.0.1',
+      port: 0,
+      skillHandler: async (req) => ({
+        action: req.action_vocabulary?.[0] || 'executed',
+        selected_skill: req.skill_id,
+        produces: 'verified-artifact',
+        gates: ['bounded-scope'],
+        structure: ['SPEC.md'],
+      }),
+      taskHandler: async (req, emit) => {
+        emit({
+          event_id: 'fixture-tool-call',
+          task_id: req.task_id,
+          run_id: req.run_id,
+          timestamp: Date.now(),
+          event_type: 'tool_call',
+          message: 'Explicit test handler invoked',
+          is_terminal: false,
+        });
+        emit({
+          event_id: 'fixture-complete',
+          task_id: req.task_id,
+          run_id: req.run_id,
+          timestamp: Date.now(),
+          event_type: 'completed',
+          message: 'Explicit test handler completed',
+          payload_json: JSON.stringify({ success: true, taskId: req.task_id }),
+          is_terminal: true,
+        });
+      },
+    });
     boundPort = await server.start();
     client = new FableWorkerClient({
       serverAddress: `127.0.0.1:${boundPort}`,
@@ -88,6 +119,34 @@ describe('Fable gRPC Worker Transport', () => {
     const completedEvent = allEvents.find((e) => e.event_type === 'completed');
     expect(completedEvent).toBeDefined();
     expect(completedEvent?.is_terminal).toBe(true);
+  });
+
+  test('unconfigured workers fail closed instead of fabricating verified execution', async () => {
+    const bareServer = new FableWorkerServer({ host: '127.0.0.1', port: 0 });
+    const port = await bareServer.start();
+    const bareClient = new FableWorkerClient({
+      serverAddress: `127.0.0.1:${port}`,
+      insecure: true,
+    });
+    try {
+      const events = await bareClient.executeTask({
+        task_id: 'no-executor',
+        run_id: 'test-fail-closed',
+        title: 'Do actual work',
+        objective: 'Must not pretend to work',
+      });
+      expect(events.some((event) => event.event_type === 'failed')).toBe(true);
+      expect(events.some((event) => event.event_type === 'completed')).toBe(false);
+      expect(events.some((event) => event.event_type === 'mutation')).toBe(false);
+      expect(bareClient.executeSkill({
+        skill_id: 'fable-tdd',
+        case_id: 'no-skill-handler',
+        instruction: 'Do actual work',
+      })).rejects.toThrow('No skillHandler configured');
+    } finally {
+      bareClient.close();
+      await bareServer.stop();
+    }
   });
 
   test('cancels active task on request', async () => {
