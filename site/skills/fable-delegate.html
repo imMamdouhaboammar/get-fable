@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-delegate.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-delegate.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-delegate.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-delegate.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-delegate — get-fable Skill Reference">
+  <meta property="og:description" content="Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-delegate.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-delegate — get-fable Skill">
+  <meta name="twitter:description" content="Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-delegate — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-delegate Skill Specification",
+    "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.",
+    "articleSection": "Build Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-delegate.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-delegate</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-delegate.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-delegate.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-delegate.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Build Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 32</span>
+        </div>
+        <h1 class="skill-title">fable-delegate</h1>
+        <p class="skill-lead">Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "parallel-work" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Build Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">parallel-work</span> <span class="intent-chip">subagents</span> <span class="intent-chip">delegation</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>ownership-explicit</code></li><li><code>acceptance-explicit</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-cowork.html">fable-cowork</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Delegate</h1>
+<p>Use parallel workers when independence is real, not merely because there are multiple tasks.</p>
+<h2>Mission</h2>
+<p>Delegation should reduce latency without multiplying ambiguity. The parent remains responsible for decomposition, contract stability, integration, and final proof.</p>
+<p>A worker is not a place to dump context. It receives one bounded responsibility with enough evidence to act independently and a return contract that makes integration reviewable.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>two or more cards can proceed without waiting for each other&#039;s decisions;</li>
+<li>specialist perspectives can investigate independent hypotheses in parallel;</li>
+<li>separate components have stable interfaces and independent acceptance checks;</li>
+<li>independent review/research can be parallelized without shared mutation.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>workers would change the same unstable contract or invariant;</li>
+<li>one card&#039;s design result changes another card&#039;s requirements;</li>
+<li>a tiny task costs more to explain/integrate than to execute;</li>
+<li>the parent has not established enough context to write precise worker contracts;</li>
+<li>all workers depend on one unresolved architectural decision.</li>
+</ul>
+<h2>Independence Classification</h2>
+<p>For each candidate pair, classify coupling:</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Coupling</th><th>Parallel?</th><th>Why</th></tr></thead><tbody>
+<tr><td>Different files + different contracts</td><td>usually yes</td><td>low semantic overlap</td></tr>
+<tr><td>Different files + shared unstable contract</td><td>no</td><td>semantic conflict despite path separation</td></tr>
+<tr><td>Same integration file + separate components</td><td>maybe, but serialize integration</td><td>component work may parallelize; integration does not</td></tr>
+<tr><td>Shared read-only evidence</td><td>yes</td><td>no ownership conflict</td></tr>
+<tr><td>Same database schema/invariant</td><td>usually no</td><td>one worker can invalidate another&#039;s assumptions</td></tr>
+<tr><td>Independent research hypotheses</td><td>yes</td><td>merge conclusions, not source edits</td></tr>
+<tr><td>Parent decision required by both</td><td>no</td><td>resolve decision first</td></tr>
+</tbody></table></div>
+<h2>Delegation Protocol</h2>
+<h3>Stage 1 — Prove independence</h3>
+<p>Check:</p>
+<ul class="docs-list">
+<li>write ownership;</li>
+<li>shared contracts/invariants;</li>
+<li>dependency order;</li>
+<li>generated artifacts;</li>
+<li>migration/state coupling;</li>
+<li>integration hotspot;</li>
+<li>whether one worker failure changes another worker&#039;s assumptions.</li>
+</ul>
+<p>If independence cannot be explained in one short paragraph, do not parallelize yet.</p>
+<h3>Stage 2 — Write a worker contract</h3>
+<p>Each contract includes:</p>
+<ul class="docs-list">
+<li>objective;</li>
+<li>context/evidence already established;</li>
+<li>owned paths or semantic area;</li>
+<li>forbidden scope;</li>
+<li>dependencies assumed stable;</li>
+<li>acceptance evidence to produce;</li>
+<li>expected return packet;</li>
+<li>stop/escalation conditions.</li>
+</ul>
+<p>Do not ask a worker to &quot;handle X&quot; with an entire repository and no boundary.</p>
+<h3>Stage 3 — Decide mutation ownership</h3>
+<p>Prefer one writer per semantic area. Multiple read-only investigators may inspect overlapping files; multiple writers should not independently redefine the same contract.</p>
+<p>For a shared integration file, assign integration to the parent or one named worker after component work converges.</p>
+<h3>Stage 4 — Dispatch and supervise by exception</h3>
+<p>Do not micromanage every command. Intervene when:</p>
+<ul class="docs-list">
+<li>worker discovers a load-bearing unknown;</li>
+<li>owned scope must expand;</li>
+<li>acceptance cannot be satisfied;</li>
+<li>contract assumption is false;</li>
+<li>worker stalls/repeats failure.</li>
+</ul>
+<h3>Stage 5 — Inspect returns, not summaries alone</h3>
+<p>Require concrete artifacts: diff/paths, commands/results, evidence, unresolved risk. A prose &quot;done&quot; is not integration evidence.</p>
+<h3>Stage 6 — Integrate centrally</h3>
+<p>The parent checks:</p>
+<ul class="docs-list">
+<li>combined diff;</li>
+<li>contract compatibility;</li>
+<li>cross-worker behavior;</li>
+<li>generated artifacts;</li>
+<li>integration tests;</li>
+<li>whether worker-local evidence is still fresh after merge/integration mutations.</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Different files are neither necessary nor sufficient for independence.</li>
+<li>Stable contract + isolated implementation can parallelize; unstable contract + separate files should not.</li>
+<li>If workers produce competing approaches, keep them read-only until the parent chooses; do not merge both experiments blindly.</li>
+<li>If a worker needs to cross ownership boundaries, pause that worker and renegotiate the contract instead of silently expanding scope.</li>
+<li>A failed/hung worker does not automatically justify rerunning the same prompt; classify failure and route the card to <code>fable-recover</code> or execute locally.</li>
+<li>Parent integration verification is mandatory whenever delegated work affects one user-visible behavior.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Every mutable surface has clear ownership.</li>
+<li>Workers receive only the context needed to make their bounded decisions.</li>
+<li>Worker completion never equals global completion.</li>
+<li>Shared contract changes have one integration owner.</li>
+<li>Combined workspace is verified after all integration mutations.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Ownership collision</h3>
+<p>Two workers need the same mutable contract/file. Stop parallel mutation and replan ownership.</p>
+<h3>Semantic collision</h3>
+<p>Files differ but both change one invariant/schema. Treat as coupled work.</p>
+<h3>Context starvation</h3>
+<p>Worker repeatedly asks questions the parent should have resolved. Improve contract or route back to discovery/plan.</p>
+<h3>Scope escape</h3>
+<p>Worker finds necessary work outside ownership. Pause, evaluate, then expand/replan explicitly.</p>
+<h3>Worker-local green / integration red</h3>
+<p>Local checks pass but combined behavior fails. Parent owns diagnosis; do not bounce workers blindly.</p>
+<h3>Worker stall</h3>
+<p>No meaningful progress or repeated failure. Terminate/recover rather than consuming unbounded budget.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>&quot;two tasks = two agents&quot;;</li>
+<li>path-disjointness as the only parallelism test;</li>
+<li>giving every worker the entire broad task;</li>
+<li>allowing each worker to update shared manifests/routes independently;</li>
+<li>accepting prose summaries without diffs/evidence;</li>
+<li>merging worker outputs before inspecting assumptions;</li>
+<li>assuming subagents transfer responsibility away from the parent;</li>
+<li>delegating a decision the parent has not made simply to avoid making it.</li>
+</ul>
+<h2>Mandatory TOON Delegation Protocol</h2>
+<p>All subagent delegation contracts and worker return packets MUST use <strong>TOON (Token-Oriented Object Notation)</strong>. This guarantees:</p>
+<p>1. <strong>Token efficiency</strong>: 35-70% fewer tokens compared to verbose markdown/JSON.</p>
+<p>2. <strong>Deterministic parsing</strong>: Explicit length tags <code>[N]</code> allow the parent agent to instantly detect truncated or dropped tasks.</p>
+<p>3. <strong>Structured schema</strong>: Field headers <code>{fields}</code> enforce contract compliance.</p>
+<h3>Boss → Worker Delegation Contract (TOON)</h3>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-toon">contract:
+  workerId: worker-1
+  targetCard: CARD-101
+  objective: &quot;Implement JWT authentication guard&quot;
+ownedPaths[2]: src/auth/guard.ts,test/auth/guard.test.ts
+forbiddenPaths[2]: src/config/keys.ts,.env
+acceptanceChecks[2]: &quot;bun test test/auth/guard.test.ts&quot;,&quot;bun run typecheck&quot;
+rules[2]: &quot;Do not touch files outside ownedPaths&quot;,&quot;Use TOON format for the return packet&quot;</code></pre></div>
+<h3>Worker → Boss Return Packet (TOON)</h3>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-toon">result:
+  workerId: worker-1
+  targetCard: CARD-101
+  status: complete
+  allChecksPassed: true
+mutations[2]{path,action}:
+  src/auth/guard.ts,modified
+  test/auth/guard.test.ts,created
+verifications[2]{command,result,durationMs}:
+  &quot;bun test test/auth/guard.test.ts&quot;,pass,120
+  &quot;bun run typecheck&quot;,pass,340
+notes[1]: Successfully implemented guard with full test coverage</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Delegation is complete when:</p>
+<ul class="docs-list">
+<li>every worker contract had explicit ownership and acceptance;</li>
+<li>returned artifacts/evidence were inspected;</li>
+<li>ownership/contract conflicts are resolved;</li>
+<li>combined diff passes integration verification on the current workspace;</li>
+<li>residual failures are routed explicitly rather than hidden in worker summaries.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/parallelism-and-integration.md</code></li>
+<li>Existing contract guide: <code>references/subagent-contracts.md</code></li>
+<li>Template: <code>templates/delegation-contract.template.md</code></li>
+<li>Example: <code>examples/parallel-workers-walkthrough.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

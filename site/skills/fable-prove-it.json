@@ -1,0 +1,54 @@
+{
+  "id": "fable-prove-it",
+  "order": 280,
+  "pack": "proof",
+  "packName": "Proof Pack",
+  "phase": "verifying",
+  "description": "Evidence precedence and verification rung enforcement preventing unverified claims.",
+  "intents": [
+    "prove-claims",
+    "verify-rung",
+    "check-evidence"
+  ],
+  "requires": [
+    "code-changes"
+  ],
+  "produces": [
+    "verification-rung-receipt"
+  ],
+  "gates": [
+    "machine-checked-proof"
+  ],
+  "fallback": "fable-verify",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-release",
+    "fable-handoff"
+  ],
+  "keywords": [
+    "prove it",
+    "verification rung",
+    "written runs verified",
+    "no optimistic rounding",
+    "machine proof"
+  ],
+  "frontmatter": {
+    "name": "fable-prove-it",
+    "description": "Use before claiming anything works, is fixed, is done, or passes; before status updates on changes you haven't run; before agreeing with someone else's claim about your work; and before state-changing commands like restarts, deletes, or config edits.",
+    "version": "1.0.0",
+    "pack": "proof",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-verify",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Prove It\n\nClaims require evidence you produced this session. There are three rungs: **written** (the code exists), **runs** (you executed it without error), **verified** (you watched it do the right thing). Say which rung you're on. \"Should work\" is rung zero wearing a suit.\n\n## Purpose\n\nPrevent false completion claims, optimistic rounding, unearned confidence, and placebo bugfixes. `fable-prove-it` enforces strict calibration between what was written, what was executed, and what was observed.\n\n## When to Use\n\n- Before claiming anything works, is fixed, is done, or passes.\n- Before status updates on changes you have not yet executed.\n- Before agreeing with someone else's assumption about your work.\n- Before running state-changing commands (restarts, deletions, migrations, config changes).\n\n## When NOT to Use\n\n- Running routine automated unit tests (use `fable-verify`).\n- Adversarial independent red-teaming or penetration testing (use `fable-redteam`).\n- Multi-agent peer review councils (use `fable-council`).\n\n## Inputs\n\n- `candidate_claim`: The statement asserting a fix, feature completion, or diagnostic conclusion.\n- `runtime_environment`: Available CLI tools, test runners, or staging endpoints.\n\n## Expected Outputs\n\n- `calibrated_verdict`: Explicit declaration of evidence rung (`written`, `runs`, `verified`).\n- `machine_receipt`: Concrete command output or observable assertion proving the claim.\n\n## Procedure\n\n1. **Claim Only Your Rung**: \"Fixed\" means verified by observation. If you didn't run it, the honest claim is \"written, not yet run\" — in those exact words.\n2. **Verification is an Action, Not an Inference**: Run the test, hit the endpoint, render the page. Re-reading your own code is not verification. Tracing paths mentally is where race conditions hide.\n3. **Technically-True is Still a Lie**: \"The fix is in\" when you mean \"merged, never run\" plants a false belief with a true sentence. Name the real rung.\n4. **Report Faithfully**: Failing tests reported as failing, WITH output. Skipped steps named explicitly. Partial completion stated as partial.\n5. **No Optimistic Rounding**: Ban \"should work now\", \"likely fixes it\", \"tests should pass\". Either run it, or state plainly what was not run.\n6. **Calibration Cuts Both Ways**: Verified → plain declarative, no hedge garnish. Unverified → name what specifically wasn't checked.\n7. **Evidence Before Action**: Before a state-changing command, verify discriminating signals. Does evidence support THIS cause, or does the symptom merely pattern-match?\n8. **Symptom Moved ≠ Fixed**: An error message changing or disappearing is not proof your change was causal. Confirm the underlying mechanism.\n\n## Decision Rules\n\n| Thought | Reality |\n|---|---|\n| \"The change is simple — it obviously works\" | Simple changes break builds daily. Running it costs less than being wrong about it. |\n| \"Tests passed before my change\" | That verified the old code. |\n| \"'Should work' is honest hedging\" | It's an unverified claim wearing hedge clothing. Name the rung instead. |\n| \"The lead said to just confirm it; they own the call\" | They own the decision; you own the truth of your report. Give the rung, hand them accurate wording. |\n| \"Reporting it unverified makes me look unfinished\" | The user discovering it later costs ten times more trust than the word \"unverified\" costs now. |\n| \"I recognize this incident — same fix as last time\" | Recognition is a hypothesis. Check the one signal that discriminates before touching state. |\n\n- If you did not execute the test, do not say \"tests pass\".\n- If you ran the test and it passed, do not say \"it should be fine now\" — say \"verified: test passed\".\n\n## Tool Policy\n\n- Execute the test runner or verification command directly in the shell.\n- Inspect exit codes and standard error before formulating status claims.\n- Never use synthetic mocks when real end-to-end checks are executable.\n\n## Evidence Requirements\n\n- Attach exact terminal command invocations and their output (exit codes, test runner summaries).\n- State the exact evidence rung for every deliverable:\n  - `written`: Code authored on disk, unexecuted.\n  - `runs`: Code executed without runtime syntax errors or crashes.\n  - `verified`: Code behavior confirmed by passing assertions or observed side effects.\n\n## Failure Handling\n\nStop and re-run or relabel when hitting these Red Flags:\n- \"Should work now\" / \"Likely fixes it\" / \"Tests should pass\".\n- Claiming verification based only on reading code diffs.\n- Hiding a failing test or suppressed warning in a status update.\n\n## Completion Criteria\n\n- Every factual claim matches its observed evidence rung.\n- Zero unverified assumptions reported as verified facts.",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-prove-it.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.223Z"
+}

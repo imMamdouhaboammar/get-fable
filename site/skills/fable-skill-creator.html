@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-skill-creator.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-skill-creator.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-skill-creator.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-skill-creator.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-skill-creator — get-fable Skill Reference">
+  <meta property="og:description" content="Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-skill-creator.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-skill-creator — get-fable Skill">
+  <meta name="twitter:description" content="Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-skill-creator — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-skill-creator Skill Specification",
+    "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.",
+    "articleSection": "Creator Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-skill-creator.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-skill-creator</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-skill-creator.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-skill-creator.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-skill-creator.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Creator Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 210</span>
+        </div>
+        <h1 class="skill-title">fable-skill-creator</h1>
+        <p class="skill-lead">Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "create-skill" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Creator Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">create-skill</span> <span class="intent-chip">modify-skill</span> <span class="intent-chip">benchmark-skill</span> <span class="intent-chip">optimize-skill</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>lack-of-surprise</code></li><li><code>objective-eval-criteria</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-eval.html">fable-eval</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Skill Creator</h1>
+<p>Create Skills that change agent behavior under pressure, not Skills that merely describe good practice.</p>
+<h2>Mission</h2>
+<p>A production Skill is a compact operating manual for a recurring class of decisions. It should help an agent recognize the situation, choose among plausible actions, collect the right evidence, reject tempting shortcuts, and hand off cleanly when another specialist is better suited.</p>
+<p>A schema-valid <code>SKILL.md</code> is not enough. A Skill that only says &quot;inspect, plan, implement, verify&quot; is documentation, not a behavioral capability.</p>
+<h2>Activation Contract</h2>
+<p>Use this Skill when the requested work is to:</p>
+<ul class="docs-list">
+<li>create a new reusable Skill;</li>
+<li>strengthen or refactor an existing Skill;</li>
+<li>improve triggering accuracy or reduce overlap with neighboring Skills;</li>
+<li>add references, examples, templates, agents, or evals;</li>
+<li>convert a repeated workflow into a portable agent capability;</li>
+<li>prove that a Skill behaves correctly across more than a happy-path example.</li>
+</ul>
+<p>Do not use it for ordinary application changes, bug fixes, or repository maintenance. Route those to the appropriate lifecycle Skill.</p>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><strong><code>user_intent</code></strong>: capability, behavior, or workflow to encode.</li>
+<li><strong><code>workflow_trace</code></strong>: observed sequence of decisions/tools/failures, when available.</li>
+<li><strong><code>reference_sources</code></strong>: primary docs, schemas, domain rules, or proven internal patterns.</li>
+</ul>
+<h2>Skill Depth Classification</h2>
+<p>Before authoring, classify the capability:</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Class</th><th>Typical shape</th><th>Required depth</th></tr></thead><tbody>
+<tr><td>Rule</td><td>One stable decision with few branches</td><td>concise Skill, strong boundaries</td></tr>
+<tr><td>Procedure</td><td>Multi-step repeatable operation</td><td>staged protocol + evidence</td></tr>
+<tr><td>Diagnostic</td><td>Symptoms map to competing causes</td><td>failure taxonomy + falsification</td></tr>
+<tr><td>Orchestrator</td><td>Chooses/delegates among specialists</td><td>routing table + handoff contracts</td></tr>
+<tr><td>Domain expert</td><td>Requires substantial specialist knowledge</td><td>deep references + examples + eval families</td></tr>
+</tbody></table></div>
+<p>If the capability is Diagnostic, Orchestrator, or Domain expert, a short checklist is presumptively insufficient.</p>
+<h2>Skill Contract V2</h2>
+<p>Every non-trivial Skill must answer these questions explicitly.</p>
+<h3>1. When does it activate?</h3>
+<p>Define positive triggers, negative triggers, prerequisites, and escalation conditions. Include near-neighbor tasks that should <em>not</em> select this Skill.</p>
+<h3>2. What situation is the agent in?</h3>
+<p>Provide a small classification that changes behavior. Examples: bounded vs architectural, deterministic vs flaky, local vs external, reversible vs destructive, known vs uncertain.</p>
+<h3>3. What decisions must be made?</h3>
+<p>Use decision tables or branching rules for ambiguous cases. Do not hide judgment behind vague language such as &quot;when appropriate&quot; without defining the evidence that makes it appropriate.</p>
+<h3>4. What is the execution protocol?</h3>
+<p>For each stage specify:</p>
+<ul class="docs-list">
+<li>objective;</li>
+<li>allowed actions;</li>
+<li>required evidence;</li>
+<li>exit condition;</li>
+<li>stop/escalation condition.</li>
+</ul>
+<h3>5. How can it fail?</h3>
+<p>Name domain-specific failure classes and observable signals that distinguish them. Do not collapse every failure into &quot;retry&quot; or &quot;use recover&quot;.</p>
+<h3>6. What must never become false?</h3>
+<p>List invariants that stay true throughout the Skill. Examples: no production mutation before valid RED, no release claim without registry confirmation, no review finding without a concrete failure mode.</p>
+<h3>7. Which shortcuts are tempting but invalid?</h3>
+<p>Document anti-patterns that capable models commonly choose under time pressure or ambiguous prompts.</p>
+<h3>8. What evidence leaves the Skill?</h3>
+<p>Define a handoff packet for the next specialist: facts learned, commands run, artifacts changed, residual risk, unresolved questions, and proof freshness where relevant.</p>
+<h3>9. What belongs in progressive resources?</h3>
+<p><code>SKILL.md</code> should hold decision logic. References should add operational depth, not repeat the same checklist in different words.</p>
+<p>Useful resources include:</p>
+<ul class="docs-list">
+<li>decision heuristics;</li>
+<li>failure diagnosis guides;</li>
+<li>legacy/edge-case playbooks;</li>
+<li>worked examples with trade-offs;</li>
+<li>tool-independent verification strategies;</li>
+<li>checklists only where the checklist encodes non-obvious domain knowledge.</li>
+</ul>
+<h3>10. How will we know the Skill actually works?</h3>
+<p>Create multiple semantically distinct eval families. Surface variations of one scenario do not count as breadth.</p>
+<h2>Eval Depth Standard</h2>
+<p>For a non-trivial Skill, target at least <strong>6 semantic scenario families</strong> across its package before calling evaluation coverage mature. A family is a different decision problem, not the same prompt rewritten five ways.</p>
+<p>Include a mix of:</p>
+<ul class="docs-list">
+<li>straightforward activation;</li>
+<li>boundary/non-trigger case;</li>
+<li>ambiguous situation requiring classification;</li>
+<li>adversarial pressure to take a shortcut;</li>
+<li>partial or contradictory evidence;</li>
+<li>failure/recovery handoff;</li>
+<li>legacy or constrained environment where the normal happy path is unavailable.</li>
+</ul>
+<p>The enterprise behavior harness may still expand each family into known/negative/ambiguous/adversarial/holdout variants. That expansion does not replace semantic family breadth.</p>
+<h2>Authoring Procedure</h2>
+<p>1. <strong>Observe the real job</strong>: identify decisions, artifacts, failure modes, and handoffs from real workflows or primary sources.</p>
+<p>2. <strong>Map neighboring Skills</strong>: define what this Skill owns and what it deliberately refuses.</p>
+<p>3. <strong>Write eval scenarios first</strong> for the most important failure-prone decisions. If the expected action cannot be stated clearly, the Skill contract is not ready.</p>
+<p>4. <strong>Design the decision model</strong>: classification, branches, invariants, stop conditions.</p>
+<p>5. <strong>Write <code>SKILL.md</code></strong> in imperative, tool-independent language.</p>
+<p>6. <strong>Add progressive resources</strong> for depth that would otherwise make the main Skill noisy.</p>
+<p>7. <strong>Add worked examples</strong> including at least one case where the obvious first move is wrong.</p>
+<p>8. <strong>Create/refresh agent profiles</strong> so host-facing prompts point to the full Skill contract rather than replacing it with a one-line summary.</p>
+<p>9. <strong>Validate packaging and registry metadata</strong>.</p>
+<p>10. <strong>Run deterministic and behavioral evals</strong>. Treat changed Skill/eval corpus hashes as requiring fresh proof.</p>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Never lower evaluation thresholds to preserve a maturity label after a Skill changes.</li>
+<li>Never copy private expected or forbidden oracle fields into provider-visible prompts.</li>
+<li>Canonical Skills must describe capabilities in provider-neutral language.</li>
+<li>Every non-trivial Skill package must include at least one substantial progressive reference (&gt;=1000 bytes).</li>
+<li>Behavioral maturity claims require fresh verified holdout evaluation across semantic scenario families.</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Prefer one strong Skill with a clear domain over several overlapping micro-Skills.</li>
+<li>If two Skills can both reasonably trigger from the same ordinary request, sharpen their boundaries before adding more keywords.</li>
+<li>If the body contains only a linear happy-path procedure, add the branches that real work forces an expert to choose between.</li>
+<li>If a reference merely paraphrases the body, replace it with deeper material.</li>
+<li>If an eval can be passed by parroting the Skill description without understanding the situation, add ambiguity or conflicting evidence.</li>
+<li>Never lower eval thresholds to preserve a maturity label after the Skill changes.</li>
+<li>Never copy private expected/forbidden oracle fields into provider-visible prompts.</li>
+<li>Avoid provider-specific tool names in canonical behavior. Describe capabilities, then let host adapters map them.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Triggering failure</h3>
+<p>Skill activates too often or misses obvious requests. Fix boundaries and description before adding more procedure text.</p>
+<h3>Behavioral shallowness</h3>
+<p>Skill selects the right broad action but cannot discriminate difficult subcases. Add classification, decision branches, and semantic eval families.</p>
+<h3>Resource shallowness</h3>
+<p>References exist but contain only summaries. Replace with operational guides and worked trade-offs.</p>
+<h3>Evaluation illusion</h3>
+<p>Pass rate is high because scenarios are near-duplicates or leak the answer. Increase semantic breadth and oracle isolation.</p>
+<h3>Contract drift</h3>
+<p><code>SKILL.md</code>, package metadata, agent profiles, registry entries, and evals describe different behavior. Reconcile before release.</p>
+<h2>Anti-Patterns</h2>
+<p>Reject these patterns during Skill review:</p>
+<ul class="docs-list">
+<li>&quot;Use best practices&quot; without naming the decision or evidence.</li>
+<li>one generic procedure reused across unrelated Skills;</li>
+<li>references under ~one screen that only restate the main steps;</li>
+<li>one toy example presented as domain coverage;</li>
+<li>an eval suite made from one scenario plus wording variants;</li>
+<li>arbitrary retry counts with no diagnostic reason;</li>
+<li>completion criteria that can be satisfied without fresh evidence;</li>
+<li><code>When NOT to Use</code> sections that omit the closest competing Skill;</li>
+<li>giant monolithic prompts that duplicate every reference and destroy progressive disclosure.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<p>A strengthened Skill should provide:</p>
+<ul class="docs-list">
+<li>valid package/frontmatter structure;</li>
+<li>explicit activation and refusal boundaries;</li>
+<li>situation classification and decision rules;</li>
+<li>domain-specific failure taxonomy;</li>
+<li>at least one substantial progressive reference;</li>
+<li>worked example(s) covering a non-happy path;</li>
+<li>multiple semantic eval families;</li>
+<li>behavioral evidence re-run when the evaluated corpus changes.</li>
+</ul>
+<h2>Handoff Contract</h2>
+<p>When finishing Skill authoring, report:</p>
+<ul class="docs-list">
+<li>Skill ID and owned capability;</li>
+<li>neighboring Skills and trigger boundaries;</li>
+<li>semantic eval families added;</li>
+<li>progressive resources added;</li>
+<li>known unsupported cases;</li>
+<li>deterministic validation status;</li>
+<li>whether behavioral evidence is fresh, stale, or not yet executed.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<p>Do not call the Skill mature merely because all expected folders exist.</p>
+<p>Completion requires:</p>
+<ul class="docs-list">
+<li>package validation passes;</li>
+<li>contract sections above are materially present where relevant;</li>
+<li>resources add depth rather than duplication;</li>
+<li>eval breadth tests the major decisions and shortcuts;</li>
+<li>registry/host metadata remains consistent;</li>
+<li>any prior behavioral proof invalidated by corpus changes is explicitly marked stale until rerun.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Depth standard: <code>references/depth-standard-v2.md</code></li>
+<li>Existing authoring references and templates remain useful for package mechanics.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

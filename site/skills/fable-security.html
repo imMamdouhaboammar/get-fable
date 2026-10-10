@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-security.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-security.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-security.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-security.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-security — get-fable Skill Reference">
+  <meta property="og:description" content="Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-security.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-security — get-fable Skill">
+  <meta name="twitter:description" content="Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-security — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-security Skill Specification",
+    "description": "Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.",
+    "articleSection": "Proof Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-security.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-security</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-security.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-security.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-security.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Proof Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 70</span>
+        </div>
+        <h1 class="skill-title">fable-security</h1>
+        <p class="skill-lead">Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "security-review" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Proof Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">security-review</span> <span class="intent-chip">threat-model</span> <span class="intent-chip">audit-auth</span> <span class="intent-chip">validate-finding</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>threat-surface-checked</code></li><li><code>no-exposed-secrets</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-release.html">fable-release</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-redteam.html">fable-redteam</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Security</h1>
+<p>Reason about attacker-controlled paths and trust boundaries until every security finding has a concrete source, sink, prerequisite, and impact.</p>
+<h2>Mission</h2>
+<p>Security review is not a secret scan plus a generic checklist. It asks what an attacker can control, which privilege/data boundary that input can cross, what enforcement must hold, and whether the changed code preserves that property under failure and concurrency.</p>
+<p>A clean scanner is evidence about scanner coverage, not a proof that the design is secure.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>authentication, authorization, sessions, tokens, permissions, tenancy, or privileged actions change;</li>
+<li>untrusted input reaches parsers, queries, templates, files, URLs, shells, webhooks, or deserializers;</li>
+<li>secrets/credentials or cryptographic material are handled;</li>
+<li>a diff changes trust boundaries, network exposure, storage access, package/install logic, or sandboxing;</li>
+<li>a reported vulnerability/finding needs validation or severity calibration;</li>
+<li>repository/package supply-chain behavior needs security review.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>the task is only functional verification with no security question (<code>fable-verify</code>);</li>
+<li>a generic maintainability review has no trust-boundary impact (<code>fable-review</code>);</li>
+<li>a vulnerability is already validated and the user wants only a bounded fix (<code>fable-execute</code>, while preserving security acceptance).</li>
+</ul>
+<h2>Security Work Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Mode</th><th>Primary question</th></tr></thead><tbody>
+<tr><td>Threat model</td><td>what assets/actors/boundaries/abuse paths exist?</td></tr>
+<tr><td>Security diff review</td><td>what security property changed in this diff?</td></tr>
+<tr><td>Finding validation</td><td>can attacker-controlled data actually reach a sensitive sink?</td></tr>
+<tr><td>Repository audit</td><td>which exposed surfaces deserve deeper inspection?</td></tr>
+<tr><td>Secret hygiene</td><td>can sensitive values enter source/logs/artifacts?</td></tr>
+<tr><td>Supply-chain/package</td><td>can dependency/install/build boundaries be abused?</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Define assets, actors, and trust boundaries</h3>
+<p>Identify:</p>
+<ul class="docs-list">
+<li>protected assets/data/operations;</li>
+<li>authenticated/unauthenticated/privileged actors;</li>
+<li>tenant/user ownership boundaries;</li>
+<li>external systems/webhooks/plugins;</li>
+<li>process/filesystem/network privilege transitions.</li>
+</ul>
+<p>Security conclusions without a named boundary are usually too vague.</p>
+<h3>Stage 2 — Trace attacker-controlled input to effect</h3>
+<p>For each relevant entrypoint follow:</p>
+<p><code>source → parsing/normalization → validation → authorization → transformation → sensitive sink/side effect</code></p>
+<p>Record where each security property is enforced and whether later transformations can invalidate earlier validation.</p>
+<h3>Stage 3 — Check the property appropriate to the boundary</h3>
+<p>Consider as relevant:</p>
+<ul class="docs-list">
+<li>authentication vs authorization separation;</li>
+<li>object/tenant ownership (IDOR/BOLA);</li>
+<li>CSRF/state binding and redirect validation;</li>
+<li>injection/query/template/shell boundaries;</li>
+<li>path traversal/symlink/archive extraction;</li>
+<li>SSRF and URL/DNS/redirect handling;</li>
+<li>file upload content/size/storage/execution boundaries;</li>
+<li>deserialization/parser resource abuse;</li>
+<li>session/token expiry, replay, rotation, audience/issuer;</li>
+<li>secrets in logs/errors/artifacts;</li>
+<li>fail-open error handling;</li>
+<li>race/TOCTOU and check-then-act authorization;</li>
+<li>privilege escalation via configuration/plugins/hooks;</li>
+<li>dependency/install script/supply-chain assumptions.</li>
+</ul>
+<h3>Stage 4 — Model failure and alternate paths</h3>
+<p>Ask:</p>
+<ul class="docs-list">
+<li>What happens when validation service fails?</li>
+<li>Is denial the default or does code continue?</li>
+<li>Can retries duplicate a privileged action?</li>
+<li>Can an attacker alter state between check and use?</li>
+<li>Do background jobs re-check authorization or trust stale caller claims?</li>
+<li>Does a redirect/proxy/parser transform the value after validation?</li>
+</ul>
+<h3>Stage 5 — Validate findings skeptically</h3>
+<p>For each candidate finding establish:</p>
+<ul class="docs-list">
+<li>attacker prerequisites/control;</li>
+<li>reachable source;</li>
+<li>exact sink/privileged effect;</li>
+<li>missing/bypassed control;</li>
+<li>realistic exploitation path;</li>
+<li>impact/scope;</li>
+<li>existing mitigations that may invalidate or reduce severity.</li>
+</ul>
+<p>Do not report a vulnerability merely because a dangerous API exists.</p>
+<h3>Stage 6 — Calibrate severity</h3>
+<p>Severity depends on exploitability + privilege gained + data/tenant scope + required conditions, not scanner labels alone.</p>
+<p>Use <code>blocking</code> for plausible exploitable issues that violate a required security property. Mark uncertain candidates as needing validation instead of inflating them.</p>
+<h3>Stage 7 — Produce bounded remediation evidence</h3>
+<p>A repair recommendation should name the property to restore and how to prove it, e.g. tenant ownership enforced atomically before mutation, canonical path contained after symlink resolution, redirect allowlist applied to normalized destination.</p>
+<h3>Stage 8 — Keep security and functionality separate</h3>
+<p>Security evidence can block release, but does not substitute for functional test/build/runtime evidence. After repair, both security-specific and functional verification may be required.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Authentication proves identity; it does not prove authorization for a resource/action.</li>
+<li>Validate/authorize as close as practical to the sensitive side effect, especially across async/background boundaries.</li>
+<li>Normalize/canonicalize before containment/allowlist checks when transformations can change meaning.</li>
+<li>Prefer allowlists/capability checks over blocklists for constrained destinations/actions.</li>
+<li>A secret removed from current source may still exist in Git history/logs/artifacts; rotate exposed credentials when exposure is credible.</li>
+<li>Scanner finding with no reachable attacker-controlled path is not automatically exploitable; validate source-to-sink.</li>
+<li>Scanner clean result does not close design-level authz/logic threats.</li>
+<li>Do not execute destructive exploit payloads against real systems; use safe local/fixture proof or code-path reasoning.</li>
+<li>If remediation changes product behavior, hand to TDD/execute and require functional verification afterward.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Raw secrets are never reproduced in evidence or logs.</li>
+<li>Every reported vulnerability has a concrete failure property and reachable path or is clearly labeled unvalidated.</li>
+<li>Tenant/resource authorization is evaluated independently from login status.</li>
+<li>Security review remains read-only unless explicitly shifted to remediation.</li>
+<li>Functional correctness and security correctness remain separate evidence classes.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>False positive</h3>
+<p>Dangerous primitive exists but attacker cannot control source/reach sink or mitigation blocks it. Downgrade/drop with evidence.</p>
+<h3>Hidden trust transition</h3>
+<p>Code crosses queue/plugin/proxy/background/storage boundary and assumes upstream validation. Trace/revalidate required property.</p>
+<h3>Fail-open path</h3>
+<p>Control error/timeout falls through to privileged behavior. Treat as high-priority boundary failure.</p>
+<h3>TOCTOU/race</h3>
+<p>Authorization/containment check is separated from side effect and mutable state can change. Seek atomic primitive/revalidation.</p>
+<h3>Sanitization mismatch</h3>
+<p>Validation occurs before decode/normalization/redirect/symlink resolution. Check canonical value at sink boundary.</p>
+<h3>Secret exposure</h3>
+<p>Credential entered source/log/artifact/history. Remove exposure path and require rotation/containment as applicable.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>&quot;no high CVEs, therefore secure&quot;;</li>
+<li>generic OWASP checklist without tracing changed paths;</li>
+<li>equating authenticated user with authorized user;</li>
+<li>regex path checks before canonical resolution;</li>
+<li>trusting webhook fields solely because request reached a webhook endpoint;</li>
+<li>reporting theoretical API danger with no attacker path;</li>
+<li>logging raw tokens to debug auth;</li>
+<li>testing exploitability against production without authorization;</li>
+<li>fixing security by disabling validation or broadening permissions to make tests pass.</li>
+</ul>
+<h2>Security Finding Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Security property:
+Asset/boundary:
+Attacker prerequisites:
+Source → transformations → control → sink:
+Concrete failure scenario:
+Existing mitigations:
+Severity + rationale:
+Evidence/location:
+Bounded remediation property:
+Security re-test:
+Functional verification still required:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Security work completes when:</p>
+<ul class="docs-list">
+<li>relevant trust boundaries and attacker-controlled paths were traced;</li>
+<li>candidate findings were validated/calibrated rather than pattern-matched;</li>
+<li>secrets were not exposed during analysis;</li>
+<li>blocking findings have bounded remediation/verification criteria;</li>
+<li>verdict states exactly what security property was checked and what remains not checked.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/trust-boundary-and-finding-validation.md</code></li>
+<li>Existing threat matrix: <code>references/threat-modeling-matrix.md</code></li>
+<li>Secret hygiene: <code>references/secret-sanitization.md</code></li>
+<li>Example: <code>examples/security-audit-walkthrough.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

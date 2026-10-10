@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-spark.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-spark.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-spark.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-spark.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-spark — get-fable Skill Reference">
+  <meta property="og:description" content="Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-spark.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-spark — get-fable Skill">
+  <meta name="twitter:description" content="Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-spark — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-spark Skill Specification",
+    "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-spark.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-spark</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-spark.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-spark.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-spark.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-idle">Phase: idle</span>
+          <span class="order-badge">Order: 200</span>
+        </div>
+        <h1 class="skill-title">fable-spark</h1>
+        <p class="skill-lead">Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "predict-next-move" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">idle</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/get-fable.html">get-fable</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">predict-next-move</span> <span class="intent-chip">situational-awareness</span> <span class="intent-chip">minimal-action</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>minimal-action-tested</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/get-fable.html">get-fable</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Spark</h1>
+<p>Choose one small next move that improves the state of the current task—or deliberately say nothing.</p>
+<h2>Mission</h2>
+<p>Spark is not a planner, router, motivational assistant, or todo generator. It is a micro-policy for moments when the task is already in motion and the best next action should be small, concrete, and justified by current state.</p>
+<p>The quality bar is not &quot;a helpful suggestion.&quot; It is <strong>the least action that unlocks the next piece of evidence or safely advances the active Skill</strong>.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>an edit/test/failure/state transition just happened;</li>
+<li>a long session needs the next atomic step rather than another full plan;</li>
+<li>verification freshness/gates determine what should happen next;</li>
+<li>an active specialist has a clear ownership boundary but the immediate move is unclear;</li>
+<li>silence vs intervention itself is a useful decision.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>no primary Skill has been selected for substantial new work (<code>get-fable</code>);</li>
+<li>architecture/decomposition is the unresolved problem (<code>fable-plan</code>);</li>
+<li>repeated failure requires a diagnosis (<code>fable-recover</code> owns the work; Spark may only point there);</li>
+<li>the user asked for execution, not a suggestion, and the executing Skill already knows its next step.</li>
+</ul>
+<h2>Situation Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>State signal</th><th>Spark posture</th></tr></thead><tbody>
+<tr><td>repeated failure</td><td>stop mutation; diagnose</td></tr>
+<tr><td>mutation newer than verification</td><td>refresh relevant proof</td></tr>
+<tr><td>explicit active gate missing</td><td>satisfy that gate</td></tr>
+<tr><td>review finding unresolved</td><td>repair/replan finding</td></tr>
+<tr><td>active card blocked by unknown</td><td>discover/research/plan</td></tr>
+<tr><td>complete/idle with no intent</td><td>silence</td></tr>
+<tr><td>specialist owns next obvious step</td><td>usually silence; avoid narration</td></tr>
+<tr><td>several equally plausible non-atomic moves</td><td>defer to orchestrator/plan</td></tr>
+</tbody></table></div>
+<h2>Next-Move Protocol</h2>
+<h3>Stage 1 — Read state before intent embellishment</h3>
+<p>Inspect phase, current Skill/card, mutation/verified generation, failure streak, evidence, unresolved findings, blockers, and latest user intent.</p>
+<h3>Stage 2 — Apply safety precedence</h3>
+<p>Prefer in order when applicable:</p>
+<p>1. diagnose repeated/contradictory failure;</p>
+<p>2. refresh stale proof after mutation;</p>
+<p>3. satisfy explicit blocking gate;</p>
+<p>4. resolve a named load-bearing unknown;</p>
+<p>5. continue the active specialist&#039;s smallest next action;</p>
+<p>6. silence.</p>
+<h3>Stage 3 — Make the action atomic</h3>
+<p>A Spark suggestion should usually be one observable verb-object step:</p>
+<ul class="docs-list">
+<li><code>run the affected auth tests</code>;</li>
+<li><code>reproduce the race with a barrier</code>;</li>
+<li><code>inspect the registered CLI entrypoint</code>;</li>
+<li><code>review the current diff against the card</code>;</li>
+<li><code>capture the provider response bundle</code>.</li>
+</ul>
+<p>Avoid multi-stage suggestions such as &quot;research, plan, implement, test, and release.&quot;</p>
+<h3>Stage 4 — Require a reason tied to evidence</h3>
+<p>The reason should reference state/evidence, e.g. verification stale after mutation, failure streak reached recovery threshold, release gate missing, or active card has unresolved API contract.</p>
+<h3>Stage 5 — Check actionability</h3>
+<p>Before speaking, ask:</p>
+<ul class="docs-list">
+<li>can the action be done now with available context/tools?</li>
+<li>does it preserve current scope?</li>
+<li>is it owned by the active/next Skill?</li>
+<li>will its outcome reduce uncertainty or satisfy a gate?</li>
+</ul>
+<p>If not, prefer silence or route back to the orchestrator.</p>
+<h3>Stage 6 — Use silence intentionally</h3>
+<p>Silence is correct when:</p>
+<ul class="docs-list">
+<li>task is idle/complete with no new intent;</li>
+<li>the active agent already has an obvious immediate action;</li>
+<li>only speculative future work can be suggested;</li>
+<li>available context is too ambiguous for a useful atomic step.</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Repeated failure outranks &quot;run tests again&quot; if another identical run adds no information.</li>
+<li>Fresh mutation outranks completion/release suggestions until relevant evidence is refreshed.</li>
+<li>Security/research/receipt evidence cannot stand in for required functional verification.</li>
+<li>Do not suggest implementation when a load-bearing fact/contract remains unknown.</li>
+<li>Prefer a targeted affected check over a full suite when the next goal is rapid causal feedback; broader required gates can follow.</li>
+<li>Never invent a new objective because the current task is quiet.</li>
+<li>Confidence is not a license to act outside the current Skill&#039;s scope.</li>
+<li>If two next moves depend on an unresolved ordering/architecture choice, route to plan instead of guessing.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>At most one primary Spark suggestion.</li>
+<li>Suggestion is atomic, actionable, and scope-preserving.</li>
+<li>State/evidence—not generic best practice—justifies intervention.</li>
+<li>Silence is allowed and preferred over speculative advice.</li>
+<li>Spark never upgrades stale/incomplete evidence into completion proof.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Scope drift</h3>
+<p>Suggestion introduces an unrelated improvement. Drop it and return to active card/gate.</p>
+<h3>Ceremony</h3>
+<p>Spark narrates a step the active specialist is already obviously executing. Stay silent.</p>
+<h3>Premature action</h3>
+<p>Suggestion mutates code before discovery/TDD/recovery requirement. Apply precedence.</p>
+<h3>Stale-proof blindness</h3>
+<p>Spark suggests review/release despite mutation newer than verification. Refresh proof first.</p>
+<h3>Retry loop</h3>
+<p>Spark repeats a command after repeated failure without new diagnostic state. Route to recovery.</p>
+<h3>Ambiguous macro-action</h3>
+<p>Suggestion contains several dependent steps. Reduce to first atomic decision or route to plan.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>turning Spark into a mini project manager;</li>
+<li>always suggesting something;</li>
+<li>generic advice such as &quot;keep testing&quot;;</li>
+<li>proposing a full suite when one focused probe is the causal next move;</li>
+<li>suggesting release because tests once passed;</li>
+<li>suggesting implementation from unknown external facts;</li>
+<li>confidence scores unsupported by state;</li>
+<li>outputting three alternatives instead of one next action.</li>
+</ul>
+<h2>Spark Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">State signal:
+Blocking gate / uncertainty:
+Suggestion: &lt;one action or null&gt;
+Why now:
+Expected observation:
+Owner Skill:
+Silent: true|false</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Spark succeeds when it either:</p>
+<ul class="docs-list">
+<li>names one immediately executable, evidence-grounded action that safely advances the current lifecycle; or</li>
+<li>remains silent because intervention would add noise, scope, or speculation.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/atomic-action-and-silence.md</code></li>
+<li>Next-move policy: <code>references/next-move-policy.md</code></li>
+<li>Silence: <code>references/silence-policy.md</code></li>
+<li>Evidence/gates: <code>references/evidence-and-gates.md</code></li>
+<li>Confidence: <code>references/confidence-policy.md</code></li>
+<li>Example: <code>examples/situational-awareness-walkthrough.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

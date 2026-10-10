@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-tdd.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-tdd.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-tdd.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-tdd.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-tdd — get-fable Skill Reference">
+  <meta property="og:description" content="Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-tdd.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-tdd — get-fable Skill">
+  <meta name="twitter:description" content="Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-tdd — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-tdd Skill Specification",
+    "description": "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.",
+    "articleSection": "Build Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-tdd.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-tdd</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-tdd.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-tdd.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-tdd.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Build Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 30</span>
+        </div>
+        <h1 class="skill-title">fable-tdd</h1>
+        <p class="skill-lead">Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "feature" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Build Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">feature</span> <span class="intent-chip">bug-fix</span> <span class="intent-chip">behavior-change</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>red-observed</code></li><li><code>green-observed</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-native-code.html">fable-native-code</a> <a class="token-link" href="../skills/fable-scope-discipline.html">fable-scope-discipline</a> <a class="token-link" href="../skills/fable-simplify.html">fable-simplify</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable TDD</h1>
+<p>Prove the behavior is missing or broken before changing production code, then make the smallest change that satisfies the right test at the right level.</p>
+<h2>Mission</h2>
+<p>TDD is not &quot;write any failing test first.&quot; The red state must demonstrate the intended behavior gap through a trustworthy harness. A syntax error, broken fixture, stale build, or mock-only expectation does not earn the right to change production code.</p>
+<p>The Skill optimizes for three things:</p>
+<ul class="docs-list">
+<li><strong>causal confidence</strong>: the test fails because the behavior is wrong;</li>
+<li><strong>minimal intervention</strong>: implementation changes only what the behavior requires;</li>
+<li><strong>durable regression proof</strong>: the test would catch the bug if it returned.</li>
+</ul>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>fixing a reproducible bug or regression;</li>
+<li>adding behavior with a stable enough contract to assert;</li>
+<li>changing validation, state transitions, calculations, API behavior, persistence, or integration semantics;</li>
+<li>refactoring where an invariant needs executable characterization first.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>the behavior cannot yet be located or reproduced (<code>fable-discover</code>);</li>
+<li>the main uncertainty is external API semantics (<code>fable-research</code>);</li>
+<li>the change is non-executable docs/metadata with no meaningful behavior test (<code>fable-execute</code>);</li>
+<li>the required test harness is itself broken or executing stale artifacts (<code>fable-recover</code>).</li>
+</ul>
+<h2>Change Classification</h2>
+<p>Classify the behavior before choosing a test.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Class</th><th>Preferred proof</th></tr></thead><tbody>
+<tr><td>Pure/domain logic</td><td>focused unit/property test</td></tr>
+<tr><td>Boundary validation/error mapping</td><td>unit or contract test at boundary</td></tr>
+<tr><td>Cross-module interaction</td><td>integration test through the changed contract</td></tr>
+<tr><td>Database/queue/cache behavior</td><td>integration test with realistic boundary where feasible</td></tr>
+<tr><td>HTTP/CLI/public API</td><td>contract/integration test at public entry point</td></tr>
+<tr><td>UI user flow</td><td>component/integration first; E2E for high-value cross-boundary behavior</td></tr>
+<tr><td>Concurrency/timing</td><td>deterministic coordination test, not sleep-and-hope</td></tr>
+<tr><td>Legacy behavior with poor seams</td><td>characterization test at nearest stable boundary</td></tr>
+<tr><td>Refactor/no intended behavior change</td><td>characterization/invariant tests before movement</td></tr>
+</tbody></table></div>
+<p>Use the lowest test level that proves the real behavior <strong>without mocking away the thing under test</strong>.</p>
+<h2>Protocol</h2>
+<h3>Stage 1 — Write the behavior contract</h3>
+<p>State:</p>
+<ul class="docs-list">
+<li>initial state/input;</li>
+<li>trigger/action;</li>
+<li>expected observable result;</li>
+<li>relevant side effects;</li>
+<li>error/boundary behavior;</li>
+<li>invariant that must remain true.</li>
+</ul>
+<p>For a bug, capture the concrete reproduction separately from the proposed implementation.</p>
+<h3>Stage 2 — Validate the harness</h3>
+<p>Before RED, confirm the chosen test actually executes the relevant path.</p>
+<p>Check when applicable:</p>
+<ul class="docs-list">
+<li>source vs built artifact;</li>
+<li>test discovery/config;</li>
+<li>fixture realism;</li>
+<li>feature flags/env;</li>
+<li>mock boundaries;</li>
+<li>asynchronous completion;</li>
+<li>cleanup/isolation;</li>
+<li>whether the assertion observes public behavior rather than an internal call count.</li>
+</ul>
+<h3>Stage 3 — Choose the test level</h3>
+<p>Ask:</p>
+<p>1. What production change would make this test fail again?</p>
+<p>2. Does the test cross the contract where the bug actually lives?</p>
+<p>3. Have I mocked the suspected failure away?</p>
+<p>4. Can a narrower test prove the same user-visible behavior more deterministically?</p>
+<p>If you cannot answer #1, the test is probably weak.</p>
+<h3>Stage 4 — RED</h3>
+<p>Write the smallest test that captures the behavior contract and run it.</p>
+<p>RED is valid only if:</p>
+<ul class="docs-list">
+<li>test executes;</li>
+<li>failure is deterministic enough to reason about;</li>
+<li>failure message/state matches the expected missing/broken behavior;</li>
+<li>it is not failing because of setup, syntax, import, environment, stale artifact, or unrelated test pollution.</li>
+</ul>
+<p>If the failure reason is wrong, repair the test/harness and repeat RED. <strong>Do not touch production code yet.</strong></p>
+<h3>Stage 5 — Minimal GREEN</h3>
+<p>Change the smallest production surface that can satisfy the valid RED.</p>
+<p>Do not:</p>
+<ul class="docs-list">
+<li>redesign adjacent APIs;</li>
+<li>add speculative flexibility;</li>
+<li>refactor unrelated code;</li>
+<li>weaken the assertion;</li>
+<li>replace real behavior with a mock to reach green.</li>
+</ul>
+<p>Run the focused test until GREEN.</p>
+<h3>Stage 6 — Adjacent falsification</h3>
+<p>Before refactor, probe the closest failure surfaces appropriate to the change:</p>
+<ul class="docs-list">
+<li>boundaries/empty/invalid input;</li>
+<li>error path;</li>
+<li>state transition ordering;</li>
+<li>idempotency/retry;</li>
+<li>concurrency/race;</li>
+<li>compatibility with prior format/API;</li>
+<li>persistence/transaction behavior.</li>
+</ul>
+<p>Add tests only when they protect a meaningful contract; do not inflate count mechanically.</p>
+<h3>Stage 7 — Refactor under green</h3>
+<p>Now improve structure if needed. Refactor in small steps and rerun the affected tests after each meaningful mutation.</p>
+<h3>Stage 8 — Fresh handoff</h3>
+<p>Record final mutation and hand off to <code>fable-verify</code> with:</p>
+<ul class="docs-list">
+<li>behavior contract;</li>
+<li>exact RED evidence/reason;</li>
+<li>GREEN command/result;</li>
+<li>tests added/changed;</li>
+<li>production surfaces changed;</li>
+<li>adjacent cases probed;</li>
+<li>residual risks not covered by the focused test.</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Test passes before production change → it does not prove the requested gap; redesign the test or confirm behavior already exists.</li>
+<li>Test errors before assertion → fix harness/test, not production.</li>
+<li>Bug is nondeterministic → first control or instrument the nondeterminism; repeated random reruns are not a reliable RED.</li>
+<li>Concurrency bug → prefer barriers/latches/fake clocks/deterministic scheduling over arbitrary sleeps.</li>
+<li>Legacy code has no unit seam → test the nearest stable public boundary before introducing a seam; do not perform a broad refactor just to make unit testing aesthetically pure.</li>
+<li>External dependency cannot be exercised locally → use a contract/fake only after establishing what behavior the fake must preserve from primary evidence.</li>
+<li>User asks to &quot;just patch it&quot; → if executable behavior is changing, preserve RED discipline unless the absence of a viable harness is explicit and accepted.</li>
+<li>Test expectation conflicts with current agreed product contract → do not force implementation to an obsolete test; resolve the contract first.</li>
+<li>A test only asserts that a mock was called → add observable outcome/state evidence unless the call itself is the public contract.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>No production behavior mutation before a valid RED for testable changes.</li>
+<li>RED and GREEN refer to the same behavior contract.</li>
+<li>Tests are not weakened to make implementation pass.</li>
+<li>The suspected failure mechanism is not mocked away.</li>
+<li>Final GREEN is fresh after the last relevant mutation.</li>
+<li>Refactoring does not add behavior outside the accepted card.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Wrong RED</h3>
+<p>Failure comes from syntax/import/setup/fixture/environment rather than target behavior. Repair harness first.</p>
+<h3>False GREEN</h3>
+<p>Test passes but does not cross the real failure boundary, often because a mock or stale artifact bypasses it. Strengthen/reposition the test.</p>
+<h3>Flaky RED/GREEN</h3>
+<p>Outcome changes without relevant code mutation. Identify nondeterminism before treating either state as evidence.</p>
+<h3>Untestable legacy surface</h3>
+<p>No narrow seam exists. Characterize at a stable boundary, then introduce the smallest seam supported by the test.</p>
+<h3>Contract ambiguity</h3>
+<p>Expected behavior itself is disputed/unclear. Return to planning/research rather than encoding a guess as a test.</p>
+<h3>Implementation loop</h3>
+<p>Valid RED exists but two materially similar fixes fail. Stop editing and route to <code>fable-recover</code> with the RED, attempts, and observed failure differences.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>writing implementation, then backfilling a test that immediately passes;</li>
+<li>accepting any failure as RED;</li>
+<li>changing expected output to match current implementation;</li>
+<li>asserting only mock interactions when user-visible state can be asserted;</li>
+<li>using sleeps to &quot;test&quot; a race;</li>
+<li>building an elaborate test abstraction before proving one behavior;</li>
+<li>broad legacy refactor before characterization;</li>
+<li>forcing unit tests where only an integration boundary can prove the behavior;</li>
+<li>skipping fresh GREEN after refactor;</li>
+<li>equating coverage percentage with regression proof.</li>
+</ul>
+<h2>Evidence Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Behavior contract:
+Test level + why:
+RED command/result + expected failure reason:
+Production mutation:
+GREEN command/result:
+Adjacent cases probed:
+Refactor mutations:
+Final fresh GREEN:
+Residual risk / verify next:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>TDD completes when:</p>
+<ul class="docs-list">
+<li>the behavior gap was demonstrated by a valid RED;</li>
+<li>production code changed only after that RED;</li>
+<li>focused GREEN is observed for the same contract;</li>
+<li>meaningful adjacent failure surfaces were considered;</li>
+<li>final tests are fresh after refactor/last mutation;</li>
+<li><code>fable-verify</code> receives enough evidence to independently falsify the result.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep strategy: <code>references/test-strategy-and-hard-cases.md</code></li>
+<li>Existing cycle reference: <code>references/red-green-refactor.md</code></li>
+<li>Example: <code>examples/failing-test-first.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -108,3 +108,74 @@ if (!prefersReducedMotion) {
     }
   });
 }
+
+// Generic code block copy handler
+document.querySelectorAll('.code-block .copy-button').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const code = btn.parentElement?.querySelector('code')?.textContent?.trim() || '';
+    if (!code) return;
+    try {
+      await copyText(code);
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied';
+      window.setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2000);
+    } catch {
+      btn.textContent = 'Copy failed';
+      window.setTimeout(() => {
+        btn.textContent = 'Copy';
+      }, 2000);
+    }
+  });
+});
+
+// Skills Catalog interactive search & filtering
+const skillSearchInput = document.getElementById('skill-search');
+const filterChips = document.querySelectorAll('.filter-chip');
+const skillCards = document.querySelectorAll('.skill-card');
+const noSkillsMsg = document.getElementById('no-skills-match');
+
+function applySkillFilters() {
+  if (!skillCards.length) return;
+  const activeChip = document.querySelector('.filter-chip.is-active');
+  const activePack = activeChip?.getAttribute('data-filter') || 'all';
+  const query = (skillSearchInput?.value || '').trim().toLowerCase();
+
+  let visibleCount = 0;
+  skillCards.forEach((card) => {
+    const cardPack = card.getAttribute('data-pack') || '';
+    const cardKeywords = card.getAttribute('data-keywords') || '';
+
+    const matchesPack = activePack === 'all' || cardPack === activePack;
+    const matchesQuery = !query || cardKeywords.includes(query);
+
+    if (matchesPack && matchesQuery) {
+      card.style.display = '';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  if (noSkillsMsg) {
+    noSkillsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+}
+
+if (skillSearchInput) {
+  skillSearchInput.addEventListener('input', applySkillFilters);
+}
+
+filterChips.forEach((chip) => {
+  chip.addEventListener('click', () => {
+    filterChips.forEach((c) => {
+      c.classList.remove('is-active');
+      c.setAttribute('aria-selected', 'false');
+    });
+    chip.classList.add('is-active');
+    chip.setAttribute('aria-selected', 'true');
+    applySkillFilters();
+  });
+});
+

@@ -1,6 +1,13 @@
 {
-  "timestamp": "2026-09-15T00:28:46.327Z",
-  "attestationSha256": "8bf654579b228f7577fc270f812b3968c91cc273deb8889b70089d4b96dd5aa9",
-  "patchesApplied": 0,
-  "totalFindings": 3
+  "timestamp": "2026-10-10T12:34:12.790Z",
+  "attestationSha256": "f586c35053a822592e1bb473a783c5bf261248916a97989d6eb92e3f938db2b3",
+  "patchesApplied": 3,
+  "totalFindings": 3,
+  "verified": true,
+  "healedFiles": [
+    "bin/serve-web.js",
+    "src/dsh/standalone.ts",
+    "src/router/index.ts"
+  ],
+  "status": "healed-and-verified"
 }

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-loop.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-loop.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-loop.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-loop.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-loop — get-fable Skill Reference">
+  <meta property="og:description" content="Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-loop.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-loop — get-fable Skill">
+  <meta name="twitter:description" content="Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-loop — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-loop Skill Specification",
+    "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-loop.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-loop</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-loop.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-loop.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-loop.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 140</span>
+        </div>
+        <h1 class="skill-title">fable-loop</h1>
+        <p class="skill-lead">Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "recurring-loop" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">recurring-loop</span> <span class="intent-chip">poll-status</span> <span class="intent-chip">babysit-ci</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>budget-bounded</code></li><li><code>exit-condition-explicit</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a> <a class="token-link" href="../skills/fable-tend.html">fable-tend</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Loop</h1>
+<p>Repeat a check only when repetition can reveal new state, with explicit termination, backoff, error classification, and zero ambiguity about why the loop stopped.</p>
+<h2>Mission</h2>
+<p>Polling is not &quot;run the same command until it turns green.&quot; A good loop models a changing external condition, distinguishes pending from failure, respects rate/cost budgets, and terminates on success, terminal failure, cancellation, or exhausted budget.</p>
+<p>If repeated execution cannot produce new information, the task belongs in diagnosis—not a loop.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>waiting for CI/deployment/build/batch-job state to change;</li>
+<li>monitoring a bounded asynchronous operation;</li>
+<li>checking eventually-consistent external state;</li>
+<li>repeating a safe measurement while a known process progresses;</li>
+<li>running a finite stabilization sample where repetition itself is the measurement.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>one command/probe is enough (<code>fable-run</code>/<code>fable-verify</code>);</li>
+<li>the same deterministic failure is repeating with no external state change (<code>fable-recover</code>);</li>
+<li>user expects a future notification/scheduled task rather than an in-session bounded loop;</li>
+<li>polling would create repeated non-idempotent side effects;</li>
+<li>no termination criteria or budget can be defined.</li>
+</ul>
+<h2>Loop Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Loop type</th><th>Success/terminal semantics</th></tr></thead><tbody>
+<tr><td>CI/build</td><td>pending → success or terminal failure/cancelled</td></tr>
+<tr><td>Deployment</td><td>progressing → healthy/rolled back/failed</td></tr>
+<tr><td>Batch job</td><td>queued/running → completed/failed</td></tr>
+<tr><td>Eventual consistency</td><td>old state → expected state within deadline</td></tr>
+<tr><td>Rate-limited API</td><td>pending/retryable → success or terminal auth/schema error</td></tr>
+<tr><td>Stabilization sampling</td><td>N bounded observations → distribution/variance verdict</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Define the state machine</h3>
+<p>Before iteration, enumerate:</p>
+<ul class="docs-list">
+<li>success state;</li>
+<li>pending/retryable states;</li>
+<li>terminal failure states;</li>
+<li>malformed/unknown states;</li>
+<li>cancellation condition.</li>
+</ul>
+<p>A loop that treats every non-success as &quot;try again&quot; is unsafe.</p>
+<h3>Stage 2 — Set budgets</h3>
+<p>Define at least:</p>
+<ul class="docs-list">
+<li>maximum elapsed time/deadline;</li>
+<li>maximum iterations or request budget where relevant;</li>
+<li>initial interval/backoff policy;</li>
+<li>maximum interval;</li>
+<li>API/cost/rate constraints.</li>
+</ul>
+<p>Use the stricter bound when several apply.</p>
+<h3>Stage 3 — Check idempotency and side effects</h3>
+<p>Polling operation should be read-only/idempotent. If the endpoint/command triggers work, separate trigger from status observation and ensure retries cannot duplicate the action.</p>
+<h3>Stage 4 — Execute one iteration and classify result</h3>
+<p>Record:</p>
+<ul class="docs-list">
+<li>iteration/time;</li>
+<li>observed state/value;</li>
+<li>transport/command result;</li>
+<li>classification: success / pending / retryable error / terminal failure / unknown;</li>
+<li>next delay/reason.</li>
+</ul>
+<h3>Stage 5 — Apply backoff intelligently</h3>
+<p>Use a fixed interval when the expected update cadence is known and inexpensive; exponential/backoff+jitter when rate limits/transient service errors matter.</p>
+<p>Respect explicit <code>Retry-After</code>/provider guidance where applicable. Do not make sub-second aggressive calls to a slow external job just because tools allow it.</p>
+<h3>Stage 6 — Stop early on terminal information</h3>
+<p>Exit immediately on:</p>
+<ul class="docs-list">
+<li>success;</li>
+<li>explicit failed/cancelled state;</li>
+<li>non-retryable auth/schema/permission error;</li>
+<li>user cancellation;</li>
+<li>budget/deadline exhaustion.</li>
+</ul>
+<p>Do not consume remaining iterations after the outcome is already known.</p>
+<h3>Stage 7 — Detect lack of progress</h3>
+<p>When a status includes progress/version/timestamp, compare across iterations. A long unchanged state near/after expected SLA may become a diagnostic signal rather than permission to extend budget automatically.</p>
+<h3>Stage 8 — Produce an honest receipt</h3>
+<p>Final receipt includes stop reason, elapsed time, iterations, last state, transient errors, and whether the condition was actually satisfied.</p>
+<p>Timeout is not success. &quot;Still running&quot; is not failure unless the contract/deadline says so.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Deterministic repeated failure with no changing external state → stop loop and recover.</li>
+<li>Retryable transport error may continue within budget; auth/permission/schema errors usually terminate until configuration changes.</li>
+<li>Treat provider <code>Retry-After</code> or job-recommended poll interval as a lower bound where applicable.</li>
+<li>Never repeat a non-idempotent trigger as a status poll.</li>
+<li>If each iteration costs meaningful money/quota, include cost/request budget, not only time.</li>
+<li>If expected completion exceeds the current session/task model, create a scheduled/condition-watch mechanism when available rather than pretending an in-session loop can run indefinitely.</li>
+<li>A loop may end <code>INCOMPLETE/TIMEOUT</code>; do not extend bounds silently just to obtain green.</li>
+<li>If progress is unchanged and deadline still distant, continue according to policy without noisy user updates; surface only meaningful state changes for long interactive runs.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Exit criteria and budgets are explicit before looping.</li>
+<li>Each iteration is safe/idempotent or side-effect semantics are explicitly controlled.</li>
+<li>Terminal failures stop immediately.</li>
+<li>Pending and failure are distinct states.</li>
+<li>Backoff/rate limits are respected.</li>
+<li>Receipt records actual stop reason; no timeout-to-pass conversion.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Infinite/implicit loop</h3>
+<p>No enforceable budget. Reject and define bounds.</p>
+<h3>Retry-all-errors</h3>
+<p>Auth/schema/permission/terminal job failures are treated as transient. Classify and stop appropriately.</p>
+<h3>Duplicate side effect</h3>
+<p>Polling call re-triggers work. Separate status endpoint/idempotency key or stop.</p>
+<h3>Thundering poll</h3>
+<p>Interval too aggressive for service/job cadence. Back off/respect provider guidance.</p>
+<h3>False timeout diagnosis</h3>
+<p>Job still pending within expected SLA but loop labels it broken. Report timeout/incomplete separately from product failure.</p>
+<h3>Stuck progress</h3>
+<p>State never changes when it should. Hand to recovery/operations diagnosis rather than extending forever.</p>
+<h3>Session mismatch</h3>
+<p>Requested monitoring lasts beyond available execution window. Use scheduling/condition-watch capability when supported.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>raw <code>while true</code>/unbounded sleep loops;</li>
+<li>retrying every error class;</li>
+<li>polling by repeatedly re-submitting the job;</li>
+<li>extending timeout until success after each miss;</li>
+<li>1-second polling for a 10-minute deployment;</li>
+<li>declaring failure just because status is pending;</li>
+<li>declaring success because the loop ended cleanly;</li>
+<li>hiding transient errors from the final receipt;</li>
+<li>using loops to avoid diagnosing deterministic repeated failures.</li>
+</ul>
+<h2>Loop Receipt</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Condition/state machine:
+Success / terminal failure states:
+Time + iteration/request budgets:
+Interval/backoff policy:
+Idempotency/side-effect check:
+Iterations: time → observed state → classification
+Transient errors:
+Stop reason:
+Condition satisfied? yes/no
+Final state:
+Next action if incomplete/failed:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Loop completes when:</p>
+<ul class="docs-list">
+<li>state machine, success/failure semantics, and budgets were explicit;</li>
+<li>polling respected idempotency/rate/cost constraints;</li>
+<li>terminal information stopped the loop early;</li>
+<li>timeout/stuck state is represented honestly;</li>
+<li>final receipt shows exactly why looping ended and what should happen next.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/polling-state-machines-and-backoff.md</code></li>
+<li>Existing guidelines: <code>references/loop-control-guidelines.md</code></li>
+<li>Example: <code>examples/poll-build-job.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

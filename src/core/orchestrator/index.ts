@@ -586,6 +586,7 @@ export function selectLifecycleEnginesForSkill(skillId: string): string[] {
 
   if (skillId === 'fable-tdd' || skillId === 'fable-judge' || skillId === 'fable-verify') {
     engines.add('test-value');
+    engines.add('frontier-test');
   }
   if (skillId === 'fable-review' || skillId === 'fable-judge') {
     engines.add('review/jev');

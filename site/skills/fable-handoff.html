@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-handoff.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-handoff.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-handoff.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-handoff.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-handoff — get-fable Skill Reference">
+  <meta property="og:description" content="Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-handoff.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-handoff — get-fable Skill">
+  <meta name="twitter:description" content="Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-handoff — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-handoff Skill Specification",
+    "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.",
+    "articleSection": "Delivery Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-handoff.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-handoff</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-handoff.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-handoff.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-handoff.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Delivery Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 85</span>
+        </div>
+        <h1 class="skill-title">fable-handoff</h1>
+        <p class="skill-lead">Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "handoff" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Delivery Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/get-fable.html">get-fable</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">handoff</span> <span class="intent-chip">resume-later</span> <span class="intent-chip">continue-session</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>next-action-explicit</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/get-fable.html">get-fable</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Handoff</h1>
+<p>Leave enough verified context that another agent can resume the work without replaying the whole conversation or rediscovering the repository.</p>
+<h2>Mission</h2>
+<p>A handoff is not a summary. It is a <strong>resumption contract</strong>.</p>
+<p>The receiving agent should know what was requested, what was actually changed, which claims are proven, which evidence is stale or missing, what is currently blocked, and the first safe action to take next.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>pausing a long-running task;</li>
+<li>transferring work to another agent/human/session;</li>
+<li>context is becoming too large and needs durable compaction;</li>
+<li>a release/PR remains incomplete but execution must stop;</li>
+<li>an automation/cowork loop needs a durable checkpoint.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>there is nothing durable to preserve beyond a trivial completed turn;</li>
+<li>the next action itself is unclear because planning/diagnosis is unfinished;</li>
+<li>a handoff would be used to hide missing verification or unresolved failure.</li>
+</ul>
+<h2>Continuity Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>State</th><th>Handoff emphasis</th></tr></thead><tbody>
+<tr><td>Clean completed card</td><td>exact evidence + next card</td></tr>
+<tr><td>Dirty worktree</td><td>owned vs unrelated changes + safe resume point</td></tr>
+<tr><td>Failed attempt</td><td>reproduction, attempts, revised/remaining hypotheses</td></tr>
+<tr><td>Review pending</td><td>diff/base, findings, verification state</td></tr>
+<tr><td>Release pending</td><td>candidate SHA/version, channel states, external blockers</td></tr>
+<tr><td>Research/discovery pending</td><td>measured facts, unresolved load-bearing questions</td></tr>
+<tr><td>Delegated work pending</td><td>worker ownership, returned/missing packets</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Reconstruct the durable task</h3>
+<p>Capture the original/current user outcome in one concise statement. Separate it from implementation tactics discovered later.</p>
+<h3>Stage 2 — Snapshot exact repository/work state</h3>
+<p>Record when available:</p>
+<ul class="docs-list">
+<li>branch/worktree and candidate commit SHA;</li>
+<li>active card/phase;</li>
+<li>files/surfaces intentionally changed;</li>
+<li>unrelated user changes that must be preserved;</li>
+<li>generated artifacts/state files intentionally not committed;</li>
+<li>open PR/issues/release/tag identifiers.</li>
+</ul>
+<h3>Stage 3 — Separate facts, decisions, and guesses</h3>
+<p>Use distinct buckets:</p>
+<ul class="docs-list">
+<li><strong>Measured facts</strong>: observed repository/runtime/provider evidence;</li>
+<li><strong>Decisions</strong>: selected architecture/contract and why;</li>
+<li><strong>Inferences</strong>: plausible but not yet proven;</li>
+<li><strong>Rejected hypotheses</strong>: avoid repeating failed reasoning;</li>
+<li><strong>Unresolved questions</strong>: only those that can change the next action.</li>
+</ul>
+<h3>Stage 4 — Record evidence with freshness</h3>
+<p>For each important claim record:</p>
+<ul class="docs-list">
+<li>command/probe/source;</li>
+<li>result;</li>
+<li>relevant mutation/commit/artifact;</li>
+<li>whether it is <strong>fresh</strong>, <strong>stale</strong>, or <strong>not checked</strong>.</li>
+</ul>
+<p>Never turn <code>NOT_CHECKED</code> into prose that sounds like PASS.</p>
+<h3>Stage 5 — Record failures and attempted repairs</h3>
+<p>Include only attempts that teach the receiver something. State what was tried, what happened, and why that changed or did not change the hypothesis.</p>
+<h3>Stage 6 — State blockers precisely</h3>
+<p>A blocker must say what external fact/permission/environment is missing and what becomes possible when it is resolved.</p>
+<p>Bad: <code>CI issue</code>.</p>
+<p>Good: <code>GitHub Dependency Review fails because Dependency Graph is disabled for the repository; code/security scan itself did not report a dependency vulnerability.</code></p>
+<h3>Stage 7 — Give one next safe action</h3>
+<p>The first next action should be executable and justified by current evidence. If several actions are independent, list them after naming the primary one.</p>
+<h3>Stage 8 — Sanitize</h3>
+<p>Do not copy secrets, tokens, private keys, raw credentials, unnecessary personal data, or giant logs. Refer to secure credential mechanisms rather than values.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Prefer exact identifiers (branch, SHA, PR, file path, command) over narrative descriptions.</li>
+<li>Preserve negative knowledge: a disproved theory prevents repeated waste.</li>
+<li>Evidence freshness must survive compaction; old green tests cannot be summarized as current green.</li>
+<li>If the worktree is dirty, distinguish owned task changes from unrelated/user-owned changes.</li>
+<li>If next action depends on an unresolved decision, route to planning/recovery first rather than inventing a handoff action.</li>
+<li>Conversation history is optional context; the handoff must stand alone.</li>
+<li>Do not copy full logs when the error signature + command + key lines are sufficient.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Handoff is truthful about what is and is not proven.</li>
+<li>Receiving agent can locate the exact work without guessing names/branches/files.</li>
+<li>Secrets are never persisted in the handoff.</li>
+<li>Unrelated user changes are explicitly protected.</li>
+<li>The next action cannot silently require context omitted from the handoff.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Narrative dump</h3>
+<p>Too much chat chronology, too little executable state. Rebuild around task/state/evidence/next action.</p>
+<h3>False freshness</h3>
+<p>Old proof is summarized as current. Attach mutation/SHA/artifact context and downgrade stale evidence.</p>
+<h3>Context starvation</h3>
+<p>Receiver must rediscover architecture or why a decision was made. Add the smallest load-bearing evidence/decision rationale.</p>
+<h3>Secret leakage</h3>
+<p>Credential appears in summary/log. Remove value and reference secure source only.</p>
+<h3>Ambiguous ownership</h3>
+<p>Dirty files are listed without saying which belong to task/user/other work. Clarify before handoff.</p>
+<h3>Fake closure</h3>
+<p>Handoff says &quot;done&quot; while external gate/review/provider evidence is missing. Use explicit pending/blocker state.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>copying the entire conversation;</li>
+<li>dumping terminal output without interpretation;</li>
+<li>omitting failed attempts so next agent repeats them;</li>
+<li>saying &quot;tests passed&quot; without commit/mutation freshness;</li>
+<li>storing tokens because &quot;the next agent will need them&quot;;</li>
+<li>vague next steps such as &quot;continue fixing&quot;;</li>
+<li>losing user constraints/preferences that materially affect implementation;</li>
+<li>claiming release/publication from a prepared artifact only.</li>
+</ul>
+<h2>Handoff Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Goal:
+Current branch/worktree/SHA:
+Active phase/card:
+Intentional changes:
+Protected unrelated changes:
+Measured facts:
+Decisions + rationale:
+Rejected hypotheses / failed attempts:
+Evidence:
+- claim → command/source → result → fresh/stale/not checked
+Open findings/blockers:
+External states (PR/CI/release/registry):
+Primary next safe action:
+Secondary independent actions:
+Do not repeat / do not change:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>A handoff is complete when a zero-context receiving agent can:</p>
+<ul class="docs-list">
+<li>identify the exact task and repository state;</li>
+<li>distinguish facts/decisions/inferences;</li>
+<li>know which evidence is fresh;</li>
+<li>avoid repeating disproved attempts;</li>
+<li>preserve unrelated work and credentials safely;</li>
+<li>execute the next action without asking for missing basic context.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/resumability-and-context-compaction.md</code></li>
+<li>Existing schema: <code>references/continuity-schema.md</code></li>
+<li>Template: <code>templates/handoff-state.template.md</code></li>
+<li>Example: <code>examples/cross-session-handoff.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+  "id": "fable-plan",
+  "order": 20,
+  "pack": "core",
+  "packName": "Core Pack",
+  "phase": "planned",
+  "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.",
+  "intents": [
+    "architecture",
+    "migration",
+    "decomposition"
+  ],
+  "requires": [
+    "load-bearing-unknowns-resolved"
+  ],
+  "produces": [
+    "accepted-card",
+    "acceptance-condition"
+  ],
+  "gates": [
+    "bounded-scope",
+    "named-acceptance"
+  ],
+  "fallback": "fable-discover",
+  "mutatesWorkspace": false,
+  "parallelSafe": false,
+  "next": [
+    "fable-research",
+    "fable-tdd",
+    "fable-delegate",
+    "fable-execute",
+    "fable-discover",
+    "fable-architecture",
+    "fable-council",
+    "fable-wise",
+    "fable-eco",
+    "fable-config",
+    "fable-artifact",
+    "fable-dataviz",
+    "fable-method",
+    "fable-scope-discipline",
+    "fable-cowork",
+    "fable-skill-creator"
+  ],
+  "keywords": [
+    "plan",
+    "design",
+    "architecture",
+    "migration",
+    "refactor",
+    "multi-file",
+    "end to end"
+  ],
+  "frontmatter": {
+    "name": "fable-plan",
+    "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants. Use when designing multi-file features, planning complex refactors, decomposing architectural migrations, or structuring multi-step implementation tasks — even if the user does not explicitly say \\\"fable-plan\\\" (e.g. \\\"plan this feature\\\", \\\"design the architecture\\\", \\\"break this task down\\\", \\\"create an implementation plan\\\"). Do NOT use when load-bearing facts remain unknown (use fable-discover first) or for trivial single-scope bug fixes (use fable-tdd or fable-execute).",
+    "version": "1.3.0",
+    "pack": "core",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-discover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "false",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Plan\n\nTurn grounded evidence into an executable change strategy with explicit dependencies, risk boundaries, acceptance proof, and integration ownership.\n\n## Mission\nA plan is not a list of files to edit. It is a set of decisions that makes implementation boring enough to execute safely.\n\nThe planner should remove architectural uncertainty, expose order constraints, define what \"done\" means, and separate work only where the pieces can genuinely be reasoned about and verified independently.\n\n## Activate When\n- the task spans multiple files/components or introduces a new contract;\n- a migration, schema change, public API change, or cross-package refactor is required;\n- implementation requires sequencing or rollback reasoning;\n- parallel workers may help but ownership/integration must be designed;\n- requirements are understood but not yet decomposed into verifiable work.\n\n## Do Not Activate When\n- load-bearing facts are still unknown (`fable-discover`/`fable-research`);\n- the change is truly bounded to one obvious edit with clear acceptance (`fable-execute`);\n- the immediate job is to reproduce a behavior in a test (`fable-tdd`).\n\n## Change Classification\nClassify before decomposing.\n\n| Change type | Main planning concern |\n| --- | --- |\n| Bounded behavior | acceptance and regression surface |\n| Cross-module feature | contracts + integration points |\n| Refactor | invariant preservation + staged compatibility |\n| Data/schema migration | forward/backward compatibility + rollback |\n| Public API/CLI | compatibility + versioning + docs/tests |\n| Dependency upgrade | behavior delta + transitive risk |\n| Security-sensitive | trust boundaries + fail-closed behavior |\n| Release/distribution | artifact boundaries + external verification |\n\n## Planning Protocol\n\n### Stage 1 — Restate the contract\nCapture:\n- requested outcome;\n- non-goals;\n- evidence already established;\n- externally visible behavior that must not regress;\n- unresolved items and why they are non-blocking.\n\nIf a blocking unknown remains, stop and route back to discovery/research.\n\n### Stage 2 — Map the change graph\nIdentify:\n- components touched;\n- contracts between them;\n- data/state transitions;\n- migration or compatibility edges;\n- shared integration hotspots;\n- generated artifacts and their sources;\n- verification surfaces.\n\nRepresent ordering as dependencies, not just numbered tasks.\n\n### Stage 3 — Choose seams for decomposition\nA card should have one coherent reason to change and one clear acceptance story.\n\nDo **not** require disjoint files as a universal rule. Two cards may touch one integration file sequentially if ownership/order is explicit. Conversely, two cards touching different files may still be unsafe to parallelize if they change one shared invariant or contract.\n\n### Stage 4 — Plan risk-first\nMove high-uncertainty or irreversible decisions earlier where possible:\n- prove migration shape before broad data rewrite;\n- prove compatibility adapter before deleting legacy path;\n- prove third-party API contract before wiring all call sites;\n- introduce observability before risky runtime changes.\n\n### Stage 5 — Define each card\nEach card must state:\n- objective and user-visible effect;\n- owned scope and prohibited scope;\n- dependencies/preconditions;\n- implementation notes only where they constrain correctness;\n- acceptance evidence/commands;\n- rollback or recovery note when failure is costly;\n- handoff/integration expectation.\n\n### Stage 6 — Define integration ownership\nName who/what proves the combined result. Worker-local green is not enough for cross-card behavior.\n\n### Stage 7 — Check the plan against failure\nAsk:\n- What if card 2 fails after card 1 lands?\n- Can old and new formats coexist during migration?\n- Is any step irreversible?\n- Does rollback preserve data/contracts?\n- Are tests capable of detecting the main regression?\n- Does parallel execution create merge or semantic conflicts?\n\n## Decision Rules\n- Unknown architecture → `fable-discover`; unknown external contract → `fable-research`.\n- Behavior change with a testable contract → route the first implementation card through `fable-tdd`.\n- Parallelize only when dependencies, ownership, shared invariants, and integration points make concurrency safe.\n- Prefer staged compatibility over flag-day replacement when old/new callers or persisted data may coexist.\n- If a card cannot name falsifiable acceptance evidence, it is not ready.\n- If planning produces more than roughly 5 tightly interdependent cards, consider milestone boundaries or a different architecture rather than mechanically splitting more.\n- Generated files belong to the card that changes their source/generator, not as independent manual edits.\n\n## Invariants\n- Every card traces back to a requirement or necessary enabling constraint.\n- No blocking architectural unknown is hidden inside an execution card.\n- Acceptance checks prove behavior, not merely file existence.\n- Integration verification has an owner.\n- Destructive/irreversible steps have explicit safeguards or rollback reasoning.\n- Parallelism is justified by dependency analysis, not by file count alone.\n\n## Failure Taxonomy\n### Hidden dependency\nA card unexpectedly requires another component. Update the dependency graph; do not let execution silently broaden scope.\n\n### False independence\nCards touch disjoint files but share one invariant/contract. Serialize or define a compatibility seam.\n\n### Acceptance weakness\nA proposed check can pass while behavior is still broken. Strengthen the acceptance condition before execution.\n\n### Migration hazard\nOld/new states can coexist in production but plan assumes atomic cutover. Add compatibility, backfill, or staged rollout.\n\n### Scope explosion\nA card keeps discovering architectural work. Stop, return to discovery/plan, and redraw boundaries.\n\n## Anti-Patterns\n- one card per file;\n- requiring disjoint files even when sequential integration is safer;\n- parallelizing based only on \"different files\";\n- acceptance such as \"tests pass\" without naming relevant behavior;\n- hiding migrations/rollbacks inside implementation prose;\n- treating documentation/generated output as separate cards when they are part of one behavior change;\n- producing a long task list with no dependency model;\n- over-specifying code line-by-line before execution evidence exists.\n\n## Work Card Template\n\n```text\nCard: <outcome>\nWhy: <requirement/risk>\nDepends on:\nOwns:\nMust not change:\nBehavior/invariant:\nImplementation constraints:\nAcceptance evidence:\nRollback/recovery:\nIntegration handoff:\nParallel-safe with:\n```\n\n## Completion Criteria\nPlanning is complete when:\n- blocking unknowns are gone;\n- dependency/order constraints are explicit;\n- cards are coherent and bounded by behavior, not arbitrary file slicing;\n- each card has falsifiable acceptance evidence;\n- migration/compatibility/rollback concerns are addressed where relevant;\n- parallel work, if proposed, has explicit semantic ownership and integration proof.\n\n## Progressive Resources\n- Deep decomposition guide: `references/risk-and-dependency-decomposition.md`\n- Existing decomposition rules: `references/decomposition-rules.md`\n- Template: `templates/work-card.template.md`\n- Example: `examples/multi-file-migration-plan.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-plan.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.206Z"
+}

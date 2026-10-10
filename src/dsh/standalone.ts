@@ -178,6 +178,13 @@ function buildHtmlShell(apiBase: string): string {
 </html>`;
 }
 
+const DEFAULT_SECURITY_HEADERS: Record<string, string> = {
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';",
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+};
+
 export function startFableDshServer(options: StandaloneServerOptions = {}) {
   const port = options.port || Number(process.env.PORT) || 4318;
   const hostname = options.hostname || '127.0.0.1';
@@ -191,6 +198,17 @@ export function startFableDshServer(options: StandaloneServerOptions = {}) {
       const url = new URL(req.url);
       const pathname = url.pathname;
 
+      // Defense-in-depth: Block sensitive file exposures
+      if (/^\/(\.env|\.git|docker-compose\.yml|\.aws|secrets)/i.test(pathname)) {
+        return new Response('Forbidden', {
+          status: 403,
+          headers: {
+            'Cache-Control': 'no-store',
+            ...DEFAULT_SECURITY_HEADERS,
+          },
+        });
+      }
+
       // Handle CORS for local dev
       if (req.method === 'OPTIONS') {
         return new Response(null, {
@@ -198,6 +216,7 @@ export function startFableDshServer(options: StandaloneServerOptions = {}) {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
+            ...DEFAULT_SECURITY_HEADERS,
           },
         });
       }
@@ -209,6 +228,7 @@ export function startFableDshServer(options: StandaloneServerOptions = {}) {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
+            ...DEFAULT_SECURITY_HEADERS,
           },
         });
 
@@ -250,11 +270,17 @@ export function startFableDshServer(options: StandaloneServerOptions = {}) {
         const clientPath = path.join(repoRoot, 'dist/client.js');
         if (fs.existsSync(clientPath)) {
           return new Response(Bun.file(clientPath), {
-            headers: { 'Content-Type': 'application/javascript' },
+            headers: {
+              'Content-Type': 'application/javascript',
+              ...DEFAULT_SECURITY_HEADERS,
+            },
           });
         }
         return new Response('/* dist/client.js not found - run bun run build:client */', {
-          headers: { 'Content-Type': 'application/javascript' },
+          headers: {
+            'Content-Type': 'application/javascript',
+            ...DEFAULT_SECURITY_HEADERS,
+          },
         });
       }
 
@@ -263,7 +289,10 @@ export function startFableDshServer(options: StandaloneServerOptions = {}) {
         const mascotPath = path.join(repoRoot, 'assets/mascot.svg');
         if (fs.existsSync(mascotPath)) {
           return new Response(Bun.file(mascotPath), {
-            headers: { 'Content-Type': 'image/svg+xml' },
+            headers: {
+              'Content-Type': 'image/svg+xml',
+              ...DEFAULT_SECURITY_HEADERS,
+            },
           });
         }
       }
@@ -271,11 +300,19 @@ export function startFableDshServer(options: StandaloneServerOptions = {}) {
       // Root GUI Dashboard
       if (pathname === '/' || pathname === '/fable' || pathname === '/index.html') {
         return new Response(buildHtmlShell(''), {
-          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            ...DEFAULT_SECURITY_HEADERS,
+          },
         });
       }
 
-      return new Response('Not Found', { status: 404 });
+      return new Response('Not Found', {
+        status: 404,
+        headers: {
+          ...DEFAULT_SECURITY_HEADERS,
+        },
+      });
     },
   });
 

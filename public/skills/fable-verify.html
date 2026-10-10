@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-verify.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-verify.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-verify.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-verify.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-verify — get-fable Skill Reference">
+  <meta property="og:description" content="Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-verify.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-verify — get-fable Skill">
+  <meta name="twitter:description" content="Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-verify — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-verify Skill Specification",
+    "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.",
+    "articleSection": "Core Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-verify.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-verify</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-verify.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-verify.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-verify.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Core Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 50</span>
+        </div>
+        <h1 class="skill-title">fable-verify</h1>
+        <p class="skill-lead">Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "run-tests" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Core Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">run-tests</span> <span class="intent-chip">typecheck</span> <span class="intent-chip">falsify-behavior</span> <span class="intent-chip">validate-acceptance</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>fresh-mutation-covered</code></li><li><code>machine-checked</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-review.html">fable-review</a> <a class="token-link" href="../skills/fable-security.html">fable-security</a> <a class="token-link" href="../skills/fable-release.html">fable-release</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-prove-it.html">fable-prove-it</a> <a class="token-link" href="../skills/fable-judge.html">fable-judge</a> <a class="token-link" href="../skills/fable-simulator.html">fable-simulator</a> <a class="token-link" href="../skills/fable-outcome-first.html">fable-outcome-first</a> <a class="token-link" href="../skills/fable-learning.html">fable-learning</a> <a class="token-link" href="../skills/fable-spark.html">fable-spark</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Verify</h1>
+<p>Try to prove the implementation wrong, then report only the claims that survive fresh evidence.</p>
+<h2>Mission</h2>
+<p>Verification is not &quot;run the test suite.&quot; It is coverage of changed risk with evidence that is both relevant and fresh.</p>
+<p>A green command proves only what it actually exercised. Build success does not prove runtime behavior. Security success does not prove functional correctness. Unit success does not prove a packaging or integration path. Old evidence does not prove a newer mutation.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>implementation or repair is ready for independent proof;</li>
+<li>a completion claim needs fresh evidence;</li>
+<li>a review/release gate requires test/build/runtime evidence;</li>
+<li>stale evidence must be refreshed after mutation;</li>
+<li>the suspected regression surface spans more than the focused TDD test.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>writing the implementation (<code>fable-execute</code>/<code>fable-tdd</code>);</li>
+<li>deciding architecture (<code>fable-plan</code>);</li>
+<li>reviewing design/maintainability from the diff (<code>fable-review</code>);</li>
+<li>diagnosing repeated confusing failures (<code>fable-recover</code>).</li>
+</ul>
+<h2>Risk Classification</h2>
+<p>Map each changed surface to the evidence capable of falsifying it.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Changed surface</th><th>Typical evidence</th></tr></thead><tbody>
+<tr><td>pure behavior</td><td>focused unit/property + affected suite</td></tr>
+<tr><td>cross-module contract</td><td>integration/contract test</td></tr>
+<tr><td>public CLI/API</td><td>invocation/smoke + contract tests</td></tr>
+<tr><td>build/export/package</td><td>build + package/clean-install smoke</td></tr>
+<tr><td>persistence/migration</td><td>integration + migration/compatibility fixtures</td></tr>
+<tr><td>async/concurrency</td><td>deterministic ordering/stress supplement</td></tr>
+<tr><td>config/feature flag</td><td>tests under relevant config branches</td></tr>
+<tr><td>browser/UI</td><td>component/integration/E2E as appropriate</td></tr>
+<tr><td>security boundary</td><td>security-specific checks <strong>plus</strong> functional evidence</td></tr>
+<tr><td>performance-sensitive path</td><td>targeted measurement when requirement exists</td></tr>
+</tbody></table></div>
+<h2>Verification Protocol</h2>
+<h3>Stage 1 — Read the diff and execution packet</h3>
+<p>Do not choose commands from habit alone. Identify:</p>
+<ul class="docs-list">
+<li>behavior changed;</li>
+<li>files/contracts touched;</li>
+<li>tests added/changed;</li>
+<li>generated/package/config surfaces;</li>
+<li>residual risks from implementation;</li>
+<li>current mutation generation.</li>
+</ul>
+<h3>Stage 2 — Build a verification matrix</h3>
+<p>For each material risk, write:</p>
+<ul class="docs-list">
+<li>claim;</li>
+<li>failure mode;</li>
+<li>evidence/command that would catch it;</li>
+<li>whether evidence must be narrow, integration, runtime, build, E2E, security, or package-level.</li>
+</ul>
+<p>Remove duplicate checks that prove the same narrow fact; add missing checks for untested surfaces.</p>
+<h3>Stage 3 — Run narrow, causal checks first</h3>
+<p>Start with the focused changed behavior and affected tests. Fast local evidence helps distinguish implementation failure from unrelated suite noise.</p>
+<h3>Stage 4 — Expand according to blast radius</h3>
+<p>Run broader typecheck/build/test/integration/E2E/package gates only where the change can affect them or where repository release policy requires them.</p>
+<p>Do not skip required project-wide gates merely because narrow tests pass.</p>
+<h3>Stage 5 — Adversarial falsification</h3>
+<p>Actively probe the most plausible regression surfaces:</p>
+<ul class="docs-list">
+<li>boundary/empty/invalid inputs;</li>
+<li>error propagation;</li>
+<li>retries/idempotency;</li>
+<li>compatibility old/new formats;</li>
+<li>async ordering/concurrency;</li>
+<li>cleanup/resource lifecycle;</li>
+<li>package/export/runtime entry point;</li>
+<li>configuration branch.</li>
+</ul>
+<p>Prefer tests/commands that can fail meaningfully over speculative prose.</p>
+<h3>Stage 6 — Detect nondeterminism and stale execution</h3>
+<p>If identical commands alternate outcomes, stop counting passes. Capture the variability and route to recovery.</p>
+<p>If results do not reflect known source changes, check source-vs-build, cache, branch, env, process, and artifact path before accepting output.</p>
+<h3>Stage 7 — Record typed, fresh evidence</h3>
+<p>Evidence should include:</p>
+<ul class="docs-list">
+<li>kind (<code>test</code>, <code>build</code>, <code>runtime</code>, <code>review</code>, <code>security</code> where applicable);</li>
+<li>exact command/probe;</li>
+<li>exit/result and relevant counts;</li>
+<li>mutation generation/artifact SHA when available;</li>
+<li>scope/claim the evidence proves.</li>
+</ul>
+<h3>Stage 8 — State the verdict narrowly</h3>
+<p>Use:</p>
+<ul class="docs-list">
+<li><strong>PASS</strong>: every required claim has fresh relevant evidence;</li>
+<li><strong>FAIL</strong>: at least one required claim is falsified;</li>
+<li><strong>INCOMPLETE</strong>: required evidence cannot be obtained or does not cover the risk.</li>
+</ul>
+<p>Never convert INCOMPLETE to PASS because the remaining check is inconvenient.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Evidence generation older than current relevant mutation → stale, rerun.</li>
+<li>Test passes but does not execute changed path → irrelevant evidence, not PASS.</li>
+<li>Security-only evidence for functional bug → require functional proof.</li>
+<li>Build/typecheck-only evidence for runtime behavior → require runtime/test proof.</li>
+<li>Focused test green but integration contract changed → run integration/contract evidence.</li>
+<li>Package/export change → inspect/package/smoke the distributed artifact, not only source tests.</li>
+<li>Flaky alternating outcomes → route to <code>fable-recover</code>; do not cherry-pick a green run.</li>
+<li>New verification failure caused by a bounded obvious implementation defect → return one repair card; repeated/ambiguous failure → recover.</li>
+<li>If a command is unavailable in current environment, mark evidence incomplete and name the external gate instead of fabricating a result.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Verification is read-only with respect to product behavior; any repair starts a new mutation/evidence cycle.</li>
+<li>Every completion claim maps to fresh evidence.</li>
+<li>Evidence kinds are not interchangeable.</li>
+<li>The final verdict covers the current mutation generation/artifact.</li>
+<li>Required failures/warnings are not hidden by truncating output or rerunning until green.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Relevant test failure</h3>
+<p>Changed behavior is falsified. Return bounded repair or recover depending on clarity/repetition.</p>
+<h3>Unrelated suite failure</h3>
+<p>Prove it is unrelated before excluding it; do not dismiss merely because it predates the change.</p>
+<h3>Stale evidence/artifact</h3>
+<p>Output corresponds to older mutation/build. Refresh build/path/env before evaluating implementation.</p>
+<h3>Nondeterministic verification</h3>
+<p>Same state produces inconsistent result. Diagnose shared state/timing/environment before verdict.</p>
+<h3>Coverage gap</h3>
+<p>Available checks do not exercise material changed risk. Add/locate suitable evidence or mark incomplete.</p>
+<h3>Environment limitation</h3>
+<p>Required external service/browser/platform/release environment unavailable. Report exact missing evidence; do not emulate a pass.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li><code>tests passed</code> as the entire verification report;</li>
+<li>running only tests the implementer just wrote;</li>
+<li>rerunning flaky tests until green;</li>
+<li>trusting old screenshots/logs after code changed;</li>
+<li>treating typecheck/build/security as functional proof;</li>
+<li>ignoring packaging/export paths;</li>
+<li>broad full-suite runs with no affected-risk reasoning;</li>
+<li>claiming pass when an external required gate was never run.</li>
+</ul>
+<h2>Verification Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Current mutation/artifact:
+Changed risks:
+Verification matrix:
+- claim → evidence → result
+Adversarial probes:
+Stale/nondeterministic evidence detected:
+Required external evidence not run:
+Verdict: PASS | FAIL | INCOMPLETE
+Repair/recovery recommendation:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Verification completes when:</p>
+<ul class="docs-list">
+<li>changed risks have relevant checks;</li>
+<li>required project gates are executed or explicitly marked unavailable;</li>
+<li>evidence is fresh for current mutation/artifact;</li>
+<li>likely edge/failure surfaces were actively probed;</li>
+<li>nondeterminism/stale output is not hidden;</li>
+<li>verdict is no broader than the evidence supports.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep matrix guide: <code>references/verification-matrix-and-evidence-strength.md</code></li>
+<li>Existing falsification heuristics: <code>references/falsification-heuristics.md</code></li>
+<li>Evidence recording: <code>references/evidence-recording.md</code></li>
+<li>Example: <code>examples/falsification-session.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

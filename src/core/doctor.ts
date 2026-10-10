@@ -29,6 +29,7 @@ import {
 import { loadReflexConfig } from './reflex/config.js';
 import { TEST_VALUE_REA_EVIDENCE_LEDGER } from './test-value/index.js';
 import { OPEN_MYTHOS_REA_EVIDENCE_LEDGER } from './mythos/index.js';
+import { FRONTIER_TEST_REA_EVIDENCE_LEDGER, FrontierTestOrchestrator } from './frontier-test/index.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -779,6 +780,36 @@ export function runDoctor(
     );
   }
 
+  try {
+    const frontierRepos = Object.values(FRONTIER_TEST_REA_EVIDENCE_LEDGER.repositories);
+    const ledgerValid =
+      frontierRepos.length >= 5 &&
+      frontierRepos.every((r) => r.artifacts.length > 0 && r.artifacts.every((a) => a.sha256.length === 64));
+    const orchestrator = new FrontierTestOrchestrator();
+    const capabilities = orchestrator.listCapabilities(process.cwd());
+
+    checks.push(
+      ledgerValid && capabilities.length >= 6
+        ? check(
+            'frontier-test-engine',
+            'PASS',
+            `Frontier Testing Engine active (${capabilities.length} adapters, ${frontierRepos.length} REA-attested upstream engines)`
+          )
+        : check(
+            'frontier-test-engine',
+            'ERROR',
+            'Frontier Testing Engine REA evidence ledger integrity check failed'
+          )
+    );
+  } catch (error) {
+    checks.push(
+      check(
+        'frontier-test-engine',
+        'ERROR',
+        `Frontier Testing Engine check failed: ${error instanceof Error ? error.message : String(error)}`
+      )
+    );
+  }
   return {
     schemaVersion: 1,
     ok: checks.every((item) => item.status !== 'ERROR'),

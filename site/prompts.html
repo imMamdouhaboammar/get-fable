@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Discover useful workflows, recipes, and production prompts to maximize get-fable for autonomous coding agents.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/workflows.html">
+  <link rel="alternate" type="text/markdown" href="./workflows.md">
+  <link rel="alternate" type="text/plain" href="./workflows.txt">
+  <link rel="alternate" type="application/json" href="./workflows.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Useful Workflows &amp; Production Prompts — get-fable">
+  <meta property="og:description" content="Battle-tested recipes, end-to-end multi-agent pipelines, and copy-paste prompts for Claude Code, Antigravity, Grok, and Codex.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/workflows.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>Useful Workflows &amp; Production Prompts — get-fable</title>
+  <link rel="icon" href="./assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./script.js" defer></script>
+
+  <!-- Schema.org HowTo -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to execute autonomous disciplined workflows with get-fable",
+    "description": "Step-by-step production workflows for AI coding agents with formal lifecycle gates and verification.",
+    "url": "https://get-fable.vercel.app/workflows.html"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="./index.html" aria-label="get-fable home">
+        <img src="./assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="./index.html#thesis">Thesis</a>
+        <a href="./skills.html">Skills (42)</a>
+        <a href="./guide.html">Guide &amp; Docs</a>
+        <a href="./workflows.html" class="is-active">Workflows &amp; Prompts</a>
+        <a href="./pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="workflows-main">
+    <div class="shell">
+      <header class="workflows-header">
+        <div class="section-marker">PLAYBOOKS &amp; PROMPTS</div>
+        <h1>Workflows &amp; Production Prompts</h1>
+        <p class="workflows-lead">Practical recipes and copy-paste system prompts to orchestrate AI coding agents with zero drift and rigorous evidence.</p>
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="./workflows.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="./workflows.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="./workflows.json" target="_blank">JSON (.json)</a>
+      </aside>
+      </header>
+
+      <div class="workflows-layout">
+        <aside class="docs-sidebar" aria-label="Workflows index">
+          <nav class="toc-nav">
+            <div class="toc-title">Workflows &amp; Prompts</div>
+            <ul class="toc-list">
+              <li><a href="#workflow-1-zero-drift-feature-development-the-canonical-tdd-loop">1. Zero-Drift TDD Loop</a></li>
+              <li><a href="#workflow-2-automated-red-team--self-healing-loop">2. Red Team &amp; Self-Healing</a></li>
+              <li><a href="#workflow-3-legacy-refactoring--ai-anti-slop-fable-wise-loop">3. Fable-Wise Anti-Slop</a></li>
+              <li><a href="#workflow-4-scale-threshold-architecture-inception">4. Architecture Inception</a></li>
+              <li><a href="#workflow-5-multi-model-deliberation-council">5. Council Deliberation</a></li>
+              <li><a href="#workflow-6-failure-compounding--durable-memory">6. Failure Compounding</a></li>
+              <li><a href="#part-2-production-prompt-library">Prompt Library</a></li>
+            </ul>
+          </nav>
+        </aside>
+
+        <article class="docs-body">
+          <h1>Useful Workflows and Production Prompts for get-fable</h1>
+<blockquote><p><strong>Battle-tested recipes, end-to-end multi-agent pipelines, and copy-paste prompts to unlock the full power of get-fable across Claude Code, Antigravity, Grok, Codex, and Cursor.</strong></p></blockquote>
+<p>---</p>
+<h2>Part 1: High-Leverage Autonomous Workflows</h2>
+<h3>Workflow 1: Zero-Drift Feature Development (The Canonical TDD Loop)</h3>
+<p><strong>Goal:</strong> Implement new features with 100% test coverage and strict scope boundaries.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># 1. Inspect execution path and dependencies
+bun ./bin/get-fable.js route &quot;inspect existing payment webhooks before adding Stripe support&quot; --apply
+
+# 2. Define bounded spec and acceptance criteria
+bun ./bin/get-fable.js card &quot;Implement idempotent Stripe invoice.paid webhook handler&quot;
+bun ./bin/get-fable.js state planned --substantial
+
+# 3. Write failing regression test first (Red phase)
+bun ./bin/get-fable.js route &quot;write failing test for duplicate Stripe event IDs&quot; --apply
+
+# 4. Implement minimal production logic (Green phase)
+bun ./bin/get-fable.js state executing --substantial
+
+# 5. Execute test suite and seal proof
+bun test test/stripe-webhook.test.ts
+bun ./bin/get-fable.js evidence pass test &quot;bun test test/stripe-webhook.test.ts&quot; &quot;duplicate event IDs handled idempotently&quot;
+
+# 6. Certify release readiness
+bun ./bin/get-fable.js route &quot;certify release readiness&quot; --apply
+bun ./bin/get-fable.js state complete</code></pre></div>
+<p>---</p>
+<h3>Workflow 2: Automated Red Team &amp; Self-Healing Loop</h3>
+<p><strong>Goal:</strong> Run black-box security scanning and automatically remediate vulnerabilities.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># 1. Execute penetration test against staging service
+bun ./bin/get-fable.js redteam scan --target https://api.staging.example.com --profile standard --fail-on-cvss 7.0
+
+# 2. View SARIF report output in docs/security/
+cat docs/security/REDTEAM_REPORT.md
+
+# 3. Trigger autonomous healing specialist
+bun ./bin/get-fable.js route &quot;synthesize and verify patches for SARIF findings&quot; --apply
+bun ./bin/get-fable.js heal
+
+# 4. Verify remediations and generate attestation
+bun ./bin/get-fable.js evidence pass security &quot;fable-heal&quot; &quot;All 3 high-severity findings remediated and regression-tested&quot;</code></pre></div>
+<p>---</p>
+<h3>Workflow 3: Legacy Refactoring &amp; AI Anti-Slop (Fable-Wise Loop)</h3>
+<p><strong>Goal:</strong> Strip AI boilerplate, eliminate duplicated configurations, and rewrite drifted files to clean v0.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># 1. Activate Fable-Wise cognitive reflex
+bun ./bin/get-fable.js route &quot;consolidate scattered configs into single source of truth&quot; --apply
+
+# 2. Execute /ssotize to unify parameters
+# 3. Execute /detool to replace bloated third-party libraries with native language constructs
+# 4. Execute /feynman to stress-test clarity
+# 5. Verify zero behavior drift
+bun test
+bun ./bin/get-fable.js evidence pass test &quot;bun test&quot; &quot;Refactored with 0 behavioral changes and -450 lines of boilerplate&quot;</code></pre></div>
+<p>---</p>
+<h3>Workflow 4: Scale Threshold Architecture Inception</h3>
+<p><strong>Goal:</strong> Evaluate system requirements and enforce microservices decomposition before code generation.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># 1. Evaluate architectural vectors
+bun ./bin/get-fable.js arch-eval &quot;High-throughput streaming analytics platform handling 50k events/sec with financial transaction settlement&quot;
+
+# 2. If composite score &gt;= 7.0, allowMonolith is locked to FALSE.
+# 3. Generate East-West gRPC Protobuf interfaces and worker bindings:
+bun ./bin/get-fable.js worker-serve</code></pre></div>
+<p>---</p>
+<h3>Workflow 5: Multi-Model Deliberation Council</h3>
+<p><strong>Goal:</strong> Convene a council across installed CLI agents before committing to risky technical decisions.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash">bun ./bin/get-fable.js route &quot;convene council of Claude, Gemini, and Grok to evaluate Postgres vs DynamoDB for append-only audit ledger&quot; --apply</code></pre></div>
+<p>---</p>
+<h3>Workflow 6: Failure Compounding &amp; Durable Memory</h3>
+<p><strong>Goal:</strong> Automatically capture unexpected engineering lessons so future agents never repeat them.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Extract durable lessons into Failure-lessons/ and agent-kernel
+bun ./bin/get-fable.js learn --failure-lessons</code></pre></div>
+<p>---</p>
+<h2>Part 2: Production Prompt Library</h2>
+<h3>Prompt 1: Claude Code Frontier Executive Harness Directive</h3>
+<p>Use this as the system directive in <code>CLAUDE.md</code> or session header:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-markdown">You are operating under get-fable execution discipline.
+Rules:
+1. Always run `bun ./bin/get-fable.js status` before touching code.
+2. Formulate a bounded spec and verify acceptance tests first.
+3. Every file mutation advances `mutationGeneration` — never claim completion with stale evidence.
+4. If two consecutive commands fail (failureStreak &gt;= 2), halt and enter `fable-recover` diagnosis.
+5. Record passing evidence using `bun ./bin/get-fable.js evidence pass &lt;kind&gt; &quot;&lt;cmd&gt;&quot; &quot;&lt;detail&gt;&quot;` before closing.</code></pre></div>
+<p>---</p>
+<h3>Prompt 2: Antigravity / Gemini CLI Autonomous Superplatform Prompt</h3>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-markdown">Enforce the Compound Engineering 80/20 loop and get-fable lifecycle:
+- 80% planning, interface verification, and AST blast-radius checks before writing implementation.
+- Fable Circuit Breaker active: halt speculative edits if failureStreak &gt;= 2.
+- 3-Pass Verification: Unit tests, Integration verification, AppSec audit.
+- Durable codification: Write every newly learned failure mechanism to Failure-lessons/.</code></pre></div>
+<p>---</p>
+<h3>Prompt 3: xAI Grok Bot Pairing Prompt</h3>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-markdown">You are Grok paired with get-fable.
+- Route every incoming ask through `bun ./bin/get-fable.js route &quot;&lt;task&gt;&quot;`.
+- Adhere to TOON format for all subagent payloads.
+- Apply ADR 0007 transport invariants: HTTP on edge, gRPC on internal services.
+- Zero sycophancy: answer direct, falsify claims ruthlessly.</code></pre></div>
+<p>---</p>
+<h3>Prompt 4: Fable-Wise Anti-Slop Directive</h3>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-markdown">Apply /fable-wise reflexes:
+- /re0: Rewrite drifted artifacts from a clean v0 rather than applying another fragile patch.
+- /ssotize: Audit scattered parameters and designate one single source of truth.
+- /detool: Replace incidental dependencies with native language primitives.
+- /hate: Identify the single fatal contrarian objection that could kill this architecture.
+- /sip: Verify with clean-and-true test suites before declaring success.</code></pre></div>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="./assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="./index.html">Home</a>
+        <a href="./skills.html">Skills Catalog</a>
+        <a href="./guide.html">User Guide</a>
+        <a href="./workflows.html">Workflows &amp; Prompts</a>
+        <a href="./pricing.html">Pricing (Free OSS)</a>
+        <a href="./llms.txt">llms.txt</a>
+        <a href="./sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

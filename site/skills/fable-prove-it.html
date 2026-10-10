@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Evidence precedence and verification rung enforcement preventing unverified claims. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-prove-it.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-prove-it.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-prove-it.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-prove-it.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-prove-it — get-fable Skill Reference">
+  <meta property="og:description" content="Evidence precedence and verification rung enforcement preventing unverified claims.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-prove-it.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-prove-it — get-fable Skill">
+  <meta name="twitter:description" content="Evidence precedence and verification rung enforcement preventing unverified claims.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-prove-it — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-prove-it Skill Specification",
+    "description": "Evidence precedence and verification rung enforcement preventing unverified claims.",
+    "articleSection": "Proof Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-prove-it.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-prove-it</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-prove-it.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-prove-it.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-prove-it.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Proof Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 280</span>
+        </div>
+        <h1 class="skill-title">fable-prove-it</h1>
+        <p class="skill-lead">Evidence precedence and verification rung enforcement preventing unverified claims.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "prove-claims" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Proof Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-verify.html">fable-verify</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">prove-claims</span> <span class="intent-chip">verify-rung</span> <span class="intent-chip">check-evidence</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>machine-checked-proof</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-release.html">fable-release</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Prove It</h1>
+<p>Claims require evidence you produced this session. There are three rungs: <strong>written</strong> (the code exists), <strong>runs</strong> (you executed it without error), <strong>verified</strong> (you watched it do the right thing). Say which rung you&#039;re on. &quot;Should work&quot; is rung zero wearing a suit.</p>
+<h2>Purpose</h2>
+<p>Prevent false completion claims, optimistic rounding, unearned confidence, and placebo bugfixes. <code>fable-prove-it</code> enforces strict calibration between what was written, what was executed, and what was observed.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>Before claiming anything works, is fixed, is done, or passes.</li>
+<li>Before status updates on changes you have not yet executed.</li>
+<li>Before agreeing with someone else&#039;s assumption about your work.</li>
+<li>Before running state-changing commands (restarts, deletions, migrations, config changes).</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>Running routine automated unit tests (use <code>fable-verify</code>).</li>
+<li>Adversarial independent red-teaming or penetration testing (use <code>fable-redteam</code>).</li>
+<li>Multi-agent peer review councils (use <code>fable-council</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>candidate_claim</code>: The statement asserting a fix, feature completion, or diagnostic conclusion.</li>
+<li><code>runtime_environment</code>: Available CLI tools, test runners, or staging endpoints.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>calibrated_verdict</code>: Explicit declaration of evidence rung (<code>written</code>, <code>runs</code>, <code>verified</code>).</li>
+<li><code>machine_receipt</code>: Concrete command output or observable assertion proving the claim.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Claim Only Your Rung</strong>: &quot;Fixed&quot; means verified by observation. If you didn&#039;t run it, the honest claim is &quot;written, not yet run&quot; — in those exact words.</p>
+<p>2. <strong>Verification is an Action, Not an Inference</strong>: Run the test, hit the endpoint, render the page. Re-reading your own code is not verification. Tracing paths mentally is where race conditions hide.</p>
+<p>3. <strong>Technically-True is Still a Lie</strong>: &quot;The fix is in&quot; when you mean &quot;merged, never run&quot; plants a false belief with a true sentence. Name the real rung.</p>
+<p>4. <strong>Report Faithfully</strong>: Failing tests reported as failing, WITH output. Skipped steps named explicitly. Partial completion stated as partial.</p>
+<p>5. <strong>No Optimistic Rounding</strong>: Ban &quot;should work now&quot;, &quot;likely fixes it&quot;, &quot;tests should pass&quot;. Either run it, or state plainly what was not run.</p>
+<p>6. <strong>Calibration Cuts Both Ways</strong>: Verified → plain declarative, no hedge garnish. Unverified → name what specifically wasn&#039;t checked.</p>
+<p>7. <strong>Evidence Before Action</strong>: Before a state-changing command, verify discriminating signals. Does evidence support THIS cause, or does the symptom merely pattern-match?</p>
+<p>8. <strong>Symptom Moved ≠ Fixed</strong>: An error message changing or disappearing is not proof your change was causal. Confirm the underlying mechanism.</p>
+<h2>Decision Rules</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Thought</th><th>Reality</th></tr></thead><tbody>
+<tr><td>&quot;The change is simple — it obviously works&quot;</td><td>Simple changes break builds daily. Running it costs less than being wrong about it.</td></tr>
+<tr><td>&quot;Tests passed before my change&quot;</td><td>That verified the old code.</td></tr>
+<tr><td>&quot;&#039;Should work&#039; is honest hedging&quot;</td><td>It&#039;s an unverified claim wearing hedge clothing. Name the rung instead.</td></tr>
+<tr><td>&quot;The lead said to just confirm it; they own the call&quot;</td><td>They own the decision; you own the truth of your report. Give the rung, hand them accurate wording.</td></tr>
+<tr><td>&quot;Reporting it unverified makes me look unfinished&quot;</td><td>The user discovering it later costs ten times more trust than the word &quot;unverified&quot; costs now.</td></tr>
+<tr><td>&quot;I recognize this incident — same fix as last time&quot;</td><td>Recognition is a hypothesis. Check the one signal that discriminates before touching state.</td></tr>
+</tbody></table></div>
+<ul class="docs-list">
+<li>If you did not execute the test, do not say &quot;tests pass&quot;.</li>
+<li>If you ran the test and it passed, do not say &quot;it should be fine now&quot; — say &quot;verified: test passed&quot;.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Execute the test runner or verification command directly in the shell.</li>
+<li>Inspect exit codes and standard error before formulating status claims.</li>
+<li>Never use synthetic mocks when real end-to-end checks are executable.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Attach exact terminal command invocations and their output (exit codes, test runner summaries).</li>
+<li>State the exact evidence rung for every deliverable:</li>
+</ul>
+<p>  - <code>written</code>: Code authored on disk, unexecuted.</p>
+<p>  - <code>runs</code>: Code executed without runtime syntax errors or crashes.</p>
+<p>  - <code>verified</code>: Code behavior confirmed by passing assertions or observed side effects.</p>
+<h2>Failure Handling</h2>
+<p>Stop and re-run or relabel when hitting these Red Flags:</p>
+<ul class="docs-list">
+<li>&quot;Should work now&quot; / &quot;Likely fixes it&quot; / &quot;Tests should pass&quot;.</li>
+<li>Claiming verification based only on reading code diffs.</li>
+<li>Hiding a failing test or suppressed warning in a status update.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>Every factual claim matches its observed evidence rung.</li>
+<li>Zero unverified assumptions reported as verified facts.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

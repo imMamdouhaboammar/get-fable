@@ -171,7 +171,13 @@ function applyCors(res: ServerResponse, origin: string | undefined) {
 }
 
 function sendJson(res: ServerResponse, statusCode: number, payload: unknown) {
-  res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.writeHead(statusCode, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none';",
+    'Referrer-Policy': 'no-referrer',
+  });
   res.end(JSON.stringify(payload));
 }
 

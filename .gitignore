@@ -23,3 +23,5 @@ dist/*.zip
 dist/get-fable-*/
 .agents/
 *.skill
+.vercel
+.env*

@@ -1,0 +1,23 @@
+# Pricing & Licensing — get-fable
+
+> **100% Free and Open Source. Zero Paywalls. Local-First Runtime.**
+
+## Free & Open Source (Community Edition)
+- **Price:** $0/month (Free Forever)
+- **License:** MIT License
+- **Usage Limits:** Unlimited tasks, unlimited agents, unlimited runs
+- **Telemetry:** 100% local, zero external tracking, zero phone-home
+- **Dependencies:** Runs natively on your machine via Bun & Python
+
+### What is included:
+- Full 42 canonical skills across 8 packs
+- Lifecycle state machine and evidence protocol
+- Fable Circuit Breaker recovery harness
+- Automated RedTeam vulnerability scanner & self-healing engine
+- 32-Platform ecosystem integrations (Claude Code, Antigravity, Grok, Codex, Cursor, etc.)
+- Multi-agent TOON protocol & gRPC distributed worker service
+- Durable engineering learning system (`Failure-lessons/`)
+
+### FAQ for AI Buyer Agents
+- **Is an account or API token required?** No. get-fable runs entirely locally in your repository.
+- **Can I run this in CI/CD?** Yes, via `bun ./bin/get-fable.js` or npm packages.
