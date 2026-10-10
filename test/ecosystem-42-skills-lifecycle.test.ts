@@ -27,8 +27,9 @@ import {
   scoreAllSkillsForSubtask,
   selectLifecycleEnginesForSkill,
 } from '../src/core/orchestrator/index.js';
-import { decodeDelegationContract, decodeToon, validateToon } from '../src/core/toon.js';
+import { decodeDelegationContract, decodeToon, encodeToon, validateToon } from '../src/core/toon.js';
 import { FableWorkerServer } from '../src/rpc/index.js';
+import type { FableRpcServerOptions } from '../src/rpc/types.js';
 
 describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orchestrator Suite', () => {
   const registry = loadSkillRegistry();
@@ -307,6 +308,34 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
   });
 
   describe('6. Live gRPC Wave Execution (executeDelegationWavePlanWithGrpc)', () => {
+    const explicitTaskRuns: string[] = [];
+    // Transport fixture. A real deployment must inject a genuine executor.
+    const fixtureTaskHandler: NonNullable<FableRpcServerOptions['taskHandler']> = async (
+      request,
+      emitEvent
+    ) => {
+      explicitTaskRuns.push(request.task_id);
+      const returnPacketToon = encodeToon({
+        returnPacket: {
+          workerId: request.parameters?.workerId || 'fixture-worker',
+          subtaskId: request.task_id,
+          primarySkill: request.parameters?.primarySkill || '',
+          coArmedSkills: (request.parameters?.coArmedSkills || '').split(',').filter(Boolean),
+          status: 'completed',
+          verified: true,
+        },
+      });
+      emitEvent({
+        event_id: `fixture-${request.task_id}`,
+        task_id: request.task_id,
+        run_id: request.run_id,
+        timestamp: Date.now(),
+        event_type: 'completed',
+        message: 'Explicit fixture handler executed (transport test)',
+        payload_json: JSON.stringify({ success: true, returnPacketToon }),
+        is_terminal: true,
+      });
+    };
     test('executes a multi-wave DelegationWavePlan over real gRPC with parallel wave concurrency, sequential wave ordering, and verified TOON return packets', async () => {
       const plan = await orchestrateSubagentsWithJev(
         'Execute multi-wave gRPC subagent plan across independent and dependent cards',
@@ -353,7 +382,7 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
         'wave1-router-followup',
       ]);
 
-      const report = await executeDelegationWavePlanWithGrpc(plan);
+      const report = await executeDelegationWavePlanWithGrpc(plan, { taskHandler: fixtureTaskHandler });
 
       expect(report.task).toBe(plan.task);
       expect(report.ephemeralServerSpawned).toBe(true);
@@ -362,6 +391,7 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
       expect(report.totalSubtasksExecuted).toBe(3);
       expect(report.allSucceeded).toBe(true);
       expect(report.receipts.length).toBe(3);
+      expect(explicitTaskRuns).toEqual(expect.arrayContaining(['wave0-tdd', 'wave0-security', 'wave1-router-followup']));
 
       // Verify wave execution order: wave 0 receipts first, then wave 1 receipt
       expect(report.receipts[0]!.waveIndex).toBe(0);
@@ -371,8 +401,8 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
 
       for (const receipt of report.receipts) {
         expect(receipt.status).toBe('completed');
-        // started -> tool_call -> mutation -> completed = 4 events
-        expect(receipt.eventsCount).toBeGreaterThanOrEqual(4);
+        // Explicit handler emits completed after the transport's started event.
+        expect(receipt.eventsCount).toBeGreaterThanOrEqual(2);
         expect(receipt.durationMs).toBeGreaterThanOrEqual(1);
         expect(receipt.coArmedSkills.length).toBeGreaterThanOrEqual(1);
 
@@ -401,9 +431,21 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
       expect(reportToonCheck.valid).toBe(true);
     });
 
+    test('never reports verified success for a plan without an actual executor', async () => {
+      const plan = await orchestrateSubagentsWithJev('Audit the task before any mutation', {
+        preferNative: false,
+      });
+      const report = await executeDelegationWavePlanWithGrpc(plan);
+      expect(report.allSucceeded).toBe(false);
+      expect(report.receipts.length).toBeGreaterThan(0);
+      expect(report.receipts.every((receipt) => receipt.status === 'failed')).toBe(true);
+      expect(report.receipts.every((receipt) => decodeToon<{
+        returnPacket: { verified: boolean };
+      }>(receipt.returnPacketToon).returnPacket.verified === false)).toBe(true);
+    });
+
     test('connects to an explicit external FableWorkerServer when workerAddress is provided', async () => {
-      const externalServer = new FableWorkerServer({ host: '127.0.0.1', port: 0 });
-      (externalServer as unknown as { port: number }).port = 0;
+      const externalServer = new FableWorkerServer({ host: '127.0.0.1', port: 0, taskHandler: fixtureTaskHandler });
       const port = await externalServer.start();
 
       try {
