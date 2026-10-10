@@ -1,6 +1,6 @@
 {
   "name": "delivery",
-  "version": "1.11.1",
+  "version": "1.12.0",
   "description": "Release verification, semantic versioning, and cross-session handoff compaction.",
   "skills": [
     "fable-release",

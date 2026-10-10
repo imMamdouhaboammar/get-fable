@@ -1,5 +1,5 @@
 name: autonomous-ci-tending-loop
-version: 1.11.1
+version: 1.12.0
 description: Autonomous repository CI repair, bounded polling, independent oracle simulation, verification, and durable failure-lesson extraction.
 targetShape: maintenance
 steps:

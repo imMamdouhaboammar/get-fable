@@ -423,6 +423,20 @@ TARGETS: list[FileTarget] = [
         optional=True,
     ),
     FileTarget(
+        path="crates/fable-jev/Cargo.toml",
+        pattern=r'version\s*=\s*"[\d]+\.[\d]+\.[\d]+"',
+        replacement=_cargo_version,
+        description="fable-jev Cargo.toml version",
+        optional=True,
+    ),
+    FileTarget(
+        path="crates/fable-toon/Cargo.toml",
+        pattern=r'version\s*=\s*"[\d]+\.[\d]+\.[\d]+"',
+        replacement=_cargo_version,
+        description="fable-toon Cargo.toml version",
+        optional=True,
+    ),
+    FileTarget(
         path="Cargo.lock",
         pattern=r'name = "fable-cli"\nversion = "[\d]+\.[\d]+\.[\d]+"',
         replacement=lambda v: f'name = "fable-cli"\nversion = "{v}"',
@@ -441,6 +455,57 @@ TARGETS: list[FileTarget] = [
         pattern=r'name = "fable-eco"\nversion = "[\d]+\.[\d]+\.[\d]+"',
         replacement=lambda v: f'name = "fable-eco"\nversion = "{v}"',
         description="Cargo.lock fable-eco version",
+        optional=True,
+    ),
+    FileTarget(
+        path="Cargo.lock",
+        pattern=r'name = "fable-jev"\nversion = "[\d]+\.[\d]+\.[\d]+"',
+        replacement=lambda v: f'name = "fable-jev"\nversion = "{v}"',
+        description="Cargo.lock fable-jev version",
+        optional=True,
+    ),
+    FileTarget(
+        path="Cargo.lock",
+        pattern=r'name = "fable-toon"\nversion = "[\d]+\.[\d]+\.[\d]+"',
+        replacement=lambda v: f'name = "fable-toon"\nversion = "{v}"',
+        description="Cargo.lock fable-toon version",
+        optional=True,
+    ),
+
+    # ── Recipes ───────────────────────────────────────────────────────────────
+    FileTarget(
+        path="recipes/autonomous-ci-tending-loop.yaml",
+        pattern=r'version:\s*[\d]+\.[\d]+\.[\d]+',
+        replacement=lambda v: f'version: {v}',
+        description="Autonomous CI tending recipe",
+        optional=True,
+    ),
+    FileTarget(
+        path="recipes/disciplined-surgical-implementation.yaml",
+        pattern=r'version:\s*[\d]+\.[\d]+\.[\d]+',
+        replacement=lambda v: f'version: {v}',
+        description="Disciplined surgical implementation recipe",
+        optional=True,
+    ),
+    FileTarget(
+        path="recipes/greenfield-architecture-council.yaml",
+        pattern=r'version:\s*[\d]+\.[\d]+\.[\d]+',
+        replacement=lambda v: f'version: {v}',
+        description="Greenfield architecture council recipe",
+        optional=True,
+    ),
+    FileTarget(
+        path="recipes/redteam-heal-attestation.yaml",
+        pattern=r'version:\s*[\d]+\.[\d]+\.[\d]+',
+        replacement=lambda v: f'version: {v}',
+        description="Redteam heal attestation recipe",
+        optional=True,
+    ),
+    FileTarget(
+        path="recipes/skill-and-visual-artifact-studio.yaml",
+        pattern=r'version:\s*[\d]+\.[\d]+\.[\d]+',
+        replacement=lambda v: f'version: {v}',
+        description="Skill and visual artifact studio recipe",
         optional=True,
     ),
 

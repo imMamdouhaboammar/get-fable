@@ -1,6 +1,6 @@
 get-fable Authoritative User Guide & Architecture Documentation
 
-Version: 1.11.1 · Schema: v3 · Canonical Skills: 42 · Supported Platforms: 32
+Version: 1.12.0 · Schema: v3 · Canonical Skills: 42 · Supported Platforms: 32
 
 get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.
 

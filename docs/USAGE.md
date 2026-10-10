@@ -1,4 +1,4 @@
-# Usage: get-fable 1.11.1
+# Usage: get-fable 1.12.0
 
 This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
 

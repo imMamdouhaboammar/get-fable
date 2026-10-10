@@ -141,11 +141,18 @@ describe('Fable gRPC Worker Transport', () => {
       const health = await bareClient.getWorkerHealth();
       expect(health.status).toBe('NOT_SERVING');
       expect(health.supported_skills).toEqual([]);
-      await expect(bareClient.executeSkill({
-        skill_id: 'fable-tdd',
-        case_id: 'no-skill-handler',
-        instruction: 'Do actual work',
-      })).rejects.toThrow('No skillHandler configured');
+      let executeSkillError: Error | null = null;
+      try {
+        await bareClient.executeSkill({
+          skill_id: 'fable-tdd',
+          case_id: 'no-skill-handler',
+          instruction: 'Do actual work',
+        });
+      } catch (err: any) {
+        executeSkillError = err;
+      }
+      expect(executeSkillError).not.toBeNull();
+      expect(executeSkillError?.message).toContain('No skillHandler configured');
     } finally {
       bareClient.close();
       await bareServer.stop();

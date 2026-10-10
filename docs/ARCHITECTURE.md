@@ -1,4 +1,4 @@
-# Architecture: get-fable 1.11.1
+# Architecture: get-fable 1.12.0
 
 ## Purpose
 

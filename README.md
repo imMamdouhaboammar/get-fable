@@ -14,13 +14,13 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
-**42 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · recovery · gRPC worker · TOON protocol · DSH plugin · release**
+**42 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · recovery · gRPC worker · TOON protocol · Rust Jev engine · Frontier test engine · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
 ```
 
-[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#29-skills-one-way-of-working) · [Docs](#documentation)
+[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#42-skills-across-8-packs-one-way-of-working) · [Docs](#documentation)
 
 </div>
 
@@ -208,77 +208,65 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 ---
 
-## 29 Skills. One way of working.
+## 42 Skills across 8 Packs. One way of working.
 
-### Understand the work
+### Core Pack — Lifecycle Navigation & Execution
+- `get-fable` — choose the next specialist from intent + durable state, with precedence for failure, security, stale proof, and unknowns.
+- `fable-discover` — trace real repository/runtime execution paths instead of guessing from filenames and imports.
+- `fable-plan` — turn evidence into dependency-aware, risk-aware, falsifiable work cards.
+- `fable-execute` — implement one bounded card while protecting scope, source-of-truth, and user work.
+- `fable-verify` — build a claim → failure mode → evidence matrix and try to falsify the implementation.
+- `fable-recover` — stop blind retries and rebuild causal confidence after repeated failure.
+- `fable-method` — step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.
 
-`get-fable` — choose the next specialist from intent + durable state, with precedence for failure, security, stale proof, and unknowns.
+### Intelligence Pack — Primary Source Grounding
+- `fable-research` — resolve current external facts against version-appropriate primary sources.
 
-`fable-discover` — trace real repository/runtime execution paths instead of guessing from filenames and imports.
+### Build Pack — Disciplined Implementation
+- `fable-tdd` — prove the behavior gap through the right test boundary before production mutation.
+- `fable-delegate` — parallelize only when write, semantic, and verification independence are real.
+- `fable-native-code` — codebase idiom matching and anti-bloat policy ensuring diffs read like native code.
+- `fable-scope-discipline` — anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.
 
-`fable-research` — resolve current external facts against version-appropriate primary sources.
+### Proof Pack — Adversarial Review & Security
+- `fable-review` — inspect the actual diff for concrete failure scenarios instead of style-comment theater.
+- `fable-security` — trace attacker-controlled input across trust boundaries and validate findings skeptically.
+- `fable-redteam` — run enterprise-grade automated penetration testing, CVSS v3.1 scoring, circuit breaker protection, SARIF reports, and cryptographic run attestations.
+- `fable-heal` — automatically synthesize, apply, and verify security remediations for vulnerabilities identified by `fable-redteam`.
+- `fable-prove-it` — evidence precedence and verification rung enforcement preventing unverified claims.
+- `fable-judge` — adversarial verification of finished work detecting weakened tests and false completion claims.
 
-`fable-plan` — turn evidence into dependency-aware, risk-aware, falsifiable work cards.
+### Delivery Pack — Production Readiness & Continuity
+- `fable-release` — audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.
+- `fable-handoff` — create a real resumability contract for another agent/session.
+- `fable-finish-your-turn` — autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.
+- `fable-outcome-first` — response styling policy enforcing direct first-sentence answers and zero sycophancy.
+- `fable-tend` — autonomous maintainer for repository CI repair, PR conflict resolution, and triage.
 
-### Build the change
+### Evolution Pack — Agent Evaluation & Durable Learnings
+- `fable-eval` — measure changes to agent behavior without benchmark overfitting or oracle leakage.
+- `fable-learning` — extract structured learnings, reusable patterns, failure lessons, and agent-kernel Playbooks from completed sessions.
 
-`fable-architecture` — evaluate scale, domain decoupling, and resource intensity vectors, lock out monolithic scaffolds when thresholds cross limits, enforce dual-transport boundaries (REST vs. gRPC), and prescribe multi-language stack matrices before scaffolding.
+### System Pack — Architecture, Scale, Reflexes & Cognitive Primitives
+- `fable-architecture` — evaluate scale, domain decoupling, and resource intensity vectors, lock out monolithic scaffolds when thresholds cross limits, enforce dual-transport boundaries (REST vs. gRPC), and prescribe multi-language stack matrices before scaffolding.
+- `fable-eco` — provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.
+- `fable-context-thrift` — conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.
+- `fable-council` — convene multi-agent council across installed CLI agents to deliberate before finalizing plans.
+- `fable-wise` — low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.
+- `fable-spark` — predict the smallest atomic next move — or stay silent when another suggestion would just be noise.
+- `fable-dataviz` — choose truthful visual encodings, preserve metric semantics, and audit for misleading scales/transformations.
+- `fable-artifact` — produce source-grounded documents and diagrams that survive outside the conversation.
+- `fable-simplify` — reduce complexity without quietly changing behavior.
+- `fable-loop` — poll changing conditions with explicit state machines, budgets, backoff, and honest stop reasons.
+- `fable-run` — launch the exact runtime artifact and separate spawn, readiness, feature proof, and cleanup.
+- `fable-memory` — preserve durable facts with scope, provenance, supersession, and secret-safe rules.
+- `fable-config` — change harness settings with precedence, least privilege, host-capability honesty, and behavioral verification.
+- `fable-simulator` — compare against an independent oracle without confusing simulation with production proof.
+- `fable-cowork` — execute long scoped work autonomously without throwing away lifecycle gates or authorization boundaries.
 
-`fable-tdd` — prove the behavior gap through the right test boundary before production mutation.
-
-`fable-delegate` — parallelize only when write, semantic, and verification independence are real.
-
-`fable-execute` — implement one bounded card while protecting scope, source-of-truth, and user work.
-
-`fable-simplify` — reduce complexity without quietly changing behavior.
-
-### Prove it
-
-`fable-verify` — build a claim → failure mode → evidence matrix and try to falsify the implementation.
-
-`fable-review` — inspect the actual diff for concrete failure scenarios instead of style-comment theater.
-
-`fable-security` — trace attacker-controlled input across trust boundaries and validate findings skeptically.
-
-`fable-redteam` — run enterprise-grade automated penetration testing, CVSS v3.1 scoring, circuit breaker protection, SARIF reports, and cryptographic run attestations.
-
-`fable-heal` — automatically synthesize, apply, and verify security remediations for vulnerabilities identified by `fable-redteam`.
-
-`fable-simulator` — compare against an independent oracle without confusing simulation with production proof.
-
-`fable-eval` — measure changes to agent behavior without benchmark overfitting or oracle leakage.
-
-### Keep long sessions sane
-
-`fable-recover` — stop blind retries and rebuild causal confidence after repeated failure.
-
-`fable-spark` — suggest the smallest useful next move — or stay silent when another suggestion would just be noise.
-
-`fable-memory` — preserve durable facts with scope, provenance, supersession, and secret-safe rules.
-
-`fable-handoff` — create a real resumability contract for another agent/session.
-
-`fable-cowork` — execute long scoped work autonomously without throwing away lifecycle gates or authorization boundaries.
-
-`fable-loop` — poll changing conditions with explicit state machines, budgets, backoff, and honest stop reasons.
-
-### Work with the environment
-
-`fable-run` — launch the exact runtime artifact and separate spawn, readiness, feature proof, and cleanup.
-
-`fable-config` — change harness settings with precedence, least privilege, host-capability honesty, and behavioral verification.
-
-### Build evidence people can use
-
-`fable-dataviz` — choose truthful visual encodings, preserve metric semantics, and audit for misleading scales/transformations.
-
-`fable-artifact` — produce source-grounded documents and diagrams that survive outside the conversation.
-
-### Extend the harness
-
-`fable-skill-creator` — author new Skills to the same V2 standard instead of cloning shallow templates.
-
-`fable-learning` — extract structured learnings, reusable patterns, and agent-kernel Playbooks from completed sessions.
+### Creator Pack — Skill Authoring & Domain Specialization
+- `fable-skill-creator` — author new Skills to the same Deep Playbook V2 standard instead of cloning shallow templates.
+- `fable-domain` — research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.
 
 [Explore the canonical Skill catalog →](docs/CANONICAL_SKILLS.md)
 
@@ -318,7 +306,7 @@ get-fable spark
 
 | Agent / Tool | Integration Tier | Key Capabilities |
 |:---|:---|:---|
-| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 29 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
+| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 42 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
 | <img src="assets/logos/gemini.svg" width="20" height="20" alt="" /> **Gemini CLI / Google Antigravity** (Google) | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/grok.svg" width="20" height="20" alt="" /> **Grok Build** (xAI) | **Full Lifecycle** | `hooks.json` lifecycle triggers, Grok plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> [**OpenAI Codex & ChatGPT**](https://openai.com/codex) (OpenAI) | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |

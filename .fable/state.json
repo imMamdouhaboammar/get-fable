@@ -1,9 +1,40 @@
 {
-  "schemaVersion": 1,
-  "phase": "idle",
+  "schemaVersion": 3,
+  "phase": "complete",
   "currentSkill": null,
   "failureStreak": 0,
-  "substantial": false,
+  "substantial": true,
   "lastDecision": null,
-  "evidence": []
+  "evidence": [
+    {
+      "kind": "build",
+      "source": "bun run build",
+      "result": "pass",
+      "detail": "build clean for 1.12.0 (dist/index.js, dist/cli.js, dist/client.js)",
+      "repositoryRevision": "561c049a7b7bda3775f29cb8cfd218352a7f663b",
+      "commandCategory": "build",
+      "scope": "workspace",
+      "generation": 8,
+      "timestamp": "2026-10-10T15:32:19.532Z",
+      "workspaceId": "4d0a9132c2e476001278e544"
+    },
+    {
+      "kind": "test",
+      "source": "bun test",
+      "result": "pass",
+      "detail": "all 1074 tests pass across 155 files",
+      "repositoryRevision": "561c049a7b7bda3775f29cb8cfd218352a7f663b",
+      "commandCategory": "test",
+      "scope": "workspace",
+      "generation": 8,
+      "timestamp": "2026-10-10T15:32:24.630Z",
+      "workspaceId": "4d0a9132c2e476001278e544"
+    }
+  ],
+  "stateRevision": 12,
+  "workspaceId": "4d0a9132c2e476001278e544",
+  "mutationGeneration": 8,
+  "verifiedGeneration": 8,
+  "activeCard": null,
+  "updatedAt": "2026-10-10T15:36:07.499Z"
 }

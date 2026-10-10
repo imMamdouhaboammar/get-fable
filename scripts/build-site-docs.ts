@@ -48,6 +48,10 @@ const PACK_DESCRIPTIONS: Record<string, string> = {
   creator: 'Deep Playbook V2 skill creation and domain adaptation.',
 };
 
+const pkgPath = path.join(repoRoot, 'package.json');
+const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+const pkgVersion = pkg.version || '1.11.1';
+
 const registryPath = path.join(repoRoot, 'skills', 'get-fable', 'registry.json');
 const registry = JSON.parse(fs.readFileSync(registryPath, 'utf-8')) as {
   schemaVersion: number;
@@ -703,7 +707,7 @@ console.log('Generating comprehensive user guide & documentation (site/guide.htm
 
 const guideMdContent = `# get-fable Authoritative User Guide & Architecture Documentation
 
-Version: **1.11.1** · Schema: **v3** · Canonical Skills: **42** · Supported Platforms: **32**
+Version: **${pkgVersion}** · Schema: **v3** · Canonical Skills: **42** · Supported Platforms: **32**
 
 > **get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.**
 
