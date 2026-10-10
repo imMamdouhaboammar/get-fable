@@ -14,7 +14,7 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
-**29 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · recovery · gRPC worker · TOON protocol · DSH plugin · release**
+**42 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · recovery · gRPC worker · TOON protocol · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
@@ -560,8 +560,10 @@ get-fable install-no-mistakes
 
 ### Step 8 — gRPC worker (distributed execution)
 
+The built-in `worker-serve` command starts the gRPC transport **without an actual task executor**. An unconfigured worker returns `NOT_SERVING` and cannot claim tasks or skills were completed. Integrators must supply real `taskHandler` and `skillHandler` callbacks on `FableWorkerServer`. `jev-orchestrate --execute` requires `--worker-addr <host:port>` pointing to a configured worker. A completed event counts as successful orchestration only when it includes a matching, verified TOON return packet. Worker-reported verification is not independent proof that the prescribed command was executed.
+
 ```bash
-# Start the Fable Worker gRPC server
+# Start the transport-only Fable Worker gRPC server (no executor configured)
 get-fable worker-serve
 
 # Behavioral evaluation pipeline
