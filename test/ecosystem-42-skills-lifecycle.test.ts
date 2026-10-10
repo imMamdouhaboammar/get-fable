@@ -28,6 +28,7 @@ import {
   selectLifecycleEnginesForSkill,
 } from '../src/core/orchestrator/index.js';
 import { decodeDelegationContract, decodeToon, encodeToon, validateToon } from '../src/core/toon.js';
+import { runCli } from '../src/cli.js';
 import { FableWorkerServer } from '../src/rpc/index.js';
 import type { FableRpcServerOptions } from '../src/rpc/types.js';
 
@@ -305,6 +306,10 @@ describe('42-Skill Ecosystem, Jev Reflex, OpenMythos MoE, Spark & Lifecycle Orch
       expect(selectLifecycleEnginesForSkill('fable-security')).toContain('reflex/recipes-bridge');
       expect(selectLifecycleEnginesForSkill('fable-discover')).toContain('reflex/recipes-bridge');
     });
+  });
+
+  test('CLI --execute refuses to claim work without an explicitly configured worker', async () => {
+    expect(await runCli(['jev-orchestrate', 'Audit a component', '--execute'])).toBe(1);
   });
 
   describe('6. Live gRPC Wave Execution (executeDelegationWavePlanWithGrpc)', () => {
