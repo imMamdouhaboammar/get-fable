@@ -151,10 +151,12 @@ export class FableWorkerServer {
   ) {
     const uptime = this.startedAt > 0 ? Math.floor((Date.now() - this.startedAt) / 1000) : 0;
     callback(null, {
-      status: this.activeTasks.size > 10 ? 'BUSY' : 'SERVING',
+      status: !this.options.taskHandler && !this.options.skillHandler
+        ? 'NOT_SERVING'
+        : this.activeTasks.size > 10 ? 'BUSY' : 'SERVING',
       worker_id: this.workerId,
       uptime_seconds: uptime,
-      supported_skills: canonicalSkillIds(),
+      supported_skills: this.options.skillHandler ? canonicalSkillIds() : [],
       active_tasks: this.activeTasks.size,
     });
   }
