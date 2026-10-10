@@ -38,7 +38,7 @@ export class FableWorkerServer {
   constructor(options: FableRpcServerOptions = {}) {
     this.options = options;
     this.host = options.host || '127.0.0.1';
-    this.port = options.port || 50051;
+    this.port = options.port ?? 50051;
     this.workerId = options.workerId || `worker-${process.pid}-${Date.now().toString(36)}`;
     this.server = new grpc.Server();
 
@@ -104,34 +104,8 @@ export class FableWorkerServer {
       if (this.options.taskHandler) {
         await this.options.taskHandler(request, emit, () => taskState.cancelled);
       } else {
-        // Default simulated bounded task execution
-        emit({
-          event_type: 'tool_call',
-          message: `Resolving required capabilities: ${(request.required_capabilities || []).join(', ') || 'none'}`,
-        });
+        throw new Error('No taskHandler configured: no task execution was performed');
 
-        if (taskState.cancelled) {
-          emit({
-            event_type: 'cancelled',
-            message: `Task ${taskId} was cancelled by caller`,
-            is_terminal: true,
-          });
-          call.end();
-          return;
-        }
-
-        emit({
-          event_type: 'mutation',
-          message: 'Executing bounded task lifecycle updates',
-          payload_json: JSON.stringify({ status: 'in_progress', verified: false }),
-        });
-
-        emit({
-          event_type: 'completed',
-          message: `Task ${taskId} completed successfully`,
-          is_terminal: true,
-          payload_json: JSON.stringify({ success: true, taskId }),
-        });
       }
     } catch (err: any) {
       emit({
@@ -158,21 +132,11 @@ export class FableWorkerServer {
         return;
       }
 
-      // Default execution logic conforming to SkillBehaviorProvider
-      const canonical = canonicalSkillIds();
-      const isValidSkill = canonical.includes(request.skill_id as any);
-
-      const action = request.action_vocabulary && request.action_vocabulary.length > 0
-        ? request.action_vocabulary[0]
-        : request.case_id || 'executed';
-
-      callback(null, {
-        action,
-        selected_skill: isValidSkill ? request.skill_id : 'fable-execute',
-        produces: 'verified-artifact',
-        gates: ['bounded-scope', 'named-acceptance'],
-        structure: ['SPEC.md', 'LEDGER.md'],
+      callback({
+        code: grpc.status.UNIMPLEMENTED,
+        message: 'No skillHandler configured: no skill was executed',
       });
+
     } catch (err: any) {
       callback({
         code: grpc.status.INTERNAL,
@@ -187,10 +151,12 @@ export class FableWorkerServer {
   ) {
     const uptime = this.startedAt > 0 ? Math.floor((Date.now() - this.startedAt) / 1000) : 0;
     callback(null, {
-      status: this.activeTasks.size > 10 ? 'BUSY' : 'SERVING',
+      status: !this.options.taskHandler && !this.options.skillHandler
+        ? 'NOT_SERVING'
+        : this.activeTasks.size > 10 ? 'BUSY' : 'SERVING',
       worker_id: this.workerId,
       uptime_seconds: uptime,
-      supported_skills: canonicalSkillIds(),
+      supported_skills: this.options.skillHandler ? canonicalSkillIds() : [],
       active_tasks: this.activeTasks.size,
     });
   }

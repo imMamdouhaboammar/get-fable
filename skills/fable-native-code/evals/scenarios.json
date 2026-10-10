@@ -12,5 +12,43 @@
     "category": "should-not-trigger",
     "prompt": "What are the core differences between TCP and UDP protocols?",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-native-code-match-neighboring-idioms",
+    "description": "Match the surrounding module's error handling, naming conventions, and zero-comment density without AI bloat",
+    "given": {
+      "intent": "Add parseHeader helper to a concise TypeScript module that uses early returns and zero JSDoc",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "conform-diff-to-local-codebase-idioms",
+      "produces": "idiomatic-minimal-diff",
+      "gates": [
+        "neighboring-style-matched",
+        "redundant-comments-stripped"
+      ]
+    },
+    "forbidden": {
+      "action": "inject-verbose-jsdoc-and-foreign-abstractions"
+    }
+  },
+  {
+    "id": "fable-native-code-eliminate-speculative-guards",
+    "description": "Remove impossible defensive type checks and single-use wrapper functions that violate internal type contracts",
+    "given": {
+      "intent": "Clean up newly written state helper where TypeScript already guarantees non-null FableState",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "strip-speculative-defensive-bloat",
+      "produces": "idiomatic-minimal-diff",
+      "gates": [
+        "internal-type-contract-trusted",
+        "single-use-wrappers-inlined"
+      ]
+    },
+    "forbidden": {
+      "action": "add-impossible-runtime-type-guards-for-trusted-types"
+    }
   }
 ]

@@ -1,0 +1,20 @@
+name: autonomous-ci-tending-loop
+version: 1.11.1
+description: Autonomous repository CI repair, bounded polling, independent oracle simulation, verification, and durable failure-lesson extraction.
+targetShape: maintenance
+steps:
+  - skill: fable-tend
+    gate: ci-verified
+    description: Triage failing CI checks, resolve PR merge conflicts, and prepare surgical maintenance fixes
+  - skill: fable-loop
+    gate: budget-bounded
+    description: Monitor CI build and check status with bounded polling budgets and exponential backoff
+  - skill: fable-simulator
+    gate: oracle-independent
+    description: Validate behavior against an independent oracle and headless sandbox environment
+  - skill: fable-verify
+    gate: fresh-mutation-covered
+    description: Record fresh machine-checked test and build proof for the current mutation generation
+  - skill: fable-learning
+    gate: evidence-grounded
+    description: Extract durable engineering lessons and failure patterns into the project knowledge base

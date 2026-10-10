@@ -239,9 +239,31 @@ def parse_args():
     return parser.parse_args()
 
 
+def find_native_binary():
+    if os.environ.get("FABLE_DISABLE_NATIVE_HOOKS") == "1":
+        return None
+    repo_root = os.path.dirname(ROOT)
+    for profile in ("release", "debug"):
+        cand = os.path.join(repo_root, "target", profile, "get-fable-native")
+        if os.path.isfile(cand) and os.access(cand, os.X_OK):
+            return cand
+    return None
+
+
 def main():
     args = parse_args()
     try:
+        # Fast-path native Rust execution (~1ms, eliminates inner Python spawn)
+        if args.handler != "learn":
+            native_bin = find_native_binary()
+            if native_bin:
+                cmd = [native_bin, "hook", "--handler", args.handler]
+                if args.event:
+                    cmd.extend(["--event", args.event])
+                if args.host:
+                    cmd.extend(["--host", args.host])
+                os.execv(native_bin, cmd)
+
         raw_text = sys.stdin.read()
         raw = json.loads(raw_text) if raw_text.strip() else {}
         payload = normalize_payload(raw, event_name=args.event, host=args.host)
@@ -282,3 +304,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

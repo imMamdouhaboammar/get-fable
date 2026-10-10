@@ -1,0 +1,30 @@
+name: greenfield-architecture-council
+version: 1.11.1
+description: Inception architecture evaluation, domain adaptation, multi-agent council deliberation, capability provisioning, and parallel delegation workflow.
+targetShape: architecture
+steps:
+  - skill: get-fable
+    gate: routing-decision
+    description: Initialize canonical lifecycle routing and workspace state at project inception
+  - skill: fable-domain
+    gate: primary-sources-verified
+    description: Translate sector requirements into research-grounded domain adapters and trap fixtures
+  - skill: fable-architecture
+    gate: microservices-threshold-evaluated
+    description: Evaluate Scale, Domain Decoupling, and Resource Intensity vectors and enforce East-West gRPC or broker transport
+  - skill: fable-council
+    gate: multi-agent-deliberation
+    description: Convene multi-agent council across installed CLI agents to deliberate on the architecture plan
+  - skill: fable-wise
+    gate: contrarian-verified
+    description: Apply Depth, Breadth, Coil, and Mesh cognitive reflexes to consolidate single sources of truth
+  - skill: fable-eco
+    gate: deterministic_resolution
+    description: Provision curated capabilities, lock reproducible dependencies, and compile execution contracts
+  - skill: fable-config
+    gate: safe-permissions
+    description: Configure harness permissions, environment settings, and lifecycle hook bindings
+  - skill: fable-delegate
+    gate: ownership-explicit
+    optional: true
+    description: Delegate semantically independent service cards to parallel workers with TOON contracts

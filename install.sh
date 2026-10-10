@@ -32,7 +32,14 @@ else
 fi
 
 echo "Running the get-fable global installer..."
-bun "$REPO_DIR/bin/get-fable.js" install
+export FABLE_INSTALL_TARGET_DIR="${FABLE_INSTALL_TARGET_DIR:-$(pwd)}"
+if [[ -t 0 ]]; then
+  bun "$REPO_DIR/bin/get-fable.js" install "$@"
+elif [[ -r /dev/tty && -z "${CI:-}" ]]; then
+  bun "$REPO_DIR/bin/get-fable.js" install "$@" </dev/tty
+else
+  bun "$REPO_DIR/bin/get-fable.js" install "$@"
+fi
 
 echo "Installation complete"
 if [[ -z "$TEMP_DIR" ]]; then

@@ -12,5 +12,43 @@
     "category": "should-not-trigger",
     "prompt": "Calculate the 15th Fibonacci number.",
     "shouldTrigger": false
+  },
+  {
+    "id": "fable-outcome-first-lead-with-verdict",
+    "description": "Open the response with the direct answer, root cause, or completion verdict in sentence one without sycophantic preamble",
+    "given": {
+      "intent": "Report why the staging database migration failed and confirm the fix is verified",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "lead-response-with-direct-outcome-verdict",
+      "produces": "outcome-first-summary",
+      "gates": [
+        "first-sentence-states-outcome",
+        "zero-sycophantic-preamble"
+      ]
+    },
+    "forbidden": {
+      "action": "bury-verdict-under-chronological-tool-narration"
+    }
+  },
+  {
+    "id": "fable-outcome-first-cite-concise-proof",
+    "description": "Follow the opening verdict immediately with concrete file paths and verification command results",
+    "given": {
+      "intent": "Summarize the completed authentication token fix for the user",
+      "verificationResult": "bun test test/auth.test.ts passed (12/12)"
+    },
+    "expected": {
+      "action": "pair-opening-verdict-with-concise-evidence",
+      "produces": "outcome-first-summary",
+      "gates": [
+        "first-sentence-states-outcome",
+        "evidence-cited-concisely"
+      ]
+    },
+    "forbidden": {
+      "action": "open-with-flattery-or-restated-prompt"
+    }
   }
 ]

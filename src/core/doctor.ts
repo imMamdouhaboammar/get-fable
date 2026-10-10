@@ -28,6 +28,7 @@ import {
 } from '../integrations/no-mistakes-installer.js';
 import { loadReflexConfig } from './reflex/config.js';
 import { TEST_VALUE_REA_EVIDENCE_LEDGER } from './test-value/index.js';
+import { OPEN_MYTHOS_REA_EVIDENCE_LEDGER } from './mythos/index.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -745,6 +746,36 @@ export function runDoctor(
   } catch (error) {
     checks.push(
       check('test-value-spearhead', 'ERROR', `Test-Value Spearhead check failed: ${error instanceof Error ? error.message : String(error)}`)
+    );
+  }
+
+  try {
+    const mythosArtifacts = OPEN_MYTHOS_REA_EVIDENCE_LEDGER.verifiedArtifacts;
+    const mythosValid =
+      mythosArtifacts.length >= 7 &&
+      mythosArtifacts.every(
+        (a) => /^[0-9a-f]{40}$/.test(a.gitBlobSha1) && /^[0-9a-f]{64}$/.test(a.sha256)
+      );
+    checks.push(
+      mythosValid
+        ? check(
+            'open-mythos-engine',
+            'PASS',
+            `OpenMythos Recurrent-Depth Engine active (${mythosArtifacts.length} REA-attested upstream artifacts, commit ${OPEN_MYTHOS_REA_EVIDENCE_LEDGER.commitSha.slice(0, 12)})`
+          )
+        : check(
+            'open-mythos-engine',
+            'ERROR',
+            'OpenMythos Recurrent-Depth Engine REA evidence ledger integrity check failed'
+          )
+    );
+  } catch (error) {
+    checks.push(
+      check(
+        'open-mythos-engine',
+        'ERROR',
+        `OpenMythos Engine check failed: ${error instanceof Error ? error.message : String(error)}`
+      )
     );
   }
 

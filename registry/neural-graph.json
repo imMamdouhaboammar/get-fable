@@ -716,6 +716,1146 @@
       "target": "fable-simplify",
       "relation": "peer",
       "weight": 0.9
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-research",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-tdd",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-delegate",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-security",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-eval",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-dataviz",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-artifact",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-simplify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-loop",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-run",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-memory",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-config",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-simulator",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-cowork",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-spark",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-skill-creator",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-redteam",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-heal",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-learning",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-architecture",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-eco",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-context-thrift",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-finish-your-turn",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-native-code",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-outcome-first",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-prove-it",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-scope-discipline",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-domain",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-judge",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-method",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-council",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-tend",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-wise",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-research",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-tdd",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-context-thrift",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-memory",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-domain",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-discover",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-tdd",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-domain",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-memory",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-skill-creator",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
+      "target": "fable-discover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-research",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-discover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-architecture",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-council",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-wise",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-config",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-artifact",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-dataviz",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-method",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-scope-discipline",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-cowork",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-skill-creator",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-discover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-native-code",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-scope-discipline",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-simplify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-delegate",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-delegate",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-delegate",
+      "target": "fable-cowork",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-delegate",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-delegate",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-native-code",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-scope-discipline",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-finish-your-turn",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-simplify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-run",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-prove-it",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-prove-it",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-judge",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-simulator",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-outcome-first",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-learning",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-spark",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-review",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-review",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-review",
+      "target": "fable-judge",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-review",
+      "target": "fable-outcome-first",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-review",
+      "target": "fable-simplify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-review",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-security",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-security",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-security",
+      "target": "fable-redteam",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-security",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-redteam",
+      "target": "fable-security",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-redteam",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-redteam",
+      "target": "fable-security",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-heal",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-heal",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-heal",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-release",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-release",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-release",
+      "target": "fable-verify",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-handoff",
+      "target": "get-fable",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-learning",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-learning",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-learning",
+      "target": "fable-eval",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-research",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-tend",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-method",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-loop",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-discover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-dataviz",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-dataviz",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-dataviz",
+      "target": "fable-execute",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-artifact",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-artifact",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-simplify",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-simplify",
+      "target": "fable-verify",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-loop",
+      "target": "fable-tend",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-loop",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-run",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-run",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-memory",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-memory",
+      "target": "fable-discover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-memory",
+      "target": "fable-discover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-config",
+      "target": "get-fable",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-config",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-simulator",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-simulator",
+      "target": "fable-verify",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-cowork",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-cowork",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-cowork",
+      "target": "fable-execute",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-spark",
+      "target": "get-fable",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-spark",
+      "target": "get-fable",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-skill-creator",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-architecture",
+      "target": "fable-tdd",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-architecture",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-architecture",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-architecture",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-eco",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eco",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eco",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-context-thrift",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-context-thrift",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-context-thrift",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-context-thrift",
+      "target": "fable-discover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-finish-your-turn",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-finish-your-turn",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-native-code",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-native-code",
+      "target": "fable-execute",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-outcome-first",
+      "target": "fable-handoff",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-prove-it",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-prove-it",
+      "target": "fable-verify",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-scope-discipline",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-scope-discipline",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-scope-discipline",
+      "target": "fable-execute",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-domain",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-domain",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-domain",
+      "target": "fable-research",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-judge",
+      "target": "fable-handoff",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-judge",
+      "target": "fable-verify",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-method",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-method",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-council",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-council",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-council",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-tend",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-tend",
+      "target": "fable-execute",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-wise",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-wise",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-wise",
+      "target": "fable-simplify",
+      "relation": "recovery",
+      "weight": 0.75
     }
   ]
 }

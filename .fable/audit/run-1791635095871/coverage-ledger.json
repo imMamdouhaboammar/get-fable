@@ -1,0 +1,198 @@
+[
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::api-logic-idor",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "api-logic-idor"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "API Logic & IDOR/BOLA Boundaries",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  },
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::client-side-injection",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "client-side-injection"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "Client-Side & Input Injection",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  },
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::cloud-deployment-ssrf",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "cloud-deployment-ssrf"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "Cloud, SSRF & Metadata Security",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  },
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::data-isolation-tenancy",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "data-isolation-tenancy"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "Data Isolation & Multi-Tenancy",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  },
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::resource-exhaustion",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "resource-exhaustion"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "Resource Exhaustion & Availability",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  },
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::supply-chain-hygiene",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "supply-chain-hygiene"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "Supply Chain & Configuration Security",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  },
+  {
+    "coverage_id": "source-entry::trust-boundary-auth::core-router::web-protocol-auth",
+    "canonical_refs": {
+      "surface": "source-entry",
+      "boundary": "trust-boundary-auth",
+      "subsystem": "core-router",
+      "attack_class": "web-protocol-auth"
+    },
+    "surface": "Source Code Entrypoint",
+    "boundary": "Trust Boundary & Authentication Gate",
+    "subsystem": "Core Subsystem Routing",
+    "attack_class": "Web Protocol & Authentication",
+    "starting_paths": [
+      "src"
+    ],
+    "ordinary_attack_class_block": "ATTACK-CLASSES.md#Core discipline",
+    "selected_companion_blocks": [],
+    "excluded_blocks": [],
+    "prior_status": "new",
+    "attempts": [],
+    "wave": 1,
+    "status": "planned",
+    "agent_id": null,
+    "reviewed_paths": [],
+    "local_checks": [],
+    "result_fingerprints": [],
+    "unresolved": []
+  }
+]

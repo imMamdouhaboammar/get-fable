@@ -64,6 +64,39 @@ import {
   ensureNoMistakesInstalled,
   initProjectNoMistakes,
 } from './integrations/no-mistakes-installer.js';
+export {
+  setupTypesafeJevEnv,
+  setupTypesafeJevEnvSync,
+  writeTypesafeJevEnv,
+  readTypesafeApiKeyFromEnvFile,
+  upsertTypesafeEnvContent,
+  isPlaceholderApiKey,
+  sanitizeEnvValue,
+  ensureEnvIgnoredInGitignore,
+  isInteractivePromptEnvironment,
+  type JevEnvSetupOptions,
+  type JevEnvSetupResult,
+} from './integrations/jev-env-installer.js';
+import {
+  setupTypesafeJevEnvSync,
+  isInteractivePromptEnvironment,
+  type JevEnvSetupOptions,
+} from './integrations/jev-env-installer.js';
+export {
+  DEFAULT_FABLE_SKILLS_REPO,
+  isValidOwnerRepoSpec,
+  extractOwnerRepoFromRepositoryUrl,
+  resolveFableOwnerRepo,
+  resolvePostinstallWorkingDir,
+  shouldRunNpmPostinstallSkills,
+  buildNpxSkillsAddArgs,
+  runNpxSkillsAdd,
+  type PostinstallCheckOptions,
+  type PostinstallCheckDecision,
+  type BuildNpxSkillsAddArgsOptions,
+  type RunNpxSkillsAddOptions,
+  type RunNpxSkillsAddResult,
+} from './integrations/skills-sh-installer.js';
 
 export function getRepoRootDir(): string {
   const currentFile = fileURLToPath(import.meta.url);
@@ -1035,7 +1068,7 @@ export function installGitHooks(targetDir: string = process.cwd()) {
   return true;
 }
 
-export function installGlobalFable() {
+export function installGlobalFable(jevEnvOptions?: JevEnvSetupOptions) {
   installClaudeGlobal();
   installAntigravityGlobal();
   installCodexGlobal();
@@ -1087,6 +1120,15 @@ export function installGlobalFable() {
     logWarn(`Could not complete no-mistakes quality gate setup: ${err instanceof Error ? err.message : String(err)}`);
   }
 
+  try {
+    setupTypesafeJevEnvSync({
+      targetDir: jevEnvOptions?.targetDir || process.env.FABLE_INSTALL_TARGET_DIR || process.cwd(),
+      ...jevEnvOptions,
+    });
+  } catch (err) {
+    logWarn(`Could not complete TypeSafe Jev .env setup: ${err instanceof Error ? err.message : String(err)}`);
+  }
+
   logSuccess('Installed get-fable across all supported AI coding platforms');
 }
 
@@ -1101,7 +1143,7 @@ function copyIfMissing(src: string, dest: string, targetDir: string) {
   logSuccess(`Created ${path.relative(targetDir, dest)}`);
 }
 
-export function initProjectFable(targetDir: string = process.cwd()) {
+export function initProjectFable(targetDir: string = process.cwd(), jevEnvOptions?: JevEnvSetupOptions) {
   const repoRoot = getRepoRootDir();
   const fableDir = path.join(targetDir, '.fable');
   const docsDir = path.join(targetDir, 'docs');
@@ -1232,6 +1274,17 @@ export function initProjectFable(targetDir: string = process.cwd()) {
   try {
     initProjectNoMistakes(targetDir);
   } catch {}
+
+  if (jevEnvOptions || isInteractivePromptEnvironment()) {
+    try {
+      setupTypesafeJevEnvSync({
+        targetDir,
+        ...jevEnvOptions,
+      });
+    } catch (err) {
+      logWarn(`Could not complete TypeSafe Jev .env setup: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
 
   logSuccess(`Project initialized with get-fable workflow files at ${targetDir}`);
 }

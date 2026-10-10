@@ -1,14 +1,195 @@
 {
   "version": "1.11.1",
   "recipes": [
-    { "id": "bug-fix", "path": "recipes/bug-fix.yaml", "targetShape": "bug-fix" },
-    { "id": "build-feature", "path": "recipes/build-feature.yaml", "targetShape": "feature" },
-    { "id": "research-first", "path": "recipes/research-first.yaml", "targetShape": "research" },
-    { "id": "review-pr", "path": "recipes/review-pr.yaml", "targetShape": "review" },
-    { "id": "security-review", "path": "recipes/security-review.yaml", "targetShape": "security" },
-    { "id": "release", "path": "recipes/release.yaml", "targetShape": "release" },
-    { "id": "cowork-session", "path": "recipes/cowork-session.yaml", "targetShape": "feature" },
-    { "id": "dataviz-dashboard", "path": "recipes/dataviz-dashboard.yaml", "targetShape": "feature" },
-    { "id": "create-skill", "path": "recipes/create-skill.yaml", "targetShape": "feature" }
+    {
+      "id": "bug-fix",
+      "path": "recipes/bug-fix.yaml",
+      "targetShape": "bug-fix",
+      "skills": [
+        "fable-discover",
+        "fable-tdd",
+        "fable-execute",
+        "fable-verify",
+        "fable-review",
+        "fable-handoff"
+      ]
+    },
+    {
+      "id": "build-feature",
+      "path": "recipes/build-feature.yaml",
+      "targetShape": "feature",
+      "skills": [
+        "fable-discover",
+        "fable-plan",
+        "fable-tdd",
+        "fable-execute",
+        "fable-verify",
+        "fable-review",
+        "fable-security",
+        "fable-release"
+      ]
+    },
+    {
+      "id": "research-first",
+      "path": "recipes/research-first.yaml",
+      "targetShape": "research",
+      "skills": [
+        "fable-research",
+        "fable-discover",
+        "fable-plan",
+        "fable-execute",
+        "fable-verify"
+      ]
+    },
+    {
+      "id": "review-pr",
+      "path": "recipes/review-pr.yaml",
+      "targetShape": "review",
+      "skills": [
+        "fable-discover",
+        "fable-review",
+        "fable-security",
+        "fable-verify",
+        "fable-release"
+      ]
+    },
+    {
+      "id": "security-review",
+      "path": "recipes/security-review.yaml",
+      "targetShape": "security",
+      "skills": [
+        "fable-discover",
+        "fable-security",
+        "fable-review",
+        "fable-verify"
+      ]
+    },
+    {
+      "id": "release",
+      "path": "recipes/release.yaml",
+      "targetShape": "release",
+      "skills": [
+        "fable-verify",
+        "fable-review",
+        "fable-security",
+        "fable-release",
+        "fable-handoff"
+      ]
+    },
+    {
+      "id": "cowork-session",
+      "path": "recipes/cowork-session.yaml",
+      "targetShape": "feature",
+      "skills": [
+        "fable-cowork",
+        "fable-execute",
+        "fable-verify",
+        "fable-spark",
+        "fable-handoff"
+      ]
+    },
+    {
+      "id": "dataviz-dashboard",
+      "path": "recipes/dataviz-dashboard.yaml",
+      "targetShape": "feature",
+      "skills": [
+        "fable-dataviz",
+        "fable-artifact",
+        "fable-run",
+        "fable-verify"
+      ]
+    },
+    {
+      "id": "create-skill",
+      "path": "recipes/create-skill.yaml",
+      "targetShape": "feature",
+      "skills": [
+        "fable-discover",
+        "fable-skill-creator",
+        "fable-eval",
+        "fable-verify",
+        "fable-review"
+      ]
+    },
+    {
+      "id": "ui-ux-polish-round",
+      "path": "recipes/ui-ux-polish-round.yaml",
+      "targetShape": "ui-ux-polish",
+      "skills": [
+        "fable-discover",
+        "fable-plan",
+        "fable-execute",
+        "fable-loop",
+        "fable-verify",
+        "fable-review",
+        "fable-release"
+      ]
+    },
+    {
+      "id": "redteam-heal-attestation",
+      "path": "recipes/redteam-heal-attestation.yaml",
+      "targetShape": "security",
+      "skills": [
+        "fable-redteam",
+        "fable-heal",
+        "fable-security",
+        "fable-prove-it",
+        "fable-judge",
+        "fable-recover"
+      ]
+    },
+    {
+      "id": "greenfield-architecture-council",
+      "path": "recipes/greenfield-architecture-council.yaml",
+      "targetShape": "architecture",
+      "skills": [
+        "get-fable",
+        "fable-domain",
+        "fable-architecture",
+        "fable-council",
+        "fable-wise",
+        "fable-eco",
+        "fable-config",
+        "fable-delegate"
+      ]
+    },
+    {
+      "id": "disciplined-surgical-implementation",
+      "path": "recipes/disciplined-surgical-implementation.yaml",
+      "targetShape": "feature",
+      "skills": [
+        "fable-context-thrift",
+        "fable-memory",
+        "fable-method",
+        "fable-scope-discipline",
+        "fable-native-code",
+        "fable-simplify",
+        "fable-finish-your-turn",
+        "fable-outcome-first"
+      ]
+    },
+    {
+      "id": "autonomous-ci-tending-loop",
+      "path": "recipes/autonomous-ci-tending-loop.yaml",
+      "targetShape": "maintenance",
+      "skills": [
+        "fable-tend",
+        "fable-loop",
+        "fable-simulator",
+        "fable-verify",
+        "fable-learning"
+      ]
+    },
+    {
+      "id": "skill-and-visual-artifact-studio",
+      "path": "recipes/skill-and-visual-artifact-studio.yaml",
+      "targetShape": "feature",
+      "skills": [
+        "fable-skill-creator",
+        "fable-dataviz",
+        "fable-artifact",
+        "fable-eval"
+      ]
+    }
   ]
 }

@@ -42,9 +42,13 @@ import {
   initProjectFable,
   ensureNoMistakesInstalled,
   autoInstallSkills,
+  runNpxSkillsAdd,
   checkFableStatus,
   getFableStatus,
   getRepoRootDir,
+  setupTypesafeJevEnvSync,
+  isInteractivePromptEnvironment,
+  type JevEnvSetupOptions,
 } from './installer.js';
 import { runFableLint } from './fable-lint.js';
 import { startMythosRouterServer } from './router/index.js';
@@ -112,6 +116,12 @@ import {
 } from './core/toon.js';
 import { runEcoCli } from './eco/index.js';
 import {
+  runNativeArchEval,
+  runNativeSpark,
+  runNativeToonEncode,
+  runNativeToonValidate,
+} from './eco/native-bridge.js';
+import {
   getReviewableFiles,
   bundleReviewFiles,
   resolveRulesForFile,
@@ -123,7 +133,12 @@ import {
 import { runReflexCommand } from './cli/commands/reflex.js';
 import { runUiPolishCommand } from './cli/commands/ui-polish.js';
 import { runTestValueCommand } from './cli/commands/test-value.js';
+import { runMythosCommand } from './cli/commands/mythos.js';
 import { loadReflexConfig, resolveRoute } from './core/reflex/index.js';
+import {
+  executeDelegationWavePlanWithGrpc,
+  orchestrateSubagentsWithJev,
+} from './core/orchestrator/index.js';
 
 
 const EVIDENCE_KINDS: EvidenceKind[] = [
@@ -261,7 +276,7 @@ function runArchEvalCommand(args: string[]): number {
     logError('arch-eval requires project specification text');
     return 1;
   }
-  const result = evaluateArchitecture(spec);
+  const result = runNativeArchEval(getRepoRootDir(), spec, process.cwd());
   return printJsonOrSummary(result, args, 'arch-eval', () => {
     logHeader(`Architecture Evaluation: ${result.verdict.toUpperCase()}`);
     console.log(`Allow Monolith:      ${result.allowMonolith ? 'YES' : 'NO (LOCKED OUT)'}`);
@@ -525,7 +540,7 @@ function runToonCommand(args: string[]): number {
       }
       try {
         const parsed = JSON.parse(content);
-        const encoded = encodeToon(parsed);
+        const encoded = runNativeToonEncode(getRepoRootDir(), parsed);
         console.log(encoded);
         return 0;
       } catch (err: any) {
@@ -615,7 +630,7 @@ function runToonCommand(args: string[]): number {
           return 1;
         }
       }
-      const result = validateToon(content);
+      const result = runNativeToonValidate(getRepoRootDir(), content);
       if (result.valid) {
         logSuccess('Valid TOON format (structure and [N] lengths verified)');
         return 0;
@@ -655,11 +670,13 @@ function runSparkCommand(args: string[]): number {
       .filter((l) => l.startsWith('- [ ]'));
   }
 
-  const result = evaluateFableSpark({
-    state,
-    userIntent,
-    openCards,
-  });
+  const result =
+    runNativeSpark(getRepoRootDir(), userIntent, process.cwd()) ||
+    evaluateFableSpark({
+      state,
+      userIntent,
+      openCards,
+    });
 
   recordTelemetry({
     eventType: 'spark_evaluated',
@@ -771,13 +788,121 @@ function runShellCommand(args: string[]): number {
   return 1;
 }
 
+function extractJevEnvCliOptions(args: string[]): {
+  positionalArgs: string[];
+  jevOptions: JevEnvSetupOptions;
+  skipJev: boolean;
+} {
+  const positionalArgs: string[] = [];
+  const jevOptions: JevEnvSetupOptions = {};
+  let skipJev = false;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--typesafe-api-key' || arg === '--jev-api-key' || arg === '--api-key') {
+      if (i + 1 < args.length) {
+        jevOptions.apiKey = args[++i];
+      }
+      continue;
+    }
+    if (
+      arg.startsWith('--typesafe-api-key=') ||
+      arg.startsWith('--jev-api-key=') ||
+      arg.startsWith('--api-key=')
+    ) {
+      jevOptions.apiKey = arg.slice(arg.indexOf('=') + 1);
+      continue;
+    }
+    if (arg === '--reflex-mode' || arg === '--mode') {
+      if (i + 1 < args.length) {
+        jevOptions.reflexMode = args[++i] as JevEnvSetupOptions['reflexMode'];
+      }
+      continue;
+    }
+    if (arg.startsWith('--reflex-mode=') || arg.startsWith('--mode=')) {
+      jevOptions.reflexMode = arg.slice(arg.indexOf('=') + 1) as JevEnvSetupOptions['reflexMode'];
+      continue;
+    }
+    if (arg === '--reflex-model' || arg === '--model') {
+      if (i + 1 < args.length) {
+        jevOptions.reflexModel = args[++i];
+      }
+      continue;
+    }
+    if (arg.startsWith('--reflex-model=') || arg.startsWith('--model=')) {
+      jevOptions.reflexModel = arg.slice(arg.indexOf('=') + 1);
+      continue;
+    }
+    if (arg === '--target-dir' || arg === '--env-dir') {
+      if (i + 1 < args.length) {
+        jevOptions.targetDir = args[++i];
+      }
+      continue;
+    }
+    if (arg.startsWith('--target-dir=') || arg.startsWith('--env-dir=')) {
+      jevOptions.targetDir = arg.slice(arg.indexOf('=') + 1);
+      continue;
+    }
+    if (arg === '--prompt-jev' || arg === '--force-jev') {
+      jevOptions.forcePrompt = true;
+      continue;
+    }
+    if (arg === '--no-jev-prompt' || arg === '--skip-jev' || arg === '--non-interactive') {
+      skipJev = true;
+      jevOptions.interactive = false;
+      continue;
+    }
+    if (arg === '--json' || arg === '--json-v1') {
+      jevOptions.silent = true;
+      continue;
+    }
+    positionalArgs.push(arg);
+  }
+
+  return { positionalArgs, jevOptions, skipJev };
+}
+
+function maybeRunJevEnvPostInstall(jevOptions: JevEnvSetupOptions, skipJev: boolean): void {
+  if (skipJev && jevOptions.apiKey === undefined) return;
+  if (jevOptions.apiKey !== undefined || jevOptions.forcePrompt || isInteractivePromptEnvironment()) {
+    try {
+      setupTypesafeJevEnvSync({
+        targetDir: jevOptions.targetDir || process.env.FABLE_INSTALL_TARGET_DIR || process.cwd(),
+        ...jevOptions,
+      });
+    } catch (err) {
+      logWarn(`Could not complete TypeSafe Jev .env setup: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+}
+
 function runInstallCommand(args: string[]): number {
-  const target = (args[0] || 'all').toLowerCase();
+  const { positionalArgs, jevOptions, skipJev } = extractJevEnvCliOptions(args);
+  const target = (positionalArgs[0] || 'all').toLowerCase();
 
   switch (target) {
     case 'all':
-      installGlobalFable();
+      installGlobalFable(skipJev && jevOptions.apiKey === undefined ? { interactive: false } : jevOptions);
       return 0;
+    case 'jev':
+    case 'typesafe-jev':
+    case 'typesafe':
+    case 'jev-env': {
+      const isJson = hasJsonFlag(args);
+      if (!isJson) {
+        logHeader('Configuring TypeSafe Jev API (.env)');
+      }
+      const res = setupTypesafeJevEnvSync({
+        targetDir: jevOptions.targetDir || process.env.FABLE_INSTALL_TARGET_DIR || process.cwd(),
+        forcePrompt: jevOptions.apiKey === undefined && !skipJev,
+        ...jevOptions,
+        silent: isJson,
+      });
+      if (isJson) {
+        printMachineJson(args, 'install:jev', res, true);
+      }
+      return res.status === 'invalid' ? 1 : 0;
+    }
     case 'no-mistakes':
     case 'quality-gate':
       logHeader('Installing and configuring no-mistakes quality gate');
@@ -785,12 +910,14 @@ function runInstallCommand(args: string[]): number {
       return 0;
     case 'claude':
       installClaudeGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'antigravity':
     case '--antigravity':
     case '-a':
     case 'gemini':
       installAntigravityGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'grok':
     case 'grok-bot':
@@ -798,109 +925,140 @@ function runInstallCommand(args: string[]): number {
     case 'xai':
     case '--grok':
       installGrokGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'codex':
     case '--codex':
       installCodexGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'cursor':
     case '--cursor':
       installCursorGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'copilot':
     case 'github-copilot':
       installCopilotGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'devin':
       installDevinGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'windsurf':
       installWindsurfGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'replit':
       installReplitGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'amazonq':
     case 'amazon-q':
     case 'q':
       installAmazonQGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'trae':
       installTraeGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'warp':
       installWarpGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'kimi':
       installKimiGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'atlarix':
       installAtlarixGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'vellum':
       installVellumGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'codegen':
       installCodegenGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'muse':
       installMuseGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'junie':
     case 'jetbrains':
       installJunieGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'qodo':
     case 'codium':
       installQodoGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'roocode':
     case 'roo':
       installRooCodeGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'aider':
       installAiderGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'cline':
       installClineGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'openhands':
     case 'opendevin':
       installOpenHandsGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'opencode':
       installOpenCodeGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'continue':
       installContinueGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'kilo':
     case 'kilo-code':
       installKiloGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'plandex':
       installPlandexGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'autogpt':
     case 'auto-gpt':
       installAutoGPTGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'hermes':
     case 'hermes-agent':
       installHermesGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'deepseek':
       installDeepSeekGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'dsh':
     case 'deepseek-harness':
       installDshGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'kiro':
       installKiroGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'pi':
       installPiCodeGlobal();
+      maybeRunJevEnvPostInstall(jevOptions, skipJev);
       return 0;
     case 'git':
     case 'git-hooks':
@@ -929,7 +1087,7 @@ function runInstallCommand(args: string[]): number {
     }
     default:
       logError(
-        `Unknown install target: ${target}. Valid targets: all, claude, antigravity, codex, cursor, copilot, devin, windsurf, replit, amazonq, trae, warp, grok, kimi, atlarix, vellum, codegen, muse, junie, qodo, roocode, aider, cline, openhands, opencode, continue, kilo, plandex, autogpt, hermes, deepseek, kiro, pi, git, shell`
+        `Unknown install target: ${target}. Valid targets: all, jev, claude, antigravity, codex, cursor, copilot, devin, windsurf, replit, amazonq, trae, warp, grok, kimi, atlarix, vellum, codegen, muse, junie, qodo, roocode, aider, cline, openhands, opencode, continue, kilo, plandex, autogpt, hermes, deepseek, kiro, pi, git, shell`
       );
       return 1;
   }
@@ -1082,6 +1240,24 @@ function runSkillsCommand(args: string[]): number {
   const json = hasJsonFlag(args);
 
   switch (sub) {
+    case 'add':
+    case 'sync': {
+      const repoArg = args[1] && !args[1].startsWith('--') ? args[1] : undefined;
+      const isGlobal = hasFlag(args, '--global') || hasFlag(args, '-g');
+      const force = hasFlag(args, '--force');
+      const result = runNpxSkillsAdd({
+        ownerRepo: repoArg,
+        global: isGlobal,
+        force,
+        silent: json,
+      });
+
+      if (json) {
+        printMachineJson(args, `skills:${sub}`, result, true);
+        return result.status === 'failed' ? 1 : 0;
+      }
+      return result.status === 'failed' ? 1 : 0;
+    }
     case 'install': {
       const packOrSkill = args[1] || 'all';
       const isGlobal = !hasFlag(args, '--project');
@@ -1423,6 +1599,110 @@ async function runGrokCommand(args: string[]): Promise<number> {
   return 0;
 }
 
+async function runJevOrchestrateCommand(args: string[]): Promise<number> {
+  const json = hasJsonFlag(args);
+  const toon = hasFlag(args, '--toon');
+  const execute = hasFlag(args, '--execute');
+  const inlineWorkerAddr = args
+    .find((a) => a.startsWith('--worker-addr='))
+    ?.slice('--worker-addr='.length);
+  const workerAddress = inlineWorkerAddr || optionValue(args, '--worker-addr');
+  const preferNative = !hasFlag(args, '--ts-only');
+
+  const rawCleaned = stripJsonFlags(args);
+  const cleanedArgs: string[] = [];
+  for (let i = 0; i < rawCleaned.length; i++) {
+    const arg = rawCleaned[i]!;
+    if (
+      arg === '--toon' ||
+      arg === '--ts-only' ||
+      arg === '--offline' ||
+      arg === '--execute' ||
+      arg.startsWith('--max-agents=') ||
+      arg.startsWith('--worker-addr=')
+    ) {
+      continue;
+    }
+    if (arg === '--worker-addr' || arg === '--max-agents') {
+      i++;
+      continue;
+    }
+    cleanedArgs.push(arg);
+  }
+
+  const task = cleanedArgs.join(' ').trim();
+  if (!task) {
+    logError(
+      'Usage: get-fable jev-orchestrate "<task>" [--execute] [--worker-addr <host:port>] [--json] [--toon] [--offline]'
+    );
+    return 1;
+  }
+  if (execute && !workerAddress) {
+    logError(
+      'Live execution requires --worker-addr <host:port> connected to an actual task executor. The default local worker has no execution handler.'
+    );
+    return 1;
+  }
+
+  const plan = await orchestrateSubagentsWithJev(task, {
+    repoRoot: getRepoRootDir(),
+    cwd: process.cwd(),
+    preferNative,
+  });
+
+  const execution = execute
+    ? await executeDelegationWavePlanWithGrpc(plan, { workerAddress })
+    : undefined;
+
+  if (json) {
+    printMachineJson(args, 'jev-orchestrate', execution ? { plan, execution } : plan);
+    return execution && !execution.allSucceeded ? 1 : 0;
+  }
+  if (toon) {
+    console.log(execution ? execution.toonReport : plan.toonSummary);
+    return execution && !execution.allSucceeded ? 1 : 0;
+  }
+
+  logHeader(`Jev Subagent Task-Distribution & Skill-Arming Engine`);
+  console.log(`Task:           ${plan.task}`);
+  console.log(`Total Subtasks: ${plan.totalSubtasks}`);
+  console.log(`Total Waves:    ${plan.totalWaves}`);
+  console.log(`Accuracy Score: ${(plan.overallAccuracyScore * 100).toFixed(2)}%`);
+  for (const wave of plan.waves) {
+    console.log(
+      `\nWave ${wave.waveIndex} (${wave.parallel ? 'PARALLEL' : 'SEQUENTIAL'} | 3-Law Proof: write=${wave.independenceProof.writeIndependent}, semantic=${wave.independenceProof.semanticIndependent}, verify=${wave.independenceProof.verificationIndependent}):`
+    );
+    for (const bundle of wave.bundles) {
+      const overlays = bundle.coArmedSkills.map((s) => s.skillId).join(', ') || 'none';
+      console.log(`  - [${bundle.subtask.id}] ${bundle.subtask.title}`);
+      console.log(`    Subagent:      ${bundle.subagentId} (${bundle.subagentRole})`);
+      console.log(
+        `    Primary Skill: ${bundle.primarySkill.skillId} (${(bundle.primarySkill.totalScore * 100).toFixed(1)}%)`
+      );
+      console.log(`    Co-Armed:      ${overlays}`);
+      console.log(`    Armed Engines: ${bundle.armedEngines.join(', ') || 'none'}`);
+    }
+  }
+
+  if (execution) {
+    logHeader(`Live gRPC Wave Execution Report (${execution.workerAddress})`);
+    console.log(
+      `Ephemeral Server: ${execution.ephemeralServerSpawned ? 'YES (in-process)' : 'NO (external)'}`
+    );
+    console.log(`Waves Executed:   ${execution.totalWavesExecuted}`);
+    console.log(`Subtasks Run:     ${execution.totalSubtasksExecuted}`);
+    console.log(`All Succeeded:    ${execution.allSucceeded ? 'YES' : 'NO'}`);
+    for (const receipt of execution.receipts) {
+      console.log(
+        `  - [Wave ${receipt.waveIndex}] [${receipt.subtaskId}] ${receipt.subagentId} -> ${receipt.primarySkillId} (${receipt.status.toUpperCase()}, ${receipt.eventsCount} events, ${receipt.durationMs}ms)`
+      );
+    }
+    return execution.allSucceeded ? 0 : 1;
+  }
+
+  return 0;
+}
+
 export function runCli(args: string[] = process.argv.slice(2)): number | Promise<number> {
   const command = args[0] || 'help';
 
@@ -1502,10 +1782,20 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
         return 0;
       })();
 
-    case 'init':
+    case 'install-jev':
+    case 'setup-jev':
+    case 'jev-setup':
+      return runInstallCommand(['jev', ...args.slice(1)]);
+
+    case 'init': {
       logHeader('Initializing project workflow files (.fable/ & .agents/)');
-      initProjectFable(process.cwd());
+      const { jevOptions, skipJev } = extractJevEnvCliOptions(args.slice(1));
+      initProjectFable(
+        process.cwd(),
+        skipJev && jevOptions.apiKey === undefined ? { interactive: false } : jevOptions
+      );
       return 0;
+    }
 
     case 'route':
       return runRoute(args.slice(1));
@@ -1572,6 +1862,14 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
 
     case 'spearhead':
       return runTestValueCommand(args.slice(1), true);
+
+    case 'mythos':
+    case 'open-mythos':
+      return runMythosCommand(args.slice(1));
+
+    case 'jev-orchestrate':
+    case 'orchestrate':
+      return runJevOrchestrateCommand(args.slice(1));
 
     case 'guide':
     case 'help':
@@ -1725,6 +2023,7 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}ui-polish [url]${colors.reset}       Autonomous E2E & pixel-by-pixel UI/UX polish round; add --json
   ${colors.yellow}test-value [action]${colors.reset}   Test-Value Spearhead Engine: spearhead, audit, select, evaluate, diagnose, rea-ledger
   ${colors.yellow}spearhead [options]${colors.reset}   Run the unified Test-Value Spearhead verification gate; add --json-v1
+  ${colors.yellow}mythos [action]${colors.reset}       OpenMythos Recurrent-Depth Engine: study, loop, moe, mla, moda, provenance
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
   ${colors.yellow}grok [task|--status]${colors.reset} Invoke Grok Bot adapter for task routing, status, and skill eval

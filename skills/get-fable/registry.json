@@ -98,7 +98,10 @@
         "fable-plan",
         "fable-tdd",
         "fable-execute",
-        "fable-verify"
+        "fable-verify",
+        "fable-context-thrift",
+        "fable-memory",
+        "fable-domain"
       ],
       "keywords": [
         "inspect",
@@ -138,7 +141,10 @@
         "fable-plan",
         "fable-tdd",
         "fable-execute",
-        "fable-verify"
+        "fable-verify",
+        "fable-domain",
+        "fable-memory",
+        "fable-skill-creator"
       ],
       "keywords": [
         "official docs",
@@ -180,7 +186,17 @@
         "fable-delegate",
         "fable-execute",
         "fable-discover",
-        "fable-architecture"
+        "fable-architecture",
+        "fable-council",
+        "fable-wise",
+        "fable-eco",
+        "fable-config",
+        "fable-artifact",
+        "fable-dataviz",
+        "fable-method",
+        "fable-scope-discipline",
+        "fable-cowork",
+        "fable-skill-creator"
       ],
       "keywords": [
         "plan",
@@ -220,7 +236,10 @@
       "next": [
         "fable-execute",
         "fable-verify",
-        "fable-recover"
+        "fable-recover",
+        "fable-native-code",
+        "fable-scope-discipline",
+        "fable-simplify"
       ],
       "keywords": [
         "tdd",
@@ -260,7 +279,9 @@
       "next": [
         "fable-execute",
         "fable-verify",
-        "fable-recover"
+        "fable-recover",
+        "fable-cowork",
+        "fable-handoff"
       ],
       "keywords": [
         "delegate",
@@ -298,7 +319,13 @@
       "parallelSafe": false,
       "next": [
         "fable-verify",
-        "fable-recover"
+        "fable-recover",
+        "fable-native-code",
+        "fable-scope-discipline",
+        "fable-finish-your-turn",
+        "fable-simplify",
+        "fable-run",
+        "fable-prove-it"
       ],
       "keywords": [
         "execute",
@@ -341,7 +368,13 @@
         "fable-security",
         "fable-release",
         "fable-recover",
-        "fable-execute"
+        "fable-execute",
+        "fable-prove-it",
+        "fable-judge",
+        "fable-simulator",
+        "fable-outcome-first",
+        "fable-learning",
+        "fable-spark"
       ],
       "keywords": [
         "verify",
@@ -382,7 +415,10 @@
         "fable-security",
         "fable-release",
         "fable-execute",
-        "fable-recover"
+        "fable-recover",
+        "fable-judge",
+        "fable-outcome-first",
+        "fable-simplify"
       ],
       "keywords": [
         "review",
@@ -716,7 +752,10 @@
         "fable-plan",
         "fable-tdd",
         "fable-execute",
-        "fable-verify"
+        "fable-verify",
+        "fable-tend",
+        "fable-method",
+        "fable-loop"
       ],
       "keywords": [
         "failed twice",
@@ -870,7 +909,8 @@
       "parallelSafe": true,
       "next": [
         "fable-verify",
-        "fable-handoff"
+        "fable-handoff",
+        "fable-tend"
       ],
       "keywords": [
         "loop",

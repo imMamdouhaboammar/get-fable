@@ -30,6 +30,9 @@
       "platform": "web"
     }
   },
+  "skills": [
+    "imMamdouhaboammar/get-fable"
+  ],
   "files": [
     "dsh.plugin.json",
     "cordis.patch.yml",
@@ -76,6 +79,8 @@
     "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
+    "postinstall": "node ./bin/postinstall.js",
+    "skills:add": "node ./bin/postinstall.js --force",
     "start": "bun ./bin/get-fable.js",
     "test": "bun test --timeout 30000",
     "test:coverage": "bun test --timeout 30000 --coverage",

@@ -1,0 +1,212 @@
+# 📦 Project Dependencies
+
+This file catalogues all third-party dependencies found across the project’s package manifests.
+
+> License data fetched from public registries (npm, PyPI, crates.io, etc.). 17/36 packages resolved.
+
+---
+
+## cargo — `crates/fable-cli/Cargo.toml`
+
+**10 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `chrono` | `0.4` | unknown |
+| `clap` | `4.5` | unknown |
+| `fable-core` | `any` | unknown |
+| `fable-eco` | `any` | unknown |
+| `fable-jev` | `any` | unknown |
+| `fable-toon` | `any` | unknown |
+| `regex` | `1.10` | unknown |
+| `serde` | `1.0` | unknown |
+| `serde_json` | `1.0` | unknown |
+| `thiserror` | `2.0` | unknown |
+
+---
+
+## cargo — `crates/fable-core/Cargo.toml`
+
+**8 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `chrono` | `0.4` | unknown |
+| `fs2` | `0.4` | unknown |
+| `regex` | `1.10` | unknown |
+| `serde` | `1.0` | unknown |
+| `serde_json` | `1.0` | unknown |
+| `serde_yaml` | `0.9` | unknown |
+| `sha2` | `0.10` | unknown |
+| `thiserror` | `2.0` | unknown |
+
+---
+
+## cargo — `crates/fable-eco/Cargo.toml`
+
+**12 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `chrono` | `0.4` | unknown |
+| `fable-core` | `any` | unknown |
+| `fs2` | `0.4` | unknown |
+| `regex` | `1.10` | unknown |
+| `semver` | `1.0` | unknown |
+| `serde` | `1.0` | unknown |
+| `serde_json` | `1.0` | unknown |
+| `serde_yaml` | `0.9` | unknown |
+| `sha2` | `0.10` | unknown |
+| `tempfile` | `3.10` | unknown |
+| `thiserror` | `2.0` | unknown |
+| `toml` | `0.8` | unknown |
+
+---
+
+## cargo — `crates/fable-jev/Cargo.toml`
+
+**8 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `chrono` | `0.4` | unknown |
+| `fable-core` | `any` | unknown |
+| `fable-toon` | `any` | unknown |
+| `regex` | `1.10` | unknown |
+| `serde` | `1.0` | unknown |
+| `serde_json` | `1.0` | unknown |
+| `sha2` | `0.10` | unknown |
+| `thiserror` | `2.0` | unknown |
+
+---
+
+## cargo — `crates/fable-toon/Cargo.toml`
+
+**5 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `fable-core` | `any` | unknown |
+| `regex` | `1.10` | unknown |
+| `serde` | `1.0` | unknown |
+| `serde_json` | `1.0` | unknown |
+| `thiserror` | `2.0` | unknown |
+
+---
+
+## pip — `docs/get-fable-jev-integration-spec-v1/awesome-jev-by-typesafe/examples/python/requirements.txt`
+
+**1 package**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `typesafe-sdk` | `any` | unknown |
+
+---
+
+## npm — `docs/get-fable-jev-integration-spec-v1/fast-jev-compaction/package.json`
+
+**4 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@types/node` | `^22.10.2` | MIT |
+| `tsx` | `^4.19.2` | MIT |
+| `typescript` | `^5.7.2` | Apache-2.0 |
+| `vitest` | `^5.0.1` | MIT |
+
+---
+
+## npm — `docs/get-fable-jev-integration-spec-v1/jev-review/package.json`
+
+**3 packages**
+
+*Dev:*
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@types/node` | `^24.0.0` | MIT |
+| `typescript` | `^5.9.0` | Apache-2.0 |
+
+*Production:*
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@typesafe-ai/sdk` | `^0.6.0` | MIT |
+
+---
+
+## npm — `docs/get-fable-jev-integration-spec-v1/jev-router/package.json`
+
+**1 package**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@typesafe-ai/sdk` | `^0.6.0` | MIT |
+
+---
+
+## npm — `package.json`
+
+**10 packages**
+
+*Dev:*
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@e2e-dev/web` | `^0.13.0` | Apache-2.0 |
+| `@types/node` | `^26.5.1` | MIT |
+| `@types/react` | `^19.2.0` | MIT |
+| `cypress` | `15.21.0` | MIT |
+| `e2e` | `^0.18.0` | Apache-2.0 |
+| `react` | `^19.2.0` | MIT |
+| `typescript` | `^5.7.0` | Apache-2.0 |
+
+*Production:*
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@grpc/grpc-js` | `^1.14.4` | Apache-2.0 |
+| `@grpc/proto-loader` | `^0.8.1` | Apache-2.0 |
+| `@toon-format/toon` | `^4.1.1` | MIT |
+
+---
+
+## pyproject — `skills/fable-tend/generator/pyproject.toml`
+
+**3 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `click` | `>=8.0` | unknown |
+| `jinja2` | `>=3.1.6` | unknown |
+| `ruamel.yaml` | `>=0.18` | MIT |
+
+---
+
+## npm — `skills/fable-tend/site/package.json`
+
+**1 package**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `astro` | `^7.2.9` | MIT |
+
+---
+
+## npm — `skills/fable-tend/worker/package.json`
+
+**4 packages**
+
+| Package | Version | License |
+|---------|---------|---------|
+| `@cloudflare/workers-types` | `^5.20260902.1` | MIT OR Apache-2.0 |
+| `typescript` | `^7.0.0` | Apache-2.0 |
+| `vitest` | `^5.0.0` | MIT |
+| `wrangler` | `^4.128.0` | MIT OR Apache-2.0 |
+
+---
+
+**📊 Summary:** 70 total dependencies across 13 manifest files (cargo, npm, pip, pyproject)
+
+*Automatically generated by [Woden DocBot](https://github.com/marketplace/ai-document-creator). Last updated: 2026-10-10*

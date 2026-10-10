@@ -28,6 +28,177 @@ export interface SparkResult {
   silent: boolean;
 }
 
+export const SPARK_SPECIALIST_NEXT_MOVES: Record<string, { command: string; rationale: string }> = {
+  'get-fable': {
+    command: 'route the active task',
+    rationale: 'Select the canonical specialist skill before mutating the workspace.',
+  },
+  'fable-discover': {
+    command: 'trace the repository execution path',
+    rationale: 'Resolve load-bearing codebase unknowns before planning or editing.',
+  },
+  'fable-research': {
+    command: 'check the current official docs',
+    rationale: 'Ground external API facts in primary documentation before coding.',
+  },
+  'fable-plan': {
+    command: 'decompose work into bounded cards',
+    rationale: 'Define explicit acceptance criteria and bounded file scope before execution.',
+  },
+  'fable-tdd': {
+    command: 'write the failing test',
+    rationale: 'Observe a red regression test before implementing the behavior change.',
+  },
+  'fable-delegate': {
+    command: 'delegate the independent cards',
+    rationale: 'Dispatch disjoint work items across parallel subagents with TOON contracts.',
+  },
+  'fable-execute': {
+    command: 'implement the active work card',
+    rationale: 'Apply the bounded code change while preserving repository invariants.',
+  },
+  'fable-verify': {
+    command: 'run the verification test suite',
+    rationale: 'Record fresh machine-checked completion proof for the current generation.',
+  },
+  'fable-review': {
+    command: 'review the diff',
+    rationale: 'Audit changed files against engineering standards and specification compliance.',
+  },
+  'fable-security': {
+    command: 'audit the trust boundary inputs',
+    rationale: 'Verify authentication, authorization, and secret hygiene across boundaries.',
+  },
+  'fable-redteam': {
+    command: 'run the scoped redteam probes',
+    rationale: 'Execute non-destructive adversarial security probes against authorized targets.',
+  },
+  'fable-heal': {
+    command: 'apply the security remediation patch',
+    rationale: 'Synthesize and verify patches neutralizing reported redteam findings.',
+  },
+  'fable-release': {
+    command: 'check release readiness',
+    rationale: 'Certify quality gates, build artifacts, and clean working tree before shipping.',
+  },
+  'fable-handoff': {
+    command: 'prepare the handoff',
+    rationale: 'Compact current state, generation stamps, and next action for continuation.',
+  },
+  'fable-eval': {
+    command: 'run the evaluation benchmark suite',
+    rationale: 'Score routing and behavioral accuracy against frozen holdout baselines.',
+  },
+  'fable-learning': {
+    command: 'extract durable session learnings',
+    rationale: 'Codify engineering failure lessons and reusable rules into Failure-lessons.',
+  },
+  'fable-recover': {
+    command: 'diagnose the repeated failure',
+    rationale: 'Walk the 4-level recovery hierarchy before attempting another code edit.',
+  },
+  'fable-dataviz': {
+    command: 'render the accessible svg chart',
+    rationale: 'Verify viewBox dimensions and theme contrast for data visualization tiles.',
+  },
+  'fable-artifact': {
+    command: 'author the structured technical artifact',
+    rationale: 'Generate the architecture diagram or interactive proposal component.',
+  },
+  'fable-simplify': {
+    command: 'simplify the settled code paths',
+    rationale: 'Flatten nested branches and remove duplication without altering behavior.',
+  },
+  'fable-loop': {
+    command: 'run the bounded polling loop',
+    rationale: 'Monitor status with explicit iteration budget, backoff, and exit conditions.',
+  },
+  'fable-run': {
+    command: 'launch the live runtime check',
+    rationale: 'Start the built artifact, probe readiness, and tear down cleanly.',
+  },
+  'fable-memory': {
+    command: 'index the persistent memory fact',
+    rationale: 'Record the cross-session constraint and synchronize MEMORY.md.',
+  },
+  'fable-config': {
+    command: 'validate the harness settings diff',
+    rationale: 'Verify JSON schema and least-privilege permissions before applying config.',
+  },
+  'fable-simulator': {
+    command: 'verify against the independent oracle',
+    rationale: 'Compare runtime outputs against derived mathematical or browser oracles.',
+  },
+  'fable-cowork': {
+    command: 'execute the autonomous cowork chain',
+    rationale: 'Complete the multi-step workflow silently and report the outcome first.',
+  },
+  'fable-spark': {
+    command: 'predict the smallest next action',
+    rationale: 'Evaluate mutation delta and missing gates to surface one atomic move.',
+  },
+  'fable-skill-creator': {
+    command: 'package and benchmark the skill',
+    rationale: 'Validate SKILL.md frontmatter and BinEval trigger discrimination.',
+  },
+  'fable-architecture': {
+    command: 'evaluate the architecture scale vectors',
+    rationale: 'Score Scale, Domain, and Resource vectors to enforce microservices boundaries.',
+  },
+  'fable-eco': {
+    command: 'compile the capability execution contract',
+    rationale: 'Resolve curated capability locks and verify host integration health.',
+  },
+  'fable-context-thrift': {
+    command: 'batch and target file lookups',
+    rationale: 'Eliminate redundant file reads to conserve context token budget.',
+  },
+  'fable-finish-your-turn': {
+    command: 'complete the remaining turn deliverables',
+    rationale: 'Execute all promised actions and resolve errors before yielding.',
+  },
+  'fable-native-code': {
+    command: 'align diff with codebase idioms',
+    rationale: 'Match local naming and strip defensive bloat from the implementation.',
+  },
+  'fable-outcome-first': {
+    command: 'lead with the direct outcome',
+    rationale: 'State the verified result in the first sentence without sycophancy.',
+  },
+  'fable-prove-it': {
+    command: 'verify the claim with evidence',
+    rationale: 'Advance verification to the machine-checked rung before claiming done.',
+  },
+  'fable-scope-discipline': {
+    command: 'bound diff to requested scope',
+    rationale: 'Remove drive-by edits and keep changes surgical to the active card.',
+  },
+  'fable-domain': {
+    command: 'generate the sector domain adapter',
+    rationale: 'Translate Fable workflow primitives into grounded domain nouns and fixtures.',
+  },
+  'fable-judge': {
+    command: 'audit deliverable for weakened tests',
+    rationale: 'Falsify completion claims and verify assertions were not diluted.',
+  },
+  'fable-method': {
+    command: 'execute the think act prove loop',
+    rationale: 'Classify the ask, define done criteria, act surgically, and observe proof.',
+  },
+  'fable-council': {
+    command: 'convene the multi agent council',
+    rationale: 'Gather independent peer critiques before locking the implementation plan.',
+  },
+  'fable-tend': {
+    command: 'triage and repair ci failures',
+    rationale: 'Inspect failing checks or merge conflicts and apply a minimal repair.',
+  },
+  'fable-wise': {
+    command: 'apply wise cognitive reflex patterns',
+    rationale: 'Use Depth, Breadth, Coil, and Mesh reflexes to strip structural slop.',
+  },
+};
+
 function cleanSuggestion(text: string | null): string | null {
   if (!text) return null;
   const trimmed = text.trim();
@@ -160,6 +331,13 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
         silent: !suggestion,
       };
     }
+    return {
+      suggestion: null,
+      reasonCode: 'silent-no-obvious-move',
+      confidence: 0.0,
+      source: 'none',
+      silent: true,
+    };
   }
 
   if (state.currentSkill === 'fable-review') {
@@ -185,6 +363,13 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
         silent: !suggestion,
       };
     }
+    return {
+      suggestion: null,
+      reasonCode: 'silent-no-obvious-move',
+      confidence: 0.0,
+      source: 'none',
+      silent: true,
+    };
   }
 
   if (state.currentSkill === 'fable-research') {
@@ -199,7 +384,7 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
   }
 
   if (state.currentSkill === 'fable-delegate') {
-    if (openCards && openCards.length > 1) {
+    if (!openCards || openCards.length > 1) {
       const suggestion = cleanSuggestion('delegate the independent cards');
       return {
         suggestion,
@@ -209,6 +394,13 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
         silent: !suggestion,
       };
     }
+    return {
+      suggestion: null,
+      reasonCode: 'silent-no-obvious-move',
+      confidence: 0.0,
+      source: 'none',
+      silent: true,
+    };
   }
 
   if (state.currentSkill === 'fable-release') {
@@ -228,6 +420,26 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
       suggestion,
       reasonCode: 'continuity-handoff-ready',
       confidence: 0.91,
+      source: 'missing-gate',
+      silent: !suggestion,
+    };
+  }
+
+  // 3b. Specialist-tailored next moves for all 42 canonical skills during active lifecycle phases
+  if (
+    state.currentSkill &&
+    SPARK_SPECIALIST_NEXT_MOVES[state.currentSkill] &&
+    (state.phase === 'discovering' ||
+      state.phase === 'planned' ||
+      state.phase === 'executing' ||
+      state.phase === 'verifying')
+  ) {
+    const move = SPARK_SPECIALIST_NEXT_MOVES[state.currentSkill]!;
+    const suggestion = cleanSuggestion(move.command);
+    return {
+      suggestion,
+      reasonCode: `${state.currentSkill}-next-move`,
+      confidence: 0.88,
       source: 'missing-gate',
       silent: !suggestion,
     };
@@ -287,3 +499,4 @@ export function evaluateFableSpark(context: SparkSignalContext): SparkResult {
     silent: true,
   };
 }
+

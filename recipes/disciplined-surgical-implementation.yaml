@@ -1,0 +1,29 @@
+name: disciplined-surgical-implementation
+version: 1.11.1
+description: Token-thrifty, memory-grounded, surgical code implementation with native idiom matching, autonomous completion, and outcome-first reporting.
+targetShape: feature
+steps:
+  - skill: fable-context-thrift
+    gate: minimal-read-verified
+    description: Conserve token budget by batching queries and targeting exact symbol reads
+  - skill: fable-memory
+    gate: index-synced
+    description: Recall and index persistent user preferences and architectural constraints
+  - skill: fable-method
+    gate: invariants-preserved
+    description: Classify the ask, define done criteria, and execute the think-act-prove loop
+  - skill: fable-scope-discipline
+    gate: zero-scope-drift
+    description: Bound changes strictly to the authorized request with zero drive-by refactors
+  - skill: fable-native-code
+    gate: idiom-matched
+    description: Match repository idioms and strip defensive bloat so diffs read like native code
+  - skill: fable-simplify
+    gate: behavior-preserved
+    description: Flatten nested control flow and remove dead branches while preserving behavior
+  - skill: fable-finish-your-turn
+    gate: errors-resolved
+    description: Drive all open subtasks and transient errors to resolution before yielding
+  - skill: fable-outcome-first
+    gate: first-sentence-outcome
+    description: Report verified outcomes directly in the opening sentence with zero sycophancy

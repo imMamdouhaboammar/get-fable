@@ -1,0 +1,17 @@
+[package]
+name = "fable-jev"
+version = "1.11.1"
+edition = "2021"
+authors = ["Mamdouh Abo Ammar"]
+description = "Jev-powered subagent task decomposition, 3-law independence verification, and dynamic skill-arming engine for get-fable"
+license = "MIT"
+
+[dependencies]
+fable-core = { path = "../fable-core" }
+fable-toon = { path = "../fable-toon" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+regex = "1.10"
+thiserror = "2.0"
+chrono = { version = "0.4", features = ["serde"] }

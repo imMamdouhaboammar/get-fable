@@ -6,6 +6,16 @@
         "name": "fable-profile-inject",
         "description": "Inject active state, ledger, and prompt directives on session startup",
         "command": "python3 hooks/fable_profile_inject.py"
+      },
+      {
+        "name": "fable-architecture-guard",
+        "description": "Evaluate inception architecture vectors and enforce microservices decoupling when thresholds cross",
+        "command": "python3 hooks/fable_architecture_guard.py"
+      },
+      {
+        "name": "fable-event-observer",
+        "description": "Append privacy-minimal SessionStart event metadata to .fable/events.jsonl",
+        "command": "python3 hooks/fable_event_observer.py"
       }
     ],
     "PreToolUse": [
@@ -14,11 +24,16 @@
         "name": "fable-spawn-guard",
         "description": "Enforce non-destructive write rules and subagent contract boundaries",
         "command": "python3 hooks/fable_spawn_guard.py"
+      },
+      {
+        "name": "fable-event-observer",
+        "description": "Append privacy-minimal PreToolUse event metadata to .fable/events.jsonl",
+        "command": "python3 hooks/fable_event_observer.py"
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|apply_patch",
         "name": "fable-mutation",
         "description": "Record workspace mutations and invalidate outdated verification",
         "command": "python3 hooks/fable_mutation.py"
@@ -28,6 +43,11 @@
         "name": "fable-fail-streak",
         "description": "Track consecutive test command failures and trigger recovery loop",
         "command": "python3 hooks/fable_fail_streak.py"
+      },
+      {
+        "name": "fable-event-observer",
+        "description": "Append privacy-minimal PostToolUse event metadata to .fable/events.jsonl",
+        "command": "python3 hooks/fable_event_observer.py"
       }
     ],
     "PostToolUseFailure": [
@@ -38,10 +58,15 @@
         "command": "python3 hooks/fable_fail_streak.py"
       },
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|apply_patch",
         "name": "fable-mutation-failure",
         "description": "Conservatively invalidate verification after a failed write attempt",
         "command": "python3 hooks/fable_mutation.py"
+      },
+      {
+        "name": "fable-event-observer-failure",
+        "description": "Append privacy-minimal PostToolUseFailure event metadata to .fable/events.jsonl",
+        "command": "python3 hooks/fable_event_observer.py"
       }
     ],
     "Stop": [
@@ -49,6 +74,16 @@
         "name": "fable-close-guard",
         "description": "Block stop event if substantial changes lack fresh passing verification",
         "command": "python3 hooks/fable_close_guard.py"
+      },
+      {
+        "name": "fable-event-observer",
+        "description": "Append privacy-minimal Stop event metadata to .fable/events.jsonl",
+        "command": "python3 hooks/fable_event_observer.py"
+      },
+      {
+        "name": "fable-session-learn",
+        "description": "Extract verified post-session learnings and failure lessons into durable project memory",
+        "command": "python3 hooks/fable_session_learn.py"
       }
     ]
   }
