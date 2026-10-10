@@ -29871,9 +29871,9 @@ class ContextInjector {
   }
 }
 // src/core/doctor.ts
-import fs23 from "node:fs";
-import path23 from "node:path";
-import { spawnSync as spawnSync3 } from "node:child_process";
+import fs25 from "node:fs";
+import path25 from "node:path";
+import { spawnSync as spawnSync4 } from "node:child_process";
 
 // src/core/telemetry.ts
 import fs15 from "node:fs";
@@ -31448,12 +31448,1067 @@ function loadReflexConfig(overrides) {
   };
 }
 
+// src/core/test-value/types.ts
+var TEST_VALUE_REA_EVIDENCE_LEDGER = {
+  featureName: "Fable Test-Value Spearhead Engine",
+  sourceRepository: "https://github.com/tt-a1i/test-value",
+  treeSha: "e3fb8a7f0950b661fab0993a06306096797dca3f",
+  reconstructedAt: "2026-10-10T12:25:00.000Z",
+  coreQuestion: "Which concrete mistake does this test catch — and what maintenance cost is that protection worth?",
+  artifacts: {
+    "SKILL.md": {
+      path: "SKILL.md",
+      gitBlobSha: "67a37da56a4bec8b912410d04e43e99395dc33b5",
+      sha256: "a68cfc741104a6abb23d8b04354885c0c7360a7a3e65a09b194b7e121b2cc51e",
+      bytes: 9644,
+      lines: 91,
+      role: "Core 3-question correctness calculus, 8-row decision table, discrimination verification, and feedback cost control"
+    },
+    "references/audit.md": {
+      path: "references/audit.md",
+      gitBlobSha: "5907e075f507d4147d7679a18d32232ac6fffa30",
+      sha256: "982e568099c21e51d6f76ae8c2185acacac36f5bede87f05302249314b387757",
+      bytes: 4946,
+      lines: 53,
+      role: "Responsibility grouping, cut-boundary proof ledger, 4-tier risk selection, and shard coverage invariants"
+    },
+    "references/decision-examples.md": {
+      path: "references/decision-examples.md",
+      gitBlobSha: "fbcc5f39d43db7166ab40f7c0efc848b7067f65f",
+      sha256: "a3c4228dbb5a42887842da09ecc0bfd8015d8828fec514a4af8e5edc792639f1",
+      bytes: 6574,
+      lines: 74,
+      role: "Brittle test trap taxonomy: automatic-layout snapshots, shared rule matrices, source assertions, semantic identity, and unstable waits"
+    },
+    "README_EN.md": {
+      path: "README_EN.md",
+      gitBlobSha: "0aa636dc08215fe4bfff0eefe7b5492373b41897",
+      sha256: "6591c5bdf9273bdf81abbbb80e3f8427593698371f0776b085dc54ceb62f8544",
+      bytes: 6716,
+      lines: 116,
+      role: "Problem-to-decision value matrix, copyable workflow prompts, and 5 foundational principles"
+    },
+    "agents/openai.yaml": {
+      path: "agents/openai.yaml",
+      gitBlobSha: "7835abcc99cce79f1d8053daa829afa719066b9d",
+      sha256: "6eea9b5e5d25af57f8473312e15790c54623b5a1fe30aa1371144bcceeed5cb8",
+      bytes: 320,
+      lines: 10,
+      role: "Agent UI metadata and invocation prompt contract"
+    }
+  },
+  locations: [
+    { artifact: "SKILL.md", lineRange: "L10-L18", subsystem: "Scope & Authorization Classifier" },
+    { artifact: "SKILL.md", lineRange: "L20-L31", subsystem: "Three-Question Independent Correctness Evaluator" },
+    { artifact: "SKILL.md", lineRange: "L32-L52", subsystem: "8-Row Test Decision Matrix & High-Severity Protection Floor" },
+    { artifact: "SKILL.md", lineRange: "L49-L59", subsystem: "Differential Discrimination Verifier" },
+    { artifact: "SKILL.md", lineRange: "L60-L69", subsystem: "Feedback Cost Controller, Zero-Selection Guard & Timing Attribution" },
+    { artifact: "references/audit.md", lineRange: "L13-L24", subsystem: "Cut-Boundary Proof Validator" },
+    { artifact: "references/audit.md", lineRange: "L25-L45", subsystem: "Risk-Tiered Execution Selector & Shard Coverage Verifier" },
+    { artifact: "references/decision-examples.md", lineRange: "L5-L64", subsystem: "Brittle Test Trap Detector" }
+  ],
+  symbols: [
+    "evaluateThreeQuestions",
+    "decideTestAction",
+    "diagnoseTestFailure",
+    "verifyDiscrimination",
+    "validateCutBoundaryRecord",
+    "analyzeTestFileContent",
+    "auditTestSuite",
+    "selectTestsByRisk",
+    "verifyShardCoverage",
+    "parseTestRunnerOutput",
+    "canReuseVerificationEvidence",
+    "runSpearheadPipeline"
+  ],
+  limitations: [
+    "Static test-file pattern analysis inspects AST/regex idioms without executing dynamic cross-process call graphs unless --execute is passed.",
+    "Simulated or mocked environments cannot stand in for real browser layout, OS path casing, or packaged distribution checks (SKILL.md:58, decision-examples.md:63)."
+  ],
+  unknowns: [
+    "External browser/OS target matrix availability at runtime depends on host CI runners and installed Playwright/Cypress binaries.",
+    "Historical failure rates outside local git/telemetry history require external CI log ingestion when available."
+  ]
+};
+// src/core/test-value/evaluator.ts
+var HIGH_CONSEQUENCE_BOUNDARIES = new Set([
+  "data-integrity",
+  "permissions-trust-boundary",
+  "compatibility",
+  "essential-accessibility",
+  "resource-cleanup",
+  "failure-recovery"
+]);
+var BOUNDARY_PROTECTION_WEIGHTS = {
+  "data-integrity": 96,
+  "permissions-trust-boundary": 95,
+  "failure-recovery": 90,
+  "resource-cleanup": 88,
+  compatibility: 86,
+  "essential-accessibility": 85,
+  "core-contract": 78,
+  incidental: 30
+};
+function isHighConsequenceBoundary(boundary) {
+  return HIGH_CONSEQUENCE_BOUNDARIES.has(boundary);
+}
+function evaluateThreeQuestions(input) {
+  const highConsequence = isHighConsequenceBoundary(input.protectedBoundary);
+  const independentBasisVerified = input.oracleSource !== "copied-implementation" && input.oracleSource !== "generated-self-snapshot" && input.concreteMistake.trim().length > 0 && input.userOrMaintainerLoss.trim().length > 0;
+  const traps = [];
+  if (!independentBasisVerified) {
+    traps.push("shared-mistake-oracle");
+  }
+  if (input.freezesNonContractualOutput) {
+    traps.push("noncontractual-snapshot");
+  }
+  if (input.breaksOnEquivalentRefactor && !input.freezesNonContractualOutput) {
+    traps.push("private-implementation-coupling");
+  }
+  let protectionScore = BOUNDARY_PROTECTION_WEIGHTS[input.protectedBoundary] ?? 60;
+  if (!independentBasisVerified) {
+    protectionScore = Math.max(15, protectionScore - 40);
+  }
+  if (input.existingCoverage === "full-same-path") {
+    protectionScore = Math.max(10, protectionScore - 45);
+  } else if (input.existingCoverage === "partial") {
+    protectionScore = Math.max(25, protectionScore - 15);
+  }
+  let refactorResilienceScore = 100;
+  if (input.breaksOnEquivalentRefactor)
+    refactorResilienceScore -= 45;
+  if (input.freezesNonContractualOutput)
+    refactorResilienceScore -= 35;
+  refactorResilienceScore = Math.max(0, refactorResilienceScore);
+  const frictionPenalty = input.maintenanceFriction === "high" ? 55 : input.maintenanceFriction === "medium" ? 28 : 10;
+  const durationPenalty = Math.min(35, Math.round((input.executionCostMs ?? 25) / 100));
+  const maintenanceCostScore = Math.min(100, frictionPenalty + durationPenalty);
+  const netValueScore = Math.max(-100, Math.min(100, Math.round(protectionScore * 0.6 + refactorResilienceScore * 0.4 - maintenanceCostScore * 0.7)));
+  const justifiesMaintenanceCost = highConsequence && input.existingCoverage !== "full-same-path" || netValueScore >= 25;
+  const decision = decideTestAction({
+    uncoveredBoundary: input.existingCoverage === "none",
+    existingTestFailsForMistake: input.existingCoverage === "partial" && !input.freezesNonContractualOutput,
+    freezesNonContractualOutput: input.freezesNonContractualOutput || input.breaksOnEquivalentRefactor,
+    duplicateSamePathCount: input.existingCoverage === "full-same-path" ? 2 : 0,
+    sharedRuleMatrixAcrossEntrypoints: false,
+    isCostly: maintenanceCostScore >= 50,
+    protectsDistinctRisk: input.existingCoverage !== "full-same-path",
+    contractEndedOrRemoved: false,
+    ownershipOrExpectationUnclear: !independentBasisVerified,
+    protectedBoundary: input.protectedBoundary
+  });
+  const rationaleParts = [];
+  if (!independentBasisVerified) {
+    rationaleParts.push("Expectation lacks an independent basis for correctness (derived from current implementation or self-snapshot).");
+  } else {
+    rationaleParts.push(`Protects ${input.protectedBoundary} against "${input.concreteMistake}" via independent ${input.oracleSource}.`);
+  }
+  rationaleParts.push(decision.rationale);
+  return {
+    q1MistakeAndLoss: {
+      concreteMistake: input.concreteMistake,
+      userOrMaintainerLoss: input.userOrMaintainerLoss,
+      protectedBoundary: input.protectedBoundary,
+      highConsequenceBoundary: highConsequence
+    },
+    q2RefactorAndContract: {
+      independentBasisVerified,
+      breaksOnEquivalentRefactor: input.breaksOnEquivalentRefactor,
+      freezesNonContractualOutput: input.freezesNonContractualOutput
+    },
+    q3IncrementalValue: {
+      existingCoverage: input.existingCoverage,
+      justifiesMaintenanceCost
+    },
+    protectionScore,
+    refactorResilienceScore,
+    maintenanceCostScore,
+    netValueScore,
+    independentBasisVerified,
+    traps,
+    recommendedAction: decision.action,
+    rationale: rationaleParts.join(" ")
+  };
+}
+function decideTestAction(input) {
+  const highConsequence = isHighConsequenceBoundary(input.protectedBoundary);
+  if (input.ownershipOrExpectationUnclear) {
+    return {
+      action: "RETAIN_AWAITING_EVIDENCE",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "Ownership of protection or correct contractual expectation is unclear; retain test and identify missing evidence rather than guessing.",
+      requiredEvidence: ["independent-contract-or-requirement", "call-path-trace"]
+    };
+  }
+  if (input.contractEndedOrRemoved) {
+    if ((input.remainingConsumersCount ?? 0) > 0) {
+      return {
+        action: "RETAIN_AWAITING_EVIDENCE",
+        highConsequenceFloorApplied: highConsequence,
+        rationale: `Cannot retire obsolete test while ${input.remainingConsumersCount} remaining consumer(s) still depend on the contract.`,
+        requiredEvidence: ["consumer-migration-verification"]
+      };
+    }
+    return {
+      action: "RETIRE_OBSOLETE",
+      highConsequenceFloorApplied: false,
+      rationale: "Historical contract has explicitly ended with zero remaining consumers; retire obsolete test.",
+      requiredEvidence: ["zero-remaining-consumers-verified", "user-authorized-scope"]
+    };
+  }
+  if (input.freezesNonContractualOutput) {
+    return {
+      action: "RELAX_TO_CONTRACT_PROPERTIES",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "Test freezes noncontractual implementation details or algorithm-selected choices; assert outcome properties, tolerances, or boundaries while preserving explicit constraints.",
+      requiredEvidence: ["valid-alternative-passes", "original-mistake-fails"]
+    };
+  }
+  if (input.sharedRuleMatrixAcrossEntrypoints) {
+    return {
+      action: "FACTOR_SHARED_RULE_MATRIX",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "Shared rule table is repeated across entrypoints; cover the full rule catalog through shared logic and verify each entrypoint integration and local overrides.",
+      requiredEvidence: [
+        "shared-catalog-test-passes",
+        "entrypoint-integration-cases-retained",
+        "removed-combinations-disclosed"
+      ]
+    };
+  }
+  if (input.duplicateSamePathCount >= 2 && !input.uncoveredBoundary) {
+    return {
+      action: "CONSOLIDATE_DUPLICATES",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "Multiple tests exercise the same failure through the identical implementation path; consolidate duplicates and record the surviving protection.",
+      requiredEvidence: ["call-path-equivalence-trace", "surviving-test-catches-mistake"]
+    };
+  }
+  if (input.existingTestFailsForMistake) {
+    return {
+      action: "REUSE_OR_EXTEND",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "An existing test already fails for this mistake; reuse or extend it instead of constructing a parallel fixture family.",
+      requiredEvidence: ["reproduction-fails-before-fix", "extended-test-passes-after-fix"]
+    };
+  }
+  if (input.isCostly && input.protectsDistinctRisk) {
+    return {
+      action: "PRESERVE_AND_TIER_BY_RISK",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "Costly test protects a distinct risk boundary; preserve coverage and optimize fixtures or schedule execution by risk tier.",
+      requiredEvidence: ["fixture-isolation-preserved", "risk-tier-scheduled"]
+    };
+  }
+  if (input.uncoveredBoundary || input.protectsDistinctRisk || highConsequence) {
+    return {
+      action: "ADD_CHEAPEST_REGRESSION",
+      highConsequenceFloorApplied: highConsequence,
+      rationale: "Worthwhile failure boundary is uncovered; add a regression at the cheapest layer that exposes the real fault while retaining required integration paths.",
+      requiredEvidence: ["red-reproduction-observed", "green-fix-observed"]
+    };
+  }
+  return {
+    action: "RETAIN_AWAITING_EVIDENCE",
+    highConsequenceFloorApplied: highConsequence,
+    rationale: "Retain current protection until concrete duplication or contract change evidence is established.",
+    requiredEvidence: ["audit-evidence"]
+  };
+}
+function diagnoseTestFailure(input) {
+  if (!input.environmentAvailable) {
+    return {
+      testName: input.testName,
+      protectedOutcome: input.protectedOutcome,
+      classification: "environment-failure",
+      allowRetryAsPass: false,
+      allowMockSubstitute: false,
+      remediation: "Environment or target binary is unavailable. Report as an explicit validation gap; simulated or mocked evidence cannot stand in for a real browser, OS, or package."
+    };
+  }
+  if (input.intermittentOnRetry) {
+    return {
+      testName: input.testName,
+      protectedOutcome: input.protectedOutcome,
+      classification: "unstable-test",
+      allowRetryAsPass: false,
+      allowMockSubstitute: false,
+      remediation: "Intermittent failure detected on retry. Inspect readiness signals, mutable fixture isolation, resource cleanup, and real product races rather than treating a green retry as a pass."
+    };
+  }
+  if (input.contractChanged) {
+    return {
+      testName: input.testName,
+      protectedOutcome: input.protectedOutcome,
+      classification: "obsolete-assertion",
+      allowRetryAsPass: false,
+      allowMockSubstitute: true,
+      remediation: "Authorized contract or noncontractual automatic output changed. Update the assertion to check contractual properties and verify discrimination against the original bad result."
+    };
+  }
+  return {
+    testName: input.testName,
+    protectedOutcome: input.protectedOutcome,
+    classification: "product-regression",
+    allowRetryAsPass: false,
+    allowMockSubstitute: false,
+    remediation: "Product behavior regressed against an active contract. Repair the implementation without weakening the assertion."
+  };
+}
+function verifyDiscrimination(input) {
+  if (!input.validAlternativeTested || !input.originalBadResultTested) {
+    return {
+      testId: input.testId,
+      discriminates: false,
+      reason: "Discrimination check incomplete: both a valid alternative and the original bad result must be exercised."
+    };
+  }
+  if (!input.validAlternativePassed) {
+    return {
+      testId: input.testId,
+      discriminates: false,
+      reason: "Assertion is overly restrictive: valid alternative / equivalent refactor failed the test."
+    };
+  }
+  if (!input.originalBadResultFailed) {
+    return {
+      testId: input.testId,
+      discriminates: false,
+      reason: "Assertion is over-relaxed: original bad result passed without triggering a failure."
+    };
+  }
+  return {
+    testId: input.testId,
+    discriminates: true,
+    reason: "Assertion cleanly discriminates: valid alternative passes and original bad result fails."
+  };
+}
+function validateCutBoundaryRecord(record) {
+  const errors = [];
+  if (!record.burden || !record.burden.trim()) {
+    errors.push('Missing "burden": must state measured execution/maintenance cost or concrete false alarm.');
+  }
+  if (!record.existingProtection || !record.existingProtection.trim()) {
+    errors.push('Missing "existingProtection": must state the actual mistake, entrypoints, and implementation paths.');
+  }
+  if (!record.change || !record.change.trim()) {
+    errors.push('Missing "change": must describe the deletion, consolidation, rewritten assertion, or tier shift.');
+  }
+  if (!record.survivingEvidence || !record.survivingEvidence.trim()) {
+    errors.push('Missing "survivingEvidence": must prove how remaining tests detect the mistake.');
+  }
+  if (!record.verification || !record.verification.trim()) {
+    errors.push('Missing "verification": must record executed commands, outcomes, and comparable timing.');
+  }
+  const combinedText = `${record.change || ""} ${record.survivingEvidence || ""}`.toLowerCase();
+  const concealsRegression = /\b(?:test\.skip|describe\.skip|it\.skip|bulk skip|blind retry|retry until green|ignore failure)\b/.test(combinedText);
+  if (concealsRegression) {
+    errors.push("Cut boundary violation (SKILL.md:47): bulk skips, blind retries, or ignored failures must not conceal regressions.");
+  }
+  return {
+    valid: errors.length === 0,
+    concealsRegression,
+    errors
+  };
+}
+// src/core/test-value/auditor.ts
+import fs23 from "node:fs";
+import path23 from "node:path";
+function classifyResponsibilityGroup(filePath, content) {
+  const norm = filePath.replace(/\\/g, "/").toLowerCase();
+  if (/supply-chain|package-distribution|install|platform-installer|host-installer/.test(norm) || /\.github\/workflows/.test(content)) {
+    return "distribution-installation";
+  }
+  if (/catalog-generation|llms-txt|generated/.test(norm)) {
+    return "generated-artifacts";
+  }
+  if (/state-boundary|atomic-write|windows|state-concurrency|pending-mutation|git-hooks|shell-system/.test(norm)) {
+    return "filesystem-process-safety";
+  }
+  if (/site\.test|ui-polish|web-server|cypress|browser|playwright/.test(norm)) {
+    return "browser-platform";
+  }
+  if (/cli\.test|hook-dispatch|provider-translator|grok-adapter|dsh-plugin|worker-rpc/.test(norm)) {
+    return "entrypoint-integration";
+  }
+  if (/router|spark|toon|architecture|neural-linking|eval-runner|verification-eval/.test(norm)) {
+    return "shared-algorithms";
+  }
+  if (/ci-|select|shard/.test(norm)) {
+    return "ci-selection";
+  }
+  return "core-behavior";
+}
+function detectProtectedBoundaries(filePath, content) {
+  const boundaries = new Set;
+  const combined = `${filePath}
+${content}`;
+  if (/\b(?:state\.json|atomicWrite|corrupt|workspaceId|stateRevision|mutationGeneration|pending-mutation|lock|transaction)\b/i.test(combined)) {
+    boundaries.add("data-integrity");
+  }
+  if (/\b(?:security|redteam|ssrf|sqli|idor|auth|bearer|token|secret|traversal|symlink|cwe|cvss|sha256|supply-chain|workflows)\b/i.test(combined)) {
+    boundaries.add("permissions-trust-boundary");
+  }
+  if (/\b(?:windows|win32|schemaVersion|migration|legacy|backward|compat|host-parity|provider-contract)\b/i.test(combined)) {
+    boundaries.add("compatibility");
+  }
+  if (/\b(?:a11y|aria-|contrast|viewBox|accessibility|wcag|keyboard|screen-reader)\b/i.test(combined)) {
+    boundaries.add("essential-accessibility");
+  }
+  if (/\b(?:rmSync|cleanup|afterEach|close|dispose|teardown|kill|tempDirs|unlink)\b/.test(combined)) {
+    boundaries.add("resource-cleanup");
+  }
+  if (/\b(?:recover|failureStreak|circuitBreaker|rollback|heal|retry|fallback)\b/i.test(combined)) {
+    boundaries.add("failure-recovery");
+  }
+  if (boundaries.size === 0) {
+    boundaries.add("core-contract");
+  }
+  return [...boundaries];
+}
+function detectBrittleTraps(filePath, content) {
+  const traps = [];
+  const lines = content.split(/\r?\n/);
+  const normPath = filePath.replace(/\\/g, "/");
+  const isLegitimateStaticRuleFile = /supply-chain|package-distribution|catalog-generation|llms-txt|skill-authoring-lint|public-json-contracts/.test(normPath);
+  lines.forEach((line, idx) => {
+    const lineNum = idx + 1;
+    const trimmed = line.trim();
+    if (!isLegitimateStaticRuleFile && /readFileSync\s*\([^)]*\.(?:ts|js|py|tsx|jsx)['"`]/.test(trimmed)) {
+      const windowText = lines.slice(idx, Math.min(lines.length, idx + 6)).join(`
+`);
+      const isArchitecturalOrPackagingRule = /\.github\/workflows|package\.json|schema\.json|registry\.json/.test(windowText);
+      if (!isArchitecturalOrPackagingRule && /\.(?:toContain|toMatch)\s*\(\s*['"`/](?:function|const|class|private|export)\b/.test(windowText)) {
+        traps.push({
+          kind: "source-spelling-assertion",
+          line: lineNum,
+          snippet: trimmed.slice(0, 120),
+          remediation: "Execute the module or CLI boundary and assert observable output/state instead of grepping source spelling (decision-examples.md:21-28)."
+        });
+      }
+    }
+    const surroundingWindow = lines.slice(Math.max(0, idx - 3), Math.min(lines.length, idx + 2)).join(`
+`);
+    const isReadinessPollingBackoff = /\b(?:for\s*\(\s*let\s+attempt|while\s*\()/.test(surroundingWindow) && /\bcatch\b/.test(surroundingWindow);
+    if (!isReadinessPollingBackoff && /\b(?:new\s+Promise\s*\([^)]*setTimeout|await\s+Bun\.sleep\s*\(\s*[1-9]\d{2,}|setTimeout\s*\([^,]+,\s*[1-9]\d{2,})\b/.test(trimmed)) {
+      traps.push({
+        kind: "sleep-timing-assumption",
+        line: lineNum,
+        snippet: trimmed.slice(0, 120),
+        remediation: "Replace fixed sleep waits with explicit readiness signals, deterministic barriers, or controllable fake clocks (decision-examples.md:45-50)."
+      });
+    }
+    if (/\b(?:toMatchSnapshot|toMatchInlineSnapshot)\s*\(/.test(trimmed)) {
+      traps.push({
+        kind: "noncontractual-snapshot",
+        line: lineNum,
+        snippet: trimmed.slice(0, 120),
+        remediation: "Separate explicit contractual constraints from algorithm-selected output; assert semantic properties rather than brittle full snapshots (decision-examples.md:5-12)."
+      });
+    }
+    if (/\[\s*['"`]_[a-zA-Z0-9]+['"`]\s*\]|\.toHaveBeenCalledTimes\s*\(\s*[2-9]\d*\s*\)/.test(trimmed)) {
+      traps.push({
+        kind: "private-implementation-coupling",
+        line: lineNum,
+        snippet: trimmed.slice(0, 120),
+        remediation: "Avoid coupling assertions to private member names or incidental internal call counts; assert public contract outcomes (SKILL.md:30)."
+      });
+    }
+  });
+  const testBlocks = content.split(/\b(?:test|it)\s*\(/).slice(1);
+  for (const block of testBlocks) {
+    const hasMockCallAssertion = /\btoHaveBeenCalled(?:Times|With)?\s*\(/.test(block);
+    const otherAssertions = block.replace(/\bexpect\s*\([^)]*\)\s*\.\s*(?:not\s*\.\s*)?toHaveBeenCalled(?:Times|With)?\s*\([^)]*\)/g, "").match(/\bexpect\s*\(/g);
+    if (hasMockCallAssertion && (!otherAssertions || otherAssertions.length === 0)) {
+      const mockLineIdx = lines.findIndex((l) => /\btoHaveBeenCalled(?:Times|With)?\s*\(/.test(l));
+      traps.push({
+        kind: "mock-only-verification",
+        line: mockLineIdx >= 0 ? mockLineIdx + 1 : 1,
+        snippet: "expect(mockFn).toHaveBeenCalled... (with no observable state/output assertion)",
+        remediation: "Add an assertion on observable output, state mutation, or returned contract rather than only verifying mock invocation (decision-examples.md:59-64)."
+      });
+      break;
+    }
+  }
+  if (/for\s*\([^)]+\)\s*\{[^}]*for\s*\([^)]+\)\s*\{[^}]*\b(?:test|it)\s*\(/.test(content)) {
+    const loopLine = lines.findIndex((l) => /for\s*\(/.test(l));
+    traps.push({
+      kind: "cross-product-matrix-bloat",
+      line: loopLine >= 0 ? loopLine + 1 : 1,
+      snippet: "Nested for-loops generating cross-product test cases",
+      remediation: "Cover the complete rule catalog through one shared path and test only entrypoint-specific integration and overrides (decision-examples.md:13-20)."
+    });
+  }
+  return traps;
+}
+function analyzeTestFileContent(filePath, content) {
+  const responsibilityGroup = classifyResponsibilityGroup(filePath, content);
+  const protectedBoundaries = detectProtectedBoundaries(filePath, content);
+  const traps = detectBrittleTraps(filePath, content);
+  const testMatches = content.match(/\b(?:test|it)\s*\(/g);
+  const assertionMatches = content.match(/\bexpect\s*\(/g);
+  const testCount = testMatches ? testMatches.length : 0;
+  const assertionCount = assertionMatches ? assertionMatches.length : 0;
+  const hasHighConsequence = protectedBoundaries.some((b) => b !== "core-contract" && b !== "incidental");
+  const baseProtection = hasHighConsequence ? 90 : 75;
+  const assertionBonus = Math.min(10, Math.floor(assertionCount / Math.max(1, testCount)) * 2);
+  const mockPenalty = traps.some((t) => t.kind === "mock-only-verification") ? 25 : 0;
+  const protectionScore = Math.max(10, Math.min(100, baseProtection + assertionBonus - mockPenalty));
+  const trapPenalty = traps.reduce((acc, trap) => {
+    switch (trap.kind) {
+      case "source-spelling-assertion":
+        return acc + 35;
+      case "noncontractual-snapshot":
+        return acc + 30;
+      case "private-implementation-coupling":
+        return acc + 25;
+      case "mock-only-verification":
+        return acc + 25;
+      case "sleep-timing-assumption":
+        return acc + 20;
+      case "cross-product-matrix-bloat":
+        return acc + 20;
+      default:
+        return acc + 15;
+    }
+  }, 0);
+  const refactorResilienceScore = Math.max(0, 100 - trapPenalty);
+  const lineCount = content.split(/\r?\n/).length;
+  const sizeCost = Math.min(40, Math.round(lineCount / 15));
+  const trapMaintenanceCost = traps.length * 18;
+  const maintenanceCostScore = Math.min(100, sizeCost + trapMaintenanceCost);
+  const netValueScore = Math.max(-100, Math.min(100, Math.round(protectionScore * 0.55 + refactorResilienceScore * 0.45 - maintenanceCostScore * 0.5)));
+  let recommendedAction = "PRESERVE_AND_TIER_BY_RISK";
+  if (traps.some((t) => t.kind === "source-spelling-assertion" || t.kind === "noncontractual-snapshot")) {
+    recommendedAction = "RELAX_TO_CONTRACT_PROPERTIES";
+  } else if (traps.some((t) => t.kind === "cross-product-matrix-bloat")) {
+    recommendedAction = "FACTOR_SHARED_RULE_MATRIX";
+  } else if (traps.some((t) => t.kind === "mock-only-verification")) {
+    recommendedAction = "ADD_CHEAPEST_REGRESSION";
+  } else if (testCount === 0) {
+    recommendedAction = "RETIRE_OBSOLETE";
+  } else if (netValueScore >= 60) {
+    recommendedAction = "REUSE_OR_EXTEND";
+  }
+  return {
+    filePath,
+    responsibilityGroup,
+    testCount,
+    assertionCount,
+    protectedBoundaries,
+    traps,
+    protectionScore,
+    refactorResilienceScore,
+    maintenanceCostScore,
+    netValueScore,
+    recommendedAction
+  };
+}
+function collectTestFiles(projectDir, targetPaths) {
+  const results = [];
+  const walk = (dir) => {
+    if (!fs23.existsSync(dir))
+      return;
+    for (const entry of fs23.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "dist")
+        continue;
+      const full = path23.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (entry.isFile() && /\.test\.(?:ts|js|tsx|jsx)$/.test(entry.name)) {
+        results.push(path23.relative(projectDir, full).replace(/\\/g, "/"));
+      }
+    }
+  };
+  if (targetPaths && targetPaths.length > 0) {
+    for (const target of targetPaths) {
+      const resolved = path23.resolve(projectDir, target);
+      if (!fs23.existsSync(resolved))
+        continue;
+      const stat = fs23.statSync(resolved);
+      if (stat.isDirectory()) {
+        walk(resolved);
+      } else if (stat.isFile()) {
+        results.push(path23.relative(projectDir, resolved).replace(/\\/g, "/"));
+      }
+    }
+  } else {
+    walk(path23.join(projectDir, "test"));
+    walk(path23.join(projectDir, "tests"));
+    walk(path23.join(projectDir, "site"));
+  }
+  return [...new Set(results)].sort();
+}
+function auditTestSuite(projectDir, targetPaths) {
+  const filesToAudit = collectTestFiles(projectDir, targetPaths);
+  const reports = [];
+  const byResponsibility = {
+    "core-behavior": [],
+    "shared-algorithms": [],
+    "entrypoint-integration": [],
+    "browser-platform": [],
+    "filesystem-process-safety": [],
+    "distribution-installation": [],
+    "generated-artifacts": [],
+    "ci-selection": []
+  };
+  for (const relPath of filesToAudit) {
+    const absPath = path23.join(projectDir, relPath);
+    if (!fs23.existsSync(absPath))
+      continue;
+    const content = fs23.readFileSync(absPath, "utf-8");
+    const report = analyzeTestFileContent(relPath, content);
+    reports.push(report);
+    byResponsibility[report.responsibilityGroup].push(relPath);
+  }
+  const totalFiles = reports.length;
+  const totalTests = reports.reduce((sum, r) => sum + r.testCount, 0);
+  const totalAssertions = reports.reduce((sum, r) => sum + r.assertionCount, 0);
+  const totalTraps = reports.reduce((sum, r) => sum + r.traps.length, 0);
+  const avg = (fn) => totalFiles === 0 ? 0 : Math.round(reports.reduce((s, r) => s + fn(r), 0) / totalFiles);
+  const highValueCandidates = reports.filter((r) => r.traps.length > 0 || r.netValueScore < 45).sort((a, b) => a.netValueScore - b.netValueScore);
+  return {
+    projectDir,
+    totalFiles,
+    totalTests,
+    totalAssertions,
+    totalTraps,
+    averageProtectionScore: avg((r) => r.protectionScore),
+    averageRefactorResilienceScore: avg((r) => r.refactorResilienceScore),
+    averageNetValueScore: avg((r) => r.netValueScore),
+    byResponsibility,
+    files: reports,
+    highValueCandidates
+  };
+}
+// src/core/test-value/selector.ts
+import { execFileSync as execFileSync3 } from "node:child_process";
+import fs24 from "node:fs";
+import path24 from "node:path";
+var TIER_PRIORITY = {
+  "daily-feedback": 1,
+  "expanded-checks": 2,
+  "platform-delivery": 3,
+  "complete-verification": 4
+};
+function escalateTier(current, candidate) {
+  return TIER_PRIORITY[candidate] > TIER_PRIORITY[current] ? candidate : current;
+}
+function discoverAllTestFiles(projectDir) {
+  const results = [];
+  const walk = (dir) => {
+    if (!fs24.existsSync(dir))
+      return;
+    for (const entry of fs24.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "dist")
+        continue;
+      const full = path24.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (entry.isFile() && /\.test\.(?:ts|js|tsx|jsx)$/.test(entry.name)) {
+        results.push(path24.relative(projectDir, full).replace(/\\/g, "/"));
+      }
+    }
+  };
+  walk(path24.join(projectDir, "test"));
+  walk(path24.join(projectDir, "tests"));
+  walk(path24.join(projectDir, "site"));
+  return [...new Set(results)].sort();
+}
+function discoverGitChangedFiles(projectDir) {
+  try {
+    const diffOut = execFileSync3("git", ["diff", "--name-only", "HEAD"], {
+      cwd: projectDir,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+    const untrackedOut = execFileSync3("git", ["ls-files", "--others", "--exclude-standard"], {
+      cwd: projectDir,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+    return [...new Set([...diffOut.split(/\r?\n/), ...untrackedOut.split(/\r?\n/)])].map((f) => f.trim().replace(/\\/g, "/")).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+function isPureCopyOrDocFile(relPath) {
+  const norm = relPath.replace(/\\/g, "/");
+  if (norm === "AGENTS.md" || norm === "SKILL.md" || /^skills\/[^/]+\/SKILL\.md$/.test(norm)) {
+    return false;
+  }
+  return /\.(?:md|txt|png|jpg|jpeg|gif|webp)$/i.test(norm) && !norm.startsWith(".fable/") && !norm.startsWith("skills/");
+}
+function isCompleteSuiteTrigger(relPath) {
+  const norm = relPath.replace(/\\/g, "/");
+  return norm === "package.json" || norm === "tsconfig.json" || norm === "src/core/state.ts" || norm === "src/core/types.ts" || norm === "src/core/skill-registry.ts" || norm === "skills/get-fable/registry.json" || norm.startsWith(".github/workflows/");
+}
+function isPlatformDeliveryTrigger(relPath) {
+  const norm = relPath.replace(/\\/g, "/");
+  return norm === "src/installer.ts" || norm === "src/core/skill-installer.ts" || norm.startsWith("hooks/") || norm.startsWith("site/") || norm.startsWith("Formula/") || norm === "install.sh";
+}
+function selectTestsByRisk(projectDir, explicitChangedFiles) {
+  const changedFiles = (explicitChangedFiles && explicitChangedFiles.length > 0 ? explicitChangedFiles : discoverGitChangedFiles(projectDir)).map((f) => f.replace(/\\/g, "/"));
+  const allTests = discoverAllTestFiles(projectDir);
+  const testContents = new Map;
+  for (const testRel of allTests) {
+    const abs = path24.join(projectDir, testRel);
+    try {
+      testContents.set(testRel, fs24.readFileSync(abs, "utf-8"));
+    } catch {}
+  }
+  if (changedFiles.length === 0) {
+    return {
+      projectDir,
+      changedFiles: [],
+      riskTier: "daily-feedback",
+      requiresCompleteSuite: false,
+      zeroSelectionJustified: true,
+      zeroSelectionReason: "No changed files detected in workspace.",
+      affectedTestFiles: [],
+      directDependents: [],
+      unmappedPaths: [],
+      recommendedCommand: "# No test execution needed (0 changed files)",
+      rationale: ["No workspace files changed; zero test selection is justified."]
+    };
+  }
+  if (changedFiles.every(isPureCopyOrDocFile)) {
+    return {
+      projectDir,
+      changedFiles,
+      riskTier: "daily-feedback",
+      requiresCompleteSuite: false,
+      zeroSelectionJustified: true,
+      zeroSelectionReason: `Pure documentation/copy changes (${changedFiles.join(", ")}) require no behavioral test run (SKILL.md:45,64).`,
+      affectedTestFiles: [],
+      directDependents: [],
+      unmappedPaths: [],
+      recommendedCommand: "# Zero test selection justified for pure documentation change",
+      rationale: [
+        "All changed files are non-executable documentation or static copy.",
+        "SKILL.md:45,64: Pure copy changes need no new test or suite execution when reason is established."
+      ]
+    };
+  }
+  let riskTier = "daily-feedback";
+  let requiresCompleteSuite = false;
+  const affectedTests = new Set;
+  const directDependents = new Set;
+  const unmappedPaths = [];
+  const rationale = [];
+  for (const changed of changedFiles) {
+    if (isPureCopyOrDocFile(changed))
+      continue;
+    if (isCompleteSuiteTrigger(changed)) {
+      riskTier = escalateTier(riskTier, "complete-verification");
+      requiresCompleteSuite = true;
+      rationale.push(`Core infrastructure or contract file "${changed}" changed -> escalated to complete-verification (audit.md:32).`);
+    } else if (isPlatformDeliveryTrigger(changed)) {
+      riskTier = escalateTier(riskTier, "platform-delivery");
+      rationale.push(`Platform/delivery/hook surface "${changed}" changed -> escalated to platform-delivery (audit.md:31).`);
+    } else if (changed.startsWith("src/core/") || changed === "src/utils.ts" || changed === "src/cli.ts") {
+      riskTier = escalateTier(riskTier, "expanded-checks");
+    }
+    if (/\.test\.(?:ts|js|tsx|jsx)$/.test(changed)) {
+      if (fs24.existsSync(path24.join(projectDir, changed))) {
+        affectedTests.add(changed);
+      }
+      continue;
+    }
+    const absChanged = path24.join(projectDir, changed);
+    const existsOnDisk = fs24.existsSync(absChanged);
+    const stem = path24.basename(changed).replace(/\.(?:ts|js|tsx|jsx|py|json)$/, "");
+    const noExt = changed.replace(/\.(?:ts|js|tsx|jsx)$/, "");
+    let matchedCountForFile = 0;
+    for (const [testRel, content] of testContents.entries()) {
+      const testStem = path24.basename(testRel).replace(/\.test\.(?:ts|js|tsx|jsx)$/, "");
+      const mentionsModule = testStem === stem || testStem.startsWith(`${stem}-`) || content.includes(noExt) || content.includes(`${stem}.ts`) || content.includes(`${stem}.js`) || content.includes(`/${stem}'`) || content.includes(`/${stem}"`);
+      if (mentionsModule) {
+        affectedTests.add(testRel);
+        directDependents.add(testRel);
+        matchedCountForFile++;
+      }
+    }
+    if (!existsOnDisk || matchedCountForFile === 0) {
+      unmappedPaths.push(changed);
+      riskTier = escalateTier(riskTier, "expanded-checks");
+      rationale.push(`Unmapped or unknown path "${changed}" has no direct test mapping; classification failures must not silently become successful skips (audit.md:36).`);
+    }
+  }
+  const sortedAffected = [...affectedTests].sort();
+  if (sortedAffected.length > 5 && riskTier === "daily-feedback") {
+    riskTier = "expanded-checks";
+  }
+  const recommendedCommand = requiresCompleteSuite ? "bun test" : sortedAffected.length > 0 ? `bun test ${sortedAffected.join(" ")}` : "bun test";
+  if (sortedAffected.length > 0 && !requiresCompleteSuite) {
+    rationale.push(`Selected ${sortedAffected.length} affected test file(s) covering blast radius at tier "${riskTier}".`);
+  }
+  return {
+    projectDir,
+    changedFiles,
+    riskTier,
+    requiresCompleteSuite,
+    zeroSelectionJustified: false,
+    zeroSelectionReason: null,
+    affectedTestFiles: sortedAffected,
+    directDependents: [...directDependents].sort(),
+    unmappedPaths,
+    recommendedCommand,
+    rationale
+  };
+}
+function verifyShardCoverage(inventory, shards, options = {}) {
+  const normInventory = [...new Set(inventory.map((f) => f.replace(/\\/g, "/")))].sort();
+  const counts = new Map;
+  for (const shard of shards) {
+    for (const rawFile of shard.files) {
+      const f = rawFile.replace(/\\/g, "/");
+      counts.set(f, (counts.get(f) || 0) + 1);
+    }
+  }
+  const missingFiles = normInventory.filter((f) => !counts.has(f));
+  const duplicateFiles = [...counts.entries()].filter(([, count]) => count > 1).map(([file]) => file).sort();
+  const durations = shards.map((s) => s.measuredDurationMs ?? 0).filter((d) => d > 0);
+  const maxShardDurationMs = durations.length > 0 ? Math.max(...durations) : 0;
+  const minShardDurationMs = durations.length > 0 ? Math.min(...durations) : 0;
+  const imbalanceRatio = minShardDurationMs > 0 ? Number((maxShardDurationMs / minShardDurationMs).toFixed(2)) : 1;
+  const overlapValid = options.allowDeliberateOverlap ? true : duplicateFiles.length === 0;
+  const valid = missingFiles.length === 0 && overlapValid && shards.length > 0;
+  return {
+    valid,
+    totalInventory: normInventory.length,
+    coveredCount: normInventory.length - missingFiles.length,
+    missingFiles,
+    duplicateFiles,
+    maxShardDurationMs,
+    minShardDurationMs,
+    imbalanceRatio
+  };
+}
+// src/core/test-value/runner.ts
+import { spawnSync as spawnSync3 } from "node:child_process";
+function parseTestRunnerOutput(stdout, stderr, exitCode, wallClockMs, options = {}) {
+  const combined = `${stdout}
+${stderr}`;
+  const passMatch = combined.match(/\b(\d+)\s+pass(?:ed)?\b/i);
+  const failMatch = combined.match(/\b(\d+)\s+fail(?:ed)?\b/i);
+  const skipMatch = combined.match(/\b(\d+)\s+(?:skip(?:ped)?|todo)\b/i);
+  const filesMatch = combined.match(/across\s+(\d+)\s+files?/i);
+  const passedCount = passMatch ? parseInt(passMatch[1], 10) : 0;
+  const failedCount = failMatch ? parseInt(failMatch[1], 10) : 0;
+  const skippedCount = skipMatch ? parseInt(skipMatch[1], 10) : 0;
+  const filesExecuted = filesMatch ? parseInt(filesMatch[1], 10) : passedCount + failedCount > 0 ? 1 : 0;
+  const totalExecuted = passedCount + failedCount;
+  const caseDurations = [];
+  const lineRegex = /\[(\d+(?:\.\d+)?)ms\]/g;
+  const lines = combined.split(/\r?\n/);
+  for (const line of lines) {
+    if (/Ran\s+\d+\s+tests/i.test(line))
+      continue;
+    const m = lineRegex.exec(line);
+    if (m) {
+      caseDurations.push(parseFloat(m[1]));
+    }
+    lineRegex.lastIndex = 0;
+  }
+  const caseTimeMs = Number(caseDurations.reduce((a, b) => a + b, 0).toFixed(2));
+  const wallClockCriticalPathMs = Math.max(1, Math.round(wallClockMs));
+  const fileTimeMs = Math.max(caseTimeMs, wallClockCriticalPathMs);
+  const totalComputeMs = Math.max(caseTimeMs, wallClockCriticalPathMs);
+  const timing = {
+    caseTimeMs,
+    fileTimeMs,
+    wallClockCriticalPathMs,
+    totalComputeMs
+  };
+  if (skippedCount > 0 && passedCount === 0 && failedCount === 0) {
+    return {
+      passed: false,
+      verdict: "BULK_SKIP_REJECTED",
+      exitCode,
+      passedCount,
+      failedCount,
+      skippedCount,
+      totalExecuted,
+      filesExecuted,
+      timing,
+      reason: `Bulk skip rejected (SKILL.md:47): ${skippedCount} test(s) skipped with 0 passing assertions.`
+    };
+  }
+  if (totalExecuted === 0) {
+    if (options.zeroSelectionJustified) {
+      return {
+        passed: exitCode === 0,
+        verdict: "ZERO_SELECTION_JUSTIFIED",
+        exitCode,
+        passedCount: 0,
+        failedCount: 0,
+        skippedCount,
+        totalExecuted: 0,
+        filesExecuted: 0,
+        timing,
+        reason: options.zeroSelectionReason || "Zero test selection explicitly justified by non-behavioral scope."
+      };
+    }
+    return {
+      passed: false,
+      verdict: "INVALID_ZERO_SELECTION",
+      exitCode,
+      passedCount: 0,
+      failedCount: 0,
+      skippedCount,
+      totalExecuted: 0,
+      filesExecuted: 0,
+      timing,
+      reason: "Accidental zero test selection (SKILL.md:64): command exited 0 but executed 0 tests without a justified non-behavioral reason."
+    };
+  }
+  if (exitCode !== 0 || failedCount > 0) {
+    return {
+      passed: false,
+      verdict: "FAIL",
+      exitCode: exitCode !== 0 ? exitCode : 1,
+      passedCount,
+      failedCount,
+      skippedCount,
+      totalExecuted,
+      filesExecuted,
+      timing,
+      reason: `Test execution failed: ${failedCount} failed, ${passedCount} passed across ${filesExecuted} file(s).`
+    };
+  }
+  return {
+    passed: true,
+    verdict: "PASS",
+    exitCode: 0,
+    passedCount,
+    failedCount: 0,
+    skippedCount,
+    totalExecuted,
+    filesExecuted,
+    timing,
+    reason: `Verified ${passedCount} passing test(s) across ${filesExecuted} file(s) in ${wallClockCriticalPathMs}ms.`
+  };
+}
+function canReuseVerificationEvidence(record, context) {
+  if (record.kind !== "test" || record.result !== "pass") {
+    return {
+      reusable: false,
+      reason: "Prior evidence is not a passing test record.",
+      disclosedReuseSummary: null
+    };
+  }
+  if (record.generation < context.mutationGeneration) {
+    return {
+      reusable: false,
+      reason: `Evidence generation (${record.generation}) is older than current mutationGeneration (${context.mutationGeneration}).`,
+      disclosedReuseSummary: null
+    };
+  }
+  if (record.workspaceId && record.workspaceId !== context.workspaceId) {
+    return {
+      reusable: false,
+      reason: "Evidence workspaceId does not match active workspace.",
+      disclosedReuseSummary: null
+    };
+  }
+  if (context.repositoryRevision && record.repositoryRevision && record.repositoryRevision !== context.repositoryRevision) {
+    return {
+      reusable: false,
+      reason: `Evidence repositoryRevision (${record.repositoryRevision}) differs from current revision (${context.repositoryRevision}).`,
+      disclosedReuseSummary: null
+    };
+  }
+  if (context.requiredScope && record.scope && record.scope !== context.requiredScope && record.scope !== "complete-suite") {
+    return {
+      reusable: false,
+      reason: `Evidence scope (${record.scope}) does not cover required scope (${context.requiredScope}).`,
+      disclosedReuseSummary: null
+    };
+  }
+  return {
+    reusable: true,
+    reason: "Existing test evidence matches current mutationGeneration, workspaceId, revision, and scope.",
+    disclosedReuseSummary: `Reused passing test evidence from ${record.source} (gen=${record.generation}, ts=${record.timestamp}): ${record.detail}`
+  };
+}
+function runSpearheadPipeline(options = {}) {
+  const projectDir = options.projectDir || process.cwd();
+  const selection = selectTestsByRisk(projectDir, options.changedFiles);
+  const auditTargets = selection.affectedTestFiles.length > 0 ? selection.affectedTestFiles : undefined;
+  const audit = auditTestSuite(projectDir, auditTargets);
+  let reusedEvidence = null;
+  const state = readFableState(projectDir);
+  const currentRevision = getRepositoryRevision(projectDir);
+  const scopeKey = selection.requiresCompleteSuite ? "complete-suite" : selection.affectedTestFiles.join(",");
+  if (options.reuseEvidence && state && state.evidence.length > 0) {
+    const latestTest = [...state.evidence].reverse().find((e) => e.kind === "test");
+    if (latestTest) {
+      reusedEvidence = canReuseVerificationEvidence(latestTest, {
+        mutationGeneration: state.mutationGeneration,
+        workspaceId: state.workspaceId,
+        repositoryRevision: currentRevision,
+        requiredScope: scopeKey
+      });
+    }
+  }
+  let execution = null;
+  let evidenceRecorded = false;
+  if (options.execute && !(reusedEvidence && reusedEvidence.reusable)) {
+    if (selection.zeroSelectionJustified && selection.affectedTestFiles.length === 0) {
+      execution = parseTestRunnerOutput("", "", 0, 1, {
+        zeroSelectionJustified: true,
+        zeroSelectionReason: selection.zeroSelectionReason
+      });
+    } else {
+      const testArgs = selection.requiresCompleteSuite ? ["test"] : ["test", ...selection.affectedTestFiles];
+      const start = Date.now();
+      const proc = spawnSync3(process.execPath, testArgs, {
+        cwd: projectDir,
+        encoding: "utf-8"
+      });
+      const wallMs = Date.now() - start;
+      execution = parseTestRunnerOutput(proc.stdout || "", proc.stderr || "", proc.status ?? 1, wallMs, {
+        zeroSelectionJustified: selection.zeroSelectionJustified,
+        zeroSelectionReason: selection.zeroSelectionReason
+      });
+    }
+    if (options.recordFableEvidence && execution && state) {
+      try {
+        withFableStateTransaction(projectDir, (txState) => addEvidence(txState, {
+          kind: "test",
+          source: selection.recommendedCommand,
+          result: execution.passed ? "pass" : "fail",
+          detail: `${execution.reason} [tier=${selection.riskTier}, netValue=${audit.averageNetValueScore}]`,
+          scope: scopeKey || "spearhead",
+          repositoryRevision: currentRevision || undefined
+        }));
+        evidenceRecorded = true;
+      } catch {
+        evidenceRecorded = false;
+      }
+    }
+  }
+  return {
+    reaProvenance: {
+      featureName: TEST_VALUE_REA_EVIDENCE_LEDGER.featureName,
+      sourceRepository: TEST_VALUE_REA_EVIDENCE_LEDGER.sourceRepository,
+      treeSha: TEST_VALUE_REA_EVIDENCE_LEDGER.treeSha,
+      coreQuestion: TEST_VALUE_REA_EVIDENCE_LEDGER.coreQuestion
+    },
+    selection,
+    audit,
+    reusedEvidence,
+    execution,
+    evidenceRecorded
+  };
+}
 // src/core/doctor.ts
 function check(id, status, message) {
   return { id, status, message };
 }
 function isSquareSvg(filePath) {
-  const svg = fs23.readFileSync(filePath, "utf-8");
+  const svg = fs25.readFileSync(filePath, "utf-8");
   const viewBoxMatch = svg.match(/viewBox=["']([^"']+)["']/i);
   if (viewBoxMatch) {
     const values = viewBoxMatch[1].trim().split(/[\s,]+/).map(Number);
@@ -31497,11 +32552,11 @@ function validateSkillPackages(repoRoot) {
 }
 function validateRegistriesAndPacks(repoRoot) {
   const checks = [];
-  const canonicalRegistryPath = path23.join(repoRoot, "skills", "get-fable", "registry.json");
-  const mirroredRegistryPath = path23.join(repoRoot, "registry", "skills.json");
-  if (fs23.existsSync(canonicalRegistryPath) && fs23.existsSync(mirroredRegistryPath)) {
-    const rawCanonical = fs23.readFileSync(canonicalRegistryPath, "utf-8");
-    const rawMirrored = fs23.readFileSync(mirroredRegistryPath, "utf-8");
+  const canonicalRegistryPath = path25.join(repoRoot, "skills", "get-fable", "registry.json");
+  const mirroredRegistryPath = path25.join(repoRoot, "registry", "skills.json");
+  if (fs25.existsSync(canonicalRegistryPath) && fs25.existsSync(mirroredRegistryPath)) {
+    const rawCanonical = fs25.readFileSync(canonicalRegistryPath, "utf-8");
+    const rawMirrored = fs25.readFileSync(mirroredRegistryPath, "utf-8");
     try {
       const parsedCanonical = JSON.parse(rawCanonical);
       const parsedMirrored = JSON.parse(rawMirrored);
@@ -31515,7 +32570,7 @@ function validateRegistriesAndPacks(repoRoot) {
   }
   try {
     const registry = loadSkillRegistry(repoRoot);
-    const packsDir = path23.join(repoRoot, "packs");
+    const packsDir = path25.join(repoRoot, "packs");
     const packFailures = [];
     const packMap = {
       core: [],
@@ -31533,12 +32588,12 @@ function validateRegistriesAndPacks(repoRoot) {
       }
     }
     for (const [packName, expectedSkills] of Object.entries(packMap)) {
-      const packFile = path23.join(packsDir, `${packName}.json`);
-      if (!fs23.existsSync(packFile)) {
+      const packFile = path25.join(packsDir, `${packName}.json`);
+      if (!fs25.existsSync(packFile)) {
         packFailures.push(`packs/${packName}.json missing`);
         continue;
       }
-      const content = JSON.parse(fs23.readFileSync(packFile, "utf-8"));
+      const content = JSON.parse(fs25.readFileSync(packFile, "utf-8"));
       const packSkills = content.skills || [];
       const sortedExpected = [...expectedSkills].sort();
       const sortedActual = [...packSkills].sort();
@@ -31546,9 +32601,9 @@ function validateRegistriesAndPacks(repoRoot) {
         packFailures.push(`packs/${packName}.json skills mismatch`);
       }
     }
-    const fullPackFile = path23.join(packsDir, "full.json");
-    if (fs23.existsSync(fullPackFile)) {
-      const fullContent = JSON.parse(fs23.readFileSync(fullPackFile, "utf-8"));
+    const fullPackFile = path25.join(packsDir, "full.json");
+    if (fs25.existsSync(fullPackFile)) {
+      const fullContent = JSON.parse(fs25.readFileSync(fullPackFile, "utf-8"));
       if ((fullContent.skills?.length || 0) !== canonicalSkillIds().length) {
         packFailures.push("packs/full.json count mismatch");
       }
@@ -31574,10 +32629,10 @@ function validateRegistriesAndPacks(repoRoot) {
   } catch (e) {
     checks.push(check("neural-graph-integrity", "ERROR", `Neural graph error: ${e}`));
   }
-  const hookRegistryPath = path23.join(repoRoot, "registry", "hooks.json");
-  if (fs23.existsSync(hookRegistryPath)) {
+  const hookRegistryPath = path25.join(repoRoot, "registry", "hooks.json");
+  if (fs25.existsSync(hookRegistryPath)) {
     try {
-      const hookData = JSON.parse(fs23.readFileSync(hookRegistryPath, "utf-8"));
+      const hookData = JSON.parse(fs25.readFileSync(hookRegistryPath, "utf-8"));
       const hookErrors = [];
       for (const [event, hookList] of Object.entries(hookData.hooks || {})) {
         if (Array.isArray(hookList)) {
@@ -31585,8 +32640,8 @@ function validateRegistriesAndPacks(repoRoot) {
             const cmd = h.command || "";
             const scriptMatch = cmd.match(/python3\s+([^\s]+)/);
             if (scriptMatch) {
-              const scriptPath = path23.resolve(repoRoot, scriptMatch[1]);
-              if (!fs23.existsSync(scriptPath)) {
+              const scriptPath = path25.resolve(repoRoot, scriptMatch[1]);
+              if (!fs25.existsSync(scriptPath)) {
                 hookErrors.push(`Hook script not found: ${scriptMatch[1]} (for ${h.name || event})`);
               }
             }
@@ -31602,19 +32657,19 @@ function validateRegistriesAndPacks(repoRoot) {
 }
 function validatePluginPackage(repoRoot) {
   const checks = [];
-  const pluginManifest = path23.join(repoRoot, ".codex-plugin", "plugin.json");
-  const claudeMarketplaceManifest = path23.join(repoRoot, ".claude-plugin", "marketplace.json");
-  const claudePluginManifest = path23.join(repoRoot, ".claude-plugin", "plugin.json");
-  if (!fs23.existsSync(pluginManifest)) {
+  const pluginManifest = path25.join(repoRoot, ".codex-plugin", "plugin.json");
+  const claudeMarketplaceManifest = path25.join(repoRoot, ".claude-plugin", "marketplace.json");
+  const claudePluginManifest = path25.join(repoRoot, ".claude-plugin", "plugin.json");
+  if (!fs25.existsSync(pluginManifest)) {
     checks.push(check("plugin-manifest", "ERROR", ".codex-plugin/plugin.json is missing"));
   } else {
     checks.push(check("plugin-manifest", "PASS", ".codex-plugin/plugin.json is present"));
   }
-  if (!fs23.existsSync(claudeMarketplaceManifest)) {
+  if (!fs25.existsSync(claudeMarketplaceManifest)) {
     checks.push(check("claude-marketplace-manifest", "ERROR", ".claude-plugin/marketplace.json is missing"));
   } else {
     try {
-      const marketplace = JSON.parse(fs23.readFileSync(claudeMarketplaceManifest, "utf-8"));
+      const marketplace = JSON.parse(fs25.readFileSync(claudeMarketplaceManifest, "utf-8"));
       if (!marketplace.name || !Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
         checks.push(check("claude-marketplace-manifest", "ERROR", ".claude-plugin/marketplace.json is missing name or plugins"));
       } else {
@@ -31625,7 +32680,7 @@ function validatePluginPackage(repoRoot) {
       checks.push(check("claude-marketplace-manifest", "ERROR", `Invalid marketplace manifest: ${message}`));
     }
   }
-  if (!fs23.existsSync(claudePluginManifest)) {
+  if (!fs25.existsSync(claudePluginManifest)) {
     checks.push(check("claude-plugin-manifest", "ERROR", ".claude-plugin/plugin.json is missing"));
   } else {
     checks.push(check("claude-plugin-manifest", "PASS", ".claude-plugin/plugin.json is present"));
@@ -31642,17 +32697,17 @@ function validatePluginPackage(repoRoot) {
     { id: "pi", dir: ".pi-plugin" }
   ];
   for (const platform of platforms) {
-    const marketPath = path23.join(repoRoot, platform.dir, "marketplace.json");
-    if (fs23.existsSync(marketPath)) {
+    const marketPath = path25.join(repoRoot, platform.dir, "marketplace.json");
+    if (fs25.existsSync(marketPath)) {
       checks.push(check(`${platform.id}-marketplace`, "PASS", `${platform.dir}/marketplace.json is present`));
     }
   }
-  const skillsShPath = path23.join(repoRoot, "skills.sh.json");
-  if (fs23.existsSync(skillsShPath)) {
+  const skillsShPath = path25.join(repoRoot, "skills.sh.json");
+  if (fs25.existsSync(skillsShPath)) {
     checks.push(check("skills-sh-catalog", "PASS", "skills.sh.json catalog is present"));
   }
   try {
-    const manifest = JSON.parse(fs23.readFileSync(pluginManifest, "utf-8"));
+    const manifest = JSON.parse(fs25.readFileSync(pluginManifest, "utf-8"));
     const requiredAssets = ["logo", "composerIcon"];
     const failures = [];
     for (const key of requiredAssets) {
@@ -31662,12 +32717,12 @@ function validatePluginPackage(repoRoot) {
         continue;
       }
       const relativePath = assetRef.slice(2);
-      const assetPath = path23.resolve(repoRoot, relativePath);
-      if (!assetPath.startsWith(`${path23.resolve(repoRoot)}${path23.sep}`) || !fs23.existsSync(assetPath)) {
+      const assetPath = path25.resolve(repoRoot, relativePath);
+      if (!assetPath.startsWith(`${path25.resolve(repoRoot)}${path25.sep}`) || !fs25.existsSync(assetPath)) {
         failures.push(`interface.${key} asset is missing`);
         continue;
       }
-      const extension = path23.extname(assetPath).toLowerCase();
+      const extension = path25.extname(assetPath).toLowerCase();
       if (![".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(extension)) {
         failures.push(`interface.${key} uses an unsupported image format`);
         continue;
@@ -31681,15 +32736,15 @@ function validatePluginPackage(repoRoot) {
     const message = error instanceof Error ? error.message : String(error);
     checks.push(check("plugin-branding", "ERROR", `Invalid plugin manifest: ${message}`));
   }
-  const skillsRoot = path23.join(repoRoot, "skills");
-  if (!fs23.existsSync(skillsRoot)) {
+  const skillsRoot = path25.join(repoRoot, "skills");
+  if (!fs25.existsSync(skillsRoot)) {
     checks.push(check("plugin-skills-root", "ERROR", "skills/ is missing"));
     return checks;
   }
-  const invalidEntries = fs23.readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith(".")).flatMap((entry) => {
+  const invalidEntries = fs25.readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith(".")).flatMap((entry) => {
     if (!entry.isDirectory())
       return [entry.name];
-    return fs23.existsSync(path23.join(skillsRoot, entry.name, "SKILL.md")) ? [] : [`${entry.name}/`];
+    return fs25.existsSync(path25.join(skillsRoot, entry.name, "SKILL.md")) ? [] : [`${entry.name}/`];
   });
   checks.push(invalidEntries.length === 0 ? check("plugin-skills-root", "PASS", "Every direct skills/ child is an importable skill directory") : check("plugin-skills-root", "ERROR", `Invalid direct skills/ entries: ${invalidEntries.join(", ")}`));
   return checks;
@@ -31697,8 +32752,8 @@ function validatePluginPackage(repoRoot) {
 function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   const repaired = [];
   const errors = [];
-  const fableDir = path23.join(targetDir, ".fable");
-  const existed = fs23.existsSync(fableDir);
+  const fableDir = path25.join(targetDir, ".fable");
+  const existed = fs25.existsSync(fableDir);
   try {
     assertSafeFableBoundary(targetDir, true);
   } catch (error) {
@@ -31707,8 +32762,8 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   if (!existed) {
     repaired.push("Created .fable/ directory");
   }
-  const statePath = path23.join(fableDir, "state.json");
-  if (!fs23.existsSync(statePath)) {
+  const statePath = path25.join(fableDir, "state.json");
+  if (!fs25.existsSync(statePath)) {
     try {
       let created = false;
       withFableStateTransaction(targetDir, (existingState) => existingState, {
@@ -31724,9 +32779,9 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
       errors.push(`Failed to repair state.json: ${e}`);
     }
   }
-  const ledgerPath = path23.join(fableDir, "LEDGER.md");
-  if (!fs23.existsSync(ledgerPath)) {
-    fs23.writeFileSync(ledgerPath, `# Project Ledger
+  const ledgerPath = path25.join(fableDir, "LEDGER.md");
+  if (!fs25.existsSync(ledgerPath)) {
+    fs25.writeFileSync(ledgerPath, `# Project Ledger
 
 ## Active Cards
 
@@ -31735,9 +32790,9 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
 `, "utf-8");
     repaired.push("Created .fable/LEDGER.md");
   }
-  const progressPath = path23.join(fableDir, "PROGRESS.md");
-  if (!fs23.existsSync(progressPath)) {
-    fs23.writeFileSync(progressPath, `# Project Progress
+  const progressPath = path25.join(fableDir, "PROGRESS.md");
+  if (!fs25.existsSync(progressPath)) {
+    fs25.writeFileSync(progressPath, `# Project Progress
 
 - Project initialized.
 `, "utf-8");
@@ -31747,28 +32802,28 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   if (hooksPath.kind === "error") {
     errors.push(hooksPath.message);
   } else if (hooksPath.kind === "resolved") {
-    const hooksSourceDir = path23.join(repoRoot, "hooks", "git");
+    const hooksSourceDir = path25.join(repoRoot, "hooks", "git");
     const hooksDestDir = hooksPath.hooksDir;
     try {
-      if (!fs23.existsSync(hooksSourceDir)) {
+      if (!fs25.existsSync(hooksSourceDir)) {
         throw new Error(`Git hook sources are missing: ${hooksSourceDir}`);
       }
-      fs23.mkdirSync(hooksDestDir, { recursive: true });
+      fs25.mkdirSync(hooksDestDir, { recursive: true });
       for (const hookFile of CANONICAL_GIT_HOOKS) {
-        const sourceFile = path23.join(hooksSourceDir, hookFile);
-        if (!fs23.existsSync(sourceFile)) {
+        const sourceFile = path25.join(hooksSourceDir, hookFile);
+        if (!fs25.existsSync(sourceFile)) {
           throw new Error(`Git hook source is missing: ${sourceFile}`);
         }
-        const destFile = path23.join(hooksDestDir, hookFile);
-        if (fs23.existsSync(destFile)) {
-          const stat = fs23.statSync(destFile);
+        const destFile = path25.join(hooksDestDir, hookFile);
+        if (fs25.existsSync(destFile)) {
+          const stat = fs25.statSync(destFile);
           if (!stat.isFile()) {
             throw new Error(`Git hook destination is not a regular file: ${destFile}`);
           }
         } else {
-          fs23.copyFileSync(sourceFile, destFile);
+          fs25.copyFileSync(sourceFile, destFile);
           try {
-            fs23.chmodSync(destFile, 493);
+            fs25.chmodSync(destFile, 493);
           } catch {}
           repaired.push(`Installed missing git hook: ${hookFile}`);
         }
@@ -31797,8 +32852,8 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
 function validateEnterpriseConfiguration(repoRoot) {
   const checks = [];
   try {
-    const stateSchema = JSON.parse(fs23.readFileSync(path23.join(repoRoot, "schemas", "state.schema.json"), "utf-8"));
-    const packageSchema = JSON.parse(fs23.readFileSync(path23.join(repoRoot, "schemas", "skill-package.schema.json"), "utf-8"));
+    const stateSchema = JSON.parse(fs25.readFileSync(path25.join(repoRoot, "schemas", "state.schema.json"), "utf-8"));
+    const packageSchema = JSON.parse(fs25.readFileSync(path25.join(repoRoot, "schemas", "skill-package.schema.json"), "utf-8"));
     const stateVersions = stateSchema?.properties?.schemaVersion?.enum;
     const packageVersions = packageSchema?.properties?.schemaVersion?.enum;
     const parity = Array.isArray(stateVersions) && stateVersions.length === 1 && stateVersions[0] === FABLE_STATE_SCHEMA_VERSION && Array.isArray(packageVersions) && packageVersions.length === 1 && packageVersions[0] === FABLE_SKILL_PACKAGE_SCHEMA_VERSION2;
@@ -31807,15 +32862,15 @@ function validateEnterpriseConfiguration(repoRoot) {
     checks.push(check("schema-runtime-parity", "ERROR", `Schema parity check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
   try {
-    const pkg = JSON.parse(fs23.readFileSync(path23.join(repoRoot, "package.json"), "utf-8"));
+    const pkg = JSON.parse(fs25.readFileSync(path25.join(repoRoot, "package.json"), "utf-8"));
     const files = Array.isArray(pkg.files) ? pkg.files : [];
     const intentional = files.includes("eval/") && !files.includes("evals/") && !files.includes("docs/") && files.includes("docs/*.md") && files.includes("public/");
     checks.push(intentional ? check("distribution-contract", "PASS", "npm whitelist keeps runtime eval material, public docs/site assets, and excludes root holdouts and internal Superpowers plans") : check("distribution-contract", "ERROR", "npm package whitelist does not match the documented distribution boundary"));
   } catch (error) {
     checks.push(check("distribution-contract", "ERROR", `Distribution contract check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
-  const workflowsDir = path23.join(repoRoot, ".github", "workflows");
-  if (!fs23.existsSync(workflowsDir)) {
+  const workflowsDir = path25.join(repoRoot, ".github", "workflows");
+  if (!fs25.existsSync(workflowsDir)) {
     checks.push(check("supply-chain-config", "PASS", "Packaged npm release: workflow supply chain verified at build/publish time"));
     checks.push(check("security-ci-config", "PASS", "Packaged npm release: security CI verified at build/publish time"));
     checks.push(check("e2e-ci-config", "PASS", "Packaged npm release: E2E CI verified at build/publish time"));
@@ -31825,8 +32880,8 @@ function validateEnterpriseConfiguration(repoRoot) {
     return checks;
   }
   try {
-    const workflowPaths = fs23.readdirSync(workflowsDir).filter((name) => /\.ya?ml$/.test(name)).sort().map((name) => `.github/workflows/${name}`);
-    const workflows = workflowPaths.map((relative) => ({ relative, text: fs23.readFileSync(path23.join(repoRoot, relative), "utf-8") }));
+    const workflowPaths = fs25.readdirSync(workflowsDir).filter((name) => /\.ya?ml$/.test(name)).sort().map((name) => `.github/workflows/${name}`);
+    const workflows = workflowPaths.map((relative) => ({ relative, text: fs25.readFileSync(path25.join(repoRoot, relative), "utf-8") }));
     const actionRefs = workflows.flatMap(({ text }) => [...text.matchAll(/uses:\s+[^@\s]+@([^\s#]+)/g)].map((match) => match[1]));
     const pinned = actionRefs.length > 0 && actionRefs.every((ref) => /^[0-9a-f]{40}$/.test(ref));
     const workflow = (name) => workflows.find((item) => item.relative.endsWith(`/${name}`))?.text || "";
@@ -31896,7 +32951,7 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
     const message = error instanceof Error ? error.message : String(error);
     checks.push(check("telemetry-health", "ERROR", `Telemetry error: ${message}`));
   }
-  const activeProject = fs23.lstatSync(path23.join(targetDir, ".fable"), { throwIfNoEntry: false }) !== undefined;
+  const activeProject = fs25.lstatSync(path25.join(targetDir, ".fable"), { throwIfNoEntry: false }) !== undefined;
   if (!activeProject) {
     checks.push(check("project-state", "WARN", "No active .fable directory in the current project"));
     checks.push(check("project-skills", "WARN", "Project-local canonical skills are not required until get-fable is initialized"));
@@ -31912,9 +32967,9 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
       const message = error instanceof Error ? error.message : String(error);
       checks.push(check("project-state", "ERROR", message));
     }
-    const isSourceRepo = path23.resolve(targetDir) === path23.resolve(repoRoot);
-    const skillRoot = isSourceRepo ? path23.join(repoRoot, "skills") : path23.join(targetDir, ".agents", "skills");
-    const missing = canonicalSkillIds().filter((skill) => !fs23.existsSync(path23.join(skillRoot, skill, "SKILL.md")));
+    const isSourceRepo = path25.resolve(targetDir) === path25.resolve(repoRoot);
+    const skillRoot = isSourceRepo ? path25.join(repoRoot, "skills") : path25.join(targetDir, ".agents", "skills");
+    const missing = canonicalSkillIds().filter((skill) => !fs25.existsSync(path25.join(skillRoot, skill, "SKILL.md")));
     checks.push(missing.length === 0 ? check("project-skills", "PASS", isSourceRepo ? "Source repository canonical skills are present" : "All canonical project skills are installed") : check("project-skills", "ERROR", `Missing project skills: ${missing.join(", ")}`));
   }
   const hooksPath = resolveGitHooksPath(targetDir);
@@ -31923,7 +32978,7 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   } else if (hooksPath.kind === "resolved") {
     checks.push(areCanonicalGitHooksInstalled(hooksPath.hooksDir) ? check("git-hooks", "PASS", "All four canonical Git lifecycle hooks are installed") : check("git-hooks", "WARN", `Canonical Git hooks are incomplete in ${hooksPath.hooksDir} (run get-fable install git-hooks or get-fable doctor --fix)`));
   }
-  const python = spawnSync3("python3", ["--version"], { encoding: "utf-8" });
+  const python = spawnSync4("python3", ["--version"], { encoding: "utf-8" });
   checks.push(python.status === 0 ? check("python-runtime", "PASS", (python.stdout || python.stderr || "python3 available").trim()) : check("python-runtime", "WARN", "python3 was not found; lifecycle hooks cannot run on hosts that require them"));
   const nmBinary = findNoMistakesBinary();
   if (nmBinary) {
@@ -31940,6 +32995,13 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
     checks.push(check("reflex-advisor", "PASS", `Reflex advisor mode: ${reflexConfig.mode}, provider: ${reflexConfig.provider}, model: ${reflexConfig.model} (${keyInfo})`));
   } catch (error) {
     checks.push(check("reflex-advisor", "WARN", `Reflex advisor check: ${error instanceof Error ? error.message : String(error)}`));
+  }
+  try {
+    const artifactList = Object.values(TEST_VALUE_REA_EVIDENCE_LEDGER.artifacts);
+    const ledgerValid = artifactList.length === 5 && artifactList.every((a) => /^(?:sha256:)?[0-9a-f]{64}$/.test(a.sha256));
+    checks.push(ledgerValid ? check("test-value-spearhead", "PASS", `Test-Value Spearhead Engine active (${artifactList.length} REA-attested upstream artifacts, tree ${TEST_VALUE_REA_EVIDENCE_LEDGER.treeSha.slice(0, 12)})`) : check("test-value-spearhead", "ERROR", "Test-Value Spearhead Engine REA evidence ledger integrity check failed"));
+  } catch (error) {
+    checks.push(check("test-value-spearhead", "ERROR", `Test-Value Spearhead check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
   return {
     schemaVersion: 1,
@@ -33109,23 +34171,23 @@ function fuseRoute(params) {
 }
 // src/core/reflex/ledger.ts
 import crypto from "node:crypto";
-import fs24 from "node:fs";
-import path24 from "node:path";
+import fs26 from "node:fs";
+import path26 from "node:path";
 var MAX_REFLEX_LEDGER_LINES = 5000;
 function hashTaskText(text) {
   return crypto.createHash("sha256").update(text, "utf8").digest("hex");
 }
 function getReflexDir(repoRoot = process.cwd()) {
-  const fableDir = path24.join(repoRoot, ".fable");
-  if (fs24.existsSync(fableDir)) {
-    const stat = fs24.lstatSync(fableDir);
+  const fableDir = path26.join(repoRoot, ".fable");
+  if (fs26.existsSync(fableDir)) {
+    const stat = fs26.lstatSync(fableDir);
     if (stat.isSymbolicLink()) {
       throw new Error("Reflex security violation: .fable directory must not be a symlink");
     }
   }
-  const reflexDir = path24.join(fableDir, "reflex");
-  if (fs24.existsSync(reflexDir)) {
-    const stat = fs24.lstatSync(reflexDir);
+  const reflexDir = path26.join(fableDir, "reflex");
+  if (fs26.existsSync(reflexDir)) {
+    const stat = fs26.lstatSync(reflexDir);
     if (stat.isSymbolicLink()) {
       throw new Error("Reflex security violation: .fable/reflex directory must not be a symlink");
     }
@@ -33135,19 +34197,19 @@ function getReflexDir(repoRoot = process.cwd()) {
 function appendReflexEvent(event, repoRoot = process.cwd()) {
   try {
     const reflexDir = getReflexDir(repoRoot);
-    if (!fs24.existsSync(reflexDir)) {
-      fs24.mkdirSync(reflexDir, { recursive: true });
+    if (!fs26.existsSync(reflexDir)) {
+      fs26.mkdirSync(reflexDir, { recursive: true });
     }
-    const eventsFile = path24.join(reflexDir, "events.jsonl");
-    if (fs24.existsSync(eventsFile)) {
-      const stat = fs24.lstatSync(eventsFile);
+    const eventsFile = path26.join(reflexDir, "events.jsonl");
+    if (fs26.existsSync(eventsFile)) {
+      const stat = fs26.lstatSync(eventsFile);
       if (stat.isSymbolicLink() || !stat.isFile()) {
         return;
       }
     }
     const line = JSON.stringify(event) + `
 `;
-    fs24.appendFileSync(eventsFile, line, "utf8");
+    fs26.appendFileSync(eventsFile, line, "utf8");
     rotateLedgerIfNecessary(eventsFile);
   } catch {}
 }
@@ -33156,15 +34218,15 @@ function readReflexEvents(options) {
   const repoRoot = options?.repoRoot || process.cwd();
   try {
     const reflexDir = getReflexDir(repoRoot);
-    const eventsFile = path24.join(reflexDir, "events.jsonl");
-    if (!fs24.existsSync(eventsFile)) {
+    const eventsFile = path26.join(reflexDir, "events.jsonl");
+    if (!fs26.existsSync(eventsFile)) {
       return [];
     }
-    const stat = fs24.lstatSync(eventsFile);
+    const stat = fs26.lstatSync(eventsFile);
     if (stat.isSymbolicLink() || !stat.isFile()) {
       return [];
     }
-    const content = fs24.readFileSync(eventsFile, "utf8");
+    const content = fs26.readFileSync(eventsFile, "utf8");
     const lines = content.trim().split(`
 `).filter(Boolean);
     const events = [];
@@ -33183,16 +34245,16 @@ function readReflexEvents(options) {
 }
 function rotateLedgerIfNecessary(eventsFile) {
   try {
-    const stat = fs24.statSync(eventsFile);
+    const stat = fs26.statSync(eventsFile);
     if (stat.size > 5 * 1024 * 1024) {
-      const content = fs24.readFileSync(eventsFile, "utf8");
+      const content = fs26.readFileSync(eventsFile, "utf8");
       const lines = content.trim().split(`
 `);
       if (lines.length > MAX_REFLEX_LEDGER_LINES) {
         const truncated = lines.slice(-Math.floor(MAX_REFLEX_LEDGER_LINES / 2)).join(`
 `) + `
 `;
-        fs24.writeFileSync(eventsFile, truncated, "utf8");
+        fs26.writeFileSync(eventsFile, truncated, "utf8");
       }
     }
   } catch {}
@@ -34592,24 +35654,24 @@ class RecipesBridge {
   }
 }
 // src/dsh/api.ts
-import fs25 from "node:fs";
-import path25 from "node:path";
+import fs27 from "node:fs";
+import path27 from "node:path";
 function readPlanStatus(projectRoot) {
-  const taskPlanPath = path25.join(projectRoot, "task_plan.md");
-  const progressPath = path25.join(projectRoot, "progress.md");
-  const findingsPath = path25.join(projectRoot, "findings.md");
-  const modePath = path25.join(projectRoot, ".mode");
-  const attestationPath = path25.join(projectRoot, ".attestation");
-  const legacyAttestationPath = path25.join(projectRoot, ".plan-attestation");
-  const hasPlan = fs25.existsSync(taskPlanPath);
-  const hasProgress = fs25.existsSync(progressPath);
-  const hasFindings = fs25.existsSync(findingsPath);
-  const planContent = hasPlan ? fs25.readFileSync(taskPlanPath, "utf-8") : null;
-  const progressContent = hasProgress ? fs25.readFileSync(progressPath, "utf-8") : null;
-  const findingsContent = hasFindings ? fs25.readFileSync(findingsPath, "utf-8") : null;
+  const taskPlanPath = path27.join(projectRoot, "task_plan.md");
+  const progressPath = path27.join(projectRoot, "progress.md");
+  const findingsPath = path27.join(projectRoot, "findings.md");
+  const modePath = path27.join(projectRoot, ".mode");
+  const attestationPath = path27.join(projectRoot, ".attestation");
+  const legacyAttestationPath = path27.join(projectRoot, ".plan-attestation");
+  const hasPlan = fs27.existsSync(taskPlanPath);
+  const hasProgress = fs27.existsSync(progressPath);
+  const hasFindings = fs27.existsSync(findingsPath);
+  const planContent = hasPlan ? fs27.readFileSync(taskPlanPath, "utf-8") : null;
+  const progressContent = hasProgress ? fs27.readFileSync(progressPath, "utf-8") : null;
+  const findingsContent = hasFindings ? fs27.readFileSync(findingsPath, "utf-8") : null;
   let mode = null;
-  if (fs25.existsSync(modePath)) {
-    const rawMode = fs25.readFileSync(modePath, "utf-8").trim();
+  if (fs27.existsSync(modePath)) {
+    const rawMode = fs27.readFileSync(modePath, "utf-8").trim();
     if (rawMode.includes("gate"))
       mode = "gated";
     else if (rawMode.includes("autonomous"))
@@ -34618,10 +35680,10 @@ function readPlanStatus(projectRoot) {
       mode = "legacy";
   }
   let attestationSha = null;
-  if (fs25.existsSync(attestationPath)) {
-    attestationSha = fs25.readFileSync(attestationPath, "utf-8").trim();
-  } else if (fs25.existsSync(legacyAttestationPath)) {
-    attestationSha = fs25.readFileSync(legacyAttestationPath, "utf-8").trim();
+  if (fs27.existsSync(attestationPath)) {
+    attestationSha = fs27.readFileSync(attestationPath, "utf-8").trim();
+  } else if (fs27.existsSync(legacyAttestationPath)) {
+    attestationSha = fs27.readFileSync(legacyAttestationPath, "utf-8").trim();
   }
   const phases = [];
   if (planContent) {
@@ -34665,15 +35727,15 @@ function readPlanStatus(projectRoot) {
 function getAllSkills(repoRoot) {
   const canonical = canonicalSkillIds();
   const results = [];
-  const skillsDir = path25.join(repoRoot, "skills");
-  if (fs25.existsSync(skillsDir)) {
-    const entries = fs25.readdirSync(skillsDir, { withFileTypes: true });
+  const skillsDir = path27.join(repoRoot, "skills");
+  if (fs27.existsSync(skillsDir)) {
+    const entries = fs27.readdirSync(skillsDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) {
         const skillId = entry.name;
-        const skillMdPath = path25.join(skillsDir, skillId, "SKILL.md");
-        if (fs25.existsSync(skillMdPath)) {
-          const content = fs25.readFileSync(skillMdPath, "utf-8");
+        const skillMdPath = path27.join(skillsDir, skillId, "SKILL.md");
+        if (fs27.existsSync(skillMdPath)) {
+          const content = fs27.readFileSync(skillMdPath, "utf-8");
           let name = skillId;
           let description = "";
           let version = "1.0.0";
@@ -34714,14 +35776,14 @@ function createFableApiHandler(projectRoot = process.cwd()) {
       const plan = readPlanStatus(projectRoot);
       let healthy = true;
       let issuesCount = 0;
-      if (!state && fs25.existsSync(path25.join(projectRoot, ".fable"))) {
+      if (!state && fs27.existsSync(path27.join(projectRoot, ".fable"))) {
         healthy = false;
         issuesCount = 1;
       }
       const unverifiedMutations = state && state.mutationGeneration > 0 ? Math.max(0, state.mutationGeneration - Math.max(0, state.verifiedGeneration)) : 0;
       let pkgVersion = "1.8.0";
       try {
-        const pkg = JSON.parse(fs25.readFileSync(path25.join(projectRoot, "package.json"), "utf-8"));
+        const pkg = JSON.parse(fs27.readFileSync(path27.join(projectRoot, "package.json"), "utf-8"));
         if (pkg.version)
           pkgVersion = pkg.version;
       } catch {}
@@ -34940,18 +36002,18 @@ function apply(ctx, config = {}) {
 // src/rpc/server.ts
 var grpc = __toESM(require_src3(), 1);
 var protoLoader = __toESM(require_src2(), 1);
-import path26 from "node:path";
+import path28 from "node:path";
 import { fileURLToPath as fileURLToPath4 } from "node:url";
-import fs26 from "node:fs";
+import fs28 from "node:fs";
 function resolveDefaultProtoPath() {
-  const currentDir = path26.dirname(fileURLToPath4(import.meta.url));
-  const candidateLocal = path26.resolve(currentDir, "../../proto/fable_worker.proto");
-  if (fs26.existsSync(candidateLocal))
+  const currentDir = path28.dirname(fileURLToPath4(import.meta.url));
+  const candidateLocal = path28.resolve(currentDir, "../../proto/fable_worker.proto");
+  if (fs28.existsSync(candidateLocal))
     return candidateLocal;
-  const candidateDist = path26.resolve(currentDir, "../proto/fable_worker.proto");
-  if (fs26.existsSync(candidateDist))
+  const candidateDist = path28.resolve(currentDir, "../proto/fable_worker.proto");
+  if (fs28.existsSync(candidateDist))
     return candidateDist;
-  return path26.resolve(process.cwd(), "proto/fable_worker.proto");
+  return path28.resolve(process.cwd(), "proto/fable_worker.proto");
 }
 
 class FableWorkerServer {
@@ -34970,7 +36032,7 @@ class FableWorkerServer {
     this.workerId = options.workerId || `worker-${process.pid}-${Date.now().toString(36)}`;
     this.server = new grpc.Server;
     const protoFile = options.protoPath || resolveDefaultProtoPath();
-    if (!fs26.existsSync(protoFile)) {
+    if (!fs28.existsSync(protoFile)) {
       throw new Error(`Protobuf file not found at ${protoFile}`);
     }
     const packageDefinition = protoLoader.loadSync(protoFile, {
@@ -35144,25 +36206,25 @@ class FableWorkerServer {
 // src/rpc/client.ts
 var grpc2 = __toESM(require_src3(), 1);
 var protoLoader2 = __toESM(require_src2(), 1);
-import path27 from "node:path";
+import path29 from "node:path";
 import { fileURLToPath as fileURLToPath5 } from "node:url";
-import fs27 from "node:fs";
+import fs29 from "node:fs";
 function resolveDefaultProtoPath2() {
-  const currentDir = path27.dirname(fileURLToPath5(import.meta.url));
-  const candidateLocal = path27.resolve(currentDir, "../../proto/fable_worker.proto");
-  if (fs27.existsSync(candidateLocal))
+  const currentDir = path29.dirname(fileURLToPath5(import.meta.url));
+  const candidateLocal = path29.resolve(currentDir, "../../proto/fable_worker.proto");
+  if (fs29.existsSync(candidateLocal))
     return candidateLocal;
-  const candidateDist = path27.resolve(currentDir, "../proto/fable_worker.proto");
-  if (fs27.existsSync(candidateDist))
+  const candidateDist = path29.resolve(currentDir, "../proto/fable_worker.proto");
+  if (fs29.existsSync(candidateDist))
     return candidateDist;
-  return path27.resolve(process.cwd(), "proto/fable_worker.proto");
+  return path29.resolve(process.cwd(), "proto/fable_worker.proto");
 }
 
 class FableWorkerClient {
   client;
   constructor(options) {
     const protoFile = options.protoPath || resolveDefaultProtoPath2();
-    if (!fs27.existsSync(protoFile)) {
+    if (!fs29.existsSync(protoFile)) {
       throw new Error(`Protobuf file not found at ${protoFile}`);
     }
     const packageDefinition = protoLoader2.loadSync(protoFile, {
@@ -35277,6 +36339,7 @@ export {
   FableWorkerClient,
   FableWorkerServer,
   GrokBotAdapter,
+  HIGH_CONSEQUENCE_BOUNDARIES,
   HIGH_RISK_SKILLS,
   MAX_REFLEX_LEDGER_LINES,
   MAX_REFLEX_TASK_LENGTH,
@@ -35290,6 +36353,7 @@ export {
   SKILL_BOUNDARY_CONTRASTS,
   STANDARD_REFLEX_BENCHMARK_CORPUS,
   TECH_STACK_MATRIX,
+  TEST_VALUE_REA_EVIDENCE_LEDGER,
   TYPESAFE_API_ENDPOINT,
   ToonDecodeError,
   TypeSafeClient,
@@ -35297,11 +36361,13 @@ export {
   TypeSafeProviderException,
   addEvidence,
   allowedTransitions,
+  analyzeTestFileContent,
   appendReflexEvent,
   apply,
   applyRoutingDecision,
   assignTechStackForDomain,
   atomicWriteFileSync,
+  auditTestSuite,
   autoInstallSkills,
   bucketTopCandidates,
   buildAgentBehaviorEvalPlan,
@@ -35317,10 +36383,12 @@ export {
   calculateFailureState,
   calculateProbabilityMargin,
   calculateVerificationFreshness,
+  canReuseVerificationEvidence,
   canonicalSkillIds,
   checkFableStatus,
   checkNoMistakesStatus,
   choice,
+  classifyResponsibilityGroup,
   collectToolCalls,
   colors,
   compact,
@@ -35335,9 +36403,14 @@ export {
   createFableApiHandler,
   createInitialState,
   createMythosRouterServer,
+  decideTestAction,
   decodeDelegationContract,
   decodeReturnPacket,
   decodeToon,
+  detectBrittleTraps,
+  detectProtectedBoundaries,
+  diagnoseTestFailure,
+  discoverGitChangedFiles,
   encodeDelegationContract,
   encodeReturnPacket,
   encodeToon,
@@ -35349,6 +36422,7 @@ export {
   evaluateFableSpark,
   evaluateResourceIntensity,
   evaluateScaleAndLoad,
+  evaluateThreeQuestions,
   extractHardPolicy,
   extractTaskConstraints,
   extractToonFences,
@@ -35447,6 +36521,7 @@ export {
   isFablePhase,
   isGrokModel,
   isHardPolicyViolation,
+  isHighConsequenceBoundary,
   isValidScenario,
   latestUserIntent,
   loadAgentBehaviorEvidenceSnapshot,
@@ -35461,6 +36536,7 @@ export {
   name,
   noul,
   parseJevResponse as parseCompactionJevResponse,
+  parseTestRunnerOutput,
   phaseForSkill,
   readFableState,
   readPlanStatus,
@@ -35479,9 +36555,11 @@ export {
   runFableLint,
   runReflexEvaluation,
   runSkillPackageLint,
+  runSpearheadPipeline,
   sanitizeTaskText,
   score,
   scoreAgentBehaviorResponseBundle,
+  selectTestsByRisk,
   setActiveCard,
   setRoutingDecision,
   setupAbortBridge,
@@ -35490,9 +36568,12 @@ export {
   toEvalCase,
   transitionState,
   validateAgentBehaviorEvidenceSnapshot,
+  validateCutBoundaryRecord,
   validateEndpoint,
   validateFableState,
   validateToon,
+  verifyDiscrimination,
+  verifyShardCoverage,
   withFableStateTransaction,
   workspaceIdForTarget,
   writeFableState

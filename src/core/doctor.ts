@@ -27,6 +27,7 @@ import {
   configureNoMistakesEcosystem,
 } from '../integrations/no-mistakes-installer.js';
 import { loadReflexConfig } from './reflex/config.js';
+import { TEST_VALUE_REA_EVIDENCE_LEDGER } from './test-value/index.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -724,6 +725,26 @@ export function runDoctor(
   } catch (error) {
     checks.push(
       check('reflex-advisor', 'WARN', `Reflex advisor check: ${error instanceof Error ? error.message : String(error)}`)
+    );
+  }
+
+  try {
+    const artifactList = Object.values(TEST_VALUE_REA_EVIDENCE_LEDGER.artifacts);
+    const ledgerValid =
+      artifactList.length === 5 &&
+      artifactList.every((a) => /^(?:sha256:)?[0-9a-f]{64}$/.test(a.sha256));
+    checks.push(
+      ledgerValid
+        ? check(
+            'test-value-spearhead',
+            'PASS',
+            `Test-Value Spearhead Engine active (${artifactList.length} REA-attested upstream artifacts, tree ${TEST_VALUE_REA_EVIDENCE_LEDGER.treeSha.slice(0, 12)})`
+          )
+        : check('test-value-spearhead', 'ERROR', 'Test-Value Spearhead Engine REA evidence ledger integrity check failed')
+    );
+  } catch (error) {
+    checks.push(
+      check('test-value-spearhead', 'ERROR', `Test-Value Spearhead check failed: ${error instanceof Error ? error.message : String(error)}`)
     );
   }
 
