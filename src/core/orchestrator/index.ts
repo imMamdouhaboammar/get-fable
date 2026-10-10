@@ -8,7 +8,7 @@ import {
   readSkillBody,
 } from '../skill-registry.js';
 import { routeTask } from '../task-router.js';
-import { encodeDelegationContract, encodeToon, validateToon } from '../toon.js';
+import { decodeToon, encodeDelegationContract, encodeToon, validateToon } from '../toon.js';
 import {
   FABLE_MYTHOS_EXPERT_CATALOG,
   routeMythosExperts,
@@ -20,7 +20,7 @@ import {
 } from '../reflex/question-builder.js';
 import type { FableSkillId, SkillRegistry } from '../types.js';
 import { FableWorkerServer, FableWorkerClient } from '../../rpc/index.js';
-import type { TaskExecutionRequest, TaskEvent } from '../../rpc/types.js';
+import type { FableRpcServerOptions, TaskExecutionRequest, TaskEvent } from '../../rpc/types.js';
 import {
   tryNativeJevOrchestrate,
   type ArmedSubagentBundle,
@@ -863,6 +863,8 @@ export async function executeDelegationWavePlanWithGrpc(
   options?: {
     workerAddress?: string;
     spawnEphemeralServer?: boolean;
+    /** The real task executor used by an ephemeral in-process worker. */
+    taskHandler?: FableRpcServerOptions['taskHandler'];
   }
 ): Promise<WaveExecutionReport> {
   const shouldSpawnEphemeral =
@@ -937,86 +939,30 @@ export async function executeDelegationWavePlanWithGrpc(
           return;
         }
 
-        emitEvent({
-          event_id: `evt-${Date.now()}-tool`,
-          task_id: taskId,
-          run_id: runId,
-          timestamp: Date.now(),
-          event_type: 'tool_call',
-          message: `Armed primary skill ${primarySkill} with co-armed overlays [${coArmedSkills.join(', ')}]`,
-          payload_json: JSON.stringify({
-            primarySkill,
-            coArmedSkills,
-            requiredCapabilities: request.required_capabilities,
-          }),
-          is_terminal: false,
-        });
-
-        emitEvent({
-          event_id: `evt-${Date.now()}-mutation`,
-          task_id: taskId,
-          run_id: runId,
-          timestamp: Date.now(),
-          event_type: 'mutation',
-          message: `Executed bounded subtask ${taskId} under verified TOON contract`,
-          payload_json: JSON.stringify({
-            subtaskId: taskId,
-            workerId,
-            status: 'in_progress',
-            verified: true,
-          }),
-          is_terminal: false,
-        });
-
-        const returnPacketToon = encodeToon({
-          returnPacket: {
-            workerId,
-            subtaskId: taskId,
-            primarySkill,
-            coArmedSkills,
-            status: 'completed',
-            verified: true,
-          },
-        });
-
-        emitEvent({
-          event_id: `evt-${Date.now()}-completed`,
-          task_id: taskId,
-          run_id: runId,
-          timestamp: Date.now(),
-          event_type: 'completed',
-          message: `Subtask ${taskId} completed on worker ${workerId}`,
-          payload_json: JSON.stringify({
-            success: true,
-            taskId,
-            workerId,
-            returnPacketToon,
-          }),
-          is_terminal: true,
-        });
+        if (!options?.taskHandler) {
+          throw new Error(
+            `No taskHandler configured for ${taskId}: cannot claim execution or verification`
+          );
+        }
+        // The injected handler owns tool execution and emits its own terminal result.
+        await options.taskHandler(request, emitEvent, isCancelled);
       },
     });
 
-    // Ensure port 0 is preserved for OS-assigned ephemeral port binding
-    (ephemeralServer as unknown as { port: number }).port = 0;
-    const prevConsoleLog = console.log;
-    let boundPort = 0;
-    try {
-      console.log = () => {};
-      boundPort = await ephemeralServer.start();
-    } finally {
-      console.log = prevConsoleLog;
-    }
+    // Port 0 is supported directly by FableWorkerServer.
+    const boundPort = await ephemeralServer.start();
     resolvedWorkerAddress = `127.0.0.1:${boundPort}`;
   }
 
   const client = new FableWorkerClient({
     serverAddress: resolvedWorkerAddress,
-    insecure: true,
+    // Never transmit worker task metadata in plaintext to a non-loopback endpoint.
+    insecure: /^(?:127\.0\.0\.1|localhost|\[::1\]):\d+$/.test(resolvedWorkerAddress),
   });
 
   const receipts: SubagentExecutionReceipt[] = [];
   const sortedWaves = [...plan.waves].sort((a, b) => a.waveIndex - b.waveIndex);
+  let executedWaves = 0;
 
   const dispatchBundle = async (
     bundle: ArmedSubagentBundle,
@@ -1054,35 +1000,56 @@ export async function executeDelegationWavePlanWithGrpc(
     const events = await client.executeTask(request);
     const durationMs = Math.max(1, Math.round(performance.now() - startedMs));
 
-    const hasFailed = events.some((e) => e.event_type === 'failed');
-    const hasCancelled = events.some((e) => e.event_type === 'cancelled');
-    const hasCompleted = events.some((e) => e.event_type === 'completed');
-
-    const status: 'completed' | 'failed' | 'cancelled' = hasFailed
-      ? 'failed'
-      : hasCancelled
-        ? 'cancelled'
-        : hasCompleted
-          ? 'completed'
-          : 'failed';
-
+    const hasFailed = events.some((event) => event.event_type === 'failed');
+    const hasCancelled = events.some((event) => event.event_type === 'cancelled');
+    // A completed event alone is not proof of a completed or verified task.
+    const terminalEvent = [...events].reverse().find((event) => event.is_terminal);
+    let verifiedCompletion = false;
     let returnPacketToon = '';
-    const terminalEvent = [...events]
-      .reverse()
-      .find((e) => e.is_terminal || e.event_type === 'completed');
 
-    if (terminalEvent?.payload_json) {
+    if (
+      !hasFailed &&
+      !hasCancelled &&
+      terminalEvent?.event_type === 'completed' &&
+      terminalEvent.payload_json
+    ) {
       try {
-        const parsed = JSON.parse(terminalEvent.payload_json) as {
+        const payload = JSON.parse(terminalEvent.payload_json) as {
+          success?: boolean;
           returnPacketToon?: string;
         };
-        if (typeof parsed.returnPacketToon === 'string' && parsed.returnPacketToon.trim()) {
-          returnPacketToon = parsed.returnPacketToon;
+        if (
+          payload.success === true &&
+          typeof payload.returnPacketToon === 'string' &&
+          validateToon(payload.returnPacketToon).valid
+        ) {
+          const packet = decodeToon<{
+            returnPacket?: {
+              subtaskId?: string;
+              primarySkill?: string;
+              status?: string;
+              verified?: boolean;
+            };
+          }>(payload.returnPacketToon);
+          verifiedCompletion =
+            packet?.returnPacket?.subtaskId === bundle.subtask.id &&
+            packet.returnPacket.primarySkill === bundle.primarySkill.skillId &&
+            packet.returnPacket.status === 'completed' &&
+            packet.returnPacket.verified === true;
+          if (verifiedCompletion) {
+            returnPacketToon = payload.returnPacketToon;
+          }
         }
       } catch {
-        // Fallback below if payload_json is not valid JSON
+        // Invalid or unverified worker packets must never be counted as success.
       }
     }
+
+    const status: 'completed' | 'failed' | 'cancelled' = hasCancelled
+      ? 'cancelled'
+      : verifiedCompletion
+        ? 'completed'
+        : 'failed';
 
     if (!returnPacketToon) {
       returnPacketToon = encodeToon({
@@ -1092,7 +1059,7 @@ export async function executeDelegationWavePlanWithGrpc(
           primarySkill: bundle.primarySkill.skillId,
           coArmedSkills: coArmedIds,
           status,
-          verified: status === 'completed',
+          verified: false,
         },
       });
     }
@@ -1112,6 +1079,7 @@ export async function executeDelegationWavePlanWithGrpc(
 
   try {
     for (const wave of sortedWaves) {
+      executedWaves++;
       if (wave.parallel) {
         const waveReceipts = await Promise.all(
           wave.bundles.map((bundle) => dispatchBundle(bundle, wave.waveIndex))
@@ -1123,15 +1091,22 @@ export async function executeDelegationWavePlanWithGrpc(
           receipts.push(receipt);
         }
       }
+      // Dependent waves must not execute after a failed or cancelled prerequisite.
+      if (receipts.some((receipt) => receipt.waveIndex === wave.waveIndex && receipt.status !== 'completed')) {
+        break;
+      }
     }
 
-    const allSucceeded = receipts.every((r) => r.status === 'completed');
+    const allSucceeded =
+      receipts.length > 0 &&
+      receipts.length === plan.totalSubtasks &&
+      receipts.every((receipt) => receipt.status === 'completed');
     const toonReport = encodeToon({
       executionReport: {
         task: plan.task,
         workerAddress: resolvedWorkerAddress,
         ephemeralServerSpawned: shouldSpawnEphemeral,
-        totalWavesExecuted: sortedWaves.length,
+        totalWavesExecuted: executedWaves,
         totalSubtasksExecuted: receipts.length,
         allSucceeded,
       },
@@ -1151,7 +1126,7 @@ export async function executeDelegationWavePlanWithGrpc(
       task: plan.task,
       workerAddress: resolvedWorkerAddress,
       ephemeralServerSpawned: shouldSpawnEphemeral,
-      totalWavesExecuted: sortedWaves.length,
+      totalWavesExecuted: executedWaves,
       totalSubtasksExecuted: receipts.length,
       allSucceeded,
       receipts,
