@@ -138,7 +138,10 @@ describe('Fable gRPC Worker Transport', () => {
       expect(events.some((event) => event.event_type === 'failed')).toBe(true);
       expect(events.some((event) => event.event_type === 'completed')).toBe(false);
       expect(events.some((event) => event.event_type === 'mutation')).toBe(false);
-      expect(bareClient.executeSkill({
+      const health = await bareClient.getWorkerHealth();
+      expect(health.status).toBe('NOT_SERVING');
+      expect(health.supported_skills).toEqual([]);
+      await expect(bareClient.executeSkill({
         skill_id: 'fable-tdd',
         case_id: 'no-skill-handler',
         instruction: 'Do actual work',
