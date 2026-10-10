@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-dataviz.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-dataviz.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-dataviz.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-dataviz.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-dataviz — get-fable Skill Reference">
+  <meta property="og:description" content="Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-dataviz.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-dataviz — get-fable Skill">
+  <meta name="twitter:description" content="Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-dataviz — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-dataviz Skill Specification",
+    "description": "Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-dataviz.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-dataviz</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-dataviz.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-dataviz.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-dataviz.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 110</span>
+        </div>
+        <h1 class="skill-title">fable-dataviz</h1>
+        <p class="skill-lead">Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "dataviz" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-execute.html">fable-execute</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">dataviz</span> <span class="intent-chip">create-chart</span> <span class="intent-chip">visualize-data</span> <span class="intent-chip">dashboard-metrics</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>theme-contrast-valid</code></li><li><code>viewbox-defined</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable DataViz</h1>
+<p>Turn data into a visual claim that is easy to read <strong>without changing what the data actually says</strong>.</p>
+<h2>Mission</h2>
+<p>A chart is an argument about magnitude, trend, distribution, relationship, uncertainty, or composition. The first job is to choose a visual encoding that matches that question. The second is to preserve statistical meaning. Styling comes after both.</p>
+<p>A valid SVG with attractive colors can still be a bad visualization if it truncates axes deceptively, aggregates incompatible groups, hides missing data, implies causality from correlation, or invents precision the source does not support.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>a metric/trend/distribution/comparison/relationship needs visual explanation;</li>
+<li>benchmark/eval results need charts or stat graphics;</li>
+<li>a report/artifact needs an evidence-backed visual;</li>
+<li>raw data must be transformed into SVG/chart code or a visual specification.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>there is no actual data and the request would require inventing values;</li>
+<li>a plain table is more accurate/readable for a small lookup task;</li>
+<li>the core task is document structure rather than visual encoding (<code>fable-artifact</code>);</li>
+<li>the user requests an illustrative image rather than a data visualization.</li>
+</ul>
+<h2>Question Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Question</th><th>Useful first encoding</th><th>Typical misuse</th></tr></thead><tbody>
+<tr><td>Compare categories</td><td>bar/dot plot</td><td>pie with many similar slices</td></tr>
+<tr><td>Trend over ordered time</td><td>line/area with careful baseline</td><td>unordered category line chart</td></tr>
+<tr><td>Distribution</td><td>histogram/box/violin/dot</td><td>average-only bar</td></tr>
+<tr><td>Relationship</td><td>scatter/bubble with scale caveats</td><td>dual-axis correlation theater</td></tr>
+<tr><td>Part-to-whole</td><td>stacked bar/100% bar; limited pie</td><td>sum components that are not one whole</td></tr>
+<tr><td>Ranking</td><td>sorted bar/dot</td><td>alphabetic order hiding rank</td></tr>
+<tr><td>Single KPI + context</td><td>stat + baseline/change</td><td>giant number without denominator/timeframe</td></tr>
+<tr><td>Uncertainty</td><td>interval/band/error bars</td><td>precise point with hidden variance</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Establish data provenance and semantic contract</h3>
+<p>Record:</p>
+<ul class="docs-list">
+<li>source/dataset/version/time window;</li>
+<li>unit and denominator;</li>
+<li>category/time definitions;</li>
+<li>missing/null semantics;</li>
+<li>whether values are counts, rates, percentages, currency, estimates, or modeled outputs;</li>
+<li>uncertainty/precision available.</li>
+</ul>
+<p>If source or metric meaning is ambiguous, stop and resolve it before rendering.</p>
+<h3>Stage 2 — State the visual question</h3>
+<p>Write one sentence: <code>This chart should help the reader see ___</code>.</p>
+<p>If there are multiple unrelated questions, create separate views rather than forcing one overloaded chart.</p>
+<h3>Stage 3 — Validate transformations</h3>
+<p>Before plotting, explicitly define:</p>
+<ul class="docs-list">
+<li>filters;</li>
+<li>grouping/aggregation;</li>
+<li>normalization/denominator;</li>
+<li>sorting;</li>
+<li>date bucketing/time zone;</li>
+<li>handling of missing/outliers;</li>
+<li>derived metrics/calculations.</li>
+</ul>
+<p>Check totals/ranges before and after transformation. Never silently drop records that change the claim.</p>
+<h3>Stage 4 — Choose encoding and scales</h3>
+<p>Use position/length for precise comparisons where possible. Choose linear/log/percentage scales based on metric semantics.</p>
+<p>Baseline rules:</p>
+<ul class="docs-list">
+<li>bar length usually needs meaningful zero because length encodes magnitude;</li>
+<li>line/scatter axes may use non-zero domains if clearly labeled and not exaggerating the story;</li>
+<li>log scales require positive values and explicit labeling;</li>
+<li>dual axes are high-risk and need strong justification.</li>
+</ul>
+<h3>Stage 5 — Encode uncertainty and data quality</h3>
+<p>If estimates have intervals/variance/sample sizes, show or state them when material. Mark missing periods/categories rather than connecting them as if observed.</p>
+<p>Do not show more decimal places than source precision justifies.</p>
+<h3>Stage 6 — Design for reading and accessibility</h3>
+<p>Prioritize:</p>
+<ul class="docs-list">
+<li>descriptive title stating metric/context;</li>
+<li>direct labels where they reduce legend decoding;</li>
+<li>readable typography/spacing;</li>
+<li>contrast and non-color cues;</li>
+<li>accessible title/description for SVG;</li>
+<li>responsive <code>viewBox</code>/appropriate container behavior;</li>
+<li>units and source note.</li>
+</ul>
+<p>Do not rely on red/green or hue alone for meaning.</p>
+<h3>Stage 7 — Validate the rendered artifact</h3>
+<p>Check:</p>
+<ul class="docs-list">
+<li>chart renders without clipping/overlap;</li>
+<li>data coordinates match source values;</li>
+<li>axes/ticks/labels/legend are correct;</li>
+<li>small/large screens when responsive;</li>
+<li>light/dark theme if required;</li>
+<li>accessibility metadata;</li>
+<li>no transformation/render code silently changes ordering or values.</li>
+</ul>
+<h3>Stage 8 — Run a deception audit</h3>
+<p>Ask:</p>
+<ul class="docs-list">
+<li>would a reasonable reader infer a larger/smaller effect than raw data supports?</li>
+<li>is the denominator/time window obvious?</li>
+<li>are missing values hidden?</li>
+<li>does annotation imply causality not established?</li>
+<li>are categories incomparable due to different bases?</li>
+</ul>
+<p>Fix the visual claim, not only the pixels.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Never invent data, labels, sample sizes, sources, or benchmark results.</li>
+<li>A percentage without denominator/base often needs contextualization before visualization.</li>
+<li>Avoid pie/donut when readers need precise comparison or categories are numerous.</li>
+<li>Do not downsample by simply dropping points when extrema/events matter; use a documented aggregation/sampling strategy.</li>
+<li>Missing values are not zero unless the domain explicitly defines them that way.</li>
+<li>Sort categories to support the question unless natural/order semantics require otherwise.</li>
+<li>Use zero baseline for bars by default; exceptions require an encoding where truncation is not misleading and must remain visible.</li>
+<li>Correlation chart/temporal coincidence does not justify causal annotation.</li>
+<li>If a chart cannot remain legible at target size, simplify/segment rather than shrink labels into illegibility.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Every plotted mark maps to source/transformation logic.</li>
+<li>Units, denominator, and timeframe remain truthful.</li>
+<li>Missing/uncertain data is not silently converted into certainty.</li>
+<li>Scale choices do not intentionally exaggerate magnitude.</li>
+<li>Accessibility does not depend on color alone.</li>
+<li>Rendered output can be traced back to source data and transformation steps.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Wrong chart question</h3>
+<p>Encoding answers composition while reader needs precise comparison. Re-select chart by analytical question.</p>
+<h3>Aggregation distortion</h3>
+<p>Grouping/normalization changes denominator or hides important subgroup behavior. Recompute and document transformation.</p>
+<h3>Scale deception</h3>
+<p>Axis/domain makes modest changes look extreme. Restore appropriate baseline/domain and labels.</p>
+<h3>Missing-data fiction</h3>
+<p>Null periods are plotted as zero/interpolated without justification. Mark gaps or document imputation.</p>
+<h3>Overplotting/crowding</h3>
+<p>Marks/labels overlap and conceal distribution. Aggregate, facet, sample responsibly, or change encoding.</p>
+<h3>Accessibility failure</h3>
+<p>Contrast/color-only meaning/text size prevents interpretation. Add non-color cues/direct labels/accessible metadata.</p>
+<h3>Source uncertainty</h3>
+<p>Metric meaning or provenance is unclear. Stop rendering and resolve source contract.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>starting with &quot;make it a donut&quot; before understanding the question;</li>
+<li>truncating bar axes to dramatize change;</li>
+<li>dual axes used to manufacture correlation;</li>
+<li>treating missing values as zero;</li>
+<li>inventing sample data to make the chart look complete;</li>
+<li>downsampling away spikes without disclosure;</li>
+<li>3D/perspective effects that distort area/length;</li>
+<li>rainbow palettes with no semantic reason;</li>
+<li>title like &quot;Revenue&quot; with no unit/timeframe;</li>
+<li>declaring a chart verified because SVG syntax parses.</li>
+</ul>
+<h2>Visualization Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Question / intended takeaway:
+Source + version/timeframe:
+Metric definition / unit / denominator:
+Transformations:
+Missing/outlier/uncertainty handling:
+Encoding + scale rationale:
+Accessibility choices:
+Rendered validation:
+Deception audit:
+Source note:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Visualization completes when:</p>
+<ul class="docs-list">
+<li>visual question and metric semantics are explicit;</li>
+<li>transformations are reproducible and totals/ranges checked;</li>
+<li>encoding/scale match the analytical task without distortion;</li>
+<li>missing/uncertain data is honest;</li>
+<li>artifact renders accessibly at target size/theme;</li>
+<li>source/data-to-mark traceability exists;</li>
+<li>no claim exceeds what the data supports.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/truthful-chart-selection-and-validation.md</code></li>
+<li>Existing design system: <code>references/dataviz-design-system.md</code></li>
+<li>Example: <code>examples/render-bar-chart.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

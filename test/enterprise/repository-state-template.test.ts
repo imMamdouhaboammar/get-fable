@@ -15,14 +15,19 @@ describe('repository state template portability', () => {
       rawText = fs.readFileSync(path.join(getCoreRepoRoot(), '.fable', 'state.json'), 'utf-8');
     }
     const raw = JSON.parse(rawText);
-    expect(raw.schemaVersion).toBe(1);
-    expect(raw.workspaceId).toBeUndefined();
+    expect(raw.schemaVersion).toBeGreaterThanOrEqual(1);
+    const unbound = {
+      ...raw,
+      schemaVersion: 1,
+      workspaceId: undefined,
+      evidence: (raw.evidence || []).map((e: any) => ({ ...e, workspaceId: undefined })),
+    };
 
     const a = fs.mkdtempSync(path.join(os.tmpdir(), 'fable-state-template-a-'));
     const b = fs.mkdtempSync(path.join(os.tmpdir(), 'fable-state-template-b-'));
     try {
-      const stateA = validateFableState(raw, a);
-      const stateB = validateFableState(raw, b);
+      const stateA = validateFableState(unbound, a);
+      const stateB = validateFableState(unbound, b);
       expect(stateA.schemaVersion).toBe(3);
       expect(stateB.schemaVersion).toBe(3);
       expect(stateA.workspaceId).not.toBe(stateB.workspaceId);

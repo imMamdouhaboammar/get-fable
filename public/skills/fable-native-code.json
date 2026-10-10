@@ -1,0 +1,55 @@
+{
+  "id": "fable-native-code",
+  "order": 260,
+  "pack": "build",
+  "packName": "Build Pack",
+  "phase": "executing",
+  "description": "Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.",
+  "intents": [
+    "write-native-code",
+    "strip-bloat",
+    "match-idiom"
+  ],
+  "requires": [
+    "codebase-context"
+  ],
+  "produces": [
+    "native-diff"
+  ],
+  "gates": [
+    "idiom-matched",
+    "no-defensive-bloat"
+  ],
+  "fallback": "fable-execute",
+  "mutatesWorkspace": true,
+  "parallelSafe": false,
+  "next": [
+    "fable-verify",
+    "fable-review"
+  ],
+  "keywords": [
+    "native code",
+    "match idiom",
+    "strip comments",
+    "no defensive bloat",
+    "clean diff"
+  ],
+  "frontmatter": {
+    "name": "fable-native-code",
+    "description": "Use when writing or editing code in an existing codebase — before adding comments, docstrings, try/catch blocks, validation, logging, or TODOs the surrounding file doesn't have, and before explaining your style choices in the reply.",
+    "version": "1.0.0",
+    "pack": "build",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-execute",
+    "mutatesWorkspace": "true",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Native Code\n\nYour diff should read like the file's longtime owner wrote it. The file has a style — naming, error handling, comment density, formatting. Write in it. Your personal preferences are not improvements; they're an accent.\n\n## Purpose\n\nEnforce codebase idioms and suppress foreign AI patterns. Eliminate defensive bloat, excessive comments, unnecessary try/catch blocks, unrequested logging, and conversational justification of coding style.\n\n## When to Use\n\n- When writing or editing code in an existing repository.\n- Before adding docstrings, comments, type annotations, or validations to a file that lacks them.\n- When choosing naming conventions, error-handling patterns, or import structures.\n- When reviewing a completed diff before finalizing the turn.\n\n## When NOT to Use\n\n- When bootstrapping a brand new project from scratch with no established idioms (use `fable-architecture` or `fable-execute`).\n- Refactoring architectural boundaries or decoupling modules (use `fable-simplify`).\n- Performance benchmarking and algorithmic optimization (use `fable-review`).\n\n## Inputs\n\n- `source_diff`: The proposed code modification.\n- `target_file`: The existing source file, its surrounding conventions, and neighboring modules.\n\n## Expected Outputs\n\n- `idiomatic_code`: Clean, minimal, idiom-matched code edits that blend seamlessly with surrounding style.\n- `clean_diff`: A diff free of cosmetic churn, gratuitous comments, and defensive wrapping.\n\n## Procedure\n\n1. **Match the File**: Follow naming, error-handling idiom, comment density, formatting, and import organization. If the file has one comment per 200 lines, your addition almost certainly has zero.\n2. **Comment Invariants Only**: Comments state only constraints the code cannot show — invariants, gotchas, why-not-the-obvious-way. Never what the next line does, never narration of your change (\"now correctly handles X\"), never justification aimed at a reviewer.\n3. **Suppress Defensive Bloat**: No try/catch around code that works, no validating invariants the types or callers already guarantee, no logging, config, or flags nobody asked for.\n4. **Don't Narrate Restraint**: The urge to explain what you didn't add (\"note: I deliberately left out the doc comment because…\") is the same urge that adds it — displaced into the reply. Deliver the code; mention style only if the user asks.\n5. **Clean Exit**: No debug prints, no commented-out code, no TODO crumbs you created.\n6. **Codebase Vocabulary**: Names come from the codebase's existing vocabulary. Don't coin a second name for an existing concept.\n\n## Decision Rules\n\n### Contrast Example: Terse Go File\n\nTask: add `clampWindow` to a terse Go file whose only comment in 200 lines marks a sorting invariant; callers guarantee `max >= 0`.\n\n**Foreign (AI habits, not the file's):**\n```go\n// clampWindow clamps start and end into the valid range [0, max] and\n// normalizes inverted windows. Returns (start, start) when end < start.\nfunc clampWindow(start, end, max int) (int, int) {\n    if max < 0 {\n        return 0, 0 // defensive: should never happen\n    }\n    ...\n}\n```\n\n**Native (what the file's owner would write):**\n```go\nfunc clampWindow(start, end, max int) (int, int) {\n    if start < 0 {\n        start = 0\n    }\n    if end > max {\n        end = max\n    }\n    if end < start {\n        end = start\n    }\n    return start, end\n}\n```\n\n- If surrounding code uses early returns, use early returns.\n- If surrounding code lets errors bubble up, bubble them up; do not swallow or wrap them in unrequested custom errors.\n- Never add a docstring unless the enclosing interface or file strictly enforces docstrings on all exported symbols.\n\n## Tool Policy\n\n- Read neighboring functions before editing to absorb file conventions.\n- Use precise line replacement tools (`replace_file_content`) to prevent whitespace and indentation drift.\n- Do not reformat untouched lines in the same file.\n\n## Evidence Requirements\n\n- Provide the exact diff showing changes integrate natively with the file.\n- Passing test suite and linter confirming zero stylistic or typing violations.\n\n## Failure Handling\n\n- If linter flags a style mismatch, conform strictly to the project's linter rules.\n- If an unneeded comment or debug print slipped into the diff, remove it immediately before completing the turn.\n\n## Completion Criteria\n\n- Diff reads as if authored by the repository's primary maintainer.\n- Zero defensive bloat, zero unrequested logging, zero artificial comments.\n- Code compiles, passes existing style checks, and passes all unit tests.",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-native-code.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.223Z"
+}

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-artifact.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-artifact.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-artifact.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-artifact.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-artifact — get-fable Skill Reference">
+  <meta property="og:description" content="Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-artifact.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-artifact — get-fable Skill">
+  <meta name="twitter:description" content="Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-artifact — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-artifact Skill Specification",
+    "description": "Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-artifact.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-artifact</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-artifact.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-artifact.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-artifact.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 120</span>
+        </div>
+        <h1 class="skill-title">fable-artifact</h1>
+        <p class="skill-lead">Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "create-artifact" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">create-artifact</span> <span class="intent-chip">diagram-architecture</span> <span class="intent-chip">interactive-component</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>hierarchy-clear</code></li><li><code>theme-adaptive</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Artifact</h1>
+<p>Turn requirements and evidence into a standalone artifact whose content, structure, diagrams, links, and rendered output can all be checked independently.</p>
+<h2>Mission</h2>
+<p>An artifact is not successful because the Markdown parses or the diagram looks polished. It must communicate the right claims to the right audience, preserve source truth, make assumptions visible, and render in the medium the user will actually consume.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>producing RFCs, architecture proposals, technical reports, runbooks, decision records, diagrams, or rich standalone documentation;</li>
+<li>packaging analysis/results into a durable document;</li>
+<li>creating a diagram or interactive explanatory artifact from established requirements/evidence.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>a one-paragraph answer is sufficient;</li>
+<li>application logic itself needs modification (<code>fable-execute</code>);</li>
+<li>the main work is numerical chart selection (<code>fable-dataviz</code>);</li>
+<li>facts required by the artifact have not been researched/discovered yet.</li>
+</ul>
+<h2>Artifact Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Artifact</th><th>Primary contract</th></tr></thead><tbody>
+<tr><td>RFC/proposal</td><td>decision, alternatives, trade-offs, acceptance/rollout</td></tr>
+<tr><td>Architecture doc</td><td>boundaries, data/control flow, invariants, deployment</td></tr>
+<tr><td>Runbook</td><td>trigger, prerequisites, executable steps, rollback/escalation</td></tr>
+<tr><td>Incident/report</td><td>timeline/evidence/impact without invented causality</td></tr>
+<tr><td>Decision record</td><td>context, decision, alternatives, consequences</td></tr>
+<tr><td>Diagram</td><td>semantic topology/sequence/state, not decorative boxes</td></tr>
+<tr><td>Interactive explainer</td><td>accessible interaction + deterministic content/source</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Define audience and job</h3>
+<p>State who will use the artifact and what decision/action it must support. One artifact can contain multiple sections, but it should have one primary communication job.</p>
+<h3>Stage 2 — Build a claim/source map</h3>
+<p>Before writing polished prose, identify:</p>
+<ul class="docs-list">
+<li>measured/source-backed facts;</li>
+<li>design decisions;</li>
+<li>assumptions/inferences;</li>
+<li>unresolved items;</li>
+<li>data/visual sources;</li>
+<li>claims that need citations/links.</li>
+</ul>
+<p>Do not invent examples, metrics, architecture components, test results, or citations to make the document feel complete.</p>
+<h3>Stage 3 — Choose structure from artifact type</h3>
+<p>Examples:</p>
+<ul class="docs-list">
+<li>RFC: context → goals/non-goals → evidence → options → decision → design → risks → rollout/rollback → acceptance;</li>
+<li>runbook: symptom/trigger → safety prerequisites → diagnosis → action → verification → rollback/escalation;</li>
+<li>architecture: scope → context → components/boundaries → flows → data/state → failure/security → deployment/operations → decisions.</li>
+</ul>
+<p>Avoid generic template sections that do not serve the document&#039;s job.</p>
+<h3>Stage 4 — Design diagrams semantically</h3>
+<p>Each node/edge should represent a real component, state, dependency, event, or data/control flow. Label direction/meaning where ambiguity exists.</p>
+<p>For Mermaid or other text diagrams:</p>
+<ul class="docs-list">
+<li>validate syntax;</li>
+<li>quote/escape labels safely;</li>
+<li>avoid giant unreadable graphs;</li>
+<li>split views by question (context, container, sequence, state) when one diagram becomes overloaded.</li>
+</ul>
+<h3>Stage 5 — Write for scanning and decision quality</h3>
+<p>Use hierarchy, short sections, tables only when comparison benefits, callouts sparingly, and explicit <code>Decision</code>, <code>Risk</code>, <code>Unknown</code>, <code>Evidence</code> language where useful.</p>
+<p>Do not turn every sentence into bullets or bury the main decision below background detail.</p>
+<h3>Stage 6 — Validate internal consistency</h3>
+<p>Cross-check:</p>
+<ul class="docs-list">
+<li>terms/names/versions match throughout;</li>
+<li>diagram matches prose;</li>
+<li>examples match actual API/schema;</li>
+<li>links/anchors exist;</li>
+<li>recommendations follow cited evidence;</li>
+<li>no section contradicts the accepted design.</li>
+</ul>
+<h3>Stage 7 — Render in the target medium</h3>
+<p>A source file is not the final artifact when rendering matters. Preview/render Markdown/Mermaid/HTML/PDF/other target as appropriate and inspect for clipping, broken diagrams, overflow, missing assets, unreadable typography, or inaccessible interactions.</p>
+<h3>Stage 8 — Run truth and usability review</h3>
+<p>Ask:</p>
+<ul class="docs-list">
+<li>can the audience locate the primary decision/action quickly?</li>
+<li>which statements are fact vs proposal vs inference?</li>
+<li>are any claims unsupported?</li>
+<li>would a diagram imply a relationship that does not exist?</li>
+<li>can a future reader execute/maintain the artifact without chat context?</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Prefer explicit <code>unknown/not checked</code> to filling gaps with plausible content.</li>
+<li>A diagram should answer a question; split it when one view mixes topology, sequence, deployment, and ownership beyond readability.</li>
+<li>Use links/citations for external/current claims where traceability matters; do not fabricate sources.</li>
+<li>Generated charts/tables inherit their data provenance from DataViz/research packets.</li>
+<li>If artifact changes as the design changes, reconcile every diagram/example/decision reference before completion.</li>
+<li>Interactive artifacts need keyboard/accessibility/fallback behavior appropriate to their use; visual novelty is not a substitute for communication.</li>
+<li>Keep implementation details out of an executive/decision artifact unless they materially change the decision.</li>
+<li>Use the repository/designated artifact destination; do not litter roots/temp paths.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Every factual claim is source-backed or clearly labeled as inference/proposal.</li>
+<li>No fake data, citations, test results, architecture components, or case studies.</li>
+<li>Diagram/prose/examples describe the same design.</li>
+<li>Target rendering is checked when rendering is part of delivery.</li>
+<li>Artifact stands alone without requiring hidden conversation context.</li>
+<li>Audience can identify the primary decision/action.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Content hallucination</h3>
+<p>Missing fact is filled with plausible detail. Remove/research/label unknown.</p>
+<h3>Diagram semantic drift</h3>
+<p>Diagram no longer matches current design or implies false flow. Regenerate/reconcile.</p>
+<h3>Template bloat</h3>
+<p>Generic sections obscure the document&#039;s job. Remove sections without decision value.</p>
+<h3>Source/render mismatch</h3>
+<p>Markdown/HTML code looks valid but target renderer clips/breaks assets/diagram. Verify rendered output.</p>
+<h3>Internal contradiction</h3>
+<p>Versions/names/decisions differ across sections. Establish one canonical claim map and reconcile.</p>
+<h3>Audience mismatch</h3>
+<p>Document is technically complete but too low/high altitude for intended reader. Reorganize around their decision/action.</p>
+<h3>Link/source rot</h3>
+<p>Critical evidence points to invalid/missing paths. Repair or preserve relevant content locally when appropriate.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>fake metrics to make proposal persuasive;</li>
+<li>Mermaid diagram full of decorative boxes with no clear edge semantics;</li>
+<li>generic &quot;Overview / Architecture / Conclusion&quot; template regardless of job;</li>
+<li>copying raw research notes without synthesis;</li>
+<li>using callout blocks everywhere;</li>
+<li>claiming rendered/accessible without previewing target medium;</li>
+<li>architecture prose updated while diagram remains stale;</li>
+<li>citations that do not support the sentence;</li>
+<li>giant wall of implementation detail before the main decision.</li>
+</ul>
+<h2>Artifact Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Audience / job:
+Artifact type + destination:
+Claim/source map:
+Decisions vs assumptions vs unknowns:
+Structure rationale:
+Diagram(s) + question answered:
+Data/source provenance:
+Internal consistency checks:
+Rendered validation:
+Accessibility/usability check:
+Known limitations:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Artifact completes when:</p>
+<ul class="docs-list">
+<li>content is evidence-grounded and audience/job-aligned;</li>
+<li>structure supports the intended decision/action;</li>
+<li>diagrams/examples/data are semantically consistent;</li>
+<li>unknowns are explicit rather than invented;</li>
+<li>target rendering/links/assets are validated;</li>
+<li>a zero-context reader can understand and use the artifact.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/source-grounded-artifact-design.md</code></li>
+<li>Existing guide: <code>references/artifact-composition-guide.md</code></li>
+<li>Example: <code>examples/system-architecture-diagram.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

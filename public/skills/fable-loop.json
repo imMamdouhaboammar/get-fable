@@ -1,0 +1,58 @@
+{
+  "id": "fable-loop",
+  "order": 140,
+  "pack": "system",
+  "packName": "System Pack",
+  "phase": "executing",
+  "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.",
+  "intents": [
+    "recurring-loop",
+    "poll-status",
+    "babysit-ci"
+  ],
+  "requires": [
+    "loop-condition"
+  ],
+  "produces": [
+    "loop-receipt"
+  ],
+  "gates": [
+    "budget-bounded",
+    "exit-condition-explicit"
+  ],
+  "fallback": "fable-recover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-verify",
+    "fable-handoff",
+    "fable-tend"
+  ],
+  "keywords": [
+    "loop",
+    "poll",
+    "interval",
+    "recurring",
+    "cron",
+    "schedule",
+    "babysit"
+  ],
+  "frontmatter": {
+    "name": "fable-loop",
+    "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff. Use when monitoring async CI/CD pipelines, polling external service status, running interval test watches, or tracking long-running jobs — even if the user does not explicitly say \\\"fable-loop\\\" (e.g. \\\"babysit this build\\\", \\\"poll until completed\\\", \\\"watch CI status\\\", \\\"wait for deployment\\\"). Do NOT use for synchronous one-shot commands or unbounded infinite polling loops.",
+    "version": "1.3.0",
+    "pack": "system",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-recover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Loop\n\nRepeat a check only when repetition can reveal new state, with explicit termination, backoff, error classification, and zero ambiguity about why the loop stopped.\n\n## Mission\nPolling is not \"run the same command until it turns green.\" A good loop models a changing external condition, distinguishes pending from failure, respects rate/cost budgets, and terminates on success, terminal failure, cancellation, or exhausted budget.\n\nIf repeated execution cannot produce new information, the task belongs in diagnosis—not a loop.\n\n## Activate When\n- waiting for CI/deployment/build/batch-job state to change;\n- monitoring a bounded asynchronous operation;\n- checking eventually-consistent external state;\n- repeating a safe measurement while a known process progresses;\n- running a finite stabilization sample where repetition itself is the measurement.\n\n## Do Not Activate When\n- one command/probe is enough (`fable-run`/`fable-verify`);\n- the same deterministic failure is repeating with no external state change (`fable-recover`);\n- user expects a future notification/scheduled task rather than an in-session bounded loop;\n- polling would create repeated non-idempotent side effects;\n- no termination criteria or budget can be defined.\n\n## Loop Classification\n| Loop type | Success/terminal semantics |\n| --- | --- |\n| CI/build | pending → success or terminal failure/cancelled |\n| Deployment | progressing → healthy/rolled back/failed |\n| Batch job | queued/running → completed/failed |\n| Eventual consistency | old state → expected state within deadline |\n| Rate-limited API | pending/retryable → success or terminal auth/schema error |\n| Stabilization sampling | N bounded observations → distribution/variance verdict |\n\n## Protocol\n### Stage 1 — Define the state machine\nBefore iteration, enumerate:\n- success state;\n- pending/retryable states;\n- terminal failure states;\n- malformed/unknown states;\n- cancellation condition.\n\nA loop that treats every non-success as \"try again\" is unsafe.\n\n### Stage 2 — Set budgets\nDefine at least:\n- maximum elapsed time/deadline;\n- maximum iterations or request budget where relevant;\n- initial interval/backoff policy;\n- maximum interval;\n- API/cost/rate constraints.\n\nUse the stricter bound when several apply.\n\n### Stage 3 — Check idempotency and side effects\nPolling operation should be read-only/idempotent. If the endpoint/command triggers work, separate trigger from status observation and ensure retries cannot duplicate the action.\n\n### Stage 4 — Execute one iteration and classify result\nRecord:\n- iteration/time;\n- observed state/value;\n- transport/command result;\n- classification: success / pending / retryable error / terminal failure / unknown;\n- next delay/reason.\n\n### Stage 5 — Apply backoff intelligently\nUse a fixed interval when the expected update cadence is known and inexpensive; exponential/backoff+jitter when rate limits/transient service errors matter.\n\nRespect explicit `Retry-After`/provider guidance where applicable. Do not make sub-second aggressive calls to a slow external job just because tools allow it.\n\n### Stage 6 — Stop early on terminal information\nExit immediately on:\n- success;\n- explicit failed/cancelled state;\n- non-retryable auth/schema/permission error;\n- user cancellation;\n- budget/deadline exhaustion.\n\nDo not consume remaining iterations after the outcome is already known.\n\n### Stage 7 — Detect lack of progress\nWhen a status includes progress/version/timestamp, compare across iterations. A long unchanged state near/after expected SLA may become a diagnostic signal rather than permission to extend budget automatically.\n\n### Stage 8 — Produce an honest receipt\nFinal receipt includes stop reason, elapsed time, iterations, last state, transient errors, and whether the condition was actually satisfied.\n\nTimeout is not success. \"Still running\" is not failure unless the contract/deadline says so.\n\n## Decision Rules\n- Deterministic repeated failure with no changing external state → stop loop and recover.\n- Retryable transport error may continue within budget; auth/permission/schema errors usually terminate until configuration changes.\n- Treat provider `Retry-After` or job-recommended poll interval as a lower bound where applicable.\n- Never repeat a non-idempotent trigger as a status poll.\n- If each iteration costs meaningful money/quota, include cost/request budget, not only time.\n- If expected completion exceeds the current session/task model, create a scheduled/condition-watch mechanism when available rather than pretending an in-session loop can run indefinitely.\n- A loop may end `INCOMPLETE/TIMEOUT`; do not extend bounds silently just to obtain green.\n- If progress is unchanged and deadline still distant, continue according to policy without noisy user updates; surface only meaningful state changes for long interactive runs.\n\n## Invariants\n- Exit criteria and budgets are explicit before looping.\n- Each iteration is safe/idempotent or side-effect semantics are explicitly controlled.\n- Terminal failures stop immediately.\n- Pending and failure are distinct states.\n- Backoff/rate limits are respected.\n- Receipt records actual stop reason; no timeout-to-pass conversion.\n\n## Failure Taxonomy\n### Infinite/implicit loop\nNo enforceable budget. Reject and define bounds.\n\n### Retry-all-errors\nAuth/schema/permission/terminal job failures are treated as transient. Classify and stop appropriately.\n\n### Duplicate side effect\nPolling call re-triggers work. Separate status endpoint/idempotency key or stop.\n\n### Thundering poll\nInterval too aggressive for service/job cadence. Back off/respect provider guidance.\n\n### False timeout diagnosis\nJob still pending within expected SLA but loop labels it broken. Report timeout/incomplete separately from product failure.\n\n### Stuck progress\nState never changes when it should. Hand to recovery/operations diagnosis rather than extending forever.\n\n### Session mismatch\nRequested monitoring lasts beyond available execution window. Use scheduling/condition-watch capability when supported.\n\n## Anti-Patterns\n- raw `while true`/unbounded sleep loops;\n- retrying every error class;\n- polling by repeatedly re-submitting the job;\n- extending timeout until success after each miss;\n- 1-second polling for a 10-minute deployment;\n- declaring failure just because status is pending;\n- declaring success because the loop ended cleanly;\n- hiding transient errors from the final receipt;\n- using loops to avoid diagnosing deterministic repeated failures.\n\n## Loop Receipt\n```text\nCondition/state machine:\nSuccess / terminal failure states:\nTime + iteration/request budgets:\nInterval/backoff policy:\nIdempotency/side-effect check:\nIterations: time → observed state → classification\nTransient errors:\nStop reason:\nCondition satisfied? yes/no\nFinal state:\nNext action if incomplete/failed:\n```\n\n## Completion Criteria\nLoop completes when:\n- state machine, success/failure semantics, and budgets were explicit;\n- polling respected idempotency/rate/cost constraints;\n- terminal information stopped the loop early;\n- timeout/stuck state is represented honestly;\n- final receipt shows exactly why looping ended and what should happen next.\n\n## Progressive Resources\n- Deep guide: `references/polling-state-machines-and-backoff.md`\n- Existing guidelines: `references/loop-control-guidelines.md`\n- Example: `examples/poll-build-job.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-loop.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.216Z"
+}

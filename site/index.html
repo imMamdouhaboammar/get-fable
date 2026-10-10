@@ -6,13 +6,92 @@
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#FFFFFF">
   <meta name="description" content="get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/">
+  <link rel="alternate" type="text/markdown" href="./index.md">
+  <link rel="alternate" type="text/plain" href="./index.txt">
+  <link rel="alternate" type="application/json" href="./index.json">
+
+  <!-- Open Graph -->
   <meta property="og:title" content="get-fable — Better working conditions for the model you already use">
   <meta property="og:description" content="Planning, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification for AI coding agents">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://get-fable.vercel.app/">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="get-fable — Frontier-style execution discipline for AI coding agents">
+  <meta name="twitter:description" content="Planning, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification for AI coding agents">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
   <title>get-fable — Frontier-style execution discipline for AI coding agents</title>
   <link rel="icon" href="./assets/mascot.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script src="./script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "get-fable",
+        "url": "https://get-fable.vercel.app/",
+        "description": "Frontier-style execution discipline for AI coding agents."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "get-fable",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "POSIX, macOS, Linux, Windows",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What does get-fable do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "get-fable provides a portable execution harness around AI coding agents with specs, persistent task state outside the chat, lifecycle hooks, 42 canonical skills, and mutation-aware evidence gates."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does get-fable modify model weights?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. get-fable does not change model weights. It improves the working conditions around the model: framing, context persistence, circuit breakers, and evidence precedence."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which coding agents are supported by get-fable?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "get-fable supports 32 platforms including Claude Code, Google Antigravity, Gemini CLI, xAI Grok, OpenAI Codex, ChatGPT, Cursor, Windsurf, Devin, Cline, Roo Code, and OpenHands."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the evidence completion protocol?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Any file mutation increments mutationGeneration and invalidates previous verification. Completion requires fresh passing machine-checked proof recorded after the final mutation."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -26,6 +105,10 @@
 
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="#thesis">Thesis</a>
+        <a href="./skills.html">Skills (42)</a>
+        <a href="./guide.html">Guide &amp; Docs</a>
+        <a href="./workflows.html">Workflows &amp; Prompts</a>
+        <a href="./pricing.html">Pricing</a>
         <a href="#disciplines">Disciplines</a>
         <a href="#quick-start">Quick start</a>
       </nav>
@@ -41,10 +124,21 @@
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="shell hero-grid">
         <div class="hero-copy">
+          <aside class="format-switcher" aria-label="Alternate page formats" style="margin-bottom: 16px;">
+            <span class="format-label">Formats:</span>
+            <span class="format-badge is-active">HTML</span>
+            <a class="format-badge" href="./index.md" target="_blank">Markdown (.md)</a>
+            <a class="format-badge" href="./index.txt" target="_blank">Plain Text (.txt)</a>
+            <a class="format-badge" href="./index.json" target="_blank">JSON (.json)</a>
+          </aside>
+
           <h1 id="hero-title">Your model is capable of more than the way you run it</h1>
           <p class="hero-summary">get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="action action-primary" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
+            <a class="action action-primary" href="./skills.html">Explore 42 Skills →</a>
+            <a class="action action-secondary" href="./guide.html">User Guide &amp; Docs →</a>
+            <a class="action action-secondary" href="./workflows.html">Workflows &amp; Prompts →</a>
+            <a class="action action-secondary" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">View on GitHub <span aria-hidden="true">↗</span></a>
             <a class="action action-secondary" href="#thesis">Read the thesis <span aria-hidden="true">↓</span></a>
           </div>
         </div>
@@ -459,6 +553,15 @@ bun ./bin/get-fable.js install</code></pre>
         <img src="./assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
         <span>get-fable</span>
       </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="./index.html">Home</a>
+        <a href="./skills.html">Skills Catalog</a>
+        <a href="./guide.html">User Guide</a>
+        <a href="./workflows.html">Workflows &amp; Prompts</a>
+        <a href="./pricing.html">Pricing (Free OSS)</a>
+        <a href="./llms.txt">llms.txt</a>
+        <a href="./sitemap.xml">Sitemap</a>
+      </nav>
       <p>Open source under MIT · <span data-year>2026</span></p>
       <a href="#top">Back to top ↑</a>
     </div>

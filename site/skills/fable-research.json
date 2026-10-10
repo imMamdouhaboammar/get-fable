@@ -1,0 +1,62 @@
+{
+  "id": "fable-research",
+  "order": 15,
+  "pack": "intelligence",
+  "packName": "Intelligence Pack",
+  "phase": "discovering",
+  "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.",
+  "intents": [
+    "external-research",
+    "current-docs",
+    "api-behavior"
+  ],
+  "requires": [
+    "research-question"
+  ],
+  "produces": [
+    "research-evidence",
+    "source-backed-facts"
+  ],
+  "gates": [
+    "primary-source-grounding"
+  ],
+  "fallback": "fable-discover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-discover",
+    "fable-plan",
+    "fable-tdd",
+    "fable-execute",
+    "fable-verify",
+    "fable-domain",
+    "fable-memory",
+    "fable-skill-creator"
+  ],
+  "keywords": [
+    "official docs",
+    "latest",
+    "current api",
+    "current version",
+    "research",
+    "primary source"
+  ],
+  "frontmatter": {
+    "name": "fable-research",
+    "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation. Use when consulting library documentation, checking breaking changes, investigating external APIs, or verifying framework versions — even if the user does not explicitly say \\\"fable-research\\\" (e.g. \\\"check the latest docs\\\", \\\"what is the API for X in version Y\\\", \\\"look up SDK specs\\\", \\\"verify library support\\\"). Do NOT use for repository-local code exploration (use fable-discover) or for writing implementation code directly (use fable-tdd or fable-execute).",
+    "version": "1.3.0",
+    "pack": "intelligence",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-discover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Research\n\nResolve external facts that can change the implementation, using current primary evidence instead of model memory.\n\n## Mission\nResearch is not link collection. The output must be a decision-ready statement tied to the exact version, environment, or contract the repository will use.\n\n## Activate When\n- SDK/API signatures, limits, defaults, lifecycle semantics, or compatibility may have changed;\n- a design depends on current cloud/provider behavior;\n- the repository pins a version that may differ from current docs;\n- multiple official sources appear to disagree;\n- an error may come from a documented breaking change or deprecation;\n- a standard/RFC/security requirement must be interpreted precisely.\n\n## Do Not Activate When\n- the fact is repository-local (`fable-discover`);\n- the implementation is already grounded and only needs execution (`fable-execute`/`fable-tdd`);\n- the task is general brainstorming where no external claim changes the decision.\n\n## Research Classification\nClassify the question first.\n\n| Question type | Best primary evidence | Extra risk |\n| --- | --- | --- |\n| API signature | versioned official docs + source/types | docs may show latest, repo pins older |\n| Runtime behavior | official docs + upstream implementation/tests | marketing docs may omit edge behavior |\n| Compatibility | release notes/changelog + version matrix | transitive dependency constraints |\n| Standard/protocol | normative spec/RFC | examples may be non-normative |\n| Cloud/product limit | current vendor docs | region/tier/account differences |\n| Security guidance | official security docs/advisories | stale blog summaries |\n| Deprecation/migration | migration guide + release notes | old and new APIs coexist |\n\n## Protocol\n\n### Stage 1 — Turn the task into answerable claims\nBreak a broad request into the smallest external claims that can affect design.\n\nBad: \"Research the new SDK.\"\n\nGood:\n- Does version 4.2 expose streaming tool-call deltas?\n- Which parameter enables them?\n- Is the callback ordered?\n- What minimum runtime version is required?\n\n### Stage 2 — Bind to repository reality\nBefore accepting current docs as applicable, record:\n- package/version actually used;\n- runtime/language version;\n- relevant feature flags/tier/region if applicable;\n- whether the repository uses generated types or a wrapper that changes the public contract.\n\n### Stage 3 — Use a source hierarchy\nPrefer, in order when available:\n1. normative specification or official versioned reference;\n2. official upstream source/types/tests;\n3. official release notes/migration guides/advisories;\n4. vendor examples authored for the relevant version;\n5. secondary sources only as leads.\n\nNever use an unsourced search snippet as final evidence.\n\n### Stage 4 — Reconcile version and source conflicts\nIf latest docs disagree with the pinned package:\n- inspect versioned docs/release notes/source for the pinned version;\n- state the delta explicitly;\n- do not silently recommend latest syntax to an older lockfile.\n\nIf two official sources disagree, prefer the one closest to executable truth for the exact version, and report the conflict.\n\n### Stage 5 — Separate fact from interpretation\nRecord:\n- **Fact**: what the source establishes;\n- **Applicability**: why it applies to this repo/version;\n- **Interpretation**: what it means for the design;\n- **Confidence**: measured / strongly supported / unresolved.\n\n### Stage 6 — Stop when the decision is grounded\nDo not continue reading once all load-bearing external claims are resolved and the next action is safe.\n\n## Decision Rules\n- If a fact could have changed since model training, verify it rather than recall it.\n- If docs are unversioned and the repo pins an older version, inspect source/types/changelog for that exact version.\n- If an official quickstart conflicts with a normative reference, do not flatten the disagreement; determine which governs the target behavior.\n- If behavior depends on account/tier/region, label that dependency and avoid universal claims.\n- If no primary source is available, report the evidence gap and use upstream code/types/tests as the next-best source; never invent missing parameters.\n- If the answer changes architecture, hand off to `fable-plan`; if it simply confirms a bounded implementation contract, hand off to `fable-tdd` or `fable-execute`.\n\n## Invariants\n- Every load-bearing external claim has a source.\n- Source applicability includes version/context, not just URL authority.\n- Quotes/signatures are kept short and exact; conclusions are written in the agent's own words.\n- Secondary sources do not override accessible primary sources.\n- Conflicting evidence remains visible until resolved.\n\n## Failure Taxonomy\n### Freshness failure\nThe source is official but stale/deprecated. Find versioned/current material and release history.\n\n### Version mismatch\nThe repo and docs describe different versions. Reconcile against the lockfile/package metadata.\n\n### Authority mismatch\nA blog/example contradicts normative docs or upstream source. Demote the weaker source.\n\n### Context mismatch\nThe claim differs by region, tier, runtime, platform, or feature flag. Scope the conclusion.\n\n### Interpretation ambiguity\nThe source is clear but its implication for the repository is not. Hand the unresolved design question to `fable-plan` rather than pretending the research answered it.\n\n## Anti-Patterns\n- asking a search engine for a signature and copying the snippet;\n- citing the latest docs without checking the pinned version;\n- collecting many links without a decision-ready conclusion;\n- using model memory because the API \"probably hasn't changed\";\n- quoting a source without saying why it applies;\n- hiding official-source disagreement;\n- continuing research after every load-bearing claim is resolved.\n\n## Research Packet / Handoff\n\n```text\nQuestion:\nRepository version/context:\nSource-backed facts:\n- fact → primary source → applicability\nConflicts/version deltas:\nInterpretation for implementation:\nConfidence / unresolved:\nRecommended next Skill:\n```\n\n## Completion Criteria\nResearch is complete when:\n- the exact external claim is answered for the repository's actual context;\n- evidence is primary or the absence of primary evidence is explicit;\n- version conflicts are reconciled;\n- the implementation/design implication is stated without overclaiming;\n- no load-bearing parameter or semantic remains ambiguous.\n\n## Progressive Resources\n- Deep guide: `references/source-reconciliation-playbook.md`\n- Existing hierarchy: `references/primary-source-hierarchy.md`\n- Example: `examples/research-api-specs.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-research.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.205Z"
+}

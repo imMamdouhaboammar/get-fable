@@ -1,0 +1,68 @@
+{
+  "id": "fable-verify",
+  "order": 50,
+  "pack": "core",
+  "packName": "Core Pack",
+  "phase": "verifying",
+  "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.",
+  "intents": [
+    "run-tests",
+    "typecheck",
+    "falsify-behavior",
+    "validate-acceptance"
+  ],
+  "requires": [
+    "implementation-diff"
+  ],
+  "produces": [
+    "verification-evidence",
+    "falsification-verdict"
+  ],
+  "gates": [
+    "fresh-mutation-covered",
+    "machine-checked"
+  ],
+  "fallback": "fable-recover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-review",
+    "fable-security",
+    "fable-release",
+    "fable-recover",
+    "fable-execute",
+    "fable-prove-it",
+    "fable-judge",
+    "fable-simulator",
+    "fable-outcome-first",
+    "fable-learning",
+    "fable-spark"
+  ],
+  "keywords": [
+    "verify",
+    "test",
+    "typecheck",
+    "smoke",
+    "acceptance",
+    "run check",
+    "prove"
+  ],
+  "frontmatter": {
+    "name": "fable-verify",
+    "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion. Use when running test suites, checking type correctness, validating acceptance criteria, or verifying post-mutation code integrity — even if the user does not explicitly say \\\"fable-verify\\\" (e.g. \\\"verify my changes\\\", \\\"run all tests and typecheck\\\", \\\"check if everything passes\\\", \\\"prove this works\\\"). Do NOT use for planning (use fable-plan) or diff code review (use fable-review).",
+    "version": "1.3.0",
+    "pack": "core",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-recover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Verify\n\nTry to prove the implementation wrong, then report only the claims that survive fresh evidence.\n\n## Mission\nVerification is not \"run the test suite.\" It is coverage of changed risk with evidence that is both relevant and fresh.\n\nA green command proves only what it actually exercised. Build success does not prove runtime behavior. Security success does not prove functional correctness. Unit success does not prove a packaging or integration path. Old evidence does not prove a newer mutation.\n\n## Activate When\n- implementation or repair is ready for independent proof;\n- a completion claim needs fresh evidence;\n- a review/release gate requires test/build/runtime evidence;\n- stale evidence must be refreshed after mutation;\n- the suspected regression surface spans more than the focused TDD test.\n\n## Do Not Activate When\n- writing the implementation (`fable-execute`/`fable-tdd`);\n- deciding architecture (`fable-plan`);\n- reviewing design/maintainability from the diff (`fable-review`);\n- diagnosing repeated confusing failures (`fable-recover`).\n\n## Risk Classification\nMap each changed surface to the evidence capable of falsifying it.\n\n| Changed surface | Typical evidence |\n| --- | --- |\n| pure behavior | focused unit/property + affected suite |\n| cross-module contract | integration/contract test |\n| public CLI/API | invocation/smoke + contract tests |\n| build/export/package | build + package/clean-install smoke |\n| persistence/migration | integration + migration/compatibility fixtures |\n| async/concurrency | deterministic ordering/stress supplement |\n| config/feature flag | tests under relevant config branches |\n| browser/UI | component/integration/E2E as appropriate |\n| security boundary | security-specific checks **plus** functional evidence |\n| performance-sensitive path | targeted measurement when requirement exists |\n\n## Verification Protocol\n\n### Stage 1 — Read the diff and execution packet\nDo not choose commands from habit alone. Identify:\n- behavior changed;\n- files/contracts touched;\n- tests added/changed;\n- generated/package/config surfaces;\n- residual risks from implementation;\n- current mutation generation.\n\n### Stage 2 — Build a verification matrix\nFor each material risk, write:\n- claim;\n- failure mode;\n- evidence/command that would catch it;\n- whether evidence must be narrow, integration, runtime, build, E2E, security, or package-level.\n\nRemove duplicate checks that prove the same narrow fact; add missing checks for untested surfaces.\n\n### Stage 3 — Run narrow, causal checks first\nStart with the focused changed behavior and affected tests. Fast local evidence helps distinguish implementation failure from unrelated suite noise.\n\n### Stage 4 — Expand according to blast radius\nRun broader typecheck/build/test/integration/E2E/package gates only where the change can affect them or where repository release policy requires them.\n\nDo not skip required project-wide gates merely because narrow tests pass.\n\n### Stage 5 — Adversarial falsification\nActively probe the most plausible regression surfaces:\n- boundary/empty/invalid inputs;\n- error propagation;\n- retries/idempotency;\n- compatibility old/new formats;\n- async ordering/concurrency;\n- cleanup/resource lifecycle;\n- package/export/runtime entry point;\n- configuration branch.\n\nPrefer tests/commands that can fail meaningfully over speculative prose.\n\n### Stage 6 — Detect nondeterminism and stale execution\nIf identical commands alternate outcomes, stop counting passes. Capture the variability and route to recovery.\n\nIf results do not reflect known source changes, check source-vs-build, cache, branch, env, process, and artifact path before accepting output.\n\n### Stage 7 — Record typed, fresh evidence\nEvidence should include:\n- kind (`test`, `build`, `runtime`, `review`, `security` where applicable);\n- exact command/probe;\n- exit/result and relevant counts;\n- mutation generation/artifact SHA when available;\n- scope/claim the evidence proves.\n\n### Stage 8 — State the verdict narrowly\nUse:\n- **PASS**: every required claim has fresh relevant evidence;\n- **FAIL**: at least one required claim is falsified;\n- **INCOMPLETE**: required evidence cannot be obtained or does not cover the risk.\n\nNever convert INCOMPLETE to PASS because the remaining check is inconvenient.\n\n## Decision Rules\n- Evidence generation older than current relevant mutation → stale, rerun.\n- Test passes but does not execute changed path → irrelevant evidence, not PASS.\n- Security-only evidence for functional bug → require functional proof.\n- Build/typecheck-only evidence for runtime behavior → require runtime/test proof.\n- Focused test green but integration contract changed → run integration/contract evidence.\n- Package/export change → inspect/package/smoke the distributed artifact, not only source tests.\n- Flaky alternating outcomes → route to `fable-recover`; do not cherry-pick a green run.\n- New verification failure caused by a bounded obvious implementation defect → return one repair card; repeated/ambiguous failure → recover.\n- If a command is unavailable in current environment, mark evidence incomplete and name the external gate instead of fabricating a result.\n\n## Invariants\n- Verification is read-only with respect to product behavior; any repair starts a new mutation/evidence cycle.\n- Every completion claim maps to fresh evidence.\n- Evidence kinds are not interchangeable.\n- The final verdict covers the current mutation generation/artifact.\n- Required failures/warnings are not hidden by truncating output or rerunning until green.\n\n## Failure Taxonomy\n### Relevant test failure\nChanged behavior is falsified. Return bounded repair or recover depending on clarity/repetition.\n\n### Unrelated suite failure\nProve it is unrelated before excluding it; do not dismiss merely because it predates the change.\n\n### Stale evidence/artifact\nOutput corresponds to older mutation/build. Refresh build/path/env before evaluating implementation.\n\n### Nondeterministic verification\nSame state produces inconsistent result. Diagnose shared state/timing/environment before verdict.\n\n### Coverage gap\nAvailable checks do not exercise material changed risk. Add/locate suitable evidence or mark incomplete.\n\n### Environment limitation\nRequired external service/browser/platform/release environment unavailable. Report exact missing evidence; do not emulate a pass.\n\n## Anti-Patterns\n- `tests passed` as the entire verification report;\n- running only tests the implementer just wrote;\n- rerunning flaky tests until green;\n- trusting old screenshots/logs after code changed;\n- treating typecheck/build/security as functional proof;\n- ignoring packaging/export paths;\n- broad full-suite runs with no affected-risk reasoning;\n- claiming pass when an external required gate was never run.\n\n## Verification Packet\n\n```text\nCurrent mutation/artifact:\nChanged risks:\nVerification matrix:\n- claim → evidence → result\nAdversarial probes:\nStale/nondeterministic evidence detected:\nRequired external evidence not run:\nVerdict: PASS | FAIL | INCOMPLETE\nRepair/recovery recommendation:\n```\n\n## Completion Criteria\nVerification completes when:\n- changed risks have relevant checks;\n- required project gates are executed or explicitly marked unavailable;\n- evidence is fresh for current mutation/artifact;\n- likely edge/failure surfaces were actively probed;\n- nondeterminism/stale output is not hidden;\n- verdict is no broader than the evidence supports.\n\n## Progressive Resources\n- Deep matrix guide: `references/verification-matrix-and-evidence-strength.md`\n- Existing falsification heuristics: `references/falsification-heuristics.md`\n- Evidence recording: `references/evidence-recording.md`\n- Example: `examples/falsification-session.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-verify.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.208Z"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "fable-context-thrift",
+  "order": 240,
+  "pack": "system",
+  "packName": "System Pack",
+  "phase": "discovering",
+  "description": "Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.",
+  "intents": [
+    "conserve-context",
+    "budget-tokens",
+    "batch-reads"
+  ],
+  "requires": [],
+  "produces": [
+    "targeted-context"
+  ],
+  "gates": [
+    "minimal-read-verified"
+  ],
+  "fallback": "fable-discover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-plan",
+    "fable-execute",
+    "fable-verify"
+  ],
+  "keywords": [
+    "context thrift",
+    "token budget",
+    "batch lookups",
+    "targeted read",
+    "conserve context"
+  ],
+  "frontmatter": {
+    "name": "fable-context-thrift",
+    "description": "Use at the start of any multi-step task and during exploration — before reading files, searching, or re-checking completed work, especially when tempted to read whole files, re-verify known facts, or run independent lookups one at a time.",
+    "version": "1.0.0",
+    "pack": "system",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-discover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Context Thrift\n\nContext is the budget everything else is paid from. Spend it on what changes your next action; nothing else.\n\n## Purpose\n\nPrevent context bloat, token exhaustion, unnecessary whole-file reads, redundant verifications, and sequential execution latency. `fable-context-thrift` treats context tokens and tool calls as a scarce, valuable engineering budget.\n\n## When to Use\n\n- At the start of any multi-step task and during exploratory codebase investigations.\n- Before reading files, searching symbols, or checking repository structure.\n- When tempted to read entire files rather than targeted slices, symbols, or functions.\n- When executing multiple independent lookups or checks that can be batched in parallel.\n\n## When NOT to Use\n\n- Comprehensive codebase discovery requiring structural mapping of unknown subsystems (use `fable-discover`).\n- External API documentation and primary-source research (use `fable-research`).\n- Deep vulnerability tracing across distributed trust boundaries (use `fable-security`).\n\n## Inputs\n\n- `exploration_intent`: The specific load-bearing question or uncertainty to be resolved.\n- `workspace_state`: Existing established facts, open files, and previous tool outputs.\n\n## Expected Outputs\n\n- `targeted_evidence`: Minimal, high-signal code excerpts, line references, and exact facts.\n- `decision_readiness`: Confirmation that the \"enough-to-act\" bar is reached with zero extraneous tokens.\n\n## Procedure\n\n1. **Targeted Read Strategy**: Read only the symbol or section needed, not the file. Widen only when a specific question demands it.\n2. **Parallel Block Batching**: Multiple greps, reads, or status checks must be dispatched in one parallel block. Sequencing independent reads adds latency, not care.\n3. **Delegate Sweeps vs Keep Lookups**: Broad questions (\"where is X handled\", find-all-usages in unfamiliar territory) go to a search subagent if available — keep the conclusion, not the file dumps. Known single lookups stay direct. The subagent is for when you *don't* know where things live.\n4. **Tool Confirmation Principle**: Never re-read a file to check an edit landed; the edit tool fails loudly. Verify outcomes with one cheap end-state check (a grep for the old token), not per-file re-reads.\n5. **Preserve Established Facts**: What the conversation already verified, don't re-derive. What the user already decided, don't reopen.\n6. **Eliminate Narrative Overhead**: Don't narrate options you won't pursue. Deliberation is for choices you might actually make.\n7. **The Enough-to-Act Test**: If more exploration would not change your next action, exploration is over. Act.\n\n## Decision Rules\n\n| Thought | Reality |\n|---|---|\n| \"I'll read the whole file for context\" | Read what the change touches. The question you're answering defines the lines you need. |\n| \"Let me just double-check my edit landed\" | The tool reported success; silence is success. One end-state grep beats N re-reads. |\n| \"One more search to be safe\" | If the result wouldn't change your action, it isn't safety — it's stalling with receipts. |\n| \"I'll re-verify the repo layout first\" | It's in your context and was correct an hour ago. Directory trees don't rot mid-session. |\n| \"Careful means one call at a time\" | Careful means right calls. Independent lookups in sequence is the same work, slower. |\n| \"I'll dispatch a subagent to be thorough\" | On a 40-file repo, grep returns line-level truth faster than a subagent returns prose. Match the tool to the territory. |\n\n- If an additional search result would not change your next command or edit, do not make the search.\n- When an edit succeeds cleanly, proceed directly to verification without viewing the modified file again.\n\n## Tool Policy\n\n- Batch all independent read and grep tool calls into a single message/turn.\n- Use line offsets and targeted slices (`StartLine`, `EndLine`) when viewing files.\n- Reject whole-file reads where ripgrep already provided exact line numbers.\n- Prefer targeted ripgrep queries over file-tree traversal when locating symbols.\n\n## Evidence Requirements\n\n- Report line-level citations (`path/to/file#L10-L25`) rather than dumping full function bodies into conversation.\n- Use single end-state checks (e.g. grep for deleted token or exit code) as proof of edit application.\n- Preserve established facts without requiring repeat execution evidence in the same session.\n\n## Failure Handling\n\nStop spending immediately when encountering any of these Red Flags:\n- A Read call for a file you edited this turn.\n- The same fact verified twice in one session.\n- Sequential tool calls with no data dependency between them.\n- An exploration step you can't name the decision for.\n- Whole-file reads where a grep already gave you the line numbers.\n\n## Completion Criteria\n\n- The load-bearing question is answered with minimum tokens spent.\n- The next engineering action is unblocked and clear.\n- Context space is preserved for implementation, verification, and diff review.",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-context-thrift.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.222Z"
+}

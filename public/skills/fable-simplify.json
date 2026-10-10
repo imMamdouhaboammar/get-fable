@@ -1,0 +1,56 @@
+{
+  "id": "fable-simplify",
+  "order": 130,
+  "pack": "system",
+  "packName": "System Pack",
+  "phase": "executing",
+  "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.",
+  "intents": [
+    "simplify-code",
+    "remove-duplication",
+    "clean-architecture"
+  ],
+  "requires": [
+    "passing-tests"
+  ],
+  "produces": [
+    "simplified-diff"
+  ],
+  "gates": [
+    "behavior-preserved",
+    "tests-pass"
+  ],
+  "fallback": "fable-verify",
+  "mutatesWorkspace": true,
+  "parallelSafe": false,
+  "next": [
+    "fable-verify",
+    "fable-review"
+  ],
+  "keywords": [
+    "simplify",
+    "clean up",
+    "refactor",
+    "dead code",
+    "deduplicate",
+    "code quality"
+  ],
+  "frontmatter": {
+    "name": "fable-simplify",
+    "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior. Use when cleaning up complex functions, eliminating boilerplate, deduplicating logic, or improving code altitude after tests pass — even if the user does not explicitly say \\\"fable-simplify\\\" (e.g. \\\"simplify this code\\\", \\\"clean up this function\\\", \\\"refactor this logic\\\", \\\"make this cleaner\\\"). Do NOT use when tests are failing (use fable-recover) or for speculative architectural rewrites (use fable-plan).",
+    "version": "1.3.0",
+    "pack": "system",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-verify",
+    "mutatesWorkspace": "true",
+    "parallelSafe": "false",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Simplify\n\nReduce accidental complexity while proving the externally relevant behavior and contracts did not change.\n\n## Mission\nSimplification is not permission for a broad rewrite. It should make the code easier to reason about through small, reviewable transformations backed by characterization/invariant evidence.\n\n\"Cleaner\" is subjective. Behavior preservation, reduced duplication/branching/indirection, and clearer ownership can be demonstrated.\n\n## Activate When\n- duplicated logic creates divergence risk;\n- nested/control-flow complexity obscures invariants;\n- dead code/obsolete indirection is proven unused;\n- a refactor is explicitly requested with no intended behavior change;\n- a completed implementation needs bounded cleanup before review.\n\n## Do Not Activate When\n- user-visible behavior/API/schema is intended to change (`fable-tdd`/`fable-execute`);\n- behavior is not characterized well enough to preserve;\n- architecture itself is being redesigned (`fable-plan`);\n- a cleanup opportunity is unrelated to the active card.\n\n## Simplification Classification\n| Smell | Safe first move |\n| --- | --- |\n| duplicated behavior | prove equivalence, extract shared rule |\n| nested branching | identify decision table/invariants, flatten incrementally |\n| dead code | prove no runtime/registration/reflection reachability |\n| wrapper/indirection | prove callers/semantics before collapse |\n| data transformation chain | characterize representative + boundary inputs |\n| public/internal API clutter | preserve public contract; simplify behind boundary |\n| generated code noise | change generator/source, not output manually |\n\n## Protocol\n### Stage 1 — Establish preservation contract\nState what must not change:\n- public inputs/outputs/errors;\n- side effects/state transitions;\n- serialization/order/timing where contractual;\n- package/API/CLI compatibility;\n- performance requirements if material.\n\nCapture baseline tests/fixtures/runtime evidence. If coverage is weak, add characterization before structural mutation.\n\n### Stage 2 — Identify the complexity to remove\nName it concretely: duplicated condition, unnecessary branch, dead adapter, repeated parsing, ownership split, obsolete compatibility path.\n\nAvoid \"modernize this module\" as an unbounded objective.\n\n### Stage 3 — Prove reachability/deadness before deletion\nSearch callers plus dynamic registration/plugin/reflection/generated paths. \"grep found no import\" is not enough for code that may load dynamically.\n\n### Stage 4 — Refactor one semantic step at a time\nExamples:\n- extract a shared pure rule;\n- replace nested branch with explicit guard/decision table;\n- collapse wrapper whose contract is identical;\n- remove dead branch after reachability proof.\n\nRun the narrow preservation checks after each meaningful step.\n\n### Stage 5 — Watch for accidental contract changes\nReview diff for:\n- changed exception/error type/message relied on by callers;\n- iteration/order changes;\n- truthiness/null semantics;\n- eager vs lazy evaluation;\n- async sequencing;\n- transaction/cleanup movement;\n- public export/signature/default changes;\n- performance/resource behavior if required.\n\n### Stage 6 — Measure simplification honestly\nUseful evidence can include:\n- fewer duplicated rules/branches;\n- smaller public surface;\n- fewer states/indirection layers;\n- improved named invariant ownership.\n\nLine count alone is not a quality metric.\n\n### Stage 7 — Fresh verify and review\nAfter the last refactor mutation, run fresh affected verification and independent diff review. A pre-refactor green baseline is stale for the simplified code.\n\n## Decision Rules\n- No characterization/proof for behavior-rich legacy code → add it before refactor.\n- Removing dead code requires runtime reachability confidence, including dynamic registries/plugins.\n- If simplification reveals a desired behavior change, split it into a separate TDD/execution card.\n- Prefer a few reversible transformations over a from-scratch rewrite.\n- Do not collapse abstraction when it represents a real domain/ownership boundary even if it adds lines.\n- Avoid DRY when two similar blocks encode different future invariants; shared syntax is not always shared concept.\n- If tests break, diagnose whether refactor changed behavior or test was coupled to internals; do not blindly revert/update assertions.\n\n## Invariants\n- Accepted external behavior remains unchanged.\n- Public contracts do not drift accidentally.\n- Each transformation is reviewable and evidence-backed.\n- Unrelated cleanup stays out of scope.\n- Dynamic/generated reachability is considered before deletion.\n- Verification is fresh after final mutation.\n\n## Failure Taxonomy\n### Behavior drift\nRefactor changes output/error/state/order. Restore invariant or separate intended behavior change.\n\n### Test coupling\nTests fail because they assert internal structure rather than contract. Determine whether test or code should change from accepted behavior—not preference.\n\n### False dead code\nDynamic registration/reflection/plugin path still reaches code. Restore and improve discovery evidence.\n\n### Abstraction collapse\nRemoved layer encoded a real boundary/invariant. Reintroduce clearer boundary rather than optimizing line count.\n\n### Scope creep\nRefactor expands into architecture/feature work. Stop and split/replan.\n\n### Complexity displacement\nCode gets shorter locally but moves complexity into callers/config/generic abstraction. Evaluate whole affected decision surface.\n\n## Anti-Patterns\n- rewriting a module from scratch to \"simplify\" it;\n- using line count as primary success metric;\n- deleting code because no static import exists;\n- DRY extraction across semantically different rules;\n- changing API signatures during cleanup;\n- updating tests to match refactor without checking contract;\n- bundling unrelated cleanup after feature work;\n- replacing explicit domain logic with clever generic abstraction.\n\n## Simplification Packet\n```text\nPreservation contract:\nBaseline evidence:\nComplexity targeted:\nReachability/deadness evidence:\nTransformations:\nRisky semantic deltas checked:\nFresh verification:\nReview result:\nMeasured simplification:\nDeferred behavior changes:\n```\n\n## Completion Criteria\nSimplification completes when:\n- complexity reduction is concrete and scoped;\n- behavior/public contracts are characterized and preserved;\n- deletion/refactor reachability assumptions are grounded;\n- final evidence is fresh;\n- independent review finds no hidden behavior drift;\n- no unrelated behavior change is smuggled into cleanup.\n\n## Progressive Resources\n- Deep guide: `references/behavior-preserving-refactor-strategy.md`\n- Existing patterns: `references/refactoring-patterns.md`\n- Example: `examples/flatten-nested-logic.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-simplify.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.215Z"
+}

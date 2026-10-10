@@ -1,0 +1,61 @@
+{
+  "id": "fable-delegate",
+  "order": 32,
+  "pack": "build",
+  "packName": "Build Pack",
+  "phase": "executing",
+  "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.",
+  "intents": [
+    "parallel-work",
+    "subagents",
+    "delegation"
+  ],
+  "requires": [
+    "bounded-cards",
+    "disjoint-ownership"
+  ],
+  "produces": [
+    "delegation-contracts",
+    "worker-results"
+  ],
+  "gates": [
+    "ownership-explicit",
+    "acceptance-explicit"
+  ],
+  "fallback": "fable-plan",
+  "mutatesWorkspace": true,
+  "parallelSafe": true,
+  "next": [
+    "fable-execute",
+    "fable-verify",
+    "fable-recover",
+    "fable-cowork",
+    "fable-handoff"
+  ],
+  "keywords": [
+    "delegate",
+    "subagent",
+    "parallel",
+    "workers",
+    "multi-agent",
+    "independent tasks"
+  ],
+  "frontmatter": {
+    "name": "fable-delegate",
+    "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts. Use when coordinating multiple independent tasks, parallelizing multi-file work without merge conflicts, or managing subagent task assignments — even if the user does not explicitly say \\\"fable-delegate\\\" (e.g. \\\"split this work among workers\\\", \\\"delegate these subtasks\\\", \\\"run parallel agents\\\", \\\"assign independent pieces\\\"). Do NOT use for tightly coupled sequential tasks or when shared mutable state causes edit collisions.",
+    "version": "1.3.0",
+    "pack": "build",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-plan",
+    "mutatesWorkspace": "true",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Delegate\n\nUse parallel workers when independence is real, not merely because there are multiple tasks.\n\n## Mission\nDelegation should reduce latency without multiplying ambiguity. The parent remains responsible for decomposition, contract stability, integration, and final proof.\n\nA worker is not a place to dump context. It receives one bounded responsibility with enough evidence to act independently and a return contract that makes integration reviewable.\n\n## Activate When\n- two or more cards can proceed without waiting for each other's decisions;\n- specialist perspectives can investigate independent hypotheses in parallel;\n- separate components have stable interfaces and independent acceptance checks;\n- independent review/research can be parallelized without shared mutation.\n\n## Do Not Activate When\n- workers would change the same unstable contract or invariant;\n- one card's design result changes another card's requirements;\n- a tiny task costs more to explain/integrate than to execute;\n- the parent has not established enough context to write precise worker contracts;\n- all workers depend on one unresolved architectural decision.\n\n## Independence Classification\nFor each candidate pair, classify coupling:\n\n| Coupling | Parallel? | Why |\n| --- | --- | --- |\n| Different files + different contracts | usually yes | low semantic overlap |\n| Different files + shared unstable contract | no | semantic conflict despite path separation |\n| Same integration file + separate components | maybe, but serialize integration | component work may parallelize; integration does not |\n| Shared read-only evidence | yes | no ownership conflict |\n| Same database schema/invariant | usually no | one worker can invalidate another's assumptions |\n| Independent research hypotheses | yes | merge conclusions, not source edits |\n| Parent decision required by both | no | resolve decision first |\n\n## Delegation Protocol\n\n### Stage 1 — Prove independence\nCheck:\n- write ownership;\n- shared contracts/invariants;\n- dependency order;\n- generated artifacts;\n- migration/state coupling;\n- integration hotspot;\n- whether one worker failure changes another worker's assumptions.\n\nIf independence cannot be explained in one short paragraph, do not parallelize yet.\n\n### Stage 2 — Write a worker contract\nEach contract includes:\n- objective;\n- context/evidence already established;\n- owned paths or semantic area;\n- forbidden scope;\n- dependencies assumed stable;\n- acceptance evidence to produce;\n- expected return packet;\n- stop/escalation conditions.\n\nDo not ask a worker to \"handle X\" with an entire repository and no boundary.\n\n### Stage 3 — Decide mutation ownership\nPrefer one writer per semantic area. Multiple read-only investigators may inspect overlapping files; multiple writers should not independently redefine the same contract.\n\nFor a shared integration file, assign integration to the parent or one named worker after component work converges.\n\n### Stage 4 — Dispatch and supervise by exception\nDo not micromanage every command. Intervene when:\n- worker discovers a load-bearing unknown;\n- owned scope must expand;\n- acceptance cannot be satisfied;\n- contract assumption is false;\n- worker stalls/repeats failure.\n\n### Stage 5 — Inspect returns, not summaries alone\nRequire concrete artifacts: diff/paths, commands/results, evidence, unresolved risk. A prose \"done\" is not integration evidence.\n\n### Stage 6 — Integrate centrally\nThe parent checks:\n- combined diff;\n- contract compatibility;\n- cross-worker behavior;\n- generated artifacts;\n- integration tests;\n- whether worker-local evidence is still fresh after merge/integration mutations.\n\n## Decision Rules\n- Different files are neither necessary nor sufficient for independence.\n- Stable contract + isolated implementation can parallelize; unstable contract + separate files should not.\n- If workers produce competing approaches, keep them read-only until the parent chooses; do not merge both experiments blindly.\n- If a worker needs to cross ownership boundaries, pause that worker and renegotiate the contract instead of silently expanding scope.\n- A failed/hung worker does not automatically justify rerunning the same prompt; classify failure and route the card to `fable-recover` or execute locally.\n- Parent integration verification is mandatory whenever delegated work affects one user-visible behavior.\n\n## Invariants\n- Every mutable surface has clear ownership.\n- Workers receive only the context needed to make their bounded decisions.\n- Worker completion never equals global completion.\n- Shared contract changes have one integration owner.\n- Combined workspace is verified after all integration mutations.\n\n## Failure Taxonomy\n### Ownership collision\nTwo workers need the same mutable contract/file. Stop parallel mutation and replan ownership.\n\n### Semantic collision\nFiles differ but both change one invariant/schema. Treat as coupled work.\n\n### Context starvation\nWorker repeatedly asks questions the parent should have resolved. Improve contract or route back to discovery/plan.\n\n### Scope escape\nWorker finds necessary work outside ownership. Pause, evaluate, then expand/replan explicitly.\n\n### Worker-local green / integration red\nLocal checks pass but combined behavior fails. Parent owns diagnosis; do not bounce workers blindly.\n\n### Worker stall\nNo meaningful progress or repeated failure. Terminate/recover rather than consuming unbounded budget.\n\n## Anti-Patterns\n- \"two tasks = two agents\";\n- path-disjointness as the only parallelism test;\n- giving every worker the entire broad task;\n- allowing each worker to update shared manifests/routes independently;\n- accepting prose summaries without diffs/evidence;\n- merging worker outputs before inspecting assumptions;\n- assuming subagents transfer responsibility away from the parent;\n- delegating a decision the parent has not made simply to avoid making it.\n\n## Mandatory TOON Delegation Protocol\n\nAll subagent delegation contracts and worker return packets MUST use **TOON (Token-Oriented Object Notation)**. This guarantees:\n1. **Token efficiency**: 35-70% fewer tokens compared to verbose markdown/JSON.\n2. **Deterministic parsing**: Explicit length tags `[N]` allow the parent agent to instantly detect truncated or dropped tasks.\n3. **Structured schema**: Field headers `{fields}` enforce contract compliance.\n\n### Boss → Worker Delegation Contract (TOON)\n```toon\ncontract:\n  workerId: worker-1\n  targetCard: CARD-101\n  objective: \"Implement JWT authentication guard\"\nownedPaths[2]: src/auth/guard.ts,test/auth/guard.test.ts\nforbiddenPaths[2]: src/config/keys.ts,.env\nacceptanceChecks[2]: \"bun test test/auth/guard.test.ts\",\"bun run typecheck\"\nrules[2]: \"Do not touch files outside ownedPaths\",\"Use TOON format for the return packet\"\n```\n\n### Worker → Boss Return Packet (TOON)\n```toon\nresult:\n  workerId: worker-1\n  targetCard: CARD-101\n  status: complete\n  allChecksPassed: true\nmutations[2]{path,action}:\n  src/auth/guard.ts,modified\n  test/auth/guard.test.ts,created\nverifications[2]{command,result,durationMs}:\n  \"bun test test/auth/guard.test.ts\",pass,120\n  \"bun run typecheck\",pass,340\nnotes[1]: Successfully implemented guard with full test coverage\n```\n\n## Completion Criteria\nDelegation is complete when:\n- every worker contract had explicit ownership and acceptance;\n- returned artifacts/evidence were inspected;\n- ownership/contract conflicts are resolved;\n- combined diff passes integration verification on the current workspace;\n- residual failures are routed explicitly rather than hidden in worker summaries.\n\n## Progressive Resources\n- Deep guide: `references/parallelism-and-integration.md`\n- Existing contract guide: `references/subagent-contracts.md`\n- Template: `templates/delegation-contract.template.md`\n- Example: `examples/parallel-workers-walkthrough.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-delegate.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.207Z"
+}

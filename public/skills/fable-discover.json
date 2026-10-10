@@ -1,0 +1,60 @@
+{
+  "id": "fable-discover",
+  "order": 10,
+  "pack": "core",
+  "packName": "Core Pack",
+  "phase": "discovering",
+  "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.",
+  "intents": [
+    "inspect-repository",
+    "trace-behavior",
+    "resolve-unknowns"
+  ],
+  "requires": [],
+  "produces": [
+    "repository-evidence",
+    "execution-path"
+  ],
+  "gates": [
+    "load-bearing-unknowns-resolved"
+  ],
+  "fallback": "fable-recover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-research",
+    "fable-plan",
+    "fable-tdd",
+    "fable-execute",
+    "fable-verify",
+    "fable-context-thrift",
+    "fable-memory",
+    "fable-domain"
+  ],
+  "keywords": [
+    "inspect",
+    "explore",
+    "trace",
+    "unknown",
+    "repository",
+    "current behavior"
+  ],
+  "frontmatter": {
+    "name": "fable-discover",
+    "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. Use when load-bearing facts are unknown, tracing execution paths, inspecting unfamiliar packages, or resolving codebase contradictions — even if the user does not explicitly say \\\"fable-discover\\\" (e.g. \\\"explore the codebase\\\", \\\"how does this work\\\", \\\"where is this implemented\\\", \\\"find where this route is handled\\\"). Do NOT use when the bounded edit is already known (use fable-execute), for external API/version research (use fable-research), or for running existing test suites (use fable-verify).",
+    "version": "1.3.0",
+    "pack": "core",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-recover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Discover\n\nBuild the smallest reliable mental model of an unfamiliar code path before anyone commits to a design or edit.\n\n## Mission\nDiscovery is not \"read a lot of files.\" It is uncertainty reduction.\n\nThe Skill should leave the next specialist with enough evidence to make a decision without rediscovering the repository, while stopping before exploration becomes archaeology.\n\n## Activate When\n- entry points, ownership, or execution flow are not known;\n- a request spans an unfamiliar package/subsystem;\n- generated code, plugins, runtime configuration, queues, jobs, or dependency injection may change the real execution path;\n- the user describes behavior but not where it is implemented;\n- a previous assumption about the repository has been contradicted.\n\n## Do Not Activate When\n- the exact bounded edit and target file are already known;\n- the job is purely external API/version research (`fable-research`);\n- the task is only to run existing checks (`fable-verify`).\n\n## Situation Classification\nClassify the unknown before searching.\n\n| Unknown | First evidence to seek | Common trap |\n| --- | --- | --- |\n| Topology | manifests, workspace config, package boundaries | assuming root package owns runtime |\n| Entry point | CLI/server/job/plugin bootstrap | starting from a similarly named helper |\n| Execution path | calls, handlers, events, data transitions | following imports without proving runtime reachability |\n| Configuration | env/schema/defaults/feature flags | reading defaults while production overrides them |\n| Generated behavior | build scripts, codegen outputs, generated manifests | editing generated output instead of source |\n| Plugin/extension path | registration, discovery, loader contracts | missing dynamic loading because grep finds no direct import |\n| Persistence/data path | repositories, schemas, transactions, queues | stopping at service layer before side effects |\n| Test architecture | harness, fixtures, test entry points | assuming tests exercise the same artifact users run |\n\n## Discovery Protocol\n\n### Stage 1 — Frame the unknowns\nWrite 2-7 questions whose answers would materially change the plan. Mark each as `load-bearing` or `nice-to-know`.\n\nExamples:\n- Which process receives this request?\n- Is the package source executed directly or from `dist/`?\n- Where is this plugin registered?\n- Which storage boundary commits the state?\n\nDo not start broad search until the questions are explicit.\n\n### Stage 2 — Establish repository topology\nRead project instructions and manifests first. Identify:\n- workspace/package roots;\n- build/test commands;\n- generated directories;\n- host/plugin manifests;\n- source vs distribution entry points;\n- configuration sources;\n- relevant ownership boundaries.\n\n### Stage 3 — Trace a real path\nStart from an observable entry point and follow concrete symbols/events toward the target behavior.\n\nFor every hop record:\n- file/symbol;\n- why this hop is reachable;\n- input/output contract;\n- side effect or state transition;\n- certainty: `[measured]`, `[inferred]`, or `[unresolved]`.\n\nAn import chain alone is not proof that code executes.\n\n### Stage 4 — Probe runtime only when static evidence is insufficient\nUse safe read-only runtime observation to answer a named question: logs, help output, route listing, test discovery, build metadata, or a narrow reproduction.\n\nDo not mutate production state just to satisfy curiosity.\n\n### Stage 5 — Resolve contradictions\nWhen measured evidence contradicts the current model, update the model immediately. Do not preserve an old theory because it made the earlier search coherent.\n\n### Stage 6 — Stop deliberately\nStop when every load-bearing question is either:\n- answered with evidence; or\n- explicitly unresolved with a named consequence and next Skill.\n\nNice-to-know questions do not block handoff.\n\n## Decision Rules\n- If the unknown is external and time-sensitive, hand that question to `fable-research` instead of inferring from model memory.\n- If the exact edit becomes bounded and no design decision remains, hand off to `fable-execute`.\n- If multiple components/risks must be coordinated, hand off to `fable-plan`.\n- If search results suggest generated code, find the generator/source-of-truth before recommending edits.\n- If direct imports disappear at a boundary, inspect registration tables, event buses, dependency injection, plugin discovery, reflection, codegen, and runtime configuration.\n- If tests and runtime appear to disagree, record both paths; do not assume the test harness is authoritative.\n\n## Invariants\n- Discovery is read-only unless the user explicitly changes the task.\n- Every load-bearing conclusion has concrete repository/runtime evidence.\n- Inference is labeled as inference.\n- Search breadth is justified by an unresolved question.\n- Generated output is not treated as canonical source without proving it is hand-maintained.\n\n## Failure Taxonomy\n### Search miss\nA symbol cannot be located. Check aliases, generated names, dynamic loading, registries, event dispatch, reflection, compiled output, and package boundaries.\n\n### False path\nFiles look relevant but are not reachable from the real entry point. Return to a proven runtime/bootstrap boundary.\n\n### Environment ambiguity\nBehavior depends on env/flags/config. Identify precedence and which configuration is active; do not report a default as runtime fact.\n\n### Source/artifact mismatch\nTests or commands execute built/stale artifacts rather than edited source. Record both paths and route to `fable-recover` if this caused repeated failure.\n\n### Unknown remains load-bearing\nDo not paper over it. Hand off to research or report the unresolved decision explicitly.\n\n## Anti-Patterns\n- reading every file in a package \"for context\";\n- trusting filenames as architecture;\n- treating grep frequency as importance;\n- following imports without proving runtime reachability;\n- ignoring build/codegen/plugin registration;\n- reporting assumptions without `[inferred]` labels;\n- continuing discovery after the planning decision is already safe.\n\n## Evidence Packet / Handoff\nProduce a compact packet:\n\n```text\nTarget:\nLoad-bearing questions:\nMeasured facts: file:symbol → fact\nExecution path: entry → ... → side effect\nConfiguration/runtime notes:\nGenerated/plugin boundaries:\nUnresolved questions + consequence:\nRecommended next Skill:\n```\n\n## Completion Criteria\nDiscovery is complete when the next specialist can explain:\n- where execution starts;\n- which path reaches the behavior;\n- which contracts/state boundaries matter;\n- which facts are measured vs inferred;\n- what remains unknown;\n- why those remaining unknowns do or do not block the next action.\n\n## Progressive Resources\n- Deep playbook: `references/repository-investigation-playbook.md`\n- Existing evidence protocol: `references/evidence-gathering-protocol.md`\n- Example: `examples/codebase-inspection.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-discover.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.204Z"
+}

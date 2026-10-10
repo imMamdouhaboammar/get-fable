@@ -1,0 +1,54 @@
+{
+  "id": "fable-handoff",
+  "order": 85,
+  "pack": "delivery",
+  "packName": "Delivery Pack",
+  "phase": "verifying",
+  "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.",
+  "intents": [
+    "handoff",
+    "resume-later",
+    "continue-session"
+  ],
+  "requires": [
+    "current-state"
+  ],
+  "produces": [
+    "handoff-evidence",
+    "continuation-state"
+  ],
+  "gates": [
+    "next-action-explicit"
+  ],
+  "fallback": "get-fable",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "get-fable"
+  ],
+  "keywords": [
+    "handoff",
+    "continue later",
+    "next session",
+    "resume",
+    "context transfer"
+  ],
+  "frontmatter": {
+    "name": "fable-handoff",
+    "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. Use when pausing a coding session, transferring context to another agent, summarizing long-running work, or creating durable continuation checkpoints — even if the user does not explicitly say \\\"fable-handoff\\\" (e.g. \\\"save context for next session\\\", \\\"create a handoff\\\", \\\"pause work here\\\", \\\"summarize where we left off\\\"). Do NOT use as a substitute for verifying code changes (use fable-verify).",
+    "version": "1.3.0",
+    "pack": "delivery",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "get-fable",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Handoff\n\nLeave enough verified context that another agent can resume the work without replaying the whole conversation or rediscovering the repository.\n\n## Mission\nA handoff is not a summary. It is a **resumption contract**.\n\nThe receiving agent should know what was requested, what was actually changed, which claims are proven, which evidence is stale or missing, what is currently blocked, and the first safe action to take next.\n\n## Activate When\n- pausing a long-running task;\n- transferring work to another agent/human/session;\n- context is becoming too large and needs durable compaction;\n- a release/PR remains incomplete but execution must stop;\n- an automation/cowork loop needs a durable checkpoint.\n\n## Do Not Activate When\n- there is nothing durable to preserve beyond a trivial completed turn;\n- the next action itself is unclear because planning/diagnosis is unfinished;\n- a handoff would be used to hide missing verification or unresolved failure.\n\n## Continuity Classification\n| State | Handoff emphasis |\n| --- | --- |\n| Clean completed card | exact evidence + next card |\n| Dirty worktree | owned vs unrelated changes + safe resume point |\n| Failed attempt | reproduction, attempts, revised/remaining hypotheses |\n| Review pending | diff/base, findings, verification state |\n| Release pending | candidate SHA/version, channel states, external blockers |\n| Research/discovery pending | measured facts, unresolved load-bearing questions |\n| Delegated work pending | worker ownership, returned/missing packets |\n\n## Protocol\n### Stage 1 — Reconstruct the durable task\nCapture the original/current user outcome in one concise statement. Separate it from implementation tactics discovered later.\n\n### Stage 2 — Snapshot exact repository/work state\nRecord when available:\n- branch/worktree and candidate commit SHA;\n- active card/phase;\n- files/surfaces intentionally changed;\n- unrelated user changes that must be preserved;\n- generated artifacts/state files intentionally not committed;\n- open PR/issues/release/tag identifiers.\n\n### Stage 3 — Separate facts, decisions, and guesses\nUse distinct buckets:\n- **Measured facts**: observed repository/runtime/provider evidence;\n- **Decisions**: selected architecture/contract and why;\n- **Inferences**: plausible but not yet proven;\n- **Rejected hypotheses**: avoid repeating failed reasoning;\n- **Unresolved questions**: only those that can change the next action.\n\n### Stage 4 — Record evidence with freshness\nFor each important claim record:\n- command/probe/source;\n- result;\n- relevant mutation/commit/artifact;\n- whether it is **fresh**, **stale**, or **not checked**.\n\nNever turn `NOT_CHECKED` into prose that sounds like PASS.\n\n### Stage 5 — Record failures and attempted repairs\nInclude only attempts that teach the receiver something. State what was tried, what happened, and why that changed or did not change the hypothesis.\n\n### Stage 6 — State blockers precisely\nA blocker must say what external fact/permission/environment is missing and what becomes possible when it is resolved.\n\nBad: `CI issue`.\n\nGood: `GitHub Dependency Review fails because Dependency Graph is disabled for the repository; code/security scan itself did not report a dependency vulnerability.`\n\n### Stage 7 — Give one next safe action\nThe first next action should be executable and justified by current evidence. If several actions are independent, list them after naming the primary one.\n\n### Stage 8 — Sanitize\nDo not copy secrets, tokens, private keys, raw credentials, unnecessary personal data, or giant logs. Refer to secure credential mechanisms rather than values.\n\n## Decision Rules\n- Prefer exact identifiers (branch, SHA, PR, file path, command) over narrative descriptions.\n- Preserve negative knowledge: a disproved theory prevents repeated waste.\n- Evidence freshness must survive compaction; old green tests cannot be summarized as current green.\n- If the worktree is dirty, distinguish owned task changes from unrelated/user-owned changes.\n- If next action depends on an unresolved decision, route to planning/recovery first rather than inventing a handoff action.\n- Conversation history is optional context; the handoff must stand alone.\n- Do not copy full logs when the error signature + command + key lines are sufficient.\n\n## Invariants\n- Handoff is truthful about what is and is not proven.\n- Receiving agent can locate the exact work without guessing names/branches/files.\n- Secrets are never persisted in the handoff.\n- Unrelated user changes are explicitly protected.\n- The next action cannot silently require context omitted from the handoff.\n\n## Failure Taxonomy\n### Narrative dump\nToo much chat chronology, too little executable state. Rebuild around task/state/evidence/next action.\n\n### False freshness\nOld proof is summarized as current. Attach mutation/SHA/artifact context and downgrade stale evidence.\n\n### Context starvation\nReceiver must rediscover architecture or why a decision was made. Add the smallest load-bearing evidence/decision rationale.\n\n### Secret leakage\nCredential appears in summary/log. Remove value and reference secure source only.\n\n### Ambiguous ownership\nDirty files are listed without saying which belong to task/user/other work. Clarify before handoff.\n\n### Fake closure\nHandoff says \"done\" while external gate/review/provider evidence is missing. Use explicit pending/blocker state.\n\n## Anti-Patterns\n- copying the entire conversation;\n- dumping terminal output without interpretation;\n- omitting failed attempts so next agent repeats them;\n- saying \"tests passed\" without commit/mutation freshness;\n- storing tokens because \"the next agent will need them\";\n- vague next steps such as \"continue fixing\";\n- losing user constraints/preferences that materially affect implementation;\n- claiming release/publication from a prepared artifact only.\n\n## Handoff Packet\n```text\nGoal:\nCurrent branch/worktree/SHA:\nActive phase/card:\nIntentional changes:\nProtected unrelated changes:\nMeasured facts:\nDecisions + rationale:\nRejected hypotheses / failed attempts:\nEvidence:\n- claim → command/source → result → fresh/stale/not checked\nOpen findings/blockers:\nExternal states (PR/CI/release/registry):\nPrimary next safe action:\nSecondary independent actions:\nDo not repeat / do not change:\n```\n\n## Completion Criteria\nA handoff is complete when a zero-context receiving agent can:\n- identify the exact task and repository state;\n- distinguish facts/decisions/inferences;\n- know which evidence is fresh;\n- avoid repeating disproved attempts;\n- preserve unrelated work and credentials safely;\n- execute the next action without asking for missing basic context.\n\n## Progressive Resources\n- Deep guide: `references/resumability-and-context-compaction.md`\n- Existing schema: `references/continuity-schema.md`\n- Template: `templates/handoff-state.template.md`\n- Example: `examples/cross-session-handoff.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-handoff.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.212Z"
+}

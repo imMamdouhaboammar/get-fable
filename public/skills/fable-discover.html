@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-discover.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-discover.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-discover.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-discover.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-discover — get-fable Skill Reference">
+  <meta property="og:description" content="Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-discover.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-discover — get-fable Skill">
+  <meta name="twitter:description" content="Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-discover — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-discover Skill Specification",
+    "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.",
+    "articleSection": "Core Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-discover.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-discover</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-discover.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-discover.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-discover.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Core Pack</span>
+          <span class="phase-badge phase-discovering">Phase: discovering</span>
+          <span class="order-badge">Order: 10</span>
+        </div>
+        <h1 class="skill-title">fable-discover</h1>
+        <p class="skill-lead">Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "inspect-repository" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Core Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">discovering</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">inspect-repository</span> <span class="intent-chip">trace-behavior</span> <span class="intent-chip">resolve-unknowns</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>load-bearing-unknowns-resolved</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-research.html">fable-research</a> <a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-tdd.html">fable-tdd</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-context-thrift.html">fable-context-thrift</a> <a class="token-link" href="../skills/fable-memory.html">fable-memory</a> <a class="token-link" href="../skills/fable-domain.html">fable-domain</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Discover</h1>
+<p>Build the smallest reliable mental model of an unfamiliar code path before anyone commits to a design or edit.</p>
+<h2>Mission</h2>
+<p>Discovery is not &quot;read a lot of files.&quot; It is uncertainty reduction.</p>
+<p>The Skill should leave the next specialist with enough evidence to make a decision without rediscovering the repository, while stopping before exploration becomes archaeology.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>entry points, ownership, or execution flow are not known;</li>
+<li>a request spans an unfamiliar package/subsystem;</li>
+<li>generated code, plugins, runtime configuration, queues, jobs, or dependency injection may change the real execution path;</li>
+<li>the user describes behavior but not where it is implemented;</li>
+<li>a previous assumption about the repository has been contradicted.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>the exact bounded edit and target file are already known;</li>
+<li>the job is purely external API/version research (<code>fable-research</code>);</li>
+<li>the task is only to run existing checks (<code>fable-verify</code>).</li>
+</ul>
+<h2>Situation Classification</h2>
+<p>Classify the unknown before searching.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Unknown</th><th>First evidence to seek</th><th>Common trap</th></tr></thead><tbody>
+<tr><td>Topology</td><td>manifests, workspace config, package boundaries</td><td>assuming root package owns runtime</td></tr>
+<tr><td>Entry point</td><td>CLI/server/job/plugin bootstrap</td><td>starting from a similarly named helper</td></tr>
+<tr><td>Execution path</td><td>calls, handlers, events, data transitions</td><td>following imports without proving runtime reachability</td></tr>
+<tr><td>Configuration</td><td>env/schema/defaults/feature flags</td><td>reading defaults while production overrides them</td></tr>
+<tr><td>Generated behavior</td><td>build scripts, codegen outputs, generated manifests</td><td>editing generated output instead of source</td></tr>
+<tr><td>Plugin/extension path</td><td>registration, discovery, loader contracts</td><td>missing dynamic loading because grep finds no direct import</td></tr>
+<tr><td>Persistence/data path</td><td>repositories, schemas, transactions, queues</td><td>stopping at service layer before side effects</td></tr>
+<tr><td>Test architecture</td><td>harness, fixtures, test entry points</td><td>assuming tests exercise the same artifact users run</td></tr>
+</tbody></table></div>
+<h2>Discovery Protocol</h2>
+<h3>Stage 1 — Frame the unknowns</h3>
+<p>Write 2-7 questions whose answers would materially change the plan. Mark each as <code>load-bearing</code> or <code>nice-to-know</code>.</p>
+<p>Examples:</p>
+<ul class="docs-list">
+<li>Which process receives this request?</li>
+<li>Is the package source executed directly or from <code>dist/</code>?</li>
+<li>Where is this plugin registered?</li>
+<li>Which storage boundary commits the state?</li>
+</ul>
+<p>Do not start broad search until the questions are explicit.</p>
+<h3>Stage 2 — Establish repository topology</h3>
+<p>Read project instructions and manifests first. Identify:</p>
+<ul class="docs-list">
+<li>workspace/package roots;</li>
+<li>build/test commands;</li>
+<li>generated directories;</li>
+<li>host/plugin manifests;</li>
+<li>source vs distribution entry points;</li>
+<li>configuration sources;</li>
+<li>relevant ownership boundaries.</li>
+</ul>
+<h3>Stage 3 — Trace a real path</h3>
+<p>Start from an observable entry point and follow concrete symbols/events toward the target behavior.</p>
+<p>For every hop record:</p>
+<ul class="docs-list">
+<li>file/symbol;</li>
+<li>why this hop is reachable;</li>
+<li>input/output contract;</li>
+<li>side effect or state transition;</li>
+<li>certainty: <code>[measured]</code>, <code>[inferred]</code>, or <code>[unresolved]</code>.</li>
+</ul>
+<p>An import chain alone is not proof that code executes.</p>
+<h3>Stage 4 — Probe runtime only when static evidence is insufficient</h3>
+<p>Use safe read-only runtime observation to answer a named question: logs, help output, route listing, test discovery, build metadata, or a narrow reproduction.</p>
+<p>Do not mutate production state just to satisfy curiosity.</p>
+<h3>Stage 5 — Resolve contradictions</h3>
+<p>When measured evidence contradicts the current model, update the model immediately. Do not preserve an old theory because it made the earlier search coherent.</p>
+<h3>Stage 6 — Stop deliberately</h3>
+<p>Stop when every load-bearing question is either:</p>
+<ul class="docs-list">
+<li>answered with evidence; or</li>
+<li>explicitly unresolved with a named consequence and next Skill.</li>
+</ul>
+<p>Nice-to-know questions do not block handoff.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>If the unknown is external and time-sensitive, hand that question to <code>fable-research</code> instead of inferring from model memory.</li>
+<li>If the exact edit becomes bounded and no design decision remains, hand off to <code>fable-execute</code>.</li>
+<li>If multiple components/risks must be coordinated, hand off to <code>fable-plan</code>.</li>
+<li>If search results suggest generated code, find the generator/source-of-truth before recommending edits.</li>
+<li>If direct imports disappear at a boundary, inspect registration tables, event buses, dependency injection, plugin discovery, reflection, codegen, and runtime configuration.</li>
+<li>If tests and runtime appear to disagree, record both paths; do not assume the test harness is authoritative.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Discovery is read-only unless the user explicitly changes the task.</li>
+<li>Every load-bearing conclusion has concrete repository/runtime evidence.</li>
+<li>Inference is labeled as inference.</li>
+<li>Search breadth is justified by an unresolved question.</li>
+<li>Generated output is not treated as canonical source without proving it is hand-maintained.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Search miss</h3>
+<p>A symbol cannot be located. Check aliases, generated names, dynamic loading, registries, event dispatch, reflection, compiled output, and package boundaries.</p>
+<h3>False path</h3>
+<p>Files look relevant but are not reachable from the real entry point. Return to a proven runtime/bootstrap boundary.</p>
+<h3>Environment ambiguity</h3>
+<p>Behavior depends on env/flags/config. Identify precedence and which configuration is active; do not report a default as runtime fact.</p>
+<h3>Source/artifact mismatch</h3>
+<p>Tests or commands execute built/stale artifacts rather than edited source. Record both paths and route to <code>fable-recover</code> if this caused repeated failure.</p>
+<h3>Unknown remains load-bearing</h3>
+<p>Do not paper over it. Hand off to research or report the unresolved decision explicitly.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>reading every file in a package &quot;for context&quot;;</li>
+<li>trusting filenames as architecture;</li>
+<li>treating grep frequency as importance;</li>
+<li>following imports without proving runtime reachability;</li>
+<li>ignoring build/codegen/plugin registration;</li>
+<li>reporting assumptions without <code>[inferred]</code> labels;</li>
+<li>continuing discovery after the planning decision is already safe.</li>
+</ul>
+<h2>Evidence Packet / Handoff</h2>
+<p>Produce a compact packet:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Target:
+Load-bearing questions:
+Measured facts: file:symbol → fact
+Execution path: entry → ... → side effect
+Configuration/runtime notes:
+Generated/plugin boundaries:
+Unresolved questions + consequence:
+Recommended next Skill:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Discovery is complete when the next specialist can explain:</p>
+<ul class="docs-list">
+<li>where execution starts;</li>
+<li>which path reaches the behavior;</li>
+<li>which contracts/state boundaries matter;</li>
+<li>which facts are measured vs inferred;</li>
+<li>what remains unknown;</li>
+<li>why those remaining unknowns do or do not block the next action.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep playbook: <code>references/repository-investigation-playbook.md</code></li>
+<li>Existing evidence protocol: <code>references/evidence-gathering-protocol.md</code></li>
+<li>Example: <code>examples/codebase-inspection.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

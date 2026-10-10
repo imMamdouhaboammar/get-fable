@@ -1,0 +1,57 @@
+{
+  "id": "fable-memory",
+  "order": 160,
+  "pack": "system",
+  "packName": "System Pack",
+  "phase": "discovering",
+  "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.",
+  "intents": [
+    "record-memory",
+    "recall-facts",
+    "index-memory"
+  ],
+  "requires": [
+    "memory-fact"
+  ],
+  "produces": [
+    "memory-record",
+    "updated-index"
+  ],
+  "gates": [
+    "single-fact-file",
+    "index-synced"
+  ],
+  "fallback": "fable-discover",
+  "mutatesWorkspace": true,
+  "parallelSafe": true,
+  "next": [
+    "fable-plan",
+    "fable-discover"
+  ],
+  "keywords": [
+    "memory",
+    "remember",
+    "user preference",
+    "feedback",
+    "project constraint",
+    "MEMORY.md"
+  ],
+  "frontmatter": {
+    "name": "fable-memory",
+    "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores. Use when recording user feedback, storing project conventions, recalling cross-session architectural constraints, or indexing durable project memory — even if the user does not explicitly say \\\"fable-memory\\\" (e.g. \\\"remember this preference\\\", \\\"save to memory\\\", \\\"what are my project rules\\\", \\\"recall user feedback\\\"). Do NOT use for volatile task state stored in .fable/state.json.",
+    "version": "1.3.0",
+    "pack": "system",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-discover",
+    "mutatesWorkspace": "true",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Memory\n\nPersist only facts that deserve to survive the session, with provenance and contradiction handling strong enough that old memory does not silently become a new source of error.\n\n## Mission\nMemory is not a chat archive. It should reduce rediscovery without freezing temporary guesses into permanent instructions.\n\nA durable record needs scope, provenance, confidence, freshness, and a way to be superseded when the user or repository changes.\n\n## Activate When\n- the user explicitly asks to remember a durable preference/constraint;\n- a stable project convention or architectural decision will materially affect future work;\n- cross-session continuity repeatedly depends on the same fact;\n- a prior durable fact needs correction, supersession, or retrieval.\n\n## Do Not Activate When\n- the information is temporary execution state (`.fable/state`, ledger, handoff);\n- it is a one-off conversational detail unlikely to affect future decisions;\n- it is a guess/inference not yet stable enough to persist;\n- it contains a password, token, private key, session cookie, or other secret.\n\n## Memory Classification\n| Type | Example | Durability rule |\n| --- | --- | --- |\n| User preference | preferred package manager | persist when explicit/stable |\n| Project constraint | runtime Bun >=1.3 | bind to project/source |\n| Architecture decision | use outbox for events | store rationale + supersession path |\n| Repeated workflow rule | verify package clean-install before release | persist if project-specific and durable |\n| External fact | API behavior/version | usually cite/research at use time; avoid timeless storage |\n| Temporary state | current failing test | handoff/state, not memory |\n| Sensitive credential | API token | never memory |\n\n## Protocol\n### Stage 1 — Decide whether it deserves memory\nAsk:\n- will this likely matter in another session?\n- is it stable, explicit, or source-backed?\n- is there a narrower existing record to update?\n- could persistence create privacy/security risk?\n\nIf not durable, leave it in current context/handoff only.\n\n### Stage 2 — Normalize the fact\nStore one coherent decision/fact with:\n- canonical statement;\n- scope (user/project/repo/subsystem);\n- type;\n- source/provenance;\n- confidence/status;\n- created/updated timestamp if supported;\n- supersedes/superseded-by relation when relevant.\n\n### Stage 3 — Check conflicts before write\nSearch for existing records with same subject. Compare:\n- exact agreement → update provenance/freshness rather than duplicate;\n- narrower/wider scope → preserve both only if scopes are genuinely different;\n- contradiction → do not keep two active truths; resolve or mark conflict explicitly.\n\n### Stage 4 — Write atomically and index\nUpdate one canonical fact record and synchronize index/catalog. Preserve unrelated records.\n\n### Stage 5 — Validate retrieval meaning\nRead back the record as a future agent would. Ensure it does not overgeneralize:\n- `use Bun in get-fable` is not `user always uses Bun everywhere`;\n- `API v4 did X in Aug 2026` is not an eternal API guarantee.\n\n### Stage 6 — Apply memory skeptically on retrieval\nWhen a remembered fact affects current work:\n- confirm scope matches;\n- prefer current user/repository evidence over old memory;\n- revalidate time-sensitive external facts;\n- treat explicit new instruction as superseding old preference where applicable.\n\n## Decision Rules\n- User's current explicit statement outranks stored preference.\n- Repository/config/source evidence outranks contradictory memory about repository state.\n- Time-sensitive external facts should be researched again rather than trusted indefinitely.\n- A memory can be historical without remaining active; use superseded status instead of deletion when history matters.\n- Do not infer broad personal preferences from a single project choice.\n- Never store credentials even when the user asks to \"remember the token\"; reference secure credential management instead.\n- One fact per record is a maintainability rule, but related rationale/source may accompany the fact.\n\n## Invariants\n- No secrets enter durable memory.\n- Active memory contains no unresolved contradictory truths without explicit conflict status.\n- Scope is explicit enough to prevent accidental generalization.\n- Provenance is retained for consequential constraints/decisions.\n- Current evidence/instruction can supersede memory.\n- Index and underlying record remain consistent.\n\n## Failure Taxonomy\n### Duplicate memory\nSame fact exists twice with minor wording differences. Merge/update canonical record.\n\n### Scope leak\nProject-specific choice is treated as global user preference. Narrow the scope.\n\n### Stale memory\nRepository/user/external reality changed. Supersede or revalidate before use.\n\n### Contradictory active facts\nTwo records give incompatible active guidance. Resolve with current source/user evidence.\n\n### Inference hardened into fact\nAgent stored an assumption as durable truth. Downgrade/remove and require evidence.\n\n### Secret persistence\nSensitive value appears in memory. Remove exposure and handle credential rotation/security as appropriate.\n\n## Anti-Patterns\n- saving every conversation detail \"just in case\";\n- storing temporary errors/active todos as durable preference;\n- broadening `in this repo` into `always`;\n- persisting current API/version claims with no expiry/provenance;\n- creating a new fact file instead of updating a conflicting one;\n- storing a token because future automation may need it;\n- treating memory as more authoritative than current repository evidence;\n- silently deleting historical decisions when supersession context matters.\n\n## Memory Record\n```text\nSubject/fact:\nScope:\nType:\nStatus: active | superseded | conflicted\nSource/provenance:\nConfidence:\nRationale/context:\nSupersedes / superseded by:\nFreshness/revalidation note:\n```\n\n## Completion Criteria\nMemory work completes when:\n- fact is genuinely durable and safely scoped;\n- duplicates/conflicts were checked;\n- record has enough provenance to evaluate later;\n- index is synchronized;\n- sensitive/temporary data was excluded;\n- a future agent can retrieve and apply the fact without overgeneralizing it.\n\n## Progressive Resources\n- Deep guide: `references/durable-fact-lifecycle.md`\n- Existing protocol: `references/memory-management-protocol.md`\n- Template: `templates/memory-fact.template.md`\n- Example: `examples/recording-user-preference.md`",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-memory.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.217Z"
+}

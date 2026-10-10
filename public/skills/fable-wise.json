@@ -1,0 +1,57 @@
+{
+  "id": "fable-wise",
+  "order": 350,
+  "pack": "system",
+  "packName": "System Pack",
+  "phase": "planned",
+  "description": "Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.",
+  "intents": [
+    "apply-wise-pattern",
+    "rewrite-v0",
+    "consolidate-ssot",
+    "strip-slop"
+  ],
+  "requires": [
+    "drifted-artifact"
+  ],
+  "produces": [
+    "purified-artifact"
+  ],
+  "gates": [
+    "contrarian-verified"
+  ],
+  "fallback": "fable-simplify",
+  "mutatesWorkspace": true,
+  "parallelSafe": true,
+  "next": [
+    "fable-plan",
+    "fable-execute"
+  ],
+  "keywords": [
+    "fable-wise",
+    "paperthin",
+    "re0",
+    "ssotize",
+    "autobahn",
+    "feynman check",
+    "strip slop"
+  ],
+  "frontmatter": {
+    "name": "fable-wise",
+    "description": "Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh. Turns senior engineering wisdom into reflexes that remove bloat, preserve truth, prevent drift, and compound learning (re0, readchk, autobahn, ssotize, detool, feynman, debloat, sip, hate, macrothink, prism). Use when refactoring complex systems, stripping AI slop, rewriting drifted artifacts from clean v0, consolidating truth into single sources, or evaluating architectural decisions against contrarian counter-arguments.",
+    "version": "1.0.0",
+    "pack": "system",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-simplify",
+    "mutatesWorkspace": "true",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Wise\n\nLow-level cognitive reflexes and architectural patterns that counteract AI slop, complexity bloat, and artifact drift. Instead of adding speculative code and boilerplate, enforce patterns that simplify, cut, consolidate, and ground decisions in observable reality.\n\n## Purpose\n\nEnforce senior architectural wisdom through cognitive reflexes across Depth, Breadth, Coil, and Mesh. Replace bloated abstractions with direct mechanisms, consolidate single sources of truth, rewrite heavily patched artifacts from clean v0, and stress-test plans with contrarian critiques.\n\n## When to Use\n\n- Rewriting a drifted, heavily patched artifact into a clean v0 (`/re0`).\n- Checking the model's interpretation of a subtle request before executing (`/readchk`).\n- Carving unsafe scope out up front so the safe remainder runs at full strength (`/autobahn`).\n- Auditing scattered facts and consolidating them into a single source of truth (`/ssotize`).\n- Replacing incidental framework/stack nouns with fundamental language mechanisms (`/detool`).\n- Pressing a newly made technical decision until it is simple or exposed as weak (`/feynman`).\n- Stress-testing an engineering plan with the one contrarian objection that could kill it (`/hate`).\n- Splitting an artifact across independent evaluation lenses to expose hidden conflicts (`/prism`).\n- Tasting proposed changes with the repository's clean-and-true checks (`/sip`).\n\n## When NOT to Use\n\n- Routine small bugfixes with zero structural complexity (use `fable-execute`).\n- Automated dependency updates or standard CI repair (use `fable-tend`).\n- High-level multi-host lifecycle routing (use `get-fable`).\n\n## Inputs\n\n- `engineering_artifact`: Code file, architecture document, configuration, or plan.\n- `pattern_directive`: Selected Paperthin cognitive reflex or command (e.g. `re0`, `detool`, `ssotize`, `hate`).\n\n## Expected Outputs\n\n- `debloated_artifact`: A simplified, drift-free artifact grounded in native language primitives.\n- `consolidated_truth`: Single source of truth configuration eliminating duplicated parameters.\n\n## Procedure\n\n1. **Stage 1 — Cardinality & Temporal Classification**:\n   - **Depth (One artifact, now)**: Is this single artifact clean, minimal, and true? Apply `re0`, `readchk`, `detool`, `debloat`, `feynman`.\n   - **Breadth (Many artifacts, now)**: Is one truth consistent everywhere? Apply `ssotize`, `reorder`.\n   - **Coil (One project, across iterations)**: Did each cycle teach the next? Apply `re0-loop`, `re0-memo`, `re0-work`, `catchup`, `nba`.\n   - **Mesh (Many perspectives, across rounds)**: Does the group converge on truth? Apply `prism`.\n2. **Stage 2 — Bloat Removal & Mechanism Substitution**:\n   - Remove marketing buzzwords, promotional adjectives, and AI boilerplate.\n   - Replace incidental third-party library nouns with standard language mechanisms.\n   - Compress bloated artifacts to their load-bearing density: cut words, never rules.\n3. **Stage 3 — Contrarian Testing & Cold Reads**:\n   - Apply the Feynman check: explain the decision in simple terms without jargon.\n   - Apply the Hate check: find the single fatal flaw and devise the cheapest test to falsify it.\n   - Cold-read the artifact as a detached third party: does it stand alone without prior conversation context?\n4. **Stage 4 — Single Source Consolidation (SSOT)**:\n   - When multiple documents or modules declare conflicting parameters, designate one canonical authority.\n   - Update all satellite references to point to the single authority; eliminate duplicative drift.\n\n## Decision Rules\n\n| Tempting Rationalization | Hard Reality / Invariant | Why |\n|---|---|---|\n| \"Adding more explanations makes the document clearer.\" | **Violation.** Explanations dilute core rules. | Bloated documents cause agents to miss critical instructions. |\n| \"We should patch this legacy file one more time.\" | **Violation.** When patches accumulate, rewrite to a clean v0 (`re0`). | Repeated patching conceals underlying design rot. |\n| \"The plan looks great to everyone; no need to object.\" | **Forbidden.** Always apply the contrarian test (`hate`). | Identifying fatal flaws early costs minutes; finding them in prod costs weeks. |\n| \"Duplicating this config in two places is harmless.\" | **Forbidden.** Consolidate to one SSOT immediately (`ssotize`). | Duplicate configurations inevitably drift out of sync. |\n\n- Prioritize removal over addition: removing bloat, removing drift, removing unproven assumptions.\n- An artifact is finished not when nothing more can be added, but when nothing more can be removed without losing required behavior.\n\n## Tool Policy\n\n- Use standard file viewing and editing tools to consolidate duplicated code and configs.\n- Execute project linters and tests to verify behavior is preserved after debloating.\n- Do not introduce third-party helper dependencies when native standard library features suffice.\n\n## Evidence Requirements\n\n- Diff showing net reduction in code lines or documentation complexity.\n- Test suites passing with 100% parity before and after simplification.\n\n## Failure Handling\n\n- If a debloating refactor breaks existing tests, identify the hidden invariant, document it explicitly, and restore passing behavior.\n- If a contrarian `hate` check reveals an unfixable flaw in a plan, abort the plan and report the flaw.\n\n## Completion Criteria\n\n- All redundant boilerplate, unnecessary layers, and duplicate configurations stripped.\n- Single source of truth established and verified across all referencing files.\n- Behavioral correctness confirmed by passing test execution.",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-wise.html",
+  "license": "MIT",
+  "updatedAt": "2026-10-10T13:26:29.226Z"
+}

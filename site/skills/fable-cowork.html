@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-cowork.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-cowork.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-cowork.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-cowork.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-cowork — get-fable Skill Reference">
+  <meta property="og:description" content="Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-cowork.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-cowork — get-fable Skill">
+  <meta name="twitter:description" content="Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-cowork — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-cowork Skill Specification",
+    "description": "Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-cowork.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-cowork</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-cowork.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-cowork.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-cowork.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 190</span>
+        </div>
+        <h1 class="skill-title">fable-cowork</h1>
+        <p class="skill-lead">Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "cowork-mode" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-execute.html">fable-execute</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">cowork-mode</span> <span class="intent-chip">autonomous-execution</span> <span class="intent-chip">clean-tool-chain</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>no-mid-chain-noise</code></li><li><code>outcome-first</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Cowork</h1>
+<p>Carry a scoped engineering objective through multiple tool calls and lifecycle stages with minimal conversational interruption, while preserving the same safety, evidence, and scope rules as interactive work.</p>
+<h2>Mission</h2>
+<p>Autonomy is not permission to improvise indefinitely. Cowork mode should reduce conversational overhead—not remove checkpoints, verification, stop conditions, or user intent.</p>
+<p>The agent owns execution between meaningful boundaries. It must still stop when the task requires a new product decision, destructive authorization, unavailable external permission, or a contradiction that changes the agreed goal.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>the user explicitly delegates a multi-step task end-to-end;</li>
+<li>the objective and success criteria are clear enough to continue without routine questions;</li>
+<li>the work may span discovery, planning, implementation, verification, review, and handoff;</li>
+<li>repeated narration would add noise while tool evidence can drive progress.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>the job is a simple answer or one bounded edit;</li>
+<li>core requirements are genuinely ambiguous and different choices materially change the product;</li>
+<li>an external irreversible action lacks authorization;</li>
+<li>work must wait for a future event rather than execute now;</li>
+<li>autonomy would require inventing credentials, access, or user intent.</li>
+</ul>
+<h2>Autonomy Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Task state</th><th>Cowork posture</th></tr></thead><tbody>
+<tr><td>Clear bounded sequence</td><td>execute silently through evidence gates</td></tr>
+<tr><td>Multiple independent cards</td><td>delegate with explicit ownership</td></tr>
+<tr><td>New architecture decision emerges</td><td>stop/replan; do not choose silently if material</td></tr>
+<tr><td>Repeated failure</td><td>enter recovery before more mutation</td></tr>
+<tr><td>External auth/permission unavailable</td><td>stop at hard wall with exact handoff</td></tr>
+<tr><td>Destructive/public action authorized</td><td>execute with release/security checks</td></tr>
+<tr><td>Destructive/public action not authorized</td><td>prepare/verify only; do not perform it</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Lock the objective and boundaries</h3>
+<p>Before long execution, capture:</p>
+<ul class="docs-list">
+<li>requested outcome;</li>
+<li>non-goals/protected surfaces;</li>
+<li>authorization boundaries;</li>
+<li>repository/worktree state;</li>
+<li>acceptance evidence;</li>
+<li>hard stop conditions.</li>
+</ul>
+<p>Do not convert a broad aspiration into unlimited scope.</p>
+<h3>Stage 2 — Route internally by lifecycle</h3>
+<p>Use the same specialist sequence as interactive get-fable work. Cowork is an execution mode across Skills, not a replacement for discovery/TDD/recovery/review.</p>
+<h3>Stage 3 — Work in bounded chunks</h3>
+<p>For each card/phase:</p>
+<ul class="docs-list">
+<li>perform the necessary tool calls;</li>
+<li>collect evidence immediately;</li>
+<li>update state/checkpoint;</li>
+<li>continue only if the next dependency is already authorized and determined.</li>
+</ul>
+<p>Keep user-visible updates sparse but meaningful for long work: surfaced finding, changed blocker, completed milestone—not narration of every command.</p>
+<h3>Stage 4 — Detect drift</h3>
+<p>Stop autonomous forward motion if:</p>
+<ul class="docs-list">
+<li>requested outcome changed;</li>
+<li>new architecture/product choice has material trade-offs not implied by existing intent;</li>
+<li>scope expands substantially;</li>
+<li>user-owned/unrelated work conflicts with required mutation;</li>
+<li>security/destructive boundary appears;</li>
+<li>external authentication/permission cannot be obtained safely.</li>
+</ul>
+<h3>Stage 5 — Handle failures through recovery</h3>
+<p>Do not hide failure inside silent loops. Repeated similar failures route to <code>fable-recover</code>; record hypothesis changes and only resume mutation when new evidence justifies it.</p>
+<h3>Stage 6 — Verify before declaring outcome</h3>
+<p>Run fresh, relevant verification after final mutations. For substantial work include review/security/release gates as appropriate. If a required environment cannot be exercised, report INCOMPLETE rather than converting autonomy into fabricated confidence.</p>
+<h3>Stage 7 — Preserve resumability</h3>
+<p>For long work or any hard wall, create a handoff/checkpoint containing exact state, evidence, blockers, and next safe action.</p>
+<h3>Stage 8 — Report outcome first</h3>
+<p>Final response should lead with what actually happened, then evidence, then remaining blockers. Do not replay the internal tool sequence.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Autonomy reduces questions only when existing intent is sufficient; it does not authorize material product decisions that were never implied.</li>
+<li>Prefer progress over clarification for recoverable implementation details; prefer stopping over guessing for irreversible/security/public-contract decisions.</li>
+<li>Do not silently reset/overwrite unrelated user changes to make the workspace convenient.</li>
+<li>Long task does not justify scope expansion; create additional cards only when they are necessary to the requested outcome.</li>
+<li>Background-like work must still happen in the current execution context; do not promise asynchronous future completion unless a scheduling mechanism actually exists.</li>
+<li>If a public publish/tag/delete/migration action is outside current authorization, prepare and verify it but stop before the irreversible step.</li>
+<li>A final &quot;done&quot; requires fresh evidence; partial completion should be reported precisely when a hard wall remains.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>User objective and protected scope remain stable or changes are surfaced.</li>
+<li>All mutations still obey specialist gates.</li>
+<li>No blind retry loops are hidden by silent execution.</li>
+<li>External/destructive authorization boundaries are respected.</li>
+<li>Unrelated user changes and credentials remain protected.</li>
+<li>Long work remains resumable after interruption.</li>
+<li>Final claims are evidence-backed and outcome-first.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Scope drift</h3>
+<p>Agent discovers adjacent opportunities and starts implementing them. Return to required outcome/cards.</p>
+<h3>Silent uncertainty</h3>
+<p>Agent makes a material product choice to avoid interrupting. Stop/replan when the choice is not implied by intent.</p>
+<h3>Silent failure loop</h3>
+<p>Repeated tool failures are hidden behind autonomy. Route to recovery and surface the blocker if diagnosis cannot progress.</p>
+<h3>Authorization wall</h3>
+<p>Required publish/delete/prod/credential action is not authorized or available. Stop at prepared state with exact next action.</p>
+<h3>Workspace collision</h3>
+<p>Unrelated user work overlaps required files. Preserve it; coordinate/narrow rather than overwrite.</p>
+<h3>Evidence gap</h3>
+<p>Implementation finished but required browser/provider/CI/external evidence cannot run. Report partial/incomplete, not success.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>&quot;keep going no matter what&quot; as autonomy policy;</li>
+<li>narrating every tool call despite cowork mode;</li>
+<li>asking permission for every reversible implementation detail;</li>
+<li>silently making a new product/architecture choice with material trade-offs;</li>
+<li>retrying until something turns green;</li>
+<li>hiding incomplete external gates behind a polished final summary;</li>
+<li>expanding the task because there is still token/time budget;</li>
+<li>promising background work that is not actually scheduled/executing.</li>
+</ul>
+<h2>Cowork Checkpoint</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Goal / non-goals:
+Authorization boundaries:
+Current phase/card:
+Completed outcomes:
+Fresh evidence:
+Protected unrelated state:
+New decisions made + basis:
+Failures/recovery state:
+Hard blockers:
+Primary next safe action:
+Can continue autonomously? yes/no + why</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Cowork completes when:</p>
+<ul class="docs-list">
+<li>requested outcome is delivered or a genuine hard wall is reached;</li>
+<li>lifecycle gates remain intact despite reduced narration;</li>
+<li>no material scope/authorization decision was guessed;</li>
+<li>final evidence is fresh and limitations explicit;</li>
+<li>task can be resumed from a durable checkpoint if incomplete;</li>
+<li>report begins with actual outcome, not process narration.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/autonomy-boundaries-and-checkpoints.md</code></li>
+<li>Existing discipline: <code>references/silent-execution-discipline.md</code></li>
+<li>Example: <code>examples/silent-refactor-session.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

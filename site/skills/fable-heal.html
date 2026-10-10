@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-heal.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-heal.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-heal.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-heal.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-heal — get-fable Skill Reference">
+  <meta property="og:description" content="Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-heal.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-heal — get-fable Skill">
+  <meta name="twitter:description" content="Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-heal — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-heal Skill Specification",
+    "description": "Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.",
+    "articleSection": "Proof Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-heal.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-heal</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-heal.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-heal.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-heal.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Proof Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 78</span>
+        </div>
+        <h1 class="skill-title">fable-heal</h1>
+        <p class="skill-lead">Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "heal" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Proof Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">heal</span> <span class="intent-chip">security-fix</span> <span class="intent-chip">remediate-vulnerability</span> <span class="intent-chip">patch-security</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>syntax_verified</code></li><li><code>regression_tests_passed</code></li><li><code>repro_neutralized</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-release.html">fable-release</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Heal</h1>
+<p>Automatically synthesize, apply, and verify security fixes for vulnerabilities detected by <code>fable-redteam</code>.</p>
+<h2>Purpose</h2>
+<p>Bridge the gap between active vulnerability discovery and verified code remediation. <code>fable-heal</code> translates offensive security findings (SQL injection, BOLA/IDOR, CORS misconfigurations, missing security headers, sensitive file leaks, SSRF, JWT signature bypass, and LLM prompt injections) into concrete, tested, verified code patches with zero regressions.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li><code>fable-redteam</code> or security audits have identified vulnerabilities that need immediate code remediation.</li>
+<li>Automatically generating TDD regression test suites to ensure security flaws stay closed in CI.</li>
+<li>Applying surgical code patches in staging or local branches with atomic rollback protection.</li>
+<li>Verifying whether candidate security patches successfully eliminate attack vectors.</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>Before vulnerabilities have been identified or reproduced (use <code>fable-redteam</code> or <code>fable-security</code>).</li>
+<li>For general non-security application refactoring (use <code>fable-simplify</code>).</li>
+<li>Direct production patching without human review or staging verification.</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>redteam_findings</code>: Array or file path of structured vulnerability findings from <code>fable-redteam</code>.</li>
+<li><code>target</code>: Target HTTP/HTTPS endpoint or repository workspace.</li>
+<li><code>dryRun</code>: When true, previews generated patches and unified diffs without modifying files.</li>
+<li><code>autoApply</code>: When true, writes patches directly to matching codebase source files.</li>
+<li><code>verify</code>: When true, re-runs attack vectors against the target to prove vulnerability resolution.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>security_patches</code>: Concrete code replacements with unified diffs.</li>
+<li><code>test/security/redteam-healed.test.ts</code>: Executable Bun test suite asserting vulnerability closure.</li>
+<li><code>.fable/heal-attestation.json</code>: Tamper-evident cryptographic SHA-256 attestation record.</li>
+<li><code>.fable/LEDGER.md</code>: Updated work cards marked as remediated.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Finding Ingestion:</strong> Load findings from <code>fable-redteam</code>, SARIF reports, or <code>.fable/redteam-findings.json</code>.</p>
+<p>2. <strong>Strategy Selection:</strong> Map each finding category and CWE to its surgical remediation pattern:</p>
+<p>   - SQL Injection (CWE-89) -&gt; Parameterized queries.</p>
+<p>   - IDOR/BOLA (CWE-639) -&gt; Resource ownership verification guard.</p>
+<p>   - CORS Misconfiguration (CWE-942) -&gt; Strict origin whitelist.</p>
+<p>   - Missing Security Headers (CWE-1021) -&gt; Content-Security-Policy, HSTS, XFO headers.</p>
+<p>   - Sensitive Exposures (CWE-200) -&gt; Route denial for <code>.env</code>, <code>.git</code>, and secrets.</p>
+<p>   - SSRF (CWE-918) -&gt; Outbound URL and IP validation blocking loopback and cloud metadata.</p>
+<p>3. <strong>Patch Synthesis:</strong> Generate code transformations and compute unified diffs.</p>
+<p>4. <strong>TDD Test Generation:</strong> Emit executable test assertions into <code>test/security/redteam-healed.test.ts</code>.</p>
+<p>5. <strong>Atomic Application &amp; Guard:</strong> If applied, write patches with automated backup. On syntax or compilation failure, trigger circuit-breaker rollback.</p>
+<p>6. <strong>Closed-Loop Verification:</strong> If target is accessible, execute verification probes to confirm fix.</p>
+<p>7. <strong>Attestation &amp; Ledger Sealing:</strong> Record cryptographic SHA-256 seal and mark work cards closed.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>If syntax check or typecheck fails on a candidate patch, trigger rollback immediately via circuit breaker.</li>
+<li>Always generate executable TDD regression test suite before sealing remediation.</li>
+<li>Never modify files in <code>dryRun</code> mode; only emit unified diffs and previews.</li>
+<li>When target endpoint is live and verification is requested, probe target to prove vulnerability closure before completing.</li>
+<li>Record SHA-256 cryptographic attestation in <code>.fable/heal-attestation.json</code> for all applied patches.</li>
+</ul>
+<h2>Constraints</h2>
+<ul class="docs-list">
+<li>Do not apply patches without automated rollback circuit breaker in place.</li>
+<li>Do not bypass verification tests when closing active security work cards.</li>
+<li>Patches must be surgical and preserve existing application business logic and comments.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Use native AST patching and regex transformers from <code>src/core/redteam/heal.ts</code>.</li>
+<li>Run Bun test runner (<code>bun test</code>) to execute generated regression test suites.</li>
+<li>Use native SHA-256 crypto for cryptographic attestation generation.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Synthesized patches must provide exact file paths, strategy name, and unified diffs.</li>
+<li>Applied patches require syntax verification and automated regression test generation in <code>test/security/redteam-healed.test.ts</code>.</li>
+<li>Cryptographic healing attestation at <code>.fable/heal-attestation.json</code> verifying integrity of all applied patches.</li>
+</ul>
+<h2>Failure Handling</h2>
+<ul class="docs-list">
+<li>If a candidate patch produces invalid syntax or type errors, immediately rollback changes via the circuit breaker.</li>
+<li>If regression tests fail, revert applied patches and flag finding for manual developer review.</li>
+<li>If target server is unavailable during closed-loop verification, mark verification as pending without blocking patch application.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>All identified vulnerability findings mapped to remediation strategies.</li>
+<li>Unified diffs and patches synthesized for vulnerable targets.</li>
+<li>TDD regression test suite generated and passing in <code>test/security/redteam-healed.test.ts</code>.</li>
+<li>Cryptographic attestation recorded in <code>.fable/heal-attestation.json</code>.</li>
+<li>Remediation status recorded in <code>.fable/LEDGER.md</code>.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-eval.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-eval.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-eval.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-eval.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-eval — get-fable Skill Reference">
+  <meta property="og:description" content="Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-eval.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-eval — get-fable Skill">
+  <meta name="twitter:description" content="Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-eval — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-eval Skill Specification",
+    "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.",
+    "articleSection": "Evolution Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-eval.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-eval</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-eval.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-eval.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-eval.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Evolution Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 90</span>
+        </div>
+        <h1 class="skill-title">fable-eval</h1>
+        <p class="skill-lead">Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "agent-eval" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Evolution Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">agent-eval</span> <span class="intent-chip">self-improvement</span> <span class="intent-chip">prompt-change</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>baseline-frozen</code></li><li><code>holdout-tested</code></li><li><code>rollback-defined</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Eval</h1>
+<p>Measure whether an agent-control change improves the behavior it claims to improve without quietly overfitting the benchmark or breaking neighboring behavior.</p>
+<h2>Mission</h2>
+<p>An eval is a decision instrument, not a scoreboard. It needs a frozen comparison point, representative semantic families, oracle isolation, explicit failure costs, and a rollback decision.</p>
+<p>A candidate should not win because the prompts resemble its instructions, because holdouts leaked into authoring, or because one average score hides a severe regression.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>changing Skills, prompts, routers, hooks, agent profiles, policies, or model-control logic;</li>
+<li>comparing candidate prompt/agent configurations;</li>
+<li>measuring trigger precision/recall or action compliance;</li>
+<li>validating a new behavioral maturity claim;</li>
+<li>investigating whether an apparent improvement is robust or benchmark-specific.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>verifying ordinary application behavior (<code>fable-verify</code>);</li>
+<li>authoring a Skill before its intended behavior is clear (<code>skill-creator</code>);</li>
+<li>running a one-off subjective prompt demo with no acceptance decision.</li>
+</ul>
+<h2>Evaluation Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Change</th><th>Primary eval risk</th></tr></thead><tbody>
+<tr><td>Router/trigger</td><td>false positives, false negatives, precedence</td></tr>
+<tr><td>Skill instruction</td><td>action correctness, forbidden shortcuts, boundary behavior</td></tr>
+<tr><td>Spark/next-action</td><td>top-1 action, unsafe suggestion, silence precision</td></tr>
+<tr><td>Hook/guard</td><td>enforcement, false blocking, bypasses</td></tr>
+<tr><td>Prompt/persona</td><td>task quality + regressions + instruction conflicts</td></tr>
+<tr><td>Tool policy</td><td>correct tool choice, unsafe/missing action</td></tr>
+<tr><td>Model/config</td><td>quality/latency/cost variance across representative tasks</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Define the decision before running tests</h3>
+<p>State:</p>
+<ul class="docs-list">
+<li>candidate being evaluated;</li>
+<li>baseline/control;</li>
+<li>exact behavior expected to improve;</li>
+<li>metrics and thresholds;</li>
+<li>unacceptable regressions;</li>
+<li>rollback action.</li>
+</ul>
+<p>Avoid inventing metrics after seeing results.</p>
+<h3>Stage 2 — Build semantic scenario families</h3>
+<p>Cover distinct decisions, not wording variants. Include as applicable:</p>
+<ul class="docs-list">
+<li>straightforward positive case;</li>
+<li>non-trigger/boundary case;</li>
+<li>ambiguous competing action;</li>
+<li>adversarial shortcut pressure;</li>
+<li>partial/contradictory evidence;</li>
+<li>failure/recovery path;</li>
+<li>legacy/constrained environment;</li>
+<li>unseen holdout.</li>
+</ul>
+<p>Record family coverage separately from raw prompt count.</p>
+<h3>Stage 3 — Freeze baseline and corpus identity</h3>
+<p>Bind the run to:</p>
+<ul class="docs-list">
+<li>corpus hash/version;</li>
+<li>candidate/baseline identity;</li>
+<li>evaluator/scorer version;</li>
+<li>provider/model/config where external;</li>
+<li>timestamp/repository revision.</li>
+</ul>
+<p>Changing the subject, oracle, corpus, or scoring logic invalidates direct comparability unless explicitly normalized.</p>
+<h3>Stage 4 — Protect the oracle</h3>
+<p>Provider-facing requests must not reveal expected actions, forbidden actions, category labels, holdout identity, scoring implementation, or answer-bearing metadata.</p>
+<p>Do not draft the candidate while repeatedly reading holdout failures. Promote discovered cases into a future checked corpus and preserve a new unseen holdout.</p>
+<h3>Stage 5 — Execute baseline and candidate consistently</h3>
+<p>Use the same task inputs, tool availability, context budget, temperature/configuration, timeout policy, and scoring rules where comparison requires them.</p>
+<p>Capture provider errors/timeouts as failures or explicit unavailable states; do not fill missing outputs from the oracle.</p>
+<h3>Stage 6 — Score by slices, not average alone</h3>
+<p>Inspect:</p>
+<ul class="docs-list">
+<li>overall metric;</li>
+<li>each semantic family;</li>
+<li>negative/adversarial forbidden violations;</li>
+<li>high-cost regressions;</li>
+<li>variance/repeated-run stability where stochasticity is material;</li>
+<li>routing confusion pairs where applicable.</li>
+</ul>
+<p>A 1% average gain is not acceptable if it introduces a severe release/security/recovery regression.</p>
+<h3>Stage 7 — Investigate suspicious gains</h3>
+<p>Check for:</p>
+<ul class="docs-list">
+<li>prompt leakage;</li>
+<li>duplicated/near-duplicate scenarios;</li>
+<li>benchmark-specific keyword matching;</li>
+<li>changed tool/context budget;</li>
+<li>scorer drift;</li>
+<li>cherry-picked seeds/runs;</li>
+<li>examples copied into the candidate.</li>
+</ul>
+<h3>Stage 8 — Decide and preserve rollback</h3>
+<p>Verdict:</p>
+<ul class="docs-list">
+<li><strong>ACCEPT</strong>: thresholds met, no prohibited regression, evidence representative/fresh;</li>
+<li><strong>REJECT</strong>: candidate regresses required behavior or fails threshold;</li>
+<li><strong>INCONCLUSIVE</strong>: evidence lacks breadth/stability/holdout integrity.</li>
+</ul>
+<p>Record baseline artifact so rollback remains possible.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Semantic family breadth matters more than raw scenario count.</li>
+<li>Surface rewrites of one case do not create independent coverage.</li>
+<li>Holdouts stop being holdouts once used repeatedly to tune the candidate.</li>
+<li>Compare slices before averages; safety-critical forbidden violations can veto a higher average score.</li>
+<li>If stochastic variance could change the decision, repeat enough runs to estimate stability rather than cherry-picking one seed.</li>
+<li>If provider/runtime errors differ between candidate and baseline, separate infrastructure failure from behavior score.</li>
+<li>Never preserve an old maturity result after the evaluated Skill/corpus/oracle changes unless freshness validation proves identity.</li>
+<li>Do not lower thresholds after a candidate fails simply to ship it.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Baseline is reproducible/frozen before candidate judgment.</li>
+<li>Oracle/holdout data remains hidden from the evaluated agent.</li>
+<li>Candidate and baseline are compared under equivalent conditions where claimed.</li>
+<li>Missing/failed provider outputs are never replaced by expected answers.</li>
+<li>Every acceptance decision has a rollback path.</li>
+<li>High-cost regressions remain visible even when aggregate score improves.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Benchmark overfit</h3>
+<p>Candidate improves checked cases but fails unseen family/holdout. Increase semantic breadth and reject/generalize candidate.</p>
+<h3>Oracle leakage</h3>
+<p>Expected/forbidden/category data reaches provider/candidate authoring loop. Discard contaminated evidence and create fresh blind cases.</p>
+<h3>Metric blindness</h3>
+<p>Average improves while important slice worsens. Use per-family and veto metrics.</p>
+<h3>Non-comparable runs</h3>
+<p>Different model/tool/context/scorer settings produce apparent gain. Re-run under controlled conditions.</p>
+<h3>High variance</h3>
+<p>Repeated runs change verdict. Increase samples/control nondeterminism or mark inconclusive.</p>
+<h3>Corpus drift</h3>
+<p>Skill/scenario/oracle changed after evidence capture. Mark evidence stale and rerun.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>five paraphrases counted as five independent tests;</li>
+<li>reading holdouts while tuning every candidate;</li>
+<li>accepting on average score alone;</li>
+<li>changing thresholds after seeing failure;</li>
+<li>treating provider timeout as skipped rather than failed/incomplete;</li>
+<li>evaluating only positive examples;</li>
+<li>copying expected action vocabulary in a way that reveals the answer per case;</li>
+<li>claiming M4 because an evidence JSON file exists even though corpus hash changed.</li>
+</ul>
+<h2>Eval Report</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Candidate / baseline:
+Corpus + hashes:
+Provider/config:
+Semantic families:
+Metrics + thresholds:
+Per-family results:
+Forbidden/high-cost regressions:
+Variance/repeats:
+Leakage/comparability checks:
+Verdict: ACCEPT | REJECT | INCONCLUSIVE
+Rollback:
+Evidence freshness:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Evaluation completes when:</p>
+<ul class="docs-list">
+<li>baseline and candidate identities are explicit;</li>
+<li>semantic coverage and blind holdout integrity are credible;</li>
+<li>metrics are inspected by meaningful slices;</li>
+<li>regressions/forbidden actions are not hidden by averages;</li>
+<li>verdict and rollback are evidence-backed;</li>
+<li>evidence freshness is tied to the exact evaluated corpus/control.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/benchmark-design-and-overfit-control.md</code></li>
+<li>Existing protocol: <code>references/eval-harness-protocol.md</code></li>
+<li>Example: <code>examples/eval-regression-run.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

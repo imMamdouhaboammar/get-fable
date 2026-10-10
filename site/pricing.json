@@ -1,0 +1,18 @@
+{
+  "title": "get-fable Pricing & Licensing",
+  "price": "$0",
+  "currency": "USD",
+  "billing_interval": "perpetual",
+  "license": "MIT",
+  "open_source": true,
+  "canonical_url": "https://get-fable.vercel.app/pricing.html",
+  "features": [
+    "42 Canonical Skills",
+    "7-Phase Lifecycle State Machine",
+    "Fable Circuit Breaker Recovery",
+    "RedTeam Penetration Scanner & Self-Healing",
+    "32-Platform Integrations",
+    "Local-first, zero telemetry"
+  ],
+  "updatedAt": "2026-10-10T13:26:29.229Z"
+}
