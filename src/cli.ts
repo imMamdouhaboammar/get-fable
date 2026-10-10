@@ -1637,6 +1637,12 @@ async function runJevOrchestrateCommand(args: string[]): Promise<number> {
     );
     return 1;
   }
+  if (execute && !workerAddress) {
+    logError(
+      'Live execution requires --worker-addr <host:port> connected to an actual task executor. The default local worker has no execution handler.'
+    );
+    return 1;
+  }
 
   const plan = await orchestrateSubagentsWithJev(task, {
     repoRoot: getRepoRootDir(),
