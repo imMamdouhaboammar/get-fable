@@ -3,7 +3,7 @@
   "price": "$0",
   "currency": "USD",
   "billing_interval": "perpetual",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "open_source": true,
   "canonical_url": "https://get-fable.vercel.app/pricing.html",
   "features": [
@@ -14,5 +14,5 @@
     "32-Platform Integrations",
     "Local-first, zero telemetry"
   ],
-  "updatedAt": "2026-10-10T15:23:20.738Z"
+  "updatedAt": "2026-10-14T06:12:12.933Z"
 }

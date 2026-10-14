@@ -74,4 +74,4 @@ bun ./bin/get-fable.js install
 7. The Boundaries: Inspectable Claims
 • What is implemented: Claude Code skills and hooks, Antigravity / Gemini plugin package, Agent Kernel rules, Request proxy development utility.
 • What get-fable does not claim: No model replacement, no universal installer, no correctness guarantee, no hardened public gateway.
-• Independent community project licensed under MIT.
+• Independent community project licensed under GNU AGPLv3.

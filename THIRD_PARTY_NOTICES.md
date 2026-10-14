@@ -16,7 +16,7 @@ It is an attribution record, not a claim that every file in this repository was 
 
 ## Licensing note
 
-The repository-level MIT license for `get-fable` applies to original project code and project-authored modifications to the extent the project owner has the right to license them
+The repository-level GNU Affero General Public License v3 (AGPL-3.0-or-later) for `get-fable` applies to original project code and project-authored modifications to the extent the project owner has the right to license them
 
 Third-party material remains subject to the rights and terms that apply to that material
 

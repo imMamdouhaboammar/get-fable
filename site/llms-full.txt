@@ -9,7 +9,7 @@ get-fable improves working conditions for AI coding agents (Claude Code, Antigra
 ## Documentation & Guides
 - [User Guide & Technical Documentation](https://get-fable.vercel.app/guide.html): Comprehensive lifecycle, state machine, hooks, and CLI reference.
 - [Workflows & Production Prompts](https://get-fable.vercel.app/workflows.html): End-to-end multi-agent pipelines and copy-paste prompt templates.
-- [Pricing & Open Source](https://get-fable.vercel.app/pricing.html): Free and open source MIT license details.
+- [Pricing & Open Source](https://get-fable.vercel.app/pricing.html): Free and open source GNU AGPLv3 license details.
 - [Skills Catalog](https://get-fable.vercel.app/skills.html): Index of all 42 canonical skills across 8 packs.
 
 ## Canonical Skills (42)

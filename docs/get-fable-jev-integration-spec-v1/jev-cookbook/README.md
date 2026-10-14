@@ -151,4 +151,4 @@ docs/case-study-templatesgrokbot.md
 
 Created by **[Jeroen Erne](https://www.linkedin.com/in/jeroenerne/)**, of [Nexibeo](https://nexibeo.com) and [Complete AI Training](https://completeaitraining.com), built together with Claude. The case study comes from [TemplatesGrokBot](https://templatesgrokbot.com). Jev is made by [TypeSafe](https://typesafe.ai); this project is independent of TypeSafe and OpenRouter.
 
-MIT licensed: see [LICENSE](LICENSE). Contributions and new recipes are welcome.
+GNU AGPLv3 licensed: see [LICENSE](LICENSE). Contributions and new recipes are welcome.
