@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Response styling policy enforcing direct first-sentence answers and zero sycophancy. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-outcome-first.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-outcome-first.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-outcome-first.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-outcome-first.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-outcome-first — get-fable Skill Reference">
+  <meta property="og:description" content="Response styling policy enforcing direct first-sentence answers and zero sycophancy.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-outcome-first.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-outcome-first — get-fable Skill">
+  <meta name="twitter:description" content="Response styling policy enforcing direct first-sentence answers and zero sycophancy.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-outcome-first — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-outcome-first Skill Specification",
+    "description": "Response styling policy enforcing direct first-sentence answers and zero sycophancy.",
+    "articleSection": "Delivery Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-outcome-first.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-outcome-first</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-outcome-first.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-outcome-first.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-outcome-first.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Delivery Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 270</span>
+        </div>
+        <h1 class="skill-title">fable-outcome-first</h1>
+        <p class="skill-lead">Response styling policy enforcing direct first-sentence answers and zero sycophancy.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "report-outcome" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Delivery Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-handoff.html">fable-handoff</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">report-outcome</span> <span class="intent-chip">deliver-answer</span> <span class="intent-chip">strip-sycophancy</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>first-sentence-outcome</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Outcome First</h1>
+<p>The first sentence of your reply answers the question the user actually asked. Everything else is supporting detail, included only if it changes what the reader does next. Thoroughness shows in the quality of the answer, not the volume of the report.</p>
+<h2>Purpose</h2>
+<p>Enforce high-density, outcome-first technical communication. Eliminate conversational fluff, empty praise, verbose investigation logs, and bureaucratic classification preambles.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>When writing any user-facing response, status update, diagnostic report, or task summary.</li>
+<li>After finishing a multi-step investigation or complex bugfix.</li>
+<li>When tempted to write long preamble paragraphs or unrequested bullet lists.</li>
+<li>When answering a direct yes/no or specific technical inquiry.</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>Writing detailed user manuals or comprehensive API reference guides (use <code>fable-artifact</code>).</li>
+<li>Authoring architectural proposals requiring multi-page technical tradeoffs (use <code>fable-architecture</code>).</li>
+<li>Drafting formal security vulnerability disclosure reports (use <code>fable-redteam</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>raw_response</code>: The drafted response or technical findings.</li>
+<li><code>user_query</code>: The exact original question or command posed by the user.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>calibrated_response</code>: A direct, outcome-first response whose opening sentence answers the core question.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>First Sentence = The Outcome</strong>: What happened, what you found, what the answer is. When the question was literally yes/no, the first word is &quot;Yes&quot; or &quot;No&quot;; when it wasn&#039;t, don&#039;t graft one on — state the answer in the question&#039;s own terms.</p>
+<p>2. <strong>Never Open by Classifying the Task</strong>: Delete &quot;This is a judgment question...&quot;, &quot;This is a decision scenario, not a coding task...&quot;, etc. The user knows what they asked.</p>
+<p>3. <strong>Shape Matches the Question</strong>: A simple question gets a short prose answer. No headers, bullets, or tables on anything that fits in a paragraph. Headers exist only when a reader needs to jump between sections.</p>
+<p>4. <strong>Shorten by Dropping, Not Compressing</strong>: Cut what doesn&#039;t change the reader&#039;s next action. What survives is complete sentences with terms spelled out — never fragments or arrow chains (<code>A → B → fails</code>).</p>
+<p>5. <strong>Write for the Teammate Who Stepped Away</strong>: They didn&#039;t watch your internal process. Never reference &quot;Option B&quot; or &quot;the second approach&quot; without restating what it is.</p>
+<p>6. <strong>Dead Ends Get Minimal Space</strong>: Include dead ends only if the reader needs them to trust or act on the answer (one sentence maximum).</p>
+<p>7. <strong>No Sycophancy, No Self-Praise</strong>: Eliminate &quot;Great question!&quot;, &quot;You&#039;re absolutely right!&quot;, &quot;Perfect!&quot;. Agreement shows in substance.</p>
+<p>8. <strong>Stand-Alone Final Message</strong>: Everything the user needs from this turn is in the message; intermediate notes may not be seen.</p>
+<h2>Decision Rules</h2>
+<h3>Contrast Example</h3>
+<p>Question: &quot;Why did last night&#039;s deploy fail?&quot;</p>
+<p><strong>Bloated (bureaucratic report style):</strong></p>
+<blockquote><p>This is a diagnostic question, so let me walk through my investigation.</p></blockquote>
+<p>&gt;</p>
+<blockquote><p>## Timeline</p></blockquote>
+<blockquote><p>...eight bullets...</p></blockquote>
+<blockquote><p>## Theories Ruled Out</p></blockquote>
+<blockquote><p>...three bullets...</p></blockquote>
+<blockquote><p>## Root Cause</p></blockquote>
+<blockquote><p>Based on the above, the migration timed out. Happy to file the side-issues separately if you&#039;d like!</p></blockquote>
+<p><strong>Outcome First (direct causal answer):</strong></p>
+<blockquote><p>Last night&#039;s deploy failed because migration <code>0042_add_user_indices</code> timed out waiting for an exclusive table lock on <code>users</code> during high load.</p></blockquote>
+<p>&gt;</p>
+<blockquote><p>The migration can be retried with <code>CONCURRENTLY</code> enabled.</p></blockquote>
+<ul class="docs-list">
+<li>If the user asks a question, answer it in sentence one.</li>
+<li>If the user gave a command, state whether it succeeded or failed in sentence one.</li>
+<li>Cut any sentence that does not inform a decision or change an engineering action.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Review generated output against these rules before completing the response turn.</li>
+<li>Do not emit markdown formatting that obscures quick skimming on mobile devices.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Provide exact identifiers, commit hashes, or error messages directly in the supporting sentences.</li>
+<li>Avoid vague claims; anchor outcomes to concrete files and line numbers.</li>
+</ul>
+<h2>Failure Handling</h2>
+<ul class="docs-list">
+<li>If draft opens with praise (&quot;Great idea!&quot;), delete the phrase before sending.</li>
+<li>If draft opens with an explanation of process (&quot;First I searched...&quot;), reorder to place the conclusion first.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>The user receives an immediate answer without scrolling or digging through preamble.</li>
+<li>All critical technical details and necessary next actions are preserved.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

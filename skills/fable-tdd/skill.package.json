@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-tdd",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/red-green-refactor.md",
+    "references/test-strategy-and-hard-cases.md"
+  ],
+  "templates": [
+    "templates/tdd-cycle.template.md"
+  ],
+  "examples": [
+    "examples/failing-test-first.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

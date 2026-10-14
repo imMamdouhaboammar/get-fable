@@ -1,0 +1,157 @@
+---
+import Base from "../layouts/Base.astro";
+import Logo from "../components/Logo.astro";
+import CurrentlyTending from "../components/CurrentlyTending.astro";
+import Stats from "../components/Stats.astro";
+import Activity from "../components/Activity.astro";
+
+const areas = [
+  {
+    eyebrow: "i.",
+    title: "PR reviews",
+    body: [
+      "Reads each pull request. It draws on the Skills and docs your team already wrote, so the review weighs in on what your project cares about.",
+      "Because it runs in your CI, it can run the tests against the change and iterate on a fix until they pass. It'll offer to push the fix.",
+    ],
+  },
+  {
+    eyebrow: "ii.",
+    title: "Issue triage",
+    body: [
+      "When an issue opens, tend classifies it, checks the backlog for duplicates, and tries to reproduce any reported bug.",
+      "If the fix is small and conservative, it'll open a PR. Otherwise it leaves a clear note for whoever picks it up.",
+    ],
+  },
+  {
+    eyebrow: "iii.",
+    title: "CI fixes",
+    body: [
+      "When the default branch goes red, tend reads the failed run, finds the underlying cause, and opens a PR with the fix.",
+    ],
+  },
+  {
+    eyebrow: "iv.",
+    title: "Work delegation",
+    body: [
+      "Mention the bot in a PR or issue and it takes a pass at what you asked — resolve a merge conflict, draft a change, research a question, fix the tests.",
+    ],
+  },
+  {
+    eyebrow: "v.",
+    title: "Nightly & weekly maintenance",
+    body: [
+      "Overnight it sweeps a rotating sample of files for stale docs and small bugs, reviews the day's commits, resolves merge conflicts on its own open PRs, and closes issues that got fixed.",
+      "Each week it works through dependency PRs — approving the patch and minor bumps with green CI, flagging the rest.",
+    ],
+  },
+  {
+    eyebrow: "vi.",
+    title: "Self-review",
+    body: [
+      "Each day tend reads the previous day's runs of its own workflows, looks for behaviour that didn't sit right, and proposes adjustments to its Skills and config.",
+    ],
+  },
+];
+---
+
+<Base>
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-body">
+      <h1>tend</h1>
+      <p class="tagline">An agent that tends your repo — reviewing PRs, triaging issues, and responding to whatever comes up, so you can focus on building beautiful things.</p>
+
+      <pre><code>claude plugin marketplace add max-sixty/tend
+claude plugin install install-tend@tend
+claude /install-tend</code></pre>
+    </div>
+    <div class="logo-frame">
+      <Logo size={220} />
+    </div>
+  </section>
+
+  <div class="marginalia stats-rail">
+    <div class="margin-note">to date</div>
+    <div class="body">
+      <Stats />
+      <CurrentlyTending />
+    </div>
+  </div>
+
+  <!-- ===== WHAT TEND TENDS ===== -->
+  <section id="what-tend-tends">
+    <p class="section-eyebrow">a small field guide</p>
+    <p class="section-lead">A few of the things tend does, day to day.</p>
+
+    {areas.map((area) => (
+      <div class="marginalia">
+        <div class="margin-note">{area.eyebrow}</div>
+        <div class="body">
+          <h2>{area.title}</h2>
+          {area.body.map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <Activity />
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works">
+    <p class="section-eyebrow">how it works</p>
+    <p class="section-lead">A subscription, some workflows, and Skills you can shape.</p>
+
+    <div class="marginalia">
+      <div class="margin-note">runtime</div>
+      <div class="body">
+        <p>Tend runs Claude Code in GitHub Actions, using your Claude Max subscription.</p>
+      </div>
+    </div>
+
+    <div class="marginalia">
+      <div class="margin-note">structure</div>
+      <div class="body">
+        <p>In your repo, Tend is a handful of GitHub Actions workflows, each running a Skill, generated from a single config.</p>
+      </div>
+    </div>
+
+    <div class="marginalia">
+      <div class="margin-note">overlay</div>
+      <div class="body">
+        <p>Skills and docs in your repo overlay Tend's defaults. Set what it auto-approves, calibrate what it flags in reviews, have it push small fixes itself, close some category of PR on sight, or give it a new chore to run each night.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== QUICK START ===== -->
+  <section id="quick-start">
+    <p class="section-eyebrow">getting started</p>
+    <p class="section-lead">Claude Code sets Tend up in about ten minutes.</p>
+
+    <div class="marginalia">
+      <div class="margin-note">install</div>
+      <div class="body">
+        <pre><code>claude plugin marketplace add max-sixty/tend
+claude plugin install install-tend@tend
+claude /install-tend</code></pre>
+
+        <p>The <code>/install-tend</code> Skill walks the rest of the way: config file, workflow generation, bot account, secrets, branch protection. It'll ask before each step that touches your repo.</p>
+        <p class="note">You'll need a GitHub account for the bot (something like <code>@your-project-bot</code>) and a Claude Max subscription. Maintainers of sizeable OSS projects can <a href="https://claude.com/contact-sales/claude-for-oss">get a Max subscription free from Anthropic</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECURITY ===== -->
+  <section id="security">
+    <p class="section-eyebrow">security</p>
+    <p class="section-lead">You remain in control.</p>
+
+    <div class="marginalia">
+      <div class="margin-note">model</div>
+      <div class="body">
+        <p>Tend gives Claude write access to your repo, but not the merge. A GitHub ruleset blocks the bot from merging to protected branches — whoever opened the PR, however it's been reviewed — so every change lands through a human. The bot proves this against itself on every run: before starting, it asks GitHub whether its own credentials could bypass the ruleset, and refuses to run if the answer is yes. Tend's setup verifies the ruleset and (if you ask) creates it for you; around that sit config-pinning, rate limits, and a fixed prompt and Skill set.</p>
+        <p><a href="https://github.com/max-sixty/tend/blob/main/docs/security-model.md">Read the full threat model →</a></p>
+      </div>
+    </div>
+  </section>
+</Base>

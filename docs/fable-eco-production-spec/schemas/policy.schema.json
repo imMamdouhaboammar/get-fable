@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "default_permission",
+    "network",
+    "active_security"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "default_permission": {
+      "const": "deny"
+    },
+    "network": {
+      "enum": [
+        "none",
+        "metadata-only",
+        "public-internet",
+        "allowlist"
+      ]
+    },
+    "allowed_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "active_security": {
+      "enum": [
+        "deny",
+        "scoped-only"
+      ]
+    },
+    "allow_project_catalog": {
+      "type": "boolean"
+    },
+    "allow_experimental": {
+      "type": "boolean"
+    }
+  }
+}

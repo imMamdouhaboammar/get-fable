@@ -1,0 +1,42 @@
+# get-fable robots.txt
+# Generative Engine Optimization (GEO) & Search Crawler Policy
+
+User-agent: *
+Allow: /
+Allow: /*.html
+Allow: /*.md
+Allow: /*.txt
+Allow: /*.json
+
+# Allow all AI Search & Extraction Engines
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+Sitemap: https://get-fable.vercel.app/sitemap.xml

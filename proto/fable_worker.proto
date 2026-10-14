@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package fable.worker.v1;
+
+// Service for distributed worker execution, streaming task lifecycle events, and capability resolution.
+service WorkerService {
+  // Execute a bounded task and stream execution events (logs, tool calls, state changes) back to the caller.
+  rpc ExecuteTask (TaskExecutionRequest) returns (stream TaskEvent);
+
+  // Synchronous skill execution fulfilling the SkillBehaviorProvider contract.
+  rpc ExecuteSkill (SkillExecutionRequest) returns (SkillExecutionResponse);
+
+  // Query worker health, readiness, and active workload.
+  rpc GetWorkerHealth (WorkerHealthRequest) returns (WorkerHealthResponse);
+
+  // Request deterministic cancellation of an active in-flight task.
+  rpc CancelTask (CancelTaskRequest) returns (CancelTaskResponse);
+}
+
+message TaskExecutionRequest {
+  string task_id = 1;
+  string run_id = 2;
+  string title = 3;
+  string objective = 4;
+  repeated string required_capabilities = 5;
+  repeated string input_artifacts = 6;
+  map<string, string> parameters = 7;
+  int64 timeout_ms = 8;
+}
+
+message TaskEvent {
+  string event_id = 1;
+  string task_id = 2;
+  string run_id = 3;
+  int64 timestamp = 4;
+  string event_type = 5; // e.g., "started", "log", "tool_call", "mutation", "completed", "failed", "cancelled"
+  string message = 6;
+  string payload_json = 7;
+  bool is_terminal = 8;
+  string error = 9;
+}
+
+message SkillExecutionRequest {
+  string skill_id = 1;
+  string case_id = 2;
+  string instruction = 3;
+  string given_json = 4;
+  repeated string action_vocabulary = 5;
+}
+
+message SkillExecutionResponse {
+  string action = 1;
+  string selected_skill = 2;
+  string produces = 3;
+  repeated string gates = 4;
+  repeated string structure = 5;
+}
+
+message WorkerHealthRequest {
+  string client_id = 1;
+}
+
+message WorkerHealthResponse {
+  string status = 1; // "SERVING", "BUSY", "NOT_SERVING"
+  string worker_id = 2;
+  int64 uptime_seconds = 3;
+  repeated string supported_skills = 4;
+  int32 active_tasks = 5;
+}
+
+message CancelTaskRequest {
+  string task_id = 1;
+  string reason = 2;
+}
+
+message CancelTaskResponse {
+  bool cancelled = 1;
+  string message = 2;
+}

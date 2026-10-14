@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://get-fable.dev/schemas/reflex-advice-v1.schema.json",
+  "title": "ReflexAdviceV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "provider", "model", "selectedSkill", "probabilities", "confidence", "signals", "latencyMs", "stage"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "provider": { "const": "typesafe-jev" },
+    "model": { "type": "string", "minLength": 1 },
+    "selectedSkill": { "type": ["string", "null"] },
+    "probabilities": {
+      "type": "object",
+      "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "taskShape": { "type": "string" },
+    "signals": {
+      "type": "object",
+      "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "latencyMs": { "type": "number", "minimum": 0 },
+    "stage": { "enum": [1, 2] },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inputTokens": { "type": "integer", "minimum": 0 },
+        "outputTokens": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

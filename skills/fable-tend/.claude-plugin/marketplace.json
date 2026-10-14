@@ -1,0 +1,22 @@
+{
+  "name": "tend",
+  "owner": {
+    "name": "Maximilian Roos",
+    "email": "m@maxroos.com"
+  },
+  "metadata": {
+    "description": "An autonomous junior maintainer for GitHub repos, powered by Claude or OpenAI Codex — reviews PRs, triages issues, fixes CI"
+  },
+  "plugins": [
+    {
+      "name": "install-tend",
+      "description": "Set up tend — an autonomous junior maintainer for your GitHub repo, powered by Claude or OpenAI Codex.",
+      "source": "./plugins/install-tend"
+    },
+    {
+      "name": "tend-ci-runner",
+      "description": "Internal CI skills loaded by tend's GitHub Action. Not for manual installation.",
+      "source": "./plugins/tend-ci-runner"
+    }
+  ]
+}

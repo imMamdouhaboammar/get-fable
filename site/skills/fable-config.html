@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-config.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-config.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-config.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-config.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-config — get-fable Skill Reference">
+  <meta property="og:description" content="Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-config.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-config — get-fable Skill">
+  <meta name="twitter:description" content="Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-config — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-config Skill Specification",
+    "description": "Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-config.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-config</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-config.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-config.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-config.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-planned">Phase: planned</span>
+          <span class="order-badge">Order: 170</span>
+        </div>
+        <h1 class="skill-title">fable-config</h1>
+        <p class="skill-lead">Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "update-config" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">planned</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">update-config</span> <span class="intent-chip">manage-permissions</span> <span class="intent-chip">configure-hooks</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>valid-json</code></li><li><code>safe-permissions</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/get-fable.html">get-fable</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Config</h1>
+<p>Change harness/configuration behavior with explicit precedence, least privilege, secret-safe handling, and a verified rollback path.</p>
+<h2>Mission</h2>
+<p>Configuration is executable behavior. A syntactically valid JSON/TOML/YAML file can still disable a guard, broaden permissions, write to the wrong scope, or be ignored because another source has higher precedence.</p>
+<p>The Skill must prove both <strong>configuration validity</strong> and <strong>effective behavior</strong>.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>changing host/harness settings, permissions, hooks, keybindings, model/tool config, or environment references;</li>
+<li>adding/removing lifecycle enforcement;</li>
+<li>troubleshooting why a setting is not taking effect;</li>
+<li>configuring safe command/tool allowlists;</li>
+<li>migrating configuration formats/scopes.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>storing raw credentials/secrets;</li>
+<li>application business logic is the real change;</li>
+<li>a host capability is unknown and needs research/discovery first;</li>
+<li>the requested change is to weaken a safety boundary merely to bypass an error without understanding it.</li>
+</ul>
+<h2>Configuration Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Change</th><th>Main risk</th></tr></thead><tbody>
+<tr><td>Permission/allowlist</td><td>excessive privilege/wildcard scope</td></tr>
+<tr><td>Hook registration</td><td>hook exists but is never invoked / blocks wrong phase</td></tr>
+<tr><td>Environment config</td><td>precedence, secret leakage, type/format</td></tr>
+<tr><td>Host settings</td><td>wrong user/project scope, unsupported keys</td></tr>
+<tr><td>Model/tool config</td><td>changed behavior/cost/access unexpectedly</td></tr>
+<tr><td>Keybindings/UI</td><td>collision/override</td></tr>
+<tr><td>Generated config</td><td>manual edit overwritten by generator</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Locate source and effective scope</h3>
+<p>Identify:</p>
+<ul class="docs-list">
+<li>target host/version;</li>
+<li>project vs user/global scope;</li>
+<li>all configuration sources and precedence;</li>
+<li>generated vs hand-maintained files;</li>
+<li>existing user customizations to preserve.</li>
+</ul>
+<p>Do not edit the first file with the right name until you know it is effective.</p>
+<h3>Stage 2 — Define desired behavior and least privilege</h3>
+<p>State exactly what capability should become allowed/blocked/triggered and what must remain unchanged.</p>
+<p>For permissions, prefer narrow command/tool/path patterns. Wildcards need explicit justification and threat consideration.</p>
+<h3>Stage 3 — Protect secrets</h3>
+<p>Configuration may reference environment variable names or secure stores, but should not embed raw tokens/passwords/private keys unless the target&#039;s secure format explicitly requires protected encrypted storage.</p>
+<p>If an existing secret is found in plaintext, do not echo it; route exposure handling appropriately.</p>
+<h3>Stage 4 — Make a minimal merge</h3>
+<p>Preserve unknown/user-defined settings. Avoid replacing an entire config object/file when one scoped key can be merged.</p>
+<p>For generated config, modify source/generator then regenerate.</p>
+<h3>Stage 5 — Validate structure and semantics</h3>
+<p>Run available parser/schema/host diagnostics. Check:</p>
+<ul class="docs-list">
+<li>syntax;</li>
+<li>key types/enums;</li>
+<li>duplicate/conflicting entries;</li>
+<li>unsupported/deprecated keys;</li>
+<li>permission pattern scope;</li>
+<li>hook command/path existence.</li>
+</ul>
+<h3>Stage 6 — Prove effective behavior</h3>
+<p>A valid file is not enough. Test the configured behavior safely:</p>
+<ul class="docs-list">
+<li>target command is allowed while broader command remains denied;</li>
+<li>hook fires at intended lifecycle point;</li>
+<li>project override wins as expected;</li>
+<li>setting is visible to the target host;</li>
+<li>rollback restores previous behavior.</li>
+</ul>
+<h3>Stage 7 — Record rollback and handoff</h3>
+<p>Capture changed source, effective scope, validation, behavioral proof, and how to revert if the host fails after restart/update.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Preserve existing user settings not owned by the task.</li>
+<li>Prefer exact allowlists over <code>*</code>, shell wildcards, root/global permissions.</li>
+<li>A config key accepted by parser but ignored by host is not a successful change; verify effect.</li>
+<li>Host integration levels differ; do not claim hooks/enforcement where the host only supports advisory rules.</li>
+<li>Environment variable name may be stored; secret value should remain in secure environment/credential store.</li>
+<li>If config precedence is uncertain, investigate before editing more files.</li>
+<li>Do not disable security/approval checks simply because they are blocking an unsafe action.</li>
+<li>If a malformed edit can lock out the host, keep a reversible backup/atomic write strategy.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Least privilege is preserved or any broadening is explicit and justified.</li>
+<li>Raw secrets are not introduced into repository/config logs.</li>
+<li>Existing unrelated user configuration is preserved.</li>
+<li>Edited source is the effective source-of-truth.</li>
+<li>Syntax/schema and actual host behavior both verify.</li>
+<li>Rollback is possible for material changes.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Precedence mismatch</h3>
+<p>Edited file is shadowed by another scope/source. Trace effective configuration.</p>
+<h3>Schema-valid but ignored</h3>
+<p>Host accepts file but does not support/use key. Verify host version/capability.</p>
+<h3>Permission overreach</h3>
+<p>Pattern allows more than requested. Narrow and test negative case.</p>
+<h3>Hook misregistration</h3>
+<p>Script exists but lifecycle never invokes it. Validate registration path/event and permissions.</p>
+<h3>Secret leakage</h3>
+<p>Credential embedded/logged. Remove safely and rotate if exposure occurred.</p>
+<h3>User-config clobber</h3>
+<p>Whole-file rewrite loses existing settings. Restore/merge surgically.</p>
+<h3>Generated drift</h3>
+<p>Manual edit is overwritten. Change generator/source instead.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li><code>&quot;allow&quot;: [&quot;*&quot;]</code> to stop approval prompts;</li>
+<li>editing global config when project scope suffices;</li>
+<li>copying API tokens into settings examples;</li>
+<li>validating JSON syntax and calling the hook configured;</li>
+<li>claiming full lifecycle enforcement on a host with advisory-only integration;</li>
+<li>resetting the whole config file for one key;</li>
+<li>disabling security controls to make a command pass;</li>
+<li>manually patching generated config.</li>
+</ul>
+<h2>Configuration Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Target host/version/scope:
+Effective config sources + precedence:
+Desired behavior:
+Settings changed:
+Permissions before/after:
+Secret handling:
+Syntax/schema validation:
+Behavioral proof + negative case:
+Preserved user settings:
+Rollback:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Configuration completes when:</p>
+<ul class="docs-list">
+<li>correct effective source/scope was changed minimally;</li>
+<li>configuration parses and satisfies schema/capability constraints;</li>
+<li>permissions remain least-privilege;</li>
+<li>secrets/unrelated settings remain safe;</li>
+<li>target behavior is empirically observed, including important negative case;</li>
+<li>rollback and host limitations are explicit.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/config-precedence-permissions-and-hooks.md</code></li>
+<li>Existing rules: <code>references/harness-configuration-rules.md</code></li>
+<li>Example: <code>examples/configure-allowlist.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

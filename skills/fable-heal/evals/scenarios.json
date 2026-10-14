@@ -1,0 +1,106 @@
+[
+  {
+    "id": "fable-heal-sql-injection",
+    "description": "Synthesize parameterized query patch for raw SQL concatenation",
+    "given": {
+      "findingType": "sql-injection",
+      "vulnerableCode": "db.query(`SELECT * FROM users WHERE id = ${id}`)"
+    },
+    "expected": {
+      "action": "parameterize-query",
+      "produces": "healing-patch"
+    },
+    "forbidden": {
+      "action": "leave-raw-template-literal"
+    }
+  },
+  {
+    "id": "fable-heal-cors-wildcard",
+    "description": "Synthesize strict origin check for wildcard CORS header",
+    "given": {
+      "findingType": "cors-misconfiguration",
+      "vulnerableCode": "res.setHeader(\"Access-Control-Allow-Origin\", \"*\")"
+    },
+    "expected": {
+      "action": "restrict-cors-origin",
+      "produces": "healing-patch"
+    },
+    "forbidden": {
+      "action": "retain-wildcard-origin"
+    }
+  },
+  {
+    "id": "fable-heal-security-headers",
+    "description": "Inject essential security headers middleware into express app",
+    "given": {
+      "findingType": "security-headers",
+      "vulnerableCode": "const app = express();\napp.listen(3000);"
+    },
+    "expected": {
+      "action": "inject-security-headers",
+      "produces": "healing-patch"
+    },
+    "forbidden": {
+      "action": "skip-headers"
+    }
+  },
+  {
+    "id": "fable-heal-sensitive-route-denial",
+    "description": "Block sensitive route exposures like .env and .git",
+    "given": {
+      "findingType": "sensitive-exposure",
+      "vulnerableCode": "const app = express();\napp.listen(3000);"
+    },
+    "expected": {
+      "action": "inject-sensitive-route-guard",
+      "produces": "healing-patch"
+    },
+    "forbidden": {
+      "action": "allow-env-access"
+    }
+  },
+  {
+    "id": "fable-heal-ssrf-validation",
+    "description": "Validate outbound URLs before calling fetch sink",
+    "given": {
+      "findingType": "ssrf",
+      "vulnerableCode": "const res = await fetch(userSuppliedUrl);"
+    },
+    "expected": {
+      "action": "inject-outbound-url-guard",
+      "produces": "healing-patch"
+    },
+    "forbidden": {
+      "action": "fetch-unvalidated-url"
+    }
+  },
+  {
+    "id": "fable-heal-circuit-breaker-rollback",
+    "description": "Rollback candidate patches when syntax or type checking fails",
+    "given": {
+      "syntaxError": true,
+      "circuitBreaker": "active"
+    },
+    "expected": {
+      "action": "trigger-rollback",
+      "produces": "clean-workspace"
+    },
+    "forbidden": {
+      "action": "leave-broken-syntax"
+    }
+  },
+  {
+    "id": "fable-heal-scenario-7",
+    "name": "fable-heal realistic validation case 7",
+    "category": "should-trigger",
+    "prompt": "Execute fable-heal workflow to remediate SQL injection finding in user service.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-heal-scenario-8",
+    "name": "fable-heal realistic validation case 8",
+    "category": "should-not-trigger",
+    "prompt": "General non-fable-heal query about design system styling.",
+    "shouldTrigger": false
+  }
+]

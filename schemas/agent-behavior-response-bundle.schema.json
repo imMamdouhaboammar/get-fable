@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableAgentBehaviorResponseBundleV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "metric",
+    "providerId",
+    "responses"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "metric": {
+      "const": "agent-behavior-responses"
+    },
+    "providerId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "responses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "caseId",
+          "response"
+        ],
+        "properties": {
+          "caseId": {
+            "type": "string",
+            "pattern": "^case-[a-f0-9]{24}$"
+          },
+          "response": {
+            "$ref": "#/definitions/response"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selectedSkill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "produces": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "structure": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

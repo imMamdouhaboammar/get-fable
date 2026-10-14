@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-learning.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-learning.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-learning.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-learning.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-learning — get-fable Skill Reference">
+  <meta property="og:description" content="Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-learning.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-learning — get-fable Skill">
+  <meta name="twitter:description" content="Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-learning — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-learning Skill Specification",
+    "description": "Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.",
+    "articleSection": "Evolution Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-learning.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-learning</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-learning.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-learning.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-learning.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Evolution Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 95</span>
+        </div>
+        <h1 class="skill-title">fable-learning</h1>
+        <p class="skill-lead">Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "extract-learnings" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Evolution Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-eval.html">fable-eval</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">extract-learnings</span> <span class="intent-chip">convo-learn</span> <span class="intent-chip">synthesize-knowledge</span> <span class="intent-chip">playbook-generation</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>evidence-grounded</code></li><li><code>atomic-claims</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-eval.html">fable-eval</a> <a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a> <a class="token-link" href="../skills/get-fable.html">get-fable</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Learning — Failure Lessons &amp; Knowledge Synthesis Engine</h1>
+<p>Turn any engineering conversation, agent trajectory, or session realities into durable, reusable project knowledge saved in <strong><code>Failure-lessons/</code></strong>, <strong><code>agent-kernel</code> rules</strong>, <strong><code>gbrain</code> chunks</strong>, <strong>compound solution docs</strong> (<code>docs/solutions/</code>), and portable <strong>Playbooks</strong>.</p>
+<p>$$\text{Session Realities} \xrightarrow{\text{Reality Mining}} \text{Failures, Fixes, Invariants, Tests} \xrightarrow{\text{Distillation \&amp; Rigor}} \text{Failure-lessons/ + agent-kernel + gbrain} \xrightarrow{\text{Evolution}} \text{Playbooks \&amp; Skills}$$</p>
+<p>---</p>
+<h2>Mission</h2>
+<h3>Mission Statement: Convert This Session Into Durable Project Learnings</h3>
+<p>This session contains engineering knowledge that should not disappear when the conversation ends.</p>
+<p>Your task is to extract the reusable lessons from the work completed and persist them as durable project knowledge.</p>
+<blockquote><p><strong>Do not produce a simple session summary.</strong>  </p></blockquote>
+<blockquote><p><strong>Do not merely list what changed.</strong>  </p></blockquote>
+<blockquote><p><strong>Convert failures, discoveries, corrections, architectural decisions, debugging insights, testing strategies, and implementation mistakes into reusable engineering lessons that future contributors and coding agents can act on.</strong></p></blockquote>
+<p>The core objective is:</p>
+<blockquote><p><strong>Pay for an engineering mistake once.</strong>  </p></blockquote>
+<blockquote><p><strong>After that, the project should remember it.</strong></p></blockquote>
+<p>---</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>Extracting takeaways, verified fixes, or patterns from a completed or in-progress session.</li>
+<li>User invokes <code>/learn</code>, <code>learn</code>, <code>convo-learn</code>, <code>fable-learning</code>, &quot;what did we learn?&quot;, &quot;extract learnings&quot;, &quot;save what we learned&quot;, or &quot;convert session into durable learnings&quot;.</li>
+<li>Resolving a non-trivial bug, test regression, or configuration obstacle and establishing a reusable prevention invariant.</li>
+<li>Creating or updating the repository&#039;s <code>Failure-lessons/</code> knowledge base.</li>
+<li>Capturing user corrections, confirmations, or escalations as post-training signals.</li>
+<li>Synthesizing 3+ related problem-solution pairs into an <code>agent-kernel</code> Playbook.</li>
+<li>Compiling conversation takeaways into a new portable Skill package via <code>fable-skill-creator</code>.</li>
+<li>Running headless at session completion (<code>Stop</code> / <code>SessionEnd</code> hook events) to record learning chunks.</li>
+</ul>
+<p>---</p>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>Reviewing code diffs or pull requests without transcript analysis (<code>fable-review</code>).</li>
+<li>Verifying whether an application feature or bugfix works against tests (<code>fable-verify</code>).</li>
+<li>Storing user preferences or static environment facts into memory (<code>fable-memory</code>).</li>
+<li>Running quantitative benchmarks or comparing prompt models (<code>fable-eval</code>).</li>
+</ul>
+<p>---</p>
+<h2>Situation Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Invocation Pattern</th><th>Mode</th><th>Primary Target Storage</th><th>Action &amp; Depth</th><th>Output Artifact</th></tr></thead><tbody>
+<tr><td>User asks for failure lessons, postmortem, or root cause codification</td><td><code>FAILURE_LESSONS</code></td><td><code>Failure-lessons/</code> + <code>agent-kernel</code> + <code>gbrain</code></td><td>Full 22-step failure extraction &amp; regression linking</td><td><code>Failure-lessons/*.md</code> + Report</td></tr>
+<tr><td>Explicit session ID or transcript file</td><td><code>ANALYZE</code></td><td><code>Failure-lessons/</code> + <code>agent-kernel</code> + <code>gbrain</code></td><td>Full 4-category extraction &amp; synthesis</td><td>Structured markdown report</td></tr>
+<tr><td>Short session or <code>--depth lightweight</code></td><td><code>QUICK</code></td><td><code>agent-kernel</code> + <code>gbrain</code></td><td>Top 5 atomic $L3+$ rules</td><td>Terminal output</td></tr>
+<tr><td>Resolved non-trivial bug or harness issue</td><td><code>COMPOUND</code></td><td><code>docs/solutions/</code> + <code>CONCEPTS.md</code></td><td>Single atomic problem-solution doc</td><td><code>docs/solutions/YYYY-MM-DD-&lt;slug&gt;.md</code></td></tr>
+<tr><td>&quot;make a skill from this&quot; or <code>--compile</code></td><td><code>COMPILE</code></td><td><code>skills/&lt;name&gt;/</code></td><td>Full extraction + author <code>SKILL.md</code> via <code>fable-skill-creator</code></td><td>Skill package</td></tr>
+<tr><td>&quot;what did we learn?&quot; or <code>--recall</code></td><td><code>RECALL</code></td><td>Terminal output / summary</td><td>Query <code>gbrain</code> and <code>agent-kernel</code> to synthesize</td><td>Interactive digest</td></tr>
+<tr><td>Post-session hook (<code>Stop</code> / <code>SessionEnd</code>)</td><td><code>HEADLESS</code></td><td><code>agent-kernel</code> + <code>gbrain</code></td><td>Automated background extraction with fail-soft safety</td><td><code>Documentation complete</code> / <code>skipped</code></td></tr>
+</tbody></table></div>
+<p>---</p>
+<h2>Protocol</h2>
+<h3>The 22-Step Failure-Lessons Extraction Protocol</h3>
+<h3>1. Use the Learning Tools Available to You</h3>
+<p>Inspect what tools are actually available in the host environment:</p>
+<ul class="docs-list">
+<li><code>/learn</code>, <code>learn</code></li>
+<li><code>gsd:extract-learnings</code></li>
+<li><code>/convo-learn</code>, <code>/fable-learning</code></li>
+<li><code>agent-kernel remember</code></li>
+<li><code>gbrain remember</code></li>
+</ul>
+<p>Rules:</p>
+<ul class="docs-list">
+<li>Inspect what is actually available; do not pretend an unavailable command was executed.</li>
+<li>Use equivalent available tooling when appropriate.</li>
+<li>The repository documentation (<code>Failure-lessons/</code>) remains the durable source of truth even when agent-memory tools are unavailable.</li>
+</ul>
+<h3>2. Review the Entire Relevant Session</h3>
+<p>Before writing anything, reconstruct what actually happened. Review the conversation, implementation history, diffs, tests, tool output, review feedback, and current repository state.</p>
+<p>Look for more than the final successful result. Extract knowledge from:</p>
+<ul class="docs-list">
+<li>bugs encountered and incorrect assumptions</li>
+<li>failed approaches and debugging discoveries</li>
+<li>root causes and architectural weaknesses</li>
+<li>implementation fixes and regressions</li>
+<li>edge cases and test failures</li>
+<li>reviewer findings and tooling limitations</li>
+<li>API-contract problems and performance issues</li>
+<li>data problems and security issues</li>
+<li>operational issues and backwards-compatibility problems</li>
+<li>decisions that were revised or places where completion was claimed too early</li>
+<li>things that worked particularly well and should become standard practice</li>
+</ul>
+<blockquote><p><strong>Do not sanitize the history.</strong> A failed approach often contains a more valuable lesson than the final fix.</p></blockquote>
+<h3>3. Separate Facts From Hypotheses</h3>
+<p>For every important finding distinguish between:</p>
+<ul class="docs-list">
+<li><code>Confirmed root cause</code>: Proven by code, log traces, or reproducible tests.</li>
+<li><code>Strongly indicated cause</code>: Highly probable, supported by strong correlation, but mechanism not 100% isolated.</li>
+<li><code>Open hypothesis</code>: Plausible explanation requiring further validation.</li>
+<li><code>Unknown</code>: Observable symptom documented honestly, cause not yet determined.</li>
+</ul>
+<blockquote><p><strong>Never convert speculation into historical fact.</strong></p></blockquote>
+<h3>4. Create or Update the Project Failure-Lessons Knowledge Base</h3>
+<p>Use the directory:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Failure-lessons/
+├── README.md                     # Knowledge base principles, triggers, and maintenance rules
+├── lessons-index.md              # Compact registry table and &quot;Rules We Now Enforce&quot;
+├── testing-and-verification.md   # Regression test mappings, oracle proofs, and test strategies
+└── &lt;topic-specific-lessons&gt;.md   # Lessons grouped by failure domain (e.g. state-management.md)</code></pre></div>
+<p>If <code>Failure-lessons/</code> does not exist, create it. If the repository already has an equivalent established location, preserve the existing convention unless explicitly instructed otherwise. Do not create a competing knowledge system unnecessarily.</p>
+<p>Topic document examples:</p>
+<p><code>authentication.md</code>, <code>state-management.md</code>, <code>database-integrity.md</code>, <code>api-contracts.md</code>, <code>background-jobs.md</code>, <code>caching.md</code>, <code>artifact-lifecycle.md</code>, <code>performance.md</code>, <code>frontend-state.md</code>, <code>deployment.md</code>, <code>testing.md</code>, <code>security.md</code>, <code>data-quality.md</code>, <code>model-lineage.md</code>, <code>observability.md</code>.</p>
+<p><em>Do not create empty files simply to match a template.</em></p>
+<h3>5. Organize by Failure Class, Not Ticket Number</h3>
+<p>Avoid documentation organized by ticket numbers or ephemeral references:</p>
+<ul class="docs-list">
+<li>❌ <code>Bug #143</code>, <code>Bug #188</code>, <code>Issue from Tuesday</code>, <code>Problem we fixed in PR #92</code></li>
+</ul>
+<p>Prefer stable, descriptive failure classes:</p>
+<ul class="docs-list">
+<li>✅ <code>Non-atomic resource publication</code></li>
+<li>✅ <code>Validation logic duplicated across entry points</code></li>
+<li>✅ <code>Background jobs without terminal-state guarantees</code></li>
+<li>✅ <code>Client and server disagreeing about API semantics</code></li>
+<li>✅ <code>Regression tests that never reproduced the original failure</code></li>
+</ul>
+<h3>6. Use the Canonical Failure-Lesson Schema</h3>
+<p>Every meaningful lesson follows this 14-section schema:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-markdown">## [Failure / lesson name]
+
+### Context
+Where this class of problem appeared.
+
+### What happened
+Short factual description.
+
+### Observable symptom
+What engineers or users actually saw.
+
+### Impact
+Why the failure mattered.
+
+### Incorrect assumption
+What the system or implementation implicitly assumed that turned out to be wrong.
+
+### Root cause
+State one of: Confirmed | Strongly indicated | Unresolved. Then explain the evidence.
+
+### Why the architecture allowed it
+Explain the deeper system condition that made the failure possible.
+
+### Fix
+Describe the implemented solution at the appropriate abstraction level. Avoid documenting only a one-line patch if the meaningful fix was architectural.
+
+### Verification
+Document how the fix was proven. Reference real tests, commands, fixtures, or reproducible experiments.
+
+### Prevention rule
+Write the invariant future implementations should preserve.
+
+### Reusable lesson
+Explain where else this lesson applies.
+
+### Related code
+Reference stable modules, symbols, or paths where useful.
+
+### Related tests
+Reference relevant regression or integration tests.
+
+### Related lessons
+Cross-link other entries when applicable.
+
+### Status
+One of: Resolved | Partially mitigated | Unresolved | Superseded.</code></pre></div>
+<h3>7. Extract the Lesson Behind the Bug</h3>
+<p>Do not stop at superficial summaries (<em>&quot;We forgot to validate X&quot;</em>).</p>
+<p>Ask:</p>
+<ul class="docs-list">
+<li><em>Why could validation be forgotten?</em></li>
+<li><em>Was the same invariant implemented independently across entry points?</em></li>
+<li><em>Was the contract unclear or failure mode hidden?</em></li>
+<li><em>Was the test too narrow or state duplicated?</em></li>
+</ul>
+<p>Transform:</p>
+<blockquote><p><em>&quot;Endpoint B forgot the tenant validation.&quot;</em></p></blockquote>
+<p>Into:</p>
+<blockquote><p><em>&quot;Domain invariants implemented independently across entry points will drift. Route all entry points through one canonical validation service.&quot;</em></p></blockquote>
+<h3>8. Capture Successful Patterns Too</h3>
+<p>Record practices that clearly prevented or exposed failures:</p>
+<ul class="docs-list">
+<li>Deterministic fixtures</li>
+<li>Property tests and fuzzing</li>
+<li>Contract and schema enforcement</li>
+<li>State-machine modeling with terminal-state guarantees</li>
+<li>Explicit capability registries</li>
+<li>Fault injection and chaos testing</li>
+<li>Red-green regression verification</li>
+</ul>
+<h3>9. Capture Mistakes Made During the Fix</h3>
+<p>Review whether the implementation process itself contained mistakes:</p>
+<ul class="docs-list">
+<li>Fixing the symptom instead of the shared cause</li>
+<li>Creating another duplicate abstraction</li>
+<li>Writing a test that could never fail</li>
+<li>Over-mocking an integration boundary</li>
+<li>Trusting stale test output or claiming completion without evidence</li>
+<li>Changing an API without checking consumers</li>
+<li>Weakening tests to make them pass</li>
+</ul>
+<h3>10. Maintain <code>Failure-lessons/README.md</code></h3>
+<p>The README explains the purpose of the directory and captures this principle:</p>
+<blockquote><p><em>This directory records engineering failures by reusable failure class, including what happened, why it happened, how it was fixed, how the fix was verified, and which invariant now prevents recurrence.</em></p></blockquote>
+<p>State when entries should be updated: recurrence, deeper root cause discovered, architecture changes, stronger verification added, previous fix proven incomplete, or consolidation of shared causes.</p>
+<h3>11. Maintain a Lessons Index (<code>Failure-lessons/lessons-index.md</code>)</h3>
+<p>Maintain a compact table:</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Lesson</th><th>Failure Class</th><th>Prevention Rule</th><th>System</th><th>Status</th><th>Document</th></tr></thead><tbody>
+</tbody></table></div>
+<h3>12. Maintain &quot;Rules We Now Enforce&quot;</h3>
+<p>Add a compact section in <code>lessons-index.md</code> containing the strongest invariants learned from the project (e.g. single source of invariant truth, completion implies resource readiness, terminal-state guarantees, caller mistakes must not be internal server faults).</p>
+<h3>13. Connect Lessons to Real Code</h3>
+<p>Confirm symbols and paths exist in the current repository. Use stable references (<code>src/jobs/state_machine.ts</code>, <code>ModelRegistry.resolve(...)</code>). Do not invent planned components that were never implemented.</p>
+<h3>14. Connect Lessons to Tests</h3>
+<p>Every resolved high-impact failure must map to regression coverage:</p>
+<p>$$\text{Failure} \longrightarrow \text{Regression Test} \longrightarrow \text{Protected Invariant}$$</p>
+<p>If a fix has no meaningful regression test, flag it as an unresolved learning item.</p>
+<h3>15. Verify Regression Tests Are Real (The 3-Step Falsifiability Test)</h3>
+<p>A strong regression test must fail when the defect is present:</p>
+<p>1. <code>fixed implementation</code> $\to$ test passes</p>
+<p>2. <code>broken/reverted defect</code> $\to$ test fails</p>
+<p>3. <code>restored implementation</code> $\to$ test passes</p>
+<p>If a test still passes after the fix is removed, it does not protect what it claims to protect.</p>
+<h3>16. Capture Testing Patterns Worth Reusing</h3>
+<p>Document what failure classes were exposed by specific testing techniques (deterministic fixtures, property tests, contract tests, fault injection), when to use them, and when they offer false confidence.</p>
+<h3>17. Deduplicate Existing Knowledge</h3>
+<p>Search <code>Failure-lessons/</code>, <code>docs/</code>, ADRs, and agent memory before adding new lessons. If the lesson already exists, update or consolidate it. Cross-link shared root causes.</p>
+<h3>18. Preserve History Without Preserving Noise</h3>
+<p>Store distilled engineering knowledge. Do not preserve giant raw logs, temporary IDs, credentials, secrets, access tokens, or raw conversation dumps.</p>
+<h3>19. Update Agent Learning Systems</h3>
+<p>Synchronize distilled invariants into agent learning and memory systems:</p>
+<ul class="docs-list">
+<li><code>agent-kernel remember &quot;&lt;prevention invariant&gt;&quot; --type rule --level critical</code></li>
+<li><code>gbrain remember &quot;&lt;failure class&gt;: &lt;invariant&gt;&quot; --provenance &quot;session:&lt;id&gt;&quot; --entity &quot;failure-lessons/&lt;domain&gt;&quot;</code></li>
+</ul>
+<h3>20. Review the Result Like Code</h3>
+<p>Inspect the documentation diff (<code>git diff -- Failure-lessons</code>). Verify:</p>
+<ul class="docs-list">
+<li>No unsupported claims or inverted root causes.</li>
+<li>No invented implementation names or stale references.</li>
+<li>All entries have status labels and prevention rules.</li>
+<li>Verification evidence is documented.</li>
+<li>No accidental secrets or private local paths.</li>
+</ul>
+<h3>21. Commit Separately</h3>
+<p>Do not hide learning documentation inside an unrelated implementation commit. Prefer:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">docs: capture engineering failure lessons</code></pre></div>
+<h3>22. Deliver Concise Final Report</h3>
+<p>Emit a final summary structured with the 8 required sections:</p>
+<p>1. <strong>Learning tools used</strong></p>
+<p>2. <strong>Files created</strong></p>
+<p>3. <strong>Files updated</strong></p>
+<p>4. <strong>Core lessons extracted</strong></p>
+<p>5. <strong>Rules we now enforce</strong></p>
+<p>6. <strong>Failure-to-test mappings</strong></p>
+<p>7. <strong>Unresolved knowledge</strong></p>
+<p>8. <strong>Repository changes</strong></p>
+<p>---</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li><strong>Empirical Grounding Over Speculation</strong>: Never persist an unverified hypothesis as an invariant. Only persist solutions backed by verified evidence.</li>
+<li><strong>Systemic Root Causes Over Local Patches</strong>: Always investigate why the system architecture allowed the defect before finalizing the prevention rule.</li>
+<li><strong>Atomicity in Rules</strong>: Rules pushed to <code>agent-kernel</code> and <code>gbrain</code> must contain one condition and one action.</li>
+<li><strong>Sanitization Invariant</strong>: Strip API keys, tokens, session IDs, private local paths, and PII before persistence.</li>
+<li><strong>Fail-Soft Runtime</strong>: Hooks and scripts must fail open without blocking terminal workflows or exits.</li>
+</ul>
+<p>---</p>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Every persisted learning chunk is grounded in transcript or artifact evidence.</li>
+<li>Root causes must be honestly separated into Confirmed, Strongly indicated, Open hypothesis, or Unknown.</li>
+<li>Knowledge is organized strictly by reusable failure class, never ticket numbers or ephemeral references.</li>
+<li>All high-impact failure lessons connect to reproducible regression tests (<code>failure -&gt; regression test -&gt; invariant being protected</code>).</li>
+<li>No confidential credentials, session tokens, or private PII are written to storage.</li>
+</ul>
+<p>---</p>
+<h2>Failure Taxonomy</h2>
+<h3>Unverified Fixes</h3>
+<p>The conversation contains attempted solutions that failed or were abandoned. Discard abandoned attempts; record only the final verified resolution.</p>
+<h3>Superficial Diagnoses</h3>
+<p>Documenting a one-line patch without understanding why the system architecture permitted the failure. Enforce the 14-section schema to capture the underlying systemic condition.</p>
+<h3>Non-Falsifiable Regression Tests</h3>
+<p>Regression tests that continue to pass even when the defect is reintroduced. Require 3-step falsifiability verification before certifying coverage.</p>
+<h3>Secret Exposure Risk</h3>
+<p>Transcript contains sensitive environment variables or keys. Sanitize through regex redaction before passing to storage commands.</p>
+<h3>Rule Drift / Obsolescence</h3>
+<p>A previously learned rule is invalidated by a new library version or runtime refactor. Quarantine the old rule, verify the new baseline, and supersede it in <code>Failure-lessons/lessons-index.md</code>.</p>
+<p>---</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>Archiving entire conversation transcripts verbatim without distillation.</li>
+<li>Documenting failures by Jira/GitHub issue numbers rather than failure classes.</li>
+<li>Persisting unverified hypotheses as confirmed root causes.</li>
+<li>Writing regression tests that pass even when the bug is reintroduced.</li>
+<li>Failing to link a resolved failure to automated regression test coverage.</li>
+<li>Bundling multiple disparate failure classes into one unorganized document.</li>
+<li>Sanitizing history by omitting failed approaches that contain valuable architectural lessons.</li>
+</ul>
+<p>---</p>
+<h2>Completion Criteria</h2>
+<p>Execution of <code>fable-learning</code> completes when:</p>
+<p>1. Session realities have been reviewed across failures, discoveries, corrections, and test results.</p>
+<p>2. Root causes are honestly classified (Confirmed, Strongly indicated, Open hypothesis, Unknown).</p>
+<p>3. <code>Failure-lessons/</code> is created or updated with <code>README.md</code>, <code>lessons-index.md</code>, <code>testing-and-verification.md</code>, and relevant topic files.</p>
+<p>4. All entries adhere to the 14-section Failure-Lesson schema and are indexed with prevention rules.</p>
+<p>5. Invariants are connected to stable code references and regression tests.</p>
+<p>6. Distilled prevention rules are persisted to <code>agent-kernel</code> and <code>gbrain</code> if available.</p>
+<p>7. The 8-section final report is delivered to the user.</p>
+<p>---</p>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Failure lessons knowledge base protocol: <code>references/failure-lessons.md</code></li>
+<li>Deep extraction schema &amp; taxonomy: <code>references/analysis.md</code></li>
+<li>Multi-target storage rules &amp; synthesis formats: <code>references/synthesis.md</code></li>
+<li>Empirical confidence &amp; rule drift: <code>references/confidence-and-drift.md</code></li>
+<li>Compound solution architecture &amp; vocabulary: <code>references/solution-architecture.md</code></li>
+<li>Post-training signal taxonomy: <code>references/post-training-signals.md</code></li>
+<li>Session source adapters: <code>references/session-sources.md</code></li>
+<li>Skill package compilation: <code>references/skill-compilation.md</code></li>
+<li>Walkthrough example: <code>examples/learning-walkthrough.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

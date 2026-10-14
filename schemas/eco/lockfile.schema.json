@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Lockfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile",
+    "catalog_digest",
+    "entries"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "profile": {
+      "type": "string"
+    },
+    "catalog_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "capability_id",
+          "manifest_digest",
+          "source_type",
+          "source_repository",
+          "resolved_version",
+          "resolved_revision",
+          "install_driver",
+          "resolved_dependencies",
+          "host_bindings"
+        ],
+        "properties": {
+          "capability_id": {
+            "type": "string"
+          },
+          "manifest_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "source_type": {
+            "type": "string"
+          },
+          "source_repository": {
+            "type": "string"
+          },
+          "resolved_version": {
+            "type": "string"
+          },
+          "resolved_revision": {
+            "type": "string",
+            "minLength": 7
+          },
+          "artifact_url": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "package_identity": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "artifact_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "install_driver": {
+            "type": "string"
+          },
+          "driver_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "resolved_dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "host_bindings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "qualified_platform": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+# get-fable — Better working conditions for the model you already use
+
+> **get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.**
+
+The weights stay the same. The working conditions do not.
+
+---
+
+## 1. The Thesis: Why do frontier models feel different?
+Raw model capability is part of the answer. It is not the whole answer.
+A strong agent experience also depends on what happens around the model:
+- How the task is framed
+- What context survives between turns
+- When implementation starts
+- How repeated failures change behavior
+- Which skills are available
+- What counts as proof that the work is finished
+
+get-fable focuses on that part: the execution environment around the model. It does not change model weights and it does not claim equivalence with Claude Fable 5, Claude Mythos 5, GPT-5.6 Sol, or any other proprietary frontier model.
+
+---
+
+## 2. The Difference: Same model, Different run
+
+### Ordinary run:
+1. **Vague instruction:** The task starts before success is made explicit.
+2. **Context drift:** Important state lives only inside the conversation.
+3. **Blind retries:** The same class of failure receives more of the same response.
+4. **Looks done:** Completion is inferred from output rather than evidence.
+
+### With get-fable:
+1. **Spec before work:** Goal, approach, checks, dependencies, and decisions stay visible.
+2. **Persistent task state:** The ledger keeps execution state outside the chat.
+3. **Failure changes strategy:** Repeated command failures become a different problem to diagnose.
+4. **Evidence before close:** Unfinished work and missing proof can block completion.
+
+---
+
+## 3. Six Ways to Change the Run
+1. **Plan before implementation:** Turn intent into a concrete project spec before expensive execution starts.
+2. **Keep task state outside the chat:** Use durable files for tasks, progress, decisions, and evidence instead of trusting conversation history alone.
+3. **Carry working rules across turns:** Reintroduce active project state and execution rules when a new agent session starts.
+4. **React differently when failures repeat:** Move from retrying commands to identifying the class of failure when the same path keeps breaking.
+5. **Reuse skills and agent instructions:** Keep useful operating knowledge available as inspectable assets instead of recreating it in every prompt.
+6. **Require evidence before completion:** Make "done" answer to unresolved tasks and observable proof, not confidence or presentation quality.
+
+---
+
+## 4. The Run Sequence
+`Prompt` (intent) -> `Spec` (definition) -> `Ledger` (state) -> `Hooks` (gates) -> `Work` (execution) -> `Verify` (evidence)
+
+---
+
+## 5. Supported Ecosystem (32 Platforms)
+- **Claude Code:** 5 lifecycle hooks, 42 canonical skills, project rules in CLAUDE.md.
+- **Antigravity & Gemini CLI:** Plugin manifest, hooks.json triggers, and full canonical skill pack.
+- **Grok Build:** Grok plugin manifest, hooks.json triggers, and canonical skills.
+- **Codex & ChatGPT:** Codex plugin manifest, ChatGPT OpenAPI Custom Actions, and skills catalog.
+- **Cursor & Windsurf:** Durable lifecycle rules and marketplace integration.
+- **GitHub Copilot, Devin, Cline, Roo Code, OpenHands, OpenCode, Kilo Code, Aider, and more.**
+
+---
+
+## 6. Quickstart Commands
+```bash
+git clone https://github.com/imMamdouhaboammar/get-fable.git
+cd get-fable
+
+bun ./bin/get-fable.js status
+bun ./bin/get-fable.js assets
+bun ./bin/get-fable.js install
+```
+
+---
+
+## 7. The Boundaries: Inspectable Claims
+- **What is implemented:** Claude Code skills and hooks, Antigravity / Gemini plugin package, Agent Kernel rules, Request proxy development utility.
+- **What get-fable does not claim:** No model replacement, no universal installer, no correctness guarantee, no hardened public gateway.
+- Independent community project licensed under MIT.

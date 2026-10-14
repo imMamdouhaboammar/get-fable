@@ -1,0 +1,12 @@
+{
+  "name": "get-fable-jev-integration-spec",
+  "version": "1.0.0",
+  "preparedAt": "2026-09-18",
+  "repository": "imMamdouhaboammar/get-fable",
+  "baselineBranch": "master",
+  "baselineCommit": "8446e33378ca7c55313fe8e08f57de9e353519ce",
+  "baselinePackageVersion": "1.9.1",
+  "jevModelEvaluated": "jev-1.13.0",
+  "status": "implementation-ready-spec",
+  "primaryDecision": "hybrid-reflex-advisor-with-deterministic-authority"
+}

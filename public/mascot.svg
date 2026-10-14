@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640">
+
+  <!-- Background -->
+  <rect width="640" height="640" fill="white"/>
+
+  <!--
+    get-fable Rabbit Mascot
+    Style: flat line-art, single color #5BBF9B, stroke-linecap/join round
+    Matches cozytab frog icon style
+  -->
+
+  <g stroke="#5BBF9B" stroke-linecap="round" stroke-linejoin="round" fill="none">
+
+    <!-- Left ear (outer) -->
+    <path d="
+      M 220 290
+      C 150 280 112 180 128 104
+      C 140 46  204 28  238 60
+      C 268 88  272 170 248 240
+      Z
+    " stroke-width="22"/>
+
+    <!-- Left ear (inner line) -->
+    <path d="
+      M 215 262
+      C 170 252 148 178 158 118
+      C 166 72  202 58  222 76
+      C 244 96  246 172 234 236
+    " stroke-width="16"/>
+
+    <!-- Right ear (outer) -->
+    <path d="
+      M 420 290
+      C 490 280 528 180 512 104
+      C 500 46  436 28  402 60
+      C 372 88  368 170 392 240
+      Z
+    " stroke-width="22"/>
+
+    <!-- Right ear (inner line) -->
+    <path d="
+      M 425 262
+      C 470 252 492 178 482 118
+      C 474 72  438 58  418 76
+      C 396 96  394 172 406 236
+    " stroke-width="16"/>
+
+    <!-- Head -->
+    <circle cx="320" cy="400" r="190" stroke-width="22"/>
+
+    <!-- Left eye ring -->
+    <circle cx="232" cy="354" r="60" stroke-width="22"/>
+
+    <!-- Right eye ring -->
+    <circle cx="408" cy="354" r="60" stroke-width="22"/>
+
+    <!-- Smile -->
+    <path d="M 252 464 Q 320 524 388 464" stroke-width="22"/>
+
+  </g>
+
+  <!-- Left eye pupil -->
+  <circle cx="244" cy="342" r="20" fill="#5BBF9B"/>
+
+  <!-- Right eye pupil -->
+  <circle cx="420" cy="342" r="20" fill="#5BBF9B"/>
+
+  <!-- Nose dots -->
+  <circle cx="302" cy="428" r="11" fill="#5BBF9B"/>
+  <circle cx="338" cy="428" r="11" fill="#5BBF9B"/>
+
+</svg>

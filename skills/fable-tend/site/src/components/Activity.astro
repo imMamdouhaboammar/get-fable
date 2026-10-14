@@ -1,0 +1,209 @@
+---
+// Recent activity feed — runtime-fetched from api.tend-src.com/activity, merged
+// with in-flight runs from /currently-tending so an idle-but-actively-tending
+// state still shows the section. Stays hidden until the merged list is
+// non-empty, so a Worker outage or empty data degrades to no section at all.
+//
+// The list ships with placeholder rows of the same shape as the real data so
+// the section reserves its natural height before the fetch resolves (no
+// min-height hack in CSS). The script clears them before appending real rows.
+
+const MAX_ROWS = 12;
+---
+
+<section id="recent-activity" class="recent-activity" data-state="loading">
+  <p class="section-eyebrow">recent ground</p>
+  <p class="section-lead">A few of the last things the bots have touched.</p>
+
+  <div class="marginalia">
+    <div class="margin-note">activity</div>
+    <div class="body">
+      <ul class="activity-rows" data-activity-rows>
+        {Array.from({ length: MAX_ROWS }).map(() => (
+          <li class="activity-row" aria-hidden="true">
+            <span class="kind">&nbsp;</span>
+            <span class="repo">&nbsp;</span>
+            <a class="title">&nbsp;</a>
+            <time class="at">&nbsp;</time>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { fetchJson, liveData } from "../lib/api";
+  import { elapsedTime, relativeTime } from "../lib/time";
+
+  const MAX_ROWS = 12; // matches the placeholder count in the markup above
+
+  interface RecentItem {
+    repo: string;
+    title: string;
+    url: string;
+    at: string;
+  }
+  interface Bucket {
+    recent?: RecentItem[];
+  }
+  interface Activity {
+    prs?: Bucket;
+    issues?: Bucket;
+    reviews?: Bucket;
+    comments?: Bucket;
+  }
+  interface Run {
+    repo: string;
+    workflow: string;
+    display_title?: string;
+    pr_number?: number;
+    started_at: string;
+    run_url: string;
+  }
+
+  type Kind = "pr" | "issue" | "review" | "comment" | "tending";
+  const KIND_LABELS: Record<Kind, string> = {
+    pr: "PR",
+    issue: "issue",
+    review: "review",
+    comment: "comment",
+    tending: "tending",
+  };
+
+  // Drop the org — current consumers have distinct repo names, and the
+  // owner just eats space.
+  function shortRepo(repo: string): string {
+    const i = repo.indexOf("/");
+    return i === -1 ? repo : repo.slice(i + 1);
+  }
+
+  function updateTendingTimes(): void {
+    const cells = document.querySelectorAll<HTMLTimeElement>(
+      ".activity-row .at[data-started-at]",
+    );
+    for (const cell of cells) {
+      const startedAt = cell.dataset.startedAt;
+      if (!startedAt) continue;
+      cell.textContent = elapsedTime(startedAt);
+    }
+  }
+
+  liveData<Activity>("/activity", "recent-activity", async (data) => {
+    const tending = await fetchJson<{ currently_tending?: Run[] }>("/currently-tending");
+    const tendingRows: Array<RecentItem & { kind: Kind }> = (tending?.currently_tending ?? []).map(
+      (r) => {
+        const workflow = r.workflow.replace(/^tend-/, "");
+        // Show what the bot is working on, not just the job kind. PR-triggered
+        // runs (review/mention on a PR) get "review · #N PR title"; issue-
+        // triggered runs (triage, mention on an issue) get "triage · issue
+        // title". Scheduled runs (nightly/weekly) have no target — fall back
+        // to the job kind alone.
+        const detail = r.pr_number != null && r.display_title
+          ? `${workflow} · #${r.pr_number} ${r.display_title}`
+          : r.display_title
+            ? `${workflow} · ${r.display_title}`
+            : workflow;
+        return {
+          kind: "tending" as const,
+          repo: r.repo,
+          title: detail,
+          url: r.run_url,
+          at: r.started_at,
+        };
+      },
+    );
+
+    const rows: Array<RecentItem & { kind: Kind }> = [
+      ...tendingRows,
+      ...(data?.prs?.recent ?? []).map((r) => ({ ...r, kind: "pr" as const })),
+      ...(data?.issues?.recent ?? []).map((r) => ({ ...r, kind: "issue" as const })),
+      ...(data?.reviews?.recent ?? []).map((r) => ({ ...r, kind: "review" as const })),
+      ...(data?.comments?.recent ?? []).map((r) => ({ ...r, kind: "comment" as const })),
+    ];
+
+    // Drop stale items first — we'd rather show a shorter list than pad
+    // with week-old work as if it's recent. Then cap each repo to PER_REPO_CAP
+    // in a first pass (age-ordered), so a single-repo burst can't crowd out
+    // the list. If slots remain, fill from the over-cap surplus, still
+    // age-ordered. The cap is the only diversification mechanism; soft
+    // weighting (sqrt etc.) is too weak to dent a fresh burst against
+    // day-old alternatives. Tending rows bypass the cap — they represent
+    // work happening *right now*, so a busy repo shouldn't displace its own
+    // live run from the list.
+    const PER_REPO_CAP = 3;
+    const FRESH_MS = 7 * 24 * 3600 * 1000;
+    const now = Date.now();
+    const fresh = rows
+      .filter((r) => now - new Date(r.at).getTime() <= FRESH_MS)
+      .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+
+    const counts = new Map<string, number>();
+    const picked: Array<RecentItem & { kind: Kind }> = [];
+    const overflow: Array<RecentItem & { kind: Kind }> = [];
+    for (const r of fresh) {
+      if (picked.length >= MAX_ROWS) break;
+      if (r.kind === "tending") {
+        picked.push(r);
+        continue;
+      }
+      const c = counts.get(r.repo) ?? 0;
+      if (c < PER_REPO_CAP) {
+        picked.push(r);
+        counts.set(r.repo, c + 1);
+      } else {
+        overflow.push(r);
+      }
+    }
+    for (const r of overflow) {
+      if (picked.length >= MAX_ROWS) break;
+      picked.push(r);
+    }
+    picked.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+    const top = picked;
+    if (top.length === 0) return false;
+
+    const ul = document.querySelector("[data-activity-rows]");
+    if (!ul) return false;
+    ul.replaceChildren(); // drop the skeleton rows
+    for (const e of top) {
+      const li = document.createElement("li");
+      li.className = "activity-row";
+
+      const kind = document.createElement("span");
+      kind.className = `kind kind-${e.kind}`;
+      kind.textContent = KIND_LABELS[e.kind];
+
+      const repo = document.createElement("span");
+      repo.className = "repo";
+      repo.textContent = shortRepo(e.repo);
+
+      const link = document.createElement("a");
+      link.className = "title";
+      link.href = e.url;
+      link.textContent = e.title;
+      link.rel = "noopener";
+
+      const time = document.createElement("time");
+      time.className = "at";
+      time.dateTime = e.at;
+      if (e.kind === "tending") {
+        time.dataset.startedAt = e.at;
+        time.textContent = elapsedTime(e.at);
+      } else {
+        time.textContent = relativeTime(e.at);
+      }
+
+      li.append(kind, repo, link, time);
+      ul.appendChild(li);
+    }
+
+    return true;
+  }, 60_000);
+
+  // One ticker for the lifetime of the page — it no-ops when no tending
+  // rows are present, so it costs a cheap querySelectorAll per second. It
+  // must live outside the render callback: liveData re-runs that callback
+  // on every refresh, and a per-render setInterval would stack.
+  setInterval(updateTendingTimes, 1000);
+</script>

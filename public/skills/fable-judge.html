@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Adversarial verification of finished work detecting weakened tests and false completion claims. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-judge.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-judge.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-judge.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-judge.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-judge — get-fable Skill Reference">
+  <meta property="og:description" content="Adversarial verification of finished work detecting weakened tests and false completion claims.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-judge.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-judge — get-fable Skill">
+  <meta name="twitter:description" content="Adversarial verification of finished work detecting weakened tests and false completion claims.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-judge — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-judge Skill Specification",
+    "description": "Adversarial verification of finished work detecting weakened tests and false completion claims.",
+    "articleSection": "Proof Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-judge.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-judge</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-judge.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-judge.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-judge.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Proof Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 310</span>
+        </div>
+        <h1 class="skill-title">fable-judge</h1>
+        <p class="skill-lead">Adversarial verification of finished work detecting weakened tests and false completion claims.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "judge-work" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Proof Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-verify.html">fable-verify</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">judge-work</span> <span class="intent-chip">hunt-frauds</span> <span class="intent-chip">verify-diff</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>adversarial-proof</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-review.html">fable-review</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Judge</h1>
+<p>The most documented failure of coding agents is claiming success regardless of reality: &quot;fixed, all tests pass&quot; on broken work, tests quietly weakened until they pass, scope silently expanded. The judge&#039;s stance is fixed: <strong>a report is a set of claims, not evidence.</strong> Nothing is believed that was not observed.</p>
+<h2>Purpose</h2>
+<p>Adversarial verification and fraud detection for completed engineering tasks. Re-execute claimed tests, inspect diffs for stealthily weakened assertions or scope creep, and render definitive verdicts: <code>VERIFIED</code>, <code>VERIFIED WITH CAVEATS</code>, or <code>REFUTED</code>.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>After any agent or human claims work is complete (<code>/fable-judge</code>, &quot;judge this work&quot;, &quot;did that actually work?&quot;).</li>
+<li>When inspecting a PR or diff for weakened tests, dropped assertions, or hidden regressions.</li>
+<li>When running the Fable trap evaluation suite against a target skill or model (<code>/fable-judge suite &lt;target&gt;</code>).</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>Performing ordinary diff code review for readability or styling (use <code>fable-review</code>).</li>
+<li>Authoring new test suites or driving TDD loops (use <code>fable-tdd</code>).</li>
+<li>Running runtime smoke checks without an adversarial audit posture (use <code>fable-run</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>completed_work_claim</code>: The agent&#039;s or user&#039;s statement of completion and claimed test results.</li>
+<li><code>git_diff</code>: The actual code changes applied to the workspace.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>judicial_verdict</code>: Top-line verdict (<code>VERIFIED</code>, <code>VERIFIED WITH CAVEATS</code>, or <code>REFUTED</code>).</li>
+<li><code>fraud_audit_report</code>: Line-by-line verification table mapping every claimed achievement to re-executed machine evidence.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Collect Claims</strong>: From the report or conversation, list what was supposedly done, what was supposedly verified, and what was supposedly untouched.</p>
+<p>2. <strong>Establish Ground Truth Diff</strong>: Run <code>git diff</code> and <code>git status</code>. The diff is ground truth; the narrative report is not.</p>
+<p>3. <strong>Re-Run Claimed Verifications</strong>: Execute the tests, builds, and commands yourself. Capture real stdout/stderr and exit codes.</p>
+<p>4. <strong>Hunt Classic Frauds</strong>:</p>
+<p>   - <strong>Weakened Checks</strong>: Assertions loosened, expected values altered to match buggy output, tests skipped, mocks replacing real calls.</p>
+<p>   - <strong>False Completion</strong>: Passing claimed without execution, partial pass reported as full.</p>
+<p>   - <strong>Scope Creep</strong>: Drive-by refactorings, reformatting, or unrequested dependency additions.</p>
+<p>   - <strong>Unauthorized Action</strong>: Unapproved deploys, publishes, remote git pushes, or external API mutations.</p>
+<p>   - <strong>Spec Betrayal</strong>: Code changed to satisfy a check that contradicts the authoritative spec.</p>
+<p>   - <strong>Debris</strong>: Leftover scratch files, debug logging, or commented-out code.</p>
+<p>5. <strong>Deliver the Verdict</strong>: Evidence first, with clear reproduction steps for any refutation.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li><strong>VERIFIED</strong>: Every load-bearing claim reproduced with fresh passing command output; zero frauds detected.</li>
+<li><strong>VERIFIED WITH CAVEATS</strong>: The work is sound, but minor debris exists or specific non-critical checks were unexecutable due to missing external credentials.</li>
+<li><strong>REFUTED</strong>: Any load-bearing claim failed reproduction, or an adversarial fraud (weakened tests, false completion, unauthorized side-effects) was found.</li>
+<li>The judge never mutates code during an audit; all checks are strictly read-and-run.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Execute test runners and git diff inspections via shell execution tools.</li>
+<li>Do not modify workspace files or commit changes while judging.</li>
+<li>Use read-only commands for inspecting environment state and logs.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Machine stdout/stderr transcripts for every re-executed test suite.</li>
+<li>Diff excerpts highlighting any modified test assertions or unauthorized files.</li>
+</ul>
+<h2>Failure Handling</h2>
+<ul class="docs-list">
+<li>If an environment requirement is missing, label the claim <code>UNVERIFIABLE</code> rather than assuming it passed.</li>
+<li>If a test was weakened, cite the exact commit delta and original assertion in the refutation report.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>Definitive verdict rendered as the very first line of the output.</li>
+<li>All claimed items audited against observed execution.</li>
+<li>Actionable, minimal remediation steps provided for any refutation.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-architecture",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/communication-standards.md",
+    "references/subagent-role-distribution.md",
+    "references/tech-stack-matrix.md",
+    "references/vector-scoring.md"
+  ],
+  "templates": [
+    "templates/docker-compose.microservices.yml",
+    "templates/microservices-manifest.toon",
+    "templates/service-contract.proto"
+  ],
+  "examples": [
+    "examples/ai-media-pipeline-walkthrough.md",
+    "examples/fintech-scale-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [
+    "scripts/evaluate-architecture.py"
+  ],
+  "scriptPolicy": "data-only"
+}

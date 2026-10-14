@@ -1,0 +1,26 @@
+name: ui-ux-polish-round
+version: 1.0.0
+description: Autonomous multi-tiered E2E and pixel-by-pixel UI/UX polish loop with taste calibration and auto-repair.
+targetShape: ui-ux-polish
+steps:
+  - skill: fable-discover
+    gate: routes-and-screens-inventoried
+    description: Discover target routes, components, design tokens, and verify dev server status
+  - skill: fable-plan
+    gate: bounded-scope
+    description: Preflight design contract (PRODUCT.md/DESIGN.md), provision test tools, and generate E2E exploration charters
+  - skill: fable-execute
+    gate: browser-round-recorded
+    description: Launch agent-browser with video/DOM recording and harvest pixel-level/UX defects
+  - skill: fable-loop
+    gate: defects-surgically-resolved
+    description: Execute closed-loop surgical auto-repairs with visual re-probing and circuit breaker
+  - skill: fable-verify
+    gate: machine-checked
+    description: Execute tester-army/e2e regression suite across desktop and mobile viewports
+  - skill: fable-review
+    gate: grounded-diff-read
+    description: Inspect code diff, calibrate taste via impeccable craft-floor, and ensure zero UI slop
+  - skill: fable-release
+    gate: required-checks-pass
+    description: Compile final visual evidence package, video proof, and certify PR readiness

@@ -1,0 +1,11 @@
+{
+  "name": "build",
+  "version": "1.12.0",
+  "description": "Test-driven development, red-green verification, and parallel subagent delegation.",
+  "skills": [
+    "fable-tdd",
+    "fable-delegate",
+    "fable-native-code",
+    "fable-scope-discipline"
+  ]
+}

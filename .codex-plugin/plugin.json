@@ -1,0 +1,46 @@
+{
+  "name": "get-fable",
+  "version": "1.12.0",
+  "description": "Portable coding lifecycle for AI agents: deterministic routing, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery across 27 canonical skills.",
+  "author": {
+    "name": "Mamdouh Abo Ammar",
+    "url": "https://github.com/imMamdouhaboammar"
+  },
+  "homepage": "https://github.com/imMamdouhaboammar/get-fable",
+  "repository": "https://github.com/imMamdouhaboammar/get-fable",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "chatgpt",
+    "coding-agent",
+    "agent-workflow",
+    "coding-lifecycle",
+    "verification",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.codex.json",
+  "interface": {
+    "displayName": "get-fable",
+    "shortDescription": "AI coding lifecycle",
+    "longDescription": "Routes software work through 27 focused lifecycle skills across 8 packs, keeps durable mutation-aware state in .fable/state.json, and requires fresh evidence before completion.",
+    "developerName": "Mamdouh Abo Ammar",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Route coding work across 27 canonical lifecycle skills in 8 packs",
+      "Track mutation-aware verification and evidence freshness",
+      "Use specialized TDD, review, security, and recovery specialists",
+      "Run lifecycle hooks across supported Codex and ChatGPT plugin surfaces",
+      "Predict atomic next moves with Fable Spark situational awareness"
+    ],
+    "websiteURL": "https://github.com/imMamdouhaboammar/get-fable",
+    "supportURL": "https://github.com/imMamdouhaboammar/get-fable/issues",
+    "defaultPrompt": [
+      "Run this software task with get-fable and choose the next lifecycle skill from current evidence.",
+      "Use the smallest relevant skill pack, keep workspace state current, and verify after the final mutation.",
+      "For failures, reviews, security, releases, handoffs, or agent-control changes, route to the matching specialist before completion."
+    ],
+    "composerIcon": "./assets/mascot.svg",
+    "logo": "./assets/mascot.svg"
+  }
+}

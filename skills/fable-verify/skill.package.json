@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-verify",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/evidence-recording.md",
+    "references/falsification-heuristics.md",
+    "references/verification-matrix-and-evidence-strength.md"
+  ],
+  "templates": [
+    "templates/verification-evidence.template.md"
+  ],
+  "examples": [
+    "examples/falsification-session.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

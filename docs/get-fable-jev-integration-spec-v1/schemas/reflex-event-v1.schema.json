@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://get-fable.dev/schemas/reflex-event-v1.schema.json",
+  "title": "ReflexRoutingEventV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "timestamp", "mode", "taskHash", "deterministicSkill", "finalSkill", "hardLocked", "overrideApplied"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "repositoryRevision": { "type": ["string", "null"] },
+    "mode": { "enum": ["off", "shadow", "recommend", "guarded", "authority"] },
+    "taskHash": { "type": "string", "minLength": 16 },
+    "deterministicSkill": { "type": "string" },
+    "jevSkill": { "type": ["string", "null"] },
+    "finalSkill": { "type": "string" },
+    "hardLocked": { "type": "boolean" },
+    "overrideApplied": { "type": "boolean" },
+    "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "margin": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "model": { "type": ["string", "null"] },
+    "latencyMs": { "type": ["number", "null"], "minimum": 0 },
+    "inputTokens": { "type": ["integer", "null"], "minimum": 0 },
+    "providerError": { "type": ["string", "null"] },
+    "stage2Used": { "type": "boolean" }
+  }
+}

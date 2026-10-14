@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-simulator",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/oracle-derivation-guide.md",
+    "references/oracle-independence-and-simulation-boundaries.md"
+  ],
+  "templates": [
+    "templates/oracle-contract.template.md"
+  ],
+  "examples": [
+    "examples/independent-oracle-verification.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

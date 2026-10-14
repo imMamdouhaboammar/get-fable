@@ -1,0 +1,38 @@
+#!/bin/sh
+# get-fable public repository pre-push guard
+set -e
+
+remote="$1"
+url="$2"
+
+if [ -n "$url" ]; then
+  echo "🛡️ [Public Pre-Push Guard]: Verifying push target '$url'..."
+  if echo "$url" | grep -E "github.com[:/][^/]+/get-fable-core(\.git)?$" >/dev/null; then
+    echo "❌ FATAL [Public Repo Guard]: Push refused! Public repository must NEVER push to 'get-fable-core'."
+    exit 1
+  fi
+fi
+
+FORBIDDEN_PATHS="_backups _quarantine Failure-lessons docs/internal evals/holdout"
+
+while read local_ref local_sha remote_ref remote_sha; do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    continue
+  fi
+
+  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+    range="$local_sha"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+
+  TOUCHED=$(git rev-list --objects "$range" | awk '{print $2}' || true)
+  for forbidden in $FORBIDDEN_PATHS; do
+    if echo "$TOUCHED" | grep -q "^$forbidden"; then
+      echo "❌ FATAL [Public Repo Guard]: Push refused! Commit in range contains private path '$forbidden'."
+      exit 1
+    fi
+  done
+done
+
+exit 0

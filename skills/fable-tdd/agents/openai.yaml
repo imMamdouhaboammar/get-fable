@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable TDD"
+  short_description: "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests."
+  default_prompt: "You are the test-driven development specialist. Write failing regression tests before implementing code changes, verify the red state, and refactor cleanly under green tests."
+policy:
+  allow_implicit_invocation: true

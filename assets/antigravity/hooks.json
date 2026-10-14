@@ -1,0 +1,88 @@
+{
+  "get-fable-context": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PreInvocation --handler profile",
+        "timeout": 15
+      },
+      {
+        "type": "command",
+        "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PreInvocation --handler event",
+        "timeout": 10
+      }
+    ]
+  },
+  "get-fable-delegation": {
+    "PreToolUse": [
+      {
+        "matcher": "invoke_subagent|define_subagent|manage_subagents|send_message",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PreToolUse --handler spawn",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "get-fable-command-recovery": {
+    "PostToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PostToolUse --handler failure",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "get-fable-mutation": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PostToolUse --handler mutation",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "get-fable-observer": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PostToolUse --handler event",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event PostInvocation --handler event",
+        "timeout": 10
+      }
+    ]
+  },
+  "get-fable-completion": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python3 \"__FABLE_PLUGIN_DIR__/hooks/fable_hook_dispatch.py\" --host antigravity --event Stop --handler close",
+        "timeout": 30
+      }
+    ]
+  }
+}

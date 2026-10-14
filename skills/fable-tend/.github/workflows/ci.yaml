@@ -1,0 +1,163 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # Every Python test in the repo — pytest collects generator/, proxy/,
+  # shared/steps/, and the install-tend scripts from the root — in the root
+  # workspace's environment, whose dev group holds the pinned mitmproxy the
+  # proxy addon imports.
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.1.0
+      # Pinned to the interpreter production runs: the step bodies under
+      # shared/steps/ execute on the runner's own /usr/bin/python3, which is
+      # 3.12 on ubuntu-24.04, and an unpinned `uv run` would test them on
+      # whatever newer version uv happens to find.
+      - run: uv run --python 3.12 pytest
+      # pypi-release.yaml only fires on a tag push, and the tag is immutable by
+      # ruleset, so a build that breaks there costs a manual publish. Run the
+      # same command here, where a bad `uv build` invocation fails on its PR.
+      - run: uv build --package tend
+
+  # The addon's pytest suite (in `test` above) exercises `mitmproxy.http` and
+  # never launches the proxy, so it passes unchanged across major mitmproxy
+  # versions. This job launches it.
+  test-proxy:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: proxy
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.1.0
+      # mitmdump starts the way setup_sandbox.py starts it, so a release that
+      # drops a flag, moves the CA file, or breaks the addon's import fails
+      # here rather than on every consumer's next run. It goes through the
+      # pinned uv, which nothing else in CI installs. The --allow-hosts value
+      # is a throwaway: setup_sandbox.py owns the real regex, which must track
+      # the allowlists in inject_credentials.py.
+      #
+      # It installs uv by running install-uv.sh rather than repeating it,
+      # which also gives that script its only CI coverage, then warms the uvx
+      # cache as setup_sandbox.py does. An empty replay lets mitmdump reach its
+      # running lifecycle hook, then its own KeepServing addon shuts it down.
+      # The foreground process exits non-zero on startup failure and is reaped
+      # by the shell; port 0 gives the fixture a listener it owns.
+      - name: Smoke the pinned uv and mitmdump
+        run: |
+          uv_v=$(yq -e '.inputs.uv_version.default' ../claude/action.yaml)
+          mitm_v=$(yq -e '.inputs.mitmproxy_version.default' ../claude/action.yaml)
+          UV_VERSION="$uv_v" UV_INSTALL_DIR="$RUNNER_TEMP/tend-uv" \
+            bash ../shared/steps/install-uv.sh
+          confdir=$RUNNER_TEMP/tend-mitm-conf
+          log=$RUNNER_TEMP/tend-mitm.log
+          flows=$RUNNER_TEMP/tend-empty.flows
+          uvx=$RUNNER_TEMP/tend-uv/uvx
+          touch "$flows"
+          "$uvx" --from "mitmproxy==${mitm_v}" mitmdump --version >/dev/null
+          if ! TEND_GH_TOKEN=dummy TEND_ANTHROPIC_OAUTH_TOKEN=dummy \
+            "$uvx" --from "mitmproxy==${mitm_v}" mitmdump \
+            -s inject_credentials.py \
+            --listen-host 127.0.0.1 --listen-port 0 \
+            --set confdir="$confdir" \
+            --set rfile="$flows" \
+            --allow-hosts '^example\.invalid$' >"$log" 2>&1; then
+            cat "$log"
+            echo "::error::mitmdump failed to start under mitmproxy ${mitm_v}"
+            exit 1
+          fi
+          grep -qF 'HTTP(S) proxy listening at 127.0.0.1:' "$log"
+          test -f "$confdir/mitmproxy-ca-cert.pem"
+
+  # setup_sandbox.py and the SRT lifecycle need a second uid, sudo, and a runner
+  # PATH to derive from, so no Python test reaches the full boundary. Running
+  # them for real leaves the runner changed — the disposable clone belongs to
+  # the sandbox UID, the proxy CA is in the system trust store, and mitmdump
+  # remains on 8899 — so a later step must expect that state. This job exercises
+  # the real boundary: shared paths cross, runner-home paths do not, same-name
+  # system fallbacks are blocked, and Tend preserves a shared uv. It then drives
+  # sandbox_setup and both harness adapters inside their real SRT lifecycle.
+  test-sandbox:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned Sandbox Runtime capabilities
+        shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+        run: PATH=/usr/sbin:/usr/bin:/sbin:/bin /usr/bin/bash shared/steps/install-sandbox-runtime.sh
+        env:
+          BASH_ENV: ""
+          SRT_VERSION: "0.0.76"
+          TEND_RUNNER_ENVIRONMENT: ${{ runner.environment }}
+      - name: Plant PATH-boundary fixtures
+        run: bash proxy/test-setup-sandbox.sh plant
+      - name: Set up the sandbox
+        run: bash proxy/test-setup-sandbox.sh setup
+      - name: Install agent uv fallback
+        run: bash proxy/test-setup-sandbox.sh install-agent-uv
+      - name: Verify the prepared UID and PATH boundary
+        run: bash proxy/test-setup-sandbox.sh verify
+      - name: Verify complete Claude and Codex SRT lifecycles
+        run: bash proxy/test-setup-sandbox.sh verify-srt
+      - name: Refuse unsafe sandbox configuration
+        run: bash proxy/test-setup-sandbox.sh verify-refusals
+      - name: Clean up sandbox fixtures
+        if: always()
+        run: bash proxy/test-setup-sandbox.sh cleanup
+      - name: Restore Sandbox Runtime host policy
+        if: always()
+        run: bash shared/steps/restore-sandbox-runtime-host.sh
+
+  # Gate Codex version bumps on the credential-free parts of the action's CLI
+  # and Responses-proxy contracts. Live model behavior needs an authenticated
+  # integration test; restricted Linux modes do not run on GitHub's hosted
+  # Ubuntu runner, so that behavior is documented rather than probed here.
+  test-codex-surface:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+      - name: Install the pinned Codex CLI
+        run: |
+          v=$(yq -e '.inputs.codex_version.default' codex/action.yaml)
+          npm install -g \
+            "@openai/codex@$v" \
+            "@openai/codex-responses-api-proxy@$v"
+          codex --version
+          codex-responses-api-proxy --help >/dev/null
+      - name: Verify the pinned Codex CLI surface
+        run: /usr/bin/python3 -E -s shared/steps/codex_surface.py
+
+  # Node 22 to match worker-deploy.yaml, which had to move off 20 because
+  # Wrangler refuses to run there ("Wrangler requires at least Node.js
+  # v22.0.0"). That deploy job re-runs this job's typecheck and tests before
+  # shipping, so leaving the gate on a version the worker's own toolchain
+  # rejects makes the pre-merge signal weaker than the thing it gates.
+  test-worker:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.1.0
+      - uses: pre-commit/action@v3.0.1

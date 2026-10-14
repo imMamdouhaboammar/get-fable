@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Capability Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "step_id",
+    "capability_id",
+    "started_at",
+    "finished_at",
+    "status",
+    "mutated_workspace",
+    "network_used",
+    "warnings",
+    "raw_output_digest",
+    "adapter_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "step_id": {
+      "type": "string"
+    },
+    "capability_id": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "finished_at": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed",
+        "blocked",
+        "skipped",
+        "timeout"
+      ]
+    },
+    "exit_code": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "structured_output": {
+      "type": [
+        "object",
+        "array",
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mutated_workspace": {
+      "type": "boolean"
+    },
+    "network_used": {
+      "type": "boolean"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "raw_output_digest": {
+      "type": "string"
+    },
+    "adapter_version": {
+      "type": "string"
+    }
+  }
+}

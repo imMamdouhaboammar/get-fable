@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-recover.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-recover.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-recover.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-recover.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-recover — get-fable Skill Reference">
+  <meta property="og:description" content="Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-recover.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-recover — get-fable Skill">
+  <meta name="twitter:description" content="Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-recover — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-recover Skill Specification",
+    "description": "Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.",
+    "articleSection": "Core Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-recover.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-recover</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-recover.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-recover.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-recover.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Core Pack</span>
+          <span class="phase-badge phase-recovering">Phase: recovering</span>
+          <span class="order-badge">Order: 100</span>
+        </div>
+        <h1 class="skill-title">fable-recover</h1>
+        <p class="skill-lead">Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "debug-failure" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Core Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">recovering</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-discover.html">fable-discover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">debug-failure</span> <span class="intent-chip">stale-execution</span> <span class="intent-chip">contradictory-evidence</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>diagnosis-changed</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-discover.html">fable-discover</a> <a class="token-link" href="../skills/fable-research.html">fable-research</a> <a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-tdd.html">fable-tdd</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-tend.html">fable-tend</a> <a class="token-link" href="../skills/fable-method.html">fable-method</a> <a class="token-link" href="../skills/fable-loop.html">fable-loop</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Recover</h1>
+<p>Stop spending mutations on a failing hypothesis. Rebuild causal confidence before changing code again.</p>
+<h2>Mission</h2>
+<p>Recovery exists for the moment an agent is most likely to become expensive and irrational: the same task has failed more than once, output contradicts expectations, or edits appear to have no effect.</p>
+<p>The goal is not to &quot;try something different.&quot; The goal is to explain why previous attempts failed, falsify competing causes, and issue one repair that is justified by new evidence.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>the same command/test/behavior fails after two materially similar implementation attempts;</li>
+<li>output appears stale or unaffected by known source changes;</li>
+<li>tests/runtime disagree;</li>
+<li>evidence contradicts a load-bearing assumption;</li>
+<li>failures alternate or depend on timing/environment;</li>
+<li>the agent is about to repeat a command/patch without new diagnostic information.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>first failure is a trivial syntax/type error introduced by the current edit;</li>
+<li>architecture is simply unknown and no repeated failure occurred (<code>fable-discover</code>);</li>
+<li>expected RED in TDD is being observed correctly;</li>
+<li>a narrow review finding already has an obvious bounded repair.</li>
+</ul>
+<h2>Failure Classification</h2>
+<p>Start by classifying the evidence, not the code.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Class</th><th>Typical signals</th><th>First probes</th></tr></thead><tbody>
+<tr><td>Harness</td><td>assertion never reached, fixture/mock/setup error</td><td>prove test path and fixture</td></tr>
+<tr><td>Environment</td><td>local/CI/OS/env-specific</td><td>versions, env, cwd, permissions</td></tr>
+<tr><td>Artifact/cache</td><td>source changes not reflected</td><td>entrypoint, build timestamps, cache, dist</td></tr>
+<tr><td>Execution path</td><td>edited code never executes</td><td>tracing/instrumentation/registration</td></tr>
+<tr><td>Dependency/version</td><td>unexpected API/runtime semantics</td><td>lockfile, resolved version, official source</td></tr>
+<tr><td>Data/state</td><td>only some fixtures/accounts/orders fail</td><td>minimal failing state, persistence boundaries</td></tr>
+<tr><td>Concurrency/timing</td><td>intermittent/order-sensitive</td><td>deterministic coordination, shared state</td></tr>
+<tr><td>Product logic</td><td>harness/path proven, assertion consistently wrong</td><td>isolate algorithm/branch</td></tr>
+<tr><td>Invariant/design</td><td>local fixes move failure elsewhere</td><td>identify violated cross-component rule</td></tr>
+</tbody></table></div>
+<p>Do not jump to product logic until cheaper external explanations are falsified.</p>
+<h2>Recovery Protocol</h2>
+<h3>Stage 1 — Freeze mutation</h3>
+<p>No new production edits until the diagnosis changes. Preserve the failing state and collect exact evidence.</p>
+<p>Record:</p>
+<ul class="docs-list">
+<li>command/action;</li>
+<li>exact error/output;</li>
+<li>workspace/commit/mutation generation;</li>
+<li>attempts already made and what differed;</li>
+<li>expected observation.</li>
+</ul>
+<h3>Stage 2 — Reproduce minimally</h3>
+<p>Find the smallest reliable reproduction. If the failure is flaky, capture seeds/order/time/environment and work on determinism before another fix.</p>
+<h3>Stage 3 — Build a hypothesis queue</h3>
+<p>Create 2-5 plausible causes ranked by:</p>
+<ul class="docs-list">
+<li>ability to explain all observed evidence;</li>
+<li>probability given recent changes;</li>
+<li>cost/safety of falsification.</li>
+</ul>
+<p>Each hypothesis must predict an observation that would distinguish it.</p>
+<p>Bad: &quot;maybe cache.&quot;</p>
+<p>Good: &quot;CLI executes stale <code>dist/cli.js</code>; if true, source timestamp will be newer than dist and direct source invocation will show new behavior.&quot;</p>
+<h3>Stage 4 — Walk the attribution ladder</h3>
+<p>Use the cheapest separating probes first:</p>
+<p>1. <strong>Harness</strong> — does the test/probe reach the intended assertion/path with realistic inputs?</p>
+<p>2. <strong>Environment/artifact</strong> — correct branch, cwd, env, version, build, cache, process?</p>
+<p>3. <strong>Execution path</strong> — is edited code actually reached? which implementation is registered?</p>
+<p>4. <strong>Data/dependency</strong> — does input/version/state differ from assumptions?</p>
+<p>5. <strong>Product logic</strong> — with above proven, isolate the wrong branch/algorithm.</p>
+<p>6. <strong>Invariant/design</strong> — if local logic is individually reasonable but system remains wrong, identify the violated system contract.</p>
+<p>The ladder is guidance, not ritual. Skip a rung only when existing evidence already proves it.</p>
+<h3>Stage 5 — Instrument or bisect when observation is weak</h3>
+<p>Use narrow temporary diagnostics, binary search/bisect, toggling one variable, or comparing known-good/bad states.</p>
+<p>Change one diagnostic dimension at a time so the result is interpretable.</p>
+<h3>Stage 6 — Falsify, do not accumulate guesses</h3>
+<p>After each probe:</p>
+<ul class="docs-list">
+<li>reject hypothesis;</li>
+<li>strengthen hypothesis;</li>
+<li>or revise the queue.</li>
+</ul>
+<p>Do not keep contradicted explanations alive as &quot;maybe still related.&quot;</p>
+<h3>Stage 7 — Form the revised diagnosis</h3>
+<p>A valid diagnosis explains:</p>
+<ul class="docs-list">
+<li>why the observed failure occurred;</li>
+<li>why previous attempts did not fix it;</li>
+<li>what evidence distinguishes it from alternatives;</li>
+<li>what smallest repair should change the outcome.</li>
+</ul>
+<h3>Stage 8 — Issue one bounded repair</h3>
+<p>Return to <code>fable-execute</code> or <code>fable-tdd</code> with one repair and one expected proof. If diagnosis reveals architecture uncertainty, route to plan/discover instead.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Never repeat an unchanged failed command unless a named environmental/state variable changed or the rerun is explicitly measuring nondeterminism.</li>
+<li>Do not delete caches/build artifacts reflexively before recording evidence; destructive cleanup can erase the clue that proves staleness.</li>
+<li>If source changes have no runtime effect, prove the executed artifact/path before editing logic again.</li>
+<li>If CI-only failure exists, compare environment/version/parallelism first; do not assume CI is &quot;random.&quot;</li>
+<li>If failure is data-specific, minimize the failing data/state before broad refactor.</li>
+<li>If a dependency/version hypothesis emerges, route external semantic verification to <code>fable-research</code>.</li>
+<li>If local patches shift failure between components, suspect a shared invariant/design and return to <code>fable-plan</code>.</li>
+<li>Similar failed fixes count as a failure streak; superficial syntax changes do not reset diagnostic responsibility.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Recovery is diagnostic/read-only until a revised diagnosis exists.</li>
+<li>Every new probe is chosen to distinguish hypotheses.</li>
+<li>Contradicted hypotheses are removed.</li>
+<li>Diagnostic instrumentation is temporary and cleaned after repair.</li>
+<li>Final repair is bounded and tied to a predicted observable outcome.</li>
+</ul>
+<h2>Failure Taxonomy of Recovery Itself</h2>
+<h3>Blind cleanup</h3>
+<p>Cache/build reset makes problem disappear but root cause is unknown. Record as unresolved unless causal evidence is obtained.</p>
+<h3>Hypothesis sprawl</h3>
+<p>Long list of possibilities with no discriminating probes. Rank and test the cheapest separator.</p>
+<h3>Mutation during diagnosis</h3>
+<p>Agent edits product while still uncertain, invalidating the failing state. Revert/restore diagnostic baseline where safe and restart evidence collection.</p>
+<h3>Confirmation bias</h3>
+<p>Only probes supporting first theory are run. Add at least one falsifier for the leading hypothesis.</p>
+<h3>Non-minimal reproduction</h3>
+<p>Huge suite/system creates too many confounders. Isolate smaller path before interpreting results.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>third/fourth patch with same causal theory;</li>
+<li>&quot;clear cache and see&quot; without recording before/after evidence;</li>
+<li>rerunning flaky command until green;</li>
+<li>blaming environment without comparing environments;</li>
+<li>adding broad logging everywhere;</li>
+<li>changing multiple diagnostic variables at once;</li>
+<li>preserving disproved assumptions;</li>
+<li>solving symptom while unable to explain previous failures.</li>
+</ul>
+<h2>Recovery Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Failure/reproduction:
+Attempts already made:
+Hypothesis queue:
+Probe → observation → hypothesis effect:
+Revised diagnosis:
+Why prior attempts failed:
+Bounded repair:
+Expected proof after repair:
+Residual uncertainty:
+Next Skill:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Recovery completes only when:</p>
+<ul class="docs-list">
+<li>a reliable enough reproduction exists or nondeterminism is explicitly characterized;</li>
+<li>leading alternative causes were falsified with evidence;</li>
+<li>diagnosis materially differs from the failed assumption/attempt;</li>
+<li>proposed repair is bounded and predicts a concrete changed observation;</li>
+<li>execution can resume without another blind retry.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/diagnostic-falsification-playbook.md</code></li>
+<li>Existing ladder: <code>references/attribution-ladder.md</code></li>
+<li>Example: <code>examples/recovering-stale-test-cache.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

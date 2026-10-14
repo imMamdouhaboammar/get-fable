@@ -1,0 +1,79 @@
+---
+// Stat strip — runtime-fetched from api.tend-src.com/activity (the bucket
+// counts). Hidden only when the fetch itself fails (network or non-OK
+// response); a successful fetch with zero counts still renders, because
+// distinguishing "data is missing" from "data is genuinely zero" matters
+// — a transient worker outage shouldn't silently black out the section.
+//
+// The strip ships with four placeholder cells of the same shape as the real
+// data so the section reserves its natural height before the fetch resolves
+// (no min-height hack in CSS). The script clears the placeholders before
+// appending real cells.
+---
+
+<section id="stats" class="stats" data-state="loading">
+  <div class="stat-strip" data-stat-strip>
+    {Array.from({ length: 4 }).map(() => (
+      <div class="stat-cell" aria-hidden="true">
+        <div class="stat-num">&nbsp;</div>
+        <div class="stat-label">&nbsp;</div>
+        <div class="stat-week">&nbsp;</div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  import { liveData } from "../lib/api";
+
+  interface Bucket {
+    count: number;
+    count_this_week: number;
+  }
+  interface Activity {
+    prs: Bucket;
+    issues: Bucket;
+    reviews: Bucket;
+    comments: Bucket;
+  }
+
+  function format(n: number): string {
+    return n.toLocaleString();
+  }
+
+  liveData<Activity>("/activity", "stats", (data) => {
+    if (!data) return false; // fetch failed — hide rather than render zeros
+    const cells = [
+      { n: data.prs?.count ?? 0, week: data.prs?.count_this_week ?? 0, label: "PRs" },
+      { n: data.reviews?.count ?? 0, week: data.reviews?.count_this_week ?? 0, label: "reviews" },
+      { n: data.comments?.count ?? 0, week: data.comments?.count_this_week ?? 0, label: "comments" },
+      { n: data.issues?.count ?? 0, week: data.issues?.count_this_week ?? 0, label: "issues" },
+    ];
+
+    const strip = document.querySelector("[data-stat-strip]");
+    if (!strip) return false;
+    strip.replaceChildren(); // drop the skeleton cells
+    for (const cell of cells) {
+      const div = document.createElement("div");
+      div.className = "stat-cell";
+
+      const num = document.createElement("div");
+      num.className = "stat-num";
+      num.textContent = format(cell.n);
+
+      const label = document.createElement("div");
+      label.className = "stat-label";
+      label.textContent = cell.label;
+
+      const week = document.createElement("div");
+      week.className = "stat-week";
+      // Render the week line unconditionally so every cell is the same height
+      // as the skeleton — a non-breaking space when there's nothing to report.
+      week.textContent = cell.week > 0 ? `+${format(cell.week)} this week` : " ";
+
+      div.append(num, label, week);
+      strip.appendChild(div);
+    }
+    return true;
+  }, 300_000);
+</script>

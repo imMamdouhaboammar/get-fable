@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-release.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-release.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-release.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-release.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-release — get-fable Skill Reference">
+  <meta property="og:description" content="Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-release.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-release — get-fable Skill">
+  <meta name="twitter:description" content="Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-release — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-release Skill Specification",
+    "description": "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.",
+    "articleSection": "Delivery Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-release.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-release</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-release.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-release.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-release.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Delivery Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 80</span>
+        </div>
+        <h1 class="skill-title">fable-release</h1>
+        <p class="skill-lead">Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "release" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Delivery Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-verify.html">fable-verify</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">release</span> <span class="intent-chip">merge</span> <span class="intent-chip">publish</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>required-checks-pass</code></li><li><code>no-blocking-findings</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Release</h1>
+<p>Prove that the exact commit and artifact users will receive are ready to ship, then distinguish readiness from actual distribution.</p>
+<h2>Mission</h2>
+<p>A release is an external state transition. Source tests can be perfect while the package omits files, the tag points at another commit, the registry still serves an old version, or a published artifact cannot start in a clean environment.</p>
+<p>This Skill closes that gap by tying release claims to exact version, commit, artifact, workflow, tag, and registry evidence.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>preparing a branch for merge or a version for release;</li>
+<li>creating/pushing a version tag;</li>
+<li>publishing npm/package/plugin artifacts;</li>
+<li>finalizing a GitHub Release;</li>
+<li>verifying that a distribution channel actually serves the intended version;</li>
+<li>assessing whether release evidence is current after last-minute changes.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>implementation is still changing (<code>fable-execute</code>/<code>fable-tdd</code>);</li>
+<li>functional verification is incomplete (<code>fable-verify</code>);</li>
+<li>blocking review/security findings remain;</li>
+<li>the user has not authorized an irreversible publish action. Readiness checks may run; publishing itself requires the applicable authorization.</li>
+</ul>
+<h2>Release Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Release type</th><th>Extra concerns</th></tr></thead><tbody>
+<tr><td>Merge only</td><td>branch/base freshness, required CI, review</td></tr>
+<tr><td>Package registry</td><td>package contents, clean install, registry verification</td></tr>
+<tr><td>Git tag/GitHub Release</td><td>tag→SHA binding, notes/assets, draft/prerelease state</td></tr>
+<tr><td>Plugin/marketplace</td><td>manifest/version parity, submission/approval state</td></tr>
+<tr><td>Migration-bearing release</td><td>rollout order, backward compatibility, rollback</td></tr>
+<tr><td>Security-sensitive release</td><td>advisory/secrets/dependency gates, disclosure constraints</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Freeze the candidate</h3>
+<p>Identify the exact candidate:</p>
+<ul class="docs-list">
+<li>version;</li>
+<li>commit SHA;</li>
+<li>target branch/tag;</li>
+<li>distribution channels;</li>
+<li>required CI/review/security evidence.</li>
+</ul>
+<p>Any source/config/package mutation after this point invalidates relevant release evidence and creates a new candidate.</p>
+<h3>Stage 2 — Validate version semantics</h3>
+<p>Check:</p>
+<ul class="docs-list">
+<li>version does not already exist in target registry/tag namespace;</li>
+<li>SemVer matches actual compatibility impact;</li>
+<li>all canonical version locations/manifests agree;</li>
+<li>changelog/release notes describe user-visible changes accurately;</li>
+<li>prerelease state is intentional.</li>
+</ul>
+<p>Do not choose patch/minor/major purely for convenience.</p>
+<h3>Stage 3 — Reconfirm fresh quality gates</h3>
+<p>Verify required functional/build/review/security evidence belongs to the candidate SHA/mutation generation. If evidence was produced before candidate changes, rerun it.</p>
+<ul class="docs-list">
+<li>When available, route branch pushes through the <code>no-mistakes</code> proxy (<code>git push no-mistakes</code> or <code>no-mistakes axi run</code>) to ensure rebase, automated review, tests, lint, and docs pass before remote merge.</li>
+</ul>
+<h3>Stage 4 — Inspect the artifact boundary</h3>
+<p>Build/dry-run the exact artifact and inspect its manifest/content.</p>
+<p>Check:</p>
+<ul class="docs-list">
+<li>required entrypoints/assets/manifests are present and non-empty;</li>
+<li>secrets, temp files, tests/fixtures/internal holdouts are excluded unless intentionally public;</li>
+<li>generated files are current;</li>
+<li>executable permissions/exports/bin paths are correct;</li>
+<li>dependency/runtime constraints are accurate.</li>
+</ul>
+<h3>Stage 5 — Clean-environment smoke</h3>
+<p>Install/use the produced artifact outside the source checkout where feasible.</p>
+<p>Prove at least:</p>
+<ul class="docs-list">
+<li>install succeeds;</li>
+<li>primary executable/import resolves;</li>
+<li>version/help/basic smoke works;</li>
+<li>documented quick-start path is not accidentally relying on repo-local files.</li>
+</ul>
+<h3>Stage 6 — Verify repository release state</h3>
+<p>Before publishing:</p>
+<ul class="docs-list">
+<li>candidate commit is pushed;</li>
+<li>required CI on the candidate is green;</li>
+<li>tag does not exist or already points to exactly the intended SHA;</li>
+<li>release notes/assets target the same tag/SHA;</li>
+<li>branch is not known-broken relative to base.</li>
+</ul>
+<h3>Stage 7 — Publish only through an authorized secure path</h3>
+<p>Prefer configured trusted publishing/OIDC/host automation over introducing long-lived tokens.</p>
+<p>Do not print/store credentials or weaken security to make a release pass.</p>
+<p>If authorization or authentication is absent, stop at <strong>READY_NOT_PUBLISHED</strong> with exact remaining action.</p>
+<h3>Stage 8 — Verify distribution independently</h3>
+<p>After publish, query the external destination rather than trusting the publish command.</p>
+<p>Examples of proof:</p>
+<ul class="docs-list">
+<li>registry reports expected version/dist metadata;</li>
+<li>clean install from registry succeeds;</li>
+<li>Git tag resolves to candidate SHA;</li>
+<li>GitHub Release is actually public, not draft;</li>
+<li>marketplace status reflects submitted/published state.</li>
+</ul>
+<h3>Stage 9 — Post-release smoke and handoff</h3>
+<p>Run the user-facing install/invocation path from public distribution. Record rollback/deprecation/follow-up issues if observed.</p>
+<h2>Release Verdicts</h2>
+<ul class="docs-list">
+<li><strong>NOT_READY</strong>: required deterministic/review/security/artifact gate fails.</li>
+<li><strong>READY_NOT_PUBLISHED</strong>: candidate is sound but publish is unauthorized/unavailable/not requested.</li>
+<li><strong>PUBLISHED_UNVERIFIED</strong>: publish command/workflow claims success but external distribution has not been independently confirmed.</li>
+<li><strong>RELEASED</strong>: exact candidate is public through intended channels and independently verified.</li>
+</ul>
+<p>Do not collapse these states into &quot;done.&quot;</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>A dirty worktree does not automatically fail if dirt is explicitly unrelated and release artifact is from a clean candidate SHA; however uncommitted release changes do fail readiness.</li>
+<li>Tag exists at different SHA → hard stop; never move/force a release tag casually.</li>
+<li>Package version already exists in immutable registry → choose a new valid version, do not overwrite.</li>
+<li>Dry-run contents differ from intended public surface → fix package configuration before tagging/publishing.</li>
+<li>Local global install works from repo link but clean tarball/registry install fails → NOT_READY.</li>
+<li>CI green on older commit → stale release evidence.</li>
+<li>GitHub Release draft exists → not public release evidence.</li>
+<li>Publish workflow green but registry not updated yet → PUBLISHED_UNVERIFIED until independently confirmed or known propagation policy is resolved.</li>
+<li>Marketplace requiring manual approval → report submission state accurately; never claim publication.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Release version, commit, tag, artifact, and public metadata refer to one candidate.</li>
+<li>No credential is committed or logged as release evidence.</li>
+<li>Irreversible external writes require applicable authorization.</li>
+<li>Public release claims are externally verified.</li>
+<li>Last-minute mutation invalidates stale candidate evidence.</li>
+<li>Release notes do not claim maturity/features unsupported by fresh proof.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Artifact omission/pollution</h3>
+<p>Package misses runtime file or includes secrets/internal material. Fix boundary, rebuild, resmoke.</p>
+<h3>Version drift</h3>
+<p>Manifests/changelog/CLI/tag disagree. Reconcile before release.</p>
+<h3>Candidate drift</h3>
+<p>CI/evidence points to older SHA after release commit changed. Rerun gates.</p>
+<h3>Tag mismatch</h3>
+<p>Existing tag points elsewhere. Stop; investigate rather than force-move.</p>
+<h3>Publish/auth failure</h3>
+<p>Candidate may remain READY_NOT_PUBLISHED. Diagnose secure auth/workflow without embedding credentials.</p>
+<h3>Registry/release mismatch</h3>
+<p>Publish reports success but public channel serves wrong/old artifact. Keep PUBLISHED_UNVERIFIED and investigate.</p>
+<h3>Clean-install failure</h3>
+<p>Artifact depends on repo-local files/dev state. NOT_READY regardless of source tests.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>&quot;tests pass, publish&quot;;</li>
+<li>tagging before inspecting artifact contents;</li>
+<li>using source checkout as the only install test;</li>
+<li>force-moving tags;</li>
+<li>adding tokens to config/docs to bypass trusted publishing;</li>
+<li>equating draft release with public release;</li>
+<li>trusting workflow success without registry/release lookup;</li>
+<li>updating docs to claim availability before public verification;</li>
+<li>claiming 100% maturity while changed behavioral evidence is stale.</li>
+</ul>
+<h2>Release Attestation</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Version:
+Candidate SHA:
+Target channels:
+Fresh quality gates:
+Artifact manifest check:
+Clean-install smoke:
+Tag → SHA:
+GitHub Release state:
+Registry/marketplace state:
+External verification:
+Verdict: NOT_READY | READY_NOT_PUBLISHED | PUBLISHED_UNVERIFIED | RELEASED
+Rollback/follow-up:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>The Skill&#039;s work completes when the requested release stage is accurately attested:</p>
+<ul class="docs-list">
+<li>readiness claims are tied to exact candidate evidence;</li>
+<li>artifact boundary and clean install are proven where applicable;</li>
+<li>tag/release/registry states are consistent;</li>
+<li>public distribution is independently verified before <code>RELEASED</code>;</li>
+<li>missing authorization/external gates are represented as explicit state, never guessed away.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/artifact-and-distribution-verification.md</code></li>
+<li>Existing release gates: <code>references/release-gates.md</code></li>
+<li>Example: <code>examples/release-readiness-audit.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableAgentDefinition",
+  "type": "object",
+  "required": ["name", "role", "description", "primary_skills", "autonomy_level"],
+  "properties": {
+    "name": { "type": "string" },
+    "role": { "type": "string" },
+    "description": { "type": "string" },
+    "autonomy_level": { "type": "string", "enum": ["high", "bounded", "supervised", "read-only"] },
+    "primary_skills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "supporting_skills": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "default_prompt": { "type": "string" }
+  }
+}

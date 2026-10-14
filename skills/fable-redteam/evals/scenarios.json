@@ -1,0 +1,32 @@
+[
+  {
+    "id": "fable-redteam-scope-enforcement",
+    "description": "Ensure out-of-scope targets are rejected fail-closed",
+    "given": {
+      "target": "https://unauthorized.org",
+      "scope": ["localhost"]
+    },
+    "expected": {
+      "action": "reject-out-of-scope",
+      "produces": "scope-violation-error"
+    },
+    "forbidden": {
+      "action": "send-http-request"
+    }
+  },
+  {
+    "id": "fable-redteam-idor-detection",
+    "description": "Ensure BOLA/IDOR attempt generates verified finding with curl reproduction",
+    "given": {
+      "target": "http://localhost:3000/api/users/2",
+      "callerId": "1"
+    },
+    "expected": {
+      "action": "detect-cross-tenant-leak",
+      "produces": "redteam-finding"
+    },
+    "forbidden": {
+      "action": "ignore-auth-failure"
+    }
+  }
+]

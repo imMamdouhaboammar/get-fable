@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-scope-discipline.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-scope-discipline.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-scope-discipline.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-scope-discipline.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-scope-discipline — get-fable Skill Reference">
+  <meta property="og:description" content="Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-scope-discipline.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-scope-discipline — get-fable Skill">
+  <meta name="twitter:description" content="Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-scope-discipline — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-scope-discipline Skill Specification",
+    "description": "Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.",
+    "articleSection": "Build Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-scope-discipline.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-scope-discipline</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-scope-discipline.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-scope-discipline.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-scope-discipline.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Build Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 290</span>
+        </div>
+        <h1 class="skill-title">fable-scope-discipline</h1>
+        <p class="skill-lead">Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "bound-scope" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Build Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-execute.html">fable-execute</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">bound-scope</span> <span class="intent-chip">prevent-drift</span> <span class="intent-chip">surgical-diff</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>zero-scope-drift</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Scope Discipline</h1>
+<p>Build exactly what was asked, at the right altitude: deep enough to fix the cause, narrow enough to touch nothing else. Unrequested improvements are not generosity — they are unreviewed risk hiding inside someone else&#039;s diff.</p>
+<h2>Purpose</h2>
+<p>Enforce strict scope boundaries during code modification. Prevent drive-by refactorings, cosmetic rewrites, speculative optimizations, unrequested validation checks, and diff bloat.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>When implementing any change in an existing codebase.</li>
+<li>When tempted to clean up neighboring functions, reformat whitespace, or rename variables.</li>
+<li>When thinking a secondary defect is &quot;arguably in scope&quot;.</li>
+<li>When inspecting a diff that spans more files or lines than the task logically warrants.</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>When tasked explicitly with a broad refactoring or architectural migration (use <code>fable-simplify</code> or <code>fable-architecture</code>).</li>
+<li>When removing dead code or deprecated systems across the whole workspace (use <code>fable-simplify</code>).</li>
+<li>When authoring exploratory prototypes or spikes (use <code>fable-discover</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>task_specification</code>: The specific bounded task, user instructions, and acceptance criteria.</li>
+<li><code>current_diff</code>: The working git diff generated during implementation.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>bounded_diff</code>: A minimal, surgical diff addressing only the authorized problem.</li>
+<li><code>discovered_items_report</code>: A structured list in the summary noting other defects discovered but deliberately not touched.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Implement What Was Asked</strong>: Focus strictly on the assigned card or request; nothing speculative, nothing &quot;while I&#039;m here.&quot;</p>
+<p>2. <strong>Adjacency is Not Scope</strong>: &quot;Same function&quot;, &quot;same file&quot;, &quot;same class of defect&quot; describe <em>location</em>, not <em>authorization</em>. The user&#039;s words define the task; proximity defines nothing.</p>
+<p>3. <strong>The Argument Test</strong>: If you are constructing an argument for why something extra is &quot;arguably part of the fix&quot; — it is not. Real scope never needs an argument. Put the observation in your report and let the user decide.</p>
+<p>4. <strong>The Open-Question Test</strong>: If an extra fix requires an unresolved design choice (raise vs clamp? rename to what?), that proves it is an independent task. You cannot settle a contract question inside someone else&#039;s bugfix.</p>
+<p>5. <strong>Right Altitude</strong>: Not a symptom patch (one case patched, bug alive), and not a rewrite (bug fixed, fifty unrelated things changed). Fix the root cause within the bounded scope.</p>
+<p>6. <strong>No Drive-Bys</strong>: No renames, reformatting, refactors, or dependency bumps the change does not require. Diff noise buries the real change.</p>
+<p>7. <strong>Touch Budget</strong>: If the diff is significantly larger than the ask implies, stop and re-evaluate your altitude.</p>
+<p>8. <strong>Look Before Deleting</strong>: If what you find contradicts the task&#039;s description or you didn&#039;t create it, surface that instead of blindly overwriting.</p>
+<p>9. <strong>Discoveries Go in the Report</strong>: Real bugs, dead code, or stale docs found along the way go in your summary — neither silently fixed nor silently dropped.</p>
+<h2>Decision Rules</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Thought</th><th>Reality</th></tr></thead><tbody>
+<tr><td>&quot;It&#039;s the same class of defect as the bug I was sent in for&quot;</td><td>Classification is taxonomy, not authorization. The user named one defect.</td></tr>
+<tr><td>&quot;It lives in the same function&#039;s contract&quot;</td><td>Location again. Contracts change by decision, not by proximity to your cursor.</td></tr>
+<tr><td>&quot;Fixing one and not the other is fixing half of a coherent correctness problem&quot;</td><td>The user defined the problem&#039;s boundary. Put it in the report and let them re-draw the boundary.</td></tr>
+<tr><td>&quot;That makes it a legitimate part of the fix, not scope creep&quot;</td><td>The moment you&#039;re litigating whether it&#039;s scope creep, it is.</td></tr>
+<tr><td>&quot;Every one of these is an uncontroversial improvement&quot;</td><td>Uncontroversial is not the bar; <em>asked-for</em> is. Improvements travel in their own reviewable diff.</td></tr>
+<tr><td>&quot;The user said they care about code quality&quot;</td><td>A value statement, not a work order. Quality includes atomic, revertible, reviewable diffs.</td></tr>
+</tbody></table></div>
+<ul class="docs-list">
+<li>If a code change is not required to make the user&#039;s scenario or test pass, revert it.</li>
+<li>If an adjacent bug is discovered, log it in the report as a follow-up item.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Run <code>git diff</code> frequently to inspect touched lines and files.</li>
+<li>Reject tools that indiscriminately reformat entire files.</li>
+<li>Keep modifications confined to the minimal set of files.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Inspect <code>git diff --stat</code> to verify that touched files and line changes match the expected blast radius.</li>
+<li>Verify tests pass on the minimal change without relying on unrequested collateral modifications.</li>
+</ul>
+<h2>Failure Handling</h2>
+<p>Stop immediately and shrink the diff when encountering these Red Flags:</p>
+<ul class="docs-list">
+<li>The word &quot;arguably&quot; near a change you&#039;re about to make.</li>
+<li>Touched files outside the component&#039;s logical domain.</li>
+<li>Formatting changes on untouched functions in the same file.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>Diff addresses the root cause of the assigned task with surgical precision.</li>
+<li>No unrelated files, styles, dependencies, or unrequested refactorings introduced.</li>
+<li>All secondary discoveries documented for future triage.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

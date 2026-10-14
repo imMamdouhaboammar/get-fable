@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-execute.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-execute.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-execute.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-execute.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-execute — get-fable Skill Reference">
+  <meta property="og:description" content="Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-execute.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-execute — get-fable Skill">
+  <meta name="twitter:description" content="Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-execute — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-execute Skill Specification",
+    "description": "Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.",
+    "articleSection": "Core Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-execute.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-execute</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-execute.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-execute.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-execute.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Core Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 40</span>
+        </div>
+        <h1 class="skill-title">fable-execute</h1>
+        <p class="skill-lead">Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "implement-card" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Core Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">implement-card</span> <span class="intent-chip">bounded-change</span> <span class="intent-chip">small-feature</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>invariants-preserved</code></li><li><code>acceptance-checked</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-native-code.html">fable-native-code</a> <a class="token-link" href="../skills/fable-scope-discipline.html">fable-scope-discipline</a> <a class="token-link" href="../skills/fable-finish-your-turn.html">fable-finish-your-turn</a> <a class="token-link" href="../skills/fable-simplify.html">fable-simplify</a> <a class="token-link" href="../skills/fable-run.html">fable-run</a> <a class="token-link" href="../skills/fable-prove-it.html">fable-prove-it</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Execute</h1>
+<p>Implement one accepted change without turning a bounded card into an unreviewable wandering session.</p>
+<h2>Mission</h2>
+<p>Execution owns implementation, not architecture discovery. The agent should make the smallest coherent change that satisfies the accepted card, keep invariants visible, validate immediately, and stop when new facts invalidate the plan.</p>
+<p>&quot;Minimal&quot; means minimal behaviorally complete diff, not necessarily the fewest changed lines.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>scope and acceptance are explicit;</li>
+<li>load-bearing architecture/external facts are settled;</li>
+<li>the card can be implemented without inventing a new public contract;</li>
+<li>the task is a bounded static/config/docs change where TDD adds no meaningful proof;</li>
+<li>a TDD Skill has already established RED and implementation is ready.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>a behavior change still needs a valid RED (<code>fable-tdd</code>);</li>
+<li>implementation reveals a new architecture decision (<code>fable-plan</code>);</li>
+<li>a repeated failure needs diagnosis (<code>fable-recover</code>);</li>
+<li>the task is to independently verify or review an existing diff (<code>fable-verify</code>/<code>fable-review</code>).</li>
+</ul>
+<h2>Change Classification</h2>
+<p>Before editing, classify the card:</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Change</th><th>Execution concern</th></tr></thead><tbody>
+<tr><td>Local behavior</td><td>preserve surrounding contract</td></tr>
+<tr><td>Config/manifest</td><td>precedence, generated source, packaging</td></tr>
+<tr><td>Public API/CLI</td><td>compatibility and caller impact</td></tr>
+<tr><td>Data/persistence</td><td>transaction/migration invariant</td></tr>
+<tr><td>Generated output</td><td>edit source/generator, regenerate once</td></tr>
+<tr><td>Dependency wiring</td><td>lifecycle/cleanup/error propagation</td></tr>
+<tr><td>Repair after TDD</td><td>satisfy RED without widening behavior</td></tr>
+<tr><td>Repair after review</td><td>fix only grounded finding + affected proof</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Re-read the card against current workspace</h3>
+<p>Confirm:</p>
+<ul class="docs-list">
+<li>objective;</li>
+<li>owned scope;</li>
+<li>prohibited scope;</li>
+<li>dependencies/assumptions;</li>
+<li>acceptance evidence;</li>
+<li>current git/workspace state.</li>
+</ul>
+<p>If the workspace changed since planning in a way that invalidates assumptions, stop and replan rather than force the old card through.</p>
+<h3>Stage 2 — Inspect before mutation</h3>
+<p>Read the exact target code and its immediate contracts/callers/tests. Avoid broad rediscovery, but do not edit from stale memory.</p>
+<p>Identify invariants that must stay true during the change.</p>
+<h3>Stage 3 — Choose the smallest coherent mutation</h3>
+<p>Prefer:</p>
+<ul class="docs-list">
+<li>existing repository patterns;</li>
+<li>source-of-truth over generated output;</li>
+<li>local compatibility over speculative abstractions;</li>
+<li>reversible changes when uncertainty remains;</li>
+<li>one behavior change at a time.</li>
+</ul>
+<h3>Stage 4 — Mutate and record impact</h3>
+<p>Track:</p>
+<ul class="docs-list">
+<li>files/surfaces changed;</li>
+<li>new/changed contract;</li>
+<li>generated artifacts affected;</li>
+<li>acceptance command required after this mutation.</li>
+</ul>
+<p>If an edit crosses card boundaries, pause and explain why before continuing.</p>
+<h3>Stage 5 — Immediate acceptance check</h3>
+<p>Run the narrowest meaningful acceptance evidence as soon as the coherent mutation exists.</p>
+<p>A command exit code alone is insufficient if it does not exercise the changed behavior.</p>
+<h3>Stage 6 — Classify failure before another edit</h3>
+<p>On failure ask:</p>
+<ul class="docs-list">
+<li>expected RED from ongoing TDD?</li>
+<li>typo/compile issue introduced by current edit?</li>
+<li>incorrect implementation hypothesis?</li>
+<li>stale/build/config/harness problem?</li>
+<li>hidden dependency/architecture change?</li>
+</ul>
+<p>Only make another mutation if the failure provides new information that justifies it.</p>
+<h3>Stage 7 — Clean the diff</h3>
+<p>Before handoff:</p>
+<ul class="docs-list">
+<li>remove debug output/dead experiments;</li>
+<li>inspect accidental formatting or generated noise;</li>
+<li>verify no unrelated file changed;</li>
+<li>regenerate deterministic outputs from source when required;</li>
+<li>preserve user-owned concurrent changes.</li>
+</ul>
+<h3>Stage 8 — Handoff for independent verification</h3>
+<p>Send <code>fable-verify</code>:</p>
+<ul class="docs-list">
+<li>card objective;</li>
+<li>diff/touched surfaces;</li>
+<li>acceptance command/result;</li>
+<li>invariants considered;</li>
+<li>generated/config impacts;</li>
+<li>residual risk and unverified surfaces.</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>New load-bearing unknown → stop and route to discover/research/plan.</li>
+<li>New architecture/public contract decision → <code>fable-plan</code>; do not hide it as implementation detail.</li>
+<li>Behavior change with no valid regression test where one is feasible → <code>fable-tdd</code>.</li>
+<li>Generated file requested → locate generator/source and mutate source; regenerate output afterward.</li>
+<li>Existing user/unrelated changes in target file → preserve them and make the smallest contextual edit; do not reset/overwrite wholesale.</li>
+<li>Acceptance fails for a clearly introduced syntax/type error → repair directly, rerun, and keep scope bounded.</li>
+<li>Similar implementation hypothesis fails repeatedly → <code>fable-recover</code>; arbitrary &quot;try again&quot; loops are forbidden.</li>
+<li>Acceptance command passes but does not exercise the changed path → do not claim card completion; strengthen acceptance or hand off with that gap explicit.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Card scope does not expand silently.</li>
+<li>User/unrelated changes are preserved.</li>
+<li>Source-of-truth is edited instead of derived output when applicable.</li>
+<li>Every meaningful mutation makes prior verification stale.</li>
+<li>No unrelated cleanup is bundled into a repair unless required for correctness.</li>
+<li>Acceptance evidence corresponds to the changed behavior.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Local implementation defect</h3>
+<p>Current edit causes a direct syntax/type/assertion failure. Fix within card.</p>
+<h3>Hypothesis failure</h3>
+<p>Code is valid but behavior remains wrong. Revise hypothesis; repeated similar failures route to recovery.</p>
+<h3>Hidden dependency</h3>
+<p>Correct behavior requires a component/contract outside the accepted card. Stop and replan scope.</p>
+<h3>Harness/artifact mismatch</h3>
+<p>Commands execute stale build, wrong env, wrong branch, or generated artifact. Route to recovery when this obscures causal evidence.</p>
+<h3>Acceptance weakness</h3>
+<p>Check passes without exercising the change. Strengthen proof before completion.</p>
+<h3>Concurrent-work conflict</h3>
+<p>Target contains legitimate changes not owned by this card. Preserve them, narrow edit, or coordinate ownership; never overwrite for convenience.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>&quot;while I&#039;m here&quot; refactors;</li>
+<li>editing generated files directly;</li>
+<li>broad search/architecture work after execution starts;</li>
+<li>retrying the same patch with superficial syntax changes;</li>
+<li>replacing an entire user-modified file for a small fix;</li>
+<li>accepting a build pass as functional proof when behavior is not exercised;</li>
+<li>adding abstraction/configurability not required by the card;</li>
+<li>hiding an architecture decision inside implementation.</li>
+</ul>
+<h2>Execution Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Card:
+Owned scope:
+Files/surfaces changed:
+Behavior/contract delta:
+Acceptance command/result:
+Invariants checked:
+Generated/config impacts:
+Unexpected facts:
+Residual risk:
+Recommended verify scope:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Execution completes when:</p>
+<ul class="docs-list">
+<li>the accepted behavior is implemented within explicit scope;</li>
+<li>immediate acceptance evidence is green or any proof gap is explicitly handed off;</li>
+<li>diff contains no accidental/unrelated mutation;</li>
+<li>new architecture decisions have not been smuggled into implementation;</li>
+<li>the verification specialist has a precise map of what changed and what remains to falsify.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep containment guide: <code>references/bounded-mutation-and-failure-classification.md</code></li>
+<li>Existing containment reference: <code>references/mutation-containment.md</code></li>
+<li>Example: <code>examples/bounded-card-execution.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

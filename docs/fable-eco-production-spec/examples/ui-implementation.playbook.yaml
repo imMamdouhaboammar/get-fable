@@ -1,0 +1,28 @@
+schema_version: 1
+id: ui-implementation
+match:
+  task_shape: implementation
+  project_facts:
+    has_frontend: true
+steps:
+  - id: inspect
+    requires_feature: code.graph.query
+    required: true
+    minimum_grade: C
+    evidence: research
+  - id: guidance
+    requires_feature: ui.review
+    required: true
+    minimum_grade: C
+    evidence: receipt
+  - id: exercise
+    requires_feature: browser.deterministic
+    required: true
+    minimum_grade: B
+    evidence: observation
+  - id: verify
+    builtin_fable_gate: behavior-verification
+    required: true
+fallback_policy:
+  allow_provider_fallback: true
+  allow_grade_downgrade: false

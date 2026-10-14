@@ -1,0 +1,25 @@
+#!/bin/sh
+# get-fable public repository pre-commit anti-leak guard
+set -e
+
+FORBIDDEN_PATHS="_backups _quarantine Failure-lessons docs/internal evals/holdout"
+
+for path in $FORBIDDEN_PATHS; do
+  if git diff --cached --name-only | grep -q "^$path"; then
+    echo "❌ FATAL [Public Repo Guard]: Commit refused! Private path '$path' detected in staged changes."
+    exit 1
+  fi
+done
+
+# Verify zero 'visibility: private' in staged markdown files
+STAGED_MD=$(git diff --cached --name-only --diff-filter=ACM | grep '\.md$' || true)
+if [ -n "$STAGED_MD" ]; then
+  for file in $STAGED_MD; do
+    if [ -f "$file" ] && grep -q "^visibility:[[:space:]]*private" "$file"; then
+      echo "❌ FATAL [Public Repo Guard]: File '$file' has 'visibility: private' and cannot be committed to public repo."
+      exit 1
+    fi
+  done
+fi
+
+exit 0

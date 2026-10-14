@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-loop",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/loop-control-guidelines.md",
+    "references/polling-state-machines-and-backoff.md"
+  ],
+  "templates": [
+    "templates/loop-config.template.json"
+  ],
+  "examples": [
+    "examples/poll-build-job.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

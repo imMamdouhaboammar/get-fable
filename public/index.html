@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>get-fable: The Agent Execution Harness for Every AI Model</title>
+  <meta name="description" content="An open-source agent execution harness giving AI models specs, persistent task state, lifecycle hooks, reusable skills, failure handling, evidence checks, and a request proxy.">
+  <link rel="icon" type="image/svg+xml" href="mascot.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand">
+        <img src="mascot.svg" alt="get-fable rabbit mascot">
+        <span>get-fable</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#thesis">The Thesis</a></li>
+        <li><a href="#changes">What It Changes</a></li>
+        <li><a href="#hooks">Lifecycle Hooks</a></li>
+        <li><a href="#proxy">Request Proxy</a></li>
+        <li><a href="docs.html">Documentation</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-secondary copy-trigger" data-copy="bun ./bin/get-fable.js install">
+          <span>bun ./bin/get-fable.js install</span>
+        </button>
+        <a href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" class="btn btn-primary">
+          <span>GitHub</span>
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge-wrapper">
+        <span class="badge">
+          <span class="badge-dot"></span>
+          <span>Open-Source Agent Discipline Engine</span>
+        </span>
+      </div>
+
+      <h1 class="hero-title">
+        What if the model you already use <br/>
+        <span class="gradient-text">could work more like a frontier model?</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        <code>get-fable</code> improves the harness around your model: providing specs, persistent task state, lifecycle hooks, reusable skills, failure handling, evidence checks, and a request proxy.
+      </p>
+
+      <div class="hero-actions">
+        <div class="install-bar">
+          <span class="install-prompt">$</span>
+          <span class="install-cmd">bun ./bin/get-fable.js install</span>
+          <button class="copy-btn copy-trigger" data-copy="bun ./bin/get-fable.js install" title="Copy Command">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </button>
+        </div>
+
+        <a href="docs.html" class="btn btn-secondary">
+          <span>Read Documentation</span>
+        </a>
+      </div>
+
+      <!-- Interactive Terminal Simulator -->
+      <div class="terminal-wrapper" aria-label="Interactive CLI Simulator">
+        <div class="terminal-header">
+          <div class="terminal-dots" aria-hidden="true">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-tabs" role="tablist" aria-label="CLI Commands">
+            <button class="term-tab active" role="tab" aria-selected="true" aria-controls="terminal-body" data-cmd="status">status</button>
+            <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="assets">assets</button>
+            <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="init">init</button>
+            <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="install">install</button>
+            <button class="term-tab" role="tab" aria-selected="false" aria-controls="terminal-body" data-cmd="serve">serve 8080</button>
+          </div>
+        </div>
+        <div class="terminal-body" id="terminal-body" role="tabpanel" aria-live="polite">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- The Thesis Section -->
+  <section class="section" id="thesis">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <h2 class="section-title">The Thesis</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">📋</div>
+          <h3 class="feature-title">1. Plan before implementation</h3>
+          <p class="feature-text">
+            Captures requirements and tasks in <code>docs/SPEC.md</code> before code execution starts.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">📁</div>
+          <h3 class="feature-title">2. Keep task state outside the chat</h3>
+          <p class="feature-text">
+            Stores task progress in <code>.fable/LEDGER.md</code>, <code>PROGRESS.md</code>, and <code>VERIFIER_PROMPT.md</code> so context survives across turns.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">⚙️</div>
+          <h3 class="feature-title">3. Carry working rules across turns</h3>
+          <p class="feature-text">
+            Injects <code>.agents/skills/fable-mode/SKILL.md</code> and <code>.agents/rules/fable5-mode.md</code> into global agent environments.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🔄</div>
+          <h3 class="feature-title">4. React to repeated failures</h3>
+          <p class="feature-text">
+            The fail-streak hook shifts behavior away from blind retries toward identifying root failure classes.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🧩</div>
+          <h3 class="feature-title">5. Reusable skills & agent definitions</h3>
+          <p class="feature-text">
+            Bundles prompts, agents, skills, slash-command references, reminders, MCP definitions, and starter components.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🔍</div>
+          <h3 class="feature-title">6. Require observable evidence</h3>
+          <p class="feature-text">
+            The close guard checks for unresolved ledger items and missing evidence annotations before turn completion.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What get-fable Changes Section -->
+  <section class="section" id="changes">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <h2 class="section-title">What get-fable Changes</h2>
+      </div>
+
+      <div class="models-grid">
+        <div class="model-card">
+          <div class="model-name">Project Discipline</div>
+          <div class="model-desc">Creates project spec, task ledger, progress file, verifier prompt, workspace skill, and workspace rules.</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-name">Claude Code</div>
+          <div class="model-desc">Installs Fable Mode skill and 4 lifecycle hooks into <code>~/.claude/</code>.</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-name">Antigravity / Gemini</div>
+          <div class="model-desc">Installs plugin package, skill files, and rules under <code>~/.gemini/config/</code>.</div>
+        </div>
+
+        <div class="model-card">
+          <div class="model-name">Agent Kernel</div>
+          <div class="model-desc">Copies Fable rules when <code>~/.agent-kernel/</code> directory exists on the system.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lifecycle Hooks Section -->
+  <section class="section" id="hooks">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <h2 class="section-title">Lifecycle Hooks</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">⚡</div>
+          <h3 class="feature-title">SessionStart</h3>
+          <p class="feature-text">
+            <code>fable_profile_inject.py</code>: Reintroduces project state and working rules at the beginning of each session.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🛡️</div>
+          <h3 class="feature-title">PreToolUse</h3>
+          <p class="feature-text">
+            <code>fable_spawn_guard.py</code>: Checks prerequisites before selected agent or task actions run.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🎯</div>
+          <h3 class="feature-title">PostToolUse</h3>
+          <p class="feature-text">
+            <code>fable_fail_streak.py</code>: Detects repeated command failures and interrupts blind retry loops.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-wrapper">🏁</div>
+          <h3 class="feature-title">Stop</h3>
+          <p class="feature-text">
+            <code>fable_close_guard.py</code>: Verifies unresolved ledger items and evidence before releasing turn control.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Request Proxy Section -->
+  <section class="section" id="proxy">
+    <div class="container">
+      <div class="section-title-wrapper">
+        <h2 class="section-title">Request Proxy Router</h2>
+      </div>
+
+      <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 32px; max-width: 800px; margin: 0 auto;">
+        <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 1.05rem;">
+          Start the local proxy server to enrich requests with Fable context:
+        </p>
+        <div class="install-bar" style="width: 100%; justify-content: space-between; margin-bottom: 20px;">
+          <span>bun ./bin/get-fable.js serve 8080</span>
+          <button class="copy-btn copy-trigger" data-copy="bun ./bin/get-fable.js serve 8080" title="Copy Command">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </button>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Exposes <code>POST /v1/chat/completions</code>. Normalizes OpenAI-style <code>messages</code> and Gemini-style <code>contents</code> arrays, prepends Fable context, and forwards to <code>UPSTREAM_OPENAI_URL</code> when set.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notice Disclaimer Banner -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius-md); padding: 24px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+        <strong style="color: var(--accent-amber);">Notice:</strong> <code>get-fable</code> does not modify model weights and does not claim model equivalence with Claude Fable 5, Claude Mythos 5, GPT-5.6 Sol, or any other frontier model. References to model and company names are descriptive only. <code>get-fable</code> is an independent community project licensed under MIT.
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div class="brand">
+        <img src="mascot.svg" alt="get-fable rabbit mascot">
+        <span>get-fable</span>
+      </div>
+      <div class="footer-text">
+        AGPL-3.0 License • Built with Bun & TypeScript
+      </div>
+      <div style="display: flex; gap: 16px;">
+        <a href="docs.html" style="color: var(--text-secondary);">Documentation</a>
+        <a href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" style="color: var(--text-secondary);">GitHub Repository</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

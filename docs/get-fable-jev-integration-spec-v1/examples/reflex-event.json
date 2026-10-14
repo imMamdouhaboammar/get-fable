@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "timestamp": "2026-09-18T13:00:00.000Z",
+  "repositoryRevision": "8446e33378ca7c55313fe8e08f57de9e353519ce",
+  "mode": "shadow",
+  "taskHash": "sha256:example-only",
+  "deterministicSkill": "fable-discover",
+  "jevSkill": "fable-research",
+  "finalSkill": "fable-discover",
+  "hardLocked": false,
+  "overrideApplied": false,
+  "confidence": 0.81,
+  "margin": 0.63,
+  "model": "jev-1.13.0",
+  "latencyMs": 184,
+  "inputTokens": 2180,
+  "providerError": null,
+  "stage2Used": false
+}

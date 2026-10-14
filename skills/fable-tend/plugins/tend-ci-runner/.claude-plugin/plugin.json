@@ -1,0 +1,11 @@
+{
+  "name": "tend-ci-runner",
+  "description": "Internal CI skills loaded by tend's GitHub Action. Not for manual installation.",
+  "author": {
+    "name": "Maximilian Roos",
+    "url": "https://github.com/max-sixty"
+  },
+  "repository": "https://github.com/max-sixty/tend",
+  "license": "MIT",
+  "keywords": ["ci", "github-actions", "code-review", "triage", "automation"]
+}

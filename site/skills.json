@@ -1,0 +1,667 @@
+{
+  "title": "get-fable 42 Canonical Skills Catalog",
+  "description": "Deterministic specialist skills for AI coding agents across 8 packs with formal gates and evidence contracts.",
+  "totalSkills": 42,
+  "packs": [
+    {
+      "id": "core",
+      "name": "Core Pack",
+      "description": "Essential lifecycle navigation, planning, bounded execution, and error recovery.",
+      "skills": [
+        "get-fable",
+        "fable-discover",
+        "fable-plan",
+        "fable-execute",
+        "fable-verify",
+        "fable-recover",
+        "fable-method"
+      ]
+    },
+    {
+      "id": "intelligence",
+      "name": "Intelligence Pack",
+      "description": "Primary source research, external fact verification, and grounding.",
+      "skills": [
+        "fable-research"
+      ]
+    },
+    {
+      "id": "build",
+      "name": "Build Pack",
+      "description": "Test-driven development, safe delegation, native code matching, and scope discipline.",
+      "skills": [
+        "fable-tdd",
+        "fable-delegate",
+        "fable-native-code",
+        "fable-scope-discipline"
+      ]
+    },
+    {
+      "id": "proof",
+      "name": "Proof Pack",
+      "description": "Adversarial review, penetration testing, automated healing, and evidence precedence.",
+      "skills": [
+        "fable-review",
+        "fable-security",
+        "fable-redteam",
+        "fable-heal",
+        "fable-prove-it",
+        "fable-judge"
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery Pack",
+      "description": "Release certification, handoff management, autonomous completion, and maintainer care.",
+      "skills": [
+        "fable-release",
+        "fable-handoff",
+        "fable-finish-your-turn",
+        "fable-outcome-first",
+        "fable-tend"
+      ]
+    },
+    {
+      "id": "evolution",
+      "name": "Evolution Pack",
+      "description": "Agent-behavior evaluation and durable project engineering knowledge capture.",
+      "skills": [
+        "fable-eval",
+        "fable-learning"
+      ]
+    },
+    {
+      "id": "system",
+      "name": "System Pack",
+      "description": "Low-level cognitive reflexes, architecture enforcement, memory, and orchestration.",
+      "skills": [
+        "fable-dataviz",
+        "fable-artifact",
+        "fable-simplify",
+        "fable-loop",
+        "fable-run",
+        "fable-memory",
+        "fable-config",
+        "fable-simulator",
+        "fable-cowork",
+        "fable-spark",
+        "fable-architecture",
+        "fable-eco",
+        "fable-context-thrift",
+        "fable-council",
+        "fable-wise"
+      ]
+    },
+    {
+      "id": "creator",
+      "name": "Creator Pack",
+      "description": "Deep Playbook V2 skill creation and domain adaptation.",
+      "skills": [
+        "fable-skill-creator",
+        "fable-domain"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "get-fable",
+      "order": 0,
+      "phase": "idle",
+      "pack": "core",
+      "description": "Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.",
+      "intents": [
+        "route",
+        "resume",
+        "orchestrate"
+      ],
+      "url": "https://get-fable.vercel.app/skills/get-fable.html"
+    },
+    {
+      "id": "fable-discover",
+      "order": 10,
+      "phase": "discovering",
+      "pack": "core",
+      "description": "Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.",
+      "intents": [
+        "inspect-repository",
+        "trace-behavior",
+        "resolve-unknowns"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-discover.html"
+    },
+    {
+      "id": "fable-research",
+      "order": 15,
+      "phase": "discovering",
+      "pack": "intelligence",
+      "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.",
+      "intents": [
+        "external-research",
+        "current-docs",
+        "api-behavior"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-research.html"
+    },
+    {
+      "id": "fable-plan",
+      "order": 20,
+      "phase": "planned",
+      "pack": "core",
+      "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.",
+      "intents": [
+        "architecture",
+        "migration",
+        "decomposition"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-plan.html"
+    },
+    {
+      "id": "fable-tdd",
+      "order": 30,
+      "phase": "executing",
+      "pack": "build",
+      "description": "Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.",
+      "intents": [
+        "feature",
+        "bug-fix",
+        "behavior-change"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-tdd.html"
+    },
+    {
+      "id": "fable-delegate",
+      "order": 32,
+      "phase": "executing",
+      "pack": "build",
+      "description": "Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.",
+      "intents": [
+        "parallel-work",
+        "subagents",
+        "delegation"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-delegate.html"
+    },
+    {
+      "id": "fable-execute",
+      "order": 40,
+      "phase": "executing",
+      "pack": "core",
+      "description": "Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.",
+      "intents": [
+        "implement-card",
+        "bounded-change",
+        "small-feature"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-execute.html"
+    },
+    {
+      "id": "fable-verify",
+      "order": 50,
+      "phase": "verifying",
+      "pack": "core",
+      "description": "Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.",
+      "intents": [
+        "run-tests",
+        "typecheck",
+        "falsify-behavior",
+        "validate-acceptance"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-verify.html"
+    },
+    {
+      "id": "fable-review",
+      "order": 60,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.",
+      "intents": [
+        "code-review",
+        "diff-audit",
+        "standards-check"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-review.html"
+    },
+    {
+      "id": "fable-security",
+      "order": 70,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.",
+      "intents": [
+        "security-review",
+        "threat-model",
+        "audit-auth",
+        "validate-finding"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-security.html"
+    },
+    {
+      "id": "fable-redteam",
+      "order": 75,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets.",
+      "intents": [
+        "redteam",
+        "pentest",
+        "security-audit",
+        "vulnerability-discovery"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-redteam.html"
+    },
+    {
+      "id": "fable-heal",
+      "order": 78,
+      "phase": "executing",
+      "pack": "proof",
+      "description": "Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.",
+      "intents": [
+        "heal",
+        "security-fix",
+        "remediate-vulnerability",
+        "patch-security"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-heal.html"
+    },
+    {
+      "id": "fable-release",
+      "order": 80,
+      "phase": "verifying",
+      "pack": "delivery",
+      "description": "Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.",
+      "intents": [
+        "release",
+        "merge",
+        "publish"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-release.html"
+    },
+    {
+      "id": "fable-handoff",
+      "order": 85,
+      "phase": "verifying",
+      "pack": "delivery",
+      "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.",
+      "intents": [
+        "handoff",
+        "resume-later",
+        "continue-session"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-handoff.html"
+    },
+    {
+      "id": "fable-eval",
+      "order": 90,
+      "phase": "verifying",
+      "pack": "evolution",
+      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.",
+      "intents": [
+        "agent-eval",
+        "self-improvement",
+        "prompt-change"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-eval.html"
+    },
+    {
+      "id": "fable-learning",
+      "order": 95,
+      "phase": "verifying",
+      "pack": "evolution",
+      "description": "Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.",
+      "intents": [
+        "extract-learnings",
+        "convo-learn",
+        "synthesize-knowledge",
+        "playbook-generation"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-learning.html"
+    },
+    {
+      "id": "fable-recover",
+      "order": 100,
+      "phase": "recovering",
+      "pack": "core",
+      "description": "Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.",
+      "intents": [
+        "debug-failure",
+        "stale-execution",
+        "contradictory-evidence"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-recover.html"
+    },
+    {
+      "id": "fable-dataviz",
+      "order": 110,
+      "phase": "executing",
+      "pack": "system",
+      "description": "Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.",
+      "intents": [
+        "dataviz",
+        "create-chart",
+        "visualize-data",
+        "dashboard-metrics"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-dataviz.html"
+    },
+    {
+      "id": "fable-artifact",
+      "order": 120,
+      "phase": "executing",
+      "pack": "system",
+      "description": "Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.",
+      "intents": [
+        "create-artifact",
+        "diagram-architecture",
+        "interactive-component"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-artifact.html"
+    },
+    {
+      "id": "fable-simplify",
+      "order": 130,
+      "phase": "executing",
+      "pack": "system",
+      "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.",
+      "intents": [
+        "simplify-code",
+        "remove-duplication",
+        "clean-architecture"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-simplify.html"
+    },
+    {
+      "id": "fable-loop",
+      "order": 140,
+      "phase": "executing",
+      "pack": "system",
+      "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.",
+      "intents": [
+        "recurring-loop",
+        "poll-status",
+        "babysit-ci"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-loop.html"
+    },
+    {
+      "id": "fable-run",
+      "order": 150,
+      "phase": "verifying",
+      "pack": "system",
+      "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.",
+      "intents": [
+        "run-app",
+        "live-smoke-test",
+        "start-server"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-run.html"
+    },
+    {
+      "id": "fable-memory",
+      "order": 160,
+      "phase": "discovering",
+      "pack": "system",
+      "description": "Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.",
+      "intents": [
+        "record-memory",
+        "recall-facts",
+        "index-memory"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-memory.html"
+    },
+    {
+      "id": "fable-config",
+      "order": 170,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.",
+      "intents": [
+        "update-config",
+        "manage-permissions",
+        "configure-hooks"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-config.html"
+    },
+    {
+      "id": "fable-simulator",
+      "order": 180,
+      "phase": "verifying",
+      "pack": "system",
+      "description": "Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.",
+      "intents": [
+        "simulator-verify",
+        "derive-contract",
+        "headless-browser-test"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-simulator.html"
+    },
+    {
+      "id": "fable-cowork",
+      "order": 190,
+      "phase": "executing",
+      "pack": "system",
+      "description": "Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.",
+      "intents": [
+        "cowork-mode",
+        "autonomous-execution",
+        "clean-tool-chain"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-cowork.html"
+    },
+    {
+      "id": "fable-spark",
+      "order": 200,
+      "phase": "idle",
+      "pack": "system",
+      "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.",
+      "intents": [
+        "predict-next-move",
+        "situational-awareness",
+        "minimal-action"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-spark.html"
+    },
+    {
+      "id": "fable-skill-creator",
+      "order": 210,
+      "phase": "executing",
+      "pack": "creator",
+      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.",
+      "intents": [
+        "create-skill",
+        "modify-skill",
+        "benchmark-skill",
+        "optimize-skill"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-skill-creator.html"
+    },
+    {
+      "id": "fable-architecture",
+      "order": 220,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture.",
+      "intents": [
+        "evaluate-architecture",
+        "enforce-microservices",
+        "assign-tech-stack",
+        "scaffold-distributed-system"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-architecture.html"
+    },
+    {
+      "id": "fable-eco",
+      "order": 230,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.",
+      "intents": [
+        "discover-environment",
+        "plan-capabilities",
+        "install-capabilities",
+        "update-capabilities",
+        "repair-capabilities",
+        "explain-run"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-eco.html"
+    },
+    {
+      "id": "fable-context-thrift",
+      "order": 240,
+      "phase": "discovering",
+      "pack": "system",
+      "description": "Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.",
+      "intents": [
+        "conserve-context",
+        "budget-tokens",
+        "batch-reads"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-context-thrift.html"
+    },
+    {
+      "id": "fable-finish-your-turn",
+      "order": 250,
+      "phase": "executing",
+      "pack": "delivery",
+      "description": "Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.",
+      "intents": [
+        "finish-turn",
+        "complete-task",
+        "diagnose-error"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-finish-your-turn.html"
+    },
+    {
+      "id": "fable-native-code",
+      "order": 260,
+      "phase": "executing",
+      "pack": "build",
+      "description": "Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.",
+      "intents": [
+        "write-native-code",
+        "strip-bloat",
+        "match-idiom"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-native-code.html"
+    },
+    {
+      "id": "fable-outcome-first",
+      "order": 270,
+      "phase": "verifying",
+      "pack": "delivery",
+      "description": "Response styling policy enforcing direct first-sentence answers and zero sycophancy.",
+      "intents": [
+        "report-outcome",
+        "deliver-answer",
+        "strip-sycophancy"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-outcome-first.html"
+    },
+    {
+      "id": "fable-prove-it",
+      "order": 280,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Evidence precedence and verification rung enforcement preventing unverified claims.",
+      "intents": [
+        "prove-claims",
+        "verify-rung",
+        "check-evidence"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-prove-it.html"
+    },
+    {
+      "id": "fable-scope-discipline",
+      "order": 290,
+      "phase": "executing",
+      "pack": "build",
+      "description": "Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.",
+      "intents": [
+        "bound-scope",
+        "prevent-drift",
+        "surgical-diff"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-scope-discipline.html"
+    },
+    {
+      "id": "fable-domain",
+      "order": 300,
+      "phase": "discovering",
+      "pack": "creator",
+      "description": "Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.",
+      "intents": [
+        "generate-domain-adapter",
+        "build-domain-workflow",
+        "create-trap-fixture"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-domain.html"
+    },
+    {
+      "id": "fable-judge",
+      "order": 310,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Adversarial verification of finished work detecting weakened tests and false completion claims.",
+      "intents": [
+        "judge-work",
+        "hunt-frauds",
+        "verify-diff"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-judge.html"
+    },
+    {
+      "id": "fable-method",
+      "order": 320,
+      "phase": "executing",
+      "pack": "core",
+      "description": "Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.",
+      "intents": [
+        "execute-method-loop",
+        "classify-ask",
+        "define-done"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-method.html"
+    },
+    {
+      "id": "fable-council",
+      "order": 330,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Convene multi-agent council across installed CLI agents to deliberate before finalizing plans.",
+      "intents": [
+        "convene-council",
+        "deliberate-plan",
+        "gather-peer-feedback"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-council.html"
+    },
+    {
+      "id": "fable-tend",
+      "order": 340,
+      "phase": "executing",
+      "pack": "delivery",
+      "description": "Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage.",
+      "intents": [
+        "triage-ci",
+        "fix-ci",
+        "resolve-conflicts",
+        "maintain-repo"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-tend.html"
+    },
+    {
+      "id": "fable-wise",
+      "order": 350,
+      "phase": "planned",
+      "pack": "system",
+      "description": "Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.",
+      "intents": [
+        "apply-wise-pattern",
+        "rewrite-v0",
+        "consolidate-ssot",
+        "strip-slop"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-wise.html"
+    }
+  ],
+  "canonical_url": "https://get-fable.vercel.app/skills.html"
+}

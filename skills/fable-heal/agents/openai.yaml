@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Heal"
+  short_description: "Synthesize surgical AST patches, generate TDD regression tests, and apply automated security fixes."
+  default_prompt: "You are the security healing specialist. Analyze vulnerability findings, generate parameterized and guarded code patches, emit executable regression tests, and verify vulnerability elimination."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "fable-context-thrift-scenario-1",
+    "name": "Targeted line read over whole file read",
+    "category": "should-trigger",
+    "prompt": "How should I inspect a 2000-line file when I only need function formatResponse?",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-context-thrift-scenario-2",
+    "name": "Irrelevant non-context query",
+    "category": "should-not-trigger",
+    "prompt": "Explain what a binary search tree is in computer science.",
+    "shouldTrigger": false
+  },
+  {
+    "id": "fable-context-thrift-targeted-symbol-slice",
+    "description": "Locate exact symbol line numbers with ripgrep and read only the bounded slice instead of dumping a large file",
+    "given": {
+      "intent": "Inspect formatResponse inside a 2400-line src/cli.ts file without exhausting context budget",
+      "fileLines": 2400
+    },
+    "expected": {
+      "action": "read-bounded-line-slice-via-symbol-index",
+      "produces": "targeted-context-excerpt",
+      "gates": [
+        "symbol-bounds-located",
+        "redundant-full-read-avoided"
+      ]
+    },
+    "forbidden": {
+      "action": "dump-entire-large-file-into-context"
+    }
+  },
+  {
+    "id": "fable-context-thrift-batch-parallel-queries",
+    "description": "Batch independent symbol searches into a single ripgrep invocation and reuse already-read context",
+    "given": {
+      "intent": "Find call sites of validateSkillPackage and loadSkillRegistry across src/",
+      "alreadyRead": ["src/core/types.ts"]
+    },
+    "expected": {
+      "action": "batch-ripgrep-queries-and-reuse-cached-reads",
+      "produces": "consolidated-search-matches",
+      "gates": [
+        "duplicate-file-reads-eliminated",
+        "search-queries-batched"
+      ]
+    },
+    "forbidden": {
+      "action": "re-read-unchanged-files-repeatedly"
+    }
+  }
+]

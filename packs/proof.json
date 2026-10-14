@@ -1,0 +1,13 @@
+{
+  "name": "proof",
+  "version": "1.12.0",
+  "description": "Independent diff review, code quality audit, and security boundary evaluation.",
+  "skills": [
+    "fable-review",
+    "fable-security",
+    "fable-redteam",
+    "fable-heal",
+    "fable-prove-it",
+    "fable-judge"
+  ]
+}

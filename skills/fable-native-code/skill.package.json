@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-native-code",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [],
+  "templates": [],
+  "examples": [],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

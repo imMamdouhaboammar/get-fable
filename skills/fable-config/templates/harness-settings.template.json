@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "harness": "get-fable",
+  "permissions": {
+    "allow": [
+      "git status",
+      "git diff",
+      "bun test",
+      "tsc --noEmit",
+      "get-fable doctor",
+      "get-fable lint"
+    ],
+    "deny": [
+      "rm -rf /",
+      "sudo",
+      "chmod 777"
+    ]
+  },
+  "environment": {
+    "FABLE_TELEMETRY": "false",
+    "NODE_ENV": "development"
+  },
+  "hooks": {
+    "enabled": true,
+    "registryPath": "./hooks/hooks.json"
+  }
+}

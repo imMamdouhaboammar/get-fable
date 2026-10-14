@@ -1,0 +1,79 @@
+---
+// "Currently tending" pulse — runtime-fetched from api.tend-src.com/currently-tending.
+// When nothing is in progress it falls back to the most recent item in
+// /activity ("last tended N min ago"), so the indicator stays live between
+// runs. Hidden only when both requests fail.
+---
+
+<a id="currently-tending" class="currently-tending" href="#recent-activity" data-state="loading" data-pulse="idle">&nbsp;</a>
+
+<script>
+  import { fetchJson, liveData } from "../lib/api";
+  import { relativeTime } from "../lib/time";
+
+  interface Run {
+    repo: string;
+  }
+  interface Bucket {
+    recent?: Array<{ at: string }>;
+  }
+  interface Activity {
+    prs?: Bucket;
+    issues?: Bucket;
+    reviews?: Bucket;
+    comments?: Bucket;
+  }
+
+  // Drop the org — the pulse already has plenty to say. Mirrors Activity.astro.
+  function shortRepo(repo: string): string {
+    const i = repo.indexOf("/");
+    return i === -1 ? repo : repo.slice(i + 1);
+  }
+
+  // Up to `cap` names with Oxford-comma joining, then "and N other(s)" for the
+  // tail. The expensive detail (workflow, target, elapsed) lives in the
+  // Activity feed below; this line conveys breadth.
+  function formatList(items: string[], cap: number): string {
+    if (items.length === 1) return items[0];
+    if (items.length === 2) return `${items[0]} and ${items[1]}`;
+    if (items.length <= cap) {
+      return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
+    }
+    const shown = items.slice(0, cap);
+    const remaining = items.length - cap;
+    return `${shown.join(", ")}, and ${remaining} other${remaining === 1 ? "" : "s"}`;
+  }
+
+  function paint(el: HTMLElement, state: "live" | "idle", text: string): void {
+    el.dataset.pulse = state;
+    el.textContent = text;
+  }
+
+  liveData<{ currently_tending?: Run[] }>(
+    "/currently-tending",
+    "currently-tending",
+    async (data, el) => {
+      const runs = data?.currently_tending ?? [];
+      if (runs.length > 0) {
+        // Dedupe by repo, preserving first-seen order — two concurrent runs
+        // on the same repo (e.g. review + ci-fix) should name it once.
+        const repos = [...new Set(runs.map((r) => shortRepo(r.repo)))];
+        paint(el, "live", `Currently tending ${formatList(repos, 3)}`);
+        return true;
+      }
+
+      const activity = await fetchJson<Activity>("/activity");
+      const newest = [activity?.prs, activity?.issues, activity?.reviews, activity?.comments]
+        .map((b) => b?.recent?.[0]?.at)
+        .filter((at): at is string => !!at)
+        .sort()
+        .at(-1);
+      if (!newest) return false;
+      const ago = relativeTime(newest);
+      if (!ago) return false;
+      paint(el, "idle", `Last tended ${ago}`);
+      return true;
+    },
+    30_000,
+  );
+</script>

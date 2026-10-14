@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "get-fable",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/lifecycle-routing-matrix.md",
+    "references/stateful-routing-and-precedence.md"
+  ],
+  "templates": [
+    "templates/lifecycle-state.template.json"
+  ],
+  "examples": [
+    "examples/lifecycle-walkthrough.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

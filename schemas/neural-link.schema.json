@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableNeuralGraph",
+  "type": "object",
+  "required": ["version", "nodes", "edges"],
+  "properties": {
+    "version": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "pack", "phase"],
+        "properties": {
+          "id": { "type": "string" },
+          "pack": { "type": "string" },
+          "phase": { "type": "string" },
+          "label": { "type": "string" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target", "relation"],
+        "properties": {
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "relation": {
+            "type": "string",
+            "enum": ["precursor", "continuation", "peer", "recovery", "fallback", "delegates_to"]
+          },
+          "weight": { "type": "number" }
+        }
+      }
+    }
+  }
+}

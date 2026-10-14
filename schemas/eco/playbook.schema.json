@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Playbook",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "match",
+    "steps",
+    "fallback_policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "match": {
+      "type": "object",
+      "required": [
+        "task_shape"
+      ],
+      "properties": {
+        "task_shape": {
+          "type": "string"
+        },
+        "selected_skill": {
+          "type": "string"
+        },
+        "project_facts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "boolean",
+              "integer"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "requires_feature": {
+            "type": "string"
+          },
+          "builtin_fable_gate": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "minimum_grade": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "evidence": {
+            "enum": [
+              "test",
+              "build",
+              "runtime",
+              "review",
+              "observation",
+              "security",
+              "research",
+              "receipt",
+              "handoff"
+            ]
+          }
+        }
+      }
+    },
+    "fallback_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allow_provider_fallback",
+        "allow_grade_downgrade"
+      ],
+      "properties": {
+        "allow_provider_fallback": {
+          "type": "boolean"
+        },
+        "allow_grade_downgrade": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

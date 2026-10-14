@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-run.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-run.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-run.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-run.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-run — get-fable Skill Reference">
+  <meta property="og:description" content="Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-run.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-run — get-fable Skill">
+  <meta name="twitter:description" content="Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-run — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-run Skill Specification",
+    "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-run.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-run</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-run.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-run.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-run.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 150</span>
+        </div>
+        <h1 class="skill-title">fable-run</h1>
+        <p class="skill-lead">Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "run-app" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">run-app</span> <span class="intent-chip">live-smoke-test</span> <span class="intent-chip">start-server</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>process-clean-exit</code></li><li><code>status-200</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-release.html">fable-release</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Run</h1>
+<p>Execute the real artifact in a bounded environment and collect runtime evidence without confusing &quot;process started&quot; with &quot;application works.&quot;</p>
+<h2>Mission</h2>
+<p>Runtime work needs lifecycle ownership: exact command/artifact, working directory, environment, ports, readiness criteria, output bounds, timeout, and cleanup.</p>
+<p>A server PID, HTTP 200 from the wrong process, or CLI exit 0 that never exercised the feature is not sufficient proof.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>a server/service must run to verify behavior;</li>
+<li>a built/published CLI or executable needs a smoke test;</li>
+<li>browser/runtime integration requires a live process;</li>
+<li>a runtime path differs materially from unit-test/source execution;</li>
+<li>verification needs empirical entrypoint/lifecycle evidence.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>unit/integration tests can prove behavior without a persistent live process (<code>fable-verify</code>);</li>
+<li>code still needs implementation (<code>fable-execute</code>);</li>
+<li>repeated runtime failure/staleness needs diagnosis (<code>fable-recover</code>);</li>
+<li>launching the process would cause an unauthorized/destructive external side effect.</li>
+</ul>
+<h2>Runtime Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Target</th><th>Important controls</th></tr></thead><tbody>
+<tr><td>one-shot CLI</td><td>cwd/env/args, exit, stdout/stderr, side effects</td></tr>
+<tr><td>HTTP server</td><td>port ownership, readiness, health vs feature probe, cleanup</td></tr>
+<tr><td>worker/daemon</td><td>startup readiness, queue/input fixture, termination</td></tr>
+<tr><td>browser app</td><td>server URL, browser readiness, console/network errors</td></tr>
+<tr><td>packaged binary</td><td>exact artifact/version/path, clean environment</td></tr>
+<tr><td>multi-service</td><td>dependency startup order, ports, teardown, correlation</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Identify the exact artifact</h3>
+<p>Record:</p>
+<ul class="docs-list">
+<li>command/binary path;</li>
+<li>version/hash/build if relevant;</li>
+<li>cwd;</li>
+<li>required environment/config;</li>
+<li>expected process type;</li>
+<li>safe input/probe;</li>
+<li>destructive/external side effects to avoid.</li>
+</ul>
+<p>Do not assume <code>foo</code> on PATH is the artifact just built—resolve it when identity matters.</p>
+<h3>Stage 2 — Establish resource ownership</h3>
+<p>Before launch determine:</p>
+<ul class="docs-list">
+<li>requested/available port;</li>
+<li>whether an existing process owns it;</li>
+<li>temp directories/files;</li>
+<li>child-process behavior;</li>
+<li>timeout/budget;</li>
+<li>cleanup method.</li>
+</ul>
+<p>Never kill an unrelated process merely to acquire a preferred port.</p>
+<h3>Stage 3 — Launch with bounded observation</h3>
+<p>Capture PID/process handle, stdout/stderr, startup errors, and timestamps. Use output/timeout limits so a noisy/hung service cannot consume unbounded resources.</p>
+<h3>Stage 4 — Distinguish startup from readiness</h3>
+<p>A successful spawn only means the OS accepted the process.</p>
+<p>Readiness may require:</p>
+<ul class="docs-list">
+<li>port accepting connections;</li>
+<li>health endpoint with expected payload;</li>
+<li>dependency initialization complete;</li>
+<li>CLI command reaches expected branch;</li>
+<li>browser page loads without fatal console/runtime errors.</li>
+</ul>
+<p>Use a bounded readiness loop with backoff rather than a fixed arbitrary sleep when possible.</p>
+<h3>Stage 5 — Probe the behavior that matters</h3>
+<p>Health 200 proves health only. If the changed feature is <code>/checkout</code>, probe the smallest safe checkout behavior/contract rather than concluding from <code>/healthz</code> alone.</p>
+<p>Record request/input and relevant response/side effect.</p>
+<h3>Stage 6 — Detect wrong/stale process</h3>
+<p>If output contradicts source/build expectations, check:</p>
+<ul class="docs-list">
+<li>resolved executable/import path;</li>
+<li>process start time;</li>
+<li>port owner PID;</li>
+<li>build/artifact hash;</li>
+<li>cwd/env;</li>
+<li>old server still running.</li>
+</ul>
+<p>Route repeated ambiguity to recovery before changing product logic.</p>
+<h3>Stage 7 — Terminate cleanly</h3>
+<p>Stop only processes/resources owned by this run. Wait for clean exit where feasible, escalate termination only within the owned process tree, and remove temporary resources.</p>
+<h3>Stage 8 — Record runtime evidence narrowly</h3>
+<p>State what the run proves: entrypoint launches, endpoint behavior observed, shutdown clean, etc. Hand broader correctness to <code>fable-verify</code>.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Port conflict with unknown process → choose another safe port or inspect owner; do not indiscriminately kill it.</li>
+<li>Spawn success without readiness → keep waiting/probing within budget, not PASS.</li>
+<li>Health success without changed-feature probe → only health claim passes.</li>
+<li>Fixed sleep for readiness is weaker than bounded condition polling; prefer observable readiness.</li>
+<li>Runtime output unchanged after source change → prove artifact/process identity before another code mutation.</li>
+<li>One-shot CLI that intentionally exits nonzero can still be a valid tested error path; compare exit/output to expected contract rather than requiring 0 universally.</li>
+<li>External production-like side effect requires explicit safe scope/authorization; prefer local fixture/sandbox when available.</li>
+<li>Background processes must have ownership and cleanup even if the test itself fails.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Exact runtime artifact/process identity is knowable when used as evidence.</li>
+<li>No unrelated process is killed.</li>
+<li>Spawn, readiness, behavior, and shutdown are separate claims.</li>
+<li>Runtime probes are bounded by time/output/resources.</li>
+<li>Owned background resources are cleaned on success and failure.</li>
+<li>Evidence does not claim more than the actual probe exercised.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Spawn failure</h3>
+<p>Executable missing, permission/config/startup error. Inspect command/artifact/env before retry.</p>
+<h3>Readiness failure</h3>
+<p>Process alive but service never becomes usable. Capture startup logs/dependencies and diagnose.</p>
+<h3>Wrong-process evidence</h3>
+<p>Port/path points to an older/unrelated process. Resolve identity, do not mutate product.</p>
+<h3>Feature probe failure</h3>
+<p>Runtime is ready but target behavior is wrong. Return to verify/execute/recover based on clarity.</p>
+<h3>Hang/leak</h3>
+<p>Process or child does not terminate. Inspect lifecycle/cleanup; force only owned tree within bounds.</p>
+<h3>Environmental mismatch</h3>
+<p>Behavior depends on cwd/env/OS/runtime version. Record and reconcile rather than treating as product fact universally.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li><code>sleep 5 &amp;&amp; curl /healthz</code> as universal runtime proof;</li>
+<li>assuming PID created means ready;</li>
+<li>using 200 from health endpoint to prove unrelated feature;</li>
+<li>killing whatever owns port 3000;</li>
+<li>leaving server running after failure;</li>
+<li>testing a PATH-installed old binary instead of candidate artifact;</li>
+<li>ignoring stderr because process stayed alive;</li>
+<li>unbounded log capture or polling;</li>
+<li>performing real destructive transactions for a smoke test without need.</li>
+</ul>
+<h2>Runtime Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Artifact/command/version:
+CWD/env/config:
+Owned resources/PID/port:
+Readiness condition/result:
+Behavior probe/result:
+Stdout/stderr highlights:
+Artifact/process identity checks:
+Termination/cleanup:
+What this proves:
+What remains for verify:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Runtime execution completes when:</p>
+<ul class="docs-list">
+<li>exact candidate process/artifact was launched under known context;</li>
+<li>readiness was observed, not assumed;</li>
+<li>relevant behavior was probed or evidence scope is explicitly limited;</li>
+<li>stale/wrong process ambiguity is resolved;</li>
+<li>owned processes/resources are cleaned;</li>
+<li>evidence is handed to verification without overclaiming.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/process-lifecycle-and-readiness.md</code></li>
+<li>Existing protocol: <code>references/runtime-process-management.md</code></li>
+<li>Example: <code>examples/live-server-smoke-check.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

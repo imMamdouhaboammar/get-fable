@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-simplify.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-simplify.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-simplify.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-simplify.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-simplify — get-fable Skill Reference">
+  <meta property="og:description" content="Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-simplify.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-simplify — get-fable Skill">
+  <meta name="twitter:description" content="Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-simplify — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-simplify Skill Specification",
+    "description": "Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-simplify.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-simplify</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-simplify.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-simplify.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-simplify.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 130</span>
+        </div>
+        <h1 class="skill-title">fable-simplify</h1>
+        <p class="skill-lead">Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "simplify-code" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-verify.html">fable-verify</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">simplify-code</span> <span class="intent-chip">remove-duplication</span> <span class="intent-chip">clean-architecture</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>behavior-preserved</code></li><li><code>tests-pass</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Simplify</h1>
+<p>Reduce accidental complexity while proving the externally relevant behavior and contracts did not change.</p>
+<h2>Mission</h2>
+<p>Simplification is not permission for a broad rewrite. It should make the code easier to reason about through small, reviewable transformations backed by characterization/invariant evidence.</p>
+<p>&quot;Cleaner&quot; is subjective. Behavior preservation, reduced duplication/branching/indirection, and clearer ownership can be demonstrated.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>duplicated logic creates divergence risk;</li>
+<li>nested/control-flow complexity obscures invariants;</li>
+<li>dead code/obsolete indirection is proven unused;</li>
+<li>a refactor is explicitly requested with no intended behavior change;</li>
+<li>a completed implementation needs bounded cleanup before review.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>user-visible behavior/API/schema is intended to change (<code>fable-tdd</code>/<code>fable-execute</code>);</li>
+<li>behavior is not characterized well enough to preserve;</li>
+<li>architecture itself is being redesigned (<code>fable-plan</code>);</li>
+<li>a cleanup opportunity is unrelated to the active card.</li>
+</ul>
+<h2>Simplification Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Smell</th><th>Safe first move</th></tr></thead><tbody>
+<tr><td>duplicated behavior</td><td>prove equivalence, extract shared rule</td></tr>
+<tr><td>nested branching</td><td>identify decision table/invariants, flatten incrementally</td></tr>
+<tr><td>dead code</td><td>prove no runtime/registration/reflection reachability</td></tr>
+<tr><td>wrapper/indirection</td><td>prove callers/semantics before collapse</td></tr>
+<tr><td>data transformation chain</td><td>characterize representative + boundary inputs</td></tr>
+<tr><td>public/internal API clutter</td><td>preserve public contract; simplify behind boundary</td></tr>
+<tr><td>generated code noise</td><td>change generator/source, not output manually</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Establish preservation contract</h3>
+<p>State what must not change:</p>
+<ul class="docs-list">
+<li>public inputs/outputs/errors;</li>
+<li>side effects/state transitions;</li>
+<li>serialization/order/timing where contractual;</li>
+<li>package/API/CLI compatibility;</li>
+<li>performance requirements if material.</li>
+</ul>
+<p>Capture baseline tests/fixtures/runtime evidence. If coverage is weak, add characterization before structural mutation.</p>
+<h3>Stage 2 — Identify the complexity to remove</h3>
+<p>Name it concretely: duplicated condition, unnecessary branch, dead adapter, repeated parsing, ownership split, obsolete compatibility path.</p>
+<p>Avoid &quot;modernize this module&quot; as an unbounded objective.</p>
+<h3>Stage 3 — Prove reachability/deadness before deletion</h3>
+<p>Search callers plus dynamic registration/plugin/reflection/generated paths. &quot;grep found no import&quot; is not enough for code that may load dynamically.</p>
+<h3>Stage 4 — Refactor one semantic step at a time</h3>
+<p>Examples:</p>
+<ul class="docs-list">
+<li>extract a shared pure rule;</li>
+<li>replace nested branch with explicit guard/decision table;</li>
+<li>collapse wrapper whose contract is identical;</li>
+<li>remove dead branch after reachability proof.</li>
+</ul>
+<p>Run the narrow preservation checks after each meaningful step.</p>
+<h3>Stage 5 — Watch for accidental contract changes</h3>
+<p>Review diff for:</p>
+<ul class="docs-list">
+<li>changed exception/error type/message relied on by callers;</li>
+<li>iteration/order changes;</li>
+<li>truthiness/null semantics;</li>
+<li>eager vs lazy evaluation;</li>
+<li>async sequencing;</li>
+<li>transaction/cleanup movement;</li>
+<li>public export/signature/default changes;</li>
+<li>performance/resource behavior if required.</li>
+</ul>
+<h3>Stage 6 — Measure simplification honestly</h3>
+<p>Useful evidence can include:</p>
+<ul class="docs-list">
+<li>fewer duplicated rules/branches;</li>
+<li>smaller public surface;</li>
+<li>fewer states/indirection layers;</li>
+<li>improved named invariant ownership.</li>
+</ul>
+<p>Line count alone is not a quality metric.</p>
+<h3>Stage 7 — Fresh verify and review</h3>
+<p>After the last refactor mutation, run fresh affected verification and independent diff review. A pre-refactor green baseline is stale for the simplified code.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>No characterization/proof for behavior-rich legacy code → add it before refactor.</li>
+<li>Removing dead code requires runtime reachability confidence, including dynamic registries/plugins.</li>
+<li>If simplification reveals a desired behavior change, split it into a separate TDD/execution card.</li>
+<li>Prefer a few reversible transformations over a from-scratch rewrite.</li>
+<li>Do not collapse abstraction when it represents a real domain/ownership boundary even if it adds lines.</li>
+<li>Avoid DRY when two similar blocks encode different future invariants; shared syntax is not always shared concept.</li>
+<li>If tests break, diagnose whether refactor changed behavior or test was coupled to internals; do not blindly revert/update assertions.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Accepted external behavior remains unchanged.</li>
+<li>Public contracts do not drift accidentally.</li>
+<li>Each transformation is reviewable and evidence-backed.</li>
+<li>Unrelated cleanup stays out of scope.</li>
+<li>Dynamic/generated reachability is considered before deletion.</li>
+<li>Verification is fresh after final mutation.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Behavior drift</h3>
+<p>Refactor changes output/error/state/order. Restore invariant or separate intended behavior change.</p>
+<h3>Test coupling</h3>
+<p>Tests fail because they assert internal structure rather than contract. Determine whether test or code should change from accepted behavior—not preference.</p>
+<h3>False dead code</h3>
+<p>Dynamic registration/reflection/plugin path still reaches code. Restore and improve discovery evidence.</p>
+<h3>Abstraction collapse</h3>
+<p>Removed layer encoded a real boundary/invariant. Reintroduce clearer boundary rather than optimizing line count.</p>
+<h3>Scope creep</h3>
+<p>Refactor expands into architecture/feature work. Stop and split/replan.</p>
+<h3>Complexity displacement</h3>
+<p>Code gets shorter locally but moves complexity into callers/config/generic abstraction. Evaluate whole affected decision surface.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>rewriting a module from scratch to &quot;simplify&quot; it;</li>
+<li>using line count as primary success metric;</li>
+<li>deleting code because no static import exists;</li>
+<li>DRY extraction across semantically different rules;</li>
+<li>changing API signatures during cleanup;</li>
+<li>updating tests to match refactor without checking contract;</li>
+<li>bundling unrelated cleanup after feature work;</li>
+<li>replacing explicit domain logic with clever generic abstraction.</li>
+</ul>
+<h2>Simplification Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Preservation contract:
+Baseline evidence:
+Complexity targeted:
+Reachability/deadness evidence:
+Transformations:
+Risky semantic deltas checked:
+Fresh verification:
+Review result:
+Measured simplification:
+Deferred behavior changes:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Simplification completes when:</p>
+<ul class="docs-list">
+<li>complexity reduction is concrete and scoped;</li>
+<li>behavior/public contracts are characterized and preserved;</li>
+<li>deletion/refactor reachability assumptions are grounded;</li>
+<li>final evidence is fresh;</li>
+<li>independent review finds no hidden behavior drift;</li>
+<li>no unrelated behavior change is smuggled into cleanup.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/behavior-preserving-refactor-strategy.md</code></li>
+<li>Existing patterns: <code>references/refactoring-patterns.md</code></li>
+<li>Example: <code>examples/flatten-nested-logic.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

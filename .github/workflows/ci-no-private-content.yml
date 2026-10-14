@@ -1,0 +1,39 @@
+name: No Private Content Gate
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  verify-leak-free:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify zero forbidden private paths
+        run: |
+          FORBIDDEN_PATHS=("_backups" "_quarantine" "Failure-lessons" "docs/internal" "evals/holdout")
+          FOUND=0
+          for p in "${FORBIDDEN_PATHS[@]}"; do
+            if [ -e "$p" ]; then
+              echo "::error file=$p::Forbidden private path detected in public distribution: $p"
+              FOUND=1
+            fi
+          done
+          if [ $FOUND -ne 0 ]; then
+            echo "CI GATE FAILED: Private content detected in public repository."
+            exit 1
+          fi
+
+      - name: Verify zero 'visibility: private' in markdown
+        run: |
+          PRIVATE_FILES=$(grep -r -l --include="*.md" "^visibility:[[:space:]]*private" . || true)
+          if [ -n "$PRIVATE_FILES" ]; then
+            echo "::error::Files with 'visibility: private' found in public distribution:"
+            echo "$PRIVATE_FILES"
+            exit 1
+          fi
+          echo "Verified: Zero private content detected in public repository."

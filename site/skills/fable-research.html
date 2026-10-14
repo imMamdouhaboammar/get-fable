@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-research.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-research.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-research.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-research.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-research — get-fable Skill Reference">
+  <meta property="og:description" content="Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-research.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-research — get-fable Skill">
+  <meta name="twitter:description" content="Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-research — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-research Skill Specification",
+    "description": "Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.",
+    "articleSection": "Intelligence Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-research.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-research</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-research.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-research.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-research.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Intelligence Pack</span>
+          <span class="phase-badge phase-discovering">Phase: discovering</span>
+          <span class="order-badge">Order: 15</span>
+        </div>
+        <h1 class="skill-title">fable-research</h1>
+        <p class="skill-lead">Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "external-research" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Intelligence Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">discovering</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-discover.html">fable-discover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">external-research</span> <span class="intent-chip">current-docs</span> <span class="intent-chip">api-behavior</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>primary-source-grounding</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-discover.html">fable-discover</a> <a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-tdd.html">fable-tdd</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-domain.html">fable-domain</a> <a class="token-link" href="../skills/fable-memory.html">fable-memory</a> <a class="token-link" href="../skills/fable-skill-creator.html">fable-skill-creator</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Research</h1>
+<p>Resolve external facts that can change the implementation, using current primary evidence instead of model memory.</p>
+<h2>Mission</h2>
+<p>Research is not link collection. The output must be a decision-ready statement tied to the exact version, environment, or contract the repository will use.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>SDK/API signatures, limits, defaults, lifecycle semantics, or compatibility may have changed;</li>
+<li>a design depends on current cloud/provider behavior;</li>
+<li>the repository pins a version that may differ from current docs;</li>
+<li>multiple official sources appear to disagree;</li>
+<li>an error may come from a documented breaking change or deprecation;</li>
+<li>a standard/RFC/security requirement must be interpreted precisely.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>the fact is repository-local (<code>fable-discover</code>);</li>
+<li>the implementation is already grounded and only needs execution (<code>fable-execute</code>/<code>fable-tdd</code>);</li>
+<li>the task is general brainstorming where no external claim changes the decision.</li>
+</ul>
+<h2>Research Classification</h2>
+<p>Classify the question first.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Question type</th><th>Best primary evidence</th><th>Extra risk</th></tr></thead><tbody>
+<tr><td>API signature</td><td>versioned official docs + source/types</td><td>docs may show latest, repo pins older</td></tr>
+<tr><td>Runtime behavior</td><td>official docs + upstream implementation/tests</td><td>marketing docs may omit edge behavior</td></tr>
+<tr><td>Compatibility</td><td>release notes/changelog + version matrix</td><td>transitive dependency constraints</td></tr>
+<tr><td>Standard/protocol</td><td>normative spec/RFC</td><td>examples may be non-normative</td></tr>
+<tr><td>Cloud/product limit</td><td>current vendor docs</td><td>region/tier/account differences</td></tr>
+<tr><td>Security guidance</td><td>official security docs/advisories</td><td>stale blog summaries</td></tr>
+<tr><td>Deprecation/migration</td><td>migration guide + release notes</td><td>old and new APIs coexist</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Turn the task into answerable claims</h3>
+<p>Break a broad request into the smallest external claims that can affect design.</p>
+<p>Bad: &quot;Research the new SDK.&quot;</p>
+<p>Good:</p>
+<ul class="docs-list">
+<li>Does version 4.2 expose streaming tool-call deltas?</li>
+<li>Which parameter enables them?</li>
+<li>Is the callback ordered?</li>
+<li>What minimum runtime version is required?</li>
+</ul>
+<h3>Stage 2 — Bind to repository reality</h3>
+<p>Before accepting current docs as applicable, record:</p>
+<ul class="docs-list">
+<li>package/version actually used;</li>
+<li>runtime/language version;</li>
+<li>relevant feature flags/tier/region if applicable;</li>
+<li>whether the repository uses generated types or a wrapper that changes the public contract.</li>
+</ul>
+<h3>Stage 3 — Use a source hierarchy</h3>
+<p>Prefer, in order when available:</p>
+<p>1. normative specification or official versioned reference;</p>
+<p>2. official upstream source/types/tests;</p>
+<p>3. official release notes/migration guides/advisories;</p>
+<p>4. vendor examples authored for the relevant version;</p>
+<p>5. secondary sources only as leads.</p>
+<p>Never use an unsourced search snippet as final evidence.</p>
+<h3>Stage 4 — Reconcile version and source conflicts</h3>
+<p>If latest docs disagree with the pinned package:</p>
+<ul class="docs-list">
+<li>inspect versioned docs/release notes/source for the pinned version;</li>
+<li>state the delta explicitly;</li>
+<li>do not silently recommend latest syntax to an older lockfile.</li>
+</ul>
+<p>If two official sources disagree, prefer the one closest to executable truth for the exact version, and report the conflict.</p>
+<h3>Stage 5 — Separate fact from interpretation</h3>
+<p>Record:</p>
+<ul class="docs-list">
+<li><strong>Fact</strong>: what the source establishes;</li>
+<li><strong>Applicability</strong>: why it applies to this repo/version;</li>
+<li><strong>Interpretation</strong>: what it means for the design;</li>
+<li><strong>Confidence</strong>: measured / strongly supported / unresolved.</li>
+</ul>
+<h3>Stage 6 — Stop when the decision is grounded</h3>
+<p>Do not continue reading once all load-bearing external claims are resolved and the next action is safe.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>If a fact could have changed since model training, verify it rather than recall it.</li>
+<li>If docs are unversioned and the repo pins an older version, inspect source/types/changelog for that exact version.</li>
+<li>If an official quickstart conflicts with a normative reference, do not flatten the disagreement; determine which governs the target behavior.</li>
+<li>If behavior depends on account/tier/region, label that dependency and avoid universal claims.</li>
+<li>If no primary source is available, report the evidence gap and use upstream code/types/tests as the next-best source; never invent missing parameters.</li>
+<li>If the answer changes architecture, hand off to <code>fable-plan</code>; if it simply confirms a bounded implementation contract, hand off to <code>fable-tdd</code> or <code>fable-execute</code>.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Every load-bearing external claim has a source.</li>
+<li>Source applicability includes version/context, not just URL authority.</li>
+<li>Quotes/signatures are kept short and exact; conclusions are written in the agent&#039;s own words.</li>
+<li>Secondary sources do not override accessible primary sources.</li>
+<li>Conflicting evidence remains visible until resolved.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Freshness failure</h3>
+<p>The source is official but stale/deprecated. Find versioned/current material and release history.</p>
+<h3>Version mismatch</h3>
+<p>The repo and docs describe different versions. Reconcile against the lockfile/package metadata.</p>
+<h3>Authority mismatch</h3>
+<p>A blog/example contradicts normative docs or upstream source. Demote the weaker source.</p>
+<h3>Context mismatch</h3>
+<p>The claim differs by region, tier, runtime, platform, or feature flag. Scope the conclusion.</p>
+<h3>Interpretation ambiguity</h3>
+<p>The source is clear but its implication for the repository is not. Hand the unresolved design question to <code>fable-plan</code> rather than pretending the research answered it.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>asking a search engine for a signature and copying the snippet;</li>
+<li>citing the latest docs without checking the pinned version;</li>
+<li>collecting many links without a decision-ready conclusion;</li>
+<li>using model memory because the API &quot;probably hasn&#039;t changed&quot;;</li>
+<li>quoting a source without saying why it applies;</li>
+<li>hiding official-source disagreement;</li>
+<li>continuing research after every load-bearing claim is resolved.</li>
+</ul>
+<h2>Research Packet / Handoff</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Question:
+Repository version/context:
+Source-backed facts:
+- fact → primary source → applicability
+Conflicts/version deltas:
+Interpretation for implementation:
+Confidence / unresolved:
+Recommended next Skill:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Research is complete when:</p>
+<ul class="docs-list">
+<li>the exact external claim is answered for the repository&#039;s actual context;</li>
+<li>evidence is primary or the absence of primary evidence is explicit;</li>
+<li>version conflicts are reconciled;</li>
+<li>the implementation/design implication is stated without overclaiming;</li>
+<li>no load-bearing parameter or semantic remains ambiguous.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/source-reconciliation-playbook.md</code></li>
+<li>Existing hierarchy: <code>references/primary-source-hierarchy.md</code></li>
+<li>Example: <code>examples/research-api-specs.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

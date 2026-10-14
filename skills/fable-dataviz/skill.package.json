@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-dataviz",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/dataviz-design-system.md",
+    "references/truthful-chart-selection-and-validation.md"
+  ],
+  "templates": [
+    "templates/svg-chart.template.md"
+  ],
+  "examples": [
+    "examples/render-bar-chart.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

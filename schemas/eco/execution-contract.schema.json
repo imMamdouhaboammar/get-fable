@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Execution Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "routing_decision_digest",
+    "host_id",
+    "capabilities",
+    "steps",
+    "permissions",
+    "evidence_expectations",
+    "stop_conditions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "contract_id": {
+      "type": "string"
+    },
+    "routing_decision_digest": {
+      "type": "string"
+    },
+    "host_id": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "enforcement_grade"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "enforcement_grade": {
+            "enum": [
+              "A",
+              "B",
+              "C",
+              "N"
+            ]
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "capability_id",
+          "mode",
+          "required",
+          "minimum_grade",
+          "timeout_ms"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "capability_id": {
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "host_skill",
+              "cli",
+              "mcp",
+              "plugin",
+              "wrapper",
+              "delegated_agent",
+              "manual_gate"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "minimum_grade": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 100
+          },
+          "fallback_capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_expectations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "step_id",
+          "kind"
+        ],
+        "properties": {
+          "step_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "test",
+              "build",
+              "runtime",
+              "review",
+              "observation",
+              "security",
+              "research",
+              "receipt",
+              "handoff"
+            ]
+          }
+        }
+      }
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

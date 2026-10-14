@@ -1,0 +1,257 @@
+{
+  "version": 1,
+  "skills": {
+    "fable-architecture": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-architecture/SKILL.md",
+      "computedHash": "3a85e89b7fa8818d7d2724ad2bf43c93050a1d508c2a78b00a04c7a69edd8218"
+    },
+    "fable-artifact": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-artifact/SKILL.md",
+      "computedHash": "065a9099a68b37bbb1813958e2c256ea2b23b7a4e1a5c8a9ddb57afb8cee2ec5"
+    },
+    "fable-config": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-config/SKILL.md",
+      "computedHash": "38bd2afa1222b9edafcf8bb175cf45ceeb9ec6ce8e42553aab30e6f3a3e3bcf7"
+    },
+    "fable-context-thrift": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-context-thrift/SKILL.md",
+      "computedHash": "d6d7b7cd7b1a36fe80b56fb4b00150dbee6a27bacbd0fecf8f875a96af865925"
+    },
+    "fable-council": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-council/SKILL.md",
+      "computedHash": "0cb7c8170e797076bfc039b98a0e083f533e32371a7c6beb7bd296a699eda769"
+    },
+    "fable-cowork": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-cowork/SKILL.md",
+      "computedHash": "3b120acae2abd2aebd96303ca1120c71092b474b441fc116d627bc64228d3a4c"
+    },
+    "fable-dataviz": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-dataviz/SKILL.md",
+      "computedHash": "afe45f3c90ffc0d7017089d10f5fb2d23a49172d1b79b5a3f40f19c9fd20410a"
+    },
+    "fable-delegate": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-delegate/SKILL.md",
+      "computedHash": "42fa495f69fc11b4485e2a2dd3f5d0ac0086a62e08e0a37a5da21cc74045b67c"
+    },
+    "fable-discover": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-discover/SKILL.md",
+      "computedHash": "9ef2ca28abd1f2a97ec624d9790c4512e324f4cf913d77a9ceaf2f0ebf7f8051"
+    },
+    "fable-domain": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-domain/SKILL.md",
+      "computedHash": "b9f461b156017c11a45aee3ffa05f7b4e04e1ed612cf36219bc2065958c263e1"
+    },
+    "fable-eco": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-eco/SKILL.md",
+      "computedHash": "1b79413b51fbe815a6b77ef61c17190aeb4e34b55c4c14aa2898b892187253cc"
+    },
+    "fable-eval": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-eval/SKILL.md",
+      "computedHash": "1f98d00fb3ee1a85c6b9d68f66864b696520a1937c18e597d64b647c85fb8c74"
+    },
+    "fable-execute": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-execute/SKILL.md",
+      "computedHash": "49ca4bfc480c38d62fa121e9c44769eed68d847139ad5dc127cdd11b9832b411"
+    },
+    "fable-finish-your-turn": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-finish-your-turn/SKILL.md",
+      "computedHash": "b6db1d0922dd09563c57471a3ef347c19c0d051cf9512566adf9a448b942b1e1"
+    },
+    "fable-handoff": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-handoff/SKILL.md",
+      "computedHash": "81f7fac0bedb405bbd02924614e2e0c69d65df8039e54cd20c9068505546fed3"
+    },
+    "fable-heal": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-heal/SKILL.md",
+      "computedHash": "ca002dad343ff36cafc4f1e28213974a7ac23912eaaaecbbd072f2013c8ff984"
+    },
+    "fable-judge": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-judge/SKILL.md",
+      "computedHash": "96410c16b1c7825e5aade767785271b4b7f9d4f9632aebc89f318845cf8035a4"
+    },
+    "fable-learning": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-learning/SKILL.md",
+      "computedHash": "edcbd7743f701f2c144c1031b46a9c267804470710d96fa9d23cb3bc0421017e"
+    },
+    "fable-loop": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-loop/SKILL.md",
+      "computedHash": "df0fa4472de8bc91bdec7c3fc3f2c0b7390e54e674cb3db9bb3e8cc9eadca98e"
+    },
+    "fable-memory": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-memory/SKILL.md",
+      "computedHash": "42130f6b207cf5568adecfe4eda7124fdb9ee529b3b5311e3d9b7c3e57e831a8"
+    },
+    "fable-method": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-method/SKILL.md",
+      "computedHash": "272f93247109c6d37f9df646ab53e46ce858568d068d2844e70246bd0f22fc27"
+    },
+    "fable-native-code": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-native-code/SKILL.md",
+      "computedHash": "2d6b40e73cc25ae9c73c71d919640cfd96fc6064740c001c5e28e91321e5cd82"
+    },
+    "fable-outcome-first": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-outcome-first/SKILL.md",
+      "computedHash": "5f9415291103387e7880813a89dca7f10c1eca1f92d12eea6c0dc64d927baf85"
+    },
+    "fable-plan": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-plan/SKILL.md",
+      "computedHash": "f59cccbfa02e1a20456afd2e709c19639edc70212aec35b59c552f6419573fc1"
+    },
+    "fable-prove-it": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-prove-it/SKILL.md",
+      "computedHash": "79590e9dcdfb65f1f299158bf6828b09ce2bc758f457769973fadae29f92e56a"
+    },
+    "fable-recover": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-recover/SKILL.md",
+      "computedHash": "0e6aac27c6fbfb9106979345243c849359cbe339e8579b5e98dfe55eda6c2039"
+    },
+    "fable-redteam": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-redteam/SKILL.md",
+      "computedHash": "331f4007e2910fc0a7db7e7cc711fd631e261b01527c78521e0e558e31e79635"
+    },
+    "fable-release": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-release/SKILL.md",
+      "computedHash": "c1a36ec547dd19f50c45c6364155e5f95fdb30adfdc910c871a624eb79eecabd"
+    },
+    "fable-research": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-research/SKILL.md",
+      "computedHash": "910612a5b37715e48f786114da325665281cc609ac24d07e804de5e852233043"
+    },
+    "fable-review": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-review/SKILL.md",
+      "computedHash": "9f1e0c63def25bfcbdd64f22f71751f05e86bae7315b633f99e11d03c8833d73"
+    },
+    "fable-run": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-run/SKILL.md",
+      "computedHash": "9e1488fdfe97e11a4a709cf4c49cb828aaa3913511a51da13c93b96a61cd2a03"
+    },
+    "fable-scope-discipline": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-scope-discipline/SKILL.md",
+      "computedHash": "ffe42e4aa19ef49b33224c8502615af79557be94394b2589e1300e91b471e6d1"
+    },
+    "fable-security": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-security/SKILL.md",
+      "computedHash": "f1165893248379be0c78074638ded231981d0decbe38c05dd6c9f4bae02a8714"
+    },
+    "fable-simplify": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-simplify/SKILL.md",
+      "computedHash": "ea787a0d8cad6b8213d2b8bb8da0b798e054d111068588b1a9d54488c7d62470"
+    },
+    "fable-simulator": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-simulator/SKILL.md",
+      "computedHash": "7666f4e6461382bbfd4bbb5de707877c755ddc74fadb75566da4247e3598500e"
+    },
+    "fable-skill-creator": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-skill-creator/SKILL.md",
+      "computedHash": "90144273f3aede37f38510f0489cd4319362e63836ca75099ead9bad79e17c8b"
+    },
+    "fable-spark": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-spark/SKILL.md",
+      "computedHash": "9eb5e1660eedddfb03b392ea33894e7ade4ca386164b8f227b87cbc46de33afb"
+    },
+    "fable-tdd": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-tdd/SKILL.md",
+      "computedHash": "f30f1a1c94791389abc9cf1980539bfe23afb8c01539301d5e640b07a0f92b7c"
+    },
+    "fable-tend": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-tend/SKILL.md",
+      "computedHash": "62ece954f648ba1ae1209dfc126506a8803721cd89c964be2bc8da321d563150"
+    },
+    "fable-verify": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-verify/SKILL.md",
+      "computedHash": "0e89ea152dacafa67161edd7b4faa80db341e6b7883c430f170354ca0347ac9d"
+    },
+    "fable-wise": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/fable-wise/SKILL.md",
+      "computedHash": "2b4435b7da67e5c61f707c36095ad2708a194522e825d83a2c4c51755f9f6df9"
+    },
+    "get-fable": {
+      "source": "imMamdouhaboammar/get-fable",
+      "sourceType": "github",
+      "skillPath": "skills/get-fable/SKILL.md",
+      "computedHash": "8c07b46520ce8519cb355074ece5dc49e3ca72609b56f51ae8aa41883aa31769"
+    }
+  }
+}

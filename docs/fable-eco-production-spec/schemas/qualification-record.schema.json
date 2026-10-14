@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Capability Qualification Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "capability_id",
+    "manifest_digest",
+    "qualified_version",
+    "platforms",
+    "tests",
+    "qualified_at",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "capability_id": {
+      "type": "string"
+    },
+    "manifest_digest": {
+      "type": "string"
+    },
+    "qualified_version": {
+      "type": "string"
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "status"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "skip"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "qualified_at": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "stable",
+        "optional",
+        "experimental",
+        "blocked"
+      ]
+    }
+  }
+}

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-context-thrift.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-context-thrift.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-context-thrift.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-context-thrift.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-context-thrift — get-fable Skill Reference">
+  <meta property="og:description" content="Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-context-thrift.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-context-thrift — get-fable Skill">
+  <meta name="twitter:description" content="Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-context-thrift — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-context-thrift Skill Specification",
+    "description": "Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-context-thrift.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-context-thrift</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-context-thrift.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-context-thrift.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-context-thrift.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-discovering">Phase: discovering</span>
+          <span class="order-badge">Order: 240</span>
+        </div>
+        <h1 class="skill-title">fable-context-thrift</h1>
+        <p class="skill-lead">Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "conserve-context" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">discovering</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-discover.html">fable-discover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">conserve-context</span> <span class="intent-chip">budget-tokens</span> <span class="intent-chip">batch-reads</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>minimal-read-verified</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Context Thrift</h1>
+<p>Context is the budget everything else is paid from. Spend it on what changes your next action; nothing else.</p>
+<h2>Purpose</h2>
+<p>Prevent context bloat, token exhaustion, unnecessary whole-file reads, redundant verifications, and sequential execution latency. <code>fable-context-thrift</code> treats context tokens and tool calls as a scarce, valuable engineering budget.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>At the start of any multi-step task and during exploratory codebase investigations.</li>
+<li>Before reading files, searching symbols, or checking repository structure.</li>
+<li>When tempted to read entire files rather than targeted slices, symbols, or functions.</li>
+<li>When executing multiple independent lookups or checks that can be batched in parallel.</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>Comprehensive codebase discovery requiring structural mapping of unknown subsystems (use <code>fable-discover</code>).</li>
+<li>External API documentation and primary-source research (use <code>fable-research</code>).</li>
+<li>Deep vulnerability tracing across distributed trust boundaries (use <code>fable-security</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>exploration_intent</code>: The specific load-bearing question or uncertainty to be resolved.</li>
+<li><code>workspace_state</code>: Existing established facts, open files, and previous tool outputs.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>targeted_evidence</code>: Minimal, high-signal code excerpts, line references, and exact facts.</li>
+<li><code>decision_readiness</code>: Confirmation that the &quot;enough-to-act&quot; bar is reached with zero extraneous tokens.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Targeted Read Strategy</strong>: Read only the symbol or section needed, not the file. Widen only when a specific question demands it.</p>
+<p>2. <strong>Parallel Block Batching</strong>: Multiple greps, reads, or status checks must be dispatched in one parallel block. Sequencing independent reads adds latency, not care.</p>
+<p>3. <strong>Delegate Sweeps vs Keep Lookups</strong>: Broad questions (&quot;where is X handled&quot;, find-all-usages in unfamiliar territory) go to a search subagent if available — keep the conclusion, not the file dumps. Known single lookups stay direct. The subagent is for when you <em>don&#039;t</em> know where things live.</p>
+<p>4. <strong>Tool Confirmation Principle</strong>: Never re-read a file to check an edit landed; the edit tool fails loudly. Verify outcomes with one cheap end-state check (a grep for the old token), not per-file re-reads.</p>
+<p>5. <strong>Preserve Established Facts</strong>: What the conversation already verified, don&#039;t re-derive. What the user already decided, don&#039;t reopen.</p>
+<p>6. <strong>Eliminate Narrative Overhead</strong>: Don&#039;t narrate options you won&#039;t pursue. Deliberation is for choices you might actually make.</p>
+<p>7. <strong>The Enough-to-Act Test</strong>: If more exploration would not change your next action, exploration is over. Act.</p>
+<h2>Decision Rules</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Thought</th><th>Reality</th></tr></thead><tbody>
+<tr><td>&quot;I&#039;ll read the whole file for context&quot;</td><td>Read what the change touches. The question you&#039;re answering defines the lines you need.</td></tr>
+<tr><td>&quot;Let me just double-check my edit landed&quot;</td><td>The tool reported success; silence is success. One end-state grep beats N re-reads.</td></tr>
+<tr><td>&quot;One more search to be safe&quot;</td><td>If the result wouldn&#039;t change your action, it isn&#039;t safety — it&#039;s stalling with receipts.</td></tr>
+<tr><td>&quot;I&#039;ll re-verify the repo layout first&quot;</td><td>It&#039;s in your context and was correct an hour ago. Directory trees don&#039;t rot mid-session.</td></tr>
+<tr><td>&quot;Careful means one call at a time&quot;</td><td>Careful means right calls. Independent lookups in sequence is the same work, slower.</td></tr>
+<tr><td>&quot;I&#039;ll dispatch a subagent to be thorough&quot;</td><td>On a 40-file repo, grep returns line-level truth faster than a subagent returns prose. Match the tool to the territory.</td></tr>
+</tbody></table></div>
+<ul class="docs-list">
+<li>If an additional search result would not change your next command or edit, do not make the search.</li>
+<li>When an edit succeeds cleanly, proceed directly to verification without viewing the modified file again.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Batch all independent read and grep tool calls into a single message/turn.</li>
+<li>Use line offsets and targeted slices (<code>StartLine</code>, <code>EndLine</code>) when viewing files.</li>
+<li>Reject whole-file reads where ripgrep already provided exact line numbers.</li>
+<li>Prefer targeted ripgrep queries over file-tree traversal when locating symbols.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Report line-level citations (<code>path/to/file#L10-L25</code>) rather than dumping full function bodies into conversation.</li>
+<li>Use single end-state checks (e.g. grep for deleted token or exit code) as proof of edit application.</li>
+<li>Preserve established facts without requiring repeat execution evidence in the same session.</li>
+</ul>
+<h2>Failure Handling</h2>
+<p>Stop spending immediately when encountering any of these Red Flags:</p>
+<ul class="docs-list">
+<li>A Read call for a file you edited this turn.</li>
+<li>The same fact verified twice in one session.</li>
+<li>Sequential tool calls with no data dependency between them.</li>
+<li>An exploration step you can&#039;t name the decision for.</li>
+<li>Whole-file reads where a grep already gave you the line numbers.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>The load-bearing question is answered with minimum tokens spent.</li>
+<li>The next engineering action is unblocked and clear.</li>
+<li>Context space is preserved for implementation, verification, and diff review.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

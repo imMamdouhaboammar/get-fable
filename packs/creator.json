@@ -1,0 +1,9 @@
+{
+  "name": "creator",
+  "version": "1.12.0",
+  "description": "Skill creation, iterative benchmarking, eval suites, description optimization, and packaging.",
+  "skills": [
+    "fable-skill-creator",
+    "fable-domain"
+  ]
+}

@@ -1,0 +1,99 @@
+name: review-reviewers
+# Outcome-based analysis of bot behavior across consumer repos. Each matrix entry
+# is a repo to analyze. The job checks out the tend repo (for creating
+# improvement PRs/issues). TEND_BOT_TOKEN is sufficient for reading CI data from
+# public consumer repos.
+#
+# Paused — manual dispatch only, no cron. The hourly outside-in sweep had
+# converged on maintaining its own evidence machinery, at the fleet's highest
+# per-run cost and a quota ceiling that twice took the user-facing workflows
+# down with it. Each consumer's own daily `tend-review-runs` already reviews that
+# repo's runs from the inside and routes bundled-skill defects upstream, so the
+# loop this closes is the direct one, not the only one. Dispatch it as a
+# deliberate spot-check after a change that could move bot behavior fleet-wide:
+# a release, a harness switch, a model bump.
+on:
+  workflow_dispatch:
+
+jobs:
+  # Create the monthly tracking issue before the matrix runs, so all matrix
+  # legs find an existing issue instead of racing to create one. Without this,
+  # the first cron tick of each new month produced N-1 duplicate tracking
+  # issues (one per matrix leg that lost the find-or-create race).
+  #
+  # This is an optimisation, not a precondition: the skill still carries its own
+  # find-or-create fallback, so the matrix runs even when this job doesn't
+  # complete (see `if:` on the matrix job below).
+  init-tracking:
+    runs-on: ubuntu-24.04
+    environment:
+      name: tend
+      deployment: false
+    permissions:
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.TEND_BOT_TOKEN }}
+        run: |
+          MONTH=$(date -u +%Y-%m)
+          LABEL="review-reviewers-tracking"
+          NUM=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label "$LABEL" \
+            --json number,title \
+            --jq "[.[] | select(.title | contains(\"$MONTH\"))] | sort_by(.number) | .[0].number // empty")
+          if [ -n "$NUM" ]; then
+            echo "Tracking issue for $MONTH exists: #$NUM"
+            exit 0
+          fi
+          cat > /tmp/body.md <<'EOF'
+          Monthly tracking issue for `review-reviewers`. Per-target evidence lives in secret gists owned by the bot. A comment below is posted when each target's gist is first created.
+
+          **Do not close manually** — a new issue is created each month.
+          EOF
+          gh issue create -R "$GITHUB_REPOSITORY" \
+            --title "$LABEL: $MONTH" --label "$LABEL" -F /tmp/body.md
+
+  review-reviewers:
+    needs: init-tracking
+    # Run even when init-tracking failed or never got a runner — losing the
+    # race guard costs up to N-1 duplicate tracking issues on the first tick of
+    # a month, while gating on it costs the whole analysis window for every
+    # target repo. Not `always()`: a user cancelling the run should stop here.
+    if: ${{ !cancelled() }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Must cover data/consumers.json; test_repo_pins.py enforces it.
+        repo:
+          - PRQL/prql
+          - diffplug/dormouse
+          - jakobtfaber/Faber2026
+          - max-sixty/cargo-affected
+          - max-sixty/leaf
+          - max-sixty/tend
+          - max-sixty/worktrunk
+          - numbagg/numbagg
+    runs-on: ubuntu-24.04
+    environment:
+      name: tend
+      deployment: false
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.TEND_BOT_TOKEN }}
+
+      - uses: max-sixty/tend/claude@0.2.9
+        with:
+          github_token: ${{ secrets.TEND_BOT_TOKEN }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          bot_name: tend-agent
+          model: opus
+          prompt: |
+            /review-reviewers ${{ matrix.repo }}

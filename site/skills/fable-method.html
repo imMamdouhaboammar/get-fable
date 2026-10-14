@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-method.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-method.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-method.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-method.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-method — get-fable Skill Reference">
+  <meta property="og:description" content="Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-method.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-method — get-fable Skill">
+  <meta name="twitter:description" content="Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-method — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-method Skill Specification",
+    "description": "Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.",
+    "articleSection": "Core Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-method.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-method</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-method.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-method.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-method.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Core Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 320</span>
+        </div>
+        <h1 class="skill-title">fable-method</h1>
+        <p class="skill-lead">Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "execute-method-loop" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Core Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">execute-method-loop</span> <span class="intent-chip">classify-ask</span> <span class="intent-chip">define-done</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>invariants-preserved</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-judge.html">fable-judge</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>The Fable Method</h1>
+<p>A mid-tier model that follows this loop beats a stronger model that free-styles: the quality lives in the structure, the evidence, and the honesty, not in the model. The loop is self-contained. Follow it literally.</p>
+<h2>Purpose</h2>
+<p>Provide a universal, disciplined engineering loop across all problem shapes: classify the ask, define done, gather evidence, decide, act surgically, verify by observation, and report outcome-first.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>When the user explicitly requests the Fable Method (<code>/fable-method</code>, &quot;approach this like Fable&quot;).</li>
+<li>When starting an ambiguous multi-step engineering task with no specialized specialist pre-assigned.</li>
+<li>When executing structured planning (<code>/fable-method plan &lt;task&gt;</code>).</li>
+<li>When auditing existing conversational work against lifecycle invariants (<code>/fable-method audit</code>).</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>Trivial one-line edits where the change is obvious and self-contained (execute directly).</li>
+<li>Purely autonomous background long-polling or test loops (use <code>fable-loop</code>).</li>
+<li>Multi-host installation and setup procedures (use <code>fable-release</code> or installer).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>task_description</code>: The problem prompt, specification, or bug report.</li>
+<li><code>domain_adapter</code>: Optional sector adapter (<code>references/domains/*</code>) for non-code domains.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>verified_solution</code>: Surgically implemented changes matching the specification.</li>
+<li><code>execution_evidence</code>: Observable evidence proving the solution works as intended.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Triviality Gate</strong>: If the task is one file, under ~10 lines, with no new behavior and known edit, execute directly and confirm with one check.</p>
+<p>2. <strong>Fit Gate</strong>: Determine where the answer lives: in reachable sources (run loop), in unknown external techniques (research first), or only in inference (flag low-confidence).</p>
+<p>3. <strong>Step 0 — Classify the Ask</strong>:</p>
+<p>   - Question / assessment: Report findings, change nothing.</p>
+<p>   - Task: Implement and verify.</p>
+<p>   - Plan-first: Produce plan and wait for approval if scope is ambiguous or actions are irreversible.</p>
+<p>4. <strong>Step 1 — Define Done</strong>: Explicitly declare what completion looks like and how it will be verified.</p>
+<p>5. <strong>Step 2 — Gather Evidence</strong>: Open sources, read relevant code, check authoritative docs before modifying state.</p>
+<p>6. <strong>Step 3 — Decide</strong>: Formulate the minimal viable plan.</p>
+<p>7. <strong>Step 4 — Act Surgically</strong>: Modify only the necessary lines with zero collateral drift.</p>
+<p>8. <strong>Step 5 — Verify by Observation</strong>: Run the code, execute the test, observe the side effect.</p>
+<p>9. <strong>Step 6 — Report Outcome-First</strong>: State the outcome in the first sentence.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Plan-First Priority: If any irreversible action, destructive command, or ambiguous scope is present, plan-first supersedes task execution.</li>
+<li>Scope Gate: Do not touch files outside the bounded problem domain.</li>
+<li>Evidence Gate: A task is not done until fresh passing machine evidence is observed.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Execute shell commands to run compilers, linters, and test runners.</li>
+<li>Use targeted file reading and editing tools.</li>
+<li>Consult domain adapters in <code>references/domains/</code> when handling non-coding tasks (marketing, ops, finance, devops).</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Direct terminal outputs from test runners or build tools.</li>
+<li>Line references to source code confirming bug mechanism and repair.</li>
+</ul>
+<h2>Failure Handling</h2>
+<ul class="docs-list">
+<li>If a step fails, diagnose the failure mechanism rather than blindly retrying the same operation.</li>
+<li>If two consecutive failures occur, immediately route to <code>fable-recover</code>.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>All criteria defined in Step 1 (&quot;Define Done&quot;) are satisfied.</li>
+<li>Fresh passing test evidence captured.</li>
+<li>Final report delivered outcome-first with zero fluff.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

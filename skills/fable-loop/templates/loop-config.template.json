@@ -1,0 +1,12 @@
+{
+  "taskName": "ci-build-monitor",
+  "maxDurationSeconds": 600,
+  "maxIterations": 30,
+  "baseIntervalMs": 2000,
+  "maxIntervalMs": 30000,
+  "backoffFactor": 1.5,
+  "exitConditions": {
+    "successStatus": ["SUCCESS", "PASSED"],
+    "failureStatus": ["FAILED", "CANCELLED", "TIMED_OUT"]
+  }
+}

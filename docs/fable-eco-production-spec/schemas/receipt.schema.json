@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fable Eco Transaction Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "transaction_id",
+    "status",
+    "operations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "committed",
+        "rolled_back",
+        "recovery_required"
+      ]
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "owned_targets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "owned_targets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "precondition_digest": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "result_digest": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

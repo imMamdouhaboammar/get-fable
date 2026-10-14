@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-review",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/alibaba-ocr-rulesets.md",
+    "references/behavioral-diff-review-playbook.md",
+    "references/diff-review-checklist.md"
+  ],
+  "templates": [
+    "templates/review-finding.template.md"
+  ],
+  "examples": [
+    "examples/code-review-finding.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}

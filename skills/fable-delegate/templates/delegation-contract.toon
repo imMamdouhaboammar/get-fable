@@ -1,0 +1,8 @@
+contract:
+  workerId: <worker-name>
+  targetCard: <CARD-ID>
+  objective: <Single cohesive objective>
+ownedPaths[2]: <path1>,<path2>
+acceptanceChecks[1]: <worker verification command>
+forbiddenPaths[1]: <forbidden_path>
+rules[2]: Do not touch files outside ownedPaths,Return findings in return-packet.toon format

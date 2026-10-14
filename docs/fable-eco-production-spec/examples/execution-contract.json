@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "contract_id": "eco-contract-example-001",
+  "routing_decision_digest": "sha256:example",
+  "host_id": "codex",
+  "capabilities": [
+    {"id": "fable/codegraph", "version": "1.2.3", "enforcement_grade": "C"},
+    {"id": "fable/impeccable", "version": "2.0.0", "enforcement_grade": "C"},
+    {"id": "fable/agent-browser", "version": "0.9.0", "enforcement_grade": "B"}
+  ],
+  "steps": [
+    {"id": "inspect", "capability_id": "fable/codegraph", "mode": "cli", "required": true, "minimum_grade": "C", "timeout_ms": 10000, "fallback_capabilities": []},
+    {"id": "guidance", "capability_id": "fable/impeccable", "mode": "host_skill", "required": true, "minimum_grade": "C", "timeout_ms": 10000, "fallback_capabilities": []},
+    {"id": "exercise", "capability_id": "fable/agent-browser", "mode": "cli", "required": true, "minimum_grade": "B", "timeout_ms": 30000, "fallback_capabilities": []}
+  ],
+  "permissions": ["filesystem.read:workspace", "browser:control", "process:spawn"],
+  "evidence_expectations": [
+    {"step_id": "inspect", "kind": "research"},
+    {"step_id": "guidance", "kind": "receipt"},
+    {"step_id": "exercise", "kind": "observation"}
+  ],
+  "stop_conditions": ["required_step_failed", "permission_denied", "minimum_enforcement_grade_unavailable"]
+}

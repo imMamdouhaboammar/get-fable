@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-review.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-review.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-review.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-review.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-review — get-fable Skill Reference">
+  <meta property="og:description" content="Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-review.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-review — get-fable Skill">
+  <meta name="twitter:description" content="Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-review — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-review Skill Specification",
+    "description": "Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.",
+    "articleSection": "Proof Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-review.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-review</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-review.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-review.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-review.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Proof Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 60</span>
+        </div>
+        <h1 class="skill-title">fable-review</h1>
+        <p class="skill-lead">Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "code-review" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Proof Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">code-review</span> <span class="intent-chip">diff-audit</span> <span class="intent-chip">standards-check</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>grounded-diff-read</code></li><li><code>actionable-findings</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-security.html">fable-security</a> <a class="token-link" href="../skills/fable-release.html">fable-release</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a> <a class="token-link" href="../skills/fable-judge.html">fable-judge</a> <a class="token-link" href="../skills/fable-outcome-first.html">fable-outcome-first</a> <a class="token-link" href="../skills/fable-simplify.html">fable-simplify</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Review</h1>
+<p>Review the change as an independent engineer trying to find plausible defects, not as the implementer explaining why the patch is probably fine.</p>
+<h2>Mission</h2>
+<p>A useful review connects a concrete line/change to a concrete failure mode. It prioritizes correctness, invariants, compatibility, lifecycle behavior, and test adequacy before style preference.</p>
+<p>The reviewer should be skeptical without manufacturing noise.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>a diff/PR/implementation is ready for independent inspection;</li>
+<li>verification is green but human/semantic risks remain;</li>
+<li>repository conventions or public contracts may have been violated;</li>
+<li>a release/merge needs grounded review evidence.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>no diff or concrete change exists;</li>
+<li>the main task is automated execution evidence (<code>fable-verify</code>);</li>
+<li>the requested work is threat modeling/security specialization (<code>fable-security</code>);</li>
+<li>blocking behavior is already known and needs implementation (<code>fable-execute</code>).</li>
+</ul>
+<h2>Review Classification</h2>
+<p>Classify the change because different diffs deserve different review depth.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Change</th><th>Primary review focus</th></tr></thead><tbody>
+<tr><td>Bug fix</td><td>root cause, regression test, adjacent paths</td></tr>
+<tr><td>New feature</td><td>contract, error states, lifecycle, compatibility</td></tr>
+<tr><td>Refactor</td><td>invariant preservation, accidental behavior delta</td></tr>
+<tr><td>Concurrency</td><td>ordering, shared state, cleanup, race/deadlock</td></tr>
+<tr><td>Persistence/migration</td><td>partial failure, transactions, compatibility, rollback</td></tr>
+<tr><td>Public API/CLI</td><td>callers, defaults, error/exit behavior, versioning</td></tr>
+<tr><td>Dependency upgrade</td><td>changed semantics, transitive behavior, config</td></tr>
+<tr><td>Packaging/build</td><td>exports, artifact contents, generated files, runtime entrypoints</td></tr>
+</tbody></table></div>
+<h2>Review Protocol</h2>
+<h3>Stage 1 — Reconstruct intent independently</h3>
+<p>Read:</p>
+<ul class="docs-list">
+<li>user/issue/card acceptance;</li>
+<li>diff against the correct base;</li>
+<li>relevant existing contracts/tests/instructions.</li>
+</ul>
+<p>State the intended behavior in your own words before judging the implementation.</p>
+<h3>Stage 2 — Read the whole diff, then trace risky changes</h3>
+<p>Do not review isolated snippets only. Identify:</p>
+<ul class="docs-list">
+<li>public/observable behavior delta;</li>
+<li>state/data-flow delta;</li>
+<li>control-flow/error delta;</li>
+<li>lifecycle/resource delta;</li>
+<li>concurrency delta;</li>
+<li>config/generated/package delta.</li>
+</ul>
+<p>Trace important changes into callers/callees where a local diff cannot establish correctness.</p>
+<h3>Stage 3 — Check invariants and failure paths</h3>
+<p>For each material change ask:</p>
+<ul class="docs-list">
+<li>What must remain true before/after?</li>
+<li>What happens on invalid input?</li>
+<li>What happens when dependency call fails/partially succeeds?</li>
+<li>Are cleanup/rollback paths complete?</li>
+<li>Can retries duplicate side effects?</li>
+<li>Can async work outlive ownership/lifecycle?</li>
+<li>Can old/new formats/callers coexist?</li>
+</ul>
+<h3>Stage 4 — Check tests as evidence, not decoration</h3>
+<p>Ask:</p>
+<ul class="docs-list">
+<li>Does a test fail on the pre-fix bug/old behavior where appropriate?</li>
+<li>Does it exercise the real changed boundary?</li>
+<li>Are important negative/error/concurrency/compatibility paths missing?</li>
+<li>Were tests weakened/snapshots blindly updated?</li>
+<li>Could implementation be wrong while tests still pass?</li>
+</ul>
+<p>Do not demand tests for trivial static changes when no meaningful behavior is testable.</p>
+<h3>Stage 5 — Check scope and maintainability only after correctness</h3>
+<p>Look for:</p>
+<ul class="docs-list">
+<li>hidden unrelated refactors;</li>
+<li>duplicated logic that creates inconsistent behavior;</li>
+<li>new abstractions whose complexity exceeds need;</li>
+<li>API/config names that misrepresent semantics;</li>
+<li>comments/docs inconsistent with new behavior.</li>
+</ul>
+<p>Avoid style-only comments unless repository rules make them blocking or they materially reduce readability/correctness.</p>
+<h3>Stage 6 — Calibrate findings (Alibaba OCR Line-Level Anchoring)</h3>
+<p>Each finding must adhere to the Alibaba OCR schema and exact line anchoring:</p>
+<ul class="docs-list">
+<li><strong>path</strong>: relative file path</li>
+<li><strong>start_line</strong> / <strong>end_line</strong>: exact line numbers in the new file (both 0 means unanchored positioning, requiring fallback inspection)</li>
+<li><strong>severity</strong>: <code>critical</code> / <code>high</code> / <code>medium</code> / <code>low</code></li>
+<li><strong>category</strong>: <code>bug</code> / <code>security</code> / <code>performance</code> / <code>maintainability</code> / <code>test</code> / <code>style</code> / <code>documentation</code> / <code>other</code></li>
+<li><strong>concrete failure scenario</strong>: why this code will fail or breach invariants</li>
+<li><strong>suggestion_code</strong>: actionable code replacement</li>
+</ul>
+<p>Discard trivial low-severity style nits or noise. If you cannot describe a plausible failure mode, it is not a defect.</p>
+<h3>Stage 7 — Produce verdict</h3>
+<ul class="docs-list">
+<li><strong>APPROVE</strong>: no critical or high severity defects found; remaining suggestions are optional.</li>
+<li><strong>CHANGES_REQUIRED</strong>: at least one critical or high issue can cause incorrect behavior, data corruption, vulnerability, or contract violation.</li>
+<li><strong>INCOMPLETE</strong>: review cannot establish correctness because required context/diff/evidence is missing or coverage rate is incomplete.</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Never approve without reading the actual diff against a known base.</li>
+<li>A passing test suite lowers some risk but does not cancel a code-level defect visible in the diff.</li>
+<li>A suspicious pattern is not a finding until tied to a realistic failure mode.</li>
+<li>Missing test is blocking only when the untested behavior is material and existing evidence cannot cover it.</li>
+<li>For concurrency, reason about interleavings/ownership, not just whether promises are awaited.</li>
+<li>For error handling, trace where the error goes and what state may already have changed.</li>
+<li>For migrations, consider partial execution and mixed-version operation.</li>
+<li>For package/config changes, review the user-installed/runtime artifact path, not just source shape.</li>
+<li>If a blocking issue is narrow and understood, produce one repair card to <code>fable-execute</code>; if root cause is uncertain/repeated, route to <code>fable-recover</code>.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Review is independent and read-only.</li>
+<li>Findings are grounded in changed code or directly affected contracts.</li>
+<li>No severity inflation to fill a quota.</li>
+<li>No style preference masquerades as correctness.</li>
+<li>Approval does not claim security proof unless security review actually ran.</li>
+<li>Review verdict covers the actual diff/base inspected.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Rubber stamp</h3>
+<p>Reviewer relies on tests/author summary and barely reads diff. Re-run full diff review.</p>
+<h3>Pattern matching without failure model</h3>
+<p>Reviewer flags a pattern because it &quot;looks bad&quot; but cannot show impact. Investigate or drop it.</p>
+<h3>Local-only review</h3>
+<p>Change is correct locally but breaks caller/contract/lifecycle. Trace affected boundary.</p>
+<h3>Test deference</h3>
+<p>Reviewer assumes green tests prove all semantics. Inspect test adequacy and changed risk.</p>
+<h3>Scope blindness</h3>
+<p>Unrelated mutation or accidental behavior change hides in a large diff. Compare against card/non-goals.</p>
+<h3>Noise overload</h3>
+<p>Many cosmetic suggestions obscure a real defect. Prioritize by impact and remove quota-driven comments.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>approving based on PR description alone;</li>
+<li>line-by-line style commentary before understanding behavior;</li>
+<li>&quot;add error handling&quot; without naming a failing error path;</li>
+<li>&quot;add tests&quot; without naming the missing risk;</li>
+<li>flagging every <code>any</code>, TODO, or long function independent of change impact;</li>
+<li>assuming an awaited promise means concurrency is safe;</li>
+<li>reviewing only files changed without following a public contract to callers;</li>
+<li>treating absence of findings as evidence the review was deep.</li>
+</ul>
+<h2>Finding Template</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Path: src/example.ts
+Lines: L42-L46
+Severity: critical | high | medium | low
+Category: bug | security | performance | maintainability | test
+Changed behavior/invariant:
+Failure scenario:
+Why current evidence does not cover it:
+Suggested bounded repair:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Review completes when:</p>
+<ul class="docs-list">
+<li>complete relevant diff/base was read;</li>
+<li>intended behavior and changed risks were reconstructed;</li>
+<li>important invariants/error/concurrency/compatibility/test surfaces were checked as applicable;</li>
+<li>every reported issue has a concrete failure mode and location;</li>
+<li>low-value noise is removed;</li>
+<li>verdict is APPROVE, CHANGES_REQUIRED, or INCOMPLETE with evidence.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Alibaba OCR Rulesets &amp; Delegation Guide: <code>references/alibaba-ocr-rulesets.md</code></li>
+<li>Deep guide: <code>references/behavioral-diff-review-playbook.md</code></li>
+<li>Existing checklist: <code>references/diff-review-checklist.md</code></li>
+<li>Example: <code>examples/code-review-finding.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# get-fable post-commit hook
+# Records workspace mutation after commit
+
+if [ ! -d ".fable" ]; then
+  exit 0
+fi
+
+if command -v get-fable >/dev/null 2>&1; then
+  CMD="get-fable"
+elif [ -f "./bin/get-fable.js" ]; then
+  CMD="bun ./bin/get-fable.js"
+else
+  exit 0
+fi
+
+$CMD mutation "git commit $(git rev-parse --short HEAD 2>/dev/null || echo '')" >/dev/null 2>&1 || true
+exit 0

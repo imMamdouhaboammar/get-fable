@@ -1,0 +1,66 @@
+# Planning example only. Production catalog values are populated and verified during adapter qualification.
+schema_version = 1
+id = "fable/rtk"
+name = "RTK"
+description = "Shell, test, and Git output compaction capability"
+kind = "tool"
+classes = ["context-reduction"]
+provides = ["shell.output.compaction", "test.output.compaction", "git.output.compaction"]
+permissions = ["process:spawn", "filesystem.read:workspace"]
+platforms = ["macos/arm64", "macos/x86_64", "linux/x86_64", "linux/arm64"]
+
+[source]
+type = "github-release"
+repository = "https://github.com/rtk-ai/rtk"
+
+[version]
+strategy = "github-release"
+channel = "stable"
+constraint = ">=0.0.0"
+
+[install]
+driver = "github_release"
+target_scope = "eco-managed"
+artifact_pattern = "platform-mapped-by-adapter"
+
+[[dependencies]]
+type = "runtime"
+target = "binary:git"
+constraint = ">=2.40"
+
+[[conflicts]]
+kind = "hook-order"
+target = "feature:shell.command-rewriter"
+reason_code = "ECO_HOOK_ORDER_REQUIRED"
+
+[health]
+kind = "command"
+command = ["rtk", "--version"]
+timeout_ms = 3000
+
+[[hosts]]
+id = "codex"
+mode = "wrapper"
+minimum_grade = "C"
+
+[[hosts]]
+id = "claude"
+mode = "wrapper"
+minimum_grade = "C"
+
+[runtime]
+intents = ["reduce shell output", "reduce test output", "reduce git output"]
+task_shapes = ["implementation", "verification", "review"]
+mutates_workspace = false
+parallel_safe = true
+network_required = false
+interactive = false
+expected_cost = "free-local"
+fallbacks = []
+
+[governance]
+support_tier = "stable"
+license = "record-from-upstream-during-qualification"
+adapter_owner = "get-fable"
+security_sensitive = false
+qualification_record = "eco/qualification/rtk.json"

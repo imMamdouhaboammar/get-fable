@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-eco.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-eco.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-eco.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-eco.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-eco — get-fable Skill Reference">
+  <meta property="og:description" content="Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-eco.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-eco — get-fable Skill">
+  <meta name="twitter:description" content="Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-eco — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-eco Skill Specification",
+    "description": "Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-eco.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-eco</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-eco.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-eco.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-eco.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-planned">Phase: planned</span>
+          <span class="order-badge">Order: 230</span>
+        </div>
+        <h1 class="skill-title">fable-eco</h1>
+        <p class="skill-lead">Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "discover-environment" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">planned</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-plan.html">fable-plan</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">discover-environment</span> <span class="intent-chip">plan-capabilities</span> <span class="intent-chip">install-capabilities</span> <span class="intent-chip">update-capabilities</span> <span class="intent-chip">repair-capabilities</span> <span class="intent-chip">explain-run</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>deterministic_resolution</code></li><li><code>transaction_journal_committed</code></li><li><code>health_check_passed</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-plan.html">fable-plan</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-verify.html">fable-verify</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Eco</h1>
+<p>Curated capability distribution and execution-control subsystem for get-fable.</p>
+<h2>Purpose</h2>
+<p>Bridge the gap between fragmented developer tool installation and disciplined agentic capability activation. <code>fable-eco</code> enforces the architectural principle of &quot;install many, activate few&quot;: it provisions curated AI engineering capabilities (code graph indexers, review helpers, browser tools, testing runners) transactionally with immutable pinned versions and compiles task-bounded execution contracts for routed get-fable tasks under explicit least-privilege policy.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>Discovering local machine runtimes, compilers, package managers, and coding host configurations without side effects.</li>
+<li>Resolving, planning, installing, updating, or rolling back curated ecosystem capabilities.</li>
+<li>Managing project capability bindings in <code>.fable/eco.json</code> to declare required capabilities, profiles, and minimum contract versions.</li>
+<li>Diagnosing or repairing ecosystem integrity, lockfiles, journals, or broken symlinks with non-mutating doctor checks.</li>
+<li>Compiling deterministic capability execution contracts for agent tasks based on lifecycle routing decisions.</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>High-level lifecycle task routing or state management (use <code>get-fable</code>).</li>
+<li>Purely internal code authoring without external capability requirements (use <code>fable-execute</code>).</li>
+<li>Driving test-first red-green-refactor loops (use <code>fable-tdd</code>).</li>
+<li>Diagnosing repeated execution failures or broken test harnesses (use <code>fable-recover</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>routing_decision</code>: Structured routing decision from <code>fable_core::RoutingDecision</code> containing selected skill, task shape, and intent.</li>
+<li><code>project_binding</code>: Optional workspace binding from <code>.fable/eco.json</code> declaring active profiles, pinned capabilities, and policy overrides.</li>
+<li><code>catalog_layers</code>: Multi-layer capability manifests across official distribution, team repositories, or local directories.</li>
+<li><code>machine_facts</code>: Observed system runtimes, OS platform, package managers, and host configuration state.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>install_plan</code>: Topological Directed Acyclic Graph (DAG) of installation operations with rollback classifications.</li>
+<li><code>lockfile</code>: Cryptographically hashed <code>.fable/eco.lock</code> with SHA-256 digests and provenance metadata.</li>
+<li><code>execution_contract</code>: Task-bounded manifest exposing only authorized tools, environment variables, and execution limits.</li>
+<li><code>capability_receipt</code>: Structured record documenting host configuration edits, installed versions, and active ownership.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Discovery</strong>: Run non-mutating probes to discover machine facts, installed runtimes, existing capability versions, and host configuration files.</p>
+<p>2. <strong>Catalog Loading &amp; Validation</strong>: Ingest capability and profile manifests across official, team, and local catalog layers, enforcing semantic schema validation.</p>
+<p>3. <strong>Deterministic Resolution</strong>: Build dependency and conflict graphs, resolve transitive capability requirements, and detect incompatibilities or missing prerequisites.</p>
+<p>4. <strong>Plan Generation</strong>: Construct an execution plan outlining all file copies, download extractions, environment updates, and health checks before applying any mutation.</p>
+<p>5. <strong>Transactional Provisioning</strong>: Execute operations inside a staging sandbox with a write-ahead journal (<code>.fable/eco-journal.json</code>), verifying checksums and atomic commit.</p>
+<p>6. <strong>Health Verification</strong>: Run post-installation health probes for each installed capability to prove operational readiness.</p>
+<p>7. <strong>Receipt &amp; Lock Sealing</strong>: Update <code>.fable/eco.lock</code> and write host configuration ownership receipts.</p>
+<p>8. <strong>Contract Compilation</strong>: For routed tasks, filter installed capabilities against the routing decision and policy rules to compile an execution contract.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Plan before mutation: Never perform file modifications, downloads, or configuration edits without a verified pre-execution plan.</li>
+<li>Immutability on stable channel: Stable capabilities must resolve to immutable git commits or cryptographically hashed release archives (reject <code>main</code> or <code>HEAD</code>).</li>
+<li>Monotonic permission layering: Project policies can only restrict capabilities; project policies cannot override machine-wide deny rules.</li>
+<li>Least privilege capability activation: Expose only the specific capabilities required by the current lifecycle phase and task shape.</li>
+<li>Rollback on failure: If a health check or installation step fails during provisioning, trigger automated rollback using the transaction journal.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Execute discovery and resolution natively via the high-performance <code>fable-eco</code> Rust crate.</li>
+<li>Use atomic filesystem staging and copy operations with strict path traversal prevention (<code>..</code> escapes prohibited).</li>
+<li>Execute read-only probes without altering system files or environment state.</li>
+<li>Validate all incoming manifests against canonical JSON Schema definitions in <code>schemas/eco/</code>.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Discovery results must include structured machine facts (OS, architecture, runtimes, package managers, hosts).</li>
+<li>Installation plans must list all operations with explicit <code>id</code>, <code>kind</code>, <code>depends_on</code>, and <code>rollback_class</code>.</li>
+<li>Execution contracts must specify exact capability IDs, permitted tools, network policies, and enforcement grades.</li>
+<li>Completed operations require passing post-install health check evidence before lockfile persistence.</li>
+</ul>
+<h2>Failure Handling</h2>
+<ul class="docs-list">
+<li>When transaction staging fails or an unexpected crash occurs, classify journal state (<code>Clean</code>, <code>RecoverableRollback</code>, <code>RecoverableCommit</code>, <code>Corrupted</code>) and recover.</li>
+<li>If a required runtime or dependency is unavailable on the host machine, mark the capability as degraded or incompatible and report remediation steps.</li>
+<li>In case of conflicting capability requirements, halt resolution and output conflicting capability chains.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>All selected capabilities successfully staged, verified, and committed without unhandled errors.</li>
+<li>Target host configuration files patched cleanly with verified ownership tags.</li>
+<li>Post-install health checks pass with exit code 0 and valid output.</li>
+<li>Deterministic <code>.fable/eco.lock</code> generated and synchronized with workspace state.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

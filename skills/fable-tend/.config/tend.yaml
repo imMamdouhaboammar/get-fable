@@ -1,0 +1,9 @@
+bot_name: tend-agent
+memory_gist: true
+
+setup:
+  - uses: astral-sh/setup-uv@v10.1.0
+
+workflows:
+  ci-fix:
+    watched_workflows: ["ci"]

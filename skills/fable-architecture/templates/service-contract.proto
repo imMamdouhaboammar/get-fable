@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package fable.architecture.v1;
+
+option go_package = "fable/architecture/v1;archv1";
+
+service DomainService {
+  // Synchronous request-response call between internal microservices
+  rpc InvokeDomainOperation(DomainRequest) returns (DomainResponse);
+
+  // Server-streaming RPC for real-time progress and delta emission
+  rpc StreamDomainEvents(EventSubscriptionRequest) returns (stream DomainEvent);
+}
+
+message DomainRequest {
+  string request_id = 1;
+  string caller_service = 2;
+  string operation = 3;
+  bytes payload = 4;
+  map<string, string> metadata = 5;
+}
+
+message DomainResponse {
+  string request_id = 1;
+  int32 status_code = 2;
+  string message = 3;
+  bytes result = 4;
+  int64 latency_micros = 5;
+}
+
+message EventSubscriptionRequest {
+  string subscriber_id = 1;
+  string topic = 2;
+  int64 start_offset = 3;
+}
+
+message DomainEvent {
+  string event_id = 1;
+  string event_type = 2;
+  int64 timestamp = 3;
+  bytes data = 4;
+}

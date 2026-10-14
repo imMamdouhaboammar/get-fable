@@ -1,0 +1,59 @@
+# get-fable
+
+> Evidence-driven coding lifecycle discipline and reusable Skills for AI coding agents.
+
+get-fable improves working conditions for AI coding agents (Claude Code, Antigravity, Grok, Codex, Cursor, etc.) through persistent state machines, lifecycle hooks, 42 canonical skills, automated verification gates, and error recovery.
+
+## Documentation & Guides
+- [User Guide & Technical Documentation](https://get-fable.vercel.app/guide.html): Comprehensive lifecycle, state machine, hooks, and CLI reference.
+- [Workflows & Production Prompts](https://get-fable.vercel.app/workflows.html): End-to-end multi-agent pipelines and copy-paste prompt templates.
+- [Pricing & Open Source](https://get-fable.vercel.app/pricing.html): Free and open source MIT license details.
+- [Skills Catalog](https://get-fable.vercel.app/skills.html): Index of all 42 canonical skills across 8 packs.
+
+## Canonical Skills (42)
+- [get-fable](https://get-fable.vercel.app/skills/get-fable.html): Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.
+- [fable-discover](https://get-fable.vercel.app/skills/fable-discover.html): Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.
+- [fable-research](https://get-fable.vercel.app/skills/fable-research.html): Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.
+- [fable-plan](https://get-fable.vercel.app/skills/fable-plan.html): Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.
+- [fable-tdd](https://get-fable.vercel.app/skills/fable-tdd.html): Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.
+- [fable-delegate](https://get-fable.vercel.app/skills/fable-delegate.html): Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.
+- [fable-execute](https://get-fable.vercel.app/skills/fable-execute.html): Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.
+- [fable-verify](https://get-fable.vercel.app/skills/fable-verify.html): Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.
+- [fable-review](https://get-fable.vercel.app/skills/fable-review.html): Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.
+- [fable-security](https://get-fable.vercel.app/skills/fable-security.html): Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.
+- [fable-redteam](https://get-fable.vercel.app/skills/fable-redteam.html): Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets.
+- [fable-heal](https://get-fable.vercel.app/skills/fable-heal.html): Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.
+- [fable-release](https://get-fable.vercel.app/skills/fable-release.html): Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.
+- [fable-handoff](https://get-fable.vercel.app/skills/fable-handoff.html): Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.
+- [fable-eval](https://get-fable.vercel.app/skills/fable-eval.html): Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.
+- [fable-learning](https://get-fable.vercel.app/skills/fable-learning.html): Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.
+- [fable-recover](https://get-fable.vercel.app/skills/fable-recover.html): Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.
+- [fable-dataviz](https://get-fable.vercel.app/skills/fable-dataviz.html): Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.
+- [fable-artifact](https://get-fable.vercel.app/skills/fable-artifact.html): Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.
+- [fable-simplify](https://get-fable.vercel.app/skills/fable-simplify.html): Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.
+- [fable-loop](https://get-fable.vercel.app/skills/fable-loop.html): Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.
+- [fable-run](https://get-fable.vercel.app/skills/fable-run.html): Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.
+- [fable-memory](https://get-fable.vercel.app/skills/fable-memory.html): Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.
+- [fable-config](https://get-fable.vercel.app/skills/fable-config.html): Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.
+- [fable-simulator](https://get-fable.vercel.app/skills/fable-simulator.html): Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.
+- [fable-cowork](https://get-fable.vercel.app/skills/fable-cowork.html): Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.
+- [fable-spark](https://get-fable.vercel.app/skills/fable-spark.html): Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.
+- [fable-skill-creator](https://get-fable.vercel.app/skills/fable-skill-creator.html): Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.
+- [fable-architecture](https://get-fable.vercel.app/skills/fable-architecture.html): Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture.
+- [fable-eco](https://get-fable.vercel.app/skills/fable-eco.html): Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.
+- [fable-context-thrift](https://get-fable.vercel.app/skills/fable-context-thrift.html): Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.
+- [fable-finish-your-turn](https://get-fable.vercel.app/skills/fable-finish-your-turn.html): Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.
+- [fable-native-code](https://get-fable.vercel.app/skills/fable-native-code.html): Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.
+- [fable-outcome-first](https://get-fable.vercel.app/skills/fable-outcome-first.html): Response styling policy enforcing direct first-sentence answers and zero sycophancy.
+- [fable-prove-it](https://get-fable.vercel.app/skills/fable-prove-it.html): Evidence precedence and verification rung enforcement preventing unverified claims.
+- [fable-scope-discipline](https://get-fable.vercel.app/skills/fable-scope-discipline.html): Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.
+- [fable-domain](https://get-fable.vercel.app/skills/fable-domain.html): Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.
+- [fable-judge](https://get-fable.vercel.app/skills/fable-judge.html): Adversarial verification of finished work detecting weakened tests and false completion claims.
+- [fable-method](https://get-fable.vercel.app/skills/fable-method.html): Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.
+- [fable-council](https://get-fable.vercel.app/skills/fable-council.html): Convene multi-agent council across installed CLI agents to deliberate before finalizing plans.
+- [fable-tend](https://get-fable.vercel.app/skills/fable-tend.html): Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage.
+- [fable-wise](https://get-fable.vercel.app/skills/fable-wise.html): Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.
+
+## Optional Resources
+- [Full Context Bundle](https://get-fable.vercel.app/llms-full.txt): Complete documentation and skill specifications in a single text file.
+- [GitHub Repository](https://github.com/imMamdouhaboammar/get-fable): Source code, tests, and lifecycle hooks.

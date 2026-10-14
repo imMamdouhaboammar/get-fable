@@ -1,0 +1,25 @@
+<<header>>
+name: tend-triage
+on:
+  issues:
+    types: [opened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    if: <<fork_guard_prefix(cfg)>><<tend_enabled>> && <<not_bookkeeping()>>
+    runs-on: ubuntu-24.04
+<<environment()>>
+    permissions:
+<<permissions()>>
+    steps:
+<<react_eyes('issues/${{ github.event.issue.number }}')>>
+
+<<checkout(cfg, ref=cfg.default_branch)>>
+<<setup>>
+<<agent_step(cfg, block_input('prompt', prompt))>>
+
+<<unreact_eyes(cfg, 'issues/${{ github.event.issue.number }}', if_condition='always()')>>

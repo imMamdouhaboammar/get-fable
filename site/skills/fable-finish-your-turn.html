@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-finish-your-turn.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-finish-your-turn.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-finish-your-turn.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-finish-your-turn.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-finish-your-turn — get-fable Skill Reference">
+  <meta property="og:description" content="Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-finish-your-turn.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-finish-your-turn — get-fable Skill">
+  <meta name="twitter:description" content="Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-finish-your-turn — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-finish-your-turn Skill Specification",
+    "description": "Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.",
+    "articleSection": "Delivery Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-finish-your-turn.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-finish-your-turn</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-finish-your-turn.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-finish-your-turn.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-finish-your-turn.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Delivery Pack</span>
+          <span class="phase-badge phase-executing">Phase: executing</span>
+          <span class="order-badge">Order: 250</span>
+        </div>
+        <h1 class="skill-title">fable-finish-your-turn</h1>
+        <p class="skill-lead">Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "finish-turn" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Delivery Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">executing</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>Yes (advances mutationGeneration)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">finish-turn</span> <span class="intent-chip">complete-task</span> <span class="intent-chip">diagnose-error</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>invariants-preserved</code></li><li><code>errors-resolved</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Finish Your Turn</h1>
+<p>A turn ends when the work is done or you are blocked on something only the user can provide. It does not end because you&#039;d like confirmation, because an error occurred, or because the session feels long.</p>
+<h2>Purpose</h2>
+<p>Enforce end-of-turn completion discipline. Eliminate speculative question-asking, timid delegation upward, abandoned investigations at first error, and half-done work disguised as future promises or TODO lists.</p>
+<h2>When to Use</h2>
+<ul class="docs-list">
+<li>Before ending any agent turn that made code changes, ran commands, or generated artifacts.</li>
+<li>When tempted to ask &quot;Want me to…?&quot;, &quot;Shall I…?&quot;, or &quot;Should I proceed with…?&quot;.</li>
+<li>When encountering an unexpected test failure or compiler error during execution.</li>
+<li>When drafting the final response paragraph of an engineering turn.</li>
+</ul>
+<h2>When NOT to Use</h2>
+<ul class="docs-list">
+<li>When an action is destructive, irreversible, touches remote production, or requires secret credentials (stop and ask the user).</li>
+<li>When the user explicitly requested assessment, design feedback, or architectural ideation without execution (use <code>fable-artifact</code> or <code>fable-discover</code>).</li>
+<li>Initial task routing across lifecycle phases (use <code>get-fable</code>).</li>
+</ul>
+<h2>Inputs</h2>
+<ul class="docs-list">
+<li><code>deliverable_state</code>: The current status of modified files, test outputs, and diagnostic traces.</li>
+<li><code>turn_execution_history</code>: Tool actions executed during the current turn.</li>
+</ul>
+<h2>Expected Outputs</h2>
+<ul class="docs-list">
+<li><code>completed_outcome</code>: A finished, verified engineering result with zero unexecuted promises.</li>
+<li><code>honest_blocker</code>: An explicit blocker requiring human authority if an irreversible boundary was reached.</li>
+</ul>
+<h2>Procedure</h2>
+<p>1. <strong>Reversible &amp; In Scope Principle</strong>: If an action is reversible and implied by the user&#039;s task, execute it immediately. Never ask permission for implied, reversible steps.</p>
+<p>2. <strong>The Last-Paragraph Check</strong>: Before sending your response, inspect your final paragraph. If it contains a plan, a list of next steps, a question a tool call could answer, or a promise (&quot;I&#039;ll…&quot;, &quot;Next I would…&quot;) — that is a to-do list, not an ending. Do the work now.</p>
+<p>3. <strong>Errors are Yours</strong>: A failing test or first error is the beginning of investigation, not the end of your turn. Inspect the traceback, formulate a fix, apply it, and re-verify.</p>
+<p>4. <strong>Missing Information: Look First</strong>: Check files, command output, and documentation before asking. Ask only for what lives exclusively in the user&#039;s head (credentials, business priorities, domain choices).</p>
+<p>5. <strong>Legitimate Stops</strong>: Stop only for destructive or irreversible actions (deletions, force-pushes, sending external traffic, production mutations), genuine out-of-scope pivots, or missing credentials.</p>
+<p>6. <strong>Assessment Mode</strong>: When the user is exploring, asking &quot;why&quot;, or thinking out loud, the deliverable IS the assessment. Report findings clearly without mutating files until requested.</p>
+<p>7. <strong>Settled Decisions Stay Settled</strong>: Decisions already agreed upon this conversation stay made; established facts stay established.</p>
+<h2>Decision Rules</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Thought</th><th>Reality</th></tr></thead><tbody>
+<tr><td>&quot;I should check with the user before proceeding&quot;</td><td>If it&#039;s reversible and in scope, checking IS the work you were asked to do. The existing code&#039;s conventions usually already answer the question.</td></tr>
+<tr><td>&quot;Offering options is collaborative&quot;</td><td>Options without a recommendation is delegation upward. Recommend, or just do it and note the choice.</td></tr>
+<tr><td>&quot;The test failure might be unrelated / a flake&quot;</td><td>It asserts something your change touches. Investigate before you&#039;re allowed that theory.</td></tr>
+<tr><td>&quot;This session is getting long, better to checkpoint&quot;</td><td>Length is not done-ness. Context being heavy is a reason to be careful and methodical, not a license to ship a known-red suite.</td></tr>
+<tr><td>&quot;I&#039;ll summarize the plan and let them confirm&quot;</td><td>Plans for reversible, in-scope work execute. They don&#039;t await applause.</td></tr>
+<tr><td>&quot;Re-run it; if it passes, call it a flake&quot;</td><td>Re-running a deterministic assertion launders reluctance to look as diligence.</td></tr>
+</tbody></table></div>
+<ul class="docs-list">
+<li>Never end a turn on an uninvestigated test failure or build breakage.</li>
+<li>Never present options without a definitive recommendation or applied solution.</li>
+</ul>
+<h2>Tool Policy</h2>
+<ul class="docs-list">
+<li>Continue tool execution loop until all required tests pass or an authentic irreversible boundary is reached.</li>
+<li>Run diagnostic commands and logs directly instead of prompting the user to run them.</li>
+<li>Do not make external destructive network or filesystem calls without user authority.</li>
+</ul>
+<h2>Evidence Requirements</h2>
+<ul class="docs-list">
+<li>Attach machine-checked evidence showing the final state passes tests and typechecks.</li>
+<li>If blocked, document the exact command output, error trace, and specific human decision needed.</li>
+</ul>
+<h2>Failure Handling</h2>
+<p>Keep working instead of stopping when you catch any of these Red Flags:</p>
+<ul class="docs-list">
+<li>&quot;Want me to…?&quot; / &quot;Shall I…?&quot; / &quot;Should I go ahead and…?&quot;</li>
+<li>Final paragraph contains &quot;Next steps&quot;, &quot;I&#039;ll…&quot;, &quot;Once you confirm…&quot;</li>
+<li>&quot;Let me know how you&#039;d like to proceed&quot; on anything reversible.</li>
+<li>Reporting a failing state plus a question, when investigation was possible.</li>
+</ul>
+<h2>Completion Criteria</h2>
+<ul class="docs-list">
+<li>The requested change is fully implemented and tested.</li>
+<li>All tests touching the change are green.</li>
+<li>No dangling promises or unexecuted tasks remain in the final response.</li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+# Useful Workflows and Production Prompts for get-fable
+
+> **Battle-tested recipes, end-to-end multi-agent pipelines, and copy-paste prompts to unlock the full power of get-fable across Claude Code, Antigravity, Grok, Codex, and Cursor.**
+
+---
+
+## Part 1: High-Leverage Autonomous Workflows
+
+### Workflow 1: Zero-Drift Feature Development (The Canonical TDD Loop)
+**Goal:** Implement new features with 100% test coverage and strict scope boundaries.
+
+```bash
+# 1. Inspect execution path and dependencies
+bun ./bin/get-fable.js route "inspect existing payment webhooks before adding Stripe support" --apply
+
+# 2. Define bounded spec and acceptance criteria
+bun ./bin/get-fable.js card "Implement idempotent Stripe invoice.paid webhook handler"
+bun ./bin/get-fable.js state planned --substantial
+
+# 3. Write failing regression test first (Red phase)
+bun ./bin/get-fable.js route "write failing test for duplicate Stripe event IDs" --apply
+
+# 4. Implement minimal production logic (Green phase)
+bun ./bin/get-fable.js state executing --substantial
+
+# 5. Execute test suite and seal proof
+bun test test/stripe-webhook.test.ts
+bun ./bin/get-fable.js evidence pass test "bun test test/stripe-webhook.test.ts" "duplicate event IDs handled idempotently"
+
+# 6. Certify release readiness
+bun ./bin/get-fable.js route "certify release readiness" --apply
+bun ./bin/get-fable.js state complete
+```
+
+---
+
+### Workflow 2: Automated Red Team & Self-Healing Loop
+**Goal:** Run black-box security scanning and automatically remediate vulnerabilities.
+
+```bash
+# 1. Execute penetration test against staging service
+bun ./bin/get-fable.js redteam scan --target https://api.staging.example.com --profile standard --fail-on-cvss 7.0
+
+# 2. View SARIF report output in docs/security/
+cat docs/security/REDTEAM_REPORT.md
+
+# 3. Trigger autonomous healing specialist
+bun ./bin/get-fable.js route "synthesize and verify patches for SARIF findings" --apply
+bun ./bin/get-fable.js heal
+
+# 4. Verify remediations and generate attestation
+bun ./bin/get-fable.js evidence pass security "fable-heal" "All 3 high-severity findings remediated and regression-tested"
+```
+
+---
+
+### Workflow 3: Legacy Refactoring & AI Anti-Slop (Fable-Wise Loop)
+**Goal:** Strip AI boilerplate, eliminate duplicated configurations, and rewrite drifted files to clean v0.
+
+```bash
+# 1. Activate Fable-Wise cognitive reflex
+bun ./bin/get-fable.js route "consolidate scattered configs into single source of truth" --apply
+
+# 2. Execute /ssotize to unify parameters
+# 3. Execute /detool to replace bloated third-party libraries with native language constructs
+# 4. Execute /feynman to stress-test clarity
+# 5. Verify zero behavior drift
+bun test
+bun ./bin/get-fable.js evidence pass test "bun test" "Refactored with 0 behavioral changes and -450 lines of boilerplate"
+```
+
+---
+
+### Workflow 4: Scale Threshold Architecture Inception
+**Goal:** Evaluate system requirements and enforce microservices decomposition before code generation.
+
+```bash
+# 1. Evaluate architectural vectors
+bun ./bin/get-fable.js arch-eval "High-throughput streaming analytics platform handling 50k events/sec with financial transaction settlement"
+
+# 2. If composite score >= 7.0, allowMonolith is locked to FALSE.
+# 3. Generate East-West gRPC Protobuf interfaces and worker bindings:
+bun ./bin/get-fable.js worker-serve
+```
+
+---
+
+### Workflow 5: Multi-Model Deliberation Council
+**Goal:** Convene a council across installed CLI agents before committing to risky technical decisions.
+
+```bash
+bun ./bin/get-fable.js route "convene council of Claude, Gemini, and Grok to evaluate Postgres vs DynamoDB for append-only audit ledger" --apply
+```
+
+---
+
+### Workflow 6: Failure Compounding & Durable Memory
+**Goal:** Automatically capture unexpected engineering lessons so future agents never repeat them.
+
+```bash
+# Extract durable lessons into Failure-lessons/ and agent-kernel
+bun ./bin/get-fable.js learn --failure-lessons
+```
+
+---
+
+## Part 2: Production Prompt Library
+
+### Prompt 1: Claude Code Frontier Executive Harness Directive
+Use this as the system directive in `CLAUDE.md` or session header:
+
+```markdown
+You are operating under get-fable execution discipline.
+Rules:
+1. Always run `bun ./bin/get-fable.js status` before touching code.
+2. Formulate a bounded spec and verify acceptance tests first.
+3. Every file mutation advances `mutationGeneration` — never claim completion with stale evidence.
+4. If two consecutive commands fail (failureStreak >= 2), halt and enter `fable-recover` diagnosis.
+5. Record passing evidence using `bun ./bin/get-fable.js evidence pass <kind> "<cmd>" "<detail>"` before closing.
+```
+
+---
+
+### Prompt 2: Antigravity / Gemini CLI Autonomous Superplatform Prompt
+```markdown
+Enforce the Compound Engineering 80/20 loop and get-fable lifecycle:
+- 80% planning, interface verification, and AST blast-radius checks before writing implementation.
+- Fable Circuit Breaker active: halt speculative edits if failureStreak >= 2.
+- 3-Pass Verification: Unit tests, Integration verification, AppSec audit.
+- Durable codification: Write every newly learned failure mechanism to Failure-lessons/.
+```
+
+---
+
+### Prompt 3: xAI Grok Bot Pairing Prompt
+```markdown
+You are Grok paired with get-fable.
+- Route every incoming ask through `bun ./bin/get-fable.js route "<task>"`.
+- Adhere to TOON format for all subagent payloads.
+- Apply ADR 0007 transport invariants: HTTP on edge, gRPC on internal services.
+- Zero sycophancy: answer direct, falsify claims ruthlessly.
+```
+
+---
+
+### Prompt 4: Fable-Wise Anti-Slop Directive
+```markdown
+Apply /fable-wise reflexes:
+- /re0: Rewrite drifted artifacts from a clean v0 rather than applying another fragile patch.
+- /ssotize: Audit scattered parameters and designate one single source of truth.
+- /detool: Replace incidental dependencies with native language primitives.
+- /hate: Identify the single fatal contrarian objection that could kill this architecture.
+- /sip: Verify with clean-and-true test suites before declaring success.
+```

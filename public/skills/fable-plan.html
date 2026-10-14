@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-plan.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-plan.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-plan.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-plan.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-plan — get-fable Skill Reference">
+  <meta property="og:description" content="Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-plan.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-plan — get-fable Skill">
+  <meta name="twitter:description" content="Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-plan — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-plan Skill Specification",
+    "description": "Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.",
+    "articleSection": "Core Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-plan.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-plan</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-plan.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-plan.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-plan.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Core Pack</span>
+          <span class="phase-badge phase-planned">Phase: planned</span>
+          <span class="order-badge">Order: 20</span>
+        </div>
+        <h1 class="skill-title">fable-plan</h1>
+        <p class="skill-lead">Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "architecture" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Core Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">planned</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-discover.html">fable-discover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">architecture</span> <span class="intent-chip">migration</span> <span class="intent-chip">decomposition</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>bounded-scope</code></li><li><code>named-acceptance</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-research.html">fable-research</a> <a class="token-link" href="../skills/fable-tdd.html">fable-tdd</a> <a class="token-link" href="../skills/fable-delegate.html">fable-delegate</a> <a class="token-link" href="../skills/fable-execute.html">fable-execute</a> <a class="token-link" href="../skills/fable-discover.html">fable-discover</a> <a class="token-link" href="../skills/fable-architecture.html">fable-architecture</a> <a class="token-link" href="../skills/fable-council.html">fable-council</a> <a class="token-link" href="../skills/fable-wise.html">fable-wise</a> <a class="token-link" href="../skills/fable-eco.html">fable-eco</a> <a class="token-link" href="../skills/fable-config.html">fable-config</a> <a class="token-link" href="../skills/fable-artifact.html">fable-artifact</a> <a class="token-link" href="../skills/fable-dataviz.html">fable-dataviz</a> <a class="token-link" href="../skills/fable-method.html">fable-method</a> <a class="token-link" href="../skills/fable-scope-discipline.html">fable-scope-discipline</a> <a class="token-link" href="../skills/fable-cowork.html">fable-cowork</a> <a class="token-link" href="../skills/fable-skill-creator.html">fable-skill-creator</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Plan</h1>
+<p>Turn grounded evidence into an executable change strategy with explicit dependencies, risk boundaries, acceptance proof, and integration ownership.</p>
+<h2>Mission</h2>
+<p>A plan is not a list of files to edit. It is a set of decisions that makes implementation boring enough to execute safely.</p>
+<p>The planner should remove architectural uncertainty, expose order constraints, define what &quot;done&quot; means, and separate work only where the pieces can genuinely be reasoned about and verified independently.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>the task spans multiple files/components or introduces a new contract;</li>
+<li>a migration, schema change, public API change, or cross-package refactor is required;</li>
+<li>implementation requires sequencing or rollback reasoning;</li>
+<li>parallel workers may help but ownership/integration must be designed;</li>
+<li>requirements are understood but not yet decomposed into verifiable work.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>load-bearing facts are still unknown (<code>fable-discover</code>/<code>fable-research</code>);</li>
+<li>the change is truly bounded to one obvious edit with clear acceptance (<code>fable-execute</code>);</li>
+<li>the immediate job is to reproduce a behavior in a test (<code>fable-tdd</code>).</li>
+</ul>
+<h2>Change Classification</h2>
+<p>Classify before decomposing.</p>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Change type</th><th>Main planning concern</th></tr></thead><tbody>
+<tr><td>Bounded behavior</td><td>acceptance and regression surface</td></tr>
+<tr><td>Cross-module feature</td><td>contracts + integration points</td></tr>
+<tr><td>Refactor</td><td>invariant preservation + staged compatibility</td></tr>
+<tr><td>Data/schema migration</td><td>forward/backward compatibility + rollback</td></tr>
+<tr><td>Public API/CLI</td><td>compatibility + versioning + docs/tests</td></tr>
+<tr><td>Dependency upgrade</td><td>behavior delta + transitive risk</td></tr>
+<tr><td>Security-sensitive</td><td>trust boundaries + fail-closed behavior</td></tr>
+<tr><td>Release/distribution</td><td>artifact boundaries + external verification</td></tr>
+</tbody></table></div>
+<h2>Planning Protocol</h2>
+<h3>Stage 1 — Restate the contract</h3>
+<p>Capture:</p>
+<ul class="docs-list">
+<li>requested outcome;</li>
+<li>non-goals;</li>
+<li>evidence already established;</li>
+<li>externally visible behavior that must not regress;</li>
+<li>unresolved items and why they are non-blocking.</li>
+</ul>
+<p>If a blocking unknown remains, stop and route back to discovery/research.</p>
+<h3>Stage 2 — Map the change graph</h3>
+<p>Identify:</p>
+<ul class="docs-list">
+<li>components touched;</li>
+<li>contracts between them;</li>
+<li>data/state transitions;</li>
+<li>migration or compatibility edges;</li>
+<li>shared integration hotspots;</li>
+<li>generated artifacts and their sources;</li>
+<li>verification surfaces.</li>
+</ul>
+<p>Represent ordering as dependencies, not just numbered tasks.</p>
+<h3>Stage 3 — Choose seams for decomposition</h3>
+<p>A card should have one coherent reason to change and one clear acceptance story.</p>
+<p>Do <strong>not</strong> require disjoint files as a universal rule. Two cards may touch one integration file sequentially if ownership/order is explicit. Conversely, two cards touching different files may still be unsafe to parallelize if they change one shared invariant or contract.</p>
+<h3>Stage 4 — Plan risk-first</h3>
+<p>Move high-uncertainty or irreversible decisions earlier where possible:</p>
+<ul class="docs-list">
+<li>prove migration shape before broad data rewrite;</li>
+<li>prove compatibility adapter before deleting legacy path;</li>
+<li>prove third-party API contract before wiring all call sites;</li>
+<li>introduce observability before risky runtime changes.</li>
+</ul>
+<h3>Stage 5 — Define each card</h3>
+<p>Each card must state:</p>
+<ul class="docs-list">
+<li>objective and user-visible effect;</li>
+<li>owned scope and prohibited scope;</li>
+<li>dependencies/preconditions;</li>
+<li>implementation notes only where they constrain correctness;</li>
+<li>acceptance evidence/commands;</li>
+<li>rollback or recovery note when failure is costly;</li>
+<li>handoff/integration expectation.</li>
+</ul>
+<h3>Stage 6 — Define integration ownership</h3>
+<p>Name who/what proves the combined result. Worker-local green is not enough for cross-card behavior.</p>
+<h3>Stage 7 — Check the plan against failure</h3>
+<p>Ask:</p>
+<ul class="docs-list">
+<li>What if card 2 fails after card 1 lands?</li>
+<li>Can old and new formats coexist during migration?</li>
+<li>Is any step irreversible?</li>
+<li>Does rollback preserve data/contracts?</li>
+<li>Are tests capable of detecting the main regression?</li>
+<li>Does parallel execution create merge or semantic conflicts?</li>
+</ul>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>Unknown architecture → <code>fable-discover</code>; unknown external contract → <code>fable-research</code>.</li>
+<li>Behavior change with a testable contract → route the first implementation card through <code>fable-tdd</code>.</li>
+<li>Parallelize only when dependencies, ownership, shared invariants, and integration points make concurrency safe.</li>
+<li>Prefer staged compatibility over flag-day replacement when old/new callers or persisted data may coexist.</li>
+<li>If a card cannot name falsifiable acceptance evidence, it is not ready.</li>
+<li>If planning produces more than roughly 5 tightly interdependent cards, consider milestone boundaries or a different architecture rather than mechanically splitting more.</li>
+<li>Generated files belong to the card that changes their source/generator, not as independent manual edits.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Every card traces back to a requirement or necessary enabling constraint.</li>
+<li>No blocking architectural unknown is hidden inside an execution card.</li>
+<li>Acceptance checks prove behavior, not merely file existence.</li>
+<li>Integration verification has an owner.</li>
+<li>Destructive/irreversible steps have explicit safeguards or rollback reasoning.</li>
+<li>Parallelism is justified by dependency analysis, not by file count alone.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Hidden dependency</h3>
+<p>A card unexpectedly requires another component. Update the dependency graph; do not let execution silently broaden scope.</p>
+<h3>False independence</h3>
+<p>Cards touch disjoint files but share one invariant/contract. Serialize or define a compatibility seam.</p>
+<h3>Acceptance weakness</h3>
+<p>A proposed check can pass while behavior is still broken. Strengthen the acceptance condition before execution.</p>
+<h3>Migration hazard</h3>
+<p>Old/new states can coexist in production but plan assumes atomic cutover. Add compatibility, backfill, or staged rollout.</p>
+<h3>Scope explosion</h3>
+<p>A card keeps discovering architectural work. Stop, return to discovery/plan, and redraw boundaries.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>one card per file;</li>
+<li>requiring disjoint files even when sequential integration is safer;</li>
+<li>parallelizing based only on &quot;different files&quot;;</li>
+<li>acceptance such as &quot;tests pass&quot; without naming relevant behavior;</li>
+<li>hiding migrations/rollbacks inside implementation prose;</li>
+<li>treating documentation/generated output as separate cards when they are part of one behavior change;</li>
+<li>producing a long task list with no dependency model;</li>
+<li>over-specifying code line-by-line before execution evidence exists.</li>
+</ul>
+<h2>Work Card Template</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Card: &lt;outcome&gt;
+Why: &lt;requirement/risk&gt;
+Depends on:
+Owns:
+Must not change:
+Behavior/invariant:
+Implementation constraints:
+Acceptance evidence:
+Rollback/recovery:
+Integration handoff:
+Parallel-safe with:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Planning is complete when:</p>
+<ul class="docs-list">
+<li>blocking unknowns are gone;</li>
+<li>dependency/order constraints are explicit;</li>
+<li>cards are coherent and bounded by behavior, not arbitrary file slicing;</li>
+<li>each card has falsifiable acceptance evidence;</li>
+<li>migration/compatibility/rollback concerns are addressed where relevant;</li>
+<li>parallel work, if proposed, has explicit semantic ownership and integration proof.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep decomposition guide: <code>references/risk-and-dependency-decomposition.md</code></li>
+<li>Existing decomposition rules: <code>references/decomposition-rules.md</code></li>
+<li>Template: <code>templates/work-card.template.md</code></li>
+<li>Example: <code>examples/multi-file-migration-plan.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

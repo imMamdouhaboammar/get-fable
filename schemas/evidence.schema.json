@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FableEvidenceSchema",
+  "type": "object",
+  "required": ["kind", "source", "result", "detail", "generation", "timestamp"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["test", "build", "runtime", "review", "observation", "security", "research", "receipt", "handoff"]
+    },
+    "source": { "type": "string", "minLength": 1 },
+    "result": { "type": "string", "enum": ["pass", "fail"] },
+    "detail": { "type": "string", "minLength": 1 },
+    "generation": { "type": "integer", "minimum": 0 },
+    "timestamp": { "type": "string" }
+  }
+}

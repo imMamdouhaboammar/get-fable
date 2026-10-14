@@ -1,0 +1,22 @@
+{
+  "$schema": "../../schemas/skill-package.schema.json",
+  "schemaVersion": 1,
+  "id": "<skill-id>",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/<domain-topic>.md"
+  ],
+  "templates": [
+    "templates/<artifact-template>.md"
+  ],
+  "examples": [
+    "examples/<usage-example>.md"
+  ],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": []
+}

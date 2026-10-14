@@ -1,0 +1,11 @@
+{
+  "name": "install-tend",
+  "description": "Set up tend — an autonomous junior maintainer for your GitHub repo, powered by Claude or OpenAI Codex.",
+  "author": {
+    "name": "Maximilian Roos",
+    "url": "https://github.com/max-sixty"
+  },
+  "repository": "https://github.com/max-sixty/tend",
+  "license": "MIT",
+  "keywords": ["ci", "github-actions", "setup", "automation"]
+}

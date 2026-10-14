@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-simulator.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-simulator.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-simulator.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-simulator.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-simulator — get-fable Skill Reference">
+  <meta property="og:description" content="Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-simulator.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-simulator — get-fable Skill">
+  <meta name="twitter:description" content="Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-simulator — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-simulator Skill Specification",
+    "description": "Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.",
+    "articleSection": "System Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-simulator.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-simulator</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-simulator.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-simulator.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-simulator.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">System Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 180</span>
+        </div>
+        <h1 class="skill-title">fable-simulator</h1>
+        <p class="skill-lead">Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "simulator-verify" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>System Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>No</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-verify.html">fable-verify</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">simulator-verify</span> <span class="intent-chip">derive-contract</span> <span class="intent-chip">headless-browser-test</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>oracle-independent</code></li><li><code>untracked-files-preserved</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Simulator</h1>
+<p>Create an independent model of expected behavior and compare it with the candidate without pretending the simulation itself is production evidence.</p>
+<h2>Mission</h2>
+<p>Simulation is useful when ordinary tests risk sharing the same assumptions as the implementation, when a UI/agent flow needs controlled playthrough, or when failure injection can expose paths that are hard to reproduce safely.</p>
+<p>The Skill must preserve a hard boundary between <strong>simulated/oracle evidence</strong> and <strong>real runtime verification</strong>.</p>
+<h2>Activate When</h2>
+<ul class="docs-list">
+<li>an algorithm/rewrite needs an independently derived oracle;</li>
+<li>a contract is implicit across callers and needs reconstruction;</li>
+<li>UI/agent state transitions benefit from scripted playthrough/failure injection;</li>
+<li>testing destructive/rare conditions safely requires a model/sandbox;</li>
+<li>differential testing between two independent implementations is valuable.</li>
+</ul>
+<h2>Do Not Activate When</h2>
+<ul class="docs-list">
+<li>normal tests/runtime evidence already proves the claim cheaply;</li>
+<li>the proposed oracle is derived from the same code/assumptions under test;</li>
+<li>simulation would be reported as proof that an external production system actually behaved that way.</li>
+</ul>
+<h2>Simulation Classification</h2>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Mode</th><th>Independence requirement</th></tr></thead><tbody>
+<tr><td>Golden fixtures</td><td>fixture expected outputs come from trusted contract/observations</td></tr>
+<tr><td>Reference implementation</td><td>independently written/maintained logic</td></tr>
+<tr><td>Differential provider/model</td><td>separate implementation/model with blinded oracle</td></tr>
+<tr><td>State-machine simulation</td><td>transitions/invariants defined from product contract</td></tr>
+<tr><td>Failure injection</td><td>controlled faults with explicit modeled assumptions</td></tr>
+<tr><td>UI playthrough</td><td>browser actions + observable DOM/network/runtime evidence</td></tr>
+</tbody></table></div>
+<h2>Protocol</h2>
+<h3>Stage 1 — Define the claim and oracle independence</h3>
+<p>State what candidate behavior is being checked and why the oracle does not simply repeat candidate logic.</p>
+<p>List shared assumptions. If a shared assumption could cause both candidate and oracle to be wrong identically, record that coverage gap.</p>
+<h3>Stage 2 — Derive contract from independent sources</h3>
+<p>Use public interfaces, callers, specs, historical golden outputs, primary docs, or separately maintained reference behavior. Avoid reading implementation details solely to recreate the same algorithm.</p>
+<h3>Stage 3 — Build representative and edge corpus</h3>
+<p>Include normal, boundary, invalid, stateful, adversarial, and failure cases relevant to the claim. Preserve user/untracked workspace files and run in isolated temp/sandbox locations where possible.</p>
+<h3>Stage 4 — Execute candidate and oracle separately</h3>
+<p>Capture inputs, outputs, errors, side effects/state transitions, timing only when required, and tool/environment identity.</p>
+<h3>Stage 5 — Compare semantically</h3>
+<p>Normalize only differences that the contract declares irrelevant. Do not normalize away a real behavioral difference just to reach zero diff.</p>
+<p>For UI, compare causal rows:</p>
+<p><code>action → expected observable → actual observable → evidence</code></p>
+<p>not pixels alone unless pixel fidelity is itself the contract.</p>
+<h3>Stage 6 — Triage divergence</h3>
+<p>A mismatch means one of:</p>
+<ul class="docs-list">
+<li>candidate wrong;</li>
+<li>oracle wrong/stale;</li>
+<li>contract ambiguous;</li>
+<li>normalization invalid;</li>
+<li>environment differs.</li>
+</ul>
+<p>Do not automatically &quot;fix candidate to oracle&quot; until the source of truth is established.</p>
+<h3>Stage 7 — Mark evidence scope</h3>
+<p>Report simulation/oracle evidence distinctly. Hand off to <code>fable-verify</code> for real runtime/package/environment proof where the claim requires it.</p>
+<h2>Decision Rules</h2>
+<ul class="docs-list">
+<li>An oracle copied from candidate implementation is self-confirming and invalid.</li>
+<li>A second LLM is not automatically an independent oracle if it receives the candidate answer or hidden expected output.</li>
+<li>Golden fixtures need provenance; unexplained fixtures can encode old bugs.</li>
+<li>UI screenshots without interaction/state evidence are weak for functional causality.</li>
+<li>Failure injection proves behavior under the modeled fault, not that real infrastructure fails exactly that way.</li>
+<li>Zero diff across a narrow corpus is not universal correctness; state coverage explicitly.</li>
+<li>Never modify/delete untracked user files to make simulation deterministic.</li>
+</ul>
+<h2>Invariants</h2>
+<ul class="docs-list">
+<li>Oracle independence and shared assumptions are explicit.</li>
+<li>Simulation evidence is labeled as simulation.</li>
+<li>Input corpus and normalization are reproducible.</li>
+<li>User/untracked workspace state is preserved.</li>
+<li>Divergence is diagnosed before deciding which side is wrong.</li>
+<li>Real-world claims receive real verification when required.</li>
+</ul>
+<h2>Failure Taxonomy</h2>
+<h3>Tautological oracle</h3>
+<p>Oracle reuses candidate implementation/answer. Redesign independently.</p>
+<h3>Stale oracle</h3>
+<p>Reference behavior no longer matches accepted contract. Re-ground oracle before judging candidate.</p>
+<h3>Ambiguous contract</h3>
+<p>Candidate and oracle differ but both are plausible. Route to plan/research rather than choose arbitrarily.</p>
+<h3>Over-normalization</h3>
+<p>Comparison strips a meaningful difference. Narrow normalization to contract-declared irrelevant fields.</p>
+<h3>Simulation/reality confusion</h3>
+<p>Simulated pass is used as production/runtime proof. Downgrade claim and hand to verify/run.</p>
+<h3>Workspace contamination</h3>
+<p>Simulation writes into real user state. Move to isolated sandbox and restore owned mutations only.</p>
+<h2>Anti-Patterns</h2>
+<ul class="docs-list">
+<li>implementing the oracle by copying candidate code;</li>
+<li>giving an LLM oracle the expected answer;</li>
+<li>demanding 100% zero diff without representative corpus reasoning;</li>
+<li>treating screenshots as complete UI verification;</li>
+<li>normalizing every mismatch until green;</li>
+<li>claiming external service behavior from a fake;</li>
+<li>deleting untracked files to reset simulation;</li>
+<li>changing candidate immediately on any oracle mismatch.</li>
+</ul>
+<h2>Simulation Packet</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">Claim:
+Oracle type/source:
+Independence + shared assumptions:
+Corpus/failure injections:
+Candidate environment:
+Comparison/normalization:
+Divergences:
+Oracle validity decision:
+Simulation verdict:
+Real evidence still required:</code></pre></div>
+<h2>Completion Criteria</h2>
+<p>Simulation completes when:</p>
+<ul class="docs-list">
+<li>oracle independence is credible and documented;</li>
+<li>corpus covers the important contract dimensions;</li>
+<li>candidate/oracle comparisons are reproducible;</li>
+<li>divergence is classified instead of blindly resolved;</li>
+<li>workspace remains safe;</li>
+<li>evidence is labeled narrowly and handed to real verification where needed.</li>
+</ul>
+<h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li>Deep guide: <code>references/oracle-independence-and-simulation-boundaries.md</code></li>
+<li>Existing guide: <code>references/oracle-derivation-guide.md</code></li>
+<li>Example: <code>examples/independent-oracle-verification.md</code></li>
+</ul>
+
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under MIT · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

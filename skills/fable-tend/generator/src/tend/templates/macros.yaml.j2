@@ -1,0 +1,268 @@
+{# The action ref pins to the generator's own release tag. Every harness ships
+   from this repo under a harness-named path (claude/, codex/); release tags
+   are immutable per docs/security-model.md, so the pin is a stable supply-chain
+   anchor. Consumers move forward via the nightly `uvx tend@latest init` regen
+   pulling a newer generator, which restamps a newer tag as a reviewable diff
+   in their own repo. `version("tend")` only resolves to an existing tag when
+   generation runs from a released package — generating from in-tree source
+   pins a tag that does not exist yet; never commit those workflows (see
+   CLAUDE.md).
+
+   Claude emits both `claude_code_oauth_token` and `anthropic_api_key`
+   unconditionally; the action validates at least one is set and routes the
+   active credential through its credential proxy (OAuth wins when both are
+   present), treating empty as absent. Codex likewise emits both paths; the
+   action prefers the access-only subscription bundle when present. Its weekly
+   refresh workflow is the only process that receives the rotating token. #}
+{% macro agent_step(cfg, prompt_body, if_condition='', checkout_mode='base', base_branch='${{ github.event.repository.default_branch }}') %}
+{% if cfg.harness == 'claude' %}
+      - uses: max-sixty/tend/claude@<<tend_version>>
+{% else %}
+      - uses: max-sixty/tend/codex@<<tend_version>>
+{% endif %}
+{% if if_condition %}
+        if: <<if_condition>>
+{% endif %}
+        with:
+          github_token: ${{ secrets.<<bot_token_secret>> }}
+{% if cfg.harness == 'claude' %}
+          claude_code_oauth_token: ${{ secrets.<<claude_token_secret>> }}
+          anthropic_api_key: ${{ secrets.<<anthropic_api_key_secret>> }}
+{% if cfg.memory_gist %}
+          memory_gist: "true"
+          memory_gist_id: ${{ secrets.<<memory_gist_secret>> }}
+{% endif %}
+{% else %}
+          openai_api_key: ${{ secrets.<<openai_key_secret>> }}
+          codex_auth_json: ${{ secrets.<<codex_auth_secret>> }}
+{% endif %}
+          bot_name: <<cfg.bot_name>>
+          model: <<cfg.model>>
+          checkout_mode: <<checkout_mode>>
+          base_branch: <<base_branch>>
+{% if cfg.effort %}
+          effort: <<cfg.effort>>
+{% endif %}
+{% if cfg.args %}
+          <<block_input('args', cfg.args|join('\n'))>>
+{% endif %}
+{% if cfg.sandbox_path %}
+          <<block_input('sandbox_path', cfg.sandbox_path|join('\n'))>>
+{% endif %}
+{% if cfg.sandbox_env %}
+          <<block_input('sandbox_env', cfg.sandbox_env.items()|map('join', '=')|join('\n'))>>
+{% endif %}
+{% if cfg.sandbox_setup %}
+          <<block_input('sandbox_setup', cfg.sandbox_setup|join('\n'))>>
+{% endif %}
+          <<prompt_body>>
+{%- endmacro %}
+
+{# The uv that tend's own script steps run. It stays off PATH, and those steps
+   call it by the path setup-uv outputs: on PATH it would shadow a uv the
+   consumer's setup or runner image provides, for the setup steps and the agent
+   alike. Its cache stays off because the post-job save would store the job's
+   later uv downloads under this step's key and restore them on every run. #}
+{% macro setup_tend_uv() %}
+      - uses: astral-sh/setup-uv@v10.1.0
+        id: tend_uv
+        env:
+          UV_NO_MODIFY_PATH: "1"
+        with:
+          version: "<<uv_version>>"
+          enable-cache: false
+          ignore-empty-workdir: true
+{%- endmacro %}
+
+{# Environment block at column 4. The environment is a secret scope, not a
+   deploy target: its branch policy is what stops a workflow pushed to a
+   feature branch reading the operational secrets (see TEND_ENVIRONMENT in
+   workflows.py). GitHub does not separate the two, so a job naming one also
+   gets a deployment record, filed against whatever the run belongs to — under
+   `pull_request_target` that is the PR's own head, so every push to every PR
+   grew a "<bot> deployed to tend" line in its timeline.
+
+   `deployment: false` drops the record and keeps the gate. Checked against
+   live GitHub rather than assumed, because dropping the record could as
+   easily have dropped the check that files it: with the property set, a job
+   on an admitted ref still receives the environment's secrets, and one on an
+   excluded ref is still refused before its first step with `Branch "x" is not
+   allowed to deploy to <env> due to environment protection rules`. #}
+{% macro environment() %}
+    environment:
+      name: <<tend_environment>>
+      deployment: false
+{%- endmacro %}
+
+{# Permissions block at column 6. `issues` defaults to True because every
+   workflow except ci-fix needs it. The trailing inline conditional avoids
+   the trim_blocks-eats-the-separator issue between `actions: read` and
+   `      issues: write` that arises with `{% if %}` on its own line.
+
+   No `id-token: write`: nothing in the harness actions requests an OIDC
+   token, and a job holding it can mint the repository's OIDC identity for
+   any relying party whose trust policy doesn't pin the workflow and ref.
+   A consumer whose `setup:` authenticates over OIDC re-adds it with a
+   `jobs.<name>.permissions` override. #}
+{% macro permissions(issues=True) %}
+      contents: write
+      pull-requests: write
+      actions: read<<'\n      issues: write' if issues else ''>>
+{%- endmacro %}
+
+{# Skip a job when running outside the canonical owner. Compares
+   `github.repository_owner` against the configured owner: `secrets` isn't
+   available in `jobs.<job_id>.if`, and `github.event.repository.fork` is null
+   for `schedule` events, so the owner string is the only check that works
+   across all the affected event types.
+
+   Two shapes:
+   - fork_guard_if(cfg): emits `    if: <expr>` on its own line, or nothing
+   - fork_guard_prefix(cfg): emits `<expr> && ` inline, or nothing — used
+     when the job already has an `if:` (e.g. ci-fix's conclusion check) #}
+{% macro fork_guard_if(cfg) %}
+{% if cfg.repo_owner %}
+    if: github.repository_owner == '<<cfg.repo_owner|replace("'", "''")>>'
+{% endif %}
+{%- endmacro %}
+
+{# True when the issue carries none of the labels tend puts on its own
+   bookkeeping issues. The list lives in workflows.py so a new one reaches
+   every workflow at once; see BOOKKEEPING_LABELS for why they are skipped.
+
+   `contains(…) == false` rather than `!contains(…)`: a value starting with
+   `!` is a tag indicator to YAML, so the negated form only parses where the
+   expression is already inside a block scalar. This one renders in both. #}
+{% macro not_bookkeeping() -%}
+{% for label in bookkeeping_labels %}contains(github.event.issue.labels.*.name, '<<label>>') == false{% if not loop.last %} && {% endif %}{% endfor %}
+{%- endmacro %}
+
+{% macro fork_guard_prefix(cfg) -%}
+{% if cfg.repo_owner %}github.repository_owner == '<<cfg.repo_owner|replace("'", "''")>>' && {% endif %}
+{%- endmacro %}
+
+{# A step's `if:`, as a block scalar where the expression spans lines. #}
+{% macro step_if(condition) %}
+{% if '\n' in condition %}
+        if: |
+<<condition|trim|indent(10, first=True)>>
+{%- else %}
+        if: <<condition>>
+{%- endif %}
+{%- endmacro %}
+
+{# 👀 means one thing wherever the bot uses it: a session is working on this
+   right now. `react_eyes` goes on at the top of the job — the agent takes
+   minutes to reach its first comment, and until then an opened issue looks
+   unattended — and `unreact_eyes` takes it off at the end, under `always()`, so
+   a failed or cancelled run doesn't strand it.
+
+   Both halves have to sit in the *same* job, which is what makes `always()`
+   mean anything: it governs step execution within a job that started, and a
+   job cancelled while still queued never allocates a runner, so no step of it
+   runs. Split across jobs, every route where the second never starts leaves
+   the eyes on with no session behind them.
+
+   `target` is an API path under `repos/<owner>/<repo>/`: `issues/<number>` for
+   an issue or PR (GitHub files PRs as issues for reactions), `issues/comments/`
+   or `pulls/comments/<id>` for a comment. A repeat react returns the existing
+   reaction rather than erroring, and the delete is filtered to the bot's own
+   reaction so a human's 👀 survives. That lookup paginates: 👀 is also the
+   ordinary "watching this" reaction, so on a busy issue the bot's own can sit
+   past the first page, and finding nothing there keeps the reaction silently
+   (the step exits 0 either way).
+
+   Either half failing warns rather than failing the job — an acknowledgment is
+   not worth losing the run that does the work, and the unreact half runs on
+   jobs that have already failed. #}
+{% macro react_eyes(target, if_condition='') %}
+      - name: React with eyes
+{% if if_condition %}
+<<step_if(if_condition)>>
+{% endif %}
+        run: |
+          gh api "repos/$REPO/$TARGET/reactions" -f content=eyes --silent \
+            || echo "::warning::could not add the eyes reaction"
+        env:
+          REPO: ${{ github.repository }}
+          TARGET: <<target>>
+          GITHUB_TOKEN: ${{ secrets.<<bot_token_secret>> }}
+{%- endmacro %}
+
+{% macro unreact_eyes(cfg, target, if_condition='') %}
+      - name: Remove the eyes reaction
+{% if if_condition %}
+<<step_if(if_condition)>>
+{% endif %}
+        run: |
+          REACTION_ID=$(gh api --paginate \
+            "repos/$REPO/$TARGET/reactions?content=eyes&per_page=100" \
+            --jq ".[] | select(.user.login == \"$BOT_NAME\") | .id" | head -n1)
+          if [ -n "$REACTION_ID" ]; then
+            gh api -X DELETE "repos/$REPO/$TARGET/reactions/$REACTION_ID" --silent \
+              || echo "::warning::could not remove the eyes reaction"
+          fi
+        env:
+          REPO: ${{ github.repository }}
+          TARGET: <<target>>
+          BOT_NAME: <<cfg.bot_name>>
+          GITHUB_TOKEN: ${{ secrets.<<bot_token_secret>> }}
+{%- endmacro %}
+
+{# Shared `actions/checkout@v7` step. Omitting `ref` takes the event's own ref,
+   which under `pull_request_target` is the PR's base branch — what mention and
+   review's first checkout both want. Callers needing a specific tree pass one:
+   the configured default branch, or review's pr_ref dispatch. `if_condition`
+   gates the step for notifications' empty-inbox path.
+
+   `allow_unsafe_pr_checkout` opts into checkout's fork-PR guard: v7 refuses to
+   check out a fork's `refs/pull/N/{merge,head}` under `pull_request_target`
+   (the "pwn request" guard) unless this input is set. Only review feeds a fork
+   ref straight to the action, so only it sets this; mention checks out the base
+   repo then `gh pr checkout`s, never handing the action a fork ref.
+
+   `clean=False` drops checkout's `git clean -ffdx && git reset --hard`, which
+   would otherwise delete what an earlier step wrote into the workspace. Review
+   sets it on its second checkout, where `setup:` has already run. #}
+{% macro checkout(cfg, ref=None, if_condition='', allow_unsafe_pr_checkout=False, clean=True) %}
+      - uses: actions/checkout@v7
+{% if if_condition %}
+        if: <<if_condition>>
+{% endif %}
+        with:
+{% if ref %}
+          ref: <<ref>>
+{% endif %}
+{% if allow_unsafe_pr_checkout %}
+          allow-unsafe-pr-checkout: true
+{% endif %}
+{% if not clean %}
+          clean: false
+{% endif %}
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.<<bot_token_secret>> }}
+{%- endmacro %}
+
+{# A multi-line action input, as a YAML block scalar at column 10 with the text
+   indented at column 12. Every input whose value is consumer-supplied and may
+   span lines renders through here — `prompt`, and the three `sandbox_*` levers
+   — so the indentation is written once rather than per call site. A caller with
+   extra context to append (ci-fix's run coordinates) composes the text first
+   and passes the whole thing.
+
+   `|2` is an explicit indentation indicator: two columns further in than the
+   `with:` mapping this renders into, which is where `indent_block` puts the
+   text. Without it YAML infers the block's indent from its first line, and a
+   value whose first line is itself indented makes every following line look
+   like the end of the scalar — a file GitHub rejects, from a config that is
+   valid YAML in the consumer's own hands.
+
+   `${{ ... }}` in the text reaches the generated file verbatim, and GitHub
+   Actions evaluates it when it sets the input — that is how a prompt's
+   per-event placeholder (`{pr_number}`, `{issue_number}`, `{run_id}`) is
+   substituted. #}
+{% macro block_input(name, text) -%}
+<<name>>: |2
+<<text|indent_block(12)>>
+{%- endmacro %}
