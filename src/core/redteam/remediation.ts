@@ -83,6 +83,58 @@ export function generateSuggestedTestCode(finding: RedTeamFinding): string {
 });`;
   }
 
+  if (finding.category === 'ssti') {
+    return `test('remediation: SSTI expression is not evaluated on ${finding.target}', async () => {
+  const res = await fetch('${finding.target}');
+  const text = await res.text();
+  expect(text).not.toContain('49');
+  expect(res.status).toBeLessThan(500);
+});`;
+  }
+
+  if (finding.category === 'nosql-injection') {
+    return `test('remediation: NoSQL query operators are rejected on ${finding.target}', async () => {
+  const res = await fetch('${finding.target}');
+  expect([400, 422]).toContain(res.status);
+});`;
+  }
+
+  if (finding.category === 'path-traversal') {
+    return `test('remediation: path traversal sequence is blocked on ${finding.target}', async () => {
+  const res = await fetch('${finding.target}');
+  expect([400, 403, 404]).toContain(res.status);
+  const text = await res.text();
+  expect(text).not.toContain('root:x:0:0');
+});`;
+  }
+
+  if (finding.category === 'graphql') {
+    return `test('remediation: GraphQL schema introspection is disabled in production', async () => {
+  const res = await fetch('${finding.target}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: '{ __schema { types { name } } }' }),
+  });
+  const data = await res.json().catch(() => ({}));
+  expect(data.data?.__schema).toBeFalsy();
+});`;
+  }
+
+  if (finding.category === 'prototype-pollution') {
+    return `test('remediation: prototype pollution payload rejected on ${finding.target}', async () => {
+  const res = await fetch('${finding.target}');
+  expect(res.status).toBeLessThan(500);
+});`;
+  }
+
+  if (finding.category === 'csrf') {
+    return `test('remediation: enforce SameSite and Secure flags on cookies', async () => {
+  const res = await fetch('${finding.target}');
+  const setCookie = res.headers.get('set-cookie') || '';
+  expect(setCookie.toLowerCase()).toContain('samesite');
+});`;
+  }
+
   return `test('remediation: ${finding.title}', async () => {
   const res = await fetch('${finding.target}');
   expect(res.status).toBeLessThan(500);

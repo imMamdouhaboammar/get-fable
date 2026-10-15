@@ -998,13 +998,50 @@ export async function executeDelegationWavePlanWithGrpc(
       timeout_ms: 30000,
     };
 
-    const events = await client.executeTask(request);
+    let events: TaskEvent[] = [];
+    let failureReason: string | undefined;
+
+    try {
+      events = await client.executeTask(request);
+    } catch (err: unknown) {
+      failureReason = err instanceof Error ? err.message : String(err);
+      events = [
+        {
+          event_id: `evt-${Date.now()}-crash`,
+          task_id: bundle.subtask.id,
+          run_id: request.run_id,
+          timestamp: Date.now(),
+          event_type: 'failed',
+          message: failureReason || 'Worker execution failed',
+          payload_json: JSON.stringify({ success: false, error: failureReason, crashed: true }),
+          is_terminal: true,
+        },
+      ];
+    }
+
     const durationMs = Math.max(1, Math.round(performance.now() - startedMs));
 
-    const hasFailed = events.some((event) => event.event_type === 'failed');
-    const hasCancelled = events.some((event) => event.event_type === 'cancelled');
+    const cancelEvent = events.find((event) => event.event_type === 'cancelled');
+    const hasCancelled = Boolean(cancelEvent);
+    // Fence any late events that arrived after cancellation
+    const effectiveEvents = hasCancelled
+      ? fenceLateEvents(events, cancelEvent?.timestamp)
+      : events;
+
+    const hasFailed = effectiveEvents.some((event) => event.event_type === 'failed');
+    if (hasFailed && !failureReason) {
+      const failedEvt = effectiveEvents.find((e) => e.event_type === 'failed');
+      if (failedEvt?.message) failureReason = failedEvt.message;
+      if (failedEvt?.payload_json) {
+        try {
+          const parsed = JSON.parse(failedEvt.payload_json);
+          if (parsed.error) failureReason = String(parsed.error);
+        } catch {}
+      }
+    }
+
     // A completed event alone is not proof of a completed or verified task.
-    const terminalEvent = [...events].reverse().find((event) => event.is_terminal);
+    const terminalEvent = [...effectiveEvents].reverse().find((event) => event.is_terminal);
     let verifiedCompletion = false;
     let returnPacketToon = '';
 
@@ -1061,6 +1098,7 @@ export async function executeDelegationWavePlanWithGrpc(
           coArmedSkills: coArmedIds,
           status,
           verified: false,
+          error: failureReason,
         },
       });
     }
@@ -1072,9 +1110,10 @@ export async function executeDelegationWavePlanWithGrpc(
       coArmedSkills: coArmedIds,
       waveIndex,
       status,
-      eventsCount: events.length,
+      eventsCount: effectiveEvents.length,
       durationMs,
       returnPacketToon,
+      failureReason,
     };
   };
 
@@ -1139,4 +1178,257 @@ export async function executeDelegationWavePlanWithGrpc(
       await ephemeralServer.stop();
     }
   }
+}
+
+export function validateCapabilityAuthorization(
+  request: TaskExecutionRequest,
+  authorizedCapabilities: readonly string[]
+): { authorized: boolean; violation?: string } {
+  const authorizedSet = new Set(authorizedCapabilities);
+  const requested = request.required_capabilities || [];
+
+  for (const cap of requested) {
+    if (!authorizedSet.has(cap)) {
+      return {
+        authorized: false,
+        violation: `Child task ${request.task_id} requested unauthorized capability: ${cap}`,
+      };
+    }
+  }
+
+  return { authorized: true };
+}
+
+export function fenceLateEvents(
+  events: readonly TaskEvent[],
+  cancelledTimestamp?: number | string
+): TaskEvent[] {
+  if (cancelledTimestamp === undefined) {
+    return [...events];
+  }
+  const cutoff = Number(cancelledTimestamp);
+  if (Number.isNaN(cutoff)) {
+    return [...events];
+  }
+  return events.filter((e) => Number(e.timestamp) <= cutoff);
+}
+
+/** Compare actual TOON return-packet contracts, never invented test-only fields. */
+export function detectContradictoryOutcomes(
+  receipts: readonly SubagentExecutionReceipt[]
+): { hasContradiction: boolean; contradictions: string[] } {
+  const observations = new Map<string, string>();
+  const contradictions: string[] = [];
+  const observe = (key: string, claim: string) => {
+    const previous = observations.get(key);
+    if (previous !== undefined && previous !== claim) {
+      contradictions.push(`Contradictory claims detected on target "${key}": ${previous} vs ${claim}`);
+    } else if (previous === undefined) {
+      observations.set(key, claim);
+    }
+  };
+  const object = (value: unknown): Record<string, unknown> | null =>
+    value !== null && typeof value === 'object' && !Array.isArray(value)
+      ? value as Record<string, unknown>
+      : null;
+
+  for (const receipt of receipts) {
+    if (!receipt.returnPacketToon) continue;
+    try {
+      const raw = receipt.returnPacketToon.trim().replace(/^\`\`\`toon\s*/i, '').replace(/\s*\`\`\`$/, '');
+      const decoded = decodeToon<unknown>(raw);
+      const parent = object(decoded);
+      const packet = object(parent?.result) || object(parent?.returnPacket) || parent;
+      if (!packet) {
+        contradictions.push(`Invalid or unparseable return packet for subtask "${receipt.subtaskId}"`);
+        continue;
+      }
+      const rawMutations = Array.isArray(parent?.mutations) && Array.isArray(packet.mutations) && parent?.mutations !== packet.mutations
+        ? [...parent.mutations, ...packet.mutations]
+        : Array.isArray(parent?.mutations)
+          ? parent.mutations
+          : Array.isArray(packet.mutations)
+            ? packet.mutations
+            : null;
+      const rawVerifications = Array.isArray(parent?.verifications) && Array.isArray(packet.verifications) && parent?.verifications !== packet.verifications
+        ? [...parent.verifications, ...packet.verifications]
+        : Array.isArray(parent?.verifications)
+          ? parent.verifications
+          : Array.isArray(packet.verifications)
+            ? packet.verifications
+            : null;
+
+      const hasRecognizedField =
+        Boolean(parent?.result || parent?.returnPacket) ||
+        typeof packet.targetCard === 'string' ||
+        typeof packet.contractTarget === 'string' ||
+        typeof packet.subtaskId === 'string' ||
+        typeof packet.status === 'string' ||
+        typeof packet.claim === 'string' ||
+        rawMutations !== null ||
+        rawVerifications !== null;
+
+      if (!hasRecognizedField) {
+        contradictions.push(`Invalid or unparseable return packet for subtask "${receipt.subtaskId}"`);
+        continue;
+      }
+      const target = typeof packet.targetCard === 'string' ? packet.targetCard
+        : typeof packet.contractTarget === 'string' ? packet.contractTarget
+        : typeof packet.subtaskId === 'string' ? packet.subtaskId
+        : receipt.subtaskId;
+      const status = typeof packet.status === 'string' ? packet.status : receipt.status;
+      const checked = typeof packet.allChecksPassed === 'boolean' ? packet.allChecksPassed
+        : typeof packet.verified === 'boolean' ? packet.verified
+        : receipt.status === 'completed';
+      const claim = typeof packet.claim === 'string' ? packet.claim : `${status}:${checked}`;
+      observe(`card:${target}`, claim);
+      if (rawMutations) {
+        for (const item of rawMutations) {
+          const mutation = object(item);
+          if (typeof mutation?.path === 'string' && typeof mutation.action === 'string') {
+            observe(`path:${mutation.path}`, `${mutation.action}:${status}:${checked}`);
+          }
+        }
+      }
+      if (rawVerifications) {
+        for (const item of rawVerifications) {
+          const verification = object(item);
+          if (typeof verification?.command === 'string' && typeof verification.result === 'string') {
+            observe(`verification:${target}:${verification.command}`, verification.result);
+          }
+        }
+      }
+    } catch {
+      // A malformed packet is not evidence of consistency.
+      contradictions.push(`Invalid or unparseable return packet for subtask "${receipt.subtaskId}"`);
+    }
+  }
+  return { hasContradiction: contradictions.length > 0, contradictions };
+}
+
+export interface MasterSupervisorOptions {
+  workerAddress?: string;
+  spawnEphemeralServer?: boolean;
+  taskHandler?: FableRpcServerOptions['taskHandler'];
+  authorizedCapabilities?: string[];
+  enforceContradictionCheck?: boolean;
+}
+
+export interface MasterOrchestrationReport extends WaveExecutionReport {
+  contradictions?: string[];
+  securityViolations?: string[];
+  supervisorVerified: boolean;
+}
+
+export async function superviseWaveExecution(
+  plan: DelegationWavePlan,
+  options?: MasterSupervisorOptions
+): Promise<MasterOrchestrationReport> {
+  const securityViolations: string[] = [];
+  const independenceViolations: string[] = [];
+  // Fail the entire plan before opening a worker connection or invoking any handler.
+  for (const wave of plan.waves) {
+    if (wave.bundles.length > 1) {
+      const proof = evaluateIndependenceProof(wave.bundles.map((bundle) => bundle.subtask));
+      if (!proof.writeIndependent || !proof.semanticIndependent || !proof.verificationIndependent) {
+        independenceViolations.push(
+          `Wave ${wave.waveIndex} violates delegation independence: ${proof.conflicts.join('; ') || 'unproven independent scopes'}`
+        );
+      }
+    }
+    if (options?.authorizedCapabilities) {
+      for (const bundle of wave.bundles) {
+        const request: TaskExecutionRequest = {
+          task_id: bundle.subtask.id,
+          run_id: `auth-check-${bundle.subagentId}`,
+          title: bundle.subtask.title,
+          objective: bundle.subtask.description,
+          required_capabilities: [
+            bundle.primarySkill.skillId,
+            ...bundle.coArmedSkills.map((skill) => skill.skillId),
+            ...bundle.armedTools,
+            ...bundle.armedEngines,
+          ],
+        };
+        const authorization = validateCapabilityAuthorization(request, options.authorizedCapabilities);
+        if (!authorization.authorized) {
+          securityViolations.push(authorization.violation || `Unauthorized task ${bundle.subtask.id}`);
+        }
+      }
+    }
+  }
+  if (securityViolations.length > 0 || independenceViolations.length > 0) {
+    return {
+      task: plan.task,
+      workerAddress: options?.workerAddress || '',
+      ephemeralServerSpawned: false,
+      totalWavesExecuted: 0,
+      totalSubtasksExecuted: 0,
+      allSucceeded: false,
+      receipts: [],
+      toonReport: encodeToon({ rejected: true, securityViolations, independenceViolations }),
+      supervisorVerified: false,
+      securityViolations: securityViolations.length ? securityViolations : undefined,
+      contradictions: independenceViolations,
+    };
+  }
+  const supervisedPlan = plan;
+
+  const originalTaskHandler = options?.taskHandler;
+  const wrappedTaskHandler: FableRpcServerOptions['taskHandler'] = async (request, emitEvent, isCancelled) => {
+    if (!originalTaskHandler) {
+      throw new Error(`No taskHandler configured for ${request.task_id}`);
+    }
+    try {
+      await originalTaskHandler(request, emitEvent, isCancelled);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      emitEvent({
+        event_id: `evt-${Date.now()}-crash`,
+        task_id: request.task_id,
+        run_id: request.run_id,
+        timestamp: Date.now(),
+        event_type: 'failed',
+        message: `Worker crashed: ${errMsg}`,
+        payload_json: JSON.stringify({ success: false, error: errMsg, crashed: true }),
+        is_terminal: true,
+      });
+    }
+  };
+
+  const baseReport = await executeDelegationWavePlanWithGrpc(supervisedPlan, {
+    workerAddress: options?.workerAddress,
+    spawnEphemeralServer: options?.spawnEphemeralServer,
+    taskHandler: wrappedTaskHandler,
+  });
+
+  for (const receipt of baseReport.receipts) {
+    if (receipt.status === 'failed' && !receipt.failureReason) {
+      try {
+        const decoded = decodeToon<{ returnPacket?: { error?: unknown } }>(receipt.returnPacketToon);
+        if (decoded?.returnPacket?.error) {
+          receipt.failureReason = String(decoded.returnPacket.error);
+        }
+      } catch {
+        // fallback
+      }
+    }
+  }
+
+  const shouldCheckContradictions = options?.enforceContradictionCheck !== false;
+  const contradictionCheck = shouldCheckContradictions
+    ? detectContradictoryOutcomes(baseReport.receipts)
+    : { hasContradiction: false, contradictions: [] };
+  const supervisorVerified =
+    baseReport.allSucceeded &&
+    securityViolations.length === 0 &&
+    !contradictionCheck.hasContradiction;
+
+  return {
+    ...baseReport,
+    allSucceeded: baseReport.allSucceeded && supervisorVerified,
+    supervisorVerified,
+    contradictions: contradictionCheck.contradictions,
+    securityViolations: securityViolations.length > 0 ? securityViolations : undefined,
+  };
 }

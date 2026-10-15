@@ -19,7 +19,13 @@ export type FindingCategory =
   | 'llm-prompt-injection'
   | 'business-logic'
   | 'mass-assignment'
-  | 'session-management';
+  | 'session-management'
+  | 'ssti'
+  | 'nosql-injection'
+  | 'path-traversal'
+  | 'graphql'
+  | 'prototype-pollution'
+  | 'csrf';
 
 export type EvidenceLevel = 'observed' | 'reproduced' | 'inferred' | 'hypothetical';
 

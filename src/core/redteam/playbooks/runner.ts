@@ -191,6 +191,148 @@ export async function runPlaybook(
     }
   }
 
+  // --- Playbook: ssti (Server-Side Template Injection) ---
+  if (playbook.id === 'ssti') {
+    const probeUrl = new URL(targetUrl);
+    probeUrl.searchParams.set('q', '{{4919*7}}');
+
+    try {
+      const res = await client.fetchText(probeUrl.toString(), {
+        headers: options.authToken ? { Authorization: options.authToken } : {},
+        timeoutMs: 3000,
+      });
+
+      if (res.text.includes('34433') && !res.text.includes('4919*7')) {
+        findings.push({
+          id: 'PLAYBOOK-SSTI-EVALUATION',
+          title: `[Playbook: ${playbook.name}] Server-Side Template Injection Confirmed`,
+          category: 'ssti',
+          severity: playbook.defaultSeverity,
+          description: `${playbook.description}. Template expression {{4919*7}} evaluated to 34433 in response body.`,
+          target: probeUrl.toString(),
+          evidence: {
+            request: { method: 'GET', url: probeUrl.toString() },
+            response: { status: res.status, snippet: res.text.slice(0, 300) },
+            reproCurl: `curl -i -s "${probeUrl.toString()}"`,
+          },
+          remediation: 'Pass user parameters as sanitized data variables, never as executable template code.',
+          cwe: playbook.cwe,
+          evidenceLevel: 'reproduced',
+          confidence: 0.98,
+        });
+      }
+    } catch {
+      // Continue
+    }
+  }
+
+  // --- Playbook: nosql (NoSQL Operator Injection) ---
+  if (playbook.id === 'nosql') {
+    const probeUrl = new URL(targetUrl);
+    probeUrl.searchParams.set('user[$gt]', '');
+
+    try {
+      const res = await client.fetchText(probeUrl.toString(), {
+        headers: options.authToken ? { Authorization: options.authToken } : {},
+        timeoutMs: 3000,
+      });
+
+      if (/(?:MongoError|MongooseError|Cast to ObjectId failed|BSONTypeError)/i.test(res.text)) {
+        findings.push({
+          id: 'PLAYBOOK-NOSQL-OPERATOR-REFLECTION',
+          title: `[Playbook: ${playbook.name}] NoSQL Injection Error Reflection Detected`,
+          category: 'nosql-injection',
+          severity: playbook.defaultSeverity,
+          description: `${playbook.description}. Parameter accepted nested query operator and reflected database error.`,
+          target: probeUrl.toString(),
+          evidence: {
+            request: { method: 'GET', url: probeUrl.toString() },
+            response: { status: res.status, snippet: res.text.slice(0, 300) },
+            reproCurl: `curl -i -s "${probeUrl.toString()}"`,
+          },
+          remediation: 'Validate input against strict string types and sanitize query operators.',
+          cwe: playbook.cwe,
+          evidenceLevel: 'reproduced',
+          confidence: 0.95,
+        });
+      }
+    } catch {
+      // Continue
+    }
+  }
+
+  // --- Playbook: path-traversal (Directory Traversal) ---
+  if (playbook.id === 'path-traversal') {
+    const probeUrl = new URL(targetUrl);
+    probeUrl.searchParams.set('file', '../../../../etc/passwd');
+
+    try {
+      const res = await client.fetchText(probeUrl.toString(), {
+        headers: options.authToken ? { Authorization: options.authToken } : {},
+        timeoutMs: 3000,
+      });
+
+      if (res.text.includes('root:x:0:0:') || /(?:open_basedir restriction|FileNotFoundException)/i.test(res.text)) {
+        findings.push({
+          id: 'PLAYBOOK-PATH-TRAVERSAL-LEAK',
+          title: `[Playbook: ${playbook.name}] Path Traversal Indicator Detected`,
+          category: 'path-traversal',
+          severity: playbook.defaultSeverity,
+          description: `${playbook.description}. Traversal sequence reflected system file contents or filesystem error.`,
+          target: probeUrl.toString(),
+          evidence: {
+            request: { method: 'GET', url: probeUrl.toString() },
+            response: { status: res.status, snippet: res.text.slice(0, 300) },
+            reproCurl: `curl -i -s "${probeUrl.toString()}"`,
+          },
+          remediation: 'Resolve and validate paths within an explicit allowed directory allowlist.',
+          cwe: playbook.cwe,
+          evidenceLevel: 'reproduced',
+          confidence: 0.95,
+        });
+      }
+    } catch {
+      // Continue
+    }
+  }
+
+  // --- Playbook: graphql (GraphQL Schema Introspection) ---
+  if (playbook.id === 'graphql') {
+    const graphqlUrl = targetUrl.includes('graphql') ? targetUrl : `${origin}/graphql`;
+    const query = JSON.stringify({ query: '{ __schema { types { name } } }' });
+
+    try {
+      const res = await client.fetchText(graphqlUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: query,
+        timeoutMs: 3000,
+      });
+
+      if (res.status === 200 && res.text.includes('__schema') && res.text.includes('types')) {
+        findings.push({
+          id: 'PLAYBOOK-GRAPHQL-INTROSPECTION',
+          title: `[Playbook: ${playbook.name}] GraphQL Schema Introspection Exposed`,
+          category: 'graphql',
+          severity: playbook.defaultSeverity,
+          description: `${playbook.description}. Endpoint returned complete GraphQL schema types for unauthenticated introspection query.`,
+          target: graphqlUrl,
+          evidence: {
+            request: { method: 'POST', url: graphqlUrl, headers: { 'Content-Type': 'application/json' }, body: query },
+            response: { status: res.status, snippet: res.text.slice(0, 300) },
+            reproCurl: `curl -i -s -X POST "${graphqlUrl}" -H "Content-Type: application/json" -d '${query}'`,
+          },
+          remediation: 'Disable GraphQL schema introspection in production environments.',
+          cwe: playbook.cwe,
+          evidenceLevel: 'reproduced',
+          confidence: 0.98,
+        });
+      }
+    } catch {
+      // Continue
+    }
+  }
+
   return findings;
 }
 

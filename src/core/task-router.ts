@@ -12,9 +12,10 @@ export const RECOVERY_FAILURE_THRESHOLD = 2;
 const PARALLEL_SIGNAL_FLOOR = 6;
 const MAX_PARALLEL_CANDIDATES = 3;
 
-function emptyScores(): Record<FableSkillId, number> {
+function emptyScores(registry?: SkillRegistry): Record<FableSkillId, number> {
+  const ids = registry ? registry.skills.map((s) => s.id) : canonicalSkillIds();
   return Object.fromEntries(
-    canonicalSkillIds().map((skill) => [skill, skill === 'fable-execute' ? 1 : 0])
+    ids.map((skill) => [skill, skill === 'fable-execute' ? 1 : 0])
   ) as Record<FableSkillId, number>;
 }
 
@@ -25,6 +26,7 @@ function addSignal(
   weight: number,
   reason: string
 ) {
+  if (scores[skill] === undefined) return;
   scores[skill] += weight;
   const list = reasons.get(skill) || [];
   list.push(reason);
@@ -57,12 +59,13 @@ function rankSkills(
   scores: Record<FableSkillId, number>,
   registry: SkillRegistry
 ): Array<{ skill: FableSkillId; score: number; order: number }> {
-  return canonicalSkillIds()
-    .filter((skill) => skill !== 'get-fable')
-    .map((skill) => ({
-      skill,
-      score: scores[skill],
-      order: getSkillEntry(skill, registry).order,
+  const entryId = registry.entry || 'get-fable';
+  return registry.skills
+    .filter((entry) => entry.id !== entryId)
+    .map((entry) => ({
+      skill: entry.id,
+      score: scores[entry.id] ?? 0,
+      order: entry.order,
     }))
     .sort((a, b) => b.score - a.score || a.order - b.order || a.skill.localeCompare(b.skill));
 }
@@ -108,7 +111,7 @@ export function routeTask(
   const suppressReview = /do not review|don't review|no (?:code )?review|review (?:is )?out of scope|skip (?:the )?review/.test(text);
   const suppressDelegation = /do not delegate|don't delegate|no delegation|without subagents?|single agent|single worker/.test(text);
 
-  const scores = emptyScores();
+  const scores = emptyScores(registry);
   const reasons = new Map<FableSkillId, string[]>();
 
   if ((state?.failureStreak || 0) >= RECOVERY_FAILURE_THRESHOLD) {
@@ -360,12 +363,14 @@ export function routeTask(
 
   const ranked = rankSkills(scores, registry);
 
-  let selectedSkill = ranked[0].score > 0 ? ranked[0].skill : 'fable-execute';
-  if (scores['fable-recover'] >= 8) {
+  let selectedSkill = ranked.length > 0 && ranked[0].score > 0
+    ? ranked[0].skill
+    : (ranked[0]?.skill || 'fable-execute');
+  if ((scores['fable-recover'] || 0) >= 8 && getSkillEntry('fable-recover', registry)) {
     selectedSkill = 'fable-recover';
   }
 
-  const selectedScore = scores[selectedSkill];
+  const selectedScore = scores[selectedSkill] || 0;
   const secondScore = ranked.find((entry) => entry.skill !== selectedSkill)?.score || 0;
   const confidence = Math.max(
     0.51,
@@ -387,7 +392,7 @@ export function routeTask(
       selectedSkill === 'fable-architecture' ||
       selectedSkill === 'fable-discover' ||
       selectedSkill === 'fable-research' ||
-      (!suppressPlan && scores['fable-plan'] >= 4),
+      (!suppressPlan && (scores['fable-plan'] || 0) >= 4),
     requiredGates: [...entry.gates],
     fallbackSkill: entry.fallback,
     parallelCandidates,

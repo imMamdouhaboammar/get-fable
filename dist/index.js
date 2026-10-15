@@ -34,7 +34,7 @@ var __toESM = (mod, isNodeMode, target) => {
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/constants.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/constants.js
 var require_constants = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = exports.DEFAULT_MAX_SEND_MESSAGE_LENGTH = exports.Propagate = exports.LogVerbosity = exports.Status = undefined;
@@ -77,11 +77,11 @@ var require_constants = __commonJS(function(exports) {
   exports.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH = 4 * 1024 * 1024;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/package.json
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/package.json
 var require_package = __commonJS(function(exports, module) {
   module.exports = {
     name: "@grpc/grpc-js",
-    version: "1.14.4",
+    version: "1.14.6",
     description: "gRPC Library for Node - pure JS implementation",
     homepage: "https://grpc.io/",
     repository: "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js",
@@ -170,7 +170,7 @@ var require_package = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/logging.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/logging.js
 var require_logging = __commonJS(function(exports) {
   var _a;
   var _b;
@@ -251,6 +251,9 @@ var require_logging = __commonJS(function(exports) {
   var enabledTracers = new Set;
   var disabledTracers = new Set;
   for (const tracerName of tracersString.split(",")) {
+    if (tracerName.length === 0) {
+      continue;
+    }
     if (tracerName.startsWith("-")) {
       disabledTracers.add(tracerName.substring(1));
     } else {
@@ -258,17 +261,21 @@ var require_logging = __commonJS(function(exports) {
     }
   }
   var allEnabled = enabledTracers.has("all");
+  var anyTracerEnabled = allEnabled || enabledTracers.size > 0;
   function trace(severity, tracer, text) {
     if (isTracerEnabled(tracer)) {
       (0, exports.log)(severity, new Date().toISOString() + " | v" + clientVersion + " " + process_1.pid + " | " + tracer + " | " + text);
     }
   }
   function isTracerEnabled(tracer) {
+    if (!anyTracerEnabled) {
+      return false;
+    }
     return !disabledTracers.has(tracer) && (allEnabled || enabledTracers.has(tracer));
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/error.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/error.js
 var require_error = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getErrorMessage = getErrorMessage;
@@ -289,7 +296,7 @@ var require_error = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/metadata.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/metadata.js
 var require_metadata = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Metadata = undefined;
@@ -336,7 +343,6 @@ var require_metadata = __commonJS(function(exports) {
   class Metadata {
     constructor(options = {}) {
       this.internalRepr = new Map;
-      this.opaqueData = new Map;
       this.options = options;
     }
     set(key, value) {
@@ -405,7 +411,11 @@ var require_metadata = __commonJS(function(exports) {
         if (key.startsWith(":")) {
           continue;
         }
-        result[key] = values.map(bufToString);
+        if (values.length === 1) {
+          result[key] = bufToString(values[0]);
+        } else {
+          result[key] = values.map(bufToString);
+        }
       }
       return result;
     }
@@ -417,10 +427,14 @@ var require_metadata = __commonJS(function(exports) {
       return result;
     }
     setOpaque(key, value) {
+      if (!this.opaqueData) {
+        this.opaqueData = new Map;
+      }
       this.opaqueData.set(key, value);
     }
     getOpaque(key) {
-      return this.opaqueData.get(key);
+      var _a;
+      return (_a = this.opaqueData) === null || _a === undefined ? undefined : _a.get(key);
     }
     static fromHttp2Headers(headers) {
       const result = new Metadata;
@@ -467,10 +481,11 @@ var require_metadata = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/call-credentials.js
 var require_call_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CallCredentials = undefined;
+  exports.isEmptyCallCredentials = isEmptyCallCredentials;
   var metadata_1 = require_metadata();
   function isCurrentOauth2Client(client) {
     return "getRequestHeaders" in client && typeof client.getRequestHeaders === "function";
@@ -531,6 +546,9 @@ var require_call_credentials = __commonJS(function(exports) {
       return base;
     }
     compose(other) {
+      if (other instanceof EmptyCallCredentials) {
+        return this;
+      }
       return new ComposedCallCredentials(this.creds.concat([other]));
     }
     _equals(other) {
@@ -562,6 +580,9 @@ var require_call_credentials = __commonJS(function(exports) {
       });
     }
     compose(other) {
+      if (other instanceof EmptyCallCredentials) {
+        return this;
+      }
       return new ComposedCallCredentials([this, other]);
     }
     _equals(other) {
@@ -587,9 +608,12 @@ var require_call_credentials = __commonJS(function(exports) {
       return other instanceof EmptyCallCredentials;
     }
   }
+  function isEmptyCallCredentials(callCredentials) {
+    return callCredentials instanceof EmptyCallCredentials;
+  }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/tls-helpers.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/tls-helpers.js
 var require_tls_helpers = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CIPHER_SUITES = undefined;
@@ -609,13 +633,15 @@ var require_tls_helpers = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/uri-parser.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/uri-parser.js
 var require_uri_parser = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.parseUri = parseUri;
   exports.splitHostPort = splitHostPort;
   exports.combineHostPort = combineHostPort;
   exports.uriToString = uriToString;
+  exports.extractServiceName = extractServiceName;
+  exports.computeServiceUrl = computeServiceUrl;
   var URI_REGEX = /^(?:([A-Za-z0-9+.-]+):)?(?:\/\/([^/]*)\/)?(.+)$/;
   function parseUri(uriString) {
     const parsedUri = URI_REGEX.exec(uriString);
@@ -698,9 +724,26 @@ var require_uri_parser = __commonJS(function(exports) {
     result += uri.path;
     return result;
   }
+  function extractServiceName(methodName) {
+    const firstSlashIndex = methodName.indexOf("/");
+    if (firstSlashIndex === -1) {
+      return "";
+    }
+    const secondSlashIndex = methodName.indexOf("/", firstSlashIndex + 1);
+    if (secondSlashIndex === -1) {
+      return methodName.substring(firstSlashIndex + 1);
+    }
+    return methodName.substring(firstSlashIndex + 1, secondSlashIndex);
+  }
+  function computeServiceUrl(host, methodName) {
+    var _a, _b;
+    const serviceName = extractServiceName(methodName);
+    const hostname = (_b = (_a = splitHostPort(host)) === null || _a === undefined ? undefined : _a.host) !== null && _b !== undefined ? _b : "localhost";
+    return `https://${hostname}/${serviceName}`;
+  }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/resolver.js
 var require_resolver = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CHANNEL_ARGS_CONFIG_SELECTOR_KEY = undefined;
@@ -749,7 +792,7 @@ var require_resolver = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/channel-credentials.js
 var require_channel_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChannelCredentials = undefined;
@@ -813,6 +856,7 @@ var require_channel_credentials = __commonJS(function(exports) {
       return other instanceof InsecureChannelCredentialsImpl;
     }
     _createSecureConnector(channelTarget, options, callCredentials) {
+      const credentials = callCredentials !== null && callCredentials !== undefined ? callCredentials : call_credentials_1.CallCredentials.createEmpty();
       return {
         connect(socket) {
           return Promise.resolve({
@@ -824,7 +868,7 @@ var require_channel_credentials = __commonJS(function(exports) {
           return Promise.resolve();
         },
         getCallCredentials: () => {
-          return callCredentials !== null && callCredentials !== undefined ? callCredentials : call_credentials_1.CallCredentials.createEmpty();
+          return credentials;
         },
         destroy() {}
       };
@@ -1118,7 +1162,7 @@ var require_channel_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancer.js
 var require_load_balancer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.createChildChannelControlHelper = createChildChannelControlHelper;
@@ -1206,7 +1250,7 @@ var require_load_balancer = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/service-config.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/service-config.js
 var require_service_config = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.validateRetryThrottling = validateRetryThrottling;
@@ -1546,7 +1590,7 @@ var require_service_config = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/connectivity-state.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/connectivity-state.js
 var require_connectivity_state = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ConnectivityState = undefined;
@@ -1560,7 +1604,7 @@ var require_connectivity_state = __commonJS(function(exports) {
   })(ConnectivityState || (exports.ConnectivityState = ConnectivityState = {}));
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/picker.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/picker.js
 var require_picker = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.QueuePicker = exports.UnavailablePicker = exports.PickResultType = undefined;
@@ -1619,7 +1663,7 @@ var require_picker = __commonJS(function(exports) {
   exports.QueuePicker = QueuePicker;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/backoff-timeout.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/backoff-timeout.js
 var require_backoff_timeout = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BackoffTimeout = undefined;
@@ -1660,7 +1704,9 @@ var require_backoff_timeout = __commonJS(function(exports) {
           this.maxDelay = options.maxDelay;
         }
       }
-      this.trace("constructed initialDelay=" + this.initialDelay + " multiplier=" + this.multiplier + " jitter=" + this.jitter + " maxDelay=" + this.maxDelay);
+      if (this.traceEnabled) {
+        this.trace("constructed initialDelay=" + this.initialDelay + " multiplier=" + this.multiplier + " jitter=" + this.jitter + " maxDelay=" + this.maxDelay);
+      }
       this.nextDelay = this.initialDelay;
       this.timerId = setTimeout(() => {}, 0);
       clearTimeout(this.timerId);
@@ -1668,12 +1714,19 @@ var require_backoff_timeout = __commonJS(function(exports) {
     static getNextId() {
       return this.nextId++;
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "{" + this.id + "} " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "{" + this.id + "} " + text);
+      }
     }
     runTimer(delay) {
       var _a, _b;
-      this.trace("runTimer(delay=" + delay + ")");
+      if (this.traceEnabled) {
+        this.trace("runTimer(delay=" + delay + ")");
+      }
       this.endTime = this.startTime;
       this.endTime.setMilliseconds(this.endTime.getMilliseconds() + delay);
       clearTimeout(this.timerId);
@@ -1701,7 +1754,9 @@ var require_backoff_timeout = __commonJS(function(exports) {
       this.running = false;
     }
     reset() {
-      this.trace("reset() running=" + this.running);
+      if (this.traceEnabled) {
+        this.trace("reset() running=" + this.running);
+      }
       this.nextDelay = this.initialDelay;
       if (this.running) {
         const now = new Date;
@@ -1736,7 +1791,7 @@ var require_backoff_timeout = __commonJS(function(exports) {
   BackoffTimeout.nextId = 0;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-child-handler.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancer-child-handler.js
 var require_load_balancer_child_handler = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChildLoadBalancerHandler = undefined;
@@ -1858,10 +1913,11 @@ var require_load_balancer_child_handler = __commonJS(function(exports) {
   exports.ChildLoadBalancerHandler = ChildLoadBalancerHandler;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolving-load-balancer.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/resolving-load-balancer.js
 var require_resolving_load_balancer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ResolvingLoadBalancer = undefined;
+  exports.getDefaultConfigSelector = getDefaultConfigSelector;
   var load_balancer_1 = require_load_balancer();
   var service_config_1 = require_service_config();
   var connectivity_state_1 = require_connectivity_state();
@@ -1912,34 +1968,41 @@ var require_resolving_load_balancer = __commonJS(function(exports) {
     }
     return null;
   }
+  var MAX_CACHED_METHOD_CONFIGS = 100;
   function getDefaultConfigSelector(serviceConfig) {
+    const methodConfigCache = new Map;
     return {
-      invoke(methodName, metadata) {
+      invoke(methodName, metadata, channelId) {
         var _a, _b;
-        const splitName = methodName.split("/").filter((x) => x.length > 0);
-        const service = (_a = splitName[0]) !== null && _a !== undefined ? _a : "";
-        const method = (_b = splitName[1]) !== null && _b !== undefined ? _b : "";
-        if (serviceConfig && serviceConfig.methodConfig) {
-          for (const matchLevel of NAME_MATCH_LEVEL_ORDER) {
-            const matchingConfig = findMatchingConfig(service, method, serviceConfig.methodConfig, matchLevel);
-            if (matchingConfig) {
-              return {
-                methodConfig: matchingConfig,
-                pickInformation: {},
-                status: constants_1.Status.OK,
-                dynamicFilterFactories: []
-              };
+        let matchingConfig = methodConfigCache.get(methodName);
+        if (matchingConfig === undefined) {
+          const splitName = methodName.split("/").filter((x) => x.length > 0);
+          const service = (_a = splitName[0]) !== null && _a !== undefined ? _a : "";
+          const method = (_b = splitName[1]) !== null && _b !== undefined ? _b : "";
+          matchingConfig = { name: [] };
+          if (serviceConfig && serviceConfig.methodConfig) {
+            for (const matchLevel of NAME_MATCH_LEVEL_ORDER) {
+              const foundConfig = findMatchingConfig(service, method, serviceConfig.methodConfig, matchLevel);
+              if (foundConfig) {
+                matchingConfig = foundConfig;
+                break;
+              }
             }
+          }
+          if (methodConfigCache.size < MAX_CACHED_METHOD_CONFIGS) {
+            methodConfigCache.set(methodName, matchingConfig);
           }
         }
         return {
-          methodConfig: { name: [] },
+          methodConfig: matchingConfig,
           pickInformation: {},
           status: constants_1.Status.OK,
           dynamicFilterFactories: []
         };
       },
-      unref() {}
+      unref() {
+        methodConfigCache.clear();
+      }
     };
   }
 
@@ -2092,7 +2155,7 @@ var require_resolving_load_balancer = __commonJS(function(exports) {
   exports.ResolvingLoadBalancer = ResolvingLoadBalancer;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel-options.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/channel-options.js
 var require_channel_options = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.recognizedOptions = undefined;
@@ -2147,7 +2210,7 @@ var require_channel_options = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-address.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/subchannel-address.js
 var require_subchannel_address = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.EndpointMap = undefined;
@@ -3166,7 +3229,7 @@ var require_cjs = __commonJS(function(exports) {
   exports.OrderedMap = OrderedMap;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/admin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/admin.js
 var require_admin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.registerAdminService = registerAdminService;
@@ -3182,7 +3245,7 @@ var require_admin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/call.js
 var require_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ClientDuplexStreamImpl = exports.ClientWritableStreamImpl = exports.ClientReadableStreamImpl = exports.ClientUnaryCallImpl = undefined;
@@ -3320,7 +3383,7 @@ ${callerStack}`;
   exports.ClientDuplexStreamImpl = ClientDuplexStreamImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-interface.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/call-interface.js
 var require_call_interface = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InterceptingListenerImpl = undefined;
@@ -3401,7 +3464,7 @@ var require_call_interface = __commonJS(function(exports) {
   exports.InterceptingListenerImpl = InterceptingListenerImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/client-interceptors.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/client-interceptors.js
 var require_client_interceptors = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.InterceptorConfigurationError = undefined;
@@ -3748,7 +3811,7 @@ var require_client_interceptors = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/client.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/client.js
 var require_client = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Client = undefined;
@@ -4119,7 +4182,7 @@ var require_client = __commonJS(function(exports) {
   exports.Client = Client;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/make-client.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/make-client.js
 var require_make_client = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.makeClientConstructor = makeClientConstructor;
@@ -5046,7 +5109,7 @@ var require_pool = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/longbits.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/util/longbits.js
 var require_longbits = __commonJS(function(exports, module) {
   module.exports = LongBits;
   var util = require_minimal();
@@ -6050,7 +6113,7 @@ var require_umd = __commonJS(function(exports, module) {
   });
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/minimal.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/util/minimal.js
 var require_minimal = __commonJS(function(exports) {
   var util = exports;
   util.asPromise = require_aspromise();
@@ -6223,7 +6286,7 @@ var require_minimal = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/writer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/writer.js
 var require_writer = __commonJS(function(exports, module) {
   module.exports = Writer;
   var util = require_minimal();
@@ -6408,7 +6471,7 @@ var require_writer = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/writer_buffer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/writer_buffer.js
 var require_writer_buffer = __commonJS(function(exports, module) {
   module.exports = BufferWriter;
   var Writer = require_writer();
@@ -6456,7 +6519,7 @@ var require_writer_buffer = __commonJS(function(exports, module) {
   BufferWriter._configure();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/reader.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/reader.js
 var require_reader = __commonJS(function(exports, module) {
   module.exports = Reader;
   var util = require_minimal();
@@ -6700,7 +6763,7 @@ var require_reader = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/reader_buffer.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/reader_buffer.js
 var require_reader_buffer = __commonJS(function(exports, module) {
   module.exports = BufferReader;
   var Reader = require_reader();
@@ -6720,7 +6783,7 @@ var require_reader_buffer = __commonJS(function(exports, module) {
   BufferReader._configure();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/rpc/service.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/rpc/service.js
 var require_service = __commonJS(function(exports, module) {
   module.exports = Service;
   var util = require_minimal();
@@ -6785,18 +6848,18 @@ var require_service = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/rpc.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/rpc.js
 var require_rpc = __commonJS(function(exports) {
   var rpc = exports;
   rpc.Service = require_service();
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/roots.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/roots.js
 var require_roots = __commonJS(function(exports, module) {
   module.exports = Object.create(null);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index-minimal.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/index-minimal.js
 var require_index_minimal = __commonJS(function(exports) {
   var protobuf = exports;
   protobuf.build = "minimal";
@@ -6984,7 +7047,7 @@ var require_path = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/patterns.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/util/patterns.js
 var require_patterns = __commonJS(function(exports) {
   var patterns = exports;
   patterns.numberRe = /^(?![eE])[0-9]*(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?$/;
@@ -6992,7 +7055,7 @@ var require_patterns = __commonJS(function(exports) {
   patterns.reservedRe = /^(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$/;
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util/fs.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/util/fs.js
 var require_fs2 = __commonJS(function(exports, module) {
   var fs = null;
   try {
@@ -7003,7 +7066,7 @@ var require_fs2 = __commonJS(function(exports, module) {
   module.exports = fs;
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/namespace.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/namespace.js
 var require_namespace = __commonJS(function(exports, module) {
   module.exports = Namespace;
   var ReflectionObject = require_object();
@@ -7278,7 +7341,7 @@ var require_namespace = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/mapfield.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/mapfield.js
 var require_mapfield = __commonJS(function(exports, module) {
   module.exports = MapField;
   var Field = require_field();
@@ -7331,7 +7394,7 @@ var require_mapfield = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/method.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/method.js
 var require_method = __commonJS(function(exports, module) {
   module.exports = Method;
   var ReflectionObject = require_object();
@@ -7395,7 +7458,7 @@ var require_method = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/service.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/service.js
 var require_service2 = __commonJS(function(exports, module) {
   module.exports = Service;
   var Namespace = require_namespace();
@@ -7505,7 +7568,7 @@ var require_service2 = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/message.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/message.js
 var require_message = __commonJS(function(exports, module) {
   module.exports = Message;
   var util = require_minimal();
@@ -7547,7 +7610,7 @@ var require_message = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/decoder.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/decoder.js
 var require_decoder = __commonJS(function(exports, module) {
   module.exports = decoder;
   var Enum = require_enum();
@@ -7612,7 +7675,7 @@ var require_decoder = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/verifier.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/verifier.js
 var require_verifier = __commonJS(function(exports, module) {
   module.exports = verifier;
   var Enum = require_enum();
@@ -7718,7 +7781,7 @@ var require_verifier = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/converter.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/converter.js
 var require_converter = __commonJS(function(exports) {
   var converter = exports;
   var Enum = require_enum();
@@ -7897,7 +7960,7 @@ var require_converter = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/wrappers.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/wrappers.js
 var require_wrappers = __commonJS(function(exports) {
   var wrappers = exports;
   var Message = require_message();
@@ -7954,7 +8017,7 @@ var require_wrappers = __commonJS(function(exports) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/type.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/type.js
 var require_type = __commonJS(function(exports, module) {
   module.exports = Type;
   var Namespace = require_namespace();
@@ -8273,7 +8336,7 @@ var require_type = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/root.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/root.js
 var require_root = __commonJS(function(exports, module) {
   module.exports = Root;
   var Namespace = require_namespace();
@@ -8515,7 +8578,7 @@ var require_root = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/util.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/util.js
 var require_util = __commonJS(function(exports, module) {
   var util = module.exports = require_minimal();
   var roots = require_roots();
@@ -8634,7 +8697,7 @@ var require_util = __commonJS(function(exports, module) {
   });
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/types.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/types.js
 var require_types = __commonJS(function(exports) {
   var types = exports;
   var util = require_util();
@@ -8735,7 +8798,7 @@ var require_types = __commonJS(function(exports) {
   ]);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/field.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/field.js
 var require_field = __commonJS(function(exports, module) {
   module.exports = Field;
   var ReflectionObject = require_object();
@@ -8924,7 +8987,7 @@ var require_field = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/oneof.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/oneof.js
 var require_oneof = __commonJS(function(exports, module) {
   module.exports = OneOf;
   var ReflectionObject = require_object();
@@ -9029,7 +9092,7 @@ var require_oneof = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/object.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/object.js
 var require_object = __commonJS(function(exports, module) {
   module.exports = ReflectionObject;
   ReflectionObject.className = "ReflectionObject";
@@ -9213,7 +9276,7 @@ var require_object = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/enum.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/enum.js
 var require_enum = __commonJS(function(exports, module) {
   module.exports = Enum;
   var ReflectionObject = require_object();
@@ -9321,7 +9384,7 @@ var require_enum = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/encoder.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/encoder.js
 var require_encoder = __commonJS(function(exports, module) {
   module.exports = encoder;
   var Enum = require_enum();
@@ -9369,7 +9432,7 @@ var require_encoder = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index-light.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/index-light.js
 var require_index_light = __commonJS(function(exports, module) {
   var protobuf = module.exports = require_index_minimal();
   protobuf.build = "light";
@@ -9412,7 +9475,7 @@ var require_index_light = __commonJS(function(exports, module) {
   protobuf.Field._configure(protobuf.Type);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/tokenize.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/tokenize.js
 var require_tokenize = __commonJS(function(exports, module) {
   module.exports = tokenize;
   var delimRe = /[\s{}=;:[\],'"()<>]/g;
@@ -9663,7 +9726,7 @@ var require_tokenize = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/parse.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/parse.js
 var require_parse = __commonJS(function(exports, module) {
   module.exports = parse;
   parse.filename = null;
@@ -10393,7 +10456,7 @@ var require_parse = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/common.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/common.js
 var require_common = __commonJS(function(exports, module) {
   module.exports = common;
   var commonRe = /\/|\./;
@@ -10596,7 +10659,7 @@ var require_common = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/src/index.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/src/index.js
 var require_src = __commonJS(function(exports, module) {
   var protobuf = module.exports = require_index_light();
   protobuf.build = "full";
@@ -10606,7 +10669,7 @@ var require_src = __commonJS(function(exports, module) {
   protobuf.Root._configure(protobuf.Type, protobuf.parse, protobuf.common);
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/descriptor.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/google/protobuf/descriptor.json
 var require_descriptor = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -11992,7 +12055,7 @@ var require_descriptor = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/ext/descriptor/index.js
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/ext/descriptor/index.js
 var require_descriptor2 = __commonJS(function(exports, module) {
   var $protobuf = require_src();
   module.exports = exports = $protobuf.descriptor = $protobuf.Root.fromJSON(require_descriptor()).lookup(".google.protobuf");
@@ -12539,7 +12602,7 @@ var require_descriptor2 = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/api.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/google/protobuf/api.json
 var require_api = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12661,7 +12724,7 @@ var require_api = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/source_context.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/google/protobuf/source_context.json
 var require_source_context = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12685,7 +12748,7 @@ var require_source_context = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/protobufjs@7.6.6-be9d4a7d621d1871/node_modules/protobufjs/google/protobuf/type.json
+// ../../../.bun/install/cache/links/protobufjs@7.6.6-0be9cc2039d89537/node_modules/protobufjs/google/protobuf/type.json
 var require_type2 = __commonJS(function(exports, module) {
   module.exports = {
     nested: {
@@ -12891,7 +12954,7 @@ var require_type2 = __commonJS(function(exports, module) {
   };
 });
 
-// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-28eceb0e4dcb771e/node_modules/@grpc/proto-loader/build/src/util.js
+// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-b708210cd794775a/node_modules/@grpc/proto-loader/build/src/util.js
 var require_util2 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.addCommonProtos = exports.loadProtosWithOptionsSync = exports.loadProtosWithOptions = undefined;
@@ -12958,7 +13021,7 @@ var require_util2 = __commonJS(function(exports) {
   exports.addCommonProtos = addCommonProtos;
 });
 
-// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-28eceb0e4dcb771e/node_modules/@grpc/proto-loader/build/src/index.js
+// ../../../.bun/install/cache/links/@grpc+proto-loader@0.8.1-b708210cd794775a/node_modules/@grpc/proto-loader/build/src/index.js
 var require_src2 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.loadFileDescriptorSetFromObject = exports.loadFileDescriptorSetFromBuffer = exports.fromJSON = exports.loadSync = exports.load = exports.IdempotencyLevel = exports.isAnyExtension = exports.Long = undefined;
@@ -13144,12 +13207,13 @@ var require_src2 = __commonJS(function(exports) {
   (0, util_1.addCommonProtos)();
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channelz.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/channelz.js
 var require_channelz = __commonJS(function(exports) {
-  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src";
+  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src";
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.registerChannelzSocket = exports.registerChannelzServer = exports.registerChannelzSubchannel = exports.registerChannelzChannel = exports.ChannelzCallTrackerStub = exports.ChannelzCallTracker = exports.ChannelzChildrenTrackerStub = exports.ChannelzChildrenTracker = exports.ChannelzTrace = exports.ChannelzTraceStub = undefined;
   exports.unregisterChannelzRef = unregisterChannelzRef;
+  exports.dateToProtoTimestamp = dateToProtoTimestamp;
   exports.getChannelzHandlers = getChannelzHandlers;
   exports.getChannelzServiceDefinition = getChannelzServiceDefinition;
   exports.setup = setup;
@@ -13299,7 +13363,7 @@ var require_channelz = __commonJS(function(exports) {
     }
     addCallStarted() {
       this.callsStarted += 1;
-      this.lastCallStartedTimestamp = new Date;
+      this.lastCallStartedTimestamp = Date.now();
     }
     addCallSucceeded() {
       this.callsSucceeded += 1;
@@ -13415,12 +13479,12 @@ var require_channelz = __commonJS(function(exports) {
     }
   }
   function dateToProtoTimestamp(date) {
-    if (!date) {
+    if (date === null || date === undefined) {
       return null;
     }
-    const millisSinceEpoch = date.getTime();
+    const millisSinceEpoch = typeof date === "number" ? date : date.getTime();
     return {
-      seconds: millisSinceEpoch / 1000 | 0,
+      seconds: Math.floor(millisSinceEpoch / 1000),
       nanos: millisSinceEpoch % 1000 * 1e6
     };
   }
@@ -13672,7 +13736,7 @@ var require_channelz = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/call-number.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/call-number.js
 var require_call_number = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.getNextCallNumber = getNextCallNumber;
@@ -13682,7 +13746,7 @@ var require_call_number = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/compression-algorithms.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/compression-algorithms.js
 var require_compression_algorithms = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CompressionAlgorithms = undefined;
@@ -13694,7 +13758,7 @@ var require_compression_algorithms = __commonJS(function(exports) {
   })(CompressionAlgorithms || (exports.CompressionAlgorithms = CompressionAlgorithms = {}));
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/filter.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/filter.js
 var require_filter = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseFilter = undefined;
@@ -13719,7 +13783,7 @@ var require_filter = __commonJS(function(exports) {
   exports.BaseFilter = BaseFilter;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/compression-filter.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/compression-filter.js
 var require_compression_filter = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.CompressionFilterFactory = exports.CompressionFilter = undefined;
@@ -13983,7 +14047,7 @@ var require_compression_filter = __commonJS(function(exports) {
   exports.CompressionFilterFactory = CompressionFilterFactory;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/control-plane-status.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/control-plane-status.js
 var require_control_plane_status = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.restrictControlPlaneStatusCode = restrictControlPlaneStatusCode;
@@ -14010,7 +14074,7 @@ var require_control_plane_status = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/deadline.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/deadline.js
 var require_deadline = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.minDeadline = minDeadline;
@@ -14035,7 +14099,7 @@ var require_deadline = __commonJS(function(exports) {
     ["H", 60 * 60 * 1000]
   ];
   function getDeadlineTimeoutString(deadline) {
-    const now = new Date().getTime();
+    const now = Date.now();
     if (deadline instanceof Date) {
       deadline = deadline.getTime();
     }
@@ -14051,7 +14115,7 @@ var require_deadline = __commonJS(function(exports) {
   var MAX_TIMEOUT_TIME = 2147483647;
   function getRelativeTimeout(deadline) {
     const deadlineMs = deadline instanceof Date ? deadline.getTime() : deadline;
-    const now = new Date().getTime();
+    const now = Date.now();
     const timeout = deadlineMs - now;
     if (timeout < 0) {
       return 0;
@@ -14074,11 +14138,13 @@ var require_deadline = __commonJS(function(exports) {
     }
   }
   function formatDateDifference(startDate, endDate) {
-    return ((endDate.getTime() - startDate.getTime()) / 1000).toFixed(3) + "s";
+    const startMs = typeof startDate === "number" ? startDate : startDate.getTime();
+    const endMs = typeof endDate === "number" ? endDate : endDate.getTime();
+    return ((endMs - startMs) / 1000).toFixed(3) + "s";
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/filter-stack.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/filter-stack.js
 var require_filter_stack = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.FilterStackFactory = exports.FilterStack = undefined;
@@ -14148,7 +14214,7 @@ var require_filter_stack = __commonJS(function(exports) {
   exports.FilterStackFactory = FilterStackFactory;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/single-subchannel-channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/single-subchannel-channel.js
 var require_single_subchannel_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SingleSubchannelChannel = undefined;
@@ -14166,7 +14232,6 @@ var require_single_subchannel_channel = __commonJS(function(exports) {
 
   class SubchannelCallWrapper {
     constructor(subchannel, method, filterStackFactory, options, callNumber) {
-      var _a, _b;
       this.subchannel = subchannel;
       this.method = method;
       this.options = options;
@@ -14178,13 +14243,7 @@ var require_single_subchannel_channel = __commonJS(function(exports) {
       this.pendingStatus = null;
       this.readFilterPending = false;
       this.writeFilterPending = false;
-      const splitPath = this.method.split("/");
-      let serviceName = "";
-      if (splitPath.length >= 2) {
-        serviceName = splitPath[1];
-      }
-      const hostname = (_b = (_a = (0, uri_parser_1.splitHostPort)(this.options.host)) === null || _a === undefined ? undefined : _a.host) !== null && _b !== undefined ? _b : "localhost";
-      this.serviceUrl = `https://${hostname}/${serviceName}`;
+      this.serviceUrl = (0, uri_parser_1.computeServiceUrl)(this.options.host, this.method);
       const timeout = (0, deadline_1.getRelativeTimeout)(options.deadline);
       if (timeout !== Infinity) {
         if (timeout <= 0) {
@@ -14262,7 +14321,7 @@ var require_single_subchannel_channel = __commonJS(function(exports) {
           }
         }
       };
-      this.childCall = this.subchannel.createCall(credsMetadata, this.options.host, this.method, childListener);
+      this.childCall = this.subchannel.createCall(credsMetadata, this.options.host, this.method, childListener, this.callNumber);
       if (this.readPending) {
         this.childCall.startRead();
       }
@@ -14367,7 +14426,7 @@ var require_single_subchannel_channel = __commonJS(function(exports) {
   exports.SingleSubchannelChannel = SingleSubchannelChannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/subchannel.js
 var require_subchannel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Subchannel = undefined;
@@ -14421,7 +14480,9 @@ var require_subchannel = __commonJS(function(exports) {
       }
       this.channelzRef = (0, channelz_1.registerChannelzSubchannel)(this.subchannelAddressString, () => this.getChannelzInfo(), this.channelzEnabled);
       this.channelzTrace.addTrace("CT_INFO", "Subchannel created");
-      this.trace("Subchannel constructed with options " + JSON.stringify(options, undefined, 2));
+      if (this.traceEnabled) {
+        this.trace("Subchannel constructed with options " + JSON.stringify(options, undefined, 2));
+      }
       this.secureConnector = credentials._createSecureConnector(channelTarget, options);
     }
     getChannelzInfo() {
@@ -14433,11 +14494,21 @@ var require_subchannel = __commonJS(function(exports) {
         target: this.subchannelAddressString
       };
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
+    get refTraceEnabled() {
+      return logging.isTracerEnabled("subchannel_refcount");
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      }
     }
     refTrace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, "subchannel_refcount", "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      if (this.refTraceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, "subchannel_refcount", "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      }
     }
     handleBackoffTimer() {
       if (this.continueConnecting) {
@@ -14484,10 +14555,12 @@ var require_subchannel = __commonJS(function(exports) {
       if (oldStates.indexOf(this.connectivityState) === -1) {
         return false;
       }
-      if (errorMessage) {
-        this.trace(connectivity_state_1.ConnectivityState[this.connectivityState] + " -> " + connectivity_state_1.ConnectivityState[newState] + ' with error "' + errorMessage + '"');
-      } else {
-        this.trace(connectivity_state_1.ConnectivityState[this.connectivityState] + " -> " + connectivity_state_1.ConnectivityState[newState]);
+      if (this.traceEnabled) {
+        if (errorMessage) {
+          this.trace(connectivity_state_1.ConnectivityState[this.connectivityState] + " -> " + connectivity_state_1.ConnectivityState[newState] + ' with error "' + errorMessage + '"');
+        } else {
+          this.trace(connectivity_state_1.ConnectivityState[this.connectivityState] + " -> " + connectivity_state_1.ConnectivityState[newState]);
+        }
       }
       if (this.channelzEnabled) {
         this.channelzTrace.addTrace("CT_INFO", "Connectivity state change to " + connectivity_state_1.ConnectivityState[newState]);
@@ -14531,11 +14604,15 @@ var require_subchannel = __commonJS(function(exports) {
       return true;
     }
     ref() {
-      this.refTrace("refcount " + this.refcount + " -> " + (this.refcount + 1));
+      if (this.refTraceEnabled) {
+        this.refTrace("refcount " + this.refcount + " -> " + (this.refcount + 1));
+      }
       this.refcount += 1;
     }
     unref() {
-      this.refTrace("refcount " + this.refcount + " -> " + (this.refcount - 1));
+      if (this.refTraceEnabled) {
+        this.refTrace("refcount " + this.refcount + " -> " + (this.refcount - 1));
+      }
       this.refcount -= 1;
       if (this.refcount === 0) {
         this.channelzTrace.addTrace("CT_INFO", "Shutting down");
@@ -14553,7 +14630,7 @@ var require_subchannel = __commonJS(function(exports) {
       }
       return false;
     }
-    createCall(metadata, host, method, listener) {
+    createCall(metadata, host, method, listener, callId) {
       if (!this.transport) {
         throw new Error("Cannot create call, subchannel not READY");
       }
@@ -14573,7 +14650,7 @@ var require_subchannel = __commonJS(function(exports) {
       } else {
         statsTracker = {};
       }
-      return this.transport.createCall(metadata, host, method, listener, statsTracker);
+      return this.transport.createCall(metadata, host, method, listener, statsTracker, callId);
     }
     startConnecting() {
       process.nextTick(() => {
@@ -14649,15 +14726,17 @@ var require_subchannel = __commonJS(function(exports) {
   exports.Subchannel = Subchannel;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/environment.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/environment.js
 var require_environment = __commonJS(function(exports) {
   var _a;
+  var _b;
   Object.defineProperty(exports, "__esModule", { value: true });
-  exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER = undefined;
+  exports.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS = exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER = undefined;
   exports.GRPC_NODE_USE_ALTERNATIVE_RESOLVER = ((_a = process.env.GRPC_NODE_USE_ALTERNATIVE_RESOLVER) !== null && _a !== undefined ? _a : "false") === "true";
+  exports.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS = ((_b = process.env.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) !== null && _b !== undefined ? _b : "false") === "true";
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-dns.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/resolver-dns.js
 var require_resolver_dns = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DEFAULT_PORT = undefined;
@@ -14921,7 +15000,7 @@ var require_resolver_dns = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/http_proxy.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/http_proxy.js
 var require_http_proxy = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.parseCIDR = parseCIDR;
@@ -15137,7 +15216,7 @@ var require_http_proxy = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/stream-decoder.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/stream-decoder.js
 var require_stream_decoder = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.StreamDecoder = undefined;
@@ -15220,7 +15299,7 @@ var require_stream_decoder = __commonJS(function(exports) {
   exports.StreamDecoder = StreamDecoder;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/subchannel-call.js
 var require_subchannel_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Http2SubchannelCall = undefined;
@@ -15293,13 +15372,15 @@ var require_subchannel_call = __commonJS(function(exports) {
       const maxReceiveMessageLength = (_a = transport.getOptions()["grpc.max_receive_message_length"]) !== null && _a !== undefined ? _a : constants_1.DEFAULT_MAX_RECEIVE_MESSAGE_LENGTH;
       this.decoder = new stream_decoder_1.StreamDecoder(maxReceiveMessageLength);
       http2Stream.on("response", (headers, flags) => {
-        let headersString = "";
-        for (const header of Object.keys(headers)) {
-          headersString += "\t\t" + header + ": " + headers[header] + `
+        if (this.traceEnabled) {
+          let headersString = "";
+          for (const header of Object.keys(headers)) {
+            headersString += "\t\t" + header + ": " + headers[header] + `
 `;
-        }
-        this.trace(`Received server headers:
+          }
+          this.trace(`Received server headers:
 ` + headersString);
+        }
         this.httpStatusCode = headers[":status"];
         if (flags & http2.constants.NGHTTP2_FLAG_END_STREAM) {
           this.handleTrailers(headers);
@@ -15325,7 +15406,9 @@ var require_subchannel_call = __commonJS(function(exports) {
         if (this.statusOutput) {
           return;
         }
-        this.trace("receive HTTP/2 data frame of length " + data.length);
+        if (this.traceEnabled) {
+          this.trace("receive HTTP/2 data frame of length " + data.length);
+        }
         let messages;
         try {
           messages = this.decoder.write(data);
@@ -15339,7 +15422,9 @@ var require_subchannel_call = __commonJS(function(exports) {
           return;
         }
         for (const message of messages) {
-          this.trace("parsed message of length " + message.length);
+          if (this.traceEnabled) {
+            this.trace("parsed message of length " + message.length);
+          }
           this.callEventTracker.addMessageReceived();
           this.tryPush(message);
         }
@@ -15352,7 +15437,9 @@ var require_subchannel_call = __commonJS(function(exports) {
         this.serverEndedCall = true;
         process.nextTick(() => {
           var _a;
-          this.trace("HTTP/2 stream closed with code " + http2Stream.rstCode);
+          if (this.traceEnabled) {
+            this.trace("HTTP/2 stream closed with code " + http2Stream.rstCode);
+          }
           if (((_a = this.finalStatus) === null || _a === undefined ? undefined : _a.code) === constants_1.Status.OK) {
             return;
           }
@@ -15420,7 +15507,9 @@ var require_subchannel_call = __commonJS(function(exports) {
       });
       http2Stream.on("error", (err) => {
         if (err.code !== "ERR_HTTP2_STREAM_ERROR") {
-          this.trace("Node error event: message=" + err.message + " code=" + err.code + " errno=" + getSystemErrorName(err.errno) + " syscall=" + err.syscall);
+          if (this.traceEnabled) {
+            this.trace("Node error event: message=" + err.message + " code=" + err.code + " errno=" + getSystemErrorName(err.errno) + " syscall=" + err.syscall);
+          }
           this.internalError = err;
         }
         this.callEventTracker.onStreamEnd(false);
@@ -15442,7 +15531,9 @@ var require_subchannel_call = __commonJS(function(exports) {
     outputStatus() {
       if (!this.statusOutput) {
         this.statusOutput = true;
-        this.trace("ended with status: code=" + this.finalStatus.code + ' details="' + this.finalStatus.details + '"');
+        if (this.traceEnabled) {
+          this.trace("ended with status: code=" + this.finalStatus.code + ' details="' + this.finalStatus.details + '"');
+        }
         this.callEventTracker.onCallEnd(this.finalStatus);
         process.nextTick(() => {
           this.listener.onReceiveStatus(this.finalStatus);
@@ -15450,8 +15541,13 @@ var require_subchannel_call = __commonJS(function(exports) {
         this.http2Stream.resume();
       }
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
     trace(text) {
-      logging.trace(constants_2.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callId + "] " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_2.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callId + "] " + text);
+      }
     }
     endCall(status) {
       if (this.finalStatus === null || this.finalStatus.code === constants_1.Status.OK) {
@@ -15468,7 +15564,9 @@ var require_subchannel_call = __commonJS(function(exports) {
       }
     }
     push(message) {
-      this.trace("pushing to reader message of length " + (message instanceof Buffer ? message.length : null));
+      if (this.traceEnabled) {
+        this.trace("pushing to reader message of length " + (message instanceof Buffer ? message.length : null));
+      }
       this.canPush = false;
       this.isPushPending = true;
       process.nextTick(() => {
@@ -15485,41 +15583,51 @@ var require_subchannel_call = __commonJS(function(exports) {
         this.http2Stream.pause();
         this.push(messageBytes);
       } else {
-        this.trace("unpushedReadMessages.push message of length " + messageBytes.length);
+        if (this.traceEnabled) {
+          this.trace("unpushedReadMessages.push message of length " + messageBytes.length);
+        }
         this.unpushedReadMessages.push(messageBytes);
       }
     }
     handleTrailers(headers) {
       this.serverEndedCall = true;
       this.callEventTracker.onStreamEnd(true);
-      let headersString = "";
-      for (const header of Object.keys(headers)) {
-        headersString += "\t\t" + header + ": " + headers[header] + `
+      if (this.traceEnabled) {
+        let headersString = "";
+        for (const header of Object.keys(headers)) {
+          headersString += "\t\t" + header + ": " + headers[header] + `
 `;
-      }
-      this.trace(`Received server trailers:
+        }
+        this.trace(`Received server trailers:
 ` + headersString);
+      }
       let metadata;
       try {
         metadata = metadata_1.Metadata.fromHttp2Headers(headers);
       } catch (e) {
         metadata = new metadata_1.Metadata;
       }
-      const metadataMap = metadata.getMap();
+      const statusValues = metadata.get("grpc-status");
       let status;
-      if (typeof metadataMap["grpc-status"] === "string") {
-        const receivedStatus = Number(metadataMap["grpc-status"]);
-        this.trace("received status code " + receivedStatus + " from server");
+      if (statusValues.length > 0 && typeof statusValues[0] === "string") {
+        const receivedStatus = Number(statusValues[0]);
+        if (this.traceEnabled) {
+          this.trace("received status code " + receivedStatus + " from server");
+        }
         metadata.remove("grpc-status");
         let details = "";
-        if (typeof metadataMap["grpc-message"] === "string") {
+        const messageValues = metadata.get("grpc-message");
+        if (messageValues.length > 0 && typeof messageValues[0] === "string") {
+          const messageString = messageValues[0];
           try {
-            details = decodeURI(metadataMap["grpc-message"]);
-          } catch (e) {
-            details = metadataMap["grpc-message"];
+            details = decodeURI(messageString);
+          } catch (error) {
+            details = messageString;
           }
           metadata.remove("grpc-message");
-          this.trace('received status details string "' + details + '" from server');
+          if (this.traceEnabled) {
+            this.trace('received status details string "' + details + '" from server');
+          }
         }
         status = {
           code: receivedStatus,
@@ -15544,7 +15652,9 @@ var require_subchannel_call = __commonJS(function(exports) {
         return;
       }
       if (this.serverEndedCall) {
-        this.http2Stream.end();
+        if (!this.http2Stream.writableEnded) {
+          this.http2Stream.end();
+        }
       } else {
         let code;
         if (((_a = this.finalStatus) === null || _a === undefined ? undefined : _a.code) === constants_1.Status.OK) {
@@ -15552,12 +15662,16 @@ var require_subchannel_call = __commonJS(function(exports) {
         } else {
           code = http2.constants.NGHTTP2_CANCEL;
         }
-        this.trace("close http2 stream with code " + code);
+        if (this.traceEnabled) {
+          this.trace("close http2 stream with code " + code);
+        }
         this.http2Stream.close(code);
       }
     }
     cancelWithStatus(status, details) {
-      this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      if (this.traceEnabled) {
+        this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      }
       this.endCall({ code: status, details, metadata: new metadata_1.Metadata });
     }
     getStatus() {
@@ -15587,7 +15701,9 @@ var require_subchannel_call = __commonJS(function(exports) {
       this.http2Stream.resume();
     }
     sendMessageWithContext(context, message) {
-      this.trace("write() called with message of length " + message.length);
+      if (this.traceEnabled) {
+        this.trace("write() called with message of length " + message.length);
+      }
       const cb = (error) => {
         process.nextTick(() => {
           var _a;
@@ -15601,7 +15717,9 @@ var require_subchannel_call = __commonJS(function(exports) {
           (_a = context.callback) === null || _a === undefined || _a.call(context);
         });
       };
-      this.trace("sending data chunk of length " + message.length);
+      if (this.traceEnabled) {
+        this.trace("sending data chunk of length " + message.length);
+      }
       this.callEventTracker.addMessageSent();
       try {
         this.http2Stream.write(message, cb);
@@ -15615,6 +15733,9 @@ var require_subchannel_call = __commonJS(function(exports) {
     }
     halfClose() {
       this.trace("end() called");
+      if (this.http2Stream.destroyed || this.http2Stream.writableEnded) {
+        return;
+      }
       this.trace("calling end() on HTTP/2 stream");
       this.http2Stream.end();
     }
@@ -15622,7 +15743,7 @@ var require_subchannel_call = __commonJS(function(exports) {
   exports.Http2SubchannelCall = Http2SubchannelCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/transport.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/transport.js
 var require_transport = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Http2SubchannelConnector = undefined;
@@ -15698,18 +15819,24 @@ var require_transport = __commonJS(function(exports) {
         if (errorCode === http2.constants.NGHTTP2_ENHANCE_YOUR_CALM && opaqueData && opaqueData.equals(tooManyPingsData)) {
           tooManyPings = true;
         }
-        this.trace("connection closed by GOAWAY with code " + errorCode + " and data " + (opaqueData === null || opaqueData === undefined ? undefined : opaqueData.toString()));
+        if (this.traceEnabled) {
+          this.trace("connection closed by GOAWAY with code " + errorCode + " and data " + (opaqueData === null || opaqueData === undefined ? undefined : opaqueData.toString()));
+        }
         this.reportDisconnectToOwner(tooManyPings);
       });
       session.once("error", (error) => {
-        this.trace("connection closed with error " + error.message);
+        if (this.traceEnabled) {
+          this.trace("connection closed with error " + error.message);
+        }
         this.handleDisconnect();
       });
       session.socket.once("close", (hadError) => {
-        this.trace("connection closed. hadError=" + hadError);
+        if (this.traceEnabled) {
+          this.trace("connection closed. hadError=" + hadError);
+        }
         this.handleDisconnect();
       });
-      if (logging.isTracerEnabled(TRACER_NAME)) {
+      if (this.traceEnabled) {
         session.on("remoteSettings", (settings) => {
           this.trace("new settings received" + (this.session !== session ? " on the old connection" : "") + ": " + JSON.stringify(settings));
         });
@@ -15720,7 +15847,7 @@ var require_transport = __commonJS(function(exports) {
       if (this.keepaliveWithoutCalls) {
         this.maybeStartKeepalivePingTimer();
       }
-      if (session.socket instanceof tls_1.TLSSocket) {
+      if (session.socket instanceof tls_1.TLSSocket && session.socket.authorized) {
         this.authContext = {
           transportSecurityType: "ssl",
           sslPeerCertificate: session.socket.getPeerCertificate()
@@ -15769,17 +15896,37 @@ var require_transport = __commonJS(function(exports) {
       };
       return socketInfo;
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
+    get keepaliveTraceEnabled() {
+      return logging.isTracerEnabled("keepalive");
+    }
+    get flowControlTraceEnabled() {
+      return logging.isTracerEnabled(FLOW_CONTROL_TRACER_NAME);
+    }
+    get internalsTraceEnabled() {
+      return logging.isTracerEnabled("transport_internals");
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      }
     }
     keepaliveTrace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, "keepalive", "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      if (this.keepaliveTraceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, "keepalive", "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      }
     }
     flowControlTrace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, FLOW_CONTROL_TRACER_NAME, "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      if (this.flowControlTraceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, FLOW_CONTROL_TRACER_NAME, "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      }
     }
     internalsTrace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, "transport_internals", "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      if (this.internalsTraceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, "transport_internals", "(" + this.channelzRef.id + ") " + this.subchannelAddressString + " " + text);
+      }
     }
     reportDisconnectToOwner(tooManyPings) {
       if (this.disconnectHandled) {
@@ -15817,7 +15964,9 @@ var require_transport = __commonJS(function(exports) {
       if (this.channelzEnabled) {
         this.keepalivesSent += 1;
       }
-      this.keepaliveTrace("Sending ping with timeout " + this.keepaliveTimeoutMs + "ms");
+      if (this.keepaliveTraceEnabled) {
+        this.keepaliveTrace("Sending ping with timeout " + this.keepaliveTimeoutMs + "ms");
+      }
       this.keepaliveTimer = setTimeout(() => {
         this.keepaliveTimer = null;
         this.keepaliveTrace("Ping timeout passed without response");
@@ -15829,7 +15978,9 @@ var require_transport = __commonJS(function(exports) {
         const pingSentSuccessfully = this.session.ping((err, duration, payload) => {
           this.clearKeepaliveTimeout();
           if (err) {
-            this.keepaliveTrace("Ping failed with error " + err.message);
+            if (this.keepaliveTraceEnabled) {
+              this.keepaliveTrace("Ping failed with error " + err.message);
+            }
             this.handleDisconnect();
           } else {
             this.keepaliveTrace("Received ping response");
@@ -15843,7 +15994,9 @@ var require_transport = __commonJS(function(exports) {
         pingSendError = (e instanceof Error ? e.message : "") || "Unknown error";
       }
       if (pingSendError) {
-        this.keepaliveTrace("Ping send failed: " + pingSendError);
+        if (this.keepaliveTraceEnabled) {
+          this.keepaliveTrace("Ping send failed: " + pingSendError);
+        }
         this.handleDisconnect();
       }
     }
@@ -15885,7 +16038,7 @@ var require_transport = __commonJS(function(exports) {
         }
       }
     }
-    createCall(metadata, host, method, listener, subchannelCallStatsTracker) {
+    createCall(metadata, host, method, listener, subchannelCallStatsTracker, callId) {
       const headers = metadata.toHttp2Headers();
       headers[HTTP2_HEADER_AUTHORITY] = host;
       headers[HTTP2_HEADER_USER_AGENT] = this.userAgent;
@@ -15900,8 +16053,12 @@ var require_transport = __commonJS(function(exports) {
         this.handleDisconnect();
         throw e;
       }
-      this.flowControlTrace("local window size: " + this.session.state.localWindowSize + " remote window size: " + this.session.state.remoteWindowSize);
-      this.internalsTrace("session.closed=" + this.session.closed + " session.destroyed=" + this.session.destroyed + " session.socket.destroyed=" + this.session.socket.destroyed);
+      if (this.flowControlTraceEnabled) {
+        this.flowControlTrace("local window size: " + this.session.state.localWindowSize + " remote window size: " + this.session.state.remoteWindowSize);
+      }
+      if (this.internalsTraceEnabled) {
+        this.internalsTrace("session.closed=" + this.session.closed + " session.destroyed=" + this.session.destroyed + " session.socket.destroyed=" + this.session.socket.destroyed);
+      }
       let eventTracker;
       let call;
       if (this.channelzEnabled) {
@@ -15910,13 +16067,13 @@ var require_transport = __commonJS(function(exports) {
           addMessageSent: () => {
             var _a;
             this.messagesSent += 1;
-            this.lastMessageSentTimestamp = new Date;
+            this.lastMessageSentTimestamp = Date.now();
             (_a = subchannelCallStatsTracker.addMessageSent) === null || _a === undefined || _a.call(subchannelCallStatsTracker);
           },
           addMessageReceived: () => {
             var _a;
             this.messagesReceived += 1;
-            this.lastMessageReceivedTimestamp = new Date;
+            this.lastMessageReceivedTimestamp = Date.now();
             (_a = subchannelCallStatsTracker.addMessageReceived) === null || _a === undefined || _a.call(subchannelCallStatsTracker);
           },
           onCallEnd: (status) => {
@@ -15955,7 +16112,7 @@ var require_transport = __commonJS(function(exports) {
           }
         };
       }
-      call = new subchannel_call_1.Http2SubchannelCall(http2Stream, eventTracker, listener, this, (0, call_number_1.getNextCallNumber)());
+      call = new subchannel_call_1.Http2SubchannelCall(http2Stream, eventTracker, listener, this, callId !== null && callId !== undefined ? callId : (0, call_number_1.getNextCallNumber)());
       this.addActiveCall(call);
       return call;
     }
@@ -15983,8 +16140,13 @@ var require_transport = __commonJS(function(exports) {
       this.session = null;
       this.isShutdown = false;
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, (0, uri_parser_1.uriToString)(this.channelTarget) + " " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, (0, uri_parser_1.uriToString)(this.channelTarget) + " " + text);
+      }
     }
     createSession(secureConnectResult, address, options) {
       if (this.isShutdown) {
@@ -16021,7 +16183,9 @@ var require_transport = __commonJS(function(exports) {
           var _a;
           (_a = this.session) === null || _a === undefined || _a.destroy();
           errorMessage = error.message;
-          this.trace("connection failed with error " + errorMessage);
+          if (this.traceEnabled) {
+            this.trace("connection failed with error " + errorMessage);
+          }
           if (!reportedError) {
             reportedError = true;
             reject(`${errorMessage} (${new Date().toISOString()})`);
@@ -16098,14 +16262,22 @@ var require_transport = __commonJS(function(exports) {
       let secureConnectResult = null;
       const addressString = (0, subchannel_address_1.subchannelAddressToString)(address);
       try {
-        this.trace(addressString + " Waiting for secureConnector to be ready");
+        if (this.traceEnabled) {
+          this.trace(addressString + " Waiting for secureConnector to be ready");
+        }
         await secureConnector.waitForReady();
-        this.trace(addressString + " secureConnector is ready");
+        if (this.traceEnabled) {
+          this.trace(addressString + " secureConnector is ready");
+        }
         tcpConnection = await this.tcpConnect(address, options);
         tcpConnection.setNoDelay();
-        this.trace(addressString + " Established TCP connection");
+        if (this.traceEnabled) {
+          this.trace(addressString + " Established TCP connection");
+        }
         secureConnectResult = await secureConnector.connect(tcpConnection);
-        this.trace(addressString + " Established secure connection");
+        if (this.traceEnabled) {
+          this.trace(addressString + " Established secure connection");
+        }
         return this.createSession(secureConnectResult, address, options);
       } catch (e) {
         tcpConnection === null || tcpConnection === undefined || tcpConnection.destroy();
@@ -16123,7 +16295,7 @@ var require_transport = __commonJS(function(exports) {
   exports.Http2SubchannelConnector = Http2SubchannelConnector;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-pool.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/subchannel-pool.js
 var require_subchannel_pool = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SubchannelPool = undefined;
@@ -16200,24 +16372,24 @@ var require_subchannel_pool = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancing-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancing-call.js
 var require_load_balancing_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.LoadBalancingCall = undefined;
+  var call_credentials_1 = require_call_credentials();
   var connectivity_state_1 = require_connectivity_state();
   var constants_1 = require_constants();
   var deadline_1 = require_deadline();
   var metadata_1 = require_metadata();
   var picker_1 = require_picker();
-  var uri_parser_1 = require_uri_parser();
   var logging = require_logging();
   var control_plane_status_1 = require_control_plane_status();
   var http2 = __require("http2");
   var TRACER_NAME = "load_balancing_call";
+  var RESOLVED_EMPTY_METADATA = Promise.resolve(undefined);
 
   class LoadBalancingCall {
     constructor(channel, callConfig, methodName, host, credentials, deadline, callNumber) {
-      var _a, _b;
       this.channel = channel;
       this.callConfig = callConfig;
       this.methodName = methodName;
@@ -16234,19 +16406,13 @@ var require_load_balancing_call = __commonJS(function(exports) {
       this.listener = null;
       this.onCallEnded = null;
       this.childStartTime = null;
-      const splitPath = this.methodName.split("/");
-      let serviceName = "";
-      if (splitPath.length >= 2) {
-        serviceName = splitPath[1];
-      }
-      const hostname = (_b = (_a = (0, uri_parser_1.splitHostPort)(this.host)) === null || _a === undefined ? undefined : _a.host) !== null && _b !== undefined ? _b : "localhost";
-      this.serviceUrl = `https://${hostname}/${serviceName}`;
-      this.startTime = new Date;
+      this.serviceUrl = this.channel.getServiceUrl(this.host, this.methodName);
+      this.startTime = Date.now();
     }
     getDeadlineInfo() {
       var _a, _b;
       const deadlineInfo = [];
-      if (this.childStartTime) {
+      if (this.childStartTime !== null) {
         if (this.childStartTime > this.startTime) {
           if ((_a = this.metadata) === null || _a === undefined ? undefined : _a.getOptions().waitForReady) {
             deadlineInfo.push("wait_for_ready");
@@ -16263,18 +16429,35 @@ var require_load_balancing_call = __commonJS(function(exports) {
       }
       return deadlineInfo;
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callNumber + "] " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callNumber + "] " + text);
+      }
+    }
+    getSubchannelString(subchannel) {
+      return subchannel ? "(" + subchannel.getChannelzRef().id + ") " + subchannel.getAddress() : "" + subchannel;
     }
     outputStatus(status, progress) {
       var _a, _b;
       if (!this.ended) {
         this.ended = true;
-        this.trace("ended with status: code=" + status.code + ' details="' + status.details + '" start time=' + this.startTime.toISOString());
+        if (this.traceEnabled) {
+          this.trace("ended with status: code=" + status.code + ' details="' + status.details + '" start time=' + new Date(this.startTime).toISOString());
+        }
         const finalStatus = Object.assign(Object.assign({}, status), { progress });
         (_a = this.listener) === null || _a === undefined || _a.onReceiveStatus(finalStatus);
         (_b = this.onCallEnded) === null || _b === undefined || _b.call(this, finalStatus.code, finalStatus.details, finalStatus.metadata);
+        this.channel.removeCallFromPickQueue(this);
       }
+    }
+    generateCallCredentialsMetadata(callCredentials) {
+      return (0, call_credentials_1.isEmptyCallCredentials)(callCredentials) ? RESOLVED_EMPTY_METADATA : callCredentials.generateMetadata({
+        method_name: this.methodName,
+        service_url: this.serviceUrl
+      });
     }
     doPick() {
       var _a, _b;
@@ -16287,18 +16470,20 @@ var require_load_balancing_call = __commonJS(function(exports) {
       this.trace("Pick called");
       const finalMetadata = this.metadata.clone();
       const pickResult = this.channel.doPick(finalMetadata, this.callConfig.pickInformation);
-      const subchannelString = pickResult.subchannel ? "(" + pickResult.subchannel.getChannelzRef().id + ") " + pickResult.subchannel.getAddress() : "" + pickResult.subchannel;
-      this.trace("Pick result: " + picker_1.PickResultType[pickResult.pickResultType] + " subchannel: " + subchannelString + " status: " + ((_a = pickResult.status) === null || _a === undefined ? undefined : _a.code) + " " + ((_b = pickResult.status) === null || _b === undefined ? undefined : _b.details));
+      if (this.traceEnabled) {
+        this.trace("Pick result: " + picker_1.PickResultType[pickResult.pickResultType] + " subchannel: " + this.getSubchannelString(pickResult.subchannel) + " status: " + ((_a = pickResult.status) === null || _a === undefined ? undefined : _a.code) + " " + ((_b = pickResult.status) === null || _b === undefined ? undefined : _b.details));
+      }
       switch (pickResult.pickResultType) {
         case picker_1.PickResultType.COMPLETE:
-          const combinedCallCredentials = this.credentials.compose(pickResult.subchannel.getCallCredentials());
-          combinedCallCredentials.generateMetadata({ method_name: this.methodName, service_url: this.serviceUrl }).then((credsMetadata) => {
+          this.generateCallCredentialsMetadata(this.credentials.compose(pickResult.subchannel.getCallCredentials())).then((credsMetadata) => {
             var _a;
             if (this.ended) {
               this.trace("Credentials metadata generation finished after call ended");
               return;
             }
-            finalMetadata.merge(credsMetadata);
+            if (credsMetadata) {
+              finalMetadata.merge(credsMetadata);
+            }
             if (finalMetadata.get("authorization").length > 1) {
               this.outputStatus({
                 code: constants_1.Status.INTERNAL,
@@ -16307,7 +16492,9 @@ var require_load_balancing_call = __commonJS(function(exports) {
               }, "PROCESSED");
             }
             if (pickResult.subchannel.getConnectivityState() !== connectivity_state_1.ConnectivityState.READY) {
-              this.trace("Picked subchannel " + subchannelString + " has state " + connectivity_state_1.ConnectivityState[pickResult.subchannel.getConnectivityState()] + " after getting credentials metadata. Retrying pick");
+              if (this.traceEnabled) {
+                this.trace("Picked subchannel " + this.getSubchannelString(pickResult.subchannel) + " has state " + connectivity_state_1.ConnectivityState[pickResult.subchannel.getConnectivityState()] + " after getting credentials metadata. Retrying pick");
+              }
               this.doPick();
               return;
             }
@@ -16332,10 +16519,12 @@ var require_load_balancing_call = __commonJS(function(exports) {
                     this.outputStatus(status, "PROCESSED");
                   }
                 }
-              });
-              this.childStartTime = new Date;
+              }, this.callNumber);
+              this.childStartTime = Date.now();
             } catch (error) {
-              this.trace("Failed to start call on picked subchannel " + subchannelString + " with error " + error.message);
+              if (this.traceEnabled) {
+                this.trace("Failed to start call on picked subchannel " + this.getSubchannelString(pickResult.subchannel) + " with error " + error.message);
+              }
               this.outputStatus({
                 code: constants_1.Status.INTERNAL,
                 details: "Failed to start HTTP/2 stream with error " + error.message,
@@ -16345,7 +16534,9 @@ var require_load_balancing_call = __commonJS(function(exports) {
             }
             (_a = pickResult.onCallStarted) === null || _a === undefined || _a.call(pickResult);
             this.onCallEnded = pickResult.onCallEnded;
-            this.trace("Created child call [" + this.child.getCallNumber() + "]");
+            if (this.traceEnabled) {
+              this.trace("Created child call [" + this.child.getCallNumber() + "]");
+            }
             if (this.readPending) {
               this.child.startRead();
             }
@@ -16386,7 +16577,9 @@ var require_load_balancing_call = __commonJS(function(exports) {
     }
     cancelWithStatus(status, details) {
       var _a;
-      this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      if (this.traceEnabled) {
+        this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      }
       (_a = this.child) === null || _a === undefined || _a.cancelWithStatus(status, details);
       this.outputStatus({ code: status, details, metadata: new metadata_1.Metadata }, "PROCESSED");
     }
@@ -16401,7 +16594,9 @@ var require_load_balancing_call = __commonJS(function(exports) {
       this.doPick();
     }
     sendMessageWithContext(context, message) {
-      this.trace("write() called with message of length " + message.length);
+      if (this.traceEnabled) {
+        this.trace("write() called with message of length " + message.length);
+      }
       if (this.child) {
         this.child.sendMessageWithContext(context, message);
       } else {
@@ -16441,7 +16636,7 @@ var require_load_balancing_call = __commonJS(function(exports) {
   exports.LoadBalancingCall = LoadBalancingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolving-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/resolving-call.js
 var require_resolving_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ResolvingCall = undefined;
@@ -16470,7 +16665,7 @@ var require_resolving_call = __commonJS(function(exports) {
       this.metadata = null;
       this.listener = null;
       this.statusWatchers = [];
-      this.deadlineTimer = setTimeout(() => {}, 0);
+      this.deadlineTimer = null;
       this.filterStack = null;
       this.deadlineStartTime = null;
       this.configReceivedTime = null;
@@ -16485,36 +16680,51 @@ var require_resolving_call = __commonJS(function(exports) {
           });
         }
         if (options.flags & constants_1.Propagate.DEADLINE) {
-          this.trace("Propagating deadline from parent: " + options.parentCall.getDeadline());
+          if (this.traceEnabled) {
+            this.trace("Propagating deadline from parent: " + options.parentCall.getDeadline());
+          }
           this.deadline = (0, deadline_1.minDeadline)(this.deadline, options.parentCall.getDeadline());
         }
       }
       this.trace("Created");
       this.runDeadlineTimer();
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callNumber + "] " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callNumber + "] " + text);
+      }
     }
     runDeadlineTimer() {
-      clearTimeout(this.deadlineTimer);
-      this.deadlineStartTime = new Date;
-      this.trace("Deadline: " + (0, deadline_1.deadlineToString)(this.deadline));
+      if (this.deadlineTimer) {
+        clearTimeout(this.deadlineTimer);
+        this.deadlineTimer = null;
+      }
+      this.deadlineStartTime = Date.now();
+      if (this.traceEnabled) {
+        this.trace("Deadline: " + (0, deadline_1.deadlineToString)(this.deadline));
+      }
       const timeout = (0, deadline_1.getRelativeTimeout)(this.deadline);
       if (timeout !== Infinity) {
-        this.trace("Deadline will be reached in " + timeout + "ms");
+        if (this.traceEnabled) {
+          this.trace("Deadline will be reached in " + timeout + "ms");
+        }
         const handleDeadline = () => {
-          if (!this.deadlineStartTime) {
+          this.deadlineTimer = null;
+          if (this.deadlineStartTime === null) {
             this.cancelWithStatus(constants_1.Status.DEADLINE_EXCEEDED, "Deadline exceeded");
             return;
           }
           const deadlineInfo = [];
-          const deadlineEndTime = new Date;
+          const deadlineEndTime = Date.now();
           deadlineInfo.push(`Deadline exceeded after ${(0, deadline_1.formatDateDifference)(this.deadlineStartTime, deadlineEndTime)}`);
-          if (this.configReceivedTime) {
+          if (this.configReceivedTime !== null) {
             if (this.configReceivedTime > this.deadlineStartTime) {
               deadlineInfo.push(`name resolution: ${(0, deadline_1.formatDateDifference)(this.deadlineStartTime, this.configReceivedTime)}`);
             }
-            if (this.childStartTime) {
+            if (this.childStartTime !== null) {
               if (this.childStartTime > this.configReceivedTime) {
                 deadlineInfo.push(`metadata filters: ${(0, deadline_1.formatDateDifference)(this.configReceivedTime, this.childStartTime)}`);
               }
@@ -16542,9 +16752,14 @@ var require_resolving_call = __commonJS(function(exports) {
         if (!this.filterStack) {
           this.filterStack = this.filterStackFactory.createFilter();
         }
-        clearTimeout(this.deadlineTimer);
+        if (this.deadlineTimer) {
+          clearTimeout(this.deadlineTimer);
+          this.deadlineTimer = null;
+        }
         const filteredStatus = this.filterStack.receiveTrailers(status);
-        this.trace("ended with status: code=" + filteredStatus.code + ' details="' + filteredStatus.details + '"');
+        if (this.traceEnabled) {
+          this.trace("ended with status: code=" + filteredStatus.code + ' details="' + filteredStatus.details + '"');
+        }
         this.statusWatchers.forEach((watcher) => watcher(filteredStatus));
         process.nextTick(() => {
           var _a;
@@ -16565,7 +16780,8 @@ var require_resolving_call = __commonJS(function(exports) {
           child.halfClose();
         }
       }, (status) => {
-        this.cancelWithStatus(status.code, status.details);
+        var _a, _b;
+        this.cancelWithStatus((_a = status.code) !== null && _a !== undefined ? _a : constants_1.Status.INTERNAL, (_b = status.details) !== null && _b !== undefined ? _b : "Failed to write message");
       });
     }
     getConfig() {
@@ -16587,7 +16803,7 @@ var require_resolving_call = __commonJS(function(exports) {
         }
         return;
       }
-      this.configReceivedTime = new Date;
+      this.configReceivedTime = Date.now();
       const config = configResult.config;
       if (config.status !== constants_1.Status.OK) {
         const { code, details } = (0, control_plane_status_1.restrictControlPlaneStatusCode)(config.status, "Failed to route call to method " + this.method);
@@ -16599,18 +16815,19 @@ var require_resolving_call = __commonJS(function(exports) {
         return;
       }
       if (config.methodConfig.timeout) {
-        const configDeadline = new Date;
-        configDeadline.setSeconds(configDeadline.getSeconds() + config.methodConfig.timeout.seconds);
-        configDeadline.setMilliseconds(configDeadline.getMilliseconds() + config.methodConfig.timeout.nanos / 1e6);
+        const timeoutMs = Math.floor(config.methodConfig.timeout.seconds * 1000 + config.methodConfig.timeout.nanos / 1e6);
+        const configDeadline = Date.now() + timeoutMs;
         this.deadline = (0, deadline_1.minDeadline)(this.deadline, configDeadline);
         this.runDeadlineTimer();
       }
       this.filterStackFactory.push(config.dynamicFilterFactories);
       this.filterStack = this.filterStackFactory.createFilter();
       this.filterStack.sendMetadata(Promise.resolve(this.metadata)).then((filteredMetadata) => {
-        this.child = this.channel.createRetryingCall(config, this.method, this.host, this.credentials, this.deadline);
-        this.trace("Created child [" + this.child.getCallNumber() + "]");
-        this.childStartTime = new Date;
+        this.child = this.channel.createRetryingCall(config, this.method, this.host, this.credentials, this.deadline, this.callNumber);
+        if (this.traceEnabled) {
+          this.trace("Created child [" + this.child.getCallNumber() + "]");
+        }
+        this.childStartTime = Date.now();
         this.child.start(filteredMetadata, {
           onReceiveMetadata: (metadata) => {
             this.trace("Received metadata");
@@ -16661,7 +16878,9 @@ var require_resolving_call = __commonJS(function(exports) {
     }
     cancelWithStatus(status, details) {
       var _a;
-      this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      if (this.traceEnabled) {
+        this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      }
       (_a = this.child) === null || _a === undefined || _a.cancelWithStatus(status, details);
       this.outputStatus({
         code: status,
@@ -16680,7 +16899,9 @@ var require_resolving_call = __commonJS(function(exports) {
       this.getConfig();
     }
     sendMessageWithContext(context, message) {
-      this.trace("write() called with message of length " + message.length);
+      if (this.traceEnabled) {
+        this.trace("write() called with message of length " + message.length);
+      }
       if (this.child) {
         this.sendMessageOnChild(context, message);
       } else {
@@ -16723,7 +16944,7 @@ var require_resolving_call = __commonJS(function(exports) {
   exports.ResolvingCall = ResolvingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/retrying-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/retrying-call.js
 var require_retrying_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.RetryingCall = exports.MessageBufferTracker = exports.RetryThrottler = undefined;
@@ -16731,6 +16952,7 @@ var require_retrying_call = __commonJS(function(exports) {
   var deadline_1 = require_deadline();
   var metadata_1 = require_metadata();
   var logging = require_logging();
+  var call_number_1 = require_call_number();
   var TRACER_NAME = "retrying_call";
 
   class RetryThrottler {
@@ -16838,7 +17060,7 @@ var require_retrying_call = __commonJS(function(exports) {
         this.state = "TRANSPARENT_ONLY";
         this.maxAttempts = 1;
       }
-      this.startTime = new Date;
+      this.startTime = Date.now();
     }
     getDeadlineInfo() {
       if (this.underlyingCalls.length === 0) {
@@ -16858,11 +17080,18 @@ var require_retrying_call = __commonJS(function(exports) {
     getCallNumber() {
       return this.callNumber;
     }
+    get traceEnabled() {
+      return logging.isTracerEnabled(TRACER_NAME);
+    }
     trace(text) {
-      logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callNumber + "] " + text);
+      if (this.traceEnabled) {
+        logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, "[" + this.callNumber + "] " + text);
+      }
     }
     reportStatus(statusObject) {
-      this.trace("ended with status: code=" + statusObject.code + ' details="' + statusObject.details + '" start time=' + this.startTime.toISOString());
+      if (this.traceEnabled) {
+        this.trace("ended with status: code=" + statusObject.code + ' details="' + statusObject.details + '" start time=' + new Date(this.startTime).toISOString());
+      }
       this.bufferTracker.freeAll(this.callNumber);
       this.writeBufferOffset = this.writeBufferOffset + this.writeBuffer.length;
       this.writeBuffer = [];
@@ -16876,7 +17105,9 @@ var require_retrying_call = __commonJS(function(exports) {
       });
     }
     cancelWithStatus(status, details) {
-      this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      if (this.traceEnabled) {
+        this.trace("cancelWithStatus code: " + status + ' details: "' + details + '"');
+      }
       this.reportStatus({ code: status, details, metadata: new metadata_1.Metadata });
       for (const { call } of this.underlyingCalls) {
         call.cancelWithStatus(status, details);
@@ -16923,7 +17154,9 @@ var require_retrying_call = __commonJS(function(exports) {
       if (this.state === "COMMITTED") {
         return;
       }
-      this.trace("Committing call [" + this.underlyingCalls[index].call.getCallNumber() + "] at index " + index);
+      if (this.traceEnabled) {
+        this.trace("Committing call [" + this.underlyingCalls[index].call.getCallNumber() + "] at index " + index);
+      }
       this.state = "COMMITTED";
       (_b = (_a = this.callConfig).onCommitted) === null || _b === undefined || _b.call(_a);
       this.committedCallIndex = index;
@@ -17090,7 +17323,9 @@ var require_retrying_call = __commonJS(function(exports) {
       if (this.underlyingCalls[callIndex].state === "COMPLETED") {
         return;
       }
-      this.trace("state=" + this.state + " handling status with progress " + status.progress + " from child [" + this.underlyingCalls[callIndex].call.getCallNumber() + "] in state " + this.underlyingCalls[callIndex].state);
+      if (this.traceEnabled) {
+        this.trace("state=" + this.state + " handling status with progress " + status.progress + " from child [" + this.underlyingCalls[callIndex].call.getCallNumber() + "] in state " + this.underlyingCalls[callIndex].state);
+      }
       this.underlyingCalls[callIndex].state = "COMPLETED";
       if (status.code === constants_1.Status.OK) {
         (_a = this.retryThrottler) === null || _a === undefined || _a.addCallSucceeded();
@@ -17166,24 +17401,30 @@ var require_retrying_call = __commonJS(function(exports) {
       (_c = (_b = this.hedgingTimer).unref) === null || _c === undefined || _c.call(_b);
     }
     startNewAttempt() {
-      const child = this.channel.createLoadBalancingCall(this.callConfig, this.methodName, this.host, this.credentials, this.deadline);
-      this.trace("Created child call [" + child.getCallNumber() + "] for attempt " + this.attempts);
+      const childCallNumber = this.underlyingCalls.length > 0 ? (0, call_number_1.getNextCallNumber)() : this.callNumber;
+      const child = this.channel.createLoadBalancingCall(this.callConfig, this.methodName, this.host, this.credentials, this.deadline, childCallNumber);
+      if (this.traceEnabled) {
+        this.trace("Created child call [" + child.getCallNumber() + "] for attempt " + this.attempts);
+      }
       const index = this.underlyingCalls.length;
       this.underlyingCalls.push({
         state: "ACTIVE",
         call: child,
         nextMessageToSend: 0,
-        startTime: new Date
+        startTime: Date.now()
       });
       const previousAttempts = this.attempts - 1;
-      const initialMetadata = this.initialMetadata.clone();
+      let initialMetadata = this.initialMetadata;
       if (previousAttempts > 0) {
+        initialMetadata = initialMetadata.clone();
         initialMetadata.set(PREVIONS_RPC_ATTEMPTS_METADATA_KEY, `${previousAttempts}`);
       }
       let receivedMetadata = false;
       child.start(initialMetadata, {
         onReceiveMetadata: (metadata) => {
-          this.trace("Received metadata from child [" + child.getCallNumber() + "]");
+          if (this.traceEnabled) {
+            this.trace("Received metadata from child [" + child.getCallNumber() + "]");
+          }
           this.commitCall(index);
           receivedMetadata = true;
           if (previousAttempts > 0) {
@@ -17194,14 +17435,18 @@ var require_retrying_call = __commonJS(function(exports) {
           }
         },
         onReceiveMessage: (message) => {
-          this.trace("Received message from child [" + child.getCallNumber() + "]");
+          if (this.traceEnabled) {
+            this.trace("Received message from child [" + child.getCallNumber() + "]");
+          }
           this.commitCall(index);
           if (this.underlyingCalls[index].state === "ACTIVE") {
             this.listener.onReceiveMessage(message);
           }
         },
         onReceiveStatus: (status) => {
-          this.trace("Received status from child [" + child.getCallNumber() + "]");
+          if (this.traceEnabled) {
+            this.trace("Received status from child [" + child.getCallNumber() + "]");
+          }
           if (!receivedMetadata && previousAttempts > 0) {
             status.metadata.set(PREVIONS_RPC_ATTEMPTS_METADATA_KEY, `${previousAttempts}`);
           }
@@ -17246,7 +17491,9 @@ var require_retrying_call = __commonJS(function(exports) {
             }, bufferEntry.message.message);
             const nextEntry = this.getBufferEntry(messageIndex + 1);
             if (nextEntry.entryType === "HALF_CLOSE") {
-              this.trace("Sending halfClose immediately after message to child [" + childCall.call.getCallNumber() + "] - optimizing for unary/final message");
+              if (this.traceEnabled) {
+                this.trace("Sending halfClose immediately after message to child [" + childCall.call.getCallNumber() + "] - optimizing for unary/final message");
+              }
               childCall.nextMessageToSend += 1;
               childCall.call.halfClose();
             }
@@ -17261,7 +17508,9 @@ var require_retrying_call = __commonJS(function(exports) {
       }
     }
     sendMessageWithContext(context, message) {
-      this.trace("write() called with message of length " + message.length);
+      if (this.traceEnabled) {
+        this.trace("write() called with message of length " + message.length);
+      }
       const writeObj = {
         message,
         flags: context.flags
@@ -17322,7 +17571,9 @@ var require_retrying_call = __commonJS(function(exports) {
       for (const call of this.underlyingCalls) {
         if ((call === null || call === undefined ? undefined : call.state) === "ACTIVE") {
           if (call.nextMessageToSend === halfCloseIndex || call.nextMessageToSend === halfCloseIndex - 1) {
-            this.trace("Sending halfClose immediately to child [" + call.call.getCallNumber() + "] - all messages already sent");
+            if (this.traceEnabled) {
+              this.trace("Sending halfClose immediately to child [" + call.call.getCallNumber() + "] - all messages already sent");
+            }
             call.nextMessageToSend += 1;
             call.call.halfClose();
           }
@@ -17349,7 +17600,7 @@ var require_retrying_call = __commonJS(function(exports) {
   exports.RetryingCall = RetryingCall;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/subchannel-interface.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/subchannel-interface.js
 var require_subchannel_interface = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseSubchannelWrapper = undefined;
@@ -17446,7 +17697,7 @@ var require_subchannel_interface = __commonJS(function(exports) {
   exports.BaseSubchannelWrapper = BaseSubchannelWrapper;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/internal-channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/internal-channel.js
 var require_internal_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.InternalChannel = exports.SUBCHANNEL_ARGS_EXCLUDE_KEY_PREFIX = undefined;
@@ -17551,7 +17802,7 @@ var require_internal_channel = __commonJS(function(exports) {
       this.connectivityState = connectivity_state_1.ConnectivityState.IDLE;
       this.currentPicker = new picker_1.UnavailablePicker;
       this.configSelectionQueue = [];
-      this.pickQueue = [];
+      this.pickQueue = new Set;
       this.connectivityStateWatchers = [];
       this.callRefTimer = null;
       this.configSelector = null;
@@ -17561,6 +17812,7 @@ var require_internal_channel = __commonJS(function(exports) {
       this.idleTimer = null;
       this.channelzEnabled = true;
       this.randomChannelId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      this.serviceUrlCache = new Map;
       if (typeof target !== "string") {
         throw new TypeError("Channel target must be a string");
       }
@@ -17618,9 +17870,9 @@ var require_internal_channel = __commonJS(function(exports) {
         },
         updateState: (connectivityState, picker) => {
           this.currentPicker = picker;
-          const queueCopy = this.pickQueue.slice();
-          this.pickQueue = [];
-          if (queueCopy.length > 0) {
+          const queueCopy = this.pickQueue;
+          this.pickQueue = new Set;
+          if (queueCopy.size > 0) {
             this.callRefTimerUnref();
           }
           for (const call of queueCopy) {
@@ -17687,17 +17939,24 @@ var require_internal_channel = __commonJS(function(exports) {
       this.filterStackFactory = new filter_stack_1.FilterStackFactory([
         new compression_filter_1.CompressionFilterFactory(this, this.options)
       ]);
-      this.trace("Channel constructed with options " + JSON.stringify(options, undefined, 2));
-      const error = new Error;
+      if (this.traceEnabled) {
+        this.trace("Channel constructed with options " + JSON.stringify(options, undefined, 2));
+      }
       if ((0, logging_1.isTracerEnabled)("channel_stacktrace")) {
+        const error = new Error;
         (0, logging_1.trace)(constants_1.LogVerbosity.DEBUG, "channel_stacktrace", "(" + this.channelzRef.id + ") " + `Channel constructed 
 ` + ((_f = error.stack) === null || _f === undefined ? undefined : _f.substring(error.stack.indexOf(`
 `) + 1)));
       }
-      this.lastActivityTimestamp = new Date;
+      this.lastActivityTimestamp = Date.now();
+    }
+    get traceEnabled() {
+      return (0, logging_1.isTracerEnabled)("channel");
     }
     trace(text, verbosityOverride) {
-      (0, logging_1.trace)(verbosityOverride !== null && verbosityOverride !== undefined ? verbosityOverride : constants_1.LogVerbosity.DEBUG, "channel", "(" + this.channelzRef.id + ") " + (0, uri_parser_1.uriToString)(this.target) + " " + text);
+      if (this.traceEnabled) {
+        (0, logging_1.trace)(verbosityOverride !== null && verbosityOverride !== undefined ? verbosityOverride : constants_1.LogVerbosity.DEBUG, "channel", "(" + this.channelzRef.id + ") " + (0, uri_parser_1.uriToString)(this.target) + " " + text);
+      }
     }
     callRefTimerRef() {
       var _a, _b, _c, _d;
@@ -17705,14 +17964,18 @@ var require_internal_channel = __commonJS(function(exports) {
         this.callRefTimer = setInterval(() => {}, MAX_TIMEOUT_TIME);
       }
       if (!((_b = (_a = this.callRefTimer).hasRef) === null || _b === undefined ? undefined : _b.call(_a))) {
-        this.trace("callRefTimer.ref | configSelectionQueue.length=" + this.configSelectionQueue.length + " pickQueue.length=" + this.pickQueue.length);
+        if (this.traceEnabled) {
+          this.trace("callRefTimer.ref | configSelectionQueue.length=" + this.configSelectionQueue.length + " pickQueue.length=" + this.pickQueue.size);
+        }
         (_d = (_c = this.callRefTimer).ref) === null || _d === undefined || _d.call(_c);
       }
     }
     callRefTimerUnref() {
       var _a, _b, _c;
       if (!((_a = this.callRefTimer) === null || _a === undefined ? undefined : _a.hasRef) || this.callRefTimer.hasRef()) {
-        this.trace("callRefTimer.unref | configSelectionQueue.length=" + this.configSelectionQueue.length + " pickQueue.length=" + this.pickQueue.length);
+        if (this.traceEnabled) {
+          this.trace("callRefTimer.unref | configSelectionQueue.length=" + this.configSelectionQueue.length + " pickQueue.length=" + this.pickQueue.size);
+        }
         (_c = (_b = this.callRefTimer) === null || _b === undefined ? undefined : _b.unref) === null || _c === undefined || _c.call(_b);
       }
     }
@@ -17764,8 +18027,14 @@ var require_internal_channel = __commonJS(function(exports) {
       });
     }
     queueCallForPick(call) {
-      this.pickQueue.push(call);
+      this.pickQueue.add(call);
       this.callRefTimerRef();
+    }
+    removeCallFromPickQueue(call) {
+      this.pickQueue.delete(call);
+      if (this.pickQueue.size === 0) {
+        this.callRefTimerUnref();
+      }
     }
     getConfig(method, metadata) {
       if (this.connectivityState !== connectivity_state_1.ConnectivityState.SHUTDOWN) {
@@ -17813,8 +18082,8 @@ var require_internal_channel = __commonJS(function(exports) {
           this.startIdleTimeout(this.idleTimeoutMs);
           return;
         }
-        const now = new Date;
-        const timeSinceLastActivity = now.valueOf() - this.lastActivityTimestamp.valueOf();
+        const now = Date.now();
+        const timeSinceLastActivity = now - this.lastActivityTimestamp;
         if (timeSinceLastActivity >= this.idleTimeoutMs) {
           this.trace("Idle timer triggered after " + this.idleTimeoutMs + "ms of inactivity");
           this.enterIdle();
@@ -17844,22 +18113,49 @@ var require_internal_channel = __commonJS(function(exports) {
         }
       }
       this.callCount -= 1;
-      this.lastActivityTimestamp = new Date;
+      this.lastActivityTimestamp = Date.now();
       this.maybeStartIdleTimer();
     }
-    createLoadBalancingCall(callConfig, method, host, credentials, deadline) {
-      const callNumber = (0, call_number_1.getNextCallNumber)();
-      this.trace("createLoadBalancingCall [" + callNumber + '] method="' + method + '"');
-      return new load_balancing_call_1.LoadBalancingCall(this, callConfig, method, host, credentials, deadline, callNumber);
+    getServiceUrl(host, methodName) {
+      let methodMap = this.serviceUrlCache.get(host);
+      if (methodMap === undefined) {
+        if (this.serviceUrlCache.size < InternalChannel.MAX_CACHED_HOSTS) {
+          methodMap = new Map;
+          this.serviceUrlCache.set(host, methodMap);
+        }
+      }
+      if (methodMap !== undefined) {
+        const serviceUrl = methodMap.get(methodName);
+        if (serviceUrl !== undefined) {
+          return serviceUrl;
+        }
+        const computedServiceUrl = (0, uri_parser_1.computeServiceUrl)(host, methodName);
+        if (methodMap.size < InternalChannel.MAX_METHODS_PER_HOST) {
+          methodMap.set(methodName, computedServiceUrl);
+        }
+        return computedServiceUrl;
+      }
+      return (0, uri_parser_1.computeServiceUrl)(host, methodName);
     }
-    createRetryingCall(callConfig, method, host, credentials, deadline) {
-      const callNumber = (0, call_number_1.getNextCallNumber)();
-      this.trace("createRetryingCall [" + callNumber + '] method="' + method + '"');
-      return new retrying_call_1.RetryingCall(this, callConfig, method, host, credentials, deadline, callNumber, this.retryBufferTracker, RETRY_THROTTLER_MAP.get(this.getTarget()));
+    createLoadBalancingCall(callConfig, method, host, credentials, deadline, callNumber) {
+      const finalCallNumber = callNumber !== null && callNumber !== undefined ? callNumber : (0, call_number_1.getNextCallNumber)();
+      if (this.traceEnabled) {
+        this.trace("createLoadBalancingCall [" + finalCallNumber + '] method="' + method + '"');
+      }
+      return new load_balancing_call_1.LoadBalancingCall(this, callConfig, method, host, credentials, deadline, finalCallNumber);
+    }
+    createRetryingCall(callConfig, method, host, credentials, deadline, callNumber) {
+      const finalCallNumber = callNumber !== null && callNumber !== undefined ? callNumber : (0, call_number_1.getNextCallNumber)();
+      if (this.traceEnabled) {
+        this.trace("createRetryingCall [" + finalCallNumber + '] method="' + method + '"');
+      }
+      return new retrying_call_1.RetryingCall(this, callConfig, method, host, credentials, deadline, finalCallNumber, this.retryBufferTracker, RETRY_THROTTLER_MAP.get(this.getTarget()));
     }
     createResolvingCall(method, deadline, host, parentCall, propagateFlags) {
       const callNumber = (0, call_number_1.getNextCallNumber)();
-      this.trace("createResolvingCall [" + callNumber + '] method="' + method + '", deadline=' + (0, deadline_1.deadlineToString)(deadline));
+      if (this.traceEnabled) {
+        this.trace("createResolvingCall [" + callNumber + '] method="' + method + '", deadline=' + (0, deadline_1.deadlineToString)(deadline));
+      }
       const finalOptions = {
         deadline,
         flags: propagateFlags !== null && propagateFlags !== undefined ? propagateFlags : constants_1.Propagate.DEFAULTS,
@@ -17885,7 +18181,7 @@ var require_internal_channel = __commonJS(function(exports) {
       for (const call of this.pickQueue) {
         call.cancelWithStatus(constants_1.Status.UNAVAILABLE, "Channel closed before call started");
       }
-      this.pickQueue = [];
+      this.pickQueue.clear();
       if (this.callRefTimer) {
         clearInterval(this.callRefTimer);
       }
@@ -17898,6 +18194,7 @@ var require_internal_channel = __commonJS(function(exports) {
       this.subchannelPool.unrefUnusedSubchannels();
       (_a = this.configSelector) === null || _a === undefined || _a.unref();
       this.configSelector = null;
+      this.serviceUrlCache.clear();
     }
     getTarget() {
       return (0, uri_parser_1.uriToString)(this.target);
@@ -17906,7 +18203,7 @@ var require_internal_channel = __commonJS(function(exports) {
       const connectivityState = this.connectivityState;
       if (tryToConnect) {
         this.resolvingLoadBalancer.exitIdle();
-        this.lastActivityTimestamp = new Date;
+        this.lastActivityTimestamp = Date.now();
         this.maybeStartIdleTimer();
       }
       return connectivityState;
@@ -17955,9 +18252,11 @@ var require_internal_channel = __commonJS(function(exports) {
     }
   }
   exports.InternalChannel = InternalChannel;
+  InternalChannel.MAX_CACHED_HOSTS = 5;
+  InternalChannel.MAX_METHODS_PER_HOST = 100;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/channel.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/channel.js
 var require_channel = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ChannelImplementation = undefined;
@@ -18007,7 +18306,7 @@ var require_channel = __commonJS(function(exports) {
   exports.ChannelImplementation = ChannelImplementation;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-call.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/server-call.js
 var require_server_call = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ServerDuplexStreamImpl = exports.ServerWritableStreamImpl = exports.ServerReadableStreamImpl = exports.ServerUnaryCallImpl = undefined;
@@ -18215,7 +18514,7 @@ var require_server_call = __commonJS(function(exports) {
   exports.ServerDuplexStreamImpl = ServerDuplexStreamImpl;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-credentials.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/server-credentials.js
 var require_server_credentials = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.ServerCredentials = undefined;
@@ -18501,7 +18800,7 @@ var require_server_credentials = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/duration.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/duration.js
 var require_duration = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.durationMessageToDuration = durationMessageToDuration;
@@ -18559,9 +18858,9 @@ var require_duration = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/orca.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/orca.js
 var require_orca = __commonJS(function(exports) {
-  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src";
+  var __dirname = "/Users/mamdouhaboammar/.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src";
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.OrcaOobMetricsSubchannelWrapper = exports.GRPC_METRICS_HEADER = exports.ServerMetricRecorder = exports.PerRequestMetricRecorder = undefined;
   exports.createOrcaClient = createOrcaClient;
@@ -18822,7 +19121,7 @@ var require_orca = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server-interceptors.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/server-interceptors.js
 var require_server_interceptors = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BaseServerInterceptingCall = exports.ServerInterceptingCall = exports.ResponderBuilder = exports.ServerListenerBuilder = undefined;
@@ -18837,6 +19136,7 @@ var require_server_interceptors = __commonJS(function(exports) {
   var logging = require_logging();
   var tls_1 = __require("tls");
   var orca_1 = require_orca();
+  var environment_1 = require_environment();
   var TRACER_NAME = "server_call";
   function trace(text) {
     logging.trace(constants_1.LogVerbosity.DEBUG, TRACER_NAME, text);
@@ -19237,8 +19537,7 @@ var require_server_interceptors = __commonJS(function(exports) {
         return;
       }
       const timeout = +match[1] * deadlineUnitsToMs[match[2]] | 0;
-      const now = new Date;
-      this.deadline = now.setMilliseconds(now.getMilliseconds() + timeout);
+      this.deadline = Date.now() + timeout;
       this.deadlineTimer = setTimeout(() => {
         const status = {
           code: constants_1.Status.DEADLINE_EXCEEDED,
@@ -19344,9 +19643,15 @@ var require_server_interceptors = __commonJS(function(exports) {
       try {
         queueEntry.parsedMessage = this.handler.deserialize(decompressedMessage);
       } catch (err) {
+        let details;
+        if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+          details = `Error deserializing request: ${err.message}`;
+        } else {
+          details = "Error deserializing request";
+        }
         this.sendStatus({
           code: constants_1.Status.INTERNAL,
-          details: `Error deserializing request: ${err.message}`
+          details
         });
         return;
       }
@@ -19426,9 +19731,15 @@ var require_server_interceptors = __commonJS(function(exports) {
       try {
         response = this.serializeMessage(message);
       } catch (e) {
+        let details;
+        if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+          details = `Error serializing response: ${(0, error_1.getErrorMessage)(e)}`;
+        } else {
+          details = "Error serializing response";
+        }
         this.sendStatus({
           code: constants_1.Status.INTERNAL,
-          details: `Error serializing response: ${(0, error_1.getErrorMessage)(e)}`,
+          details,
           metadata: null
         });
         return;
@@ -19446,9 +19757,15 @@ var require_server_interceptors = __commonJS(function(exports) {
       this.stream.write(response, (error) => {
         var _a;
         if (error) {
+          let details;
+          if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+            details = `Error writing message: ${(0, error_1.getErrorMessage)(error)}`;
+          } else {
+            details = "Internal server error";
+          }
           this.sendStatus({
             code: constants_1.Status.INTERNAL,
-            details: `Error writing message: ${(0, error_1.getErrorMessage)(error)}`,
+            details,
             metadata: null
           });
           return;
@@ -19530,15 +19847,17 @@ var require_server_interceptors = __commonJS(function(exports) {
     }
     getAuthContext() {
       var _a;
-      if (((_a = this.stream.session) === null || _a === undefined ? undefined : _a.socket) instanceof tls_1.TLSSocket) {
-        const peerCertificate = this.stream.session.socket.getPeerCertificate();
-        return {
-          transportSecurityType: "ssl",
-          sslPeerCertificate: peerCertificate.raw ? peerCertificate : undefined
-        };
-      } else {
+      if (!(((_a = this.stream.session) === null || _a === undefined ? undefined : _a.socket) instanceof tls_1.TLSSocket)) {
         return {};
       }
+      if (!this.stream.session.socket.authorized) {
+        return {};
+      }
+      const peerCertificate = this.stream.session.socket.getPeerCertificate();
+      return {
+        transportSecurityType: "ssl",
+        sslPeerCertificate: peerCertificate.raw ? peerCertificate : undefined
+      };
     }
     getConnectionInfo() {
       return this.connectionInfo;
@@ -19563,7 +19882,7 @@ var require_server_interceptors = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/server.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/server.js
 var require_server = __commonJS(function(exports) {
   var __runInitializers = exports && exports.__runInitializers || function(thisArg, initializers, value) {
     var useValue = arguments.length > 2;
@@ -19629,6 +19948,7 @@ var require_server = __commonJS(function(exports) {
   var uri_parser_1 = require_uri_parser();
   var channelz_1 = require_channelz();
   var server_interceptors_1 = require_server_interceptors();
+  var environment_1 = require_environment();
   var UNLIMITED_CONNECTION_AGE_MS = ~(1 << 31);
   var KEEPALIVE_MAX_TIME_MS = ~(1 << 31);
   var KEEPALIVE_TIMEOUT_MS = 20000;
@@ -20396,13 +20716,13 @@ var require_server = __commonJS(function(exports) {
           addMessageSent: () => {
             if (channelzSessionInfo) {
               channelzSessionInfo.messagesSent += 1;
-              channelzSessionInfo.lastMessageSentTimestamp = new Date;
+              channelzSessionInfo.lastMessageSentTimestamp = Date.now();
             }
           },
           addMessageReceived: () => {
             if (channelzSessionInfo) {
               channelzSessionInfo.messagesReceived += 1;
-              channelzSessionInfo.lastMessageReceivedTimestamp = new Date;
+              channelzSessionInfo.lastMessageReceivedTimestamp = Date.now();
             }
           },
           onCallEnd: (status) => {
@@ -20843,9 +21163,15 @@ var require_server = __commonJS(function(exports) {
         try {
           handler.func(stream, respond);
         } catch (err) {
+          let details;
+          if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+            details = `Server method handler threw error ${err.message}`;
+          } else {
+            details = "Unknown error";
+          }
           call.sendStatus({
             code: constants_1.Status.UNKNOWN,
-            details: `Server method handler threw error ${err.message}`,
+            details,
             metadata: null
           });
         }
@@ -20879,9 +21205,15 @@ var require_server = __commonJS(function(exports) {
         try {
           handler.func(stream, respond);
         } catch (err) {
+          let details;
+          if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+            details = `Server method handler threw error ${err.message}`;
+          } else {
+            details = "Unknown error";
+          }
           call.sendStatus({
             code: constants_1.Status.UNKNOWN,
-            details: `Server method handler threw error ${err.message}`,
+            details,
             metadata: null
           });
         }
@@ -20935,9 +21267,15 @@ var require_server = __commonJS(function(exports) {
         try {
           handler.func(stream);
         } catch (err) {
+          let details;
+          if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+            details = `Server method handler threw error ${err.message}`;
+          } else {
+            details = "Unknown error";
+          }
           call.sendStatus({
             code: constants_1.Status.UNKNOWN,
-            details: `Server method handler threw error ${err.message}`,
+            details,
             metadata: null
           });
         }
@@ -20959,9 +21297,15 @@ var require_server = __commonJS(function(exports) {
         try {
           handler.func(stream);
         } catch (err) {
+          let details;
+          if (environment_1.GRPC_NODE_DEBUG_SEND_ERROR_DETAILS) {
+            details = `Server method handler threw error ${err.message}`;
+          } else {
+            details = "Unknown error";
+          }
           call.sendStatus({
             code: constants_1.Status.UNKNOWN,
-            details: `Server method handler threw error ${err.message}`,
+            details,
             metadata: null
           });
         }
@@ -20983,7 +21327,7 @@ var require_server = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/status-builder.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/status-builder.js
 var require_status_builder = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.StatusBuilder = undefined;
@@ -21023,7 +21367,7 @@ var require_status_builder = __commonJS(function(exports) {
   exports.StatusBuilder = StatusBuilder;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-pick-first.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancer-pick-first.js
 var require_load_balancer_pick_first = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.LeafLoadBalancer = exports.PickFirstLoadBalancer = exports.PickFirstLoadBalancingConfig = undefined;
@@ -21416,7 +21760,7 @@ var require_load_balancer_pick_first = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/certificate-provider.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/certificate-provider.js
 var require_certificate_provider = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.FileWatcherCertificateProvider = undefined;
@@ -21537,7 +21881,7 @@ var require_certificate_provider = __commonJS(function(exports) {
   exports.FileWatcherCertificateProvider = FileWatcherCertificateProvider;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/experimental.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/experimental.js
 var require_experimental = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.SUBCHANNEL_ARGS_EXCLUDE_KEY_PREFIX = exports.createCertificateProviderChannelCredentials = exports.FileWatcherCertificateProvider = exports.createCertificateProviderServerCredentials = exports.createServerCredentialsWithInterceptors = exports.BaseSubchannelWrapper = exports.registerAdminService = exports.FilterStackFactory = exports.BaseFilter = exports.statusOrFromError = exports.statusOrFromValue = exports.PickResultType = exports.QueuePicker = exports.UnavailablePicker = exports.ChildLoadBalancerHandler = exports.EndpointMap = exports.endpointHasAddress = exports.endpointToString = exports.subchannelAddressToString = exports.LeafLoadBalancer = exports.isLoadBalancerNameRegistered = exports.parseLoadBalancingConfig = exports.selectLbConfigFromList = exports.registerLoadBalancerType = exports.createChildChannelControlHelper = exports.BackoffTimeout = exports.parseDuration = exports.durationToMs = exports.splitHostPort = exports.uriToString = exports.CHANNEL_ARGS_CONFIG_SELECTOR_KEY = exports.createResolver = exports.registerResolver = exports.log = exports.trace = undefined;
@@ -21667,7 +22011,7 @@ var require_experimental = __commonJS(function(exports) {
   } });
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-uds.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/resolver-uds.js
 var require_resolver_uds = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.setup = setup;
@@ -21705,7 +22049,7 @@ var require_resolver_uds = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/resolver-ip.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/resolver-ip.js
 var require_resolver_ip = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.setup = setup;
@@ -21794,7 +22138,7 @@ var require_resolver_ip = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-round-robin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancer-round-robin.js
 var require_load_balancer_round_robin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.RoundRobinLoadBalancer = undefined;
@@ -21960,7 +22304,7 @@ var require_load_balancer_round_robin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-outlier-detection.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancer-outlier-detection.js
 var require_load_balancer_outlier_detection = __commonJS(function(exports) {
   var _a;
   Object.defineProperty(exports, "__esModule", { value: true });
@@ -22458,7 +22802,7 @@ var require_load_balancer_outlier_detection = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/priority-queue.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/priority-queue.js
 var require_priority_queue = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.PriorityQueue = undefined;
@@ -22529,7 +22873,7 @@ var require_priority_queue = __commonJS(function(exports) {
   exports.PriorityQueue = PriorityQueue;
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/load-balancer-weighted-round-robin.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/load-balancer-weighted-round-robin.js
 var require_load_balancer_weighted_round_robin = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.WeightedRoundRobinLoadBalancingConfig = undefined;
@@ -22879,7 +23223,7 @@ var require_load_balancer_weighted_round_robin = __commonJS(function(exports) {
   }
 });
 
-// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.4-ca4e68593d6cd989/node_modules/@grpc/grpc-js/build/src/index.js
+// ../../../.bun/install/cache/links/@grpc+grpc-js@1.14.6-0e42e059034d0440/node_modules/@grpc/grpc-js/build/src/index.js
 var require_src3 = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.experimental = exports.ServerMetricRecorder = exports.ServerInterceptingCall = exports.ResponderBuilder = exports.ServerListenerBuilder = exports.addAdminServicesToServer = exports.getChannelzHandlers = exports.getChannelzServiceDefinition = exports.InterceptorConfigurationError = exports.InterceptingCall = exports.RequesterBuilder = exports.ListenerBuilder = exports.StatusBuilder = exports.getClientChannel = exports.ServerCredentials = exports.Server = exports.setLogVerbosity = exports.setLogger = exports.load = exports.loadObject = exports.CallCredentials = exports.ChannelCredentials = exports.waitForClientReady = exports.closeClient = exports.Channel = exports.makeGenericClientConstructor = exports.makeClientConstructor = exports.loadPackageDefinition = exports.Client = exports.compressionAlgorithms = exports.propagate = exports.connectivityState = exports.status = exports.logVerbosity = exports.Metadata = exports.credentials = undefined;
@@ -26993,10 +27337,13 @@ import path14 from "node:path";
 var RECOVERY_FAILURE_THRESHOLD = 2;
 var PARALLEL_SIGNAL_FLOOR = 6;
 var MAX_PARALLEL_CANDIDATES = 3;
-function emptyScores() {
-  return Object.fromEntries(canonicalSkillIds().map((skill) => [skill, skill === "fable-execute" ? 1 : 0]));
+function emptyScores(registry) {
+  const ids = registry ? registry.skills.map((s) => s.id) : canonicalSkillIds();
+  return Object.fromEntries(ids.map((skill) => [skill, skill === "fable-execute" ? 1 : 0]));
 }
 function addSignal(scores, reasons, skill, weight, reason) {
+  if (scores[skill] === undefined)
+    return;
   scores[skill] += weight;
   const list = reasons.get(skill) || [];
   list.push(reason);
@@ -27034,10 +27381,11 @@ function taskShapeFor(skill, text) {
   return "unknown";
 }
 function rankSkills(scores, registry) {
-  return canonicalSkillIds().filter((skill) => skill !== "get-fable").map((skill) => ({
-    skill,
-    score: scores[skill],
-    order: getSkillEntry(skill, registry).order
+  const entryId = registry.entry || "get-fable";
+  return registry.skills.filter((entry) => entry.id !== entryId).map((entry) => ({
+    skill: entry.id,
+    score: scores[entry.id] ?? 0,
+    order: entry.order
   })).sort((a, b) => b.score - a.score || a.order - b.order || a.skill.localeCompare(b.skill));
 }
 function selectParallelCandidates(selectedSkill, ranked, registry) {
@@ -27063,7 +27411,7 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
   const suppressPlan = /do not plan|don't plan|no planning|planning (?:is )?out of scope|skip (?:the )?plan/.test(text);
   const suppressReview = /do not review|don't review|no (?:code )?review|review (?:is )?out of scope|skip (?:the )?review/.test(text);
   const suppressDelegation = /do not delegate|don't delegate|no delegation|without subagents?|single agent|single worker/.test(text);
-  const scores = emptyScores();
+  const scores = emptyScores(registry);
   const reasons = new Map;
   if ((state?.failureStreak || 0) >= RECOVERY_FAILURE_THRESHOLD) {
     addSignal(scores, reasons, "fable-recover", 8, "project state records repeated failure");
@@ -27205,11 +27553,11 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
     addSignal(scores, reasons, "fable-execute", 3, "task requests a concrete code change");
   }
   const ranked = rankSkills(scores, registry);
-  let selectedSkill = ranked[0].score > 0 ? ranked[0].skill : "fable-execute";
-  if (scores["fable-recover"] >= 8) {
+  let selectedSkill = ranked.length > 0 && ranked[0].score > 0 ? ranked[0].skill : ranked[0]?.skill || "fable-execute";
+  if ((scores["fable-recover"] || 0) >= 8 && getSkillEntry("fable-recover", registry)) {
     selectedSkill = "fable-recover";
   }
-  const selectedScore = scores[selectedSkill];
+  const selectedScore = scores[selectedSkill] || 0;
   const secondScore = ranked.find((entry) => entry.skill !== selectedSkill)?.score || 0;
   const confidence = Math.max(0.51, Math.min(0.99, 0.56 + selectedScore * 0.025 + Math.max(0, selectedScore - secondScore) * 0.035));
   const selectedReasons = reasons.get(selectedSkill) || ["bounded execution is the default when no stronger routing signal is present"];
@@ -27221,7 +27569,7 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
     taskShape: taskShapeFor(selectedSkill, text),
     confidence: Number(confidence.toFixed(2)),
     reasons: selectedReasons,
-    requiresPlan: selectedSkill === "fable-plan" || selectedSkill === "fable-architecture" || selectedSkill === "fable-discover" || selectedSkill === "fable-research" || !suppressPlan && scores["fable-plan"] >= 4,
+    requiresPlan: selectedSkill === "fable-plan" || selectedSkill === "fable-architecture" || selectedSkill === "fable-discover" || selectedSkill === "fable-research" || !suppressPlan && (scores["fable-plan"] || 0) >= 4,
     requiredGates: [...entry.gates],
     fallbackSkill: entry.fallback,
     parallelCandidates,
@@ -28346,7 +28694,7 @@ function evaluateFableSpark(context) {
   };
 }
 
-// ../../../.bun/install/cache/links/@toon-format+toon@4.1.1-1365ec1fbc4347c4/node_modules/@toon-format/toon/dist/index.mjs
+// ../../../.bun/install/cache/links/@toon-format+toon@4.4.0-7e1bd394d60b266c/node_modules/@toon-format/toon/dist/index.mjs
 var NULL_LITERAL = "null";
 var DELIMITERS = {
   comma: ",",
@@ -28596,33 +28944,34 @@ function isNumericLiteral(token) {
   return !Number.isNaN(numericValue) && Number.isFinite(numericValue);
 }
 function parseArrayHeaderLine(content, defaultDelimiter) {
-  const trimmedToken = content.trimStart();
   let bracketStart = -1;
-  if (trimmedToken.startsWith('"')) {
-    const closingQuoteIndex = findClosingQuote(trimmedToken, 0);
+  if (content.startsWith('"')) {
+    const closingQuoteIndex = findClosingQuote(content, 0);
     if (closingQuoteIndex === -1)
       return { kind: "notHeader" };
-    if (!trimmedToken.slice(closingQuoteIndex + 1).startsWith("["))
+    if (content[closingQuoteIndex + 1] !== "[")
       return { kind: "notHeader" };
-    const keyEndIndex = content.length - trimmedToken.length + closingQuoteIndex + 1;
-    bracketStart = content.indexOf("[", keyEndIndex);
+    bracketStart = closingQuoteIndex + 1;
   } else
     bracketStart = findUnquotedChar(content, "[");
   if (bracketStart === -1)
     return { kind: "notHeader" };
   const firstColonIndex = findUnquotedChar(content, ":");
-  if (firstColonIndex !== -1 && firstColonIndex < bracketStart)
+  if (firstColonIndex === -1 || firstColonIndex < bracketStart)
     return { kind: "notHeader" };
   const bracketEnd = findUnquotedChar(content, "]", bracketStart);
   if (bracketEnd === -1)
-    return { kind: "notHeader" };
+    return {
+      kind: "invalid",
+      reason: "Unterminated bracket segment"
+    };
   let colonIndex = bracketEnd + 1;
   let braceEnd = colonIndex;
   const braceStart = findUnquotedChar(content, "{", bracketEnd);
   if (braceStart !== -1 && braceStart < findUnquotedChar(content, ":", bracketEnd)) {
     const gapBeforeBrace = content.slice(bracketEnd + 1, braceStart);
     if (gapBeforeBrace !== "") {
-      const trimmedGap = gapBeforeBrace.trim();
+      const trimmedGap = trimWhitespace(gapBeforeBrace);
       return {
         kind: "invalid",
         reason: trimmedGap === "" ? `Unexpected whitespace between bracket segment and field list` : `Unexpected content "${trimmedGap}" between bracket segment and field list`
@@ -28634,11 +28983,14 @@ function parseArrayHeaderLine(content, defaultDelimiter) {
   }
   colonIndex = findUnquotedChar(content, ":", Math.max(bracketEnd, braceEnd));
   if (colonIndex === -1)
-    return { kind: "notHeader" };
+    return {
+      kind: "invalid",
+      reason: "Missing colon after array header"
+    };
   const gapStart = Math.max(bracketEnd + 1, braceEnd);
   const gapBeforeColon = content.slice(gapStart, colonIndex);
   if (gapBeforeColon !== "") {
-    const trimmedGap = gapBeforeColon.trim();
+    const trimmedGap = trimWhitespace(gapBeforeColon);
     return {
       kind: "invalid",
       reason: trimmedGap === "" ? `Unexpected whitespace between bracket segment and colon` : `Unexpected content "${trimmedGap}" between bracket segment and colon`
@@ -28647,7 +28999,7 @@ function parseArrayHeaderLine(content, defaultDelimiter) {
   let key;
   if (bracketStart > 0) {
     const rawKey = content.slice(0, bracketStart);
-    if (rawKey !== rawKey.trimEnd())
+    if (endsWithWhitespace(rawKey))
       return {
         kind: "invalid",
         reason: "Unexpected whitespace between key and bracket segment"
@@ -28744,9 +29096,11 @@ function parseFieldEntries(fieldsContent, delimiter) {
     const groupStart = findUnquotedChar(trimmedEntry, "{");
     if (groupStart === -1)
       return { name: parseStringLiteral(trimmedEntry) };
-    const namePart = trimSpaces(trimmedEntry.slice(0, groupStart));
+    const namePart = trimmedEntry.slice(0, groupStart);
     if (!namePart)
       throw new SyntaxError("Missing field name before nested field group");
+    if (namePart.endsWith(" "))
+      throw new SyntaxError("Unexpected whitespace before nested field group");
     const groupEnd = findMatchingBrace(trimmedEntry, groupStart);
     if (groupEnd === -1)
       throw new SyntaxError("Unmatched brace in field list");
@@ -28942,6 +29296,8 @@ function parseQuotedKey(content, start) {
     throw new SyntaxError("Unterminated quoted key");
   const key = unescapeString(content.slice(start + 1, closingQuoteIndex));
   let parsePosition = closingQuoteIndex + 1;
+  while (content[parsePosition] === " ")
+    parsePosition++;
   if (parsePosition >= content.length || content[parsePosition] !== ":")
     throw new SyntaxError("Missing colon after key");
   parsePosition++;
@@ -28953,14 +29309,20 @@ function parseQuotedKey(content, start) {
 function parseKeyToken(content, start) {
   return content[start] === '"' ? parseQuotedKey(content, start) : parseUnquotedKey(content, start);
 }
+function endsWithWhitespace(value) {
+  return value.endsWith(" ") || value.endsWith("\t");
+}
+function trimWhitespace(value) {
+  return value.replace(/^[ \t]+|[ \t]+$/g, "");
+}
 function isArrayHeaderContent(content) {
-  return content.trim().startsWith("[") && findUnquotedChar(content, ":") !== -1;
+  return trimSpaces(content).startsWith("[") && findUnquotedChar(content, ":") !== -1;
 }
 function isKeyValueContent(content) {
   return findUnquotedChar(content, ":") !== -1;
 }
-function assertExpectedCount(actual, expected, itemType, options, line) {
-  if (options.strict && actual !== expected)
+function assertExpectedCount(actual, expected, itemType, line) {
+  if (actual !== expected)
     throw new ToonDecodeError(`Expected ${expected} ${itemType}, but got ${actual}`, {
       line: line.lineNumber,
       source: line.raw
@@ -28980,8 +29342,8 @@ function validateNoExtraTabularRows(nextLine, rowDepth, header) {
       source: nextLine.raw
     });
 }
-function validateNoBlankLinesInRange(startLine, endLine, blankLines, strict, context) {
-  if (!strict)
+function validateNoBlankLinesInRange(startLine, endLine, blankLines, context) {
+  if (startLine === undefined || endLine === undefined)
     return;
   const firstBlank = blankLines.find((blank) => blank.lineNumber > startLine && blank.lineNumber < endLine);
   if (firstBlank)
@@ -29008,6 +29370,8 @@ function decodeStreamSync$1(source, options) {
 }
 function* decodeDocument(reader, options) {
   const first = yield* peekLine(reader);
+  if (first && first.depth !== 0)
+    throw overIndentedLineError(first, 0);
   if (!first) {
     yield { type: "startObject" };
     yield { type: "endObject" };
@@ -29020,7 +29384,7 @@ function* decodeDocument(reader, options) {
       length: 0
     };
     yield { type: "endArray" };
-    yield* assertFullyConsumed(reader, options.strict);
+    yield* assertFullyConsumed(reader);
     return;
   }
   if (isArrayHeaderContent(first.content)) {
@@ -29028,20 +29392,20 @@ function* decodeDocument(reader, options) {
     if (headerInfo) {
       yield* readLine(reader);
       yield* decodeArrayFromHeader(headerInfo.header, headerInfo.inlineValues, reader, 0, options, first);
-      yield* assertFullyConsumed(reader, options.strict);
+      yield* assertFullyConsumed(reader);
       return;
     }
   }
   yield* readLine(reader);
   const following = yield* peekLine(reader);
-  if (!(following !== undefined) && !isKeyValueLine(first)) {
+  if (!(following !== undefined) && !isKeyValueContent(first.content)) {
     yield {
       type: "primitive",
       value: withLine(first, () => parsePrimitiveToken(first.content))
     };
     return;
   }
-  if (!isKeyValueLine(first) && following?.depth === 0)
+  if (!isKeyValueContent(first.content) && following?.depth === 0)
     throw new ToonDecodeError("Top-level document must start with a key-value or array-header line", {
       line: first.lineNumber,
       source: first.raw
@@ -29053,13 +29417,8 @@ function* decodeDocument(reader, options) {
     const line = yield* peekLine(reader);
     if (!line)
       break;
-    if (line.depth !== 0) {
-      if (options.strict)
-        throw overIndentedLineError(line, 0);
-      assertNotScalarLine(line);
-      yield* readLine(reader);
-      continue;
-    }
+    if (line.depth !== 0)
+      throw overIndentedLineError(line, 0);
     yield* readLine(reader);
     yield* decodeKeyValue(line, reader, 0, options, rootSeenKeys);
   }
@@ -29074,14 +29433,6 @@ function assertNoDepthJump(firstNestedLine, parentDepth, strict) {
 }
 function overIndentedLineError(line, expectedDepth) {
   return new ToonDecodeError(`Over-indented line: expected depth ${expectedDepth}, but found ${line.depth}`, {
-    line: line.lineNumber,
-    source: line.raw
-  });
-}
-function assertNotScalarLine(line) {
-  if (line.content.startsWith("- ") || line.content === "-" || findUnquotedChar(line.content, ":") !== -1)
-    return;
-  throw new ToonDecodeError("Unexpected bare token line outside root primitive position", {
     line: line.lineNumber,
     source: line.raw
   });
@@ -29104,9 +29455,7 @@ function keylessFieldsHeaderError(line) {
     source: line.raw
   });
 }
-function* assertFullyConsumed(reader, strict) {
-  if (!strict)
-    return;
+function* assertFullyConsumed(reader) {
   const line = yield* peekLine(reader);
   if (line)
     throw new ToonDecodeError("Unexpected content after the document root", {
@@ -29136,7 +29485,7 @@ function* decodeKeyValue(line, reader, baseDepth, options, seenKeys) {
     yield* decodeArrayFromHeader(arrayHeader.header, arrayHeader.inlineValues, reader, baseDepth, options, line);
     return;
   }
-  if (arrayHeader && arrayHeader.header.key === undefined && options.strict)
+  if (arrayHeader && arrayHeader.header.key === undefined)
     throw arrayHeader.header.keyed ? keylessKeyedError(line) : keylessHeaderError(line);
   const { key, end } = withLine(line, () => parseKeyToken(content, 0));
   const rest = trimSpaces(content.slice(end));
@@ -29178,19 +29527,19 @@ function* decodeObjectFields(reader, baseDepth, options) {
     const line = yield* peekLine(reader);
     if (!line || line.depth < baseDepth)
       break;
-    if (computedDepth === undefined && line.depth >= baseDepth)
-      computedDepth = line.depth;
-    if (line.depth === computedDepth) {
-      yield* readLine(reader);
-      yield* decodeKeyValue(line, reader, computedDepth, options, seenKeys);
-    } else if (computedDepth !== undefined && line.depth > computedDepth) {
-      if (options.strict)
-        throw overIndentedLineError(line, computedDepth);
-      assertNotScalarLine(line);
-      yield* readLine(reader);
-    } else
-      break;
+    computedDepth ??= line.depth;
+    if (line.depth !== computedDepth)
+      throw overIndentedLineError(line, computedDepth);
+    yield* readLine(reader);
+    yield* decodeKeyValue(line, reader, computedDepth, options, seenKeys);
   }
+}
+function* scopeContentDepth(reader, baseDepth, strict) {
+  const first = yield* peekLine(reader);
+  if (!first || first.depth <= baseDepth + 1)
+    return baseDepth + 1;
+  assertNoDepthJump(first, baseDepth, strict);
+  return first.depth;
 }
 function* decodeArrayFromHeader(header, inlineValues, reader, baseDepth, options, headerLine) {
   if (header.keyed) {
@@ -29215,13 +29564,10 @@ function* decodeArrayFromHeader(header, inlineValues, reader, baseDepth, options
   yield { type: "endArray" };
 }
 function* decodeInlinePrimitiveArray(header, inlineValues, options, headerLine) {
-  if (!trimSpaces(inlineValues)) {
-    assertExpectedCount(0, header.length, "inline-form values", options, headerLine);
-    return;
-  }
   const values = withLine(headerLine, () => parseDelimitedValues(inlineValues, header.delimiter));
   const primitives = withLine(headerLine, () => mapRowValuesToPrimitives(values));
-  assertExpectedCount(primitives.length, header.length, "inline-form values", options, headerLine);
+  if (options.strict)
+    assertExpectedCount(primitives.length, header.length, "inline-form values", headerLine);
   for (const primitive of primitives)
     yield {
       type: "primitive",
@@ -29229,7 +29575,7 @@ function* decodeInlinePrimitiveArray(header, inlineValues, options, headerLine) 
     };
 }
 function* decodeKeyedObject(header, reader, baseDepth, options, headerLine) {
-  const entryDepth = baseDepth + 1;
+  const entryDepth = yield* scopeContentDepth(reader, baseDepth, options.strict);
   const leafFieldCount = countLeafFields(header.fields);
   const seenEntryKeys = options.strict ? /* @__PURE__ */ new Set : undefined;
   let entryCount = 0;
@@ -29241,24 +29587,13 @@ function* decodeKeyedObject(header, reader, baseDepth, options, headerLine) {
     const line = yield* peekLine(reader);
     if (!line || line.depth <= baseDepth)
       break;
-    if (line.depth > entryDepth) {
-      if (options.strict)
-        throw new ToonDecodeError("Unexpected indentation inside keyed tabular object", {
-          line: line.lineNumber,
-          source: line.raw
-        });
-      yield* readLine(reader);
-      continue;
-    }
-    if (findUnquotedChar(line.content, ":") === -1) {
-      if (options.strict)
-        throw new ToonDecodeError("Expected entry row inside keyed tabular object", {
-          line: line.lineNumber,
-          source: line.raw
-        });
-      yield* readLine(reader);
-      continue;
-    }
+    if (line.depth !== entryDepth)
+      throw overIndentedLineError(line, entryDepth);
+    if (findUnquotedChar(line.content, ":") === -1)
+      throw new ToonDecodeError("Expected entry row inside keyed tabular object", {
+        line: line.lineNumber,
+        source: line.raw
+      });
     yield* readLine(reader);
     if (startLine === undefined)
       startLine = line.lineNumber;
@@ -29272,79 +29607,79 @@ function* decodeKeyedObject(header, reader, baseDepth, options, headerLine) {
     };
     const cellsContent = trimSpaces(line.content.slice(end));
     const values = cellsContent === "" ? [] : withLine(line, () => parseDelimitedValues(cellsContent, header.delimiter));
-    assertExpectedCount(values.length, leafFieldCount, "keyed entry cells", options, line);
+    assertExpectedCount(values.length, leafFieldCount, "keyed entry cells", line);
     const primitives = withLine(line, () => mapRowValuesToPrimitives(values));
     yield* yieldObjectFromFields(header.fields, primitives);
     entryCount++;
   }
-  assertExpectedCount(entryCount, header.length, "keyed entries", options, lastEntryLine);
-  if (options.strict && startLine !== undefined && endLine !== undefined)
-    validateNoBlankLinesInRange(startLine, endLine, reader.scanState.blankLines, options.strict, "keyed tabular object");
+  if (options.strict) {
+    assertExpectedCount(entryCount, header.length, "keyed entries", lastEntryLine);
+    validateNoBlankLinesInRange(startLine, endLine, reader.scanState.blankLines, "keyed tabular object");
+  }
   yield { type: "endObject" };
 }
 function* decodeTabularArray(header, reader, baseDepth, options, headerLine) {
-  const rowDepth = baseDepth + 1;
+  const rowDepth = yield* scopeContentDepth(reader, baseDepth, options.strict);
   let rowCount = 0;
   let startLine;
   let endLine;
   let lastRowLine = headerLine;
   while (!options.strict || rowCount < header.length) {
     const line = yield* peekLine(reader);
-    if (!line || line.depth < rowDepth)
+    if (!line || line.depth <= baseDepth)
       break;
-    if (line.depth === rowDepth) {
-      if (!isDataRow(line.content, header.delimiter))
-        break;
-      if (startLine === undefined)
-        startLine = line.lineNumber;
-      endLine = line.lineNumber;
-      lastRowLine = line;
-      yield* readLine(reader);
-      const values = withLine(line, () => parseDelimitedValues(line.content, header.delimiter));
-      assertExpectedCount(values.length, countLeafFields(header.fields), "tabular row values", options, line);
-      const primitives = withLine(line, () => mapRowValuesToPrimitives(values));
-      yield* yieldObjectFromFields(header.fields, primitives);
-      rowCount++;
-    } else
+    if (line.depth !== rowDepth)
+      throw overIndentedLineError(line, rowDepth);
+    if (!isDataRow(line.content, header.delimiter))
       break;
+    if (startLine === undefined)
+      startLine = line.lineNumber;
+    endLine = line.lineNumber;
+    lastRowLine = line;
+    yield* readLine(reader);
+    const values = withLine(line, () => parseDelimitedValues(line.content, header.delimiter));
+    assertExpectedCount(values.length, countLeafFields(header.fields), "tabular row values", line);
+    const primitives = withLine(line, () => mapRowValuesToPrimitives(values));
+    yield* yieldObjectFromFields(header.fields, primitives);
+    rowCount++;
   }
-  assertExpectedCount(rowCount, header.length, "tabular rows", options, lastRowLine);
-  if (options.strict && startLine !== undefined && endLine !== undefined)
-    validateNoBlankLinesInRange(startLine, endLine, reader.scanState.blankLines, options.strict, "tabular array");
-  if (options.strict)
+  if (options.strict) {
+    assertExpectedCount(rowCount, header.length, "tabular rows", lastRowLine);
+    validateNoBlankLinesInRange(startLine, endLine, reader.scanState.blankLines, "tabular array");
     validateNoExtraTabularRows(yield* peekLine(reader), rowDepth, header);
+  }
 }
 function* decodeListArray(header, reader, baseDepth, options, headerLine) {
-  const itemDepth = baseDepth + 1;
+  const itemDepth = yield* scopeContentDepth(reader, baseDepth, options.strict);
   let itemCount = 0;
   let startLine;
   let endLine;
   let lastItemLine = headerLine;
   while (!options.strict || itemCount < header.length) {
     const line = yield* peekLine(reader);
-    if (!line || line.depth < itemDepth)
+    if (!line || line.depth <= baseDepth)
       break;
-    const isListItem = line.content.startsWith("- ") || line.content === "-";
-    if (line.depth === itemDepth && isListItem) {
-      if (startLine === undefined)
-        startLine = line.lineNumber;
-      endLine = line.lineNumber;
-      lastItemLine = line;
-      yield* decodeListItem(reader, itemDepth, options);
-      const lastConsumedLine = reader.lastLine;
-      if (lastConsumedLine) {
-        endLine = lastConsumedLine.lineNumber;
-        lastItemLine = lastConsumedLine;
-      }
-      itemCount++;
-    } else
+    if (line.depth !== itemDepth)
+      throw overIndentedLineError(line, itemDepth);
+    if (!(line.content.startsWith("- ") || line.content === "-"))
       break;
+    if (startLine === undefined)
+      startLine = line.lineNumber;
+    endLine = line.lineNumber;
+    lastItemLine = line;
+    yield* decodeListItem(reader, itemDepth, options);
+    const lastConsumedLine = reader.lastLine;
+    if (lastConsumedLine) {
+      endLine = lastConsumedLine.lineNumber;
+      lastItemLine = lastConsumedLine;
+    }
+    itemCount++;
   }
-  assertExpectedCount(itemCount, header.length, "list-form items", options, lastItemLine);
-  if (options.strict && startLine !== undefined && endLine !== undefined)
-    validateNoBlankLinesInRange(startLine, endLine, reader.scanState.blankLines, options.strict, "list-form array");
-  if (options.strict)
+  if (options.strict) {
+    assertExpectedCount(itemCount, header.length, "list-form items", lastItemLine);
+    validateNoBlankLinesInRange(startLine, endLine, reader.scanState.blankLines, "list-form array");
     validateNoExtraListItems(yield* peekLine(reader), itemDepth, header.length);
+  }
 }
 function* decodeListItem(reader, baseDepth, options) {
   const line = yield* readLine(reader);
@@ -29356,7 +29691,7 @@ function* decodeListItem(reader, baseDepth, options) {
     yield { type: "endObject" };
     return;
   } else if (line.content.startsWith("- "))
-    afterHyphen = line.content.slice(2);
+    afterHyphen = line.content.slice(2).replace(/^ +/, "");
   else
     throw new ToonDecodeError(`Expected list item to start with "- "`, {
       line: line.lineNumber,
@@ -29381,14 +29716,12 @@ function* decodeListItem(reader, baseDepth, options) {
   };
   if (isArrayHeaderContent(afterHyphen)) {
     const arrayHeader = withLine(itemLine, () => resolveArrayHeader(parseArrayHeaderLine(afterHyphen, DEFAULT_DELIMITER), options.strict));
-    if (arrayHeader)
-      if (arrayHeader.header.keyed || arrayHeader.header.fields !== undefined) {
-        if (options.strict)
-          throw arrayHeader.header.keyed ? keylessKeyedError(itemLine) : keylessFieldsHeaderError(itemLine);
-      } else {
-        yield* decodeArrayFromHeader(arrayHeader.header, arrayHeader.inlineValues, reader, baseDepth, options, itemLine);
-        return;
-      }
+    if (arrayHeader) {
+      if (arrayHeader.header.keyed || arrayHeader.header.fields !== undefined)
+        throw arrayHeader.header.keyed ? keylessKeyedError(itemLine) : keylessFieldsHeaderError(itemLine);
+      yield* decodeArrayFromHeader(arrayHeader.header, arrayHeader.inlineValues, reader, baseDepth, options, itemLine);
+      return;
+    }
   }
   const headerInfo = withLine(itemLine, () => resolveArrayHeader(parseArrayHeaderLine(afterHyphen, DEFAULT_DELIMITER), options.strict));
   if (headerInfo && headerInfo.header.key !== undefined && headerInfo.header.fields !== undefined) {
@@ -29422,31 +29755,17 @@ function* followSiblingFields(reader, followDepth, options, seenKeys) {
     const nextLine = yield* peekLine(reader);
     if (!nextLine || nextLine.depth < followDepth)
       break;
-    if (nextLine.depth === followDepth && !nextLine.content.startsWith("- ")) {
-      yield* readLine(reader);
-      yield* decodeKeyValue(nextLine, reader, followDepth, options, seenKeys);
-    } else
-      break;
+    if (nextLine.depth !== followDepth)
+      throw overIndentedLineError(nextLine, followDepth);
+    yield* readLine(reader);
+    yield* decodeKeyValue(nextLine, reader, followDepth, options, seenKeys);
   }
-}
-function isKeyValueLine(line) {
-  const content = line.content;
-  if (content.startsWith('"')) {
-    const closingQuoteIndex = findClosingQuote(content, 0);
-    if (closingQuoteIndex === -1)
-      return false;
-    return content.slice(closingQuoteIndex + 1).includes(":");
-  } else
-    return content.includes(":");
 }
 function resolveArrayHeader(result, strict) {
   if (result.kind === "notHeader")
     return;
-  if (result.kind === "invalid") {
-    if (strict)
-      throw new SyntaxError(result.reason);
-    return;
-  }
+  if (result.kind === "invalid")
+    throw new SyntaxError(result.reason);
   if (strict && result.strictError !== undefined)
     throw new SyntaxError(result.strictError);
   return {
@@ -29459,8 +29778,6 @@ function* yieldObjectFromFields(fields, primitives) {
   function* walkFieldGroup(nodes) {
     yield { type: "startObject" };
     for (const node of nodes) {
-      if (!node.children && cellIndex >= primitives.length)
-        continue;
       yield {
         type: "key",
         key: node.name
@@ -29589,7 +29906,6 @@ function applyEvent(state, event) {
         } else if (parent.type === "array")
           parent.arr.push(event.value);
       }
-      break;
   }
 }
 function finalizeState(state) {
@@ -29642,7 +29958,7 @@ function normalizeValue(value) {
   if (value instanceof Date)
     return value.toISOString();
   if (Array.isArray(value))
-    return value.map(normalizeValue);
+    return Array.from(value, normalizeValue);
   if (value instanceof Set)
     return Array.from(value).map(normalizeValue);
   if (value instanceof Map)
@@ -29837,7 +30153,7 @@ function collectLeafValues(row, fields, leaves) {
 }
 function* encodeJsonValue(value, options, depth) {
   if (isEncodablePrimitive(value)) {
-    const encodedPrimitive = encodePrimitive(value, options.delimiter);
+    const encodedPrimitive = typeof value === "string" && value.startsWith("\uFEFF") ? `"${escapeString(value)}"` : encodePrimitive(value, options.delimiter);
     if (encodedPrimitive !== "")
       yield encodedPrimitive;
     return;
@@ -29997,7 +30313,7 @@ function* encodeObjectAsListItemLines(obj, depth, options) {
   const encodedKey = encodeKey(firstKey);
   if (isEncodablePrimitive(firstValue))
     yield indentedListItem(depth, `${encodedKey}: ${encodePrimitive(firstValue, options.delimiter)}`, options.indentSize);
-  else if (isJsonArray(firstValue))
+  else if (isJsonArray(firstValue)) {
     if (firstValue.length === 0)
       yield indentedListItem(depth, `${encodedKey}: []`, options.indentSize);
     else if (isArrayOfPrimitives(firstValue))
@@ -30007,7 +30323,7 @@ function* encodeObjectAsListItemLines(obj, depth, options) {
       for (const item of firstValue)
         yield* encodeListItemValueLines(item, depth + 2, options);
     }
-  else if (isJsonObject(firstValue)) {
+  } else if (isJsonObject(firstValue)) {
     yield indentedListItem(depth, `${encodedKey}:`, options.indentSize);
     if (!isEmptyObject(firstValue))
       yield* encodeObjectLines(firstValue, depth + 2, options);
@@ -30018,7 +30334,7 @@ function* encodeObjectAsListItemLines(obj, depth, options) {
 function* encodeListItemValueLines(value, depth, options) {
   if (isEncodablePrimitive(value))
     yield indentedListItem(depth, encodePrimitive(value, options.delimiter), options.indentSize);
-  else if (isJsonArray(value))
+  else if (isJsonArray(value)) {
     if (isArrayOfPrimitives(value))
       yield indentedListItem(depth, encodeInlineArrayLine(value, options.delimiter), options.indentSize);
     else {
@@ -30026,7 +30342,7 @@ function* encodeListItemValueLines(value, depth, options) {
       for (const item of value)
         yield* encodeListItemValueLines(item, depth + 1, options);
     }
-  else if (isJsonObject(value))
+  } else if (isJsonObject(value))
     yield* encodeObjectAsListItemLines(value, depth, options);
 }
 function indentedLine(depth, content, indentSize) {
@@ -30090,7 +30406,7 @@ function encodeLines(input, options) {
   return encodeJsonValue(resolvedOptions.replacer ? applyReplacer(normalizedValue, resolvedOptions.replacer) : normalizedValue, resolvedOptions, 0);
 }
 function decodeFromLines(lines, options) {
-  return buildValueFromEvents(decodeStreamSync$1(lines, resolveDecodeOptions(options)));
+  return buildValueFromEvents(decodeStreamSync$1(lines, options));
 }
 function resolveOptions(options) {
   const delimiter = options?.delimiter ?? DEFAULT_DELIMITER;
@@ -30099,12 +30415,6 @@ function resolveOptions(options) {
     indentSize: options?.indentSize ?? options?.indent ?? 2,
     delimiter,
     replacer: options?.replacer
-  };
-}
-function resolveDecodeOptions(options) {
-  return {
-    indentSize: options?.indentSize ?? options?.indent ?? 2,
-    strict: options?.strict ?? true
   };
 }
 
@@ -33080,8 +33390,7 @@ function compactState(state, task) {
 ${toonBlock}
 \`\`\``;
 }
-function selectCoArmedPolicyOverlays(task, decision, mythosRoute, maxOverlays = 3) {
-  const registry = loadSkillRegistry();
+function selectCoArmedPolicyOverlays(task, decision, mythosRoute, maxOverlays = 3, repoRoot = getCoreRepoRoot(), registry = loadSkillRegistry(repoRoot)) {
   const primaryEntry = getSkillEntry(decision.selectedSkill, registry);
   const routedWeights = new Map(mythosRoute.routedExperts.map((r) => [r.expertId, r.normalizedGateWeight]));
   const sharedSet = new Set(mythosRoute.sharedExperts);
@@ -33127,7 +33436,8 @@ function selectCoArmedPolicyOverlays(task, decision, mythosRoute, maxOverlays = 
 }
 function compileFableDirective(task, targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   const state = readFableState(targetDir);
-  const decision = routeTask(task, state || undefined);
+  const registry = loadSkillRegistry(repoRoot);
+  const decision = routeTask(task, state || undefined, registry);
   const skillBody = readSkillBody(decision.selectedSkill, repoRoot);
   const routingSummary = decision.reasons.map((reason) => `- ${reason}`).join(`
 `);
@@ -33159,13 +33469,15 @@ async function compileFableDirectiveWithJev(task, options) {
   const targetDir = opts.targetDir || process.cwd();
   const repoRoot = opts.repoRoot || getCoreRepoRoot();
   const state = opts.state !== undefined ? opts.state : readFableState(targetDir);
+  const registry = loadSkillRegistry(repoRoot);
   const routeResolution = await resolveRoute(task, state || undefined, {
     config: opts.reflexConfig,
-    advisor: opts.advisor
+    advisor: opts.advisor,
+    registry
   });
   const decision = routeResolution.decision;
   const mythosRoute = routeMythosExperts({ task, topK: 4 });
-  const coArmedOverlaySkills = selectCoArmedPolicyOverlays(task, decision, mythosRoute, opts.maxOverlaySkills ?? 3);
+  const coArmedOverlaySkills = selectCoArmedPolicyOverlays(task, decision, mythosRoute, opts.maxOverlaySkills ?? 3, repoRoot, registry);
   const skillBody = readSkillBody(decision.selectedSkill, repoRoot);
   const routingSummary = decision.reasons.map((reason) => `- ${reason}`).join(`
 `);
@@ -33852,6 +34164,7 @@ import path23 from "node:path";
 
 // src/core/maturity.ts
 import fs22 from "node:fs";
+import { createPublicKey, verify as verifySignature } from "node:crypto";
 import path22 from "node:path";
 
 // src/core/eval-runner.ts
@@ -34809,6 +35122,144 @@ async function runAgentBehaviorEvalPlan(provider, plan = buildAgentBehaviorEvalP
 function slice(total, passed, threshold = 1) {
   return total === 0 ? { status: "NOT_CHECKED", total, passed, passRate: null } : { status: passed / total >= threshold ? "PASS" : "FAIL", total, passed, passRate: passed / total };
 }
+function externalCertificateSignedPayload(cert) {
+  return Buffer.from(JSON.stringify({
+    schemaVersion: cert.schemaVersion,
+    target: cert.target,
+    auditor: cert.auditor,
+    attestationHash: cert.attestationHash,
+    issuedAt: cert.issuedAt,
+    expiresAt: cert.expiresAt,
+    ...cert.reportUri !== undefined ? { reportUri: cert.reportUri } : {}
+  }), "utf8");
+}
+function verifyExternalCertificate(cert, options) {
+  const reject = (reason) => ({ valid: false, status: "REJECTED", reason });
+  if (!cert || typeof cert !== "object" || Array.isArray(cert))
+    return reject("Invalid certificate object");
+  const data = cert;
+  if (data.schemaVersion !== 1)
+    return reject("Unsupported certificate schema");
+  if (data.target !== options.expectedTarget)
+    return reject("Certificate target mismatch");
+  if (typeof data.auditor !== "string" || !data.auditor.trim())
+    return reject("Missing auditor identifier");
+  if (options.trustedAuditors && !options.trustedAuditors.includes(data.auditor)) {
+    return reject("Untrusted auditor");
+  }
+  const trustedKey = options.trustedAuditorPublicKeys?.[data.auditor];
+  if (typeof trustedKey !== "string" || !trustedKey.trim()) {
+    return reject("Missing trusted auditor public key");
+  }
+  if (typeof data.attestationHash !== "string" || !/^[0-9a-f]{64}$/i.test(data.attestationHash)) {
+    return reject("Invalid SHA-256 attestation hash");
+  }
+  if (!options.expectedAttestationHash || data.attestationHash !== options.expectedAttestationHash) {
+    return reject("Certificate is not bound to the expected independently verified attestation hash");
+  }
+  const issuedAt = typeof data.issuedAt === "string" ? Date.parse(data.issuedAt) : NaN;
+  const expiresAt = typeof data.expiresAt === "string" ? Date.parse(data.expiresAt) : NaN;
+  if (!Number.isFinite(issuedAt) || !Number.isFinite(expiresAt))
+    return reject("Invalid certificate dates");
+  if (issuedAt > Date.now() || expiresAt <= issuedAt || expiresAt <= Date.now()) {
+    return reject("Certificate expired or is not yet valid");
+  }
+  if (data.reportUri !== undefined && typeof data.reportUri !== "string") {
+    return reject("Invalid report URI");
+  }
+  if (typeof data.signature !== "string" || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(data.signature) || !data.signature) {
+    return reject("Invalid signature encoding");
+  }
+  try {
+    const key = createPublicKey(trustedKey);
+    if (key.asymmetricKeyType !== "ed25519" && key.asymmetricKeyType !== "rsa") {
+      return reject("Unsupported trusted key algorithm");
+    }
+    const algorithm = key.asymmetricKeyType === "ed25519" ? null : "sha256";
+    const payload = externalCertificateSignedPayload(data);
+    const signature = Buffer.from(data.signature, "base64");
+    if (!verifySignature(algorithm, payload, key, signature))
+      return reject("Invalid certificate signature");
+  } catch {
+    return reject("Certificate signature or trust key cannot be verified");
+  }
+  return { valid: true, status: "VERIFIED" };
+}
+function evaluateEnterpriseCertificationGates(options) {
+  const details = [];
+  const behavioralReliability = Boolean(options.behavioralReliability);
+  const orchestrationCorrectness = Boolean(options.orchestrationCorrectness);
+  const securityAuthorization = Boolean(options.securityAuthorization);
+  const evidenceIntegrity = Boolean(options.evidenceIntegrity);
+  const operationalReliability = Boolean(options.operationalReliability);
+  const integrationAssurance = Boolean(options.integrationAssurance);
+  const enterpriseAudit = Boolean(options.enterpriseAudit);
+  if (behavioralReliability)
+    details.push("Pillar 1: Behavioral reliability verified (>=90%/95% across all categories)");
+  else
+    details.push("Pillar 1: Behavioral reliability NOT satisfied");
+  if (orchestrationCorrectness)
+    details.push("Pillar 2: Orchestration correctness verified (Delegation Laws & TOON contracts)");
+  else
+    details.push("Pillar 2: Orchestration correctness NOT satisfied");
+  if (securityAuthorization)
+    details.push("Pillar 3: Security & authorization verified (least privilege, CIDR boundary)");
+  else
+    details.push("Pillar 3: Security & authorization NOT satisfied");
+  if (evidenceIntegrity)
+    details.push("Pillar 4: Evidence integrity verified (hash-bound runner and holdout provenance)");
+  else
+    details.push("Pillar 4: Evidence integrity NOT satisfied");
+  if (operationalReliability)
+    details.push("Pillar 5: Operational reliability verified (atomic state locks & recovery)");
+  else
+    details.push("Pillar 5: Operational reliability NOT satisfied");
+  if (integrationAssurance)
+    details.push("Pillar 6: Integration assurance verified (32-host parity & packaging)");
+  else
+    details.push("Pillar 6: Integration assurance NOT satisfied");
+  if (enterpriseAudit)
+    details.push("Pillar 7: Enterprise audit verified (machine-readable JSON & SARIF reports)");
+  else
+    details.push("Pillar 7: Enterprise audit NOT satisfied");
+  const readiness = behavioralReliability && orchestrationCorrectness && securityAuthorization && evidenceIntegrity && operationalReliability && integrationAssurance && enterpriseAudit ? "PASS" : "FAIL";
+  let externalCertification = "PENDING";
+  let externalAuditSigned = false;
+  if (options.externalCertificate) {
+    const certCheck = verifyExternalCertificate(options.externalCertificate, {
+      expectedTarget: options.expectedTarget || "get-fable",
+      trustedAuditors: options.trustedAuditors,
+      trustedAuditorPublicKeys: options.trustedAuditorPublicKeys,
+      expectedAttestationHash: options.expectedAttestationHash
+    });
+    externalCertification = certCheck.status;
+    externalAuditSigned = certCheck.valid;
+    if (certCheck.valid) {
+      details.push("Pillar 8: External certification audit signed and verified");
+    } else {
+      details.push(`Pillar 8: External certificate rejected: ${certCheck.reason}`);
+    }
+  } else {
+    details.push("Pillar 8: External certification audit is pending (independent certification not yet submitted)");
+  }
+  const enterpriseGatesPassed = readiness === "PASS" && externalAuditSigned === true;
+  return {
+    readiness,
+    externalCertification,
+    enterpriseGatesPassed,
+    gates: {
+      behavioralReliability,
+      orchestrationCorrectness,
+      securityAuthorization,
+      evidenceIntegrity,
+      operationalReliability,
+      integrationAssurance,
+      enterpriseAudit,
+      externalAuditSigned
+    },
+    details
+  };
+}
 function computeEvidenceBackedMaturity(input) {
   if (!input.sourceAvailable)
     return "M0";
@@ -34887,6 +35338,37 @@ function evaluateSkillMaturity(id, repoRoot = getCoreRepoRoot(), options = {}) {
     adversarial: slice(0, 0),
     holdout: slice(0, 0)
   };
+  const behaviorReady = behavior.known.total > 0 && behavior.known.status === "PASS" && behavior.negative.total > 0 && behavior.negative.status === "PASS" && behavior.ambiguous.total > 0 && behavior.ambiguous.status === "PASS" && behavior.adversarial.total > 0 && behavior.adversarial.status === "PASS" && behavior.holdout.total > 0 && behavior.holdout.status === "PASS";
+  let enterpriseCertification;
+  if (id === "get-fable") {
+    let externalCertificate = null;
+    const certPath = path22.join(repoRoot, ".fable", "certification.json");
+    if (fs22.existsSync(certPath)) {
+      try {
+        externalCertificate = JSON.parse(fs22.readFileSync(certPath, "utf-8"));
+      } catch {
+        externalCertificate = null;
+      }
+    }
+    const integrationAssurance = false;
+    const evidenceIntegrity = Boolean(frozenHoldout?.fresh);
+    const operationalReliability = false;
+    const orchestrationCorrectness = false;
+    const securityAuthorization = false;
+    const enterpriseAudit = false;
+    enterpriseCertification = evaluateEnterpriseCertificationGates({
+      behavioralReliability: behaviorReady,
+      orchestrationCorrectness,
+      securityAuthorization,
+      evidenceIntegrity,
+      operationalReliability,
+      integrationAssurance,
+      enterpriseAudit,
+      externalCertificate,
+      expectedTarget: id,
+      ...options.certificationTrust
+    });
+  }
   const maturity = computeEvidenceBackedMaturity({
     sourceAvailable,
     structured,
@@ -34902,7 +35384,7 @@ function evaluateSkillMaturity(id, repoRoot = getCoreRepoRoot(), options = {}) {
     adversarialPassRate: behavior.adversarial.passRate || 0,
     holdoutCases: behavior.holdout.total,
     holdoutPassRate: behavior.holdout.passRate || 0,
-    enterpriseGatesPassed: false
+    enterpriseGatesPassed: Boolean(enterpriseCertification?.enterpriseGatesPassed)
   });
   return {
     id,
@@ -34913,7 +35395,10 @@ function evaluateSkillMaturity(id, repoRoot = getCoreRepoRoot(), options = {}) {
     runtimeIntegrated,
     behaviorallyProven: maturity === "M4" || maturity === "M5",
     enterpriseReady: maturity === "M5",
-    behavior
+    behavior,
+    certificationReadiness: enterpriseCertification?.readiness,
+    externalCertification: enterpriseCertification?.externalCertification,
+    enterpriseCertification
   };
 }
 
@@ -41496,11 +41981,43 @@ async function executeDelegationWavePlanWithGrpc(plan, options) {
       },
       timeout_ms: 30000
     };
-    const events = await client.executeTask(request);
+    let events = [];
+    let failureReason;
+    try {
+      events = await client.executeTask(request);
+    } catch (err) {
+      failureReason = err instanceof Error ? err.message : String(err);
+      events = [
+        {
+          event_id: `evt-${Date.now()}-crash`,
+          task_id: bundle.subtask.id,
+          run_id: request.run_id,
+          timestamp: Date.now(),
+          event_type: "failed",
+          message: failureReason || "Worker execution failed",
+          payload_json: JSON.stringify({ success: false, error: failureReason, crashed: true }),
+          is_terminal: true
+        }
+      ];
+    }
     const durationMs = Math.max(1, Math.round(performance.now() - startedMs));
-    const hasFailed = events.some((event) => event.event_type === "failed");
-    const hasCancelled = events.some((event) => event.event_type === "cancelled");
-    const terminalEvent = [...events].reverse().find((event) => event.is_terminal);
+    const cancelEvent = events.find((event) => event.event_type === "cancelled");
+    const hasCancelled = Boolean(cancelEvent);
+    const effectiveEvents = hasCancelled ? fenceLateEvents(events, cancelEvent?.timestamp) : events;
+    const hasFailed = effectiveEvents.some((event) => event.event_type === "failed");
+    if (hasFailed && !failureReason) {
+      const failedEvt = effectiveEvents.find((e) => e.event_type === "failed");
+      if (failedEvt?.message)
+        failureReason = failedEvt.message;
+      if (failedEvt?.payload_json) {
+        try {
+          const parsed = JSON.parse(failedEvt.payload_json);
+          if (parsed.error)
+            failureReason = String(parsed.error);
+        } catch {}
+      }
+    }
+    const terminalEvent = [...effectiveEvents].reverse().find((event) => event.is_terminal);
     let verifiedCompletion = false;
     let returnPacketToon = "";
     if (!hasFailed && !hasCancelled && terminalEvent?.event_type === "completed" && terminalEvent.payload_json) {
@@ -41524,7 +42041,8 @@ async function executeDelegationWavePlanWithGrpc(plan, options) {
           primarySkill: bundle.primarySkill.skillId,
           coArmedSkills: coArmedIds,
           status,
-          verified: false
+          verified: false,
+          error: failureReason
         }
       });
     }
@@ -41535,9 +42053,10 @@ async function executeDelegationWavePlanWithGrpc(plan, options) {
       coArmedSkills: coArmedIds,
       waveIndex,
       status,
-      eventsCount: events.length,
+      eventsCount: effectiveEvents.length,
       durationMs,
-      returnPacketToon
+      returnPacketToon,
+      failureReason
     };
   };
   try {
@@ -41593,6 +42112,181 @@ async function executeDelegationWavePlanWithGrpc(plan, options) {
       await ephemeralServer.stop();
     }
   }
+}
+function validateCapabilityAuthorization(request, authorizedCapabilities) {
+  const authorizedSet = new Set(authorizedCapabilities);
+  const requested = request.required_capabilities || [];
+  for (const cap of requested) {
+    if (!authorizedSet.has(cap)) {
+      return {
+        authorized: false,
+        violation: `Child task ${request.task_id} requested unauthorized capability: ${cap}`
+      };
+    }
+  }
+  return { authorized: true };
+}
+function fenceLateEvents(events, cancelledTimestamp) {
+  if (cancelledTimestamp === undefined) {
+    return [...events];
+  }
+  const cutoff = Number(cancelledTimestamp);
+  if (Number.isNaN(cutoff)) {
+    return [...events];
+  }
+  return events.filter((e) => Number(e.timestamp) <= cutoff);
+}
+function detectContradictoryOutcomes(receipts) {
+  const observations = new Map;
+  const contradictions = [];
+  const observe = (key, claim) => {
+    const previous = observations.get(key);
+    if (previous !== undefined && previous !== claim) {
+      contradictions.push(`Contradictory claims detected on target "${key}": ${previous} vs ${claim}`);
+    } else if (previous === undefined) {
+      observations.set(key, claim);
+    }
+  };
+  const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value) ? value : null;
+  for (const receipt of receipts) {
+    if (!receipt.returnPacketToon)
+      continue;
+    try {
+      const raw = receipt.returnPacketToon.trim().replace(/^\`\`\`toon\s*/i, "").replace(/\s*\`\`\`$/, "");
+      const decoded = decodeToon(raw);
+      const parent = object(decoded);
+      const packet = object(parent?.result) || object(parent?.returnPacket) || parent;
+      if (!packet) {
+        contradictions.push(`Invalid or unparseable return packet for subtask "${receipt.subtaskId}"`);
+        continue;
+      }
+      const rawMutations = Array.isArray(parent?.mutations) && Array.isArray(packet.mutations) && parent?.mutations !== packet.mutations ? [...parent.mutations, ...packet.mutations] : Array.isArray(parent?.mutations) ? parent.mutations : Array.isArray(packet.mutations) ? packet.mutations : null;
+      const rawVerifications = Array.isArray(parent?.verifications) && Array.isArray(packet.verifications) && parent?.verifications !== packet.verifications ? [...parent.verifications, ...packet.verifications] : Array.isArray(parent?.verifications) ? parent.verifications : Array.isArray(packet.verifications) ? packet.verifications : null;
+      const hasRecognizedField = Boolean(parent?.result || parent?.returnPacket) || typeof packet.targetCard === "string" || typeof packet.contractTarget === "string" || typeof packet.subtaskId === "string" || typeof packet.status === "string" || typeof packet.claim === "string" || rawMutations !== null || rawVerifications !== null;
+      if (!hasRecognizedField) {
+        contradictions.push(`Invalid or unparseable return packet for subtask "${receipt.subtaskId}"`);
+        continue;
+      }
+      const target = typeof packet.targetCard === "string" ? packet.targetCard : typeof packet.contractTarget === "string" ? packet.contractTarget : typeof packet.subtaskId === "string" ? packet.subtaskId : receipt.subtaskId;
+      const status = typeof packet.status === "string" ? packet.status : receipt.status;
+      const checked = typeof packet.allChecksPassed === "boolean" ? packet.allChecksPassed : typeof packet.verified === "boolean" ? packet.verified : receipt.status === "completed";
+      const claim = typeof packet.claim === "string" ? packet.claim : `${status}:${checked}`;
+      observe(`card:${target}`, claim);
+      if (rawMutations) {
+        for (const item of rawMutations) {
+          const mutation = object(item);
+          if (typeof mutation?.path === "string" && typeof mutation.action === "string") {
+            observe(`path:${mutation.path}`, `${mutation.action}:${status}:${checked}`);
+          }
+        }
+      }
+      if (rawVerifications) {
+        for (const item of rawVerifications) {
+          const verification = object(item);
+          if (typeof verification?.command === "string" && typeof verification.result === "string") {
+            observe(`verification:${target}:${verification.command}`, verification.result);
+          }
+        }
+      }
+    } catch {
+      contradictions.push(`Invalid or unparseable return packet for subtask "${receipt.subtaskId}"`);
+    }
+  }
+  return { hasContradiction: contradictions.length > 0, contradictions };
+}
+async function superviseWaveExecution(plan, options) {
+  const securityViolations = [];
+  const independenceViolations = [];
+  for (const wave of plan.waves) {
+    if (wave.bundles.length > 1) {
+      const proof = evaluateIndependenceProof(wave.bundles.map((bundle) => bundle.subtask));
+      if (!proof.writeIndependent || !proof.semanticIndependent || !proof.verificationIndependent) {
+        independenceViolations.push(`Wave ${wave.waveIndex} violates delegation independence: ${proof.conflicts.join("; ") || "unproven independent scopes"}`);
+      }
+    }
+    if (options?.authorizedCapabilities) {
+      for (const bundle of wave.bundles) {
+        const request = {
+          task_id: bundle.subtask.id,
+          run_id: `auth-check-${bundle.subagentId}`,
+          title: bundle.subtask.title,
+          objective: bundle.subtask.description,
+          required_capabilities: [
+            bundle.primarySkill.skillId,
+            ...bundle.coArmedSkills.map((skill) => skill.skillId),
+            ...bundle.armedTools,
+            ...bundle.armedEngines
+          ]
+        };
+        const authorization = validateCapabilityAuthorization(request, options.authorizedCapabilities);
+        if (!authorization.authorized) {
+          securityViolations.push(authorization.violation || `Unauthorized task ${bundle.subtask.id}`);
+        }
+      }
+    }
+  }
+  if (securityViolations.length > 0 || independenceViolations.length > 0) {
+    return {
+      task: plan.task,
+      workerAddress: options?.workerAddress || "",
+      ephemeralServerSpawned: false,
+      totalWavesExecuted: 0,
+      totalSubtasksExecuted: 0,
+      allSucceeded: false,
+      receipts: [],
+      toonReport: encodeToon({ rejected: true, securityViolations, independenceViolations }),
+      supervisorVerified: false,
+      securityViolations: securityViolations.length ? securityViolations : undefined,
+      contradictions: independenceViolations
+    };
+  }
+  const supervisedPlan = plan;
+  const originalTaskHandler = options?.taskHandler;
+  const wrappedTaskHandler = async (request, emitEvent, isCancelled) => {
+    if (!originalTaskHandler) {
+      throw new Error(`No taskHandler configured for ${request.task_id}`);
+    }
+    try {
+      await originalTaskHandler(request, emitEvent, isCancelled);
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      emitEvent({
+        event_id: `evt-${Date.now()}-crash`,
+        task_id: request.task_id,
+        run_id: request.run_id,
+        timestamp: Date.now(),
+        event_type: "failed",
+        message: `Worker crashed: ${errMsg}`,
+        payload_json: JSON.stringify({ success: false, error: errMsg, crashed: true }),
+        is_terminal: true
+      });
+    }
+  };
+  const baseReport = await executeDelegationWavePlanWithGrpc(supervisedPlan, {
+    workerAddress: options?.workerAddress,
+    spawnEphemeralServer: options?.spawnEphemeralServer,
+    taskHandler: wrappedTaskHandler
+  });
+  for (const receipt of baseReport.receipts) {
+    if (receipt.status === "failed" && !receipt.failureReason) {
+      try {
+        const decoded = decodeToon(receipt.returnPacketToon);
+        if (decoded?.returnPacket?.error) {
+          receipt.failureReason = String(decoded.returnPacket.error);
+        }
+      } catch {}
+    }
+  }
+  const shouldCheckContradictions = options?.enforceContradictionCheck !== false;
+  const contradictionCheck = shouldCheckContradictions ? detectContradictoryOutcomes(baseReport.receipts) : { hasContradiction: false, contradictions: [] };
+  const supervisorVerified = baseReport.allSucceeded && securityViolations.length === 0 && !contradictionCheck.hasContradiction;
+  return {
+    ...baseReport,
+    allSucceeded: baseReport.allSucceeded && supervisorVerified,
+    supervisorVerified,
+    contradictions: contradictionCheck.contradictions,
+    securityViolations: securityViolations.length > 0 ? securityViolations : undefined
+  };
 }
 // src/dsh/api.ts
 import fs33 from "node:fs";
@@ -42067,6 +42761,7 @@ export {
   decodeToon,
   decomposeTaskIntoSubtasks,
   detectBrittleTraps,
+  detectContradictoryOutcomes,
   detectProtectedBoundaries,
   diagnoseTestFailure,
   discoverGitChangedFiles,
@@ -42092,6 +42787,7 @@ export {
   extractOwnerRepoFromRepositoryUrl,
   extractTaskConstraints,
   extractToonFences,
+  fenceLateEvents,
   fitState as fitCompactionState,
   formatArchitectureManifestToon,
   fuseRoute,
@@ -42255,12 +42951,14 @@ export {
   statePath,
   stepActHaltingController,
   stepLtiStateUpdate,
+  superviseWaveExecution,
   synthesizeFrontierEvidence,
   toEvalCase,
   transitionState,
   tryNativeJevOrchestrate,
   upsertTypesafeEnvContent,
   validateAgentBehaviorEvidenceSnapshot,
+  validateCapabilityAuthorization,
   validateCutBoundaryRecord,
   validateEndpoint,
   validateFableState,

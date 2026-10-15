@@ -31,6 +31,8 @@ export interface RoutingBenchmarkResult {
   metric: 'routing';
   total: number;
   passed: number;
+  errors: number;
+  errorRate: number;
   accuracy: number;
   forbiddenViolations: number;
   forbiddenViolationRate: number;
@@ -38,6 +40,97 @@ export interface RoutingBenchmarkResult {
   falseNegativeRate: number;
   confusionMatrix: Record<string, Record<string, number>>;
   cases: RoutingEvalCaseResult[];
+}
+
+export interface ConfusionMetrics {
+  total: number;
+  passed: number;
+  errors: number;
+  errorRate: number;
+  accuracy: number;
+  falsePositiveRate: number;
+  falseNegativeRate: number;
+  confusionMatrix: Record<string, Record<string, number>>;
+}
+
+export function computeConfusionMetrics(
+  cases: ReadonlyArray<{ expectedSkill: string; actualSkill: string; passed: boolean }>
+): ConfusionMetrics {
+  const confusionMatrix: Record<string, Record<string, number>> = {};
+  const classes = new Set<string>();
+
+  for (const item of cases) {
+    classes.add(item.expectedSkill);
+    classes.add(item.actualSkill);
+    confusionMatrix[item.expectedSkill] ||= {};
+    confusionMatrix[item.expectedSkill][item.actualSkill] =
+      (confusionMatrix[item.expectedSkill][item.actualSkill] || 0) + 1;
+  }
+
+  const total = cases.length;
+  const passed = cases.filter((item) => item.passed).length;
+  const errors = total - passed;
+  const accuracy = total > 0 ? passed / total : 0;
+  const errorRate = total > 0 ? errors / total : 0;
+
+  if (total === 0 || classes.size === 0) {
+    return {
+      total,
+      passed,
+      errors,
+      errorRate: 0,
+      accuracy: 0,
+      falsePositiveRate: 0,
+      falseNegativeRate: 0,
+      confusionMatrix,
+    };
+  }
+
+  let sumFnr = 0;
+  let fnrCount = 0;
+  let sumFpr = 0;
+  let fprCount = 0;
+
+  for (const c of classes) {
+    const tp = confusionMatrix[c]?.[c] || 0;
+    let actualC = 0;
+    if (confusionMatrix[c]) {
+      for (const count of Object.values(confusionMatrix[c])) {
+        actualC += count;
+      }
+    }
+    const fn = actualC - tp;
+    if (actualC > 0) {
+      sumFnr += fn / actualC;
+      fnrCount++;
+    }
+
+    const actualNonC = total - actualC;
+    let fp = 0;
+    for (const exp of classes) {
+      if (exp !== c && confusionMatrix[exp]?.[c]) {
+        fp += confusionMatrix[exp][c];
+      }
+    }
+    if (actualNonC > 0) {
+      sumFpr += fp / actualNonC;
+      fprCount++;
+    }
+  }
+
+  const falseNegativeRate = fnrCount > 0 ? Number((sumFnr / fnrCount).toFixed(4)) : 0;
+  const falsePositiveRate = fprCount > 0 ? Number((sumFpr / fprCount).toFixed(4)) : 0;
+
+  return {
+    total,
+    passed,
+    errors,
+    errorRate,
+    accuracy,
+    falsePositiveRate,
+    falseNegativeRate,
+    confusionMatrix,
+  };
 }
 
 export interface SkillKnownCaseResult {
@@ -137,25 +230,21 @@ export function runRoutingBenchmark(repoRoot: string = getCoreRepoRoot()): Routi
     const result = runSkillKnownCases(name as FableSkillId, repoRoot);
     for (const item of result.cases) cases.push({ ...item, source: `skills/${name}` });
   }
-  const confusionMatrix: Record<string, Record<string, number>> = {};
-  for (const item of cases) {
-    confusionMatrix[item.expectedSkill] ||= {};
-    confusionMatrix[item.expectedSkill][item.actualSkill] = (confusionMatrix[item.expectedSkill][item.actualSkill] || 0) + 1;
-  }
-  const passed = cases.filter((item) => item.passed).length;
+  const confusion = computeConfusionMetrics(cases);
   const forbiddenViolations = cases.filter((item) => item.forbiddenViolated).length;
-  const errors = cases.length - passed;
   return {
     schemaVersion: 1,
     metric: 'routing',
     total: cases.length,
-    passed,
-    accuracy: cases.length ? passed / cases.length : 0,
+    passed: confusion.passed,
+    errors: confusion.errors,
+    errorRate: confusion.errorRate,
+    accuracy: confusion.accuracy,
     forbiddenViolations,
     forbiddenViolationRate: cases.length ? forbiddenViolations / cases.length : 0,
-    falsePositiveRate: cases.length ? errors / cases.length : 0,
-    falseNegativeRate: cases.length ? errors / cases.length : 0,
-    confusionMatrix,
+    falsePositiveRate: confusion.falsePositiveRate,
+    falseNegativeRate: confusion.falseNegativeRate,
+    confusionMatrix: confusion.confusionMatrix,
     cases,
   };
 }

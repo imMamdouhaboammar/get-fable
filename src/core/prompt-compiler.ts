@@ -8,7 +8,7 @@ import { POLICY_OVERLAY_SKILLS, SKILL_BOUNDARY_CONTRASTS } from './reflex/questi
 import type { ReflexAdvisor, ReflexConfig, RouteResolution } from './reflex/types.js';
 import { routeMythosExperts } from './mythos/moe-moda-router.js';
 import type { MoeRouteDecision } from './mythos/types.js';
-import type { FableSkillId, FableState, RoutingDecision } from './types.js';
+import type { FableSkillId, FableState, RoutingDecision, SkillRegistry } from './types.js';
 
 const CORE_CONTRACT = `# get-fable runtime contract & harness discipline
 - Improve execution discipline; do not claim the underlying model changed.
@@ -72,9 +72,10 @@ export function selectCoArmedPolicyOverlays(
   task: string,
   decision: RoutingDecision,
   mythosRoute: MoeRouteDecision,
-  maxOverlays: number = 3
+  maxOverlays: number = 3,
+  repoRoot: string = getCoreRepoRoot(),
+  registry: SkillRegistry = loadSkillRegistry(repoRoot)
 ): FableSkillId[] {
-  const registry = loadSkillRegistry();
   const primaryEntry = getSkillEntry(decision.selectedSkill, registry);
   const routedWeights = new Map<string, number>(
     mythosRoute.routedExperts.map((r) => [r.expertId, r.normalizedGateWeight])
@@ -123,7 +124,8 @@ export function compileFableDirective(
   repoRoot: string = getCoreRepoRoot()
 ): CompiledDirective {
   const state = readFableState(targetDir);
-  const decision = routeTask(task, state || undefined);
+  const registry = loadSkillRegistry(repoRoot);
+  const decision = routeTask(task, state || undefined, registry);
   const skillBody = readSkillBody(decision.selectedSkill, repoRoot);
   const routingSummary = decision.reasons.map((reason) => `- ${reason}`).join('\n');
   const gates = decision.requiredGates.length
@@ -153,10 +155,12 @@ export async function compileFableDirectiveWithJev(
   const targetDir = opts.targetDir || process.cwd();
   const repoRoot = opts.repoRoot || getCoreRepoRoot();
   const state = opts.state !== undefined ? opts.state : readFableState(targetDir);
+  const registry = loadSkillRegistry(repoRoot);
 
   const routeResolution = await resolveRoute(task, state || undefined, {
     config: opts.reflexConfig,
     advisor: opts.advisor,
+    registry,
   });
   const decision = routeResolution.decision;
   const mythosRoute = routeMythosExperts({ task, topK: 4 });
@@ -164,7 +168,9 @@ export async function compileFableDirectiveWithJev(
     task,
     decision,
     mythosRoute,
-    opts.maxOverlaySkills ?? 3
+    opts.maxOverlaySkills ?? 3,
+    repoRoot,
+    registry
   );
 
   const skillBody = readSkillBody(decision.selectedSkill, repoRoot);

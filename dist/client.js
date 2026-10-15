@@ -32,7 +32,7 @@ var __toESM = (mod, isNodeMode, target) => {
 };
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 
-// ../../../.bun/install/cache/links/react@19.2.8-cd643cd10e1e2a1c/node_modules/react/cjs/react.development.js
+// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS(function(exports, module) {
   (function() {
     function defineDeprecationWarning(methodName, info) {
@@ -105,6 +105,8 @@ var require_react_development = __commonJS(function(exports, module) {
           return "SuspenseList";
         case REACT_ACTIVITY_TYPE:
           return "Activity";
+        case REACT_VIEW_TRANSITION_TYPE:
+          return "ViewTransition";
       }
       if (typeof type === "object")
         switch (typeof type.tag === "number" && console.error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."), type.$$typeof) {
@@ -314,8 +316,11 @@ var require_react_development = __commonJS(function(exports, module) {
     }
     function lazyInitializer(payload) {
       if (payload._status === -1) {
-        var ioInfo = payload._ioInfo;
-        ioInfo != null && (ioInfo.start = ioInfo.end = performance.now());
+        var resolveDebugValue = null, rejectDebugValue = null, ioInfo = payload._ioInfo;
+        ioInfo != null && (ioInfo.start = ioInfo.end = performance.now(), ioInfo.value = new Promise(function(resolve, reject) {
+          resolveDebugValue = resolve;
+          rejectDebugValue = reject;
+        }));
         ioInfo = payload._result;
         var thenable = ioInfo();
         thenable.then(function(moduleObject) {
@@ -323,7 +328,13 @@ var require_react_development = __commonJS(function(exports, module) {
             payload._status = 1;
             payload._result = moduleObject;
             var _ioInfo = payload._ioInfo;
-            _ioInfo != null && (_ioInfo.end = performance.now());
+            if (_ioInfo != null) {
+              _ioInfo.end = performance.now();
+              var debugValue = moduleObject == null ? undefined : moduleObject.default;
+              resolveDebugValue(debugValue);
+              _ioInfo.value.status = "fulfilled";
+              _ioInfo.value.value = debugValue;
+            }
             thenable.status === undefined && (thenable.status = "fulfilled", thenable.value = moduleObject);
           }
         }, function(error) {
@@ -331,13 +342,12 @@ var require_react_development = __commonJS(function(exports, module) {
             payload._status = 2;
             payload._result = error;
             var _ioInfo2 = payload._ioInfo;
-            _ioInfo2 != null && (_ioInfo2.end = performance.now());
+            _ioInfo2 != null && (_ioInfo2.end = performance.now(), _ioInfo2.value.then(noop, noop), rejectDebugValue(error), _ioInfo2.value.status = "rejected", _ioInfo2.value.reason = error);
             thenable.status === undefined && (thenable.status = "rejected", thenable.reason = error);
           }
         });
         ioInfo = payload._ioInfo;
         if (ioInfo != null) {
-          ioInfo.value = thenable;
           var displayName = thenable.displayName;
           typeof displayName === "string" && (ioInfo.name = displayName);
         }
@@ -366,6 +376,29 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     }
     function releaseAsyncTransition() {
       ReactSharedInternals.asyncTransitions--;
+    }
+    function startTransition(scope) {
+      var prevTransition = ReactSharedInternals.T, currentTransition = {};
+      currentTransition.types = prevTransition !== null ? prevTransition.types : null;
+      currentTransition._updatedFibers = new Set;
+      ReactSharedInternals.T = currentTransition;
+      try {
+        var returnValue = scope(), onStartTransitionFinish = ReactSharedInternals.S;
+        onStartTransitionFinish !== null && onStartTransitionFinish(currentTransition, returnValue);
+        typeof returnValue === "object" && returnValue !== null && typeof returnValue.then === "function" && (ReactSharedInternals.asyncTransitions++, returnValue.then(releaseAsyncTransition, releaseAsyncTransition), returnValue.then(noop, reportGlobalError));
+      } catch (error) {
+        reportGlobalError(error);
+      } finally {
+        prevTransition === null && currentTransition._updatedFibers && (scope = currentTransition._updatedFibers.size, currentTransition._updatedFibers.clear(), 10 < scope && console.warn("Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table.")), prevTransition !== null && currentTransition.types !== null && (prevTransition.types !== null && prevTransition.types !== currentTransition.types && console.error("We expected inner Transitions to have transferred the outer types set and that you cannot add to the outer Transition while inside the inner.This is a bug in React."), prevTransition.types = currentTransition.types), ReactSharedInternals.T = prevTransition;
+      }
+    }
+    function addTransitionType(type) {
+      var transition = ReactSharedInternals.T;
+      if (transition !== null) {
+        var transitionTypes = transition.types;
+        transitionTypes === null ? transition.types = [type] : transitionTypes.indexOf(type) === -1 && transitionTypes.push(type);
+      } else
+        ReactSharedInternals.asyncTransitions === 0 && console.error("addTransitionType can only be called inside a `startTransition()` callback. It must be associated with a specific Transition."), startTransition(addTransitionType.bind(null, type));
     }
     function enqueueTask(task) {
       if (enqueueTaskImpl === null)
@@ -436,7 +469,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
       }
     }
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-    var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), MAYBE_ITERATOR_SYMBOL = Symbol.iterator, didWarnStateUpdateForUnmountedComponent = {}, ReactNoopUpdateQueue = {
+    var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_VIEW_TRANSITION_TYPE = Symbol.for("react.view_transition"), MAYBE_ITERATOR_SYMBOL = Symbol.iterator, didWarnStateUpdateForUnmountedComponent = {}, ReactNoopUpdateQueue = {
       isMounted: function() {
         return false;
       },
@@ -561,6 +594,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.PureComponent = PureComponent;
     exports.StrictMode = REACT_STRICT_MODE_TYPE;
     exports.Suspense = REACT_SUSPENSE_TYPE;
+    exports.ViewTransition = REACT_VIEW_TRANSITION_TYPE;
     exports.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = ReactSharedInternals;
     exports.__COMPILER_RUNTIME = deprecatedAPIs;
     exports.act = function(callback) {
@@ -622,6 +656,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
         }
       };
     };
+    exports.addTransitionType = addTransitionType;
     exports.cache = function(fn) {
       return function() {
         return fn.apply(null, arguments);
@@ -687,6 +722,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.createElement = function(type, config, children) {
       for (var i = 2;i < arguments.length; i++)
         validateChildKeys(arguments[i]);
+      var propName;
       i = {};
       var key = null;
       if (config != null)
@@ -705,8 +741,8 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
         for (propName in childrenLength = type.defaultProps, childrenLength)
           i[propName] === undefined && (i[propName] = childrenLength[propName]);
       key && defineKeyPropWarningGetter(i, typeof type === "function" ? type.displayName || type.name || "Unknown" : type);
-      var propName = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
-      return ReactElement(type, key, i, getOwner(), propName ? Error("react-stack-top-frame") : unknownOwnerDebugStack, propName ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
+      (propName = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++) ? (childArray = Error.stackTraceLimit, Error.stackTraceLimit = 10, childrenLength = Error("react-stack-top-frame"), Error.stackTraceLimit = childArray) : childrenLength = unknownOwnerDebugStack;
+      return ReactElement(type, key, i, getOwner(), childrenLength, propName ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
     };
     exports.createRef = function() {
       var refObject = { current: null };
@@ -771,20 +807,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
       });
       return compare;
     };
-    exports.startTransition = function(scope) {
-      var prevTransition = ReactSharedInternals.T, currentTransition = {};
-      currentTransition._updatedFibers = new Set;
-      ReactSharedInternals.T = currentTransition;
-      try {
-        var returnValue = scope(), onStartTransitionFinish = ReactSharedInternals.S;
-        onStartTransitionFinish !== null && onStartTransitionFinish(currentTransition, returnValue);
-        typeof returnValue === "object" && returnValue !== null && typeof returnValue.then === "function" && (ReactSharedInternals.asyncTransitions++, returnValue.then(releaseAsyncTransition, releaseAsyncTransition), returnValue.then(noop, reportGlobalError));
-      } catch (error) {
-        reportGlobalError(error);
-      } finally {
-        prevTransition === null && currentTransition._updatedFibers && (scope = currentTransition._updatedFibers.size, currentTransition._updatedFibers.clear(), 10 < scope && console.warn("Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table.")), prevTransition !== null && currentTransition.types !== null && (prevTransition.types !== null && prevTransition.types !== currentTransition.types && console.error("We expected inner Transitions to have transferred the outer types set and that you cannot add to the outer Transition while inside the inner.This is a bug in React."), prevTransition.types = currentTransition.types), ReactSharedInternals.T = prevTransition;
-      }
-    };
+    exports.startTransition = startTransition;
     exports.unstable_useCacheRefresh = function() {
       return resolveDispatcher().useCacheRefresh();
     };
@@ -850,12 +873,12 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.useTransition = function() {
       return resolveDispatcher().useTransition();
     };
-    exports.version = "19.2.8";
+    exports.version = "19.3.0";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
 
-// ../../../.bun/install/cache/links/react@19.2.8-cd643cd10e1e2a1c/node_modules/react/index.js
+// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/index.js
 var require_react = __commonJS(function(exports, module) {
   var react_development = __toESM(require_react_development());
   if (false) {} else {
@@ -863,7 +886,7 @@ var require_react = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/react@19.2.8-cd643cd10e1e2a1c/node_modules/react/cjs/react-jsx-runtime.development.js
+// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/cjs/react-jsx-runtime.development.js
 var require_react_jsx_runtime_development = __commonJS(function(exports) {
   var React = __toESM(require_react());
   (function() {
@@ -887,6 +910,8 @@ var require_react_jsx_runtime_development = __commonJS(function(exports) {
           return "SuspenseList";
         case REACT_ACTIVITY_TYPE:
           return "Activity";
+        case REACT_VIEW_TRANSITION_TYPE:
+          return "ViewTransition";
       }
       if (typeof type === "object")
         switch (typeof type.tag === "number" && console.error("Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."), type.$$typeof) {
@@ -1057,7 +1082,7 @@ React keys must be passed directly to JSX without using spread:
     function isValidElement(object) {
       return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
     }
-    var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
+    var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler"), REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_VIEW_TRANSITION_TYPE = Symbol.for("react.view_transition"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
       return null;
     };
     React = {
@@ -1073,16 +1098,30 @@ React keys must be passed directly to JSX without using spread:
     exports.Fragment = REACT_FRAGMENT_TYPE;
     exports.jsx = function(type, config, maybeKey) {
       var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
-      return jsxDEVImpl(type, config, maybeKey, false, trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack, trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
+      if (trackActualOwner) {
+        var previousStackTraceLimit = Error.stackTraceLimit;
+        Error.stackTraceLimit = 10;
+        var debugStackDEV = Error("react-stack-top-frame");
+        Error.stackTraceLimit = previousStackTraceLimit;
+      } else
+        debugStackDEV = unknownOwnerDebugStack;
+      return jsxDEVImpl(type, config, maybeKey, false, debugStackDEV, trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
     };
     exports.jsxs = function(type, config, maybeKey) {
       var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
-      return jsxDEVImpl(type, config, maybeKey, true, trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack, trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
+      if (trackActualOwner) {
+        var previousStackTraceLimit = Error.stackTraceLimit;
+        Error.stackTraceLimit = 10;
+        var debugStackDEV = Error("react-stack-top-frame");
+        Error.stackTraceLimit = previousStackTraceLimit;
+      } else
+        debugStackDEV = unknownOwnerDebugStack;
+      return jsxDEVImpl(type, config, maybeKey, true, debugStackDEV, trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask);
     };
   })();
 });
 
-// ../../../.bun/install/cache/links/react@19.2.8-cd643cd10e1e2a1c/node_modules/react/jsx-runtime.js
+// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS(function(exports, module) {
   var react_jsx_runtime_development = __toESM(require_react_jsx_runtime_development());
   if (false) {} else {

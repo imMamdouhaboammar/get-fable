@@ -114,6 +114,102 @@ export const CLAUDE_RED_PLAYBOOKS: Record<string, TacticalPlaybook> = {
       },
     ],
   },
+
+  'ssti': {
+    id: 'ssti',
+    name: 'Server-Side Template Injection (SSTI)',
+    category: 'ssti',
+    defaultSeverity: 'critical',
+    cwe: 'CWE-1336',
+    description:
+      'Cognitive reasoning playbook for identifying unescaped template compilation and mathematical reflection',
+    methodology: [
+      '1. Identify parameter reflection sites in HTML, preview, and email generation endpoints',
+      '2. Submit mathematical expression {{4919*7}} and ${4919*7}',
+      '3. Verify if arithmetic product (34433) is calculated and reflected in response',
+      '4. Check for template syntax error banners (Jinja2, Twig, FreeMarker, Handlebars)',
+    ],
+    assertions: [
+      {
+        checkName: 'Template Arithmetic Evaluation',
+        payloadPattern: '{{4919*7}}',
+        expectedSafetyResponse: 'Literal string {{4919*7}} reflected or encoded without evaluation',
+        vulnerabilityIndicator: 'Arithmetic product 34433 evaluated and rendered in body',
+      },
+    ],
+  },
+
+  'nosql': {
+    id: 'nosql',
+    name: 'NoSQL Operator Injection & Query Tampering',
+    category: 'nosql-injection',
+    defaultSeverity: 'high',
+    cwe: 'CWE-943',
+    description:
+      'Evaluates document store queries against query operator tampering ($gt, $ne, $regex)',
+    methodology: [
+      '1. Map input fields used in document queries and authentication routes',
+      '2. Inject nested operator objects: username[$gt]= or {"username":{"$gt":""}}',
+      '3. Detect database error signatures (MongoError, Cast to ObjectId, BSONTypeError)',
+      '4. Verify authentication bypass without valid password credentials',
+    ],
+    assertions: [
+      {
+        checkName: 'NoSQL Operator Injection',
+        payloadPattern: 'param[$gt]=',
+        expectedSafetyResponse: '400 Bad Request or strict string parsing',
+        vulnerabilityIndicator: 'MongoError or authentication bypass with status 200',
+      },
+    ],
+  },
+
+  'path-traversal': {
+    id: 'path-traversal',
+    name: 'Directory Traversal & Path Normalization',
+    category: 'path-traversal',
+    defaultSeverity: 'high',
+    cwe: 'CWE-22',
+    description:
+      'Identifies unvalidated file path parameters allowing traversal outside web root',
+    methodology: [
+      '1. Map file download, viewer, and template inclusion routes',
+      '2. Submit directory traversal sequences: ../../../../etc/passwd and encoded forms',
+      '3. Verify file indicator reflection (root:x:0:0:, win.ini markers)',
+      '4. Detect filesystem exception messages leaking directory structures',
+    ],
+    assertions: [
+      {
+        checkName: 'Traversal Sequence Rejection',
+        payloadPattern: '../../../../etc/passwd',
+        expectedSafetyResponse: '400 Bad Request or 404 Not Found without system content',
+        vulnerabilityIndicator: 'System file content or path resolution error banner',
+      },
+    ],
+  },
+
+  'graphql': {
+    id: 'graphql',
+    name: 'GraphQL Schema Introspection & Query Governance',
+    category: 'graphql',
+    defaultSeverity: 'medium',
+    cwe: 'CWE-200',
+    description:
+      'Validates GraphQL endpoint hardening against schema reconnaissance and batch abuse',
+    methodology: [
+      '1. Discover GraphQL routes (/graphql, /api/graphql)',
+      '2. Execute schema introspection query { __schema { types { name } } }',
+      '3. Verify whether production schema types and mutations are exposed',
+      '4. Test query batching and depth limit enforcement',
+    ],
+    assertions: [
+      {
+        checkName: 'Introspection Shielding',
+        payloadPattern: '{ __schema { types { name } } }',
+        expectedSafetyResponse: 'Introspection disabled error or 400 Bad Request',
+        vulnerabilityIndicator: 'HTTP 200 with complete schema definition in response',
+      },
+    ],
+  },
 };
 
 export function getPlaybook(id: string): TacticalPlaybook | undefined {

@@ -368,6 +368,26 @@ export function deriveComplianceMappings(finding: RedTeamFinding): ComplianceTag
     owaspApi = 'API8:2023-Security Misconfiguration';
     pciDss = 'Req 6.4.3-Web Application Headers and Scripts';
     soc2 = 'CC6.6-Boundary Protection';
+  } else if (cat === 'ssti' || cat === 'nosql-injection') {
+    owaspTop10 = 'A03:2021-Injection';
+    owaspApi = 'API10:2023-Unsafe Consumption of APIs';
+    pciDss = 'Req 6.2.4-Injection Flaw Prevention';
+    soc2 = 'CC7.1-Vulnerability and Threat Management';
+  } else if (cat === 'path-traversal') {
+    owaspTop10 = 'A01:2021-Broken Access Control';
+    owaspApi = 'API1:2023-Broken Object Level Authorization';
+    pciDss = 'Req 6.2.4-Input Validation & Path Traversal Prevention';
+    soc2 = 'CC6.1-Logical Access Controls';
+  } else if (cat === 'graphql' || cat === 'prototype-pollution') {
+    owaspTop10 = 'A05:2021-Security Misconfiguration';
+    owaspApi = 'API8:2023-Security Misconfiguration';
+    pciDss = 'Req 6.4.3-Web Application Headers and Scripts';
+    soc2 = 'CC6.6-Boundary Protection';
+  } else if (cat === 'csrf') {
+    owaspTop10 = 'A01:2021-Broken Access Control';
+    owaspApi = 'API2:2023-Broken Authentication';
+    pciDss = 'Req 6.4.3-CSRF & Cookie Protection';
+    soc2 = 'CC6.1-Logical Access Controls';
   }
 
   return {
@@ -395,7 +415,7 @@ export function calculateCvssV3(finding: RedTeamFinding): CvssScore {
   let rating: CvssScore['rating'] = 'None';
 
   if (sev === 'critical') {
-    if (cat === 'injection') {
+    if (cat === 'injection' || cat === 'ssti') {
       c = 'H'; i = 'H'; a = 'H';
       score = 9.8;
     } else if (cat === 'sensitive-exposure' || cat === 'auth-bypass') {

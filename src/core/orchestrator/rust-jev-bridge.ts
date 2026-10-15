@@ -94,6 +94,7 @@ export interface SubagentExecutionReceipt {
   eventsCount: number;
   durationMs: number;
   returnPacketToon: string;
+  failureReason?: string;
 }
 
 export interface WaveExecutionReport {
