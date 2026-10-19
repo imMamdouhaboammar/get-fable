@@ -41,7 +41,7 @@ function taskShapeFor(skill: FableSkillId, text: string): FableTaskShape {
   if (skill === 'fable-research' || skill === 'fable-memory' || skill === 'fable-context-thrift') return 'research';
   if (skill === 'fable-plan' || skill === 'fable-artifact' || skill === 'fable-config' || skill === 'fable-spark' || skill === 'fable-architecture' || skill === 'fable-eco' || skill === 'fable-council' || skill === 'fable-wise') return 'architecture';
   if (skill === 'fable-delegate') return 'delegation';
-  if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator' || skill === 'fable-judge' || skill === 'fable-prove-it') return 'review';
+  if (skill === 'fable-review' || skill === 'fable-verify' || skill === 'fable-run' || skill === 'fable-simulator' || skill === 'fable-judge' || skill === 'fable-prove-it' || skill === 'fable-anti-slop-engineering' || skill === 'fable-anti-churn') return 'review';
   if (skill === 'fable-security' || skill === 'fable-redteam' || skill === 'fable-heal') return 'security';
   if (skill === 'fable-release' || skill === 'fable-tend') return 'release';
   if (skill === 'fable-handoff' || skill === 'fable-outcome-first') return 'handoff';
@@ -210,8 +210,18 @@ export function routeTask(
     addSignal(scores, reasons, 'fable-review', reviewWeight, 'task requests an independent code or diff review');
   }
 
-  if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence/)) {
-    addSignal(scores, reasons, 'fable-verify', 7, 'task explicitly asks for behavior verification');
+  if (
+    has(
+      text,
+      /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence|\bneural[- ]test\b|\btpu[- ]test\b|\btest[- ]engine\b|\btest[- ]value\b|\bspearhead\b|\bfrontier[- ]test\b|accelerat(?:e|ing|ion) test|pareto test|test tournament|systolic test/i
+    )
+  ) {
+    const isAccelerated = has(text, /\bneural[- ]test\b|\btpu[- ]test\b|\btest[- ]engine\b|\btest[- ]value\b|\bspearhead\b|\bfrontier[- ]test\b|accelerat(?:e|ing|ion) test|pareto test|test tournament|systolic test/i);
+    const verifyWeight = isAccelerated ? 9 : 7;
+    const verifyReason = isAccelerated
+      ? 'task explicitly asks for behavior verification, frontier testing, or neural test acceleration'
+      : 'task explicitly asks for behavior verification';
+    addSignal(scores, reasons, 'fable-verify', verifyWeight, verifyReason);
   }
 
   if (
@@ -351,6 +361,25 @@ export function routeTask(
 
   if (has(text, /\bfable-wise\b|paperthin|re0\b|ssotize|autobahn\b|feynman check|strip slop|debloat artifact|contrarian objection/i)) {
     addSignal(scores, reasons, 'fable-wise', 12, 'task requests Paperthin low-level agentic patterns or slop reduction');
+  }
+
+  if (
+    !has(text, /\bfable-wise\b/i) &&
+    has(
+      text,
+      /\bfable-anti-slop-engineering\b|\banti[- ]slop\b|(?<!strip\s+)\bslop\b|\bdirty[- ]engineering\b|\bdirty engineering\b|\bweak assertions?\b|\bskipped tests?\b|\bswallowed (?:error|errors|exception|exceptions)\b|\bdiff[- ]guard\b|\bdiff guard\b|\btest[- ]integrity\b|\btest integrity\b/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-anti-slop-engineering', 12, 'task audits or prevents AI coding slop and test tampering');
+  }
+
+  if (
+    has(
+      text,
+      /\bfable-anti-churn\b|\banti[- ]churn\b|\bduplicate (?:work|actions?)\b|\bretry loop\b|\bevidence reuse\b|\breceipts?\b|\btyped invalidation\b|\bpromotion gate\b|\bdeterministic failure gate\b/i
+    )
+  ) {
+    addSignal(scores, reasons, 'fable-anti-churn', 12, 'task prevents duplicate agent actions or manages evidence reuse receipts');
   }
 
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {

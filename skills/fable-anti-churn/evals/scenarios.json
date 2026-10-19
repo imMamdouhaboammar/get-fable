@@ -1,0 +1,52 @@
+[
+  {
+    "id": "fable-anti-churn-scenario-1",
+    "name": "Check for duplicate test rerun before execution",
+    "category": "should-trigger",
+    "prompt": "Check if this test suite execution is a duplicate of a prior passing run and can reuse accepted evidence.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-anti-churn-scenario-2",
+    "name": "General trivia question",
+    "category": "should-not-trigger",
+    "prompt": "What is the boiling point of nitrogen?",
+    "shouldTrigger": false
+  },
+  {
+    "id": "fable-anti-churn-block-duplicate-test",
+    "description": "Block rerun of identical test without code modification or typed invalidation",
+    "given": {
+      "intent": "Run test suite after no files changed",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "reuse-prior-evidence",
+      "produces": "decision-receipt",
+      "gates": [
+        "zero-duplicate-churn"
+      ]
+    },
+    "forbidden": {
+      "action": "allow-unverified-duplicate-execution"
+    }
+  },
+  {
+    "id": "fable-anti-churn-enforce-typed-invalidation",
+    "description": "Require typed invalidation when candidate hash changes before re-running verification",
+    "given": {
+      "intent": "Re-run targeted test after candidate code edit",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "allow-reexecution",
+      "produces": "decision-receipt",
+      "gates": [
+        "typed-invalidation-satisfied"
+      ]
+    },
+    "forbidden": {
+      "action": "bypass-invalidation-check"
+    }
+  }
+]

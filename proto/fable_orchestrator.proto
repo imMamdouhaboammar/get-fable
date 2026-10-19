@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package fable.orchestrator.v1;
+
+// FableOrchestrator represents the master lifecycle orchestration service for Get-Fable.
+// Inspired by VectorOS, PortOS, Meridian, AX, and Substrate.
+service FableOrchestrator {
+  // Submits a declarative or conversational engineering task for orchestration.
+  rpc SubmitTask (SubmitTaskRequest) returns (SubmitTaskResponse);
+
+  // Checks current lifecycle status, active workers, and evidence generations.
+  rpc GetTaskStatus (TaskStatusRequest) returns (TaskStatusResponse);
+
+  // Streams real-time tamper-evident events from the audit ledger.
+  rpc StreamEvents (StreamEventsRequest) returns (stream OrchestratorEvent);
+
+  // Signals cancellation to an ongoing task and triggers compensating rollbacks.
+  rpc CancelTask (CancelTaskRequest) returns (CancelTaskResponse);
+
+  // Proposes an intermediate artifact to the horizontal peer coordination blackboard.
+  rpc ProposeBlackboardArtifact (ProposeArtifactRequest) returns (ProposeArtifactResponse);
+
+  // Queries available artifacts from the horizontal blackboard.
+  rpc QueryBlackboard (QueryBlackboardRequest) returns (QueryBlackboardResponse);
+
+  // Commits an accepted artifact through the merge admission gate.
+  rpc CommitBlackboardArtifact (CommitArtifactRequest) returns (CommitArtifactResponse);
+}
+
+message SubmitTaskRequest {
+  string task_id = 1;
+  string goal = 2;
+  string declarative_spec_yaml = 3;
+  map<string, string> context_variables = 4;
+  string workspace_strategy = 5;
+  uint32 max_turns = 6;
+  double max_cost_usd = 7;
+}
+
+message SubmitTaskResponse {
+  string task_id = 1;
+  string status = 2;
+  string assigned_orchestrator = 3;
+  uint32 initial_generation = 4;
+}
+
+message TaskStatusRequest {
+  string task_id = 1;
+}
+
+message TaskStatusResponse {
+  string task_id = 1;
+  string phase = 2;
+  uint32 mutation_generation = 3;
+  uint32 verified_generation = 4;
+  repeated string active_workers = 5;
+  string latest_evidence = 6;
+  uint32 failure_streak = 7;
+}
+
+message StreamEventsRequest {
+  string task_id = 1;
+  string since_hash = 2;
+}
+
+message OrchestratorEvent {
+  string event_id = 1;
+  string parent_hash = 2;
+  string timestamp = 3;
+  string event_type = 4;
+  string payload_toon = 5;
+  string record_hash = 6;
+}
+
+message CancelTaskRequest {
+  string task_id = 1;
+  string reason = 2;
+  bool rollback_mutations = 3;
+}
+
+message CancelTaskResponse {
+  bool success = 1;
+  string message = 2;
+  string rollback_checkpoint = 3;
+}
+
+message ProposeArtifactRequest {
+  string task_id = 1;
+  string worker_id = 2;
+  string artifact_type = 3;
+  string payload = 4;
+  uint32 ttl_seconds = 5;
+}
+
+message ProposeArtifactResponse {
+  string artifact_id = 1;
+  bool accepted = 2;
+  string reason = 3;
+}
+
+message QueryBlackboardRequest {
+  string task_id = 1;
+  string artifact_type = 2;
+}
+
+message QueryBlackboardResponse {
+  repeated BlackboardArtifact artifacts = 1;
+}
+
+message CommitArtifactRequest {
+  string task_id = 1;
+  string artifact_id = 2;
+  string worker_id = 3;
+  uint32 fencing_token = 4;
+}
+
+message CommitArtifactResponse {
+  bool committed = 1;
+  string state_hash = 2;
+  string error = 3;
+}
+
+message BlackboardArtifact {
+  string artifact_id = 1;
+  string task_id = 2;
+  string worker_id = 3;
+  string artifact_type = 4;
+  string payload = 5;
+  string timestamp = 6;
+  string status = 7;
+}

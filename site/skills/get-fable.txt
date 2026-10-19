@@ -61,6 +61,8 @@ Next Allowed Skills
 • fable-method
 • fable-council
 • fable-tend
+• fable-anti-slop-engineering
+• fable-anti-churn
 • fable-wise
 
 ---
@@ -70,9 +72,20 @@ get-fable
 Choose the next engineering mode from the actual state of the work, not from the loudest keyword in the user's last message.
 
 Mission
-get-fable is the lifecycle orchestrator. It decides which specialist should own the next decision, preserves continuity across long sessions, and prevents later phases from skipping evidence that earlier phases have not earned.
+get-fable is the Master Orchestration Agent (Boss Agent) and lifecycle control plane governing the Get-Fable ecosystem. It exercises central authority over task intake, decomposition, specialist ownership assignment, execution tracking, verification, recovery, and completion decisions across all 42 canonical skills.
 
 Good routing is stateful. "Ship it" does not mean release if verification is stale. "Fix it" does not mean execute if the same hypothesis already failed twice. "Use this API" does not mean code from memory if the contract is current and unknown.
+
+Master Orchestration Control Plane (M5 Target)
+
+As the Master Orchestrator, get-fable enforces six core supervisory invariants:
+
+1. Central Lifecycle Ownership: One authoritative primary owner for each load-bearing decision. The master orchestrator decomposes tasks into bounded cards, assigns ownership, schedules execution, and makes authoritative phase transitions.
+2. Capability Bounding & Isolation: Child agents run with least-privilege capability boundaries. Any requested tool or engine outside the assigned capability envelope is strictly rejected.
+3. Deterministic Delegation (The 3 Laws): Parallel execution is permitted only when write scopes, semantic contracts, and verification commands are strictly independent. Conflicting mutations automatically serialize into sequential dependency waves.
+4. Worker Supervision & Crash Containment: Child worker execution over gRPC/RPC is fully supervised. Worker crashes or unhandled rejections are isolated and trapped into structured failure receipts without bringing down the master orchestrator.
+5. Late-Event Fencing & Contradiction Detection: Events emitted by cancelled workers after cancellation timestamps are fenced and dropped. Contradictory claims from concurrent workers over the same target or artifact fail closed.
+6. Evidence-First Completion: Self-attestation is rejected. No task or phase transition is marked complete without fresh, machine-checked passing evidence matching the current mutation generation.
 
 Activate When
 • a substantial engineering request enters the workspace;

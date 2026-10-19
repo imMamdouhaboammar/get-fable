@@ -157,6 +157,9 @@ SKILL_RULES = {
     "fable-wise": (
         "Wise rule: apply Depth, Breadth, Coil, and Mesh cognitive reflexes to consolidate single sources of truth and strip architectural slop."
     ),
+    "fable-anti-churn": (
+        "Anti-churn rule: check idempotency and work identity before dispatching commands or subtasks; reuse valid receipts, enforce deterministic local failure backoff, and require typed invalidation before re-executing identical work."
+    ),
 }
 
 
@@ -173,7 +176,7 @@ def select_skill(state, open_items):
     return "fable-execute" if open_items else "get-fable"
 
 
-def build_context(state, open_items, paused):
+def build_context(state, open_items, paused, fable_dir=None):
     if paused:
         return (
             "[get-fable] Project workflow is PAUSED by .fable/LEDGER.md. "
@@ -222,6 +225,34 @@ def build_context(state, open_items, paused):
         if len(open_items) > len(shown):
             lines.append("  ... and %d more" % (len(open_items) - len(shown)))
 
+    if fable_dir:
+        receipts_path = os.path.join(fable_dir, "anti-churn", "receipts.ndjson")
+        if os.path.isfile(receipts_path):
+            try:
+                total_r = 0
+                pending_r = 0
+                reused_r = 0
+                local_fail_r = 0
+                with open(receipts_path, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        total_r += 1
+                        if '"outcome":"pending"' in line or '"outcome": "pending"' in line:
+                            pending_r += 1
+                        elif '"outcome":"reused"' in line or '"outcome": "reused"' in line:
+                            reused_r += 1
+                        elif '"outcome":"local_failure"' in line or '"outcome": "local_failure"' in line:
+                            local_fail_r += 1
+                if total_r > 0:
+                    lines.append(
+                        "Anti-churn active: %d receipts (%d reused, %d pending, %d local failures). Deduplication armed."
+                        % (total_r, reused_r, pending_r, local_fail_r)
+                    )
+            except Exception:
+                pass
+
     return "\n".join(lines)
 
 
@@ -233,7 +264,7 @@ def main():
 
     open_items, _has_any, paused = parse_ledger(ledger_path(fable_dir))
     state = read_state(fable_dir)
-    context = build_context(state, open_items, paused)
+    context = build_context(state, open_items, paused, fable_dir=fable_dir)
     print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "SessionStart",

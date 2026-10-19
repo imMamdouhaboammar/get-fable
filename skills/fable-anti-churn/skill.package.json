@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-anti-churn",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/CLAUDE-INSTALL.md",
+    "references/CODEX-INSTALL.md",
+    "references/DECISIONS-AND-RECEIPTS.md",
+    "references/EVALUATION.md",
+    "references/OPENAI-PLUGIN-SUBMISSION.md",
+    "references/PRIVACY.md",
+    "references/THREAT-MODEL.md",
+    "references/doctrine_review.md"
+  ],
+  "templates": [
+    "templates/EVENT_TEMPLATE.json",
+    "templates/RECEIPT_TEMPLATE.json"
+  ],
+  "examples": [],
+  "evals": [
+    "evals/scenarios.json",
+    "evals/agent-churn-control-activation-golden.json"
+  ],
+  "scripts": [
+    "scripts/churn_control.py"
+  ],
+  "scriptPolicy": "data-only"
+}

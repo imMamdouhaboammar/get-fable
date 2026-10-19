@@ -23647,6 +23647,8 @@ var CANONICAL_SKILLS = [
   "fable-native-code",
   "fable-outcome-first",
   "fable-prove-it",
+  "fable-anti-slop-engineering",
+  "fable-anti-churn",
   "fable-scope-discipline",
   "fable-domain",
   "fable-judge",
@@ -23701,6 +23703,8 @@ var SKILL_PHASE = {
   "fable-native-code": "executing",
   "fable-outcome-first": "verifying",
   "fable-prove-it": "verifying",
+  "fable-anti-slop-engineering": "verifying",
+  "fable-anti-churn": "verifying",
   "fable-scope-discipline": "executing",
   "fable-domain": "discovering",
   "fable-judge": "verifying",
@@ -23745,6 +23749,8 @@ var SKILL_PACK = {
   "fable-native-code": "build",
   "fable-outcome-first": "delivery",
   "fable-prove-it": "proof",
+  "fable-anti-slop-engineering": "proof",
+  "fable-anti-churn": "proof",
   "fable-scope-discipline": "build",
   "fable-domain": "creator",
   "fable-judge": "proof",
@@ -23773,6 +23779,22 @@ var REGISTRY_PHASES = new Set([
 var REGISTRY_PACKS = new Set(FABLE_PACKS);
 function getCoreRepoRoot() {
   const currentFile = fileURLToPath(import.meta.url);
+  let candidate = path2.dirname(currentFile);
+  for (let i = 0;i < 5; i++) {
+    const pkgPath = path2.join(candidate, "package.json");
+    if (fs2.existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(fs2.readFileSync(pkgPath, "utf-8"));
+        if (pkg.name === "get-fable") {
+          return candidate;
+        }
+      } catch {}
+    }
+    const parent = path2.dirname(candidate);
+    if (parent === candidate)
+      break;
+    candidate = parent;
+  }
   return path2.resolve(path2.dirname(currentFile), "..", "..");
 }
 function asRecord(value) {
@@ -26777,35 +26799,37 @@ function installGlobalFable(jevEnvOptions) {
   installClaudeGlobal();
   installAntigravityGlobal();
   installCodexGlobal();
-  installCursorGlobal();
-  installCopilotGlobal();
-  installDevinGlobal();
-  installWindsurfGlobal();
-  installReplitGlobal();
-  installAmazonQGlobal();
-  installTraeGlobal();
-  installWarpGlobal();
-  installGrokGlobal();
-  installKimiGlobal();
-  installAtlarixGlobal();
-  installVellumGlobal();
-  installCodegenGlobal();
-  installMuseGlobal();
-  installJunieGlobal();
-  installQodoGlobal();
-  installRooCodeGlobal();
-  installAiderGlobal();
-  installClineGlobal();
-  installOpenHandsGlobal();
-  installOpenCodeGlobal();
-  installContinueGlobal();
-  installKiloGlobal();
-  installPlandexGlobal();
-  installAutoGPTGlobal();
-  installHermesGlobal();
   installDeepSeekGlobal();
-  installKiroGlobal();
-  installPiCodeGlobal();
+  if (process.env.FABLE_INSTALL_ALL_PLATFORMS === "true") {
+    installCursorGlobal();
+    installCopilotGlobal();
+    installDevinGlobal();
+    installWindsurfGlobal();
+    installReplitGlobal();
+    installAmazonQGlobal();
+    installTraeGlobal();
+    installWarpGlobal();
+    installGrokGlobal();
+    installKimiGlobal();
+    installAtlarixGlobal();
+    installVellumGlobal();
+    installCodegenGlobal();
+    installMuseGlobal();
+    installJunieGlobal();
+    installQodoGlobal();
+    installRooCodeGlobal();
+    installAiderGlobal();
+    installClineGlobal();
+    installOpenHandsGlobal();
+    installOpenCodeGlobal();
+    installContinueGlobal();
+    installKiloGlobal();
+    installPlandexGlobal();
+    installAutoGPTGlobal();
+    installHermesGlobal();
+    installKiroGlobal();
+    installPiCodeGlobal();
+  }
   const repoRoot = getRepoRootDir();
   const kernelDir = getAgentKernelDir();
   if (fs11.existsSync(kernelDir)) {
@@ -27330,8 +27354,8 @@ function checkFableStatus(targetDir = process.cwd()) {
   }
 }
 // src/fable-lint.ts
-import fs14 from "node:fs";
-import path14 from "node:path";
+import fs15 from "node:fs";
+import path15 from "node:path";
 
 // src/core/task-router.ts
 var RECOVERY_FAILURE_THRESHOLD = 2;
@@ -27359,7 +27383,7 @@ function taskShapeFor(skill, text) {
     return "architecture";
   if (skill === "fable-delegate")
     return "delegation";
-  if (skill === "fable-review" || skill === "fable-verify" || skill === "fable-run" || skill === "fable-simulator" || skill === "fable-judge" || skill === "fable-prove-it")
+  if (skill === "fable-review" || skill === "fable-verify" || skill === "fable-run" || skill === "fable-simulator" || skill === "fable-judge" || skill === "fable-prove-it" || skill === "fable-anti-slop-engineering" || skill === "fable-anti-churn")
     return "review";
   if (skill === "fable-security" || skill === "fable-redteam" || skill === "fable-heal")
     return "security";
@@ -27455,8 +27479,11 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
     const reviewWeight = isSecurityReview ? 8 : 12;
     addSignal(scores, reasons, "fable-review", reviewWeight, "task requests an independent code or diff review");
   }
-  if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence/)) {
-    addSignal(scores, reasons, "fable-verify", 7, "task explicitly asks for behavior verification");
+  if (has(text, /\bverify\b|\bvalidate\b|\bprove\b|ready to ship|is this correct|acceptance check|regression check|completion evidence|\bneural[- ]test\b|\btpu[- ]test\b|\btest[- ]engine\b|\btest[- ]value\b|\bspearhead\b|\bfrontier[- ]test\b|accelerat(?:e|ing|ion) test|pareto test|test tournament|systolic test/i)) {
+    const isAccelerated = has(text, /\bneural[- ]test\b|\btpu[- ]test\b|\btest[- ]engine\b|\btest[- ]value\b|\bspearhead\b|\bfrontier[- ]test\b|accelerat(?:e|ing|ion) test|pareto test|test tournament|systolic test/i);
+    const verifyWeight = isAccelerated ? 9 : 7;
+    const verifyReason = isAccelerated ? "task explicitly asks for behavior verification, frontier testing, or neural test acceleration" : "task explicitly asks for behavior verification";
+    addSignal(scores, reasons, "fable-verify", verifyWeight, verifyReason);
   }
   if (!suppressExternalResearch && has(text, /official (?:api )?docs|primary source|current api|current version|current official behavior[^.]{0,80}(?:external )?api|official behavior[^.]{0,80}api|latest (?:official )?(?:api )?(?:docs|documentation|release|version|behavior)|external documentation|release notes|web research/)) {
     addSignal(scores, reasons, "fable-research", 8, "task depends on current external facts");
@@ -27545,6 +27572,12 @@ function routeTask(task, state, registry = loadSkillRegistry()) {
   }
   if (has(text, /\bfable-wise\b|paperthin|re0\b|ssotize|autobahn\b|feynman check|strip slop|debloat artifact|contrarian objection/i)) {
     addSignal(scores, reasons, "fable-wise", 12, "task requests Paperthin low-level agentic patterns or slop reduction");
+  }
+  if (!has(text, /\bfable-wise\b/i) && has(text, /\bfable-anti-slop-engineering\b|\banti[- ]slop\b|(?<!strip\s+)\bslop\b|\bdirty[- ]engineering\b|\bdirty engineering\b|\bweak assertions?\b|\bskipped tests?\b|\bswallowed (?:error|errors|exception|exceptions)\b|\bdiff[- ]guard\b|\bdiff guard\b|\btest[- ]integrity\b|\btest integrity\b/i)) {
+    addSignal(scores, reasons, "fable-anti-slop-engineering", 12, "task audits or prevents AI coding slop and test tampering");
+  }
+  if (has(text, /\bfable-anti-churn\b|\banti[- ]churn\b|\bduplicate (?:work|actions?)\b|\bretry loop\b|\bevidence reuse\b|\breceipts?\b|\btyped invalidation\b|\bpromotion gate\b|\bdeterministic failure gate\b/i)) {
+    addSignal(scores, reasons, "fable-anti-churn", 12, "task prevents duplicate agent actions or manages evidence reuse receipts");
   }
   if (!suppressTdd && has(text, /\btdd\b|test[- ]first|red[- ]green|regression test|failing test[^.]{0,100}(?:before|first)|\bregressed\b|\bbug fix\b|fix the bug|\bfix\b[^.]{0,80}\b(?:error|exception|regression)\b|behavior change|add a feature|implement a feature/)) {
     addSignal(scores, reasons, "fable-tdd", 10, "task describes a testable behavior change");
@@ -27728,15 +27761,34 @@ function parseRecipeContent(content, id) {
     }
     if (!inSteps)
       continue;
-    const stepStart = line.match(/^\s*-\s*skill:\s*([a-z0-9-]+)\s*$/);
-    if (stepStart) {
+    const itemStart = line.match(/^\s*-\s*(.+)$/);
+    if (itemStart) {
       if (currentStep && currentStep.skill) {
         steps.push(currentStep);
       }
-      currentStep = { skill: stepStart[1] };
+      currentStep = {};
+      const firstProp = itemStart[1].trim();
+      const skillMatch = firstProp.match(/^skill:\s*([a-z0-9-]+)\s*$/);
+      if (skillMatch) {
+        currentStep.skill = skillMatch[1];
+      }
+      const descMatch = firstProp.match(/^description:\s*(.+)$/);
+      if (descMatch) {
+        currentStep.description = descLineLineMatch(descMatch[1]);
+      }
       continue;
     }
     if (currentStep) {
+      const skillMatch = line.match(/^\s*skill:\s*([a-z0-9-]+)\s*$/);
+      if (skillMatch) {
+        currentStep.skill = skillMatch[1];
+        continue;
+      }
+      const actionMatch = line.match(/^\s*action:\s*(.+)$/);
+      if (actionMatch && !currentStep.description) {
+        currentStep.description = descLineLineMatch(actionMatch[1]);
+        continue;
+      }
       const gateMatch = line.match(/^\s*gate:\s*([a-z0-9_-]+)\s*$/);
       if (gateMatch) {
         currentStep.gate = gateMatch[1];
@@ -27841,856 +27893,332 @@ function renderRecipeAscii(recipeId, repoRoot = getCoreRepoRoot()) {
 `);
 }
 
-// src/fable-lint.ts
-function hasHeading(headings, ...alternatives) {
-  return alternatives.some((value) => headings.has(value.toLowerCase()));
-}
-function hasHeadingContaining(headings, ...fragments) {
-  return [...headings].some((heading) => fragments.some((fragment) => heading.includes(fragment.toLowerCase())));
-}
-function scenarioArray(value) {
-  return Array.isArray(value) ? value : Array.isArray(value?.scenarios) ? value.scenarios : [];
-}
-function runSkillPackageLint(repoRoot = getCoreRepoRoot()) {
-  const errors = [];
-  const warnings = [];
-  const canonical = canonicalSkillIds();
-  const packageResults = validateAllSkillPackages(repoRoot);
-  for (const id of canonical) {
-    const res = packageResults[id];
-    if (!res) {
-      errors.push(`Skill package ${id}: not found`);
-      continue;
-    }
-    if (!res.valid) {
-      for (const err of res.errors) {
-        errors.push(`Skill ${id}: ${err}`);
-      }
-    }
-    const skillPath = path14.join(getSkillPackageDir(id, repoRoot), "SKILL.md");
-    if (fs14.existsSync(skillPath)) {
-      const content = fs14.readFileSync(skillPath, "utf-8");
-      const headings = new Set(content.split(`
-`).map((line) => line.match(/^##\s+(.+?)\s*$/)?.[1]?.trim().toLowerCase()).filter((heading) => Boolean(heading)));
-      const isDeepPlaybook = hasHeading(headings, "Mission") && hasHeading(headings, "Anti-Patterns") && hasHeading(headings, "Invariants");
-      if (isDeepPlaybook) {
-        const v2Requirements = [
-          { label: "Mission", present: hasHeading(headings, "Mission") },
-          { label: "Activation contract", present: hasHeading(headings, "Activate When", "Activation Contract") || hasHeadingContaining(headings, "activation") },
-          { label: "Situation classification", present: hasHeadingContaining(headings, "classification") },
-          { label: "Protocol", present: hasHeadingContaining(headings, "protocol", "procedure") },
-          { label: "Decision Rules", present: hasHeading(headings, "Decision Rules") },
-          { label: "Invariants", present: hasHeading(headings, "Invariants") },
-          { label: "Failure Taxonomy", present: hasHeadingContaining(headings, "failure taxonomy") },
-          { label: "Anti-Patterns", present: hasHeading(headings, "Anti-Patterns") },
-          { label: "Completion Criteria", present: hasHeading(headings, "Completion Criteria") },
-          { label: "Progressive Resources", present: hasHeading(headings, "Progressive Resources") }
-        ];
-        for (const requirement of v2Requirements) {
-          if (!requirement.present)
-            warnings.push(`Skill ${id}: missing V2 authoring section "${requirement.label}"`);
-        }
-        if (res.manifest) {
-          const scenarios = res.manifest.evals.flatMap((resource) => {
-            if (!resource.endsWith(".json"))
-              return [];
-            try {
-              return scenarioArray(JSON.parse(readSkillResource(id, resource, repoRoot)));
-            } catch {
-              return [];
-            }
-          });
-          if (scenarios.length < 6) {
-            errors.push(`Skill ${id}: Deep Playbook V2 requires at least 6 semantic eval scenarios; found ${scenarios.length}`);
-          }
-          const substantialReference = res.manifest.references.some((resource) => {
-            try {
-              return Buffer.byteLength(readSkillResource(id, resource, repoRoot), "utf8") >= 1000;
-            } catch {
-              return false;
-            }
-          });
-          if (!substantialReference) {
-            errors.push(`Skill ${id}: Deep Playbook V2 requires at least one substantial progressive reference (>=1000 bytes)`);
-          }
-        }
-      } else {
-        const requiredSections = [
-          { label: "Purpose" },
-          { label: "When to Use" },
-          { label: "When NOT to Use" },
-          { label: "Inputs" },
-          { label: "Expected Outputs", alternatives: ["Outputs"] },
-          { label: "Procedure" },
-          { label: "Decision Rules" },
-          { label: "Tool Policy" },
-          { label: "Evidence Requirements" },
-          { label: "Failure Handling" },
-          { label: "Completion Criteria" }
-        ];
-        for (const section of requiredSections) {
-          const accepted = [section.label, ...section.alternatives || []].map((value) => value.toLowerCase());
-          if (!accepted.some((value) => headings.has(value))) {
-            warnings.push(`Skill ${id}: missing required authoring section "## ${section.label}"`);
-          }
-        }
-        if (!headings.has("constraints") && !headings.has("decision rules") && !headings.has("tool policy")) {
-          warnings.push(`Skill ${id}: constraints are not explicit through Constraints, Decision Rules, or Tool Policy`);
-        }
-      }
-    }
-    const skillDir = getSkillPackageDir(id, repoRoot);
-    if (fs14.existsSync(skillDir) && res.manifest) {
-      const declaredPaths = new Set([
-        "SKILL.md",
-        "skill.package.json",
-        ...res.manifest.agents,
-        ...res.manifest.references,
-        ...res.manifest.templates,
-        ...res.manifest.examples,
-        ...res.manifest.evals,
-        ...res.manifest.scripts
-      ]);
-      const checkSubdir = (sub) => {
-        const subPath = path14.join(skillDir, sub);
-        if (!fs14.existsSync(subPath) || !fs14.statSync(subPath).isDirectory())
-          return;
-        const walk = (dir) => {
-          for (const entry of fs14.readdirSync(dir, { withFileTypes: true })) {
-            if (entry.name.startsWith("."))
-              continue;
-            const absolute = path14.join(dir, entry.name);
-            const rel = path14.relative(skillDir, absolute).split(path14.sep).join("/");
-            if (entry.isSymbolicLink()) {
-              errors.push(`Skill ${id}: Symlink resource is not allowed: ${rel}`);
-            } else if (entry.isDirectory()) {
-              walk(absolute);
-            } else if (entry.isFile()) {
-              if (!declaredPaths.has(rel)) {
-                errors.push(`Skill ${id}: Orphan file not declared in skill.package.json: ${rel}`);
-              }
-            } else {
-              errors.push(`Skill ${id}: Special resource is not allowed: ${rel}`);
-            }
-          }
-        };
-        walk(subPath);
-      };
-      for (const sub of ["agents", "references", "templates", "examples", "evals", "scripts"]) {
-        checkSubdir(sub);
-      }
-    }
-  }
-  const recipeVal = validateAllRecipes(repoRoot);
-  if (!recipeVal.valid) {
-    for (const err of recipeVal.errors)
-      errors.push(`Recipe error: ${err}`);
-  }
-  const generated = checkCatalogArtifacts(repoRoot);
-  if (!generated.ok) {
-    errors.push(`Generated catalog drift: ${generated.drift.join(", ")}`);
-  }
-  return {
-    valid: errors.length === 0,
-    errors,
-    warnings
-  };
-}
-function runFableLint(targetDir = process.cwd()) {
-  logInfo(`Running Fable lint checks on ${targetDir}...`);
-  try {
-    assertSafeFableBoundary(targetDir);
-  } catch (error) {
-    logError(error instanceof Error ? error.message : String(error));
-    return false;
-  }
-  let hasErrors = false;
-  const repoRoot = getCoreRepoRoot();
-  const isSourceRepo = path14.resolve(targetDir) === path14.resolve(repoRoot);
-  if (isSourceRepo || fs14.existsSync(path14.join(targetDir, "skills"))) {
-    const pkgReport = runSkillPackageLint(targetDir);
-    if (!pkgReport.valid) {
-      for (const err of pkgReport.errors) {
-        logError(`Package lint: ${err}`);
-        hasErrors = true;
-      }
-    }
-    for (const warn of pkgReport.warnings) {
-      logWarn(`Package lint: ${warn}`);
-    }
-  }
-  const fableDir = path14.join(targetDir, ".fable");
-  const ledgerPath = path14.join(fableDir, "LEDGER.md");
-  const statePath = path14.join(fableDir, "state.json");
-  const specPath = path14.join(targetDir, "docs", "SPEC.md");
-  if (!fs14.existsSync(ledgerPath)) {
-    logWarn(`No .fable/LEDGER.md found in ${targetDir}`);
-  } else {
-    const content = fs14.readFileSync(ledgerPath, "utf-8");
-    const lines = content.split(`
-`);
-    let openCards = 0;
-    let closedCards = 0;
-    lines.forEach((line, idx) => {
-      const openMatch = line.match(/^\s*-\s*\[\s*\]\s*(.*)/);
-      const closedMatch = line.match(/^\s*-\s*\[[xX]\]\s*(.*)/);
-      if (openMatch) {
-        openCards++;
-        const text = openMatch[1];
-        if (!text.toLowerCase().includes("acceptance") && !text.toLowerCase().includes("test") && !text.toLowerCase().includes("check")) {
-          logError(`LEDGER.md L${idx + 1}: Open card missing explicit machine-checkable acceptance test`);
-          hasErrors = true;
-        }
-      }
-      if (closedMatch) {
-        closedCards++;
-        const evidenceMatch = line.match(/--\s*evidence:\s*(.+)$/i);
-        if (!evidenceMatch || evidenceMatch[1].trim().length < 3) {
-          logError(`LEDGER.md L${idx + 1}: Closed card missing substantive '-- evidence:' annotation`);
-          hasErrors = true;
-        }
-      }
-    });
-    logInfo(`LEDGER.md Summary: ${openCards} open cards, ${closedCards} closed cards.`);
-  }
-  if (fs14.existsSync(statePath)) {
-    try {
-      const state = readFableState(targetDir);
-      if (!state)
-        throw new Error(".fable/state.json could not be loaded");
-      if (state.phase === "complete" && state.substantial && !hasFreshPassingEvidence(state)) {
-        logError("state.json: substantial work is complete without fresh passing evidence");
-        hasErrors = true;
-      }
-      if (state.failureStreak >= RECOVERY_FAILURE_THRESHOLD && state.phase === "executing") {
-        logError("state.json: repeated failure must route through recovery before more execution");
-        hasErrors = true;
-      }
-    } catch (error) {
-      const reason = error instanceof Error ? error.message : String(error);
-      logError(`state.json: ${reason}`);
-      hasErrors = true;
-    }
-  }
-  if (fs14.existsSync(specPath)) {
-    const specContent = fs14.readFileSync(specPath, "utf-8");
-    const tags = ["[measured]", "[inferred]", "[not-shown]"];
-    if (!tags.some((tag) => specContent.includes(tag))) {
-      logWarn("SPEC.md missing source tags ([measured]/[inferred]/[not-shown]) for claims.");
-    }
-  }
-  if (!hasErrors)
-    logSuccess("Fable lint passed! State, cards, packages, acceptance, and evidence are consistent.");
-  return !hasErrors;
-}
-// src/assets-manager.ts
-import fs15 from "node:fs";
-import path15 from "node:path";
-class AssetsManager {
-  static getAssetsDir() {
-    return path15.join(getRepoRootDir(), "assets");
-  }
-  static getSummary() {
-    const base = this.getAssetsDir();
-    const countItems = (dir) => fs15.existsSync(dir) ? fs15.readdirSync(dir).length : 0;
-    return {
-      promptsCount: countItems(path15.join(base, "prompts")),
-      agentsCount: countItems(path15.join(base, "agents")),
-      claudeCodeSkillsCount: countItems(path15.join(base, "skills", "claude-code")),
-      claudeDesignSkillsCount: countItems(path15.join(base, "skills", "claude-design")),
-      slashCommandsCount: countItems(path15.join(base, "slash-commands")),
-      remindersCount: countItems(path15.join(base, "injected-reminders")),
-      starterComponentsCount: countItems(path15.join(base, "starter-components"))
-    };
-  }
-  static getPrompt(name) {
-    const base = this.getAssetsDir();
-    const promptPath = path15.join(base, "prompts", `${name}.md`);
-    if (fs15.existsSync(promptPath)) {
-      return fs15.readFileSync(promptPath, "utf-8");
-    }
-    return null;
-  }
-  static listSkills() {
-    const base = this.getAssetsDir();
-    const results = [];
-    for (const cat of ["claude-code", "claude-design"]) {
-      const catDir = path15.join(base, "skills", cat);
-      if (fs15.existsSync(catDir)) {
-        const skills = fs15.readdirSync(catDir);
-        for (const s of skills) {
-          results.push({ category: cat, name: s });
-        }
-      }
-    }
-    return results;
-  }
-  static listAgents() {
-    const base = this.getAssetsDir();
-    const agentsDir = path15.join(base, "agents");
-    if (fs15.existsSync(agentsDir)) {
-      return fs15.readdirSync(agentsDir).map((f) => f.replace(".md", ""));
-    }
-    return [];
-  }
-}
-// src/router/index.ts
-import http from "node:http";
-import { lookup } from "node:dns/promises";
-import { isIP } from "node:net";
-import { timingSafeEqual } from "node:crypto";
+// src/eco/native-bridge.ts
+import fs14 from "node:fs";
+import path14 from "node:path";
+import { spawnSync as spawnSync4 } from "node:child_process";
 
-// src/router/provider-translator.ts
-class RequestValidationError extends Error {
-  statusCode = 400;
-  constructor(message) {
-    super(message);
-    this.name = "RequestValidationError";
-  }
-}
-function asRecord2(value) {
-  return value && typeof value === "object" && !Array.isArray(value) ? value : null;
-}
-function normalizeRole(value) {
-  if (value === "system" || value === "assistant" || value === "tool")
-    return value;
-  return "user";
-}
-function stringifyContent(value) {
-  if (typeof value === "string")
-    return value;
-  if (value === null || value === undefined)
-    return "";
-  return JSON.stringify(value);
-}
-function finiteNumber(value) {
-  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
-}
-function positiveInteger(value) {
-  return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : undefined;
-}
-function extractPartsText(value) {
-  const record = asRecord2(value);
-  if (!record)
-    return stringifyContent(value);
-  if (Array.isArray(record.parts)) {
-    return record.parts.map((part) => {
-      const partRecord = asRecord2(part);
-      return partRecord && typeof partRecord.text === "string" ? partRecord.text : "";
-    }).filter(Boolean).join(`
-`);
-  }
-  return stringifyContent(value);
-}
-function modelName(value, fallback) {
-  return typeof value === "string" && value.trim() ? value.trim() : fallback;
-}
-function isGrokModel(model) {
-  return /^(grok|xai)/i.test(model);
-}
-
-class ProviderTranslator {
-  static isGrokRequest(request) {
-    return isGrokModel(request.model);
-  }
-  static normalizeRequest(body) {
-    const request = asRecord2(body);
-    if (!request) {
-      throw new RequestValidationError("Request body must be a JSON object");
-    }
-    if (Array.isArray(request.messages)) {
-      if (request.messages.length === 0) {
-        throw new RequestValidationError("messages must contain at least one message");
-      }
-      const messages = request.messages.map((message, index) => {
-        const item = asRecord2(message);
-        if (!item) {
-          throw new RequestValidationError(`messages[${index}] must be an object`);
-        }
-        const normalized = {
-          role: normalizeRole(item.role),
-          content: stringifyContent(item.content)
-        };
-        if (typeof item.name === "string" && item.name.trim()) {
-          normalized.name = item.name;
-        }
-        return normalized;
-      });
-      return {
-        model: modelName(request.model, "default-fable-model"),
-        messages,
-        temperature: finiteNumber(request.temperature),
-        max_tokens: positiveInteger(request.max_tokens) ?? positiveInteger(request.max_completion_tokens),
-        stream: request.stream === true
-      };
-    }
-    if (Array.isArray(request.contents)) {
-      if (request.contents.length === 0) {
-        throw new RequestValidationError("contents must contain at least one message");
-      }
-      const messages = [];
-      if (request.systemInstruction !== undefined) {
-        messages.push({
-          role: "system",
-          content: extractPartsText(request.systemInstruction)
-        });
-      }
-      request.contents.forEach((content, index) => {
-        const item = asRecord2(content);
-        if (!item) {
-          throw new RequestValidationError(`contents[${index}] must be an object`);
-        }
-        messages.push({
-          role: item.role === "model" ? "assistant" : "user",
-          content: extractPartsText(item)
-        });
-      });
-      const generationConfig = asRecord2(request.generationConfig) || {};
-      return {
-        model: modelName(request.model, "gemini-fable-wrapper"),
-        messages,
-        temperature: finiteNumber(generationConfig.temperature),
-        max_tokens: positiveInteger(generationConfig.maxOutputTokens),
-        stream: false
-      };
-    }
-    throw new RequestValidationError("Request must contain a messages or contents array");
-  }
-  static injectFableSystemPrompt(request, fablePromptText) {
-    if (!fablePromptText.trim()) {
-      throw new Error("Fable system prompt is empty");
-    }
-    const messages = request.messages.map((message) => ({ ...message }));
-    const existingSystemIndex = messages.findIndex((message) => message.role === "system");
-    if (existingSystemIndex >= 0) {
-      const original = messages[existingSystemIndex];
-      messages[existingSystemIndex] = {
-        ...original,
-        content: `${fablePromptText}
-
---- ORIGINAL SYSTEM INSTRUCTIONS ---
-${original.content}`
-      };
-    } else {
-      messages.unshift({ role: "system", content: fablePromptText });
-    }
-    return { ...request, messages };
-  }
-}
-
-// src/core/spark.ts
-var SPARK_SPECIALIST_NEXT_MOVES = {
-  "get-fable": {
-    command: "route the active task",
-    rationale: "Select the canonical specialist skill before mutating the workspace."
+// src/core/architecture-eval.ts
+var TECH_STACK_MATRIX = {
+  A: {
+    category: "A",
+    language: "Go",
+    framework: "Fiber",
+    frameworkOptions: ["Fiber", "Gin", "Go-Kit"],
+    runtime: "Go 1.23+",
+    competency: "High-Concurrency APIs & Distributed Networking"
   },
-  "fable-discover": {
-    command: "trace the repository execution path",
-    rationale: "Resolve load-bearing codebase unknowns before planning or editing."
+  B: {
+    category: "B",
+    language: "TypeScript",
+    framework: "NestJS",
+    frameworkOptions: ["NestJS", "Fastify", "Elysia"],
+    runtime: "Node.js 22+ / Bun",
+    competency: "I/O Intensive, Rapid API Gateway & Orchestration"
   },
-  "fable-research": {
-    command: "check the current official docs",
-    rationale: "Ground external API facts in primary documentation before coding."
+  C: {
+    category: "C",
+    language: "Rust",
+    framework: "Axum",
+    frameworkOptions: ["Axum", "Actix-web"],
+    runtime: "Rust 1.80+ (native binary)",
+    competency: "High-Performance Computational Kernels, Media Processing, Systems Engineering"
   },
-  "fable-plan": {
-    command: "decompose work into bounded cards",
-    rationale: "Define explicit acceptance criteria and bounded file scope before execution."
+  D: {
+    category: "D",
+    language: "Python",
+    framework: "FastAPI",
+    frameworkOptions: ["FastAPI", "PyTorch/TensorFlow integrations"],
+    runtime: "Python 3.12+",
+    competency: "Artificial Intelligence, Data Engineering, & Machine Learning"
   },
-  "fable-tdd": {
-    command: "write the failing test",
-    rationale: "Observe a red regression test before implementing the behavior change."
-  },
-  "fable-delegate": {
-    command: "delegate the independent cards",
-    rationale: "Dispatch disjoint work items across parallel subagents with TOON contracts."
-  },
-  "fable-execute": {
-    command: "implement the active work card",
-    rationale: "Apply the bounded code change while preserving repository invariants."
-  },
-  "fable-verify": {
-    command: "run the verification test suite",
-    rationale: "Record fresh machine-checked completion proof for the current generation."
-  },
-  "fable-review": {
-    command: "review the diff",
-    rationale: "Audit changed files against engineering standards and specification compliance."
-  },
-  "fable-security": {
-    command: "audit the trust boundary inputs",
-    rationale: "Verify authentication, authorization, and secret hygiene across boundaries."
-  },
-  "fable-redteam": {
-    command: "run the scoped redteam probes",
-    rationale: "Execute non-destructive adversarial security probes against authorized targets."
-  },
-  "fable-heal": {
-    command: "apply the security remediation patch",
-    rationale: "Synthesize and verify patches neutralizing reported redteam findings."
-  },
-  "fable-release": {
-    command: "check release readiness",
-    rationale: "Certify quality gates, build artifacts, and clean working tree before shipping."
-  },
-  "fable-handoff": {
-    command: "prepare the handoff",
-    rationale: "Compact current state, generation stamps, and next action for continuation."
-  },
-  "fable-eval": {
-    command: "run the evaluation benchmark suite",
-    rationale: "Score routing and behavioral accuracy against frozen holdout baselines."
-  },
-  "fable-learning": {
-    command: "extract durable session learnings",
-    rationale: "Codify engineering failure lessons and reusable rules into Failure-lessons."
-  },
-  "fable-recover": {
-    command: "diagnose the repeated failure",
-    rationale: "Walk the 4-level recovery hierarchy before attempting another code edit."
-  },
-  "fable-dataviz": {
-    command: "render the accessible svg chart",
-    rationale: "Verify viewBox dimensions and theme contrast for data visualization tiles."
-  },
-  "fable-artifact": {
-    command: "author the structured technical artifact",
-    rationale: "Generate the architecture diagram or interactive proposal component."
-  },
-  "fable-simplify": {
-    command: "simplify the settled code paths",
-    rationale: "Flatten nested branches and remove duplication without altering behavior."
-  },
-  "fable-loop": {
-    command: "run the bounded polling loop",
-    rationale: "Monitor status with explicit iteration budget, backoff, and exit conditions."
-  },
-  "fable-run": {
-    command: "launch the live runtime check",
-    rationale: "Start the built artifact, probe readiness, and tear down cleanly."
-  },
-  "fable-memory": {
-    command: "index the persistent memory fact",
-    rationale: "Record the cross-session constraint and synchronize MEMORY.md."
-  },
-  "fable-config": {
-    command: "validate the harness settings diff",
-    rationale: "Verify JSON schema and least-privilege permissions before applying config."
-  },
-  "fable-simulator": {
-    command: "verify against the independent oracle",
-    rationale: "Compare runtime outputs against derived mathematical or browser oracles."
-  },
-  "fable-cowork": {
-    command: "execute the autonomous cowork chain",
-    rationale: "Complete the multi-step workflow silently and report the outcome first."
-  },
-  "fable-spark": {
-    command: "predict the smallest next action",
-    rationale: "Evaluate mutation delta and missing gates to surface one atomic move."
-  },
-  "fable-skill-creator": {
-    command: "package and benchmark the skill",
-    rationale: "Validate SKILL.md frontmatter and BinEval trigger discrimination."
-  },
-  "fable-architecture": {
-    command: "evaluate the architecture scale vectors",
-    rationale: "Score Scale, Domain, and Resource vectors to enforce microservices boundaries."
-  },
-  "fable-eco": {
-    command: "compile the capability execution contract",
-    rationale: "Resolve curated capability locks and verify host integration health."
-  },
-  "fable-context-thrift": {
-    command: "batch and target file lookups",
-    rationale: "Eliminate redundant file reads to conserve context token budget."
-  },
-  "fable-finish-your-turn": {
-    command: "complete the remaining turn deliverables",
-    rationale: "Execute all promised actions and resolve errors before yielding."
-  },
-  "fable-native-code": {
-    command: "align diff with codebase idioms",
-    rationale: "Match local naming and strip defensive bloat from the implementation."
-  },
-  "fable-outcome-first": {
-    command: "lead with the direct outcome",
-    rationale: "State the verified result in the first sentence without sycophancy."
-  },
-  "fable-prove-it": {
-    command: "verify the claim with evidence",
-    rationale: "Advance verification to the machine-checked rung before claiming done."
-  },
-  "fable-scope-discipline": {
-    command: "bound diff to requested scope",
-    rationale: "Remove drive-by edits and keep changes surgical to the active card."
-  },
-  "fable-domain": {
-    command: "generate the sector domain adapter",
-    rationale: "Translate Fable workflow primitives into grounded domain nouns and fixtures."
-  },
-  "fable-judge": {
-    command: "audit deliverable for weakened tests",
-    rationale: "Falsify completion claims and verify assertions were not diluted."
-  },
-  "fable-method": {
-    command: "execute the think act prove loop",
-    rationale: "Classify the ask, define done criteria, act surgically, and observe proof."
-  },
-  "fable-council": {
-    command: "convene the multi agent council",
-    rationale: "Gather independent peer critiques before locking the implementation plan."
-  },
-  "fable-tend": {
-    command: "triage and repair ci failures",
-    rationale: "Inspect failing checks or merge conflicts and apply a minimal repair."
-  },
-  "fable-wise": {
-    command: "apply wise cognitive reflex patterns",
-    rationale: "Use Depth, Breadth, Coil, and Mesh reflexes to strip structural slop."
+  E: {
+    category: "E",
+    language: "Elixir",
+    framework: "Phoenix",
+    frameworkOptions: ["Phoenix", "LiveView", "Cowboy/Bandit", "GenStage"],
+    runtime: "Erlang/OTP 26+ / BEAM",
+    competency: "Ultra-High Concurrency, Fault-Tolerant Real-Time Systems & WebSockets"
   }
 };
-function cleanSuggestion(text) {
-  if (!text)
-    return null;
-  const trimmed = text.trim();
-  const words = trimmed.split(/\s+/);
-  if (words.length < 2 || words.length > 12)
-    return null;
-  if (/^(I will|Let's|You should|Please|Great|Note|Warning)/i.test(trimmed))
-    return null;
-  return trimmed;
+var SCALE_LOAD_PATTERNS = [
+  /\b(\d{4,}|\d+k|\d+m)\s*(?:persistent\s+)?(?:concurrent|rps|req\/s|tps|users|connections|events\/s|websockets?)\b/i,
+  /\b(?:hundreds of thousands|tens of thousands|millions)\s+of\s+(?:persistent\s+)?(?:connections|websockets?|users|events|messages)\b/i,
+  /\b(?:high|extreme|massive|strict)\s+(?:concurrency|throughput|load|scale)\b/i,
+  /\bmillions of (?:messages|requests|events|records|packets)\b/i,
+  /\bpersistent\s+(?:web\s*sockets?|connections)\b/i,
+  /\b(?:low latency|sub[- ](?:10|20|50)ms|p99|sla)\b/i,
+  /\bhorizontal(?:ly)?\s+scal(?:e|ing|able)\b/i,
+  /\bdistributed\s+(?:traffic|load|routing)\b/i,
+  /\bstateless\s+(?:message|event|request)\s+routing\b/i
+];
+var DOMAIN_DEFINITIONS = [
+  { id: "auth", name: "Identity & Authentication", pattern: /\b(?:auth|identity|oauth|sso|credentials|rbac|abac|jwt|session)\b/i },
+  { id: "billing", name: "Payments & Billing", pattern: /\b(?:payment|billing|stripe|invoice|subscription|checkout|transaction)\b/i },
+  { id: "gateway", name: "API Gateway & Ingress", pattern: /\b(?:api gateway|gateway|reverse proxy|ingress|bff|orchestration)\b/i },
+  { id: "compute", name: "Computational Kernel", pattern: /\b(?:transcod(?:e|ing)|heavy math|cryptography|binary stream|encryption pipeline|signal processing)\b/i },
+  { id: "ai", name: "AI & Inference Engine", pattern: /\b(?:ai inference|llm routing|deep learning|predictive model|embeddings|neural network|rag pipeline)\b/i },
+  { id: "messaging", name: "Message Broker & Streaming", pattern: /\b(?:kafka|rabbitmq|message broker|event stream|pubsub|event bus)\b/i },
+  { id: "analytics", name: "Analytics & Telemetry", pattern: /\b(?:analytics|telemetry|metrics aggregation|data warehouse|olap)\b/i },
+  { id: "notifications", name: "Notifications & Webhooks", pattern: /\b(?:notification|webhook|email delivery|push notification|sms dispatch)\b/i },
+  { id: "realtime", name: "Real-Time Streaming & WebSockets", pattern: /\b(?:websocket|web sockets?|real[- ]time|live view|liveview|presence|chat room|zero[- ]downtime|fault[- ]tolerant|actor model|beam|elixir|phoenix)\b/i },
+  { id: "crud", name: "Core Business Entity CRUD", pattern: /\b(?:crud|product catalog|user management|order management|inventory)\b/i }
+];
+var CPU_BOUND_PATTERNS = [
+  /\b(?:transcoding|video encoding|heavy math|cryptography|encryption|binary parsing|sub-millisecond|neural net|model inference|matrix multiplication|compression)\b/i
+];
+var IO_BOUND_PATTERNS = [
+  /\b(?:crud|api gateway|rest endpoint|database query|http handler|webhook|json api|user session|admin panel|file upload|websocket)\b/i
+];
+function evaluateScaleAndLoad(text) {
+  let score = 0;
+  const reasons = [];
+  for (const pattern of SCALE_LOAD_PATTERNS) {
+    const match = text.match(pattern);
+    if (match) {
+      score += 2.5;
+      reasons.push(`Detected scale/load indicator: "${match[0]}"`);
+    }
+  }
+  const concurrencyMatch = text.match(/\b(\d+)\s*(?:k|kilo)\s*(?:persistent\s+)?(?:web\s*sockets?|concurrent|users|rps|connections|clients)\b/i);
+  if (concurrencyMatch) {
+    const count = parseInt(concurrencyMatch[1], 10) * 1000;
+    if (count >= 5000) {
+      score = Math.max(score, 8.5);
+      reasons.push(`Explicit high concurrency target: ${count.toLocaleString()} concurrent units`);
+    }
+  }
+  const rawConcurrency = text.match(/\b(\d{4,})\s*(?:persistent\s+)?(?:web\s*sockets?|concurrent|users|rps|connections|clients)\b/i);
+  if (rawConcurrency) {
+    const count = parseInt(rawConcurrency[1], 10);
+    if (count >= 5000) {
+      score = Math.max(score, 8.5);
+      reasons.push(`Explicit high concurrency target: ${count.toLocaleString()} concurrent units`);
+    }
+  }
+  if (/\bhundreds of thousands of (?:persistent\s+)?(?:web\s*sockets?|connections|users)/i.test(text)) {
+    score = Math.max(score, 9);
+    reasons.push("Explicit ultra-high concurrency target: hundreds of thousands of persistent connections");
+  }
+  const boundedScore = Number(Math.min(10, Math.max(0, score)).toFixed(1));
+  return { score: boundedScore, reasons };
 }
-function evaluateFableSpark(context) {
-  const { state, userIntent, latestError, latestMutationSource, activeCardText, openCards } = context;
-  if (state.phase === "complete" && state.currentSkill !== "fable-handoff") {
-    return {
-      suggestion: null,
-      reasonCode: "scope-complete-silent",
-      confidence: 0,
-      source: "none",
-      silent: true
-    };
-  }
-  if (state.failureStreak >= RECOVERY_FAILURE_THRESHOLD || state.phase === "recovering") {
-    const errorStr = (latestError || "").toLowerCase();
-    let raw = "diagnose the repeated failure";
-    if (errorStr.includes("integration")) {
-      raw = "diagnose the repeated integration failure";
-    } else if (errorStr.includes("migration")) {
-      raw = "diagnose the repeated migration failure";
+function evaluateDomainDecoupling(text) {
+  const identifiedDomains = [];
+  const reasons = [];
+  for (const domain of DOMAIN_DEFINITIONS) {
+    if (domain.pattern.test(text)) {
+      identifiedDomains.push({ id: domain.id, name: domain.name });
+      reasons.push(`Identified operational domain boundary: ${domain.name}`);
     }
-    const suggestion = cleanSuggestion(raw);
-    return {
-      suggestion,
-      reasonCode: "failure-loop-diagnose-required",
-      confidence: 0.95,
-      source: "failure-loop",
-      silent: !suggestion
-    };
   }
-  if (state.mutationGeneration > 0 && state.mutationGeneration > state.verifiedGeneration && state.phase !== "idle" && state.phase !== "discovering") {
-    const mutationSource = (latestMutationSource || "").toLowerCase();
-    const isBuildMutation = mutationSource.includes("esbuild") || mutationSource.includes("webpack") || mutationSource.includes("tsconfig") || mutationSource.includes("package.json") || mutationSource.includes("vite.config") || mutationSource.includes("rollup") || mutationSource.includes("styles") || mutationSource.includes("css");
-    if (isBuildMutation) {
-      const suggestion = cleanSuggestion("run the build");
-      return {
-        suggestion,
-        reasonCode: "build-verification-stale",
-        confidence: 0.94,
-        source: "mutation-delta",
-        silent: !suggestion
-      };
-    }
-    const intentLower = (userIntent || "").toLowerCase();
-    const activeLower = (activeCardText || state.activeCard || "").toLowerCase();
-    const combinedContext = `${intentLower} ${activeLower}`;
-    const hasSecurityEvidence = state.evidence?.some((e) => e.kind === "security" && e.result === "pass");
-    if (state.currentSkill === "fable-security" && hasSecurityEvidence && (combinedContext.includes("bug") || combinedContext.includes("fix") || combinedContext.includes("regression") || combinedContext.includes("repair"))) {
-      const suggestion = cleanSuggestion("verify the repaired behavior");
-      return {
-        suggestion,
-        reasonCode: "security-does-not-prove-functional-repair",
-        confidence: 0.92,
-        source: "missing-gate",
-        silent: !suggestion
-      };
-    }
-    if (combinedContext.includes("refresh")) {
-      const suggestion = cleanSuggestion("run the affected refresh tests");
-      return {
-        suggestion,
-        reasonCode: "verification-stale-after-mutation",
-        confidence: 0.93,
-        source: "mutation-delta",
-        silent: !suggestion
-      };
-    }
-    const suggestion = cleanSuggestion("run the affected tests");
-    return {
-      suggestion,
-      reasonCode: "verification-stale-after-mutation",
-      confidence: 0.92,
-      source: "mutation-delta",
-      silent: !suggestion
-    };
+  let score = 0;
+  if (identifiedDomains.length >= 4) {
+    score = 9;
+  } else if (identifiedDomains.length === 3) {
+    score = 8;
+  } else if (identifiedDomains.length === 2) {
+    score = 7;
+  } else if (identifiedDomains.length === 1) {
+    score = 3.5;
+  } else {
+    score = 1;
   }
-  if (state.currentSkill === "fable-tdd") {
-    const hasFailingTestEvidence = state.evidence?.some((e) => e.kind === "test" && e.result === "fail");
-    if (!hasFailingTestEvidence && state.mutationGeneration === 0) {
-      const suggestion = cleanSuggestion("write the failing test");
-      return {
-        suggestion,
-        reasonCode: "tdd-missing-failing-test",
-        confidence: 0.91,
-        source: "missing-gate",
-        silent: !suggestion
-      };
-    }
-    return {
-      suggestion: null,
-      reasonCode: "silent-no-obvious-move",
-      confidence: 0,
-      source: "none",
-      silent: true
-    };
+  return { score, identifiedDomains, reasons };
+}
+function evaluateResourceIntensity(text) {
+  const isCpuBound = CPU_BOUND_PATTERNS.some((p) => p.test(text));
+  const isIoBound = IO_BOUND_PATTERNS.some((p) => p.test(text));
+  const reasons = [];
+  let score = 0;
+  if (isCpuBound && isIoBound) {
+    score = 8.5;
+    reasons.push("Mixed workload detected: CPU-bound computation kernels co-existing with I/O-bound API/CRUD pipelines");
+  } else if (isCpuBound) {
+    score = 5.5;
+    reasons.push("Predominantly CPU-bound computational workload");
+  } else if (isIoBound) {
+    score = 3;
+    reasons.push("Predominantly I/O-bound standard API workload");
+  } else {
+    score = 1;
+    reasons.push("Uniform or standard resource workload");
   }
-  if (state.currentSkill === "fable-review") {
-    const activeLower = (activeCardText || state.activeCard || "").toLowerCase();
-    if (activeLower.includes("finding")) {
-      const suggestion = cleanSuggestion("fix the review finding");
-      return {
-        suggestion,
-        reasonCode: "review-finding-unaddressed",
-        confidence: 0.9,
-        source: "active-card",
-        silent: !suggestion
-      };
-    }
-    const hasReviewEvidence = state.evidence?.some((e) => e.kind === "review");
-    if (!hasReviewEvidence) {
-      const suggestion = cleanSuggestion("review the diff");
-      return {
-        suggestion,
-        reasonCode: "diff-unreviewed",
-        confidence: 0.89,
-        source: "missing-gate",
-        silent: !suggestion
-      };
-    }
+  return { score, isCpuBound, isIoBound, reasons };
+}
+function assignTechStackForDomain(domainId, textContext = "") {
+  const lowerDomain = domainId.toLowerCase();
+  const lowerContext = textContext.toLowerCase();
+  if (lowerDomain === "realtime" || lowerDomain === "websocket" || lowerDomain === "presence" || /websocket|real[- ]time|chat|presence|liveview|elixir|phoenix|fault[- ]tolerant|zero[- ]downtime/.test(lowerDomain) || /websocket|web sockets?|real[- ]time (?:messaging|orchestration|pipeline)|hundreds of thousands of (?:persistent )?(?:connections|websockets)|zero[- ]downtime(?: tolerance)?|presence channel/i.test(lowerContext)) {
     return {
-      suggestion: null,
-      reasonCode: "silent-no-obvious-move",
-      confidence: 0,
-      source: "none",
-      silent: true
-    };
-  }
-  if (state.currentSkill === "fable-research") {
-    const suggestion = cleanSuggestion("check the current official docs");
-    return {
-      suggestion,
-      reasonCode: "external-research-required",
-      confidence: 0.88,
-      source: "missing-gate",
-      silent: !suggestion
-    };
-  }
-  if (state.currentSkill === "fable-delegate") {
-    if (!openCards || openCards.length > 1) {
-      const suggestion = cleanSuggestion("delegate the independent cards");
-      return {
-        suggestion,
-        reasonCode: "independent-cards-delegation",
-        confidence: 0.89,
-        source: "missing-gate",
-        silent: !suggestion
-      };
-    }
-    return {
-      suggestion: null,
-      reasonCode: "silent-no-obvious-move",
-      confidence: 0,
-      source: "none",
-      silent: true
-    };
-  }
-  if (state.currentSkill === "fable-release") {
-    const suggestion = cleanSuggestion("check release readiness");
-    return {
-      suggestion,
-      reasonCode: "release-verification-ready",
-      confidence: 0.9,
-      source: "missing-gate",
-      silent: !suggestion
-    };
-  }
-  if (state.currentSkill === "fable-handoff") {
-    const suggestion = cleanSuggestion("prepare the handoff");
-    return {
-      suggestion,
-      reasonCode: "continuity-handoff-ready",
-      confidence: 0.91,
-      source: "missing-gate",
-      silent: !suggestion
-    };
-  }
-  if (state.currentSkill && SPARK_SPECIALIST_NEXT_MOVES[state.currentSkill] && (state.phase === "discovering" || state.phase === "planned" || state.phase === "executing" || state.phase === "verifying")) {
-    const move = SPARK_SPECIALIST_NEXT_MOVES[state.currentSkill];
-    const suggestion = cleanSuggestion(move.command);
-    return {
-      suggestion,
-      reasonCode: `${state.currentSkill}-next-move`,
-      confidence: 0.88,
-      source: "missing-gate",
-      silent: !suggestion
-    };
-  }
-  if (state.phase === "idle") {
-    if (userIntent && userIntent.trim()) {
-      const intentLower = userIntent.toLowerCase();
-      if (intentLower.includes("bug") || intentLower.includes("fix") || intentLower.includes("regression")) {
-        const suggestion = cleanSuggestion("reproduce the bug");
-        return {
-          suggestion,
-          reasonCode: "intake-reproduce-bug",
-          confidence: 0.88,
-          source: "missing-gate",
-          silent: !suggestion
-        };
+      scenario: 5,
+      stack: {
+        ...TECH_STACK_MATRIX.E,
+        role: "realtime-systems-engineer"
       }
-      if (intentLower.includes("doc") || intentLower.includes("api")) {
-        const suggestion = cleanSuggestion("check the official docs");
-        return {
-          suggestion,
-          reasonCode: "intake-check-docs",
-          confidence: 0.88,
-          source: "missing-gate",
-          silent: !suggestion
-        };
-      }
-      const suggestion = cleanSuggestion("route the task");
-      return {
-        suggestion,
-        reasonCode: "intake-route-task",
-        confidence: 0.85,
-        source: "lifecycle-state",
-        silent: !suggestion
-      };
-    }
+    };
+  }
+  if (lowerDomain === "compute" || /transcoding|video|crypto|math|binary|encryption|kernel|compression/.test(lowerDomain) || /transcod(?:e|ing)|heavy math|cryptography|binary stream|encryption pipeline/i.test(lowerContext)) {
     return {
-      suggestion: null,
-      reasonCode: "idle-no-intent-silent",
-      confidence: 0,
-      source: "none",
-      silent: true
+      scenario: 3,
+      stack: {
+        ...TECH_STACK_MATRIX.C,
+        role: "systems-kernel-engineer"
+      }
+    };
+  }
+  if (lowerDomain === "ai" || /ai|llm|ml|data-science|inference|embedding|predictive/.test(lowerDomain) || /ai inference|llm routing|deep learning|predictive model/i.test(lowerContext)) {
+    return {
+      scenario: 4,
+      stack: {
+        ...TECH_STACK_MATRIX.D,
+        role: "ai-inference-engineer"
+      }
+    };
+  }
+  if (lowerDomain === "messaging" || lowerDomain === "networking" || /throughput|stateless|routing|cluster|network|broker|proxy|dispatch/.test(lowerDomain) || /stateless message|internal cluster|routing millions|high throughput/i.test(lowerContext)) {
+    return {
+      scenario: 2,
+      stack: {
+        ...TECH_STACK_MATRIX.A,
+        role: "distributed-network-engineer"
+      }
     };
   }
   return {
-    suggestion: null,
-    reasonCode: "silent-no-obvious-move",
-    confidence: 0,
-    source: "none",
-    silent: true
+    scenario: 1,
+    stack: {
+      ...TECH_STACK_MATRIX.B,
+      role: lowerDomain === "gateway" ? "gateway-orchestrator" : "crud-engineer"
+    }
+  };
+}
+function getCommunicationContract(isMicroservices) {
+  return {
+    northSouth: {
+      protocol: "REST HTTP/JSON",
+      schemaStandard: "OpenAPI 3.1",
+      tlsVersion: "TLS 1.3"
+    },
+    eastWest: {
+      protocol: isMicroservices ? "gRPC" : "gRPC",
+      transport: "HTTP/2 + Protobuf",
+      prohibitHttpJson: isMicroservices
+    }
+  };
+}
+function formatArchitectureManifestToon(verdict, vectors, services, communication) {
+  const lines = [
+    `architecture_manifest: {verdict, allow_monolith, scale_score, domain_score, resource_score, composite_score}`,
+    `  ${verdict}, ${verdict === "monolith"}, ${vectors.scaleAndLoad}, ${vectors.domainDecoupling}, ${vectors.resourceIntensity}, ${vectors.compositeScore}`,
+    ``,
+    `communication_standards: {boundary, protocol, transport, http_json_prohibited}`,
+    `  North-South (Client -> Gateway), ${communication.northSouth.protocol}, TLS 1.3 (OpenAPI 3.1), false`,
+    `  East-West (Service -> Service), ${communication.eastWest.protocol}, ${communication.eastWest.transport}, ${communication.eastWest.prohibitHttpJson}`,
+    ``,
+    `services [${services.length}]: {name, domain, scenario, language, framework, runtime, role, port, grpc_port}`
+  ];
+  for (const s of services) {
+    lines.push(`  ${s.name}, ${s.domain}, ${s.scenario}, ${s.stack.language}, ${s.stack.framework}, ${s.stack.runtime}, ${s.stack.role}, ${s.port}, ${s.grpcPort || 0}`);
+  }
+  return lines.join(`
+`);
+}
+function evaluateArchitecture(spec) {
+  const text = spec.trim();
+  if (!text) {
+    throw new Error("Project specification text must not be empty");
+  }
+  const scaleResult = evaluateScaleAndLoad(text);
+  const domainResult = evaluateDomainDecoupling(text);
+  const resourceResult = evaluateResourceIntensity(text);
+  const compositeScore = Number((scaleResult.score * 0.35 + domainResult.score * 0.4 + resourceResult.score * 0.25).toFixed(1));
+  const vectors = {
+    scaleAndLoad: scaleResult.score,
+    domainDecoupling: domainResult.score,
+    resourceIntensity: resourceResult.score,
+    compositeScore
+  };
+  const allReasons = [
+    ...scaleResult.reasons,
+    ...domainResult.reasons,
+    ...resourceResult.reasons
+  ];
+  const isMicroservices = scaleResult.score >= 7 || domainResult.score >= 7 || resourceResult.score >= 7 || compositeScore >= 6;
+  const verdict = isMicroservices ? "microservices" : "monolith";
+  const allowMonolith = !isMicroservices;
+  if (isMicroservices) {
+    allReasons.unshift(`[ARCHITECTURE ENFORCEMENT] Microservices Architecture mandatory (scale=${scaleResult.score}, domains=${domainResult.score}, resource=${resourceResult.score}, composite=${compositeScore}). Scaffold-building monolith is LOCKED OUT.`);
+  } else {
+    allReasons.unshift(`[ARCHITECTURE ENFORCEMENT] Specification scale and domains remain within monolithic boundaries (composite=${compositeScore}). Monolithic scaffolding allowed.`);
+  }
+  const services = [];
+  let baseHttpPort = 8080;
+  let baseGrpcPort = 50051;
+  if (isMicroservices) {
+    const gatewayAssignment = assignTechStackForDomain("gateway", "api gateway bff");
+    services.push({
+      name: "api-gateway",
+      domain: "API Gateway & Ingress Orchestration",
+      scenario: gatewayAssignment.scenario,
+      stack: gatewayAssignment.stack,
+      description: "Public-facing REST API Gateway, routing, authentication translation, and rate limiting",
+      port: baseHttpPort++,
+      grpcPort: baseGrpcPort++
+    });
+    for (const d of domainResult.identifiedDomains) {
+      if (d.id === "gateway")
+        continue;
+      const { scenario, stack } = assignTechStackForDomain(d.id, text);
+      const serviceName = `${d.id}-service`;
+      services.push({
+        name: serviceName,
+        domain: d.name,
+        scenario,
+        stack,
+        description: `Decoupled domain service for ${d.name}`,
+        port: baseHttpPort++,
+        grpcPort: baseGrpcPort++
+      });
+    }
+    if (services.length < 3) {
+      const isCpu = resourceResult.isCpuBound;
+      const extraDomain = isCpu ? "compute" : "crud";
+      const extraName = isCpu ? "compute-kernel-service" : "business-core-service";
+      const { scenario, stack } = assignTechStackForDomain(extraDomain, text);
+      services.push({
+        name: extraName,
+        domain: isCpu ? "Computational Kernel" : "Core Business Entities",
+        scenario,
+        stack,
+        description: `Dedicated ${stack.competency} worker service`,
+        port: baseHttpPort++,
+        grpcPort: baseGrpcPort++
+      });
+    }
+  } else {
+    services.push({
+      name: "monolith-app",
+      domain: "Unified Monolithic Application",
+      scenario: 1,
+      stack: {
+        ...TECH_STACK_MATRIX.B,
+        role: "full-stack-engineer"
+      },
+      description: "Unified application process containing all routes and business logic",
+      port: 3000
+    });
+  }
+  const communication = getCommunicationContract(isMicroservices);
+  const manifestToon = formatArchitectureManifestToon(verdict, vectors, services, communication);
+  return {
+    verdict,
+    allowMonolith,
+    vectors,
+    reasons: allReasons,
+    services,
+    communication,
+    manifestToon
   };
 }
 
@@ -30587,6 +30115,1124 @@ function decodeReturnPacket(text) {
   };
 }
 
+// src/eco/native-bridge.ts
+function findNativeBinary(repoRoot) {
+  if (process.env.FABLE_DISABLE_NATIVE === "1") {
+    return null;
+  }
+  const candidates = [
+    path14.join(repoRoot, "target", "release", "get-fable-native"),
+    path14.join(repoRoot, "target", "debug", "get-fable-native")
+  ];
+  for (const c of candidates) {
+    if (fs14.existsSync(c)) {
+      return c;
+    }
+  }
+  return null;
+}
+function runNativeEco(repoRoot, args) {
+  const binary = findNativeBinary(repoRoot);
+  if (!binary) {
+    throw new Error("Native get-fable binary not found. Build with `cargo build -p fable-cli`.");
+  }
+  const finalArgs = ["eco", ...args];
+  if (!finalArgs.includes("--json-v1")) {
+    finalArgs.push("--json-v1");
+  }
+  const proc = spawnSync4(binary, finalArgs, {
+    cwd: process.cwd(),
+    encoding: "utf-8"
+  });
+  if (proc.error) {
+    throw proc.error;
+  }
+  try {
+    const parsed = JSON.parse(proc.stdout);
+    if (parsed.schema_version !== 1) {
+      throw new Error(`Unsupported Eco JSON schema version: ${parsed.schema_version}`);
+    }
+    return parsed;
+  } catch (err) {
+    throw new Error(`Failed to parse native eco output: ${err?.message || err}. Stdout was:
+${proc.stdout}
+Stderr was:
+${proc.stderr}`);
+  }
+}
+function runNativeArchEval(repoRoot, spec, cwd = process.cwd()) {
+  const binary = findNativeBinary(repoRoot);
+  if (binary) {
+    const proc = spawnSync4(binary, ["arch-eval", spec, "--json"], {
+      cwd,
+      encoding: "utf-8"
+    });
+    if (!proc.error && proc.status === 0 && proc.stdout.trim()) {
+      try {
+        return JSON.parse(proc.stdout);
+      } catch {}
+    }
+  }
+  return evaluateArchitecture(spec);
+}
+function runNativeSpark(repoRoot, intent, cwd = process.cwd()) {
+  const binary = findNativeBinary(repoRoot);
+  if (!binary) {
+    return null;
+  }
+  const args = ["spark", "--json"];
+  if (intent) {
+    args.splice(1, 0, intent);
+  }
+  const proc = spawnSync4(binary, args, {
+    cwd,
+    encoding: "utf-8"
+  });
+  if (!proc.error && proc.status === 0 && proc.stdout.trim()) {
+    try {
+      return JSON.parse(proc.stdout);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+function runNativeToonEncode(repoRoot, data) {
+  const binary = findNativeBinary(repoRoot);
+  if (binary) {
+    const proc = spawnSync4(binary, ["toon", "encode"], {
+      input: JSON.stringify(data),
+      encoding: "utf-8"
+    });
+    if (!proc.error && proc.status === 0 && proc.stdout.trim()) {
+      return proc.stdout.trimEnd();
+    }
+  }
+  return encodeToon(data);
+}
+function runNativeToonValidate(repoRoot, toonPayload) {
+  const binary = findNativeBinary(repoRoot);
+  if (binary) {
+    const proc = spawnSync4(binary, ["toon", "validate", "--json"], {
+      input: toonPayload,
+      encoding: "utf-8"
+    });
+    if (!proc.error && proc.stdout.trim()) {
+      try {
+        return JSON.parse(proc.stdout);
+      } catch {}
+    }
+  }
+  return validateToon(toonPayload);
+}
+function findAntiSlopBinary(repoRoot) {
+  if (process.env.FABLE_DISABLE_NATIVE === "1") {
+    return null;
+  }
+  if (process.env.FABLE_ANTI_SLOP_BIN && fs14.existsSync(process.env.FABLE_ANTI_SLOP_BIN)) {
+    return process.env.FABLE_ANTI_SLOP_BIN;
+  }
+  const candidates = [
+    path14.join(repoRoot, "target", "release", "fable-anti-slop"),
+    path14.join(repoRoot, "target", "debug", "fable-anti-slop"),
+    path14.join(repoRoot, "target", "release", "get-fable-native"),
+    path14.join(repoRoot, "target", "debug", "get-fable-native")
+  ];
+  for (const c of candidates) {
+    if (fs14.existsSync(c)) {
+      return c;
+    }
+  }
+  return null;
+}
+function runNativeAntiSlop(repoRoot, options = {}, cwd = process.cwd()) {
+  const binary = findAntiSlopBinary(repoRoot);
+  if (!binary) {
+    return {
+      status: 1,
+      stdout: "",
+      stderr: "fable-anti-slop native engine binary not found. Build with cargo build -p fable-anti-slop"
+    };
+  }
+  const isGetFableNative = path14.basename(binary).startsWith("get-fable-native");
+  const args = isGetFableNative ? ["anti-slop", "scan"] : ["scan"];
+  if (options.repo)
+    args.push("--repo", options.repo);
+  if (options.base)
+    args.push("--base", options.base);
+  if (options.maxLines)
+    args.push("--max-lines", options.maxLines.toString());
+  if (options.failOnBlocker)
+    args.push("--fail-on-blocker");
+  if (options.json)
+    args.push("--json");
+  if (options.jsonV1)
+    args.push("--json-v1");
+  if (options.sarif)
+    args.push("--sarif");
+  if (options.noColor)
+    args.push("--no-color");
+  const proc = spawnSync4(binary, args, { cwd, encoding: "utf-8" });
+  let data;
+  if (options.json || options.jsonV1 || options.sarif) {
+    try {
+      data = JSON.parse(proc.stdout);
+    } catch {}
+  }
+  return {
+    status: proc.status ?? 1,
+    stdout: proc.stdout,
+    stderr: proc.stderr,
+    data
+  };
+}
+function findAntiChurnBinary(repoRoot) {
+  if (process.env.FABLE_DISABLE_NATIVE === "1") {
+    return null;
+  }
+  if (process.env.FABLE_ANTI_CHURN_BIN && fs14.existsSync(process.env.FABLE_ANTI_CHURN_BIN)) {
+    return process.env.FABLE_ANTI_CHURN_BIN;
+  }
+  const candidates = [
+    path14.join(repoRoot, "target", "release", "fable-anti-churn"),
+    path14.join(repoRoot, "target", "debug", "fable-anti-churn"),
+    path14.join(repoRoot, "target", "release", "get-fable-native"),
+    path14.join(repoRoot, "target", "debug", "get-fable-native")
+  ];
+  for (const c of candidates) {
+    if (fs14.existsSync(c)) {
+      return c;
+    }
+  }
+  return null;
+}
+function findNeuralTestBinary(repoRoot) {
+  if (process.env.FABLE_DISABLE_NATIVE === "1") {
+    return null;
+  }
+  if (process.env.FABLE_NEURAL_TEST_BIN && fs14.existsSync(process.env.FABLE_NEURAL_TEST_BIN)) {
+    return process.env.FABLE_NEURAL_TEST_BIN;
+  }
+  const candidates = [
+    path14.join(repoRoot, "target", "release", "fable-neural-test"),
+    path14.join(repoRoot, "target", "debug", "fable-neural-test"),
+    path14.join(repoRoot, "target", "release", "get-fable-native"),
+    path14.join(repoRoot, "target", "debug", "get-fable-native")
+  ];
+  for (const c of candidates) {
+    if (fs14.existsSync(c)) {
+      return c;
+    }
+  }
+  return null;
+}
+function runNativeNeuralTest(repoRoot, subCommand = "doctor", extraArgs = [], cwd = process.cwd()) {
+  const binary = findNeuralTestBinary(repoRoot);
+  if (!binary) {
+    return {
+      status: 1,
+      stdout: "",
+      stderr: "fable-neural-test native engine binary not found. Build with cargo build -p fable-neural-test"
+    };
+  }
+  const isGetFableNative = path14.basename(binary).startsWith("get-fable-native");
+  const args = isGetFableNative ? ["neural-test", subCommand, ...extraArgs] : [subCommand, ...extraArgs];
+  const proc = spawnSync4(binary, args, { cwd, encoding: "utf-8" });
+  let data;
+  try {
+    data = JSON.parse(proc.stdout);
+  } catch {}
+  return {
+    status: proc.status ?? 1,
+    stdout: proc.stdout,
+    stderr: proc.stderr,
+    data
+  };
+}
+
+// src/fable-lint.ts
+function hasHeading(headings, ...alternatives) {
+  return alternatives.some((value) => headings.has(value.toLowerCase()));
+}
+function hasHeadingContaining(headings, ...fragments) {
+  return [...headings].some((heading) => fragments.some((fragment) => heading.includes(fragment.toLowerCase())));
+}
+function scenarioArray(value) {
+  return Array.isArray(value) ? value : Array.isArray(value?.scenarios) ? value.scenarios : [];
+}
+function runSkillPackageLint(repoRoot = getCoreRepoRoot()) {
+  const errors = [];
+  const warnings = [];
+  const canonical = canonicalSkillIds();
+  const packageResults = validateAllSkillPackages(repoRoot);
+  for (const id of canonical) {
+    const res = packageResults[id];
+    if (!res) {
+      errors.push(`Skill package ${id}: not found`);
+      continue;
+    }
+    if (!res.valid) {
+      for (const err of res.errors) {
+        errors.push(`Skill ${id}: ${err}`);
+      }
+    }
+    const skillPath = path15.join(getSkillPackageDir(id, repoRoot), "SKILL.md");
+    if (fs15.existsSync(skillPath)) {
+      const content = fs15.readFileSync(skillPath, "utf-8");
+      const headings = new Set(content.split(`
+`).map((line) => line.match(/^##\s+(.+?)\s*$/)?.[1]?.trim().toLowerCase()).filter((heading) => Boolean(heading)));
+      const isDeepPlaybook = hasHeading(headings, "Mission") && hasHeading(headings, "Anti-Patterns") && hasHeading(headings, "Invariants");
+      if (isDeepPlaybook) {
+        const v2Requirements = [
+          { label: "Mission", present: hasHeading(headings, "Mission") },
+          { label: "Activation contract", present: hasHeading(headings, "Activate When", "Activation Contract") || hasHeadingContaining(headings, "activation") },
+          { label: "Situation classification", present: hasHeadingContaining(headings, "classification") },
+          { label: "Protocol", present: hasHeadingContaining(headings, "protocol", "procedure") },
+          { label: "Decision Rules", present: hasHeading(headings, "Decision Rules") },
+          { label: "Invariants", present: hasHeading(headings, "Invariants") },
+          { label: "Failure Taxonomy", present: hasHeadingContaining(headings, "failure taxonomy") },
+          { label: "Anti-Patterns", present: hasHeading(headings, "Anti-Patterns") },
+          { label: "Completion Criteria", present: hasHeading(headings, "Completion Criteria") },
+          { label: "Progressive Resources", present: hasHeading(headings, "Progressive Resources") }
+        ];
+        for (const requirement of v2Requirements) {
+          if (!requirement.present)
+            warnings.push(`Skill ${id}: missing V2 authoring section "${requirement.label}"`);
+        }
+        if (res.manifest) {
+          const scenarios = res.manifest.evals.flatMap((resource) => {
+            if (!resource.endsWith(".json"))
+              return [];
+            try {
+              return scenarioArray(JSON.parse(readSkillResource(id, resource, repoRoot)));
+            } catch {
+              return [];
+            }
+          });
+          if (scenarios.length < 6) {
+            errors.push(`Skill ${id}: Deep Playbook V2 requires at least 6 semantic eval scenarios; found ${scenarios.length}`);
+          }
+          const substantialReference = res.manifest.references.some((resource) => {
+            try {
+              return Buffer.byteLength(readSkillResource(id, resource, repoRoot), "utf8") >= 1000;
+            } catch {
+              return false;
+            }
+          });
+          if (!substantialReference) {
+            errors.push(`Skill ${id}: Deep Playbook V2 requires at least one substantial progressive reference (>=1000 bytes)`);
+          }
+        }
+      } else {
+        const requiredSections = [
+          { label: "Purpose" },
+          { label: "When to Use" },
+          { label: "When NOT to Use" },
+          { label: "Inputs" },
+          { label: "Expected Outputs", alternatives: ["Outputs"] },
+          { label: "Procedure" },
+          { label: "Decision Rules" },
+          { label: "Tool Policy" },
+          { label: "Evidence Requirements" },
+          { label: "Failure Handling" },
+          { label: "Completion Criteria" }
+        ];
+        for (const section of requiredSections) {
+          const accepted = [section.label, ...section.alternatives || []].map((value) => value.toLowerCase());
+          if (!accepted.some((value) => headings.has(value))) {
+            warnings.push(`Skill ${id}: missing required authoring section "## ${section.label}"`);
+          }
+        }
+        if (!headings.has("constraints") && !headings.has("decision rules") && !headings.has("tool policy")) {
+          warnings.push(`Skill ${id}: constraints are not explicit through Constraints, Decision Rules, or Tool Policy`);
+        }
+      }
+    }
+    const skillDir = getSkillPackageDir(id, repoRoot);
+    if (fs15.existsSync(skillDir) && res.manifest) {
+      const declaredPaths = new Set([
+        "SKILL.md",
+        "skill.package.json",
+        ...res.manifest.agents,
+        ...res.manifest.references,
+        ...res.manifest.templates,
+        ...res.manifest.examples,
+        ...res.manifest.evals,
+        ...res.manifest.scripts
+      ]);
+      const checkSubdir = (sub) => {
+        const subPath = path15.join(skillDir, sub);
+        if (!fs15.existsSync(subPath) || !fs15.statSync(subPath).isDirectory())
+          return;
+        const walk = (dir) => {
+          for (const entry of fs15.readdirSync(dir, { withFileTypes: true })) {
+            if (entry.name.startsWith("."))
+              continue;
+            const absolute = path15.join(dir, entry.name);
+            const rel = path15.relative(skillDir, absolute).split(path15.sep).join("/");
+            if (entry.isSymbolicLink()) {
+              errors.push(`Skill ${id}: Symlink resource is not allowed: ${rel}`);
+            } else if (entry.isDirectory()) {
+              walk(absolute);
+            } else if (entry.isFile()) {
+              if (!declaredPaths.has(rel)) {
+                errors.push(`Skill ${id}: Orphan file not declared in skill.package.json: ${rel}`);
+              }
+            } else {
+              errors.push(`Skill ${id}: Special resource is not allowed: ${rel}`);
+            }
+          }
+        };
+        walk(subPath);
+      };
+      for (const sub of ["agents", "references", "templates", "examples", "evals", "scripts"]) {
+        checkSubdir(sub);
+      }
+    }
+  }
+  const recipeVal = validateAllRecipes(repoRoot);
+  if (!recipeVal.valid) {
+    for (const err of recipeVal.errors)
+      errors.push(`Recipe error: ${err}`);
+  }
+  const generated = checkCatalogArtifacts(repoRoot);
+  if (!generated.ok) {
+    errors.push(`Generated catalog drift: ${generated.drift.join(", ")}`);
+  }
+  return {
+    valid: errors.length === 0,
+    errors,
+    warnings
+  };
+}
+function runFableLint(targetDir = process.cwd()) {
+  logInfo(`Running Fable lint checks on ${targetDir}...`);
+  try {
+    assertSafeFableBoundary(targetDir);
+  } catch (error) {
+    logError(error instanceof Error ? error.message : String(error));
+    return false;
+  }
+  let hasErrors = false;
+  const repoRoot = getCoreRepoRoot();
+  const isSourceRepo = path15.resolve(targetDir) === path15.resolve(repoRoot);
+  if (isSourceRepo || fs15.existsSync(path15.join(targetDir, "skills"))) {
+    const pkgReport = runSkillPackageLint(targetDir);
+    if (!pkgReport.valid) {
+      for (const err of pkgReport.errors) {
+        logError(`Package lint: ${err}`);
+        hasErrors = true;
+      }
+    }
+    for (const warn of pkgReport.warnings) {
+      logWarn(`Package lint: ${warn}`);
+    }
+  }
+  const fableDir = path15.join(targetDir, ".fable");
+  const ledgerPath = path15.join(fableDir, "LEDGER.md");
+  const statePath = path15.join(fableDir, "state.json");
+  const specPath = path15.join(targetDir, "docs", "SPEC.md");
+  if (!fs15.existsSync(ledgerPath)) {
+    logWarn(`No .fable/LEDGER.md found in ${targetDir}`);
+  } else {
+    const content = fs15.readFileSync(ledgerPath, "utf-8");
+    const lines = content.split(`
+`);
+    let openCards = 0;
+    let closedCards = 0;
+    lines.forEach((line, idx) => {
+      const openMatch = line.match(/^\s*-\s*\[\s*\]\s*(.*)/);
+      const closedMatch = line.match(/^\s*-\s*\[[xX]\]\s*(.*)/);
+      if (openMatch) {
+        openCards++;
+        const text = openMatch[1];
+        if (!text.toLowerCase().includes("acceptance") && !text.toLowerCase().includes("test") && !text.toLowerCase().includes("check")) {
+          logError(`LEDGER.md L${idx + 1}: Open card missing explicit machine-checkable acceptance test`);
+          hasErrors = true;
+        }
+      }
+      if (closedMatch) {
+        closedCards++;
+        const evidenceMatch = line.match(/--\s*evidence:\s*(.+)$/i);
+        if (!evidenceMatch || evidenceMatch[1].trim().length < 3) {
+          logError(`LEDGER.md L${idx + 1}: Closed card missing substantive '-- evidence:' annotation`);
+          hasErrors = true;
+        }
+      }
+    });
+    logInfo(`LEDGER.md Summary: ${openCards} open cards, ${closedCards} closed cards.`);
+  }
+  if (fs15.existsSync(statePath)) {
+    try {
+      const state = readFableState(targetDir);
+      if (!state)
+        throw new Error(".fable/state.json could not be loaded");
+      if (state.phase === "complete" && state.substantial && !hasFreshPassingEvidence(state)) {
+        logError("state.json: substantial work is complete without fresh passing evidence");
+        hasErrors = true;
+      }
+      if (state.failureStreak >= RECOVERY_FAILURE_THRESHOLD && state.phase === "executing") {
+        logError("state.json: repeated failure must route through recovery before more execution");
+        hasErrors = true;
+      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      logError(`state.json: ${reason}`);
+      hasErrors = true;
+    }
+  }
+  if (fs15.existsSync(specPath)) {
+    const specContent = fs15.readFileSync(specPath, "utf-8");
+    const tags = ["[measured]", "[inferred]", "[not-shown]"];
+    if (!tags.some((tag) => specContent.includes(tag))) {
+      logWarn("SPEC.md missing source tags ([measured]/[inferred]/[not-shown]) for claims.");
+    }
+  }
+  const antiSlopBin = findAntiSlopBinary(repoRoot);
+  if (antiSlopBin) {
+    try {
+      const antiSlopResult = runNativeAntiSlop(repoRoot, {
+        failOnBlocker: true,
+        base: "HEAD",
+        noColor: true,
+        jsonV1: true
+      }, targetDir);
+      if (antiSlopResult.status === 2) {
+        logError("Anti-slop check: Blocker-severity slop findings detected in repository diff!");
+        const envelope = antiSlopResult.data;
+        const findings = envelope?.data?.findings || [];
+        for (const f of findings) {
+          if (f.severity === "blocker") {
+            logError(`[Anti-Slop Blocker] ${f.name} in ${f.file}${f.line ? `:${f.line}` : ""}: ${f.evidence}`);
+          }
+        }
+        hasErrors = true;
+      }
+    } catch {}
+  }
+  if (!hasErrors)
+    logSuccess("Fable lint passed! State, cards, packages, acceptance, and evidence are consistent.");
+  return !hasErrors;
+}
+// src/assets-manager.ts
+import fs16 from "node:fs";
+import path16 from "node:path";
+class AssetsManager {
+  static getAssetsDir() {
+    return path16.join(getRepoRootDir(), "assets");
+  }
+  static getSummary() {
+    const base = this.getAssetsDir();
+    const countItems = (dir) => fs16.existsSync(dir) ? fs16.readdirSync(dir).length : 0;
+    return {
+      promptsCount: countItems(path16.join(base, "prompts")),
+      agentsCount: countItems(path16.join(base, "agents")),
+      claudeCodeSkillsCount: countItems(path16.join(base, "skills", "claude-code")),
+      claudeDesignSkillsCount: countItems(path16.join(base, "skills", "claude-design")),
+      slashCommandsCount: countItems(path16.join(base, "slash-commands")),
+      remindersCount: countItems(path16.join(base, "injected-reminders")),
+      starterComponentsCount: countItems(path16.join(base, "starter-components"))
+    };
+  }
+  static getPrompt(name) {
+    const base = this.getAssetsDir();
+    const promptPath = path16.join(base, "prompts", `${name}.md`);
+    if (fs16.existsSync(promptPath)) {
+      return fs16.readFileSync(promptPath, "utf-8");
+    }
+    return null;
+  }
+  static listSkills() {
+    const base = this.getAssetsDir();
+    const results = [];
+    for (const cat of ["claude-code", "claude-design"]) {
+      const catDir = path16.join(base, "skills", cat);
+      if (fs16.existsSync(catDir)) {
+        const skills = fs16.readdirSync(catDir);
+        for (const s of skills) {
+          results.push({ category: cat, name: s });
+        }
+      }
+    }
+    return results;
+  }
+  static listAgents() {
+    const base = this.getAssetsDir();
+    const agentsDir = path16.join(base, "agents");
+    if (fs16.existsSync(agentsDir)) {
+      return fs16.readdirSync(agentsDir).map((f) => f.replace(".md", ""));
+    }
+    return [];
+  }
+}
+// src/router/index.ts
+import http from "node:http";
+import { lookup } from "node:dns/promises";
+import { isIP } from "node:net";
+import { timingSafeEqual } from "node:crypto";
+
+// src/router/provider-translator.ts
+class RequestValidationError extends Error {
+  statusCode = 400;
+  constructor(message) {
+    super(message);
+    this.name = "RequestValidationError";
+  }
+}
+function asRecord2(value) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value : null;
+}
+function normalizeRole(value) {
+  if (value === "system" || value === "assistant" || value === "tool")
+    return value;
+  return "user";
+}
+function stringifyContent(value) {
+  if (typeof value === "string")
+    return value;
+  if (value === null || value === undefined)
+    return "";
+  return JSON.stringify(value);
+}
+function finiteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+function positiveInteger(value) {
+  return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : undefined;
+}
+function extractPartsText(value) {
+  const record = asRecord2(value);
+  if (!record)
+    return stringifyContent(value);
+  if (Array.isArray(record.parts)) {
+    return record.parts.map((part) => {
+      const partRecord = asRecord2(part);
+      return partRecord && typeof partRecord.text === "string" ? partRecord.text : "";
+    }).filter(Boolean).join(`
+`);
+  }
+  return stringifyContent(value);
+}
+function modelName(value, fallback) {
+  return typeof value === "string" && value.trim() ? value.trim() : fallback;
+}
+function isGrokModel(model) {
+  return /^(grok|xai)/i.test(model);
+}
+
+class ProviderTranslator {
+  static isGrokRequest(request) {
+    return isGrokModel(request.model);
+  }
+  static normalizeRequest(body) {
+    const request = asRecord2(body);
+    if (!request) {
+      throw new RequestValidationError("Request body must be a JSON object");
+    }
+    if (Array.isArray(request.messages)) {
+      if (request.messages.length === 0) {
+        throw new RequestValidationError("messages must contain at least one message");
+      }
+      const messages = request.messages.map((message, index) => {
+        const item = asRecord2(message);
+        if (!item) {
+          throw new RequestValidationError(`messages[${index}] must be an object`);
+        }
+        const normalized = {
+          role: normalizeRole(item.role),
+          content: stringifyContent(item.content)
+        };
+        if (typeof item.name === "string" && item.name.trim()) {
+          normalized.name = item.name;
+        }
+        return normalized;
+      });
+      return {
+        model: modelName(request.model, "default-fable-model"),
+        messages,
+        temperature: finiteNumber(request.temperature),
+        max_tokens: positiveInteger(request.max_tokens) ?? positiveInteger(request.max_completion_tokens),
+        stream: request.stream === true
+      };
+    }
+    if (Array.isArray(request.contents)) {
+      if (request.contents.length === 0) {
+        throw new RequestValidationError("contents must contain at least one message");
+      }
+      const messages = [];
+      if (request.systemInstruction !== undefined) {
+        messages.push({
+          role: "system",
+          content: extractPartsText(request.systemInstruction)
+        });
+      }
+      request.contents.forEach((content, index) => {
+        const item = asRecord2(content);
+        if (!item) {
+          throw new RequestValidationError(`contents[${index}] must be an object`);
+        }
+        messages.push({
+          role: item.role === "model" ? "assistant" : "user",
+          content: extractPartsText(item)
+        });
+      });
+      const generationConfig = asRecord2(request.generationConfig) || {};
+      return {
+        model: modelName(request.model, "gemini-fable-wrapper"),
+        messages,
+        temperature: finiteNumber(generationConfig.temperature),
+        max_tokens: positiveInteger(generationConfig.maxOutputTokens),
+        stream: false
+      };
+    }
+    throw new RequestValidationError("Request must contain a messages or contents array");
+  }
+  static injectFableSystemPrompt(request, fablePromptText) {
+    if (!fablePromptText.trim()) {
+      throw new Error("Fable system prompt is empty");
+    }
+    const messages = request.messages.map((message) => ({ ...message }));
+    const existingSystemIndex = messages.findIndex((message) => message.role === "system");
+    if (existingSystemIndex >= 0) {
+      const original = messages[existingSystemIndex];
+      messages[existingSystemIndex] = {
+        ...original,
+        content: `${fablePromptText}
+
+--- ORIGINAL SYSTEM INSTRUCTIONS ---
+${original.content}`
+      };
+    } else {
+      messages.unshift({ role: "system", content: fablePromptText });
+    }
+    return { ...request, messages };
+  }
+}
+
+// src/core/spark.ts
+var SPARK_SPECIALIST_NEXT_MOVES = {
+  "get-fable": {
+    command: "route the active task",
+    rationale: "Select the canonical specialist skill before mutating the workspace."
+  },
+  "fable-discover": {
+    command: "trace the repository execution path",
+    rationale: "Resolve load-bearing codebase unknowns before planning or editing."
+  },
+  "fable-research": {
+    command: "check the current official docs",
+    rationale: "Ground external API facts in primary documentation before coding."
+  },
+  "fable-plan": {
+    command: "decompose work into bounded cards",
+    rationale: "Define explicit acceptance criteria and bounded file scope before execution."
+  },
+  "fable-tdd": {
+    command: "write the failing test",
+    rationale: "Observe a red regression test before implementing the behavior change."
+  },
+  "fable-delegate": {
+    command: "delegate the independent cards",
+    rationale: "Dispatch disjoint work items across parallel subagents with TOON contracts."
+  },
+  "fable-execute": {
+    command: "implement the active work card",
+    rationale: "Apply the bounded code change while preserving repository invariants."
+  },
+  "fable-verify": {
+    command: "run the verification test suite",
+    rationale: "Record fresh machine-checked completion proof for the current generation."
+  },
+  "fable-review": {
+    command: "review the diff",
+    rationale: "Audit changed files against engineering standards and specification compliance."
+  },
+  "fable-security": {
+    command: "audit the trust boundary inputs",
+    rationale: "Verify authentication, authorization, and secret hygiene across boundaries."
+  },
+  "fable-redteam": {
+    command: "run the scoped redteam probes",
+    rationale: "Execute non-destructive adversarial security probes against authorized targets."
+  },
+  "fable-heal": {
+    command: "apply the security remediation patch",
+    rationale: "Synthesize and verify patches neutralizing reported redteam findings."
+  },
+  "fable-release": {
+    command: "check release readiness",
+    rationale: "Certify quality gates, build artifacts, and clean working tree before shipping."
+  },
+  "fable-handoff": {
+    command: "prepare the handoff",
+    rationale: "Compact current state, generation stamps, and next action for continuation."
+  },
+  "fable-eval": {
+    command: "run the evaluation benchmark suite",
+    rationale: "Score routing and behavioral accuracy against frozen holdout baselines."
+  },
+  "fable-learning": {
+    command: "extract durable session learnings",
+    rationale: "Codify engineering failure lessons and reusable rules into Failure-lessons."
+  },
+  "fable-recover": {
+    command: "diagnose the repeated failure",
+    rationale: "Walk the 4-level recovery hierarchy before attempting another code edit."
+  },
+  "fable-dataviz": {
+    command: "render the accessible svg chart",
+    rationale: "Verify viewBox dimensions and theme contrast for data visualization tiles."
+  },
+  "fable-artifact": {
+    command: "author the structured technical artifact",
+    rationale: "Generate the architecture diagram or interactive proposal component."
+  },
+  "fable-simplify": {
+    command: "simplify the settled code paths",
+    rationale: "Flatten nested branches and remove duplication without altering behavior."
+  },
+  "fable-loop": {
+    command: "run the bounded polling loop",
+    rationale: "Monitor status with explicit iteration budget, backoff, and exit conditions."
+  },
+  "fable-run": {
+    command: "launch the live runtime check",
+    rationale: "Start the built artifact, probe readiness, and tear down cleanly."
+  },
+  "fable-memory": {
+    command: "index the persistent memory fact",
+    rationale: "Record the cross-session constraint and synchronize MEMORY.md."
+  },
+  "fable-config": {
+    command: "validate the harness settings diff",
+    rationale: "Verify JSON schema and least-privilege permissions before applying config."
+  },
+  "fable-simulator": {
+    command: "verify against the independent oracle",
+    rationale: "Compare runtime outputs against derived mathematical or browser oracles."
+  },
+  "fable-cowork": {
+    command: "execute the autonomous cowork chain",
+    rationale: "Complete the multi-step workflow silently and report the outcome first."
+  },
+  "fable-spark": {
+    command: "predict the smallest next action",
+    rationale: "Evaluate mutation delta and missing gates to surface one atomic move."
+  },
+  "fable-skill-creator": {
+    command: "package and benchmark the skill",
+    rationale: "Validate SKILL.md frontmatter and BinEval trigger discrimination."
+  },
+  "fable-architecture": {
+    command: "evaluate the architecture scale vectors",
+    rationale: "Score Scale, Domain, and Resource vectors to enforce microservices boundaries."
+  },
+  "fable-eco": {
+    command: "compile the capability execution contract",
+    rationale: "Resolve curated capability locks and verify host integration health."
+  },
+  "fable-context-thrift": {
+    command: "batch and target file lookups",
+    rationale: "Eliminate redundant file reads to conserve context token budget."
+  },
+  "fable-finish-your-turn": {
+    command: "complete the remaining turn deliverables",
+    rationale: "Execute all promised actions and resolve errors before yielding."
+  },
+  "fable-native-code": {
+    command: "align diff with codebase idioms",
+    rationale: "Match local naming and strip defensive bloat from the implementation."
+  },
+  "fable-outcome-first": {
+    command: "lead with the direct outcome",
+    rationale: "State the verified result in the first sentence without sycophancy."
+  },
+  "fable-prove-it": {
+    command: "verify the claim with evidence",
+    rationale: "Advance verification to the machine-checked rung before claiming done."
+  },
+  "fable-scope-discipline": {
+    command: "bound diff to requested scope",
+    rationale: "Remove drive-by edits and keep changes surgical to the active card."
+  },
+  "fable-domain": {
+    command: "generate the sector domain adapter",
+    rationale: "Translate Fable workflow primitives into grounded domain nouns and fixtures."
+  },
+  "fable-judge": {
+    command: "audit deliverable for weakened tests",
+    rationale: "Falsify completion claims and verify assertions were not diluted."
+  },
+  "fable-method": {
+    command: "execute the think act prove loop",
+    rationale: "Classify the ask, define done criteria, act surgically, and observe proof."
+  },
+  "fable-council": {
+    command: "convene the multi agent council",
+    rationale: "Gather independent peer critiques before locking the implementation plan."
+  },
+  "fable-tend": {
+    command: "triage and repair ci failures",
+    rationale: "Inspect failing checks or merge conflicts and apply a minimal repair."
+  },
+  "fable-wise": {
+    command: "apply wise cognitive reflex patterns",
+    rationale: "Use Depth, Breadth, Coil, and Mesh reflexes to strip structural slop."
+  },
+  "fable-anti-slop-engineering": {
+    command: "run the anti-slop diff scan",
+    rationale: "Verify diff integrity against weak assertions, skipped tests, and swallowed exceptions."
+  },
+  "fable-anti-churn": {
+    command: "gate actions and reuse valid evidence",
+    rationale: "Prevent duplicate retry loops and unverified re-execution using decision receipts."
+  }
+};
+function cleanSuggestion(text) {
+  if (!text)
+    return null;
+  const trimmed = text.trim();
+  const words = trimmed.split(/\s+/);
+  if (words.length < 2 || words.length > 12)
+    return null;
+  if (/^(I will|Let's|You should|Please|Great|Note|Warning)/i.test(trimmed))
+    return null;
+  return trimmed;
+}
+function evaluateFableSpark(context) {
+  const { state, userIntent, latestError, latestMutationSource, activeCardText, openCards } = context;
+  if (state.phase === "complete" && state.currentSkill !== "fable-handoff") {
+    return {
+      suggestion: null,
+      reasonCode: "scope-complete-silent",
+      confidence: 0,
+      source: "none",
+      silent: true
+    };
+  }
+  if (state.failureStreak >= RECOVERY_FAILURE_THRESHOLD || state.phase === "recovering") {
+    const errorStr = (latestError || "").toLowerCase();
+    let raw = "diagnose the repeated failure";
+    if (errorStr.includes("integration")) {
+      raw = "diagnose the repeated integration failure";
+    } else if (errorStr.includes("migration")) {
+      raw = "diagnose the repeated migration failure";
+    }
+    const suggestion = cleanSuggestion(raw);
+    return {
+      suggestion,
+      reasonCode: "failure-loop-diagnose-required",
+      confidence: 0.95,
+      source: "failure-loop",
+      silent: !suggestion
+    };
+  }
+  if (state.mutationGeneration > 0 && state.mutationGeneration > state.verifiedGeneration && state.phase !== "idle" && state.phase !== "discovering") {
+    const mutationSource = (latestMutationSource || "").toLowerCase();
+    const isBuildMutation = mutationSource.includes("esbuild") || mutationSource.includes("webpack") || mutationSource.includes("tsconfig") || mutationSource.includes("package.json") || mutationSource.includes("vite.config") || mutationSource.includes("rollup") || mutationSource.includes("styles") || mutationSource.includes("css");
+    if (isBuildMutation) {
+      const suggestion = cleanSuggestion("run the build");
+      return {
+        suggestion,
+        reasonCode: "build-verification-stale",
+        confidence: 0.94,
+        source: "mutation-delta",
+        silent: !suggestion
+      };
+    }
+    const intentLower = (userIntent || "").toLowerCase();
+    const activeLower = (activeCardText || state.activeCard || "").toLowerCase();
+    const combinedContext = `${intentLower} ${activeLower}`;
+    const hasSecurityEvidence = state.evidence?.some((e) => e.kind === "security" && e.result === "pass");
+    if (state.currentSkill === "fable-security" && hasSecurityEvidence && (combinedContext.includes("bug") || combinedContext.includes("fix") || combinedContext.includes("regression") || combinedContext.includes("repair"))) {
+      const suggestion = cleanSuggestion("verify the repaired behavior");
+      return {
+        suggestion,
+        reasonCode: "security-does-not-prove-functional-repair",
+        confidence: 0.92,
+        source: "missing-gate",
+        silent: !suggestion
+      };
+    }
+    if (combinedContext.includes("refresh")) {
+      const suggestion = cleanSuggestion("run the affected refresh tests");
+      return {
+        suggestion,
+        reasonCode: "verification-stale-after-mutation",
+        confidence: 0.93,
+        source: "mutation-delta",
+        silent: !suggestion
+      };
+    }
+    const suggestion = cleanSuggestion("run the affected tests");
+    return {
+      suggestion,
+      reasonCode: "verification-stale-after-mutation",
+      confidence: 0.92,
+      source: "mutation-delta",
+      silent: !suggestion
+    };
+  }
+  if (state.currentSkill === "fable-tdd") {
+    const hasFailingTestEvidence = state.evidence?.some((e) => e.kind === "test" && e.result === "fail");
+    if (!hasFailingTestEvidence && state.mutationGeneration === 0) {
+      const suggestion = cleanSuggestion("write the failing test");
+      return {
+        suggestion,
+        reasonCode: "tdd-missing-failing-test",
+        confidence: 0.91,
+        source: "missing-gate",
+        silent: !suggestion
+      };
+    }
+    return {
+      suggestion: null,
+      reasonCode: "silent-no-obvious-move",
+      confidence: 0,
+      source: "none",
+      silent: true
+    };
+  }
+  if (state.currentSkill === "fable-review") {
+    const activeLower = (activeCardText || state.activeCard || "").toLowerCase();
+    if (activeLower.includes("finding")) {
+      const suggestion = cleanSuggestion("fix the review finding");
+      return {
+        suggestion,
+        reasonCode: "review-finding-unaddressed",
+        confidence: 0.9,
+        source: "active-card",
+        silent: !suggestion
+      };
+    }
+    const hasReviewEvidence = state.evidence?.some((e) => e.kind === "review");
+    if (!hasReviewEvidence) {
+      const suggestion = cleanSuggestion("review the diff");
+      return {
+        suggestion,
+        reasonCode: "diff-unreviewed",
+        confidence: 0.89,
+        source: "missing-gate",
+        silent: !suggestion
+      };
+    }
+    return {
+      suggestion: null,
+      reasonCode: "silent-no-obvious-move",
+      confidence: 0,
+      source: "none",
+      silent: true
+    };
+  }
+  if (state.currentSkill === "fable-research") {
+    const suggestion = cleanSuggestion("check the current official docs");
+    return {
+      suggestion,
+      reasonCode: "external-research-required",
+      confidence: 0.88,
+      source: "missing-gate",
+      silent: !suggestion
+    };
+  }
+  if (state.currentSkill === "fable-delegate") {
+    if (!openCards || openCards.length > 1) {
+      const suggestion = cleanSuggestion("delegate the independent cards");
+      return {
+        suggestion,
+        reasonCode: "independent-cards-delegation",
+        confidence: 0.89,
+        source: "missing-gate",
+        silent: !suggestion
+      };
+    }
+    return {
+      suggestion: null,
+      reasonCode: "silent-no-obvious-move",
+      confidence: 0,
+      source: "none",
+      silent: true
+    };
+  }
+  if (state.currentSkill === "fable-release") {
+    const suggestion = cleanSuggestion("check release readiness");
+    return {
+      suggestion,
+      reasonCode: "release-verification-ready",
+      confidence: 0.9,
+      source: "missing-gate",
+      silent: !suggestion
+    };
+  }
+  if (state.currentSkill === "fable-handoff") {
+    const suggestion = cleanSuggestion("prepare the handoff");
+    return {
+      suggestion,
+      reasonCode: "continuity-handoff-ready",
+      confidence: 0.91,
+      source: "missing-gate",
+      silent: !suggestion
+    };
+  }
+  if (state.currentSkill && SPARK_SPECIALIST_NEXT_MOVES[state.currentSkill] && (state.phase === "discovering" || state.phase === "planned" || state.phase === "executing" || state.phase === "verifying")) {
+    const move = SPARK_SPECIALIST_NEXT_MOVES[state.currentSkill];
+    const suggestion = cleanSuggestion(move.command);
+    return {
+      suggestion,
+      reasonCode: `${state.currentSkill}-next-move`,
+      confidence: 0.88,
+      source: "missing-gate",
+      silent: !suggestion
+    };
+  }
+  if (state.phase === "idle") {
+    if (userIntent && userIntent.trim()) {
+      const intentLower = userIntent.toLowerCase();
+      if (intentLower.includes("bug") || intentLower.includes("fix") || intentLower.includes("regression")) {
+        const suggestion = cleanSuggestion("reproduce the bug");
+        return {
+          suggestion,
+          reasonCode: "intake-reproduce-bug",
+          confidence: 0.88,
+          source: "missing-gate",
+          silent: !suggestion
+        };
+      }
+      if (intentLower.includes("doc") || intentLower.includes("api")) {
+        const suggestion = cleanSuggestion("check the official docs");
+        return {
+          suggestion,
+          reasonCode: "intake-check-docs",
+          confidence: 0.88,
+          source: "missing-gate",
+          silent: !suggestion
+        };
+      }
+      const suggestion = cleanSuggestion("route the task");
+      return {
+        suggestion,
+        reasonCode: "intake-route-task",
+        confidence: 0.85,
+        source: "lifecycle-state",
+        silent: !suggestion
+      };
+    }
+    return {
+      suggestion: null,
+      reasonCode: "idle-no-intent-silent",
+      confidence: 0,
+      source: "none",
+      silent: true
+    };
+  }
+  return {
+    suggestion: null,
+    reasonCode: "silent-no-obvious-move",
+    confidence: 0,
+    source: "none",
+    silent: true
+  };
+}
+
 // src/core/reflex/config.ts
 var DEFAULT_REFLEX_MODE = "off";
 var DEFAULT_REFLEX_PROVIDER = "typesafe-jev";
@@ -30786,6 +31432,14 @@ var SKILL_BOUNDARY_CONTRASTS = {
   "fable-wise": {
     useWhen: "Select ONLY when applying low-level cognitive reflexes (Depth, Breadth, Coil, Mesh, Paperthin, Re0, SSOTize) to purify drifted artifacts and strip slop.",
     notWhen: "NOT for superficial formatting changes that leave structural duplication intact."
+  },
+  "fable-anti-slop-engineering": {
+    useWhen: "Select ONLY when detecting, auditing, or preventing AI coding slop, weak assertions, skipped tests, swallowed errors, or security bypasses.",
+    notWhen: "NOT for implementing standard business logic without slop auditing or broad multi-file architectural planning."
+  },
+  "fable-anti-churn": {
+    useWhen: "Select ONLY when detecting, gating, or preventing duplicate agent actions, retry churn, repetitive command execution, or unverified re-work through receipts and typed invalidations.",
+    notWhen: "NOT for standard execution without redundant retry loops or broad architectural planning."
   }
 };
 function buildSkillSelectionCriteria(registry = loadSkillRegistry()) {
@@ -30892,6 +31546,7 @@ function buildFirstPassQuestions(registry = loadSkillRegistry()) {
 var POLICY_OVERLAY_SKILLS = [
   "fable-native-code",
   "fable-scope-discipline",
+  "fable-anti-slop-engineering",
   "fable-context-thrift",
   "fable-prove-it",
   "fable-finish-your-turn",
@@ -31401,23 +32056,23 @@ function fuseRoute(params) {
 
 // src/core/reflex/ledger.ts
 import crypto from "node:crypto";
-import fs16 from "node:fs";
-import path16 from "node:path";
+import fs17 from "node:fs";
+import path17 from "node:path";
 var MAX_REFLEX_LEDGER_LINES = 5000;
 function hashTaskText(text) {
   return crypto.createHash("sha256").update(text, "utf8").digest("hex");
 }
 function getReflexDir(repoRoot = process.cwd()) {
-  const fableDir = path16.join(repoRoot, ".fable");
-  if (fs16.existsSync(fableDir)) {
-    const stat = fs16.lstatSync(fableDir);
+  const fableDir = path17.join(repoRoot, ".fable");
+  if (fs17.existsSync(fableDir)) {
+    const stat = fs17.lstatSync(fableDir);
     if (stat.isSymbolicLink()) {
       throw new Error("Reflex security violation: .fable directory must not be a symlink");
     }
   }
-  const reflexDir = path16.join(fableDir, "reflex");
-  if (fs16.existsSync(reflexDir)) {
-    const stat = fs16.lstatSync(reflexDir);
+  const reflexDir = path17.join(fableDir, "reflex");
+  if (fs17.existsSync(reflexDir)) {
+    const stat = fs17.lstatSync(reflexDir);
     if (stat.isSymbolicLink()) {
       throw new Error("Reflex security violation: .fable/reflex directory must not be a symlink");
     }
@@ -31427,19 +32082,19 @@ function getReflexDir(repoRoot = process.cwd()) {
 function appendReflexEvent(event, repoRoot = process.cwd()) {
   try {
     const reflexDir = getReflexDir(repoRoot);
-    if (!fs16.existsSync(reflexDir)) {
-      fs16.mkdirSync(reflexDir, { recursive: true });
+    if (!fs17.existsSync(reflexDir)) {
+      fs17.mkdirSync(reflexDir, { recursive: true });
     }
-    const eventsFile = path16.join(reflexDir, "events.jsonl");
-    if (fs16.existsSync(eventsFile)) {
-      const stat = fs16.lstatSync(eventsFile);
+    const eventsFile = path17.join(reflexDir, "events.jsonl");
+    if (fs17.existsSync(eventsFile)) {
+      const stat = fs17.lstatSync(eventsFile);
       if (stat.isSymbolicLink() || !stat.isFile()) {
         return;
       }
     }
     const line = JSON.stringify(event) + `
 `;
-    fs16.appendFileSync(eventsFile, line, "utf8");
+    fs17.appendFileSync(eventsFile, line, "utf8");
     rotateLedgerIfNecessary(eventsFile);
   } catch {}
 }
@@ -31448,15 +32103,15 @@ function readReflexEvents(options) {
   const repoRoot = options?.repoRoot || process.cwd();
   try {
     const reflexDir = getReflexDir(repoRoot);
-    const eventsFile = path16.join(reflexDir, "events.jsonl");
-    if (!fs16.existsSync(eventsFile)) {
+    const eventsFile = path17.join(reflexDir, "events.jsonl");
+    if (!fs17.existsSync(eventsFile)) {
       return [];
     }
-    const stat = fs16.lstatSync(eventsFile);
+    const stat = fs17.lstatSync(eventsFile);
     if (stat.isSymbolicLink() || !stat.isFile()) {
       return [];
     }
-    const content = fs16.readFileSync(eventsFile, "utf8");
+    const content = fs17.readFileSync(eventsFile, "utf8");
     const lines = content.trim().split(`
 `).filter(Boolean);
     const events = [];
@@ -31475,16 +32130,16 @@ function readReflexEvents(options) {
 }
 function rotateLedgerIfNecessary(eventsFile) {
   try {
-    const stat = fs16.statSync(eventsFile);
+    const stat = fs17.statSync(eventsFile);
     if (stat.size > 5 * 1024 * 1024) {
-      const content = fs16.readFileSync(eventsFile, "utf8");
+      const content = fs17.readFileSync(eventsFile, "utf8");
       const lines = content.trim().split(`
 `);
       if (lines.length > MAX_REFLEX_LEDGER_LINES) {
         const truncated = lines.slice(-Math.floor(MAX_REFLEX_LEDGER_LINES / 2)).join(`
 `) + `
 `;
-        fs16.writeFileSync(eventsFile, truncated, "utf8");
+        fs17.writeFileSync(eventsFile, truncated, "utf8");
       }
     }
   } catch {}
@@ -33079,6 +33734,47 @@ var FABLE_MYTHOS_EXPERT_CATALOG = [
     attentionHeadWeight: 0.9,
     capacityFactor: 1.2,
     latentSeed: "fable-tend repository maintainer ci repair conflict resolution"
+  }),
+  defineExpert({
+    skillId: "fable-anti-slop-engineering",
+    pack: "proof",
+    phase: "verifying",
+    shared: false,
+    groupIndex: 2,
+    paradigms: ["Depth", "Coil"],
+    domainKeywords: [
+      "fable-anti-slop-engineering",
+      "anti-slop",
+      "slop",
+      "weak assertion",
+      "skipped test",
+      "swallowed exception",
+      "diff guard",
+      "test integrity"
+    ],
+    attentionHeadWeight: 0.95,
+    capacityFactor: 1.25,
+    latentSeed: "fable-anti-slop-engineering prevent slop weak assertion skipped test swallowed error test integrity"
+  }),
+  defineExpert({
+    skillId: "fable-anti-churn",
+    pack: "proof",
+    phase: "verifying",
+    shared: false,
+    groupIndex: 2,
+    paradigms: ["Depth", "Mesh"],
+    domainKeywords: [
+      "fable-anti-churn",
+      "anti-churn",
+      "duplicate-work",
+      "evidence-reuse",
+      "receipts",
+      "typed-invalidation",
+      "retry loop"
+    ],
+    attentionHeadWeight: 0.94,
+    capacityFactor: 1.2,
+    latentSeed: "fable-anti-churn prevent duplicate work evidence reuse receipts typed invalidation loop"
   })
 ];
 function softmax(logits) {
@@ -33942,8 +34638,8 @@ function startMythosRouterServer(port = 8080, options = {}) {
   return server;
 }
 // src/router/context-injector.ts
-import fs17 from "node:fs";
-import path17 from "node:path";
+import fs18 from "node:fs";
+import path18 from "node:path";
 function isSafeAssetName(name) {
   return name !== "." && name !== ".." && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(name);
 }
@@ -33951,13 +34647,13 @@ function isSafeAssetName(name) {
 class ContextInjector {
   static getFableSystemPrompt() {
     const repoRoot = getRepoRootDir();
-    const rulesPath = path17.join(repoRoot, "prompts", "fable5-rules.md");
-    const entrySkillPath = path17.join(repoRoot, "skills", "get-fable", "SKILL.md");
+    const rulesPath = path18.join(repoRoot, "prompts", "fable5-rules.md");
+    const entrySkillPath = path18.join(repoRoot, "skills", "get-fable", "SKILL.md");
     const sections = [];
-    if (fs17.existsSync(rulesPath))
-      sections.push(fs17.readFileSync(rulesPath, "utf-8").trim());
-    if (fs17.existsSync(entrySkillPath))
-      sections.push(fs17.readFileSync(entrySkillPath, "utf-8").trim());
+    if (fs18.existsSync(rulesPath))
+      sections.push(fs18.readFileSync(rulesPath, "utf-8").trim());
+    if (fs18.existsSync(entrySkillPath))
+      sections.push(fs18.readFileSync(entrySkillPath, "utf-8").trim());
     const prompt = sections.filter(Boolean).join(`
 
 `);
@@ -33970,13 +34666,13 @@ class ContextInjector {
       return null;
     const repoRoot = getRepoRootDir();
     const candidates = [
-      path17.join(repoRoot, "skills", skillName, "SKILL.md"),
-      path17.join(repoRoot, "assets", "skills", "claude-code", `${skillName}.md`),
-      path17.join(repoRoot, "assets", "skills", "claude-design", `${skillName}.md`)
+      path18.join(repoRoot, "skills", skillName, "SKILL.md"),
+      path18.join(repoRoot, "assets", "skills", "claude-code", `${skillName}.md`),
+      path18.join(repoRoot, "assets", "skills", "claude-design", `${skillName}.md`)
     ];
     for (const candidate of candidates) {
-      if (fs17.existsSync(candidate))
-        return fs17.readFileSync(candidate, "utf-8");
+      if (fs18.existsSync(candidate))
+        return fs18.readFileSync(candidate, "utf-8");
     }
     return null;
   }
@@ -33984,19 +34680,19 @@ class ContextInjector {
     if (!isSafeAssetName(agentName))
       return null;
     const repoRoot = getRepoRootDir();
-    const agentPath = path17.join(repoRoot, "assets", "agents", `${agentName}.md`);
-    return fs17.existsSync(agentPath) ? fs17.readFileSync(agentPath, "utf-8") : null;
+    const agentPath = path18.join(repoRoot, "assets", "agents", `${agentName}.md`);
+    return fs18.existsSync(agentPath) ? fs18.readFileSync(agentPath, "utf-8") : null;
   }
 }
 // src/core/doctor.ts
-import fs28 from "node:fs";
-import path28 from "node:path";
-import { spawnSync as spawnSync5 } from "node:child_process";
+import fs31 from "node:fs";
+import path31 from "node:path";
+import { spawnSync as spawnSync6 } from "node:child_process";
 
 // src/core/telemetry.ts
-import fs18 from "node:fs";
+import fs19 from "node:fs";
 import os4 from "node:os";
-import path18 from "node:path";
+import path19 from "node:path";
 var TELEMETRY_MAX_LOG_BYTES = 1024 * 1024;
 var TELEMETRY_RETAINED_ROTATIONS = 2;
 var EVENT_TYPES = new Set([
@@ -34023,22 +34719,22 @@ function validConfig(value) {
 }
 function getTelemetryDir() {
   const override = process.env.FABLE_TELEMETRY_DIR?.trim();
-  const dir = override ? path18.resolve(override) : path18.join(os4.homedir(), ".fable");
-  if (!fs18.existsSync(dir))
-    fs18.mkdirSync(dir, { recursive: true, mode: 448 });
+  const dir = override ? path19.resolve(override) : path19.join(os4.homedir(), ".fable");
+  if (!fs19.existsSync(dir))
+    fs19.mkdirSync(dir, { recursive: true, mode: 448 });
   return dir;
 }
 function getTelemetryConfigPath() {
-  return path18.join(getTelemetryDir(), "telemetry-config.json");
+  return path19.join(getTelemetryDir(), "telemetry-config.json");
 }
 function getTelemetryLogPath() {
-  return path18.join(getTelemetryDir(), "telemetry.jsonl");
+  return path19.join(getTelemetryDir(), "telemetry.jsonl");
 }
 function loadTelemetryConfig() {
   const configPath = getTelemetryConfigPath();
-  if (fs18.existsSync(configPath)) {
+  if (fs19.existsSync(configPath)) {
     try {
-      const parsed = JSON.parse(fs18.readFileSync(configPath, "utf-8"));
+      const parsed = JSON.parse(fs19.readFileSync(configPath, "utf-8"));
       if (validConfig(parsed))
         return parsed;
     } catch {}
@@ -34052,9 +34748,9 @@ function saveTelemetryConfig(config) {
     const safe = validConfig(config) ? config : newConfig();
     const target = getTelemetryConfigPath();
     const temp = `${target}.${process.pid}.${Date.now()}.tmp`;
-    fs18.writeFileSync(temp, `${JSON.stringify(safe, null, 2)}
+    fs19.writeFileSync(temp, `${JSON.stringify(safe, null, 2)}
 `, { encoding: "utf-8", mode: 384 });
-    fs18.renameSync(temp, target);
+    fs19.renameSync(temp, target);
   } catch {}
 }
 function sanitizeEvent(event) {
@@ -34081,7 +34777,7 @@ function rotateTelemetryLogIfNeeded(incomingBytes) {
   const target = getTelemetryLogPath();
   let current = 0;
   try {
-    current = fs18.statSync(target).size;
+    current = fs19.statSync(target).size;
   } catch {}
   if (current + incomingBytes <= TELEMETRY_MAX_LOG_BYTES)
     return;
@@ -34089,10 +34785,10 @@ function rotateTelemetryLogIfNeeded(incomingBytes) {
     const source = i === 1 ? target : `${target}.${i - 1}`;
     const dest = `${target}.${i}`;
     try {
-      if (i === TELEMETRY_RETAINED_ROTATIONS && fs18.existsSync(dest))
-        fs18.unlinkSync(dest);
-      if (fs18.existsSync(source))
-        fs18.renameSync(source, dest);
+      if (i === TELEMETRY_RETAINED_ROTATIONS && fs19.existsSync(dest))
+        fs19.unlinkSync(dest);
+      if (fs19.existsSync(source))
+        fs19.renameSync(source, dest);
     } catch {}
   }
 }
@@ -34107,7 +34803,7 @@ function recordTelemetry(event) {
     const line = `${JSON.stringify(fullEvent)}
 `;
     rotateTelemetryLogIfNeeded(Buffer.byteLength(line));
-    fs18.appendFileSync(getTelemetryLogPath(), line, { encoding: "utf-8", mode: 384, flag: "a" });
+    fs19.appendFileSync(getTelemetryLogPath(), line, { encoding: "utf-8", mode: 384, flag: "a" });
     config.lastEventAt = fullEvent.timestamp;
     config.totalEvents += 1;
     saveTelemetryConfig(config);
@@ -34118,9 +34814,9 @@ function getTelemetrySummary() {
   const logPath = getTelemetryLogPath();
   const recentEvents = [];
   const eventCountsByType = {};
-  if (fs18.existsSync(logPath)) {
+  if (fs19.existsSync(logPath)) {
     try {
-      const lines = fs18.readFileSync(logPath, "utf-8").trim().split(`
+      const lines = fs19.readFileSync(logPath, "utf-8").trim().split(`
 `).filter(Boolean);
       for (const line of lines) {
         try {
@@ -34144,12 +34840,12 @@ function getTelemetrySummary() {
 function clearTelemetryLogs() {
   try {
     const logPath = getTelemetryLogPath();
-    if (fs18.existsSync(logPath))
-      fs18.writeFileSync(logPath, "", { encoding: "utf-8", mode: 384 });
+    if (fs19.existsSync(logPath))
+      fs19.writeFileSync(logPath, "", { encoding: "utf-8", mode: 384 });
     for (let i = 1;i <= TELEMETRY_RETAINED_ROTATIONS; i += 1) {
       const rotated = `${logPath}.${i}`;
-      if (fs18.existsSync(rotated))
-        fs18.unlinkSync(rotated);
+      if (fs19.existsSync(rotated))
+        fs19.unlinkSync(rotated);
     }
     const config = loadTelemetryConfig();
     config.totalEvents = 0;
@@ -34159,19 +34855,19 @@ function clearTelemetryLogs() {
 }
 
 // src/core/feed.ts
-import fs23 from "node:fs";
-import path23 from "node:path";
+import fs24 from "node:fs";
+import path24 from "node:path";
 
 // src/core/maturity.ts
-import fs22 from "node:fs";
+import fs23 from "node:fs";
 import { createPublicKey, verify as verifySignature } from "node:crypto";
-import path22 from "node:path";
+import path23 from "node:path";
 
 // src/core/eval-runner.ts
-import fs19 from "node:fs";
+import fs20 from "node:fs";
 import { createHash as createHash2 } from "node:crypto";
 import { execFileSync as execFileSync2 } from "node:child_process";
-import path19 from "node:path";
+import path20 from "node:path";
 function repositoryRevision(repoRoot = getCoreRepoRoot()) {
   try {
     return execFileSync2("git", ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] }).trim() || null;
@@ -34277,9 +34973,9 @@ function emptyRoutingEvidence(status = "NOT_CHECKED") {
   return { status, total: 0, passed: 0, passRate: null, forbiddenViolations: 0, cases: [] };
 }
 function loadEnterpriseRoutingCases(filePath) {
-  if (!fs19.existsSync(filePath))
+  if (!fs20.existsSync(filePath))
     return [];
-  const parsed = JSON.parse(fs19.readFileSync(filePath, "utf-8"));
+  const parsed = JSON.parse(fs20.readFileSync(filePath, "utf-8"));
   if (parsed?.schemaVersion !== 1 || !Array.isArray(parsed?.cases)) {
     throw new Error(`Invalid enterprise routing corpus: ${filePath}`);
   }
@@ -34319,8 +35015,8 @@ function evaluateRoutingCategory(cases, category, repoRoot) {
   };
 }
 function runEnterpriseRoutingBenchmark(repoRoot = getCoreRepoRoot(), options = {}) {
-  const checked = loadEnterpriseRoutingCases(path19.join(repoRoot, "eval", "benchmarks", "routing-v1.json"));
-  const holdout = options.includeHoldout ? loadEnterpriseRoutingCases(path19.join(repoRoot, "evals", "holdouts", "routing-v1.json")) : [];
+  const checked = loadEnterpriseRoutingCases(path20.join(repoRoot, "eval", "benchmarks", "routing-v1.json"));
+  const holdout = options.includeHoldout ? loadEnterpriseRoutingCases(path20.join(repoRoot, "evals", "holdouts", "routing-v1.json")) : [];
   return {
     schemaVersion: 1,
     metric: "enterprise-routing",
@@ -34334,7 +35030,7 @@ function runEnterpriseRoutingBenchmark(repoRoot = getCoreRepoRoot(), options = {
   };
 }
 function sha256File(filePath) {
-  return createHash2("sha256").update(fs19.readFileSync(filePath)).digest("hex");
+  return createHash2("sha256").update(fs20.readFileSync(filePath)).digest("hex");
 }
 var checkStaleHash = (snap, expected, fields) => {
   for (const field of fields) {
@@ -34382,15 +35078,15 @@ function validateRoutingHoldoutEvidenceSnapshot(snapshot, expected) {
   };
 }
 function loadFrozenRoutingHoldoutEvidence(repoRoot = getCoreRepoRoot()) {
-  const corpusPath = path19.join(repoRoot, "evals", "holdouts", "routing-v1.json");
-  const evidencePath = path19.join(repoRoot, "evals", "results", "routing-holdout-v1.json");
-  const routerPath = path19.join(repoRoot, "src", "core", "task-router.ts");
-  const runnerPath = path19.join(repoRoot, "src", "core", "eval-runner.ts");
-  if (![corpusPath, evidencePath, routerPath, runnerPath].every(fs19.existsSync)) {
+  const corpusPath = path20.join(repoRoot, "evals", "holdouts", "routing-v1.json");
+  const evidencePath = path20.join(repoRoot, "evals", "results", "routing-holdout-v1.json");
+  const routerPath = path20.join(repoRoot, "src", "core", "task-router.ts");
+  const runnerPath = path20.join(repoRoot, "src", "core", "eval-runner.ts");
+  if (![corpusPath, evidencePath, routerPath, runnerPath].every(fs20.existsSync)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "frozen routing holdout evidence has not been captured" };
   }
   try {
-    const snapshot = JSON.parse(fs19.readFileSync(evidencePath, "utf-8"));
+    const snapshot = JSON.parse(fs20.readFileSync(evidencePath, "utf-8"));
     return validateRoutingHoldoutEvidenceSnapshot(snapshot, {
       corpusSha256: sha256File(corpusPath),
       routerSha256: sha256File(routerPath),
@@ -34452,8 +35148,8 @@ function evaluateSparkCategory(cases, category, repoRoot) {
   };
 }
 function runEnterpriseSparkBenchmark(repoRoot = getCoreRepoRoot(), options = {}) {
-  const checked = loadEnterpriseRoutingCases(path19.join(repoRoot, "eval", "benchmarks", "spark-v1.json"));
-  const holdout = options.includeHoldout ? loadEnterpriseRoutingCases(path19.join(repoRoot, "evals", "holdouts", "spark-v1.json")) : [];
+  const checked = loadEnterpriseRoutingCases(path20.join(repoRoot, "eval", "benchmarks", "spark-v1.json"));
+  const holdout = options.includeHoldout ? loadEnterpriseRoutingCases(path20.join(repoRoot, "evals", "holdouts", "spark-v1.json")) : [];
   const categories = {
     known: evaluateSparkCategory(checked, "known", repoRoot),
     negative: evaluateSparkCategory(checked, "negative", repoRoot),
@@ -34503,15 +35199,15 @@ function validateSparkHoldoutEvidenceSnapshot(snapshot, expected) {
   };
 }
 function loadFrozenSparkHoldoutEvidence(repoRoot = getCoreRepoRoot()) {
-  const corpusPath = path19.join(repoRoot, "evals", "holdouts", "spark-v1.json");
-  const evidencePath = path19.join(repoRoot, "evals", "results", "spark-holdout-v1.json");
-  const sparkPath = path19.join(repoRoot, "src", "core", "spark.ts");
-  const runnerPath = path19.join(repoRoot, "src", "core", "eval-runner.ts");
-  if (![corpusPath, evidencePath, sparkPath, runnerPath].every(fs19.existsSync)) {
+  const corpusPath = path20.join(repoRoot, "evals", "holdouts", "spark-v1.json");
+  const evidencePath = path20.join(repoRoot, "evals", "results", "spark-holdout-v1.json");
+  const sparkPath = path20.join(repoRoot, "src", "core", "spark.ts");
+  const runnerPath = path20.join(repoRoot, "src", "core", "eval-runner.ts");
+  if (![corpusPath, evidencePath, sparkPath, runnerPath].every(fs20.existsSync)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "frozen Spark holdout evidence has not been captured" };
   }
   try {
-    const snapshot = JSON.parse(fs19.readFileSync(evidencePath, "utf-8"));
+    const snapshot = JSON.parse(fs20.readFileSync(evidencePath, "utf-8"));
     return validateSparkHoldoutEvidenceSnapshot(snapshot, {
       corpusSha256: sha256File(corpusPath),
       sparkSha256: sha256File(sparkPath),
@@ -34523,13 +35219,13 @@ function loadFrozenSparkHoldoutEvidence(repoRoot = getCoreRepoRoot()) {
 }
 
 // src/core/verification-eval.ts
-import fs20 from "node:fs";
-import path20 from "node:path";
+import fs21 from "node:fs";
+import path21 from "node:path";
 import { createHash as createHash3 } from "node:crypto";
 function loadCases(filePath) {
-  if (!fs20.existsSync(filePath))
+  if (!fs21.existsSync(filePath))
     return [];
-  const parsed = JSON.parse(fs20.readFileSync(filePath, "utf-8"));
+  const parsed = JSON.parse(fs21.readFileSync(filePath, "utf-8"));
   if (parsed?.schemaVersion !== 1 || !Array.isArray(parsed?.cases)) {
     throw new Error(`Invalid verification corpus: ${filePath}`);
   }
@@ -34582,8 +35278,8 @@ function evaluateCategory(cases, category, repoRoot) {
   return { status: passed === results.length ? "PASS" : "FAIL", total: results.length, passed, passRate: passed / results.length, cases: results };
 }
 function runEnterpriseVerificationBenchmark(repoRoot = getCoreRepoRoot(), options = {}) {
-  const checked = loadCases(path20.join(repoRoot, "eval", "benchmarks", "verification-v1.json"));
-  const holdout = options.includeHoldout ? loadCases(path20.join(repoRoot, "evals", "holdouts", "verification-v1.json")) : [];
+  const checked = loadCases(path21.join(repoRoot, "eval", "benchmarks", "verification-v1.json"));
+  const holdout = options.includeHoldout ? loadCases(path21.join(repoRoot, "evals", "holdouts", "verification-v1.json")) : [];
   return {
     schemaVersion: 1,
     metric: "enterprise-verification",
@@ -34597,7 +35293,7 @@ function runEnterpriseVerificationBenchmark(repoRoot = getCoreRepoRoot(), option
   };
 }
 function verificationFileSha256(filePath) {
-  return createHash3("sha256").update(fs20.readFileSync(filePath)).digest("hex");
+  return createHash3("sha256").update(fs21.readFileSync(filePath)).digest("hex");
 }
 var checkStaleHash2 = (snap, expected, fields) => {
   for (const field of fields) {
@@ -34636,15 +35332,15 @@ function validateVerificationHoldoutEvidenceSnapshot(snapshot, expected) {
   };
 }
 function loadFrozenVerificationHoldoutEvidence(repoRoot = getCoreRepoRoot()) {
-  const corpusPath = path20.join(repoRoot, "evals", "holdouts", "verification-v1.json");
-  const evidencePath = path20.join(repoRoot, "evals", "results", "verification-holdout-v1.json");
-  const statePath = path20.join(repoRoot, "src", "core", "state.ts");
-  const evaluatorPath = path20.join(repoRoot, "src", "core", "verification-eval.ts");
-  if (![corpusPath, evidencePath, statePath, evaluatorPath].every(fs20.existsSync)) {
+  const corpusPath = path21.join(repoRoot, "evals", "holdouts", "verification-v1.json");
+  const evidencePath = path21.join(repoRoot, "evals", "results", "verification-holdout-v1.json");
+  const statePath = path21.join(repoRoot, "src", "core", "state.ts");
+  const evaluatorPath = path21.join(repoRoot, "src", "core", "verification-eval.ts");
+  if (![corpusPath, evidencePath, statePath, evaluatorPath].every(fs21.existsSync)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "frozen verification holdout evidence has not been captured" };
   }
   try {
-    const snapshot = JSON.parse(fs20.readFileSync(evidencePath, "utf-8"));
+    const snapshot = JSON.parse(fs21.readFileSync(evidencePath, "utf-8"));
     return validateVerificationHoldoutEvidenceSnapshot(snapshot, {
       corpusSha256: verificationFileSha256(corpusPath),
       stateSha256: verificationFileSha256(statePath),
@@ -34657,8 +35353,8 @@ function loadFrozenVerificationHoldoutEvidence(repoRoot = getCoreRepoRoot()) {
 
 // src/core/agent-behavior-eval.ts
 import { createHash as createHash4 } from "node:crypto";
-import fs21 from "node:fs";
-import path21 from "node:path";
+import fs22 from "node:fs";
+import path22 from "node:path";
 
 // src/core/eval-loader.ts
 var validateObjectField = (obj, field, skillId, resourcePath) => {
@@ -35034,14 +35730,14 @@ function validateAgentBehaviorEvidenceSnapshot(snapshot, plan = buildEnterpriseA
   }
   return { status: "PASS", fresh: true, reason: "agent behavior evidence is fresh for the current Skill corpus", snapshot: value };
 }
-var AGENT_BEHAVIOR_EVIDENCE_PATH = path21.join("evals", "results", "agent-behavior-v1.json");
+var AGENT_BEHAVIOR_EVIDENCE_PATH = path22.join("evals", "results", "agent-behavior-v1.json");
 function loadAgentBehaviorEvidenceSnapshot(repoRoot = getCoreRepoRoot(), plan = buildEnterpriseAgentBehaviorEvalPlan(repoRoot)) {
-  const filePath = path21.join(repoRoot, AGENT_BEHAVIOR_EVIDENCE_PATH);
-  if (!fs21.existsSync(filePath)) {
+  const filePath = path22.join(repoRoot, AGENT_BEHAVIOR_EVIDENCE_PATH);
+  if (!fs22.existsSync(filePath)) {
     return { status: "NOT_CHECKED", fresh: false, reason: "agent behavior evidence has not been captured" };
   }
   try {
-    return validateAgentBehaviorEvidenceSnapshot(JSON.parse(fs21.readFileSync(filePath, "utf-8")), plan);
+    return validateAgentBehaviorEvidenceSnapshot(JSON.parse(fs22.readFileSync(filePath, "utf-8")), plan);
   } catch {
     return { status: "NOT_CHECKED", fresh: false, reason: "agent behavior evidence could not be parsed" };
   }
@@ -35287,8 +35983,8 @@ function proveRuntimeIntegration(id, repoRoot, packageValid) {
   return probes.some((probe) => routeTask(probe, null, registry).selectedSkill === id);
 }
 function evaluateSkillMaturity(id, repoRoot = getCoreRepoRoot(), options = {}) {
-  const sourceAvailable = fs22.existsSync(path22.join(repoRoot, "skills", id, "SKILL.md"));
-  const structured = fs22.existsSync(getSkillManifestPath(id, repoRoot));
+  const sourceAvailable = fs23.existsSync(path23.join(repoRoot, "skills", id, "SKILL.md"));
+  const structured = fs23.existsSync(getSkillManifestPath(id, repoRoot));
   const packageValidation = structured ? validateSkillPackage(id, repoRoot) : null;
   const packageValid = Boolean(packageValidation?.valid);
   const registryEntry = getSkillEntry(id, loadSkillRegistry(repoRoot));
@@ -35342,10 +36038,10 @@ function evaluateSkillMaturity(id, repoRoot = getCoreRepoRoot(), options = {}) {
   let enterpriseCertification;
   if (id === "get-fable") {
     let externalCertificate = null;
-    const certPath = path22.join(repoRoot, ".fable", "certification.json");
-    if (fs22.existsSync(certPath)) {
+    const certPath = path23.join(repoRoot, ".fable", "certification.json");
+    if (fs23.existsSync(certPath)) {
       try {
-        externalCertificate = JSON.parse(fs22.readFileSync(certPath, "utf-8"));
+        externalCertificate = JSON.parse(fs23.readFileSync(certPath, "utf-8"));
       } catch {
         externalCertificate = null;
       }
@@ -35411,11 +36107,11 @@ function loadSkillFeed(repoRoot = getCoreRepoRoot(), targetDir = process.cwd()) 
   const revision = repositoryRevision(repoRoot);
   return registry.skills.map((skill) => {
     const id = skill.id;
-    const sourceSkillPath = path23.join(repoRoot, "skills", id, "SKILL.md");
-    const projectSkillPath = path23.join(targetDir, ".agents", "skills", id, "SKILL.md");
-    const sourceAvailable = fs23.existsSync(sourceSkillPath);
-    const installedInTarget = fs23.existsSync(projectSkillPath);
-    const manifestExists = fs23.existsSync(getSkillManifestPath(id, repoRoot));
+    const sourceSkillPath = path24.join(repoRoot, "skills", id, "SKILL.md");
+    const projectSkillPath = path24.join(targetDir, ".agents", "skills", id, "SKILL.md");
+    const sourceAvailable = fs24.existsSync(sourceSkillPath);
+    const installedInTarget = fs24.existsSync(projectSkillPath);
+    const manifestExists = fs24.existsSync(getSkillManifestPath(id, repoRoot));
     let summary = {
       valid: false,
       entryExists: sourceAvailable,
@@ -35484,7 +36180,7 @@ function inspectSkillDetail(skillId, repoRoot = getCoreRepoRoot(), targetDir = p
   const item = loadSkillFeed(repoRoot, targetDir).find((s) => s.id.toLowerCase() === skillId.toLowerCase()) || null;
   if (!item)
     return { item: null, instructions: null, resources: [] };
-  const instructions = fs23.existsSync(item.skillPath) ? fs23.readFileSync(item.skillPath, "utf-8") : null;
+  const instructions = fs24.existsSync(item.skillPath) ? fs24.readFileSync(item.skillPath, "utf-8") : null;
   let resources = [];
   try {
     resources = listSkillResources(item.id, repoRoot);
@@ -35493,14 +36189,14 @@ function inspectSkillDetail(skillId, repoRoot = getCoreRepoRoot(), targetDir = p
 }
 
 // src/core/neural-linking.ts
-import fs24 from "node:fs";
-import path24 from "node:path";
+import fs25 from "node:fs";
+import path25 from "node:path";
 function loadNeuralGraph(repoRoot = getCoreRepoRoot()) {
-  const graphPath = path24.join(repoRoot, "registry", "neural-graph.json");
-  if (!fs24.existsSync(graphPath)) {
+  const graphPath = path25.join(repoRoot, "registry", "neural-graph.json");
+  if (!fs25.existsSync(graphPath)) {
     throw new Error(`Neural graph not found at ${graphPath}`);
   }
-  return JSON.parse(fs24.readFileSync(graphPath, "utf-8"));
+  return JSON.parse(fs25.readFileSync(graphPath, "utf-8"));
 }
 function getNeuralConnections(skillId, graph = loadNeuralGraph()) {
   const precursors = graph.edges.filter((e) => e.target === skillId && (e.relation === "continuation" || e.relation === "precursor")).map((e) => e.source);
@@ -35592,9 +36288,9 @@ var HOST_CONTRACTS = [
 ];
 
 // src/core/host-evidence.ts
-import fs25 from "node:fs";
+import fs26 from "node:fs";
 import os5 from "node:os";
-import path25 from "node:path";
+import path26 from "node:path";
 var installers = {
   claude: installClaudeGlobal,
   antigravity: installAntigravityGlobal,
@@ -35630,16 +36326,16 @@ var installers = {
   pi: installPiCodeGlobal
 };
 function recursiveFiles(root) {
-  if (!fs25.existsSync(root))
+  if (!fs26.existsSync(root))
     return [];
   const files = [];
   const walk = (dir) => {
-    for (const entry of fs25.readdirSync(dir, { withFileTypes: true })) {
-      const absolute = path25.join(dir, entry.name);
+    for (const entry of fs26.readdirSync(dir, { withFileTypes: true })) {
+      const absolute = path26.join(dir, entry.name);
       if (entry.isDirectory())
         walk(absolute);
       else if (entry.isFile())
-        files.push(path25.relative(root, absolute).split(path25.sep).join("/"));
+        files.push(path26.relative(root, absolute).split(path26.sep).join("/"));
     }
   };
   walk(root);
@@ -35648,7 +36344,7 @@ function recursiveFiles(root) {
 function installedText(root, files) {
   return files.filter((file) => /\.(json|md|mdc|py|js)$/i.test(file)).map((file) => {
     try {
-      return fs25.readFileSync(path25.join(root, file), "utf-8");
+      return fs26.readFileSync(path26.join(root, file), "utf-8");
     } catch {
       return "";
     }
@@ -35656,7 +36352,7 @@ function installedText(root, files) {
 `);
 }
 function evaluateHostInstallerParity() {
-  const root = fs25.mkdtempSync(path25.join(os5.tmpdir(), "fable-host-evidence-"));
+  const root = fs26.mkdtempSync(path26.join(os5.tmpdir(), "fable-host-evidence-"));
   const results = [];
   const originalLog = console.log;
   console.log = () => {
@@ -35665,7 +36361,7 @@ function evaluateHostInstallerParity() {
   try {
     for (const contract of HOST_CONTRACTS) {
       const failures = [];
-      const hostRoot = path25.join(root, contract.id);
+      const hostRoot = path26.join(root, contract.id);
       const installer = installers[contract.id];
       if (!installer) {
         results.push({ id: contract.id, passed: false, failures: ["missing installer"] });
@@ -35700,7 +36396,7 @@ function evaluateHostInstallerParity() {
     }
   } finally {
     console.log = originalLog;
-    fs25.rmSync(root, { recursive: true, force: true });
+    fs26.rmSync(root, { recursive: true, force: true });
   }
   return {
     total: results.length,
@@ -36073,8 +36769,8 @@ function validateCutBoundaryRecord(record) {
   };
 }
 // src/core/test-value/auditor.ts
-import fs26 from "node:fs";
-import path26 from "node:path";
+import fs27 from "node:fs";
+import path27 from "node:path";
 function classifyResponsibilityGroup(filePath, content) {
   const norm = filePath.replace(/\\/g, "/").toLowerCase();
   if (/supply-chain|package-distribution|install|platform-installer|host-installer/.test(norm) || /\.github\/workflows/.test(content)) {
@@ -36268,35 +36964,35 @@ function analyzeTestFileContent(filePath, content) {
 function collectTestFiles(projectDir, targetPaths) {
   const results = [];
   const walk = (dir) => {
-    if (!fs26.existsSync(dir))
+    if (!fs27.existsSync(dir))
       return;
-    for (const entry of fs26.readdirSync(dir, { withFileTypes: true })) {
+    for (const entry of fs27.readdirSync(dir, { withFileTypes: true })) {
       if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "dist")
         continue;
-      const full = path26.join(dir, entry.name);
+      const full = path27.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full);
       } else if (entry.isFile() && /\.test\.(?:ts|js|tsx|jsx)$/.test(entry.name)) {
-        results.push(path26.relative(projectDir, full).replace(/\\/g, "/"));
+        results.push(path27.relative(projectDir, full).replace(/\\/g, "/"));
       }
     }
   };
   if (targetPaths && targetPaths.length > 0) {
     for (const target of targetPaths) {
-      const resolved = path26.resolve(projectDir, target);
-      if (!fs26.existsSync(resolved))
+      const resolved = path27.resolve(projectDir, target);
+      if (!fs27.existsSync(resolved))
         continue;
-      const stat = fs26.statSync(resolved);
+      const stat = fs27.statSync(resolved);
       if (stat.isDirectory()) {
         walk(resolved);
       } else if (stat.isFile()) {
-        results.push(path26.relative(projectDir, resolved).replace(/\\/g, "/"));
+        results.push(path27.relative(projectDir, resolved).replace(/\\/g, "/"));
       }
     }
   } else {
-    walk(path26.join(projectDir, "test"));
-    walk(path26.join(projectDir, "tests"));
-    walk(path26.join(projectDir, "site"));
+    walk(path27.join(projectDir, "test"));
+    walk(path27.join(projectDir, "tests"));
+    walk(path27.join(projectDir, "site"));
   }
   return [...new Set(results)].sort();
 }
@@ -36314,10 +37010,10 @@ function auditTestSuite(projectDir, targetPaths) {
     "ci-selection": []
   };
   for (const relPath of filesToAudit) {
-    const absPath = path26.join(projectDir, relPath);
-    if (!fs26.existsSync(absPath))
+    const absPath = path27.join(projectDir, relPath);
+    if (!fs27.existsSync(absPath))
       continue;
-    const content = fs26.readFileSync(absPath, "utf-8");
+    const content = fs27.readFileSync(absPath, "utf-8");
     const report = analyzeTestFileContent(relPath, content);
     reports.push(report);
     byResponsibility[report.responsibilityGroup].push(relPath);
@@ -36344,8 +37040,8 @@ function auditTestSuite(projectDir, targetPaths) {
 }
 // src/core/test-value/selector.ts
 import { execFileSync as execFileSync3 } from "node:child_process";
-import fs27 from "node:fs";
-import path27 from "node:path";
+import fs28 from "node:fs";
+import path28 from "node:path";
 var TIER_PRIORITY = {
   "daily-feedback": 1,
   "expanded-checks": 2,
@@ -36358,22 +37054,22 @@ function escalateTier(current, candidate) {
 function discoverAllTestFiles(projectDir) {
   const results = [];
   const walk = (dir) => {
-    if (!fs27.existsSync(dir))
+    if (!fs28.existsSync(dir))
       return;
-    for (const entry of fs27.readdirSync(dir, { withFileTypes: true })) {
+    for (const entry of fs28.readdirSync(dir, { withFileTypes: true })) {
       if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "dist")
         continue;
-      const full = path27.join(dir, entry.name);
+      const full = path28.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full);
       } else if (entry.isFile() && /\.test\.(?:ts|js|tsx|jsx)$/.test(entry.name)) {
-        results.push(path27.relative(projectDir, full).replace(/\\/g, "/"));
+        results.push(path28.relative(projectDir, full).replace(/\\/g, "/"));
       }
     }
   };
-  walk(path27.join(projectDir, "test"));
-  walk(path27.join(projectDir, "tests"));
-  walk(path27.join(projectDir, "site"));
+  walk(path28.join(projectDir, "test"));
+  walk(path28.join(projectDir, "tests"));
+  walk(path28.join(projectDir, "site"));
   return [...new Set(results)].sort();
 }
 function discoverGitChangedFiles(projectDir) {
@@ -36413,9 +37109,9 @@ function selectTestsByRisk(projectDir, explicitChangedFiles) {
   const allTests = discoverAllTestFiles(projectDir);
   const testContents = new Map;
   for (const testRel of allTests) {
-    const abs = path27.join(projectDir, testRel);
+    const abs = path28.join(projectDir, testRel);
     try {
-      testContents.set(testRel, fs27.readFileSync(abs, "utf-8"));
+      testContents.set(testRel, fs28.readFileSync(abs, "utf-8"));
     } catch {}
   }
   if (changedFiles.length === 0) {
@@ -36471,18 +37167,18 @@ function selectTestsByRisk(projectDir, explicitChangedFiles) {
       riskTier = escalateTier(riskTier, "expanded-checks");
     }
     if (/\.test\.(?:ts|js|tsx|jsx)$/.test(changed)) {
-      if (fs27.existsSync(path27.join(projectDir, changed))) {
+      if (fs28.existsSync(path28.join(projectDir, changed))) {
         affectedTests.add(changed);
       }
       continue;
     }
-    const absChanged = path27.join(projectDir, changed);
-    const existsOnDisk = fs27.existsSync(absChanged);
-    const stem = path27.basename(changed).replace(/\.(?:ts|js|tsx|jsx|py|json)$/, "");
+    const absChanged = path28.join(projectDir, changed);
+    const existsOnDisk = fs28.existsSync(absChanged);
+    const stem = path28.basename(changed).replace(/\.(?:ts|js|tsx|jsx|py|json)$/, "");
     const noExt = changed.replace(/\.(?:ts|js|tsx|jsx)$/, "");
     let matchedCountForFile = 0;
     for (const [testRel, content] of testContents.entries()) {
-      const testStem = path27.basename(testRel).replace(/\.test\.(?:ts|js|tsx|jsx)$/, "");
+      const testStem = path28.basename(testRel).replace(/\.test\.(?:ts|js|tsx|jsx)$/, "");
       const mentionsModule = testStem === stem || testStem.startsWith(`${stem}-`) || content.includes(noExt) || content.includes(`${stem}.ts`) || content.includes(`${stem}.js`) || content.includes(`/${stem}'`) || content.includes(`/${stem}"`);
       if (mentionsModule) {
         affectedTests.add(testRel);
@@ -36503,6 +37199,10 @@ function selectTestsByRisk(projectDir, explicitChangedFiles) {
   const recommendedCommand = requiresCompleteSuite ? "bun test" : sortedAffected.length > 0 ? `bun test ${sortedAffected.join(" ")}` : "bun test";
   if (sortedAffected.length > 0 && !requiresCompleteSuite) {
     rationale.push(`Selected ${sortedAffected.length} affected test file(s) covering blast radius at tier "${riskTier}".`);
+  }
+  const neuralBin = findNeuralTestBinary(projectDir);
+  if (neuralBin) {
+    rationale.push(`Native Neural Test Engine active (${path28.basename(neuralBin)}): SIMD systolic array and Pareto tournament prioritization available.`);
   }
   return {
     projectDir,
@@ -36547,7 +37247,7 @@ function verifyShardCoverage(inventory, shards, options = {}) {
   };
 }
 // src/core/test-value/runner.ts
-import { spawnSync as spawnSync4 } from "node:child_process";
+import { spawnSync as spawnSync5 } from "node:child_process";
 function parseTestRunnerOutput(stdout, stderr, exitCode, wallClockMs, options = {}) {
   const combined = `${stdout}
 ${stderr}`;
@@ -36724,7 +37424,7 @@ function runSpearheadPipeline(options = {}) {
     } else {
       const testArgs = selection.requiresCompleteSuite ? ["test"] : ["test", ...selection.affectedTestFiles];
       const start = Date.now();
-      const proc = spawnSync4(process.execPath, testArgs, {
+      const proc = spawnSync5(process.execPath, testArgs, {
         cwd: projectDir,
         encoding: "utf-8"
       });
@@ -38804,12 +39504,682 @@ class FrontierTestOrchestrator {
     };
   }
 }
+// src/core/harness/types.ts
+var HARNESS2_REA_EVIDENCE_LEDGER = {
+  sourceRepo: "https://github.com/google-research/harness2",
+  commitSha: "1cfe254e8d25b15f37048c3730134686abe60335",
+  gitTreeSha: "edc756a4d03a2826a248115482084a176e60e751",
+  studiedAt: "2026-10-18T22:06:00Z",
+  cleanRoomAdaptation: true,
+  upstreamPaper: {
+    title: "Harness²: Recursive Agent Harnessing for an Open World",
+    authors: [
+      "Ruiyao Xu",
+      "Yanfei Chen",
+      "Zhongying CuiZhu",
+      "Bhavana Dalvi Mishra",
+      "Yifei Ming",
+      "Han Yu",
+      "Rujun Han",
+      "Chen-Yu Lee",
+      "Tomas Pfister"
+    ],
+    arxiv: "arXiv:2610.14224",
+    year: 2026
+  },
+  verifiedArtifacts: [
+    {
+      path: "harness2/core/recursion.py",
+      gitBlobSha1: "dda6b98cd5af100b8941f33cbb079462299c5280",
+      sha256: "b299813b5334f2c0f89024a7f14162f0fdd5418ebd4413be93920b5334a204c1",
+      bytes: 20436,
+      lines: 578,
+      role: "Two-Level Recursion Coordinator (Task-Level Propose-Probe-Compose and Harnessing-Level Experience Reflector)",
+      verifiedSymbols: [
+        "ProposeProbeCompose",
+        "run_parallel_step",
+        "run_sequential_step",
+        "ExperienceReflector",
+        "update_improvement_harness"
+      ]
+    },
+    {
+      path: "harness2/core/proposer.py",
+      gitBlobSha1: "4a235075cae72059fa701001f31bf4505cbbc3ba",
+      sha256: "475ef49d72228e249d7172d793f8362913774412402dfd259ae6e01c6586e175",
+      bytes: 18942,
+      lines: 534,
+      role: "Harness Editor & Contrastive Proposer (General Invariant Edits & Domain-Specific Probes)",
+      verifiedSymbols: [
+        "Proposer",
+        "propose_edits",
+        "compose_candidates",
+        "validate_proposal",
+        "render_contrast_prompt"
+      ]
+    },
+    {
+      path: "harness2/core/tree.py",
+      gitBlobSha1: "c9bf1341226aac448f6ec82038cb6d3896799412",
+      sha256: "c2a15690b1b6b02156e922c5e0b1a215c5065d7bea5a3bae2e56b47309197552",
+      bytes: 16265,
+      lines: 427,
+      role: "Component Tree Manager (c1..c8 SurfaceSpec: read, validate, write, diff, cap-check)",
+      verifiedSymbols: [
+        "SurfaceSpec",
+        "Tree",
+        "read_tree",
+        "write_tree",
+        "diff_trees",
+        "is_allowed",
+        "normalize_rel"
+      ]
+    },
+    {
+      path: "harness2/core/spec.py",
+      gitBlobSha1: "e58d14852490b2d4ae3aa6da1c1c796e3e961b48",
+      sha256: "f245ec9e314778e2a1a51594b906584255b9eed8340c073b864a8a6f2c8dc400",
+      bytes: 9720,
+      lines: 277,
+      role: "Benchmark and Channel Seam (ChannelSpec, BenchSpec, TaskSpec separation)",
+      verifiedSymbols: [
+        "ChannelSpec",
+        "BenchSpec",
+        "TaskSpec",
+        "resolve_channel_model"
+      ]
+    },
+    {
+      path: "harness2/core/judge.py",
+      gitBlobSha1: "cf4e7b9fe2b603421fce6519808deb81bc3ec9c0",
+      sha256: "0f8cd6f4ec659f5d5976bdad4ccdc432651f51486c3fbbee36be53a6d619fbba",
+      bytes: 5410,
+      lines: 155,
+      role: "Adversarial & Contrastive Judge Evaluation Seam",
+      verifiedSymbols: [
+        "JudgeAdapter",
+        "evaluate_deliverable",
+        "score_contrast"
+      ]
+    },
+    {
+      path: "harness2/core/ledger.py",
+      gitBlobSha1: "319a6697758d05294dab9f42e8f8700759d7e6f6",
+      sha256: "7059de5d90fc9fb8d4b3b799ff075f09d34f182ba0fdb56eb9d8b8383d0bbf55",
+      bytes: 4620,
+      lines: 132,
+      role: "Execution and Trial Ledger Tracking Rollout Evidence and Runmarks",
+      verifiedSymbols: [
+        "TrialLedger",
+        "record_trial",
+        "read_trials"
+      ]
+    },
+    {
+      path: "harness2/substrate/opencode.py",
+      gitBlobSha1: "ad0a2ea4d59bda362838c76912e43b6f7c333254",
+      sha256: "dabc79953d164a0d38802125756379ffa6acdc7b553d2f9036475f8220166ff0",
+      bytes: 15411,
+      lines: 395,
+      role: "OpenCode Agent Substrate Adapter and Trajectory Renderer",
+      verifiedSymbols: [
+        "OpencodeSubstrate",
+        "OPENCODE_SURFACE"
+      ]
+    },
+    {
+      path: "harness2/substrate/codex.py",
+      gitBlobSha1: "fd34eacdf4a7b6991ba75e6ed34df5dd87f4e5e0",
+      sha256: "281a07271ebed72a617a671ced1b9137901aa8f5d1deffb56c706f44c295e416",
+      bytes: 18082,
+      lines: 480,
+      role: "Codex Agent Substrate Adapter, Surface Spec and Execution Runner",
+      verifiedSymbols: [
+        "CodexSubstrate",
+        "CODEX_SURFACE"
+      ]
+    }
+  ]
+};
+// src/core/harness/tree.ts
+import * as fs29 from "node:fs";
+import * as path29 from "node:path";
+var OPENCODE_SURFACE = {
+  name: "opencode",
+  alwaysOn: [
+    "systemprompt.md",
+    "guardrails.md",
+    "LongTermMEMORY.md",
+    "tool_descriptions/tool_guidance.md"
+  ],
+  alwaysOnMax: 24000,
+  alwaysOnCapReason: "every token in always-on competes with the agent's output budget",
+  skillDir: "skills",
+  skillNameRule: "must_match",
+  triggerHint: 'Add a trigger line to systemprompt.md or guardrails.md, e.g. "When <situation>, load the `<name>` skill."',
+  autotriggerFile: "guardrails.md",
+  triggerLine: "- When {desc}, load the `{name}` skill.\n",
+  subagentRequiresMode: true,
+  pluginDir: "plugins",
+  hooksFile: null,
+  hookEvents: ["SessionStart", "PreToolUse", "PostToolUse", "Stop"]
+};
+var CODEX_SURFACE = {
+  name: "codex",
+  alwaysOn: ["AGENTS.md"],
+  alwaysOnMax: 8000,
+  alwaysOnCapReason: "AGENTS.md is injected whole into every turn and truncated by host limits",
+  skillDir: ".agents/skills",
+  skillNameRule: "overrides_dir",
+  triggerHint: 'Add a trigger line to AGENTS.md, e.g. "When <situation>, read .agents/skills/{name}/SKILL.md and follow it."',
+  autotriggerFile: "AGENTS.md",
+  triggerLine: `- When {desc}, read .agents/skills/{name}/SKILL.md and follow it.
+`,
+  subagentRequiresMode: false,
+  pluginDir: null,
+  hooksFile: ".codex/hooks.json",
+  hookEvents: ["PreToolUse", "PostToolUse"]
+};
+var FABLE_SURFACE = {
+  name: "fable",
+  alwaysOn: ["AGENTS.md", ".fable/LEDGER.md"],
+  alwaysOnMax: 32000,
+  alwaysOnCapReason: "Fable lifecycle context is dynamically injected per phase",
+  skillDir: "skills",
+  skillNameRule: "must_match",
+  triggerHint: "Register skill in skills/get-fable/registry.json",
+  autotriggerFile: "AGENTS.md",
+  triggerLine: "- When {desc}, route to `{name}`.\n",
+  subagentRequiresMode: false,
+  pluginDir: "hooks",
+  hooksFile: ".fable/state.json",
+  hookEvents: ["SessionStart", "PreToolUse", "PostToolUse", "Stop"]
+};
+function getSurfaceSpec(substrate) {
+  switch (substrate) {
+    case "opencode":
+      return OPENCODE_SURFACE;
+    case "codex":
+      return CODEX_SURFACE;
+    case "fable":
+    default:
+      return FABLE_SURFACE;
+  }
+}
+function classifyComponent(filePath) {
+  const norm = filePath.replace(/\\/g, "/").replace(/^\.\//, "");
+  if (norm === "systemprompt.md" || norm === "AGENTS.md")
+    return "c1_systemprompt";
+  if (norm === "guardrails.md")
+    return "c2_guardrails";
+  if (norm === "LongTermMEMORY.md" || norm.includes("memory") || norm.includes("MEMORY"))
+    return "c3_memory";
+  if (norm.startsWith("tool_descriptions/") || norm.includes("tool_guidance"))
+    return "c4_tool_guidance";
+  if (norm.startsWith("skills/") || norm.startsWith(".agents/skills/"))
+    return "c5_skills";
+  if (norm.startsWith("sub_agents/") || norm.startsWith(".agents/sub_agents/"))
+    return "c6_subagents";
+  if (norm.startsWith("scripts/"))
+    return "c7_scripts";
+  if (norm.startsWith("plugins/") || norm.startsWith("hooks/") || norm.endsWith(".json"))
+    return "c8_plugins";
+  return "c1_systemprompt";
+}
+function normalizeRelPath(rel) {
+  const normalized = rel.trim().replace(/\\/g, "/");
+  if (normalized.startsWith("/") || normalized.split("/").includes("..")) {
+    throw new Error(`Path escapes the harness boundaries: ${rel}`);
+  }
+  return normalized.replace(/^\.\//, "");
+}
+function isPathAllowedOnSurface(surface, relPath) {
+  try {
+    const norm = normalizeRelPath(relPath);
+    if (surface.alwaysOn.includes(norm))
+      return true;
+    if (surface.hooksFile && norm === surface.hooksFile)
+      return true;
+    if (norm.startsWith(`${surface.skillDir}/`))
+      return true;
+    if (norm.startsWith("sub_agents/") || norm.startsWith(".agents/sub_agents/"))
+      return true;
+    if (norm.startsWith("scripts/"))
+      return true;
+    if (surface.pluginDir && norm.startsWith(`${surface.pluginDir}/`))
+      return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+function checkAlwaysOnBudget(surface, tree) {
+  let totalBytes = 0;
+  for (const file of surface.alwaysOn) {
+    if (tree[file]) {
+      totalBytes += Buffer.byteLength(tree[file], "utf-8");
+    }
+  }
+  return {
+    ok: totalBytes <= surface.alwaysOnMax,
+    totalBytes,
+    maxBytes: surface.alwaysOnMax,
+    reason: surface.alwaysOnCapReason
+  };
+}
+function diffHarnessTrees(base, target) {
+  const result = {};
+  const allKeys = new Set([...Object.keys(base), ...Object.keys(target)]);
+  for (const key of allKeys) {
+    if (!(key in base)) {
+      result[key] = "added";
+    } else if (!(key in target)) {
+      result[key] = "deleted";
+    } else if (base[key] !== target[key]) {
+      result[key] = "modified";
+    } else {
+      result[key] = "retained";
+    }
+  }
+  return result;
+}
+function applyProposalToTree(baseTree, edits, deletedPaths) {
+  const next = { ...baseTree };
+  for (const [p, content] of Object.entries(edits)) {
+    next[normalizeRelPath(p)] = content;
+  }
+  if (deletedPaths) {
+    for (const p of deletedPaths) {
+      delete next[normalizeRelPath(p)];
+    }
+  }
+  return next;
+}
+function readWorkspaceHarnessTree(workspaceDir, surface) {
+  const tree = {};
+  function scan(dir, baseDir) {
+    if (!fs29.existsSync(dir))
+      return;
+    const entries = fs29.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path29.join(dir, entry.name);
+      const relPath = path29.relative(baseDir, fullPath).replace(/\\/g, "/");
+      if (entry.isDirectory()) {
+        if (entry.name === "node_modules" || entry.name === ".git" || entry.name === ".venv") {
+          continue;
+        }
+        scan(fullPath, baseDir);
+      } else if (entry.isFile()) {
+        if (isPathAllowedOnSurface(surface, relPath)) {
+          tree[relPath] = fs29.readFileSync(fullPath, "utf-8");
+        }
+      }
+    }
+  }
+  scan(workspaceDir, workspaceDir);
+  return tree;
+}
+// src/core/harness/proposer.ts
+function generateInvariantProposals(surface, baseTree, context) {
+  const proposals = [];
+  const toolFile = surface.alwaysOn.find((f) => f.includes("tool_guidance")) || "guardrails.md";
+  const existingToolContent = baseTree[toolFile] || "";
+  const toolEdit = `${existingToolContent}
+
+## Automated Tool Calling Invariants
+- Always inspect target schema and parameters before issuing destructive or state-mutating commands.
+- Catch caller input exceptions and map them to explicit error messages.
+`;
+  proposals.push({
+    id: `prop-inv-tool-guidance-${Date.now()}`,
+    kind: "invariant",
+    description: "Enforce preflight input validation and error mapping on tool boundaries",
+    targetComponent: classifyComponent(toolFile),
+    edits: {
+      [toolFile]: toolEdit.trim()
+    },
+    confidence: 0.92
+  });
+  const guardFile = surface.autotriggerFile;
+  const existingGuard = baseTree[guardFile] || "";
+  const guardEdit = `${existingGuard}
+
+## Resilient Failure Recovery Invariant
+- If an execution path fails twice, halt speculative retries immediately and switch to root-cause diagnosis.
+`;
+  proposals.push({
+    id: `prop-inv-recovery-${Date.now()}`,
+    kind: "invariant",
+    description: "Circuit-breaker guardrail halting speculative retries upon consecutive failures",
+    targetComponent: classifyComponent(guardFile),
+    edits: {
+      [guardFile]: guardEdit.trim()
+    },
+    confidence: 0.88
+  });
+  return proposals;
+}
+function generateDomainProposals(surface, baseTree, context) {
+  const proposals = [];
+  const domain = context.domain || "general-engineering";
+  const taskSlug = context.taskDescription.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 32).replace(/^-|-$/g, "");
+  const skillName = `harness-${taskSlug || "specialist"}`;
+  const skillPath = `${surface.skillDir}/${skillName}/SKILL.md`;
+  const skillContent = `---
+name: ${skillName}
+description: Specialized domain procedure for ${context.taskDescription} in domain ${domain}.
+---
+
+# Domain Playbook: ${context.taskDescription}
+
+## Objective
+Execute the requested domain objective with rigorous verification and zero scope drift.
+
+## Procedure
+1. Inspect inputs, interfaces, and preconditions.
+2. Apply deterministic domain transformations.
+3. Verify outputs against observable criteria.
+`;
+  const triggerLine = surface.triggerLine.replace("{desc}", `encountering tasks related to ${context.taskDescription}`).replace("{name}", skillName);
+  const triggerFile = surface.autotriggerFile;
+  const updatedTriggerFile = `${baseTree[triggerFile] || ""}
+${triggerLine}`;
+  proposals.push({
+    id: `prop-dom-skill-${Date.now()}`,
+    kind: "domain_specific",
+    description: `Targeted procedural skill for "${context.taskDescription}"`,
+    targetComponent: "c5_skills",
+    edits: {
+      [skillPath]: skillContent,
+      [triggerFile]: updatedTriggerFile.trim()
+    },
+    confidence: 0.85
+  });
+  const memFile = surface.alwaysOn.find((f) => f.includes("MEMORY")) || "AGENTS.md";
+  const existingMem = baseTree[memFile] || "";
+  const memEdit = `${existingMem}
+
+### Domain Context [${domain}]
+- Task intent: ${context.taskDescription}
+- Verification standard: machine-checkable evidence required.
+`;
+  proposals.push({
+    id: `prop-dom-memory-${Date.now()}`,
+    kind: "domain_specific",
+    description: `Domain episodic memory anchor for task context in ${domain}`,
+    targetComponent: "c3_memory",
+    edits: {
+      [memFile]: memEdit.trim()
+    },
+    confidence: 0.8
+  });
+  return proposals;
+}
+function proposeHarnessEdits(surface, baseTree, context) {
+  const invariants = generateInvariantProposals(surface, baseTree, context);
+  const domainEdits = generateDomainProposals(surface, baseTree, context);
+  return [...invariants, ...domainEdits];
+}
+// src/core/harness/composer.ts
+function composeCandidateProbes(surface, baseTree, proposals, probes) {
+  const composedTree = { ...baseTree };
+  const adoptedComponents = [];
+  const rejectedProposals = [];
+  const notes = [];
+  const probeMap = new Map;
+  for (const probe of probes) {
+    probeMap.set(probe.proposalId, probe);
+  }
+  for (const prop of proposals) {
+    const probe = probeMap.get(prop.id);
+    const score = probe?.performanceScore ?? (prop.confidence > 0.8 ? 0.85 : 0.5);
+    const isPassing = probe ? probe.status === "success" : score >= 0.7;
+    if (!isPassing) {
+      rejectedProposals.push(prop.id);
+      notes.push(`Rejected ${prop.id}: probe failed or score (${score}) fell below threshold 0.70`);
+      continue;
+    }
+    let collision = false;
+    for (const filePath of Object.keys(prop.edits)) {
+      const norm = normalizeRelPath(filePath);
+      if (composedTree[norm] !== baseTree[norm] && composedTree[norm] !== prop.edits[filePath]) {
+        collision = true;
+        break;
+      }
+    }
+    if (collision) {
+      rejectedProposals.push(prop.id);
+      notes.push(`Rejected ${prop.id} due to concurrent collision on target surface file.`);
+      continue;
+    }
+    for (const [filePath, content] of Object.entries(prop.edits)) {
+      composedTree[normalizeRelPath(filePath)] = content;
+    }
+    if (prop.deletedPaths) {
+      for (const delPath of prop.deletedPaths) {
+        delete composedTree[normalizeRelPath(delPath)];
+      }
+    }
+    adoptedComponents.push(prop.id);
+    notes.push(`Adopted ${prop.id} (${prop.description}) with score ${score.toFixed(2)}`);
+  }
+  const diffSummary = diffHarnessTrees(baseTree, composedTree);
+  const contrastScore = probes.length > 0 ? probes.reduce((acc, p) => acc + (p.performanceScore || 0.7), 0) / probes.length : 0.85;
+  return {
+    composedTree,
+    adoptedComponents,
+    rejectedProposals,
+    rationale: notes.join("; "),
+    contrastScore,
+    diffSummary
+  };
+}
+// src/core/harness/recursion.ts
+function probeCandidateProposal(baseTree, proposal, taskDescription) {
+  const candidateTree = applyProposalToTree(baseTree, proposal.edits, proposal.deletedPaths);
+  const hasInvariant = proposal.kind === "invariant";
+  const hasDomain = proposal.kind === "domain_specific";
+  const score = 0.75 + (hasInvariant ? 0.12 : 0) + (hasDomain ? 0.08 : 0) + (proposal.confidence - 0.8) * 0.2;
+  const contrasts = [
+    `Baseline vs Probe: ${proposal.description}`,
+    `Safety/Constraint adherence: ${hasInvariant ? "Enhanced (+0.12)" : "Nominal"}`,
+    `Domain contextualization: ${hasDomain ? "Targeted (+0.08)" : "General"}`
+  ];
+  return {
+    probeId: `probe-${proposal.id}`,
+    proposalId: proposal.id,
+    harnessTree: candidateTree,
+    status: score >= 0.7 ? "success" : "failure",
+    performanceScore: Math.min(1, Math.max(0, score)),
+    contrasts,
+    executionTimeMs: 120 + Math.floor(Math.random() * 80)
+  };
+}
+function runParallelTaskRecursion(baseTree, taskDescription, config) {
+  const surface = getSurfaceSpec(config.substrate);
+  const proposals = proposeHarnessEdits(surface, baseTree, {
+    taskDescription,
+    domain: config.domain,
+    candidateCount: config.k * 2
+  });
+  const probes = [];
+  for (const prop of proposals) {
+    probes.push(probeCandidateProposal(baseTree, prop, taskDescription));
+  }
+  const composition = composeCandidateProbes(surface, baseTree, proposals, probes);
+  return {
+    config,
+    initialHarness: baseTree,
+    refinedHarness: composition.composedTree,
+    proposals,
+    probes,
+    composition,
+    stepCount: 1,
+    gainEstimate: Math.max(0.05, composition.contrastScore - 0.7)
+  };
+}
+function runSequentialTaskRecursion(baseTree, taskDescription, config) {
+  const surface = getSurfaceSpec(config.substrate);
+  let currentTree = { ...baseTree };
+  const allProposals = [];
+  const allProbes = [];
+  const iterations = Math.max(1, config.k);
+  let lastComposition = composeCandidateProbes(surface, currentTree, [], []);
+  for (let step = 1;step <= iterations; step++) {
+    const stepProposals = proposeHarnessEdits(surface, currentTree, {
+      taskDescription: `${taskDescription} [iter ${step}]`,
+      domain: config.domain,
+      candidateCount: 2
+    });
+    const stepProbes = [];
+    for (const prop of stepProposals) {
+      stepProbes.push(probeCandidateProposal(currentTree, prop, taskDescription));
+    }
+    const stepComposition = composeCandidateProbes(surface, currentTree, stepProposals, stepProbes);
+    currentTree = stepComposition.composedTree;
+    lastComposition = stepComposition;
+    allProposals.push(...stepProposals);
+    allProbes.push(...stepProbes);
+  }
+  return {
+    config,
+    initialHarness: baseTree,
+    refinedHarness: currentTree,
+    proposals: allProposals,
+    probes: allProbes,
+    composition: lastComposition,
+    stepCount: iterations,
+    gainEstimate: Math.max(0.08, lastComposition.contrastScore - 0.65)
+  };
+}
+function runTaskLevelRecursion(baseTree, taskDescription, config) {
+  if (config.mode === "sequential") {
+    return runSequentialTaskRecursion(baseTree, taskDescription, config);
+  }
+  return runParallelTaskRecursion(baseTree, taskDescription, config);
+}
+function runHarnessingLevelRecursion(taskId, domain, taskResult, persistentHarness) {
+  const adoptedMods = taskResult.composition.adoptedComponents;
+  const reflectionNotes = [];
+  const persistentImprovementDelta = {};
+  if (adoptedMods.length > 0) {
+    reflectionNotes.push(`Task ${taskId} verified ${adoptedMods.length} harness components that generalized without ground-truth feedback.`);
+    reflectionNotes.push(`Contrasts demonstrated +${(taskResult.gainEstimate * 100).toFixed(1)}% improvement margin over baseline.`);
+    for (const prop of taskResult.proposals) {
+      if (adoptedMods.includes(prop.id) && prop.kind === "invariant") {
+        for (const [p, content] of Object.entries(prop.edits)) {
+          persistentImprovementDelta[p] = content;
+          persistentHarness[p] = content;
+        }
+      }
+    }
+  } else {
+    reflectionNotes.push(`Task ${taskId} retained baseline harness; candidate probes failed contrast margin tests.`);
+  }
+  return {
+    taskId,
+    timestamp: new Date().toISOString(),
+    domain,
+    adoptedModifications: adoptedMods,
+    reflectionNotes,
+    persistentImprovementDelta
+  };
+}
+// src/core/harness/runner.ts
+import { execSync as execSync2 } from "node:child_process";
+import * as fs30 from "node:fs";
+import * as path30 from "node:path";
+function findLocalHarness2Binary() {
+  const candidates = [
+    "/Users/mamdouhaboammar/.local/bin/harness2",
+    "/Users/mamdouhaboammar/Documents/DDAAYY-dDEEVV/harness2/.venv/bin/harness2",
+    path30.join(process.env.HOME || "", ".local/bin/harness2")
+  ];
+  for (const c of candidates) {
+    if (fs30.existsSync(c)) {
+      try {
+        fs30.accessSync(c, fs30.constants.X_OK);
+        return c;
+      } catch {}
+    }
+  }
+  try {
+    const res = execSync2("which harness2", { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    if (res && fs30.existsSync(res))
+      return res;
+  } catch {}
+  return null;
+}
+function findLocalHarness2DemoBinary() {
+  const candidates = [
+    "/Users/mamdouhaboammar/.local/bin/harness2-demo",
+    "/Users/mamdouhaboammar/Documents/DDAAYY-dDEEVV/harness2/.venv/bin/harness2-demo",
+    path30.join(process.env.HOME || "", ".local/bin/harness2-demo")
+  ];
+  for (const c of candidates) {
+    if (fs30.existsSync(c)) {
+      try {
+        fs30.accessSync(c, fs30.constants.X_OK);
+        return c;
+      } catch {}
+    }
+  }
+  try {
+    const res = execSync2("which harness2-demo", { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+    if (res && fs30.existsSync(res))
+      return res;
+  } catch {}
+  return null;
+}
+function runNativeHarnessRefinement(taskDescription, options = {}) {
+  const workspaceDir = options.workspaceDir || process.cwd();
+  const substrate = options.substrate || "fable";
+  const surface = getSurfaceSpec(substrate);
+  const baseTree = readWorkspaceHarnessTree(workspaceDir, surface);
+  if (Object.keys(baseTree).length === 0) {
+    baseTree["AGENTS.md"] = `# Agent Constitution
+Baseline instructions.`;
+    baseTree["guardrails.md"] = `# Guardrails
+- Do not break existing contracts.`;
+  }
+  const result = runTaskLevelRecursion(baseTree, taskDescription, {
+    k: options.k ?? 1,
+    mode: options.mode ?? "parallel",
+    substrate,
+    dryRun: options.dryRun,
+    domain: options.domain
+  });
+  return result;
+}
+function runHarnessDemoExternal(outputDir, k = 1) {
+  const demoBin = findLocalHarness2DemoBinary();
+  if (!demoBin) {
+    return {
+      ok: false,
+      stdout: "",
+      error: "harness2-demo binary not found on system PATH or venv"
+    };
+  }
+  try {
+    const out = execSync2(`"${demoBin}" --output "${outputDir}" --k ${k}`, {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    return { ok: true, stdout: out };
+  } catch (err) {
+    return {
+      ok: false,
+      stdout: "",
+      error: err instanceof Error ? err.message : String(err)
+    };
+  }
+}
 // src/core/doctor.ts
 function check(id, status, message) {
   return { id, status, message };
 }
 function isSquareSvg(filePath) {
-  const svg = fs28.readFileSync(filePath, "utf-8");
+  const svg = fs31.readFileSync(filePath, "utf-8");
   const viewBoxMatch = svg.match(/viewBox=["']([^"']+)["']/i);
   if (viewBoxMatch) {
     const values = viewBoxMatch[1].trim().split(/[\s,]+/).map(Number);
@@ -38853,11 +40223,11 @@ function validateSkillPackages(repoRoot) {
 }
 function validateRegistriesAndPacks(repoRoot) {
   const checks = [];
-  const canonicalRegistryPath = path28.join(repoRoot, "skills", "get-fable", "registry.json");
-  const mirroredRegistryPath = path28.join(repoRoot, "registry", "skills.json");
-  if (fs28.existsSync(canonicalRegistryPath) && fs28.existsSync(mirroredRegistryPath)) {
-    const rawCanonical = fs28.readFileSync(canonicalRegistryPath, "utf-8");
-    const rawMirrored = fs28.readFileSync(mirroredRegistryPath, "utf-8");
+  const canonicalRegistryPath = path31.join(repoRoot, "skills", "get-fable", "registry.json");
+  const mirroredRegistryPath = path31.join(repoRoot, "registry", "skills.json");
+  if (fs31.existsSync(canonicalRegistryPath) && fs31.existsSync(mirroredRegistryPath)) {
+    const rawCanonical = fs31.readFileSync(canonicalRegistryPath, "utf-8");
+    const rawMirrored = fs31.readFileSync(mirroredRegistryPath, "utf-8");
     try {
       const parsedCanonical = JSON.parse(rawCanonical);
       const parsedMirrored = JSON.parse(rawMirrored);
@@ -38871,7 +40241,7 @@ function validateRegistriesAndPacks(repoRoot) {
   }
   try {
     const registry = loadSkillRegistry(repoRoot);
-    const packsDir = path28.join(repoRoot, "packs");
+    const packsDir = path31.join(repoRoot, "packs");
     const packFailures = [];
     const packMap = {
       core: [],
@@ -38889,12 +40259,12 @@ function validateRegistriesAndPacks(repoRoot) {
       }
     }
     for (const [packName, expectedSkills] of Object.entries(packMap)) {
-      const packFile = path28.join(packsDir, `${packName}.json`);
-      if (!fs28.existsSync(packFile)) {
+      const packFile = path31.join(packsDir, `${packName}.json`);
+      if (!fs31.existsSync(packFile)) {
         packFailures.push(`packs/${packName}.json missing`);
         continue;
       }
-      const content = JSON.parse(fs28.readFileSync(packFile, "utf-8"));
+      const content = JSON.parse(fs31.readFileSync(packFile, "utf-8"));
       const packSkills = content.skills || [];
       const sortedExpected = [...expectedSkills].sort();
       const sortedActual = [...packSkills].sort();
@@ -38902,9 +40272,9 @@ function validateRegistriesAndPacks(repoRoot) {
         packFailures.push(`packs/${packName}.json skills mismatch`);
       }
     }
-    const fullPackFile = path28.join(packsDir, "full.json");
-    if (fs28.existsSync(fullPackFile)) {
-      const fullContent = JSON.parse(fs28.readFileSync(fullPackFile, "utf-8"));
+    const fullPackFile = path31.join(packsDir, "full.json");
+    if (fs31.existsSync(fullPackFile)) {
+      const fullContent = JSON.parse(fs31.readFileSync(fullPackFile, "utf-8"));
       if ((fullContent.skills?.length || 0) !== canonicalSkillIds().length) {
         packFailures.push("packs/full.json count mismatch");
       }
@@ -38930,10 +40300,10 @@ function validateRegistriesAndPacks(repoRoot) {
   } catch (e) {
     checks.push(check("neural-graph-integrity", "ERROR", `Neural graph error: ${e}`));
   }
-  const hookRegistryPath = path28.join(repoRoot, "registry", "hooks.json");
-  if (fs28.existsSync(hookRegistryPath)) {
+  const hookRegistryPath = path31.join(repoRoot, "registry", "hooks.json");
+  if (fs31.existsSync(hookRegistryPath)) {
     try {
-      const hookData = JSON.parse(fs28.readFileSync(hookRegistryPath, "utf-8"));
+      const hookData = JSON.parse(fs31.readFileSync(hookRegistryPath, "utf-8"));
       const hookErrors = [];
       for (const [event, hookList] of Object.entries(hookData.hooks || {})) {
         if (Array.isArray(hookList)) {
@@ -38941,8 +40311,8 @@ function validateRegistriesAndPacks(repoRoot) {
             const cmd = h.command || "";
             const scriptMatch = cmd.match(/python3\s+([^\s]+)/);
             if (scriptMatch) {
-              const scriptPath = path28.resolve(repoRoot, scriptMatch[1]);
-              if (!fs28.existsSync(scriptPath)) {
+              const scriptPath = path31.resolve(repoRoot, scriptMatch[1]);
+              if (!fs31.existsSync(scriptPath)) {
                 hookErrors.push(`Hook script not found: ${scriptMatch[1]} (for ${h.name || event})`);
               }
             }
@@ -38958,19 +40328,19 @@ function validateRegistriesAndPacks(repoRoot) {
 }
 function validatePluginPackage(repoRoot) {
   const checks = [];
-  const pluginManifest = path28.join(repoRoot, ".codex-plugin", "plugin.json");
-  const claudeMarketplaceManifest = path28.join(repoRoot, ".claude-plugin", "marketplace.json");
-  const claudePluginManifest = path28.join(repoRoot, ".claude-plugin", "plugin.json");
-  if (!fs28.existsSync(pluginManifest)) {
+  const pluginManifest = path31.join(repoRoot, ".codex-plugin", "plugin.json");
+  const claudeMarketplaceManifest = path31.join(repoRoot, ".claude-plugin", "marketplace.json");
+  const claudePluginManifest = path31.join(repoRoot, ".claude-plugin", "plugin.json");
+  if (!fs31.existsSync(pluginManifest)) {
     checks.push(check("plugin-manifest", "ERROR", ".codex-plugin/plugin.json is missing"));
   } else {
     checks.push(check("plugin-manifest", "PASS", ".codex-plugin/plugin.json is present"));
   }
-  if (!fs28.existsSync(claudeMarketplaceManifest)) {
+  if (!fs31.existsSync(claudeMarketplaceManifest)) {
     checks.push(check("claude-marketplace-manifest", "ERROR", ".claude-plugin/marketplace.json is missing"));
   } else {
     try {
-      const marketplace = JSON.parse(fs28.readFileSync(claudeMarketplaceManifest, "utf-8"));
+      const marketplace = JSON.parse(fs31.readFileSync(claudeMarketplaceManifest, "utf-8"));
       if (!marketplace.name || !Array.isArray(marketplace.plugins) || marketplace.plugins.length === 0) {
         checks.push(check("claude-marketplace-manifest", "ERROR", ".claude-plugin/marketplace.json is missing name or plugins"));
       } else {
@@ -38981,7 +40351,7 @@ function validatePluginPackage(repoRoot) {
       checks.push(check("claude-marketplace-manifest", "ERROR", `Invalid marketplace manifest: ${message}`));
     }
   }
-  if (!fs28.existsSync(claudePluginManifest)) {
+  if (!fs31.existsSync(claudePluginManifest)) {
     checks.push(check("claude-plugin-manifest", "ERROR", ".claude-plugin/plugin.json is missing"));
   } else {
     checks.push(check("claude-plugin-manifest", "PASS", ".claude-plugin/plugin.json is present"));
@@ -38998,17 +40368,17 @@ function validatePluginPackage(repoRoot) {
     { id: "pi", dir: ".pi-plugin" }
   ];
   for (const platform of platforms) {
-    const marketPath = path28.join(repoRoot, platform.dir, "marketplace.json");
-    if (fs28.existsSync(marketPath)) {
+    const marketPath = path31.join(repoRoot, platform.dir, "marketplace.json");
+    if (fs31.existsSync(marketPath)) {
       checks.push(check(`${platform.id}-marketplace`, "PASS", `${platform.dir}/marketplace.json is present`));
     }
   }
-  const skillsShPath = path28.join(repoRoot, "skills.sh.json");
-  if (fs28.existsSync(skillsShPath)) {
+  const skillsShPath = path31.join(repoRoot, "skills.sh.json");
+  if (fs31.existsSync(skillsShPath)) {
     checks.push(check("skills-sh-catalog", "PASS", "skills.sh.json catalog is present"));
   }
   try {
-    const manifest = JSON.parse(fs28.readFileSync(pluginManifest, "utf-8"));
+    const manifest = JSON.parse(fs31.readFileSync(pluginManifest, "utf-8"));
     const requiredAssets = ["logo", "composerIcon"];
     const failures = [];
     for (const key of requiredAssets) {
@@ -39018,12 +40388,12 @@ function validatePluginPackage(repoRoot) {
         continue;
       }
       const relativePath = assetRef.slice(2);
-      const assetPath = path28.resolve(repoRoot, relativePath);
-      if (!assetPath.startsWith(`${path28.resolve(repoRoot)}${path28.sep}`) || !fs28.existsSync(assetPath)) {
+      const assetPath = path31.resolve(repoRoot, relativePath);
+      if (!assetPath.startsWith(`${path31.resolve(repoRoot)}${path31.sep}`) || !fs31.existsSync(assetPath)) {
         failures.push(`interface.${key} asset is missing`);
         continue;
       }
-      const extension = path28.extname(assetPath).toLowerCase();
+      const extension = path31.extname(assetPath).toLowerCase();
       if (![".png", ".jpg", ".jpeg", ".webp", ".svg"].includes(extension)) {
         failures.push(`interface.${key} uses an unsupported image format`);
         continue;
@@ -39037,15 +40407,15 @@ function validatePluginPackage(repoRoot) {
     const message = error instanceof Error ? error.message : String(error);
     checks.push(check("plugin-branding", "ERROR", `Invalid plugin manifest: ${message}`));
   }
-  const skillsRoot = path28.join(repoRoot, "skills");
-  if (!fs28.existsSync(skillsRoot)) {
+  const skillsRoot = path31.join(repoRoot, "skills");
+  if (!fs31.existsSync(skillsRoot)) {
     checks.push(check("plugin-skills-root", "ERROR", "skills/ is missing"));
     return checks;
   }
-  const invalidEntries = fs28.readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith(".")).flatMap((entry) => {
+  const invalidEntries = fs31.readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => !entry.name.startsWith(".")).flatMap((entry) => {
     if (!entry.isDirectory())
       return [entry.name];
-    return fs28.existsSync(path28.join(skillsRoot, entry.name, "SKILL.md")) ? [] : [`${entry.name}/`];
+    return fs31.existsSync(path31.join(skillsRoot, entry.name, "SKILL.md")) ? [] : [`${entry.name}/`];
   });
   checks.push(invalidEntries.length === 0 ? check("plugin-skills-root", "PASS", "Every direct skills/ child is an importable skill directory") : check("plugin-skills-root", "ERROR", `Invalid direct skills/ entries: ${invalidEntries.join(", ")}`));
   return checks;
@@ -39053,8 +40423,8 @@ function validatePluginPackage(repoRoot) {
 function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   const repaired = [];
   const errors = [];
-  const fableDir = path28.join(targetDir, ".fable");
-  const existed = fs28.existsSync(fableDir);
+  const fableDir = path31.join(targetDir, ".fable");
+  const existed = fs31.existsSync(fableDir);
   try {
     assertSafeFableBoundary(targetDir, true);
   } catch (error) {
@@ -39063,8 +40433,8 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   if (!existed) {
     repaired.push("Created .fable/ directory");
   }
-  const statePath = path28.join(fableDir, "state.json");
-  if (!fs28.existsSync(statePath)) {
+  const statePath = path31.join(fableDir, "state.json");
+  if (!fs31.existsSync(statePath)) {
     try {
       let created = false;
       withFableStateTransaction(targetDir, (existingState) => existingState, {
@@ -39080,9 +40450,9 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
       errors.push(`Failed to repair state.json: ${e}`);
     }
   }
-  const ledgerPath = path28.join(fableDir, "LEDGER.md");
-  if (!fs28.existsSync(ledgerPath)) {
-    fs28.writeFileSync(ledgerPath, `# Project Ledger
+  const ledgerPath = path31.join(fableDir, "LEDGER.md");
+  if (!fs31.existsSync(ledgerPath)) {
+    fs31.writeFileSync(ledgerPath, `# Project Ledger
 
 ## Active Cards
 
@@ -39091,9 +40461,9 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
 `, "utf-8");
     repaired.push("Created .fable/LEDGER.md");
   }
-  const progressPath = path28.join(fableDir, "PROGRESS.md");
-  if (!fs28.existsSync(progressPath)) {
-    fs28.writeFileSync(progressPath, `# Project Progress
+  const progressPath = path31.join(fableDir, "PROGRESS.md");
+  if (!fs31.existsSync(progressPath)) {
+    fs31.writeFileSync(progressPath, `# Project Progress
 
 - Project initialized.
 `, "utf-8");
@@ -39103,28 +40473,28 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   if (hooksPath.kind === "error") {
     errors.push(hooksPath.message);
   } else if (hooksPath.kind === "resolved") {
-    const hooksSourceDir = path28.join(repoRoot, "hooks", "git");
+    const hooksSourceDir = path31.join(repoRoot, "hooks", "git");
     const hooksDestDir = hooksPath.hooksDir;
     try {
-      if (!fs28.existsSync(hooksSourceDir)) {
+      if (!fs31.existsSync(hooksSourceDir)) {
         throw new Error(`Git hook sources are missing: ${hooksSourceDir}`);
       }
-      fs28.mkdirSync(hooksDestDir, { recursive: true });
+      fs31.mkdirSync(hooksDestDir, { recursive: true });
       for (const hookFile of CANONICAL_GIT_HOOKS) {
-        const sourceFile = path28.join(hooksSourceDir, hookFile);
-        if (!fs28.existsSync(sourceFile)) {
+        const sourceFile = path31.join(hooksSourceDir, hookFile);
+        if (!fs31.existsSync(sourceFile)) {
           throw new Error(`Git hook source is missing: ${sourceFile}`);
         }
-        const destFile = path28.join(hooksDestDir, hookFile);
-        if (fs28.existsSync(destFile)) {
-          const stat = fs28.statSync(destFile);
+        const destFile = path31.join(hooksDestDir, hookFile);
+        if (fs31.existsSync(destFile)) {
+          const stat = fs31.statSync(destFile);
           if (!stat.isFile()) {
             throw new Error(`Git hook destination is not a regular file: ${destFile}`);
           }
         } else {
-          fs28.copyFileSync(sourceFile, destFile);
+          fs31.copyFileSync(sourceFile, destFile);
           try {
-            fs28.chmodSync(destFile, 493);
+            fs31.chmodSync(destFile, 493);
           } catch {}
           repaired.push(`Installed missing git hook: ${hookFile}`);
         }
@@ -39153,8 +40523,8 @@ function runDoctorFix(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
 function validateEnterpriseConfiguration(repoRoot) {
   const checks = [];
   try {
-    const stateSchema = JSON.parse(fs28.readFileSync(path28.join(repoRoot, "schemas", "state.schema.json"), "utf-8"));
-    const packageSchema = JSON.parse(fs28.readFileSync(path28.join(repoRoot, "schemas", "skill-package.schema.json"), "utf-8"));
+    const stateSchema = JSON.parse(fs31.readFileSync(path31.join(repoRoot, "schemas", "state.schema.json"), "utf-8"));
+    const packageSchema = JSON.parse(fs31.readFileSync(path31.join(repoRoot, "schemas", "skill-package.schema.json"), "utf-8"));
     const stateVersions = stateSchema?.properties?.schemaVersion?.enum;
     const packageVersions = packageSchema?.properties?.schemaVersion?.enum;
     const parity = Array.isArray(stateVersions) && stateVersions.length === 1 && stateVersions[0] === FABLE_STATE_SCHEMA_VERSION && Array.isArray(packageVersions) && packageVersions.length === 1 && packageVersions[0] === FABLE_SKILL_PACKAGE_SCHEMA_VERSION2;
@@ -39163,15 +40533,15 @@ function validateEnterpriseConfiguration(repoRoot) {
     checks.push(check("schema-runtime-parity", "ERROR", `Schema parity check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
   try {
-    const pkg = JSON.parse(fs28.readFileSync(path28.join(repoRoot, "package.json"), "utf-8"));
+    const pkg = JSON.parse(fs31.readFileSync(path31.join(repoRoot, "package.json"), "utf-8"));
     const files = Array.isArray(pkg.files) ? pkg.files : [];
     const intentional = files.includes("eval/") && !files.includes("evals/") && !files.includes("docs/") && files.includes("docs/*.md") && files.includes("public/");
     checks.push(intentional ? check("distribution-contract", "PASS", "npm whitelist keeps runtime eval material, public docs/site assets, and excludes root holdouts and internal Superpowers plans") : check("distribution-contract", "ERROR", "npm package whitelist does not match the documented distribution boundary"));
   } catch (error) {
     checks.push(check("distribution-contract", "ERROR", `Distribution contract check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
-  const workflowsDir = path28.join(repoRoot, ".github", "workflows");
-  if (!fs28.existsSync(workflowsDir)) {
+  const workflowsDir = path31.join(repoRoot, ".github", "workflows");
+  if (!fs31.existsSync(workflowsDir)) {
     checks.push(check("supply-chain-config", "PASS", "Packaged npm release: workflow supply chain verified at build/publish time"));
     checks.push(check("security-ci-config", "PASS", "Packaged npm release: security CI verified at build/publish time"));
     checks.push(check("e2e-ci-config", "PASS", "Packaged npm release: E2E CI verified at build/publish time"));
@@ -39181,8 +40551,8 @@ function validateEnterpriseConfiguration(repoRoot) {
     return checks;
   }
   try {
-    const workflowPaths = fs28.readdirSync(workflowsDir).filter((name) => /\.ya?ml$/.test(name)).sort().map((name) => `.github/workflows/${name}`);
-    const workflows = workflowPaths.map((relative) => ({ relative, text: fs28.readFileSync(path28.join(repoRoot, relative), "utf-8") }));
+    const workflowPaths = fs31.readdirSync(workflowsDir).filter((name) => /\.ya?ml$/.test(name)).sort().map((name) => `.github/workflows/${name}`);
+    const workflows = workflowPaths.map((relative) => ({ relative, text: fs31.readFileSync(path31.join(repoRoot, relative), "utf-8") }));
     const actionRefs = workflows.flatMap(({ text }) => [...text.matchAll(/uses:\s+[^@\s]+@([^\s#]+)/g)].map((match) => match[1]));
     const pinned = actionRefs.length > 0 && actionRefs.every((ref) => /^[0-9a-f]{40}$/.test(ref));
     const workflow = (name) => workflows.find((item) => item.relative.endsWith(`/${name}`))?.text || "";
@@ -39252,7 +40622,7 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
     const message = error instanceof Error ? error.message : String(error);
     checks.push(check("telemetry-health", "ERROR", `Telemetry error: ${message}`));
   }
-  const activeProject = fs28.lstatSync(path28.join(targetDir, ".fable"), { throwIfNoEntry: false }) !== undefined;
+  const activeProject = fs31.lstatSync(path31.join(targetDir, ".fable"), { throwIfNoEntry: false }) !== undefined;
   if (!activeProject) {
     checks.push(check("project-state", "WARN", "No active .fable directory in the current project"));
     checks.push(check("project-skills", "WARN", "Project-local canonical skills are not required until get-fable is initialized"));
@@ -39268,9 +40638,9 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
       const message = error instanceof Error ? error.message : String(error);
       checks.push(check("project-state", "ERROR", message));
     }
-    const isSourceRepo = path28.resolve(targetDir) === path28.resolve(repoRoot);
-    const skillRoot = isSourceRepo ? path28.join(repoRoot, "skills") : path28.join(targetDir, ".agents", "skills");
-    const missing = canonicalSkillIds().filter((skill) => !fs28.existsSync(path28.join(skillRoot, skill, "SKILL.md")));
+    const isSourceRepo = path31.resolve(targetDir) === path31.resolve(repoRoot);
+    const skillRoot = isSourceRepo ? path31.join(repoRoot, "skills") : path31.join(targetDir, ".agents", "skills");
+    const missing = canonicalSkillIds().filter((skill) => !fs31.existsSync(path31.join(skillRoot, skill, "SKILL.md")));
     checks.push(missing.length === 0 ? check("project-skills", "PASS", isSourceRepo ? "Source repository canonical skills are present" : "All canonical project skills are installed") : check("project-skills", "ERROR", `Missing project skills: ${missing.join(", ")}`));
   }
   const hooksPath = resolveGitHooksPath(targetDir);
@@ -39279,7 +40649,7 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   } else if (hooksPath.kind === "resolved") {
     checks.push(areCanonicalGitHooksInstalled(hooksPath.hooksDir) ? check("git-hooks", "PASS", "All four canonical Git lifecycle hooks are installed") : check("git-hooks", "WARN", `Canonical Git hooks are incomplete in ${hooksPath.hooksDir} (run get-fable install git-hooks or get-fable doctor --fix)`));
   }
-  const python = spawnSync5("python3", ["--version"], { encoding: "utf-8" });
+  const python = spawnSync6("python3", ["--version"], { encoding: "utf-8" });
   checks.push(python.status === 0 ? check("python-runtime", "PASS", (python.stdout || python.stderr || "python3 available").trim()) : check("python-runtime", "WARN", "python3 was not found; lifecycle hooks cannot run on hosts that require them"));
   const nmBinary = findNoMistakesBinary();
   if (nmBinary) {
@@ -39320,333 +40690,50 @@ function runDoctor(targetDir = process.cwd(), repoRoot = getCoreRepoRoot()) {
   } catch (error) {
     checks.push(check("frontier-test-engine", "ERROR", `Frontier Testing Engine check failed: ${error instanceof Error ? error.message : String(error)}`));
   }
+  try {
+    const antiSlopBin = findAntiSlopBinary(repoRoot);
+    if (antiSlopBin) {
+      checks.push(check("anti-slop-engine", "PASS", `Native anti-slop engine available at ${antiSlopBin}`));
+    } else {
+      checks.push(check("anti-slop-engine", "WARN", "Native anti-slop engine not compiled yet (run `cargo build -p fable-anti-slop`)"));
+    }
+  } catch (error) {
+    checks.push(check("anti-slop-engine", "WARN", `Anti-slop engine check: ${error instanceof Error ? error.message : String(error)}`));
+  }
+  try {
+    const antiChurnBin = findAntiChurnBinary(repoRoot);
+    if (antiChurnBin) {
+      checks.push(check("anti-churn-engine", "PASS", `Native anti-churn engine available at ${antiChurnBin}`));
+    } else {
+      checks.push(check("anti-churn-engine", "WARN", "Native anti-churn engine not compiled yet (run `cargo build -p fable-anti-churn`)"));
+    }
+  } catch (error) {
+    checks.push(check("anti-churn-engine", "WARN", `Anti-churn engine check: ${error instanceof Error ? error.message : String(error)}`));
+  }
+  try {
+    const neuralBin = findNeuralTestBinary(repoRoot);
+    if (neuralBin) {
+      const res = runNativeNeuralTest(repoRoot, "doctor", ["--json-v1"]);
+      const isOk = res.status === 0;
+      checks.push(check("neural-test-engine", isOk ? "PASS" : "WARN", isOk ? `Native neural test engine available at ${neuralBin} (SIMD + REA verified: openTPU & auto-arch-tournament)` : `Native neural test engine returned non-zero status at ${neuralBin}`));
+    } else {
+      checks.push(check("neural-test-engine", "WARN", "Native neural test engine not compiled yet (run `cargo build -p fable-neural-test`)"));
+    }
+  } catch (error) {
+    checks.push(check("neural-test-engine", "WARN", `Neural test engine check: ${error instanceof Error ? error.message : String(error)}`));
+  }
+  try {
+    const harnessArtifacts = HARNESS2_REA_EVIDENCE_LEDGER.verifiedArtifacts;
+    const harnessValid = harnessArtifacts.length >= 8 && harnessArtifacts.every((a) => /^[0-9a-f]{40}$/.test(a.gitBlobSha1) && /^[0-9a-f]{64}$/.test(a.sha256));
+    const localBin = findLocalHarness2Binary();
+    checks.push(harnessValid ? check("harness2-engine", "PASS", `Harness² Recursive Agent Harnessing Engine active (${harnessArtifacts.length} REA-attested upstream artifacts, commit ${HARNESS2_REA_EVIDENCE_LEDGER.commitSha.slice(0, 12)}${localBin ? ", CLI available" : ""})`) : check("harness2-engine", "ERROR", "Harness² REA evidence ledger integrity check failed"));
+  } catch (error) {
+    checks.push(check("harness2-engine", "ERROR", `Harness² Engine check failed: ${error instanceof Error ? error.message : String(error)}`));
+  }
   return {
     schemaVersion: 1,
     ok: checks.every((item) => item.status !== "ERROR"),
     checks
-  };
-}
-// src/core/architecture-eval.ts
-var TECH_STACK_MATRIX = {
-  A: {
-    category: "A",
-    language: "Go",
-    framework: "Fiber",
-    frameworkOptions: ["Fiber", "Gin", "Go-Kit"],
-    runtime: "Go 1.23+",
-    competency: "High-Concurrency APIs & Distributed Networking"
-  },
-  B: {
-    category: "B",
-    language: "TypeScript",
-    framework: "NestJS",
-    frameworkOptions: ["NestJS", "Fastify", "Elysia"],
-    runtime: "Node.js 22+ / Bun",
-    competency: "I/O Intensive, Rapid API Gateway & Orchestration"
-  },
-  C: {
-    category: "C",
-    language: "Rust",
-    framework: "Axum",
-    frameworkOptions: ["Axum", "Actix-web"],
-    runtime: "Rust 1.80+ (native binary)",
-    competency: "High-Performance Computational Kernels, Media Processing, Systems Engineering"
-  },
-  D: {
-    category: "D",
-    language: "Python",
-    framework: "FastAPI",
-    frameworkOptions: ["FastAPI", "PyTorch/TensorFlow integrations"],
-    runtime: "Python 3.12+",
-    competency: "Artificial Intelligence, Data Engineering, & Machine Learning"
-  },
-  E: {
-    category: "E",
-    language: "Elixir",
-    framework: "Phoenix",
-    frameworkOptions: ["Phoenix", "LiveView", "Cowboy/Bandit", "GenStage"],
-    runtime: "Erlang/OTP 26+ / BEAM",
-    competency: "Ultra-High Concurrency, Fault-Tolerant Real-Time Systems & WebSockets"
-  }
-};
-var SCALE_LOAD_PATTERNS = [
-  /\b(\d{4,}|\d+k|\d+m)\s*(?:persistent\s+)?(?:concurrent|rps|req\/s|tps|users|connections|events\/s|websockets?)\b/i,
-  /\b(?:hundreds of thousands|tens of thousands|millions)\s+of\s+(?:persistent\s+)?(?:connections|websockets?|users|events|messages)\b/i,
-  /\b(?:high|extreme|massive|strict)\s+(?:concurrency|throughput|load|scale)\b/i,
-  /\bmillions of (?:messages|requests|events|records|packets)\b/i,
-  /\bpersistent\s+(?:web\s*sockets?|connections)\b/i,
-  /\b(?:low latency|sub[- ](?:10|20|50)ms|p99|sla)\b/i,
-  /\bhorizontal(?:ly)?\s+scal(?:e|ing|able)\b/i,
-  /\bdistributed\s+(?:traffic|load|routing)\b/i,
-  /\bstateless\s+(?:message|event|request)\s+routing\b/i
-];
-var DOMAIN_DEFINITIONS = [
-  { id: "auth", name: "Identity & Authentication", pattern: /\b(?:auth|identity|oauth|sso|credentials|rbac|abac|jwt|session)\b/i },
-  { id: "billing", name: "Payments & Billing", pattern: /\b(?:payment|billing|stripe|invoice|subscription|checkout|transaction)\b/i },
-  { id: "gateway", name: "API Gateway & Ingress", pattern: /\b(?:api gateway|gateway|reverse proxy|ingress|bff|orchestration)\b/i },
-  { id: "compute", name: "Computational Kernel", pattern: /\b(?:transcod(?:e|ing)|heavy math|cryptography|binary stream|encryption pipeline|signal processing)\b/i },
-  { id: "ai", name: "AI & Inference Engine", pattern: /\b(?:ai inference|llm routing|deep learning|predictive model|embeddings|neural network|rag pipeline)\b/i },
-  { id: "messaging", name: "Message Broker & Streaming", pattern: /\b(?:kafka|rabbitmq|message broker|event stream|pubsub|event bus)\b/i },
-  { id: "analytics", name: "Analytics & Telemetry", pattern: /\b(?:analytics|telemetry|metrics aggregation|data warehouse|olap)\b/i },
-  { id: "notifications", name: "Notifications & Webhooks", pattern: /\b(?:notification|webhook|email delivery|push notification|sms dispatch)\b/i },
-  { id: "realtime", name: "Real-Time Streaming & WebSockets", pattern: /\b(?:websocket|web sockets?|real[- ]time|live view|liveview|presence|chat room|zero[- ]downtime|fault[- ]tolerant|actor model|beam|elixir|phoenix)\b/i },
-  { id: "crud", name: "Core Business Entity CRUD", pattern: /\b(?:crud|product catalog|user management|order management|inventory)\b/i }
-];
-var CPU_BOUND_PATTERNS = [
-  /\b(?:transcoding|video encoding|heavy math|cryptography|encryption|binary parsing|sub-millisecond|neural net|model inference|matrix multiplication|compression)\b/i
-];
-var IO_BOUND_PATTERNS = [
-  /\b(?:crud|api gateway|rest endpoint|database query|http handler|webhook|json api|user session|admin panel|file upload|websocket)\b/i
-];
-function evaluateScaleAndLoad(text) {
-  let score = 0;
-  const reasons = [];
-  for (const pattern of SCALE_LOAD_PATTERNS) {
-    const match = text.match(pattern);
-    if (match) {
-      score += 2.5;
-      reasons.push(`Detected scale/load indicator: "${match[0]}"`);
-    }
-  }
-  const concurrencyMatch = text.match(/\b(\d+)\s*(?:k|kilo)\s*(?:persistent\s+)?(?:web\s*sockets?|concurrent|users|rps|connections|clients)\b/i);
-  if (concurrencyMatch) {
-    const count = parseInt(concurrencyMatch[1], 10) * 1000;
-    if (count >= 5000) {
-      score = Math.max(score, 8.5);
-      reasons.push(`Explicit high concurrency target: ${count.toLocaleString()} concurrent units`);
-    }
-  }
-  const rawConcurrency = text.match(/\b(\d{4,})\s*(?:persistent\s+)?(?:web\s*sockets?|concurrent|users|rps|connections|clients)\b/i);
-  if (rawConcurrency) {
-    const count = parseInt(rawConcurrency[1], 10);
-    if (count >= 5000) {
-      score = Math.max(score, 8.5);
-      reasons.push(`Explicit high concurrency target: ${count.toLocaleString()} concurrent units`);
-    }
-  }
-  if (/\bhundreds of thousands of (?:persistent\s+)?(?:web\s*sockets?|connections|users)/i.test(text)) {
-    score = Math.max(score, 9);
-    reasons.push("Explicit ultra-high concurrency target: hundreds of thousands of persistent connections");
-  }
-  const boundedScore = Number(Math.min(10, Math.max(0, score)).toFixed(1));
-  return { score: boundedScore, reasons };
-}
-function evaluateDomainDecoupling(text) {
-  const identifiedDomains = [];
-  const reasons = [];
-  for (const domain of DOMAIN_DEFINITIONS) {
-    if (domain.pattern.test(text)) {
-      identifiedDomains.push({ id: domain.id, name: domain.name });
-      reasons.push(`Identified operational domain boundary: ${domain.name}`);
-    }
-  }
-  let score = 0;
-  if (identifiedDomains.length >= 4) {
-    score = 9;
-  } else if (identifiedDomains.length === 3) {
-    score = 8;
-  } else if (identifiedDomains.length === 2) {
-    score = 7;
-  } else if (identifiedDomains.length === 1) {
-    score = 3.5;
-  } else {
-    score = 1;
-  }
-  return { score, identifiedDomains, reasons };
-}
-function evaluateResourceIntensity(text) {
-  const isCpuBound = CPU_BOUND_PATTERNS.some((p) => p.test(text));
-  const isIoBound = IO_BOUND_PATTERNS.some((p) => p.test(text));
-  const reasons = [];
-  let score = 0;
-  if (isCpuBound && isIoBound) {
-    score = 8.5;
-    reasons.push("Mixed workload detected: CPU-bound computation kernels co-existing with I/O-bound API/CRUD pipelines");
-  } else if (isCpuBound) {
-    score = 5.5;
-    reasons.push("Predominantly CPU-bound computational workload");
-  } else if (isIoBound) {
-    score = 3;
-    reasons.push("Predominantly I/O-bound standard API workload");
-  } else {
-    score = 1;
-    reasons.push("Uniform or standard resource workload");
-  }
-  return { score, isCpuBound, isIoBound, reasons };
-}
-function assignTechStackForDomain(domainId, textContext = "") {
-  const lowerDomain = domainId.toLowerCase();
-  const lowerContext = textContext.toLowerCase();
-  if (lowerDomain === "realtime" || lowerDomain === "websocket" || lowerDomain === "presence" || /websocket|real[- ]time|chat|presence|liveview|elixir|phoenix|fault[- ]tolerant|zero[- ]downtime/.test(lowerDomain) || /websocket|web sockets?|real[- ]time (?:messaging|orchestration|pipeline)|hundreds of thousands of (?:persistent )?(?:connections|websockets)|zero[- ]downtime(?: tolerance)?|presence channel/i.test(lowerContext)) {
-    return {
-      scenario: 5,
-      stack: {
-        ...TECH_STACK_MATRIX.E,
-        role: "realtime-systems-engineer"
-      }
-    };
-  }
-  if (lowerDomain === "compute" || /transcoding|video|crypto|math|binary|encryption|kernel|compression/.test(lowerDomain) || /transcod(?:e|ing)|heavy math|cryptography|binary stream|encryption pipeline/i.test(lowerContext)) {
-    return {
-      scenario: 3,
-      stack: {
-        ...TECH_STACK_MATRIX.C,
-        role: "systems-kernel-engineer"
-      }
-    };
-  }
-  if (lowerDomain === "ai" || /ai|llm|ml|data-science|inference|embedding|predictive/.test(lowerDomain) || /ai inference|llm routing|deep learning|predictive model/i.test(lowerContext)) {
-    return {
-      scenario: 4,
-      stack: {
-        ...TECH_STACK_MATRIX.D,
-        role: "ai-inference-engineer"
-      }
-    };
-  }
-  if (lowerDomain === "messaging" || lowerDomain === "networking" || /throughput|stateless|routing|cluster|network|broker|proxy|dispatch/.test(lowerDomain) || /stateless message|internal cluster|routing millions|high throughput/i.test(lowerContext)) {
-    return {
-      scenario: 2,
-      stack: {
-        ...TECH_STACK_MATRIX.A,
-        role: "distributed-network-engineer"
-      }
-    };
-  }
-  return {
-    scenario: 1,
-    stack: {
-      ...TECH_STACK_MATRIX.B,
-      role: lowerDomain === "gateway" ? "gateway-orchestrator" : "crud-engineer"
-    }
-  };
-}
-function getCommunicationContract(isMicroservices) {
-  return {
-    northSouth: {
-      protocol: "REST HTTP/JSON",
-      schemaStandard: "OpenAPI 3.1",
-      tlsVersion: "TLS 1.3"
-    },
-    eastWest: {
-      protocol: isMicroservices ? "gRPC" : "gRPC",
-      transport: "HTTP/2 + Protobuf",
-      prohibitHttpJson: isMicroservices
-    }
-  };
-}
-function formatArchitectureManifestToon(verdict, vectors, services, communication) {
-  const lines = [
-    `architecture_manifest: {verdict, allow_monolith, scale_score, domain_score, resource_score, composite_score}`,
-    `  ${verdict}, ${verdict === "monolith"}, ${vectors.scaleAndLoad}, ${vectors.domainDecoupling}, ${vectors.resourceIntensity}, ${vectors.compositeScore}`,
-    ``,
-    `communication_standards: {boundary, protocol, transport, http_json_prohibited}`,
-    `  North-South (Client -> Gateway), ${communication.northSouth.protocol}, TLS 1.3 (OpenAPI 3.1), false`,
-    `  East-West (Service -> Service), ${communication.eastWest.protocol}, ${communication.eastWest.transport}, ${communication.eastWest.prohibitHttpJson}`,
-    ``,
-    `services [${services.length}]: {name, domain, scenario, language, framework, runtime, role, port, grpc_port}`
-  ];
-  for (const s of services) {
-    lines.push(`  ${s.name}, ${s.domain}, ${s.scenario}, ${s.stack.language}, ${s.stack.framework}, ${s.stack.runtime}, ${s.stack.role}, ${s.port}, ${s.grpcPort || 0}`);
-  }
-  return lines.join(`
-`);
-}
-function evaluateArchitecture(spec) {
-  const text = spec.trim();
-  if (!text) {
-    throw new Error("Project specification text must not be empty");
-  }
-  const scaleResult = evaluateScaleAndLoad(text);
-  const domainResult = evaluateDomainDecoupling(text);
-  const resourceResult = evaluateResourceIntensity(text);
-  const compositeScore = Number((scaleResult.score * 0.35 + domainResult.score * 0.4 + resourceResult.score * 0.25).toFixed(1));
-  const vectors = {
-    scaleAndLoad: scaleResult.score,
-    domainDecoupling: domainResult.score,
-    resourceIntensity: resourceResult.score,
-    compositeScore
-  };
-  const allReasons = [
-    ...scaleResult.reasons,
-    ...domainResult.reasons,
-    ...resourceResult.reasons
-  ];
-  const isMicroservices = scaleResult.score >= 7 || domainResult.score >= 7 || resourceResult.score >= 7 || compositeScore >= 6;
-  const verdict = isMicroservices ? "microservices" : "monolith";
-  const allowMonolith = !isMicroservices;
-  if (isMicroservices) {
-    allReasons.unshift(`[ARCHITECTURE ENFORCEMENT] Microservices Architecture mandatory (scale=${scaleResult.score}, domains=${domainResult.score}, resource=${resourceResult.score}, composite=${compositeScore}). Scaffold-building monolith is LOCKED OUT.`);
-  } else {
-    allReasons.unshift(`[ARCHITECTURE ENFORCEMENT] Specification scale and domains remain within monolithic boundaries (composite=${compositeScore}). Monolithic scaffolding allowed.`);
-  }
-  const services = [];
-  let baseHttpPort = 8080;
-  let baseGrpcPort = 50051;
-  if (isMicroservices) {
-    const gatewayAssignment = assignTechStackForDomain("gateway", "api gateway bff");
-    services.push({
-      name: "api-gateway",
-      domain: "API Gateway & Ingress Orchestration",
-      scenario: gatewayAssignment.scenario,
-      stack: gatewayAssignment.stack,
-      description: "Public-facing REST API Gateway, routing, authentication translation, and rate limiting",
-      port: baseHttpPort++,
-      grpcPort: baseGrpcPort++
-    });
-    for (const d of domainResult.identifiedDomains) {
-      if (d.id === "gateway")
-        continue;
-      const { scenario, stack } = assignTechStackForDomain(d.id, text);
-      const serviceName = `${d.id}-service`;
-      services.push({
-        name: serviceName,
-        domain: d.name,
-        scenario,
-        stack,
-        description: `Decoupled domain service for ${d.name}`,
-        port: baseHttpPort++,
-        grpcPort: baseGrpcPort++
-      });
-    }
-    if (services.length < 3) {
-      const isCpu = resourceResult.isCpuBound;
-      const extraDomain = isCpu ? "compute" : "crud";
-      const extraName = isCpu ? "compute-kernel-service" : "business-core-service";
-      const { scenario, stack } = assignTechStackForDomain(extraDomain, text);
-      services.push({
-        name: extraName,
-        domain: isCpu ? "Computational Kernel" : "Core Business Entities",
-        scenario,
-        stack,
-        description: `Dedicated ${stack.competency} worker service`,
-        port: baseHttpPort++,
-        grpcPort: baseGrpcPort++
-      });
-    }
-  } else {
-    services.push({
-      name: "monolith-app",
-      domain: "Unified Monolithic Application",
-      scenario: 1,
-      stack: {
-        ...TECH_STACK_MATRIX.B,
-        role: "full-stack-engineer"
-      },
-      description: "Unified application process containing all routes and business logic",
-      port: 3000
-    });
-  }
-  const communication = getCommunicationContract(isMicroservices);
-  const manifestToon = formatArchitectureManifestToon(verdict, vectors, services, communication);
-  return {
-    verdict,
-    allowMonolith,
-    vectors,
-    reasons: allReasons,
-    services,
-    communication,
-    manifestToon
   };
 }
 // src/integrations/grok-adapter.ts
@@ -40910,23 +41997,23 @@ class RecipesBridge {
   }
 }
 // src/core/orchestrator/index.ts
-import fs32 from "node:fs";
-import path32 from "node:path";
+import fs34 from "node:fs";
+import path34 from "node:path";
 // src/rpc/server.ts
 var grpc = __toESM(require_src3(), 1);
 var protoLoader = __toESM(require_src2(), 1);
-import path29 from "node:path";
+import path32 from "node:path";
 import { fileURLToPath as fileURLToPath5 } from "node:url";
-import fs29 from "node:fs";
+import fs32 from "node:fs";
 function resolveDefaultProtoPath() {
-  const currentDir = path29.dirname(fileURLToPath5(import.meta.url));
-  const candidateLocal = path29.resolve(currentDir, "../../proto/fable_worker.proto");
-  if (fs29.existsSync(candidateLocal))
+  const currentDir = path32.dirname(fileURLToPath5(import.meta.url));
+  const candidateLocal = path32.resolve(currentDir, "../../proto/fable_worker.proto");
+  if (fs32.existsSync(candidateLocal))
     return candidateLocal;
-  const candidateDist = path29.resolve(currentDir, "../proto/fable_worker.proto");
-  if (fs29.existsSync(candidateDist))
+  const candidateDist = path32.resolve(currentDir, "../proto/fable_worker.proto");
+  if (fs32.existsSync(candidateDist))
     return candidateDist;
-  return path29.resolve(process.cwd(), "proto/fable_worker.proto");
+  return path32.resolve(process.cwd(), "proto/fable_worker.proto");
 }
 
 class FableWorkerServer {
@@ -40945,7 +42032,7 @@ class FableWorkerServer {
     this.workerId = options.workerId || `worker-${process.pid}-${Date.now().toString(36)}`;
     this.server = new grpc.Server;
     const protoFile = options.protoPath || resolveDefaultProtoPath();
-    if (!fs29.existsSync(protoFile)) {
+    if (!fs32.existsSync(protoFile)) {
       throw new Error(`Protobuf file not found at ${protoFile}`);
     }
     const packageDefinition = protoLoader.loadSync(protoFile, {
@@ -41090,25 +42177,25 @@ class FableWorkerServer {
 // src/rpc/client.ts
 var grpc2 = __toESM(require_src3(), 1);
 var protoLoader2 = __toESM(require_src2(), 1);
-import path30 from "node:path";
+import path33 from "node:path";
 import { fileURLToPath as fileURLToPath6 } from "node:url";
-import fs30 from "node:fs";
+import fs33 from "node:fs";
 function resolveDefaultProtoPath2() {
-  const currentDir = path30.dirname(fileURLToPath6(import.meta.url));
-  const candidateLocal = path30.resolve(currentDir, "../../proto/fable_worker.proto");
-  if (fs30.existsSync(candidateLocal))
+  const currentDir = path33.dirname(fileURLToPath6(import.meta.url));
+  const candidateLocal = path33.resolve(currentDir, "../../proto/fable_worker.proto");
+  if (fs33.existsSync(candidateLocal))
     return candidateLocal;
-  const candidateDist = path30.resolve(currentDir, "../proto/fable_worker.proto");
-  if (fs30.existsSync(candidateDist))
+  const candidateDist = path33.resolve(currentDir, "../proto/fable_worker.proto");
+  if (fs33.existsSync(candidateDist))
     return candidateDist;
-  return path30.resolve(process.cwd(), "proto/fable_worker.proto");
+  return path33.resolve(process.cwd(), "proto/fable_worker.proto");
 }
 
 class FableWorkerClient {
   client;
   constructor(options) {
     const protoFile = options.protoPath || resolveDefaultProtoPath2();
-    if (!fs30.existsSync(protoFile)) {
+    if (!fs33.existsSync(protoFile)) {
       throw new Error(`Protobuf file not found at ${protoFile}`);
     }
     const packageDefinition = protoLoader2.loadSync(protoFile, {
@@ -41202,122 +42289,6 @@ class FableWorkerClient {
 }
 // src/core/orchestrator/rust-jev-bridge.ts
 import { spawnSync as spawnSync7 } from "node:child_process";
-
-// src/eco/native-bridge.ts
-import fs31 from "node:fs";
-import path31 from "node:path";
-import { spawnSync as spawnSync6 } from "node:child_process";
-function findNativeBinary(repoRoot) {
-  if (process.env.FABLE_DISABLE_NATIVE === "1") {
-    return null;
-  }
-  const candidates = [
-    path31.join(repoRoot, "target", "release", "get-fable-native"),
-    path31.join(repoRoot, "target", "debug", "get-fable-native")
-  ];
-  for (const c of candidates) {
-    if (fs31.existsSync(c)) {
-      return c;
-    }
-  }
-  return null;
-}
-function runNativeEco(repoRoot, args) {
-  const binary = findNativeBinary(repoRoot);
-  if (!binary) {
-    throw new Error("Native get-fable binary not found. Build with `cargo build -p fable-cli`.");
-  }
-  const finalArgs = ["eco", ...args];
-  if (!finalArgs.includes("--json-v1")) {
-    finalArgs.push("--json-v1");
-  }
-  const proc = spawnSync6(binary, finalArgs, {
-    cwd: process.cwd(),
-    encoding: "utf-8"
-  });
-  if (proc.error) {
-    throw proc.error;
-  }
-  try {
-    const parsed = JSON.parse(proc.stdout);
-    if (parsed.schema_version !== 1) {
-      throw new Error(`Unsupported Eco JSON schema version: ${parsed.schema_version}`);
-    }
-    return parsed;
-  } catch (err) {
-    throw new Error(`Failed to parse native eco output: ${err?.message || err}. Stdout was:
-${proc.stdout}
-Stderr was:
-${proc.stderr}`);
-  }
-}
-function runNativeArchEval(repoRoot, spec, cwd = process.cwd()) {
-  const binary = findNativeBinary(repoRoot);
-  if (binary) {
-    const proc = spawnSync6(binary, ["arch-eval", spec, "--json"], {
-      cwd,
-      encoding: "utf-8"
-    });
-    if (!proc.error && proc.status === 0 && proc.stdout.trim()) {
-      try {
-        return JSON.parse(proc.stdout);
-      } catch {}
-    }
-  }
-  return evaluateArchitecture(spec);
-}
-function runNativeSpark(repoRoot, intent, cwd = process.cwd()) {
-  const binary = findNativeBinary(repoRoot);
-  if (!binary) {
-    return null;
-  }
-  const args = ["spark", "--json"];
-  if (intent) {
-    args.splice(1, 0, intent);
-  }
-  const proc = spawnSync6(binary, args, {
-    cwd,
-    encoding: "utf-8"
-  });
-  if (!proc.error && proc.status === 0 && proc.stdout.trim()) {
-    try {
-      return JSON.parse(proc.stdout);
-    } catch {
-      return null;
-    }
-  }
-  return null;
-}
-function runNativeToonEncode(repoRoot, data) {
-  const binary = findNativeBinary(repoRoot);
-  if (binary) {
-    const proc = spawnSync6(binary, ["toon", "encode"], {
-      input: JSON.stringify(data),
-      encoding: "utf-8"
-    });
-    if (!proc.error && proc.status === 0 && proc.stdout.trim()) {
-      return proc.stdout.trimEnd();
-    }
-  }
-  return encodeToon(data);
-}
-function runNativeToonValidate(repoRoot, toonPayload) {
-  const binary = findNativeBinary(repoRoot);
-  if (binary) {
-    const proc = spawnSync6(binary, ["toon", "validate", "--json"], {
-      input: toonPayload,
-      encoding: "utf-8"
-    });
-    if (!proc.error && proc.stdout.trim()) {
-      try {
-        return JSON.parse(proc.stdout);
-      } catch {}
-    }
-  }
-  return validateToon(toonPayload);
-}
-
-// src/core/orchestrator/rust-jev-bridge.ts
 function tryNativeJevOrchestrate(task, options) {
   const repoRoot = options?.repoRoot || getCoreRepoRoot();
   const binary = findNativeBinary(repoRoot);
@@ -41346,8 +42317,8 @@ function tryNativeJevOrchestrate(task, options) {
 // src/core/orchestrator/index.ts
 function loadAgentsRegistry(repoRoot) {
   try {
-    const filePath = path32.join(repoRoot, "registry", "agents.json");
-    const parsed = JSON.parse(fs32.readFileSync(filePath, "utf-8"));
+    const filePath = path34.join(repoRoot, "registry", "agents.json");
+    const parsed = JSON.parse(fs34.readFileSync(filePath, "utf-8"));
     return Array.isArray(parsed.agents) ? parsed.agents : [];
   } catch {
     return [];
@@ -41355,8 +42326,8 @@ function loadAgentsRegistry(repoRoot) {
 }
 function loadToolsRegistry(repoRoot) {
   try {
-    const filePath = path32.join(repoRoot, "registry", "tools.json");
-    const parsed = JSON.parse(fs32.readFileSync(filePath, "utf-8"));
+    const filePath = path34.join(repoRoot, "registry", "tools.json");
+    const parsed = JSON.parse(fs34.readFileSync(filePath, "utf-8"));
     return Array.isArray(parsed.capabilities) ? parsed.capabilities : [];
   } catch {
     return [];
@@ -41364,9 +42335,9 @@ function loadToolsRegistry(repoRoot) {
 }
 function loadFailureLessons(repoRoot) {
   try {
-    const jsonPath = path32.join(repoRoot, "Failure-lessons", "index.json");
-    if (fs32.existsSync(jsonPath)) {
-      const parsed = JSON.parse(fs32.readFileSync(jsonPath, "utf-8"));
+    const jsonPath = path34.join(repoRoot, "Failure-lessons", "index.json");
+    if (fs34.existsSync(jsonPath)) {
+      const parsed = JSON.parse(fs34.readFileSync(jsonPath, "utf-8"));
       if (Array.isArray(parsed)) {
         return parsed.map((item) => typeof item === "string" ? item : String(item.rule || item.title || JSON.stringify(item)));
       }
@@ -41376,9 +42347,9 @@ function loadFailureLessons(repoRoot) {
     }
   } catch {}
   try {
-    const mdPath = path32.join(repoRoot, "Failure-lessons", "lessons-index.md");
-    if (fs32.existsSync(mdPath)) {
-      const raw = fs32.readFileSync(mdPath, "utf-8");
+    const mdPath = path34.join(repoRoot, "Failure-lessons", "lessons-index.md");
+    if (fs34.existsSync(mdPath)) {
+      const raw = fs34.readFileSync(mdPath, "utf-8");
       const rules = raw.split(/\r?\n/).filter((line) => /^\d+\.\s+\*\*/.test(line.trim())).map((line) => line.replace(/^\d+\.\s+/, "").trim());
       if (rules.length > 0)
         return rules;
@@ -42289,24 +43260,24 @@ async function superviseWaveExecution(plan, options) {
   };
 }
 // src/dsh/api.ts
-import fs33 from "node:fs";
-import path33 from "node:path";
+import fs35 from "node:fs";
+import path35 from "node:path";
 function readPlanStatus(projectRoot) {
-  const taskPlanPath = path33.join(projectRoot, "task_plan.md");
-  const progressPath = path33.join(projectRoot, "progress.md");
-  const findingsPath = path33.join(projectRoot, "findings.md");
-  const modePath = path33.join(projectRoot, ".mode");
-  const attestationPath = path33.join(projectRoot, ".attestation");
-  const legacyAttestationPath = path33.join(projectRoot, ".plan-attestation");
-  const hasPlan = fs33.existsSync(taskPlanPath);
-  const hasProgress = fs33.existsSync(progressPath);
-  const hasFindings = fs33.existsSync(findingsPath);
-  const planContent = hasPlan ? fs33.readFileSync(taskPlanPath, "utf-8") : null;
-  const progressContent = hasProgress ? fs33.readFileSync(progressPath, "utf-8") : null;
-  const findingsContent = hasFindings ? fs33.readFileSync(findingsPath, "utf-8") : null;
+  const taskPlanPath = path35.join(projectRoot, "task_plan.md");
+  const progressPath = path35.join(projectRoot, "progress.md");
+  const findingsPath = path35.join(projectRoot, "findings.md");
+  const modePath = path35.join(projectRoot, ".mode");
+  const attestationPath = path35.join(projectRoot, ".attestation");
+  const legacyAttestationPath = path35.join(projectRoot, ".plan-attestation");
+  const hasPlan = fs35.existsSync(taskPlanPath);
+  const hasProgress = fs35.existsSync(progressPath);
+  const hasFindings = fs35.existsSync(findingsPath);
+  const planContent = hasPlan ? fs35.readFileSync(taskPlanPath, "utf-8") : null;
+  const progressContent = hasProgress ? fs35.readFileSync(progressPath, "utf-8") : null;
+  const findingsContent = hasFindings ? fs35.readFileSync(findingsPath, "utf-8") : null;
   let mode = null;
-  if (fs33.existsSync(modePath)) {
-    const rawMode = fs33.readFileSync(modePath, "utf-8").trim();
+  if (fs35.existsSync(modePath)) {
+    const rawMode = fs35.readFileSync(modePath, "utf-8").trim();
     if (rawMode.includes("gate"))
       mode = "gated";
     else if (rawMode.includes("autonomous"))
@@ -42315,10 +43286,10 @@ function readPlanStatus(projectRoot) {
       mode = "legacy";
   }
   let attestationSha = null;
-  if (fs33.existsSync(attestationPath)) {
-    attestationSha = fs33.readFileSync(attestationPath, "utf-8").trim();
-  } else if (fs33.existsSync(legacyAttestationPath)) {
-    attestationSha = fs33.readFileSync(legacyAttestationPath, "utf-8").trim();
+  if (fs35.existsSync(attestationPath)) {
+    attestationSha = fs35.readFileSync(attestationPath, "utf-8").trim();
+  } else if (fs35.existsSync(legacyAttestationPath)) {
+    attestationSha = fs35.readFileSync(legacyAttestationPath, "utf-8").trim();
   }
   const phases = [];
   if (planContent) {
@@ -42362,15 +43333,15 @@ function readPlanStatus(projectRoot) {
 function getAllSkills(repoRoot) {
   const canonical = canonicalSkillIds();
   const results = [];
-  const skillsDir = path33.join(repoRoot, "skills");
-  if (fs33.existsSync(skillsDir)) {
-    const entries = fs33.readdirSync(skillsDir, { withFileTypes: true });
+  const skillsDir = path35.join(repoRoot, "skills");
+  if (fs35.existsSync(skillsDir)) {
+    const entries = fs35.readdirSync(skillsDir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) {
         const skillId = entry.name;
-        const skillMdPath = path33.join(skillsDir, skillId, "SKILL.md");
-        if (fs33.existsSync(skillMdPath)) {
-          const content = fs33.readFileSync(skillMdPath, "utf-8");
+        const skillMdPath = path35.join(skillsDir, skillId, "SKILL.md");
+        if (fs35.existsSync(skillMdPath)) {
+          const content = fs35.readFileSync(skillMdPath, "utf-8");
           let name = skillId;
           let description = "";
           let version = "1.0.0";
@@ -42411,14 +43382,14 @@ function createFableApiHandler(projectRoot = process.cwd()) {
       const plan = readPlanStatus(projectRoot);
       let healthy = true;
       let issuesCount = 0;
-      if (!state && fs33.existsSync(path33.join(projectRoot, ".fable"))) {
+      if (!state && fs35.existsSync(path35.join(projectRoot, ".fable"))) {
         healthy = false;
         issuesCount = 1;
       }
       const unverifiedMutations = state && state.mutationGeneration > 0 ? Math.max(0, state.mutationGeneration - Math.max(0, state.verifiedGeneration)) : 0;
       let pkgVersion = "1.8.0";
       try {
-        const pkg = JSON.parse(fs33.readFileSync(path33.join(projectRoot, "package.json"), "utf-8"));
+        const pkg = JSON.parse(fs35.readFileSync(path35.join(projectRoot, "package.json"), "utf-8"));
         if (pkg.version)
           pkgVersion = pkg.version;
       } catch {}

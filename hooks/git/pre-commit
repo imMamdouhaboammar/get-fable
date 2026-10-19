@@ -24,4 +24,13 @@ if [ $LINT_EXIT -ne 0 ]; then
   exit 1
 fi
 
+echo "ℹ [get-fable] Running pre-commit anti-slop verification..."
+$CMD anti-slop scan --base HEAD --fail-on-blocker
+SLOP_EXIT=$?
+
+if [ $SLOP_EXIT -ne 0 ]; then
+  echo "✖ [get-fable] Pre-commit anti-slop gate failed! Resolve AI coding slop and blocker findings before committing."
+  exit 1
+fi
+
 exit 0

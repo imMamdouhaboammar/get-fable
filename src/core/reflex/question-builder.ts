@@ -196,6 +196,14 @@ export const SKILL_BOUNDARY_CONTRASTS: Record<string, { useWhen: string; notWhen
     useWhen: 'Select ONLY when applying low-level cognitive reflexes (Depth, Breadth, Coil, Mesh, Paperthin, Re0, SSOTize) to purify drifted artifacts and strip slop.',
     notWhen: 'NOT for superficial formatting changes that leave structural duplication intact.',
   },
+  'fable-anti-slop-engineering': {
+    useWhen: 'Select ONLY when detecting, auditing, or preventing AI coding slop, weak assertions, skipped tests, swallowed errors, or security bypasses.',
+    notWhen: 'NOT for implementing standard business logic without slop auditing or broad multi-file architectural planning.',
+  },
+  'fable-anti-churn': {
+    useWhen: 'Select ONLY when detecting, gating, or preventing duplicate agent actions, retry churn, repetitive command execution, or unverified re-work through receipts and typed invalidations.',
+    notWhen: 'NOT for standard execution without redundant retry loops or broad architectural planning.',
+  },
 };
 
 /**
@@ -329,6 +337,7 @@ export function buildFirstPassQuestions(
 export const POLICY_OVERLAY_SKILLS: readonly FableSkillId[] = [
   'fable-native-code',
   'fable-scope-discipline',
+  'fable-anti-slop-engineering',
   'fable-context-thrift',
   'fable-prove-it',
   'fable-finish-your-turn',

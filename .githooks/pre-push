@@ -13,7 +13,7 @@ if [ -n "$url" ]; then
   fi
 fi
 
-FORBIDDEN_PATHS="_backups _quarantine Failure-lessons docs/internal evals/holdout"
+FORBIDDEN_PATHS="_backups _quarantine Failure-lessons docs/internal evals/holdout docs/get-fable-commercial-spec-v2 docs/get-fable-commercial-spec-v2\ 2 commercial"
 
 while read local_ref local_sha remote_ref remote_sha; do
   if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then

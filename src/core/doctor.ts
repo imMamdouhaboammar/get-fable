@@ -30,6 +30,8 @@ import { loadReflexConfig } from './reflex/config.js';
 import { TEST_VALUE_REA_EVIDENCE_LEDGER } from './test-value/index.js';
 import { OPEN_MYTHOS_REA_EVIDENCE_LEDGER } from './mythos/index.js';
 import { FRONTIER_TEST_REA_EVIDENCE_LEDGER, FrontierTestOrchestrator } from './frontier-test/index.js';
+import { HARNESS2_REA_EVIDENCE_LEDGER, findLocalHarness2Binary } from './harness/index.js';
+import { findAntiSlopBinary, findAntiChurnBinary, findNeuralTestBinary, runNativeNeuralTest } from '../eco/native-bridge.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
   return { id, status, message };
@@ -810,6 +812,129 @@ export function runDoctor(
       )
     );
   }
+
+  try {
+    const antiSlopBin = findAntiSlopBinary(repoRoot);
+    if (antiSlopBin) {
+      checks.push(
+        check(
+          'anti-slop-engine',
+          'PASS',
+          `Native anti-slop engine available at ${antiSlopBin}`
+        )
+      );
+    } else {
+      checks.push(
+        check(
+          'anti-slop-engine',
+          'WARN',
+          'Native anti-slop engine not compiled yet (run `cargo build -p fable-anti-slop`)'
+        )
+      );
+    }
+  } catch (error) {
+    checks.push(
+      check(
+        'anti-slop-engine',
+        'WARN',
+        `Anti-slop engine check: ${error instanceof Error ? error.message : String(error)}`
+      )
+    );
+  }
+
+  try {
+    const antiChurnBin = findAntiChurnBinary(repoRoot);
+    if (antiChurnBin) {
+      checks.push(
+        check(
+          'anti-churn-engine',
+          'PASS',
+          `Native anti-churn engine available at ${antiChurnBin}`
+        )
+      );
+    } else {
+      checks.push(
+        check(
+          'anti-churn-engine',
+          'WARN',
+          'Native anti-churn engine not compiled yet (run `cargo build -p fable-anti-churn`)'
+        )
+      );
+    }
+  } catch (error) {
+    checks.push(
+      check(
+        'anti-churn-engine',
+        'WARN',
+        `Anti-churn engine check: ${error instanceof Error ? error.message : String(error)}`
+      )
+    );
+  }
+
+  try {
+    const neuralBin = findNeuralTestBinary(repoRoot);
+    if (neuralBin) {
+      const res = runNativeNeuralTest(repoRoot, 'doctor', ['--json-v1']);
+      const isOk = res.status === 0;
+      checks.push(
+        check(
+          'neural-test-engine',
+          isOk ? 'PASS' : 'WARN',
+          isOk
+            ? `Native neural test engine available at ${neuralBin} (SIMD + REA verified: openTPU & auto-arch-tournament)`
+            : `Native neural test engine returned non-zero status at ${neuralBin}`
+        )
+      );
+    } else {
+      checks.push(
+        check(
+          'neural-test-engine',
+          'WARN',
+          'Native neural test engine not compiled yet (run `cargo build -p fable-neural-test`)'
+        )
+      );
+    }
+  } catch (error) {
+    checks.push(
+      check(
+        'neural-test-engine',
+        'WARN',
+        `Neural test engine check: ${error instanceof Error ? error.message : String(error)}`
+      )
+    );
+  }
+
+  try {
+    const harnessArtifacts = HARNESS2_REA_EVIDENCE_LEDGER.verifiedArtifacts;
+    const harnessValid =
+      harnessArtifacts.length >= 8 &&
+      harnessArtifacts.every(
+        (a) => /^[0-9a-f]{40}$/.test(a.gitBlobSha1) && /^[0-9a-f]{64}$/.test(a.sha256)
+      );
+    const localBin = findLocalHarness2Binary();
+    checks.push(
+      harnessValid
+        ? check(
+            'harness2-engine',
+            'PASS',
+            `Harness² Recursive Agent Harnessing Engine active (${harnessArtifacts.length} REA-attested upstream artifacts, commit ${HARNESS2_REA_EVIDENCE_LEDGER.commitSha.slice(0, 12)}${localBin ? ', CLI available' : ''})`
+          )
+        : check(
+            'harness2-engine',
+            'ERROR',
+            'Harness² REA evidence ledger integrity check failed'
+          )
+    );
+  } catch (error) {
+    checks.push(
+      check(
+        'harness2-engine',
+        'ERROR',
+        `Harness² Engine check failed: ${error instanceof Error ? error.message : String(error)}`
+      )
+    );
+  }
+
   return {
     schemaVersion: 1,
     ok: checks.every((item) => item.status !== 'ERROR'),

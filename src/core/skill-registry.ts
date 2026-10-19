@@ -27,6 +27,23 @@ const REGISTRY_PACKS = new Set<FablePack>(FABLE_PACKS);
 
 export function getCoreRepoRoot(): string {
   const currentFile = fileURLToPath(import.meta.url);
+  let candidate = path.dirname(currentFile);
+  for (let i = 0; i < 5; i++) {
+    const pkgPath = path.join(candidate, 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+        if (pkg.name === 'get-fable') {
+          return candidate;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    const parent = path.dirname(candidate);
+    if (parent === candidate) break;
+    candidate = parent;
+  }
   return path.resolve(path.dirname(currentFile), '..', '..');
 }
 

@@ -100,12 +100,12 @@ describe('deployment contract', () => {
   });
 });
 
-describe('42 canonical skills standalone pages and multi-format contract', () => {
+describe('44 canonical skills standalone pages and multi-format contract', () => {
   const registryRaw = read('skills/get-fable/registry.json');
   const registry = JSON.parse(registryRaw) as { skills: { id: string }[] };
 
-  test('verifies all 42 canonical skills have .html, .md, .txt, and .json pages', () => {
-    expect(registry.skills.length).toBe(42);
+  test('verifies all 44 canonical skills have .html, .md, .txt, and .json pages', () => {
+    expect(registry.skills.length).toBe(44);
     for (const skill of registry.skills) {
       const htmlFile = read(`site/skills/${skill.id}.html`);
       const mdFile = read(`site/skills/${skill.id}.md`);
@@ -176,9 +176,9 @@ describe('SEO, GEO and AI search discovery contract', () => {
 
     expect(llms).toContain('# get-fable');
     expect(llms).toContain('## Documentation & Guides');
-    expect(llms).toContain('## Canonical Skills (42)');
+    expect(llms).toContain('## Canonical Skills (44)');
     expect(llmsFull).toContain('USER GUIDE & SYSTEM ARCHITECTURE');
-    expect(llmsFull).toContain('ALL 42 CANONICAL SKILL SPECIFICATIONS');
+    expect(llmsFull).toContain('ALL 44 CANONICAL SKILL SPECIFICATIONS');
   });
 });
 

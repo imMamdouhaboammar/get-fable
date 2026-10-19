@@ -132,9 +132,14 @@ import {
 } from './core/review/index.js';
 import { runReflexCommand } from './cli/commands/reflex.js';
 import { runUiPolishCommand } from './cli/commands/ui-polish.js';
+import { runAntiSlopCommand } from './cli/commands/anti-slop.js';
+import { runAntiChurnCommand } from './cli/commands/anti-churn.js';
 import { runTestValueCommand } from './cli/commands/test-value.js';
 import { runFrontierTestCommand } from './cli/commands/frontier-test.js';
 import { runMythosCommand } from './cli/commands/mythos.js';
+import { runHarnessCommand } from './cli/commands/harness.js';
+import { runNeuralTestCommand } from './cli/commands/neural-test.js';
+import { runStewardCommand } from './cli/commands/steward.js';
 import { loadReflexConfig, resolveRoute } from './core/reflex/index.js';
 import {
   executeDelegationWavePlanWithGrpc,
@@ -1857,6 +1862,21 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'polish':
       return runUiPolishCommand(args.slice(1));
 
+    case 'anti-slop':
+    case 'anti-slop-engineering':
+    case 'slop-check':
+      return runAntiSlopCommand(args.slice(1));
+
+    case 'anti-churn':
+    case 'churn-check':
+    case 'anti-churn-control':
+      return runAntiChurnCommand(args.slice(1));
+
+    case 'neural-test':
+    case 'neural-engine':
+    case 'tpu-test':
+      return runNeuralTestCommand(args.slice(1));
+
     case 'test-engine':
     case 'frontier-test':
       return runFrontierTestCommand(args.slice(1));
@@ -1871,9 +1891,17 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
     case 'open-mythos':
       return runMythosCommand(args.slice(1));
 
+    case 'harness':
+    case 'harness2':
+      return runHarnessCommand(args.slice(1));
+
     case 'jev-orchestrate':
     case 'orchestrate':
       return runJevOrchestrateCommand(args.slice(1));
+
+    case 'steward':
+    case 'auto-steward':
+      return runStewardCommand(args.slice(1));
 
     case 'guide':
     case 'help':
@@ -2013,6 +2041,7 @@ ${colors.bright}CORE WORKFLOW COMMANDS:${colors.reset}
   ${colors.yellow}toon <action>${colors.reset}        Token-Oriented Object Notation: encode, decode, stats, state, validate
   ${colors.yellow}lint${colors.reset}                 Verify ledger acceptance, evidence, and state consistency
   ${colors.yellow}doctor [--fix]${colors.reset}       Validate and auto-repair installation, registry, state, and hooks
+  ${colors.yellow}steward [options]${colors.reset}    Autonomous perpetual repository steward & continuous innovation engine
 
 ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}graph [skill-id]${colors.reset}     Inspect neural linking and knowledge graph topology; add --json
@@ -2025,10 +2054,14 @@ ${colors.bright}EXTENSIBILITY & PLATFORMS:${colors.reset}
   ${colors.yellow}redteam --target <url>${colors.reset}Execute native agentic ethical penetration audit
   ${colors.yellow}heal [options]${colors.reset}        Synthesize and apply code patches, TDD guards, and attestations
   ${colors.yellow}ui-polish [url]${colors.reset}       Autonomous E2E & pixel-by-pixel UI/UX polish round; add --json
+  ${colors.yellow}anti-slop [scan|..]${colors.reset}   High-performance anti-slop engine & dirty engineering prevention
+  ${colors.yellow}anti-churn [check|..]${colors.reset}  High-performance anti-churn & duplicate-work prevention
+  ${colors.yellow}neural-test [action]${colors.reset}  Native Rust Neural Testing & Auto-Arch Tournament Engine (openTPU & auto-arch-tournament)
   ${colors.yellow}test-engine [action]${colors.reset}  Frontier Testing Engine: status, scan, plan, install, run, repro, provenance
   ${colors.yellow}test-value [action]${colors.reset}   Test-Value Spearhead Engine: spearhead, audit, select, evaluate, diagnose, rea-ledger
   ${colors.yellow}spearhead [options]${colors.reset}   Run the unified Test-Value Spearhead verification gate; add --json-v1
   ${colors.yellow}mythos [action]${colors.reset}       OpenMythos Recurrent-Depth Engine: study, loop, moe, mla, moda, provenance
+  ${colors.yellow}harness [action]${colors.reset}      Harness² Recursive Agent Harnessing Engine: status, components, refine, reflect, demo, provenance
   ${colors.yellow}telemetry [status|..]${colors.reset}Manage privacy-preserving local telemetry
   ${colors.yellow}status${colors.reset}               Report installation state; add --json for machine output
   ${colors.yellow}grok [task|--status]${colors.reset} Invoke Grok Bot adapter for task routing, status, and skill eval

@@ -1,0 +1,13 @@
+name: autonomous-pr-reviewer
+version: 1.0.0
+description: Autonomous PR diff audit, anti-slop verification, and code review comment pipeline.
+steps:
+  - id: fetch-pr-diff
+    skill: fable-review
+    action: Retrieve PR metadata and diff via gh CLI
+  - id: audit-anti-slop
+    skill: fable-anti-slop-engineering
+    action: Scan modified files for slop, debug logs, and missing assertions
+  - id: post-review-comment
+    skill: fable-judge
+    action: Generate structured review verdict and comment on PR

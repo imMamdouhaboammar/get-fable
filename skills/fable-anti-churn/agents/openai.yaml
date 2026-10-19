@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Anti-Churn Engine"
+  short_description: "Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles."
+  default_prompt: "You are the anti-churn specialist. Cryptographically deduplicate actions, reuse valid accepted evidence, block repetitive test failures, and enforce typed invalidation with zero token waste."
+policy:
+  allow_implicit_invocation: true

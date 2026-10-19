@@ -53,16 +53,35 @@ function parseRecipeContent(content: string, id: string): Recipe {
     }
     if (!inSteps) continue;
 
-    const stepStart = line.match(/^\s*-\s*skill:\s*([a-z0-9-]+)\s*$/);
-    if (stepStart) {
+    const itemStart = line.match(/^\s*-\s*(.+)$/);
+    if (itemStart) {
       if (currentStep && currentStep.skill) {
         steps.push(currentStep as RecipeStep);
       }
-      currentStep = { skill: stepStart[1] };
+      currentStep = {};
+      const firstProp = itemStart[1].trim();
+      const skillMatch = firstProp.match(/^skill:\s*([a-z0-9-]+)\s*$/);
+      if (skillMatch) {
+        currentStep.skill = skillMatch[1];
+      }
+      const descMatch = firstProp.match(/^description:\s*(.+)$/);
+      if (descMatch) {
+        currentStep.description = descLineLineMatch(descMatch[1]);
+      }
       continue;
     }
 
     if (currentStep) {
+      const skillMatch = line.match(/^\s*skill:\s*([a-z0-9-]+)\s*$/);
+      if (skillMatch) {
+        currentStep.skill = skillMatch[1];
+        continue;
+      }
+      const actionMatch = line.match(/^\s*action:\s*(.+)$/);
+      if (actionMatch && !currentStep.description) {
+        currentStep.description = descLineLineMatch(actionMatch[1]);
+        continue;
+      }
       const gateMatch = line.match(/^\s*gate:\s*([a-z0-9_-]+)\s*$/);
       if (gateMatch) {
         currentStep.gate = gateMatch[1];

@@ -39,6 +39,8 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 260 | build | `fable-native-code` | executing | Codebase idiom matching and anti-bloat policy ensuring diffs read like native code. |
 | 270 | delivery | `fable-outcome-first` | verifying | Response styling policy enforcing direct first-sentence answers and zero sycophancy. |
 | 280 | proof | `fable-prove-it` | verifying | Evidence precedence and verification rung enforcement preventing unverified claims. |
+| 285 | proof | `fable-anti-slop-engineering` | verifying | Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories. |
+| 287 | proof | `fable-anti-churn` | verifying | Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead. |
 | 290 | build | `fable-scope-discipline` | executing | Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests. |
 | 300 | creator | `fable-domain` | discovering | Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns. |
 | 310 | proof | `fable-judge` | verifying | Adversarial verification of finished work detecting weakened tests and false completion claims. |

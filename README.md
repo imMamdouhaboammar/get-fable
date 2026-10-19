@@ -14,13 +14,13 @@
 [![E2E](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/e2e.yml)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue?style=flat-square)](./LICENSE)
 
-**42 connected Skills · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · recovery · gRPC worker · TOON protocol · Rust Jev engine · Frontier test engine · DSH plugin · release**
+**44 connected Skills · Autonomous Repository Steward · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · anti-slop · recovery · gRPC worker · TOON protocol · Rust Jev engine · Frontier test engine · DSH plugin · release**
 
 ```bash
 bun add -g get-fable
 ```
 
-[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#42-skills-across-8-packs-one-way-of-working) · [Docs](#documentation)
+[Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [Steward Module](#step-9--autonomous-perpetual-repository-steward-get-fable-steward) · [The Skills](#44-skills-across-8-packs-one-way-of-working) · [Docs](#documentation)
 
 </div>
 
@@ -208,7 +208,7 @@ Every canonical Skill carries complete operational knowledge and architecture di
 
 ---
 
-## 42 Skills across 8 Packs. One way of working.
+## 43 Skills across 8 Packs. One way of working.
 
 ### Core Pack — Lifecycle Navigation & Execution
 - `get-fable` — choose the next specialist from intent + durable state, with precedence for failure, security, stale proof, and unknowns.
@@ -235,6 +235,7 @@ Every canonical Skill carries complete operational knowledge and architecture di
 - `fable-heal` — automatically synthesize, apply, and verify security remediations for vulnerabilities identified by `fable-redteam`.
 - `fable-prove-it` — evidence precedence and verification rung enforcement preventing unverified claims.
 - `fable-judge` — adversarial verification of finished work detecting weakened tests and false completion claims.
+- `fable-anti-slop-engineering` — high-performance native Rust engine detecting test tampering, weak assertions, swallowed errors, security bypasses, and type suppressions.
 
 ### Delivery Pack — Production Readiness & Continuity
 - `fable-release` — audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.
@@ -242,6 +243,7 @@ Every canonical Skill carries complete operational knowledge and architecture di
 - `fable-finish-your-turn` — autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.
 - `fable-outcome-first` — response styling policy enforcing direct first-sentence answers and zero sycophancy.
 - `fable-tend` — autonomous maintainer for repository CI repair, PR conflict resolution, and triage.
+- `fable-steward` — autonomous perpetual repository steward and continuous builder executing 5-tier triage across failing CI, pending PRs, open issues, code hygiene, and roadmap feature packaging.
 
 ### Evolution Pack — Agent Evaluation & Durable Learnings
 - `fable-eval` — measure changes to agent behavior without benchmark overfitting or oracle leakage.
@@ -306,7 +308,7 @@ get-fable spark
 
 | Agent / Tool | Integration Tier | Key Capabilities |
 |:---|:---|:---|
-| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 42 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
+| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 43 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
 | <img src="assets/logos/gemini.svg" width="20" height="20" alt="" /> **Gemini CLI / Google Antigravity** (Google) | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/grok.svg" width="20" height="20" alt="" /> **Grok Build** (xAI) | **Full Lifecycle** | `hooks.json` lifecycle triggers, Grok plugin manifest, canonical skills, constitution rules |
 | <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> [**OpenAI Codex & ChatGPT**](https://openai.com/codex) (OpenAI) | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
@@ -505,7 +507,7 @@ Creates `.fable/state.json`, `.fable/LEDGER.md`, `.fable/PROGRESS.md`, and `docs
 ### Step 4 — Verify health
 
 ```bash
-get-fable doctor          # 42 system checks — skills, hooks, state, supply chain
+get-fable doctor          # 43+ system checks — skills, hooks, state, supply chain
 get-fable doctor --json-v1  # machine-readable diagnostic envelope
 get-fable lint            # ledger + state completion semantics
 ```
@@ -560,6 +562,32 @@ get-fable behavior-eval score /tmp/provider-responses.json \
   --out evals/results/agent-behavior-v1.json
 get-fable behavior-eval status
 ```
+
+### Step 9 — Autonomous Perpetual Repository Steward (`get-fable steward`)
+
+Run an unattended maintenance and continuous feature innovation loop over any repository. The steward evaluates live GitHub CI health, pending pull requests, open issues, diff slop, and roadmap backlog through a deterministic 5-tier triage priority matrix.
+
+```bash
+# Dry-run: Probe repository health and print triage decision without mutating workspace
+get-fable steward --dry-run
+
+# Run a single autonomous triage and execution cycle
+get-fable steward
+
+# Run perpetual continuous loop (60s interval, watchdog monitoring)
+get-fable steward --loop --interval 60 --max-cycles 100
+
+# Output machine-readable JSON v1 envelope
+get-fable steward --json-v1
+```
+
+| Tier | Trigger | Recommended Skill | Autonomous Action |
+|---|---|---|---|
+| **Tier 1** | Failing Mainline CI Runs | `fable-tend` | Diagnose logs, apply surgical repair, verify build |
+| **Tier 2** | Pending Pull Requests | `fable-review` + `fable-judge` | Diff audit, anti-slop check, post structured verdict |
+| **Tier 3** | Open GitHub Issues | `fable-plan` + `fable-tdd` | Reproduce failure via test fixture, repair, and PR |
+| **Tier 4** | Code Hygiene & Anti-Slop | `fable-anti-slop-engineering` | Remediate swallowed errors, weak assertions, dead code |
+| **Tier 5** | Autonomous Innovation | `fable-spark` + `fable-cowork` | Package next roadmap capability with unit/integration tests |
 
 ### Shell integration (optional)
 

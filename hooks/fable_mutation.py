@@ -58,6 +58,15 @@ def main():
         return 0
 
     record_workspace_mutation(fable_dir)
+
+    # Invalidate anti-churn local failure loop tracking on workspace mutation
+    tracking_file = os.path.join(fable_dir, "anti-churn", "last_failure.json")
+    if os.path.isfile(tracking_file):
+        try:
+            os.remove(tracking_file)
+        except Exception:
+            pass
+
     return 0
 
 

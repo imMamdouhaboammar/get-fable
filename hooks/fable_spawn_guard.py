@@ -71,6 +71,44 @@ def delegation_tool(data):
     return any(marker in normalized for marker in DELEGATION_TOOL_MARKERS)
 
 
+def check_anti_churn_delegation(fable_dir, tool_input):
+    receipts_path = os.path.join(fable_dir, "anti-churn", "receipts.ndjson")
+    if not os.path.isfile(receipts_path):
+        return 0, ""
+
+    prompt_or_task = ""
+    if isinstance(tool_input, dict):
+        for k in ("prompt", "task", "instruction", "description", "command", "Subagents"):
+            if k in tool_input:
+                prompt_or_task = str(tool_input[k])
+                break
+    elif isinstance(tool_input, str):
+        prompt_or_task = tool_input
+
+    if not prompt_or_task or len(prompt_or_task.strip()) < 20:
+        return 0, ""
+
+    import hashlib
+    task_digest = "sha256:" + hashlib.sha256(prompt_or_task.strip().encode("utf-8")).hexdigest()
+
+    try:
+        with open(receipts_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                if task_digest in line:
+                    if '"outcome":"pending"' in line or '"outcome": "pending"' in line:
+                        return 2, (
+                            "[get-fable] BLOCKED duplicate spawn: task has an active in-flight anti-churn reservation. "
+                            "Wait for prior worker or invalidate prior reservation.\n"
+                        )
+    except Exception:
+        pass
+
+    return 0, ""
+
+
 def main():
     data = read_hook_input()
     if not delegation_tool(data):
@@ -84,6 +122,15 @@ def main():
     if is_fork(tool_input):
         return 0
 
+    open_items, _has_any, paused = parse_ledger(ledger_path(fable_dir))
+    if paused:
+        return 0
+
+    churn_code, churn_msg = check_anti_churn_delegation(fable_dir, tool_input)
+    if churn_code != 0:
+        sys.stderr.write(churn_msg)
+        return churn_code
+
     try:
         threshold = int(os.environ.get("FABLE_SPAWN_MIN_CHARS", "1500"))
     except ValueError:
@@ -91,8 +138,7 @@ def main():
     if payload_len(tool_input) < threshold:
         return 0
 
-    open_items, _has_any, paused = parse_ledger(ledger_path(fable_dir))
-    if paused or open_items:
+    if open_items:
         return 0
 
     state = read_state(fable_dir)

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-anti-slop-engineering",
+  "entry": "SKILL.md",
+  "agents": [
+    "agents/openai.yaml"
+  ],
+  "references": [
+    "references/anti-pattern-catalog.md",
+    "references/engineering-judgment.md",
+    "references/evaluation-cases.md",
+    "references/evidence-and-sources.md",
+    "references/pr-review.md",
+    "references/security-and-operations.md",
+    "references/test-integrity.md"
+  ],
+  "templates": [
+    "templates/PR_REVIEW_TEMPLATE.md",
+    "templates/RUN_REPORT_TEMPLATE.md"
+  ],
+  "examples": [],
+  "evals": [
+    "evals/scenarios.json"
+  ],
+  "scripts": [
+    "scripts/diff_guard.py"
+  ],
+  "scriptPolicy": "data-only"
+}

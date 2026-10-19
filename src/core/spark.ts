@@ -197,6 +197,14 @@ export const SPARK_SPECIALIST_NEXT_MOVES: Record<string, { command: string; rati
     command: 'apply wise cognitive reflex patterns',
     rationale: 'Use Depth, Breadth, Coil, and Mesh reflexes to strip structural slop.',
   },
+  'fable-anti-slop-engineering': {
+    command: 'run the anti-slop diff scan',
+    rationale: 'Verify diff integrity against weak assertions, skipped tests, and swallowed exceptions.',
+  },
+  'fable-anti-churn': {
+    command: 'gate actions and reuse valid evidence',
+    rationale: 'Prevent duplicate retry loops and unverified re-execution using decision receipts.',
+  },
 };
 
 function cleanSuggestion(text: string | null): string | null {

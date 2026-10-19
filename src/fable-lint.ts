@@ -7,6 +7,7 @@ import { RECOVERY_FAILURE_THRESHOLD } from './core/task-router.js';
 import { validateAllSkillPackages, getSkillPackageDir, readSkillResource } from './core/skill-package.js';
 import { checkCatalogArtifacts } from './core/catalog-generator.js';
 import { validateAllRecipes } from './core/recipes.js';
+import { findAntiSlopBinary, runNativeAntiSlop } from './eco/native-bridge.js';
 import { logInfo, logSuccess, logError, logWarn } from './utils.js';
 
 export interface SkillPackageLintReport {
@@ -279,6 +280,32 @@ export function runFableLint(targetDir: string = process.cwd()): boolean {
     const tags = ['[measured]', '[inferred]', '[not-shown]'];
     if (!tags.some((tag) => specContent.includes(tag))) {
       logWarn('SPEC.md missing source tags ([measured]/[inferred]/[not-shown]) for claims.');
+    }
+  }
+
+  // Anti-slop blocker check: verify diff does not introduce test tampering or slop patterns
+  const antiSlopBin = findAntiSlopBinary(repoRoot);
+  if (antiSlopBin) {
+    try {
+      const antiSlopResult = runNativeAntiSlop(repoRoot, {
+        failOnBlocker: true,
+        base: 'HEAD',
+        noColor: true,
+        jsonV1: true,
+      }, targetDir);
+      if (antiSlopResult.status === 2) {
+        logError('Anti-slop check: Blocker-severity slop findings detected in repository diff!');
+        const envelope = antiSlopResult.data as { data?: { findings?: Array<{ id: string; severity: string; name: string; file: string; line?: number; evidence: string }> } } | undefined;
+        const findings = envelope?.data?.findings || [];
+        for (const f of findings) {
+          if (f.severity === 'blocker') {
+            logError(`[Anti-Slop Blocker] ${f.name} in ${f.file}${f.line ? `:${f.line}` : ''}: ${f.evidence}`);
+          }
+        }
+        hasErrors = true;
+      }
+    } catch {
+      // Non-fatal if diff scanning fails in environment
     }
   }
 

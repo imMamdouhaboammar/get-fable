@@ -1,0 +1,13 @@
+name: autonomous-ci-healer
+version: 1.0.0
+description: Autonomous CI diagnostic, triage, and self-healing workflow.
+steps:
+  - id: probe-failing-runs
+    skill: fable-tend
+    action: Probe and extract GitHub workflow failure logs
+  - id: analyze-root-cause
+    skill: fable-review
+    action: Categorize billing, test, or lint failure
+  - id: apply-repair
+    skill: fable-heal
+    action: Formulate targeted fix and verify with bun test

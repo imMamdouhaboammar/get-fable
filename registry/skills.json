@@ -62,6 +62,8 @@
         "fable-method",
         "fable-council",
         "fable-tend",
+        "fable-anti-slop-engineering",
+        "fable-anti-churn",
         "fable-wise"
       ],
       "keywords": [
@@ -325,7 +327,9 @@
         "fable-finish-your-turn",
         "fable-simplify",
         "fable-run",
-        "fable-prove-it"
+        "fable-prove-it",
+        "fable-anti-slop-engineering",
+        "fable-anti-churn"
       ],
       "keywords": [
         "execute",
@@ -374,7 +378,9 @@
         "fable-simulator",
         "fable-outcome-first",
         "fable-learning",
-        "fable-spark"
+        "fable-spark",
+        "fable-anti-slop-engineering",
+        "fable-anti-churn"
       ],
       "keywords": [
         "verify",
@@ -418,7 +424,9 @@
         "fable-recover",
         "fable-judge",
         "fable-outcome-first",
-        "fable-simplify"
+        "fable-simplify",
+        "fable-anti-slop-engineering",
+        "fable-anti-churn"
       ],
       "keywords": [
         "review",
@@ -1455,6 +1463,96 @@
         "written runs verified",
         "no optimistic rounding",
         "machine proof"
+      ]
+    },
+    {
+      "id": "fable-anti-slop-engineering",
+      "order": 285,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.",
+      "intents": [
+        "audit-slop",
+        "verify-diff-integrity",
+        "prevent-slop",
+        "check-test-integrity"
+      ],
+      "requires": [
+        "workspace-mutation"
+      ],
+      "produces": [
+        "slop-audit-report",
+        "diff-integrity-evidence"
+      ],
+      "gates": [
+        "zero-slop-blockers",
+        "test-assertions-intact"
+      ],
+      "fallback": "fable-recover",
+      "mutatesWorkspace": false,
+      "parallelSafe": true,
+      "next": [
+        "fable-verify",
+        "fable-review",
+        "fable-heal",
+        "fable-prove-it",
+        "fable-judge",
+        "fable-handoff",
+        "fable-anti-churn",
+        "fable-recover"
+      ],
+      "keywords": [
+        "anti-slop",
+        "slop",
+        "dirty-engineering",
+        "test-integrity",
+        "diff-guard",
+        "assertions"
+      ]
+    },
+    {
+      "id": "fable-anti-churn",
+      "order": 287,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.",
+      "intents": [
+        "anti-churn",
+        "prevent-duplicate-work",
+        "reuse-evidence",
+        "gate-deterministic-failure",
+        "check-promotion"
+      ],
+      "requires": [
+        "action-identity"
+      ],
+      "produces": [
+        "decision-receipt",
+        "evidence-acceptance"
+      ],
+      "gates": [
+        "zero-duplicate-churn",
+        "typed-invalidation-satisfied"
+      ],
+      "fallback": "fable-recover",
+      "mutatesWorkspace": false,
+      "parallelSafe": true,
+      "next": [
+        "fable-verify",
+        "fable-review",
+        "fable-heal",
+        "fable-prove-it",
+        "fable-judge",
+        "fable-handoff",
+        "fable-recover"
+      ],
+      "keywords": [
+        "anti-churn",
+        "duplicate-work",
+        "evidence-reuse",
+        "receipts",
+        "typed-invalidation",
+        "promotion-gate"
       ]
     },
     {

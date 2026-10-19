@@ -39,6 +39,8 @@ bun ./bin/get-fable.js route "code-review" --apply
 - `fable-judge`
 - `fable-outcome-first`
 - `fable-simplify`
+- `fable-anti-slop-engineering`
+- `fable-anti-churn`
 
 ---
 

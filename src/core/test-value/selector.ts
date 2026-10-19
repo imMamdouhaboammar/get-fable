@@ -9,6 +9,7 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { findNeuralTestBinary } from '../../eco/native-bridge.js';
 import type {
   BlastRadiusSelectionReport,
   RiskExecutionTier,
@@ -246,6 +247,13 @@ export function selectTestsByRisk(
   if (sortedAffected.length > 0 && !requiresCompleteSuite) {
     rationale.push(
       `Selected ${sortedAffected.length} affected test file(s) covering blast radius at tier "${riskTier}".`
+    );
+  }
+
+  const neuralBin = findNeuralTestBinary(projectDir);
+  if (neuralBin) {
+    rationale.push(
+      `Native Neural Test Engine active (${path.basename(neuralBin)}): SIMD systolic array and Pareto tournament prioritization available.`
     );
   }
 

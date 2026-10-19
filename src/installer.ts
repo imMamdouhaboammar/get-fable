@@ -1069,38 +1069,42 @@ export function installGitHooks(targetDir: string = process.cwd()) {
 }
 
 export function installGlobalFable(jevEnvOptions?: JevEnvSetupOptions) {
+  // Only install authorized platforms: Claude, Antigravity, Codex, DSH / DeepSeek
   installClaudeGlobal();
   installAntigravityGlobal();
   installCodexGlobal();
-  installCursorGlobal();
-  installCopilotGlobal();
-  installDevinGlobal();
-  installWindsurfGlobal();
-  installReplitGlobal();
-  installAmazonQGlobal();
-  installTraeGlobal();
-  installWarpGlobal();
-  installGrokGlobal();
-  installKimiGlobal();
-  installAtlarixGlobal();
-  installVellumGlobal();
-  installCodegenGlobal();
-  installMuseGlobal();
-  installJunieGlobal();
-  installQodoGlobal();
-  installRooCodeGlobal();
-  installAiderGlobal();
-  installClineGlobal();
-  installOpenHandsGlobal();
-  installOpenCodeGlobal();
-  installContinueGlobal();
-  installKiloGlobal();
-  installPlandexGlobal();
-  installAutoGPTGlobal();
-  installHermesGlobal();
   installDeepSeekGlobal();
-  installKiroGlobal();
-  installPiCodeGlobal();
+
+  if (process.env.FABLE_INSTALL_ALL_PLATFORMS === 'true') {
+    installCursorGlobal();
+    installCopilotGlobal();
+    installDevinGlobal();
+    installWindsurfGlobal();
+    installReplitGlobal();
+    installAmazonQGlobal();
+    installTraeGlobal();
+    installWarpGlobal();
+    installGrokGlobal();
+    installKimiGlobal();
+    installAtlarixGlobal();
+    installVellumGlobal();
+    installCodegenGlobal();
+    installMuseGlobal();
+    installJunieGlobal();
+    installQodoGlobal();
+    installRooCodeGlobal();
+    installAiderGlobal();
+    installClineGlobal();
+    installOpenHandsGlobal();
+    installOpenCodeGlobal();
+    installContinueGlobal();
+    installKiloGlobal();
+    installPlandexGlobal();
+    installAutoGPTGlobal();
+    installHermesGlobal();
+    installKiroGlobal();
+    installPiCodeGlobal();
+  }
 
   const repoRoot = getRepoRootDir();
   const kernelDir = getAgentKernelDir();

@@ -1,0 +1,71 @@
+[
+  {
+    "id": "fable-anti-slop-engineering-scenario-1",
+    "name": "Audit diff for test tampering, skipped assertions, or swallowed errors",
+    "category": "should-trigger",
+    "prompt": "Audit this pull request diff for test tampering, skipped assertions, swallowed exceptions, or security bypasses.",
+    "shouldTrigger": true
+  },
+  {
+    "id": "fable-anti-slop-engineering-scenario-2",
+    "name": "General non-engineering question",
+    "category": "should-not-trigger",
+    "prompt": "What is the capital of France?",
+    "shouldTrigger": false
+  },
+  {
+    "id": "fable-anti-slop-reject-skipped-test",
+    "description": "Block PR that adds @pytest.mark.skip or it.skip to make a failing suite green",
+    "given": {
+      "intent": "Ensure all tests pass before shipping",
+      "phase": "verifying"
+    },
+    "expected": {
+      "action": "block-test-disabling",
+      "produces": "slop-audit-report",
+      "gates": [
+        "zero-slop-blockers",
+        "test-assertions-intact"
+      ]
+    },
+    "forbidden": {
+      "action": "allow-skipped-test-workaround"
+    }
+  },
+  {
+    "id": "fable-anti-slop-reject-swallowed-exception",
+    "description": "Reject empty catch block or except pass concealing downstream failure",
+    "given": {
+      "intent": "Handle potential database connection error in payment service",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "enforce-error-semantics",
+      "produces": "slop-audit-report",
+      "gates": [
+        "zero-slop-blockers"
+      ]
+    },
+    "forbidden": {
+      "action": "swallow-exceptions-silently"
+    }
+  },
+  {
+    "id": "fable-anti-slop-reject-dev-notes-in-ui",
+    "description": "Reject dev notes, TODOs, or mock data disclaimers rendered in UI components",
+    "given": {
+      "intent": "Implement user profile card in React",
+      "phase": "executing"
+    },
+    "expected": {
+      "action": "block-ui-dev-notes-leakage",
+      "produces": "slop-audit-report",
+      "gates": [
+        "zero-slop-blockers"
+      ]
+    },
+    "forbidden": {
+      "action": "allow-dev-notes-in-ui"
+    }
+  }
+]

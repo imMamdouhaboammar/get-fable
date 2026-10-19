@@ -252,6 +252,18 @@
       "pack": "system",
       "phase": "planned",
       "label": "Paperthin Cognitive Reflexes & Architecture Patterns"
+    },
+    {
+      "id": "fable-anti-slop-engineering",
+      "pack": "proof",
+      "phase": "verifying",
+      "label": "Anti-Slop Detection & Prevention Engine"
+    },
+    {
+      "id": "fable-anti-churn",
+      "pack": "proof",
+      "phase": "verifying",
+      "label": "Duplicate-Work & Anti-Churn Decision Engine"
     }
   ],
   "edges": [
@@ -1856,6 +1868,126 @@
       "target": "fable-simplify",
       "relation": "recovery",
       "weight": 0.75
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-anti-slop-engineering",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-anti-slop-engineering",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-anti-slop-engineering",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-anti-slop-engineering",
+      "relation": "peer",
+      "weight": 0.95
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.95
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-heal",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-prove-it",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-judge",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 1.0
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-scope-discipline",
+      "relation": "peer",
+      "weight": 0.9
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-anti-churn",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-anti-churn",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-anti-churn",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-verify",
+      "target": "fable-anti-churn",
+      "relation": "peer",
+      "weight": 0.95
+    },
+    {
+      "source": "fable-anti-churn",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.95
+    },
+    {
+      "source": "fable-anti-churn",
+      "target": "fable-heal",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-anti-churn",
+      "target": "fable-prove-it",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-anti-churn",
+      "target": "fable-judge",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-anti-churn",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 1.0
+    },
+    {
+      "source": "fable-anti-churn",
+      "target": "fable-anti-slop-engineering",
+      "relation": "peer",
+      "weight": 0.95
     }
   ]
 }

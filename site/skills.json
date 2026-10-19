@@ -1,7 +1,7 @@
 {
   "title": "get-fable 42 Canonical Skills Catalog",
   "description": "Deterministic specialist skills for AI coding agents across 8 packs with formal gates and evidence contracts.",
-  "totalSkills": 42,
+  "totalSkills": 44,
   "packs": [
     {
       "id": "core",
@@ -46,6 +46,8 @@
         "fable-redteam",
         "fable-heal",
         "fable-prove-it",
+        "fable-anti-slop-engineering",
+        "fable-anti-churn",
         "fable-judge"
       ]
     },
@@ -568,6 +570,35 @@
         "check-evidence"
       ],
       "url": "https://get-fable.vercel.app/skills/fable-prove-it.html"
+    },
+    {
+      "id": "fable-anti-slop-engineering",
+      "order": 285,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.",
+      "intents": [
+        "audit-slop",
+        "verify-diff-integrity",
+        "prevent-slop",
+        "check-test-integrity"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html"
+    },
+    {
+      "id": "fable-anti-churn",
+      "order": 287,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.",
+      "intents": [
+        "anti-churn",
+        "prevent-duplicate-work",
+        "reuse-evidence",
+        "gate-deterministic-failure",
+        "check-promotion"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-anti-churn.html"
     },
     {
       "id": "fable-scope-discipline",

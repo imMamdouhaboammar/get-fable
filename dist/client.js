@@ -32,7 +32,7 @@ var __toESM = (mod, isNodeMode, target) => {
 };
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 
-// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/cjs/react.development.js
+// ../../../.bun/install/cache/links/react@19.3.1-f1c8026c1be9208c/node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS(function(exports, module) {
   (function() {
     function defineDeprecationWarning(methodName, info) {
@@ -873,12 +873,12 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.useTransition = function() {
       return resolveDispatcher().useTransition();
     };
-    exports.version = "19.3.0";
+    exports.version = "19.3.1";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
 
-// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/index.js
+// ../../../.bun/install/cache/links/react@19.3.1-f1c8026c1be9208c/node_modules/react/index.js
 var require_react = __commonJS(function(exports, module) {
   var react_development = __toESM(require_react_development());
   if (false) {} else {
@@ -886,7 +886,7 @@ var require_react = __commonJS(function(exports, module) {
   }
 });
 
-// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/cjs/react-jsx-runtime.development.js
+// ../../../.bun/install/cache/links/react@19.3.1-f1c8026c1be9208c/node_modules/react/cjs/react-jsx-runtime.development.js
 var require_react_jsx_runtime_development = __commonJS(function(exports) {
   var React = __toESM(require_react());
   (function() {
@@ -1121,7 +1121,7 @@ React keys must be passed directly to JSX without using spread:
   })();
 });
 
-// ../../../.bun/install/cache/links/react@19.3.0-be7196de2fdcf3f4/node_modules/react/jsx-runtime.js
+// ../../../.bun/install/cache/links/react@19.3.1-f1c8026c1be9208c/node_modules/react/jsx-runtime.js
 var require_jsx_runtime = __commonJS(function(exports, module) {
   var react_jsx_runtime_development = __toESM(require_react_jsx_runtime_development());
   if (false) {} else {

@@ -40,6 +40,8 @@ bun ./bin/get-fable.js route "implement-card" --apply
 - `fable-simplify`
 - `fable-run`
 - `fable-prove-it`
+- `fable-anti-slop-engineering`
+- `fable-anti-churn`
 
 ---
 

@@ -37,6 +37,8 @@ CANONICAL_SKILLS = {
     "fable-native-code",
     "fable-outcome-first",
     "fable-prove-it",
+    "fable-anti-slop-engineering",
+    "fable-anti-churn",
     "fable-scope-discipline",
     "fable-domain",
     "fable-judge",

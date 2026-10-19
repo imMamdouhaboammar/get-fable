@@ -2,15 +2,15 @@
 
 > Evidence-driven coding lifecycle discipline and reusable Skills for AI coding agents.
 
-get-fable improves working conditions for AI coding agents (Claude Code, Antigravity, Grok, Codex, Cursor, etc.) through persistent state machines, lifecycle hooks, 42 canonical skills, automated verification gates, and error recovery.
+get-fable improves working conditions for AI coding agents (Claude Code, Antigravity, Grok, Codex, Cursor, etc.) through persistent state machines, lifecycle hooks, 44 canonical skills, automated verification gates, and error recovery.
 
 ## Documentation & Guides
 - [User Guide & Technical Documentation](https://get-fable.vercel.app/guide.html): Comprehensive lifecycle, state machine, hooks, and CLI reference.
 - [Workflows & Production Prompts](https://get-fable.vercel.app/workflows.html): End-to-end multi-agent pipelines and copy-paste prompt templates.
 - [Pricing & Open Source](https://get-fable.vercel.app/pricing.html): Free and open source GNU AGPLv3 license details.
-- [Skills Catalog](https://get-fable.vercel.app/skills.html): Index of all 42 canonical skills across 8 packs.
+- [Skills Catalog](https://get-fable.vercel.app/skills.html): Index of all 44 canonical skills across 8 packs.
 
-## Canonical Skills (42)
+## Canonical Skills (44)
 - [get-fable](https://get-fable.vercel.app/skills/get-fable.html): Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.
 - [fable-discover](https://get-fable.vercel.app/skills/fable-discover.html): Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.
 - [fable-research](https://get-fable.vercel.app/skills/fable-research.html): Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.
@@ -46,6 +46,8 @@ get-fable improves working conditions for AI coding agents (Claude Code, Antigra
 - [fable-native-code](https://get-fable.vercel.app/skills/fable-native-code.html): Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.
 - [fable-outcome-first](https://get-fable.vercel.app/skills/fable-outcome-first.html): Response styling policy enforcing direct first-sentence answers and zero sycophancy.
 - [fable-prove-it](https://get-fable.vercel.app/skills/fable-prove-it.html): Evidence precedence and verification rung enforcement preventing unverified claims.
+- [fable-anti-slop-engineering](https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html): Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.
+- [fable-anti-churn](https://get-fable.vercel.app/skills/fable-anti-churn.html): Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.
 - [fable-scope-discipline](https://get-fable.vercel.app/skills/fable-scope-discipline.html): Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.
 - [fable-domain](https://get-fable.vercel.app/skills/fable-domain.html): Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.
 - [fable-judge](https://get-fable.vercel.app/skills/fable-judge.html): Adversarial verification of finished work detecting weakened tests and false completion claims.

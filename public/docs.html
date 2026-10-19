@@ -97,7 +97,7 @@
 
         <article class="docs-body">
           <h1>get-fable Authoritative User Guide &amp; Architecture Documentation</h1>
-<p>Version: <strong>1.12.0</strong> · Schema: <strong>v3</strong> · Canonical Skills: <strong>42</strong> · Supported Platforms: <strong>32</strong></p>
+<p>Version: <strong>1.14.0</strong> · Schema: <strong>v3</strong> · Canonical Skills: <strong>44</strong> · Supported Platforms: <strong>32</strong></p>
 <blockquote><p><strong>get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.</strong></p></blockquote>
 <p>---</p>
 <h2>1. Introduction: The Working Conditions Thesis</h2>
@@ -209,7 +209,29 @@ bun ./bin/get-fable.js evidence pass build &quot;bun run build&quot; &quot;host 
 <div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash">bun ./bin/get-fable.js learn --failure-lessons</code></pre></div>
 <p>Extracts session mistakes and root causes into <code>Failure-lessons/</code>, <code>.fable/learnings.json</code>, and <code>agent-kernel</code>.</p>
 <p>---</p>
-<h2>10. CLI Command Reference</h2>
+<h2>10. Autonomous Perpetual Repository Steward</h2>
+<p>Autonomous repository triage, continuous maintenance, CI healing, PR verification, and capability packaging engine for <code>get-fable</code>.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Probe live repository and GitHub platform status without mutating workspace
+bun ./bin/get-fable.js steward --dry-run
+
+# Execute a single triage and action cycle
+bun ./bin/get-fable.js steward
+
+# Run perpetual continuous stewardship loop with 60s cooldown between cycles
+bun ./bin/get-fable.js steward --loop --interval 60 --max-cycles 100
+
+# Output machine-readable JSON v1 envelope
+bun ./bin/get-fable.js steward --json-v1</code></pre></div>
+<h3>Triage Priority Matrix</h3>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Tier</th><th>Priority Target</th><th>Trigger Condition</th><th>Primary Skill</th><th>Action</th></tr></thead><tbody>
+<tr><td><strong>Tier 1</strong></td><td>Mainline CI Runs</td><td>Mainline workflow run conclusion is <code>failure</code></td><td><code>fable-tend</code></td><td>Extract logs, reproduce failure locally, formulate minimal fix, verify build</td></tr>
+<tr><td><strong>Tier 2</strong></td><td>Pull Requests</td><td>Non-draft PRs targeting default branch exist</td><td><code>fable-review</code> + <code>fable-judge</code></td><td>Audit diff against anti-slop rules, run adversary tests, submit structured review</td></tr>
+<tr><td><strong>Tier 3</strong></td><td>Open Issues</td><td>Unassigned open GitHub issues exist</td><td><code>fable-plan</code> + <code>fable-tdd</code></td><td>Extract acceptance criteria, write failing reproduction test, apply native fix, open PR</td></tr>
+<tr><td><strong>Tier 4</strong></td><td>Code Hygiene</td><td>Untracked or unstaged modifications present</td><td><code>fable-anti-slop-engineering</code></td><td>Scan for swallowed errors, weak assertions, leftover debug code, enforce clean git tree</td></tr>
+<tr><td><strong>Tier 5</strong></td><td>Feature Innovation</td><td>Mainline green, zero open PRs/issues, clean tree</td><td><code>fable-spark</code> + <code>fable-cowork</code></td><td>Select next capability from roadmap backlog, execute with full unit/integration coverage</td></tr>
+</tbody></table></div>
+<p>---</p>
+<h2>11. CLI Command Reference</h2>
 <div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Lifecycle state management
 bun ./bin/get-fable.js status [--json-v1]
 bun ./bin/get-fable.js doctor [--json-v1]
@@ -218,6 +240,9 @@ bun ./bin/get-fable.js state &lt;phase&gt; [--substantial]
 bun ./bin/get-fable.js card &quot;&lt;text&gt;&quot; [--clear]
 bun ./bin/get-fable.js evidence &lt;pass|fail&gt; &lt;kind&gt; &quot;&lt;source&gt;&quot; &quot;&lt;detail&gt;&quot;
 bun ./bin/get-fable.js lint
+
+# Autonomous Repository Steward
+bun ./bin/get-fable.js steward [--dry-run] [--loop] [--interval 60]
 
 # Architecture &amp; Security
 bun ./bin/get-fable.js arch-eval &quot;&lt;spec&gt;&quot;

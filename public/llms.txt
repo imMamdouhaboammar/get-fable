@@ -28,6 +28,7 @@
 - [Task Routing & Selection Engine](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/ROUTING.md): 1. **Keyword Scoring**: Evaluates prompt tokens and intent signals across all 25 canonical skills.
 - [Skill Authoring Standard](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SKILL-AUTHORING.md): Every Fable skill must adhere to the 12-section standard:
 - [SPEC — <project / round name>](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/SPEC.md): <One paragraph: what must exist when this round is done, and for whom.>
+- [Autonomous Perpetual Repository Steward](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/STEWARD.md): Autonomous repository triage, continuous maintenance, CI healing, PR verification, and capability packaging engine for `get-fable`.
 - [Tool Capabilities & Schema Binding](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/TOOLS.md): 1. `filesystem-operations`: Workspace file read/write/edit.
 - [Updating get-fable](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/UPDATE.md): The updater separates read-only release intelligence from explicit mutation. Package and Git changes are never performed by passive checks.
 - [Usage: get-fable 1.12.0](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/USAGE.md): This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.

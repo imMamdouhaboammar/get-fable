@@ -28,7 +28,7 @@ Test-driven development, safe delegation, native code matching, and scope discip
 • fable-native-code (executing): Codebase idiom matching and anti-bloat policy ensuring diffs read like native code. (Intents: write-native-code, strip-bloat, match-idiom)
 • fable-scope-discipline (executing): Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests. (Intents: bound-scope, prevent-drift, surgical-diff)
 
-Proof Pack (6 Skills)
+Proof Pack (8 Skills)
 Adversarial review, penetration testing, automated healing, and evidence precedence.
 
 • fable-review (verifying): Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards. (Intents: code-review, diff-audit, standards-check)
@@ -36,6 +36,8 @@ Adversarial review, penetration testing, automated healing, and evidence precede
 • fable-redteam (verifying): Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets. (Intents: redteam, pentest, security-audit, vulnerability-discovery)
 • fable-heal (executing): Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam. (Intents: heal, security-fix, remediate-vulnerability, patch-security)
 • fable-prove-it (verifying): Evidence precedence and verification rung enforcement preventing unverified claims. (Intents: prove-claims, verify-rung, check-evidence)
+• fable-anti-slop-engineering (verifying): Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories. (Intents: audit-slop, verify-diff-integrity, prevent-slop, check-test-integrity)
+• fable-anti-churn (verifying): Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead. (Intents: anti-churn, prevent-duplicate-work, reuse-evidence, gate-deterministic-failure, check-promotion)
 • fable-judge (verifying): Adversarial verification of finished work detecting weakened tests and false completion claims. (Intents: judge-work, hunt-frauds, verify-diff)
 
 Delivery Pack (5 Skills)

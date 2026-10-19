@@ -65,7 +65,121 @@ def block_invalid_state(path):
     return 2
 
 
-def block_state_if_needed(state):
+def check_anti_slop_blockers(repo_root):
+    candidates = [
+        os.path.join(repo_root, "target", "release", "fable-anti-slop"),
+        os.path.join(repo_root, "target", "debug", "fable-anti-slop"),
+        os.path.join(repo_root, "target", "release", "get-fable-native"),
+        os.path.join(repo_root, "target", "debug", "get-fable-native"),
+    ]
+    binary = None
+    for c in candidates:
+        if os.path.isfile(c) and os.access(c, os.X_OK):
+            binary = c
+            break
+    if not binary:
+        import shutil
+        binary = shutil.which("fable-anti-slop")
+
+    if not binary:
+        return 0
+
+    import subprocess, json
+    is_native_cli = os.path.basename(binary).startswith("get-fable-native")
+    cmd = [binary, "anti-slop", "scan"] if is_native_cli else [binary, "scan"]
+    cmd.extend(["--repo", repo_root, "--base", "HEAD", "--fail-on-blocker", "--json"])
+
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        if proc.returncode == 2:
+            sys.stderr.write("[get-fable] BLOCKED stop: anti-slop engine detected blocker findings in diff!\n")
+            try:
+                data = json.loads(proc.stdout)
+                findings = data.get("findings", [])
+                for f in findings:
+                    if f.get("severity") == "blocker":
+                        sys.stderr.write(
+                            "    - [%s] %s in %s: %s\n"
+                            % (f.get("id"), f.get("name"), f.get("file"), f.get("evidence"))
+                        )
+            except Exception:
+                if proc.stdout:
+                    sys.stderr.write(proc.stdout[:500] + "\n")
+            sys.stderr.write("Fix or revert AI coding slop (weak assertions, skipped tests, error swallowing) before completion.\n")
+            return 2
+    except Exception:
+        pass
+
+    return 0
+
+
+def check_anti_churn_blockers(fable_dir):
+    receipts_file = os.path.join(fable_dir, "anti-churn", "receipts.ndjson")
+    if not os.path.isfile(receipts_file):
+        return 0
+
+    pending_ids = []
+    try:
+        with open(receipts_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                if '"outcome":"pending"' in line or '"outcome": "pending"' in line:
+                    try:
+                        obj = json.loads(line)
+                        if obj.get("outcome") == "pending":
+                            pending_ids.append(obj.get("receipt_id", "unknown"))
+                    except Exception:
+                        pass
+    except Exception:
+        pass
+
+    if pending_ids:
+        sys.stderr.write(
+            "[get-fable] BLOCKED stop: %d pending anti-churn reservation(s) left unresolved on ledger (%s).\n"
+            "Accept evidence or complete reserved work before closing turn.\n"
+            % (len(pending_ids), ", ".join(pending_ids[:3]))
+        )
+        return 2
+
+    repo_root = os.path.dirname(fable_dir)
+    candidates = [
+        os.path.join(repo_root, "target", "release", "fable-anti-churn"),
+        os.path.join(repo_root, "target", "debug", "fable-anti-churn"),
+        os.path.join(repo_root, "target", "release", "get-fable-native"),
+        os.path.join(repo_root, "target", "debug", "get-fable-native"),
+    ]
+    binary = None
+    for c in candidates:
+        if os.path.isfile(c) and os.access(c, os.X_OK):
+            binary = c
+            break
+
+    if binary:
+        import subprocess
+        is_native_cli = os.path.basename(binary).startswith("get-fable-native")
+        cmd = (
+            [binary, "anti-churn", "verify", "--state", receipts_file]
+            if is_native_cli
+            else [binary, "verify", "--state", receipts_file]
+        )
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+            if proc.returncode != 0:
+                sys.stderr.write("[get-fable] BLOCKED stop: anti-churn receipts ledger verification failed!\n")
+                if proc.stdout:
+                    sys.stderr.write(proc.stdout[:500] + "\n")
+                if proc.stderr:
+                    sys.stderr.write(proc.stderr[:500] + "\n")
+                return 2
+        except Exception:
+            pass
+
+    return 0
+
+
+def block_state_if_needed(state, fable_dir=None):
     if not isinstance(state, dict) or not state.get("substantial"):
         return 0
 
@@ -83,6 +197,15 @@ def block_state_if_needed(state):
             % state.get("phase")
         )
         return 2
+
+    if fable_dir:
+        repo_root = os.path.dirname(fable_dir)
+        slop_blocked = check_anti_slop_blockers(repo_root)
+        if slop_blocked:
+            return slop_blocked
+        churn_blocked = check_anti_churn_blockers(fable_dir)
+        if churn_blocked:
+            return churn_blocked
 
     return 0
 
@@ -123,7 +246,7 @@ def main():
 
     path = ledger_path(fable_dir)
     if not os.path.isfile(path):
-        return block_state_if_needed(state)
+        return block_state_if_needed(state, fable_dir)
 
     open_items, _has_any, paused = parse_ledger(path)
     if paused:
@@ -135,7 +258,7 @@ def main():
     if bad:
         return block_missing_ledger_evidence(path, bad)
 
-    return block_state_if_needed(state)
+    return block_state_if_needed(state, fable_dir)
 
 
 if __name__ == "__main__":

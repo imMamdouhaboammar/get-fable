@@ -32,10 +32,10 @@ after the final mutation to bring verifiedGeneration up to mutationGeneration.
 
   skills: {
     id: 'skills',
-    title: '25 Canonical Specialist Skills',
-    summary: 'Role-specific coding skills with strict inputs, outputs, and gates.',
+    title: '44 Canonical Specialist Skills',
+    summary: 'Role-specific coding skills across 8 packs with strict inputs, outputs, and gates.',
     content: `
-${colors.bright}${colors.cyan}25 CANONICAL SPECIALIST SKILLS${colors.reset}
+${colors.bright}${colors.cyan}44 CANONICAL SPECIALIST SKILLS (8 PACKS)${colors.reset}
 --------------------------------------------------
 ${colors.yellow}Core Pack:${colors.reset}
   - get-fable       : Universal front-door router and orchestrator
@@ -44,6 +44,7 @@ ${colors.yellow}Core Pack:${colors.reset}
   - fable-execute   : Focused implementation within accepted card bounds
   - fable-verify    : Machine-checked test, build, and runtime evidence
   - fable-recover   : Deterministic failure diagnosis and loop recovery
+  - fable-method    : Canonical 4-step execution and problem-solving loop
 
 ${colors.yellow}Intelligence Pack:${colors.reset}
   - fable-research  : Primary source and official documentation lookup
@@ -51,17 +52,29 @@ ${colors.yellow}Intelligence Pack:${colors.reset}
 ${colors.cyan}Build Pack:${colors.reset}
   - fable-tdd       : Test-driven development with red-green validation
   - fable-delegate  : Bounded parallel work delegation across subagents
+  - fable-native-code : Codebase idiom matching and anti-bloat policy
+  - fable-scope-discipline : Anti-scope-creep and atomic diff policy
 
 ${colors.magenta}Proof Pack:${colors.reset}
   - fable-review    : Independent diff and correctness review
   - fable-security  : Security boundary review and vulnerability checks
+  - fable-redteam   : Automated penetration testing with CVSS v3.1 and SARIF
+  - fable-heal      : Synthesize, apply, and verify security remediations
+  - fable-prove-it  : Verification rung enforcement preventing unverified claims
+  - fable-judge     : Adversarial verification detecting weakened tests and fraud
+  - fable-anti-slop-engineering : High-performance anti-slop engine & dirty engineering prevention
+  - fable-anti-churn: Work-identity deduplication, typed invalidation, and evidence reuse
 
 ${colors.green}Delivery Pack:${colors.reset}
   - fable-release   : Release verification, semver, and packaging checks
   - fable-handoff   : Session context preservation and structured handoffs
+  - fable-finish-your-turn : Autonomous task completion policy
+  - fable-outcome-first : Response styling policy enforcing direct first-sentence answers
+  - fable-tend      : Autonomous junior maintainer for CI repair and conflict triage
 
 ${colors.green}Evolution Pack:${colors.reset}
   - fable-eval      : Holdout evaluation and benchmark scoring
+  - fable-learning  : Durable project engineering knowledge and failure lessons
 
 ${colors.blue}System Pack:${colors.reset}
   - fable-dataviz   : Accessible data visualizations and charts
@@ -74,9 +87,15 @@ ${colors.blue}System Pack:${colors.reset}
   - fable-simulator : Independent oracle verification and simulation
   - fable-cowork    : Autonomous cowork execution and silent tool chaining
   - fable-spark     : Situational awareness and atomic next-move prediction
+  - fable-architecture : Architecture evaluation and microservices enforcement
+  - fable-eco       : Curated capability provisioning and reproducible locks
+  - fable-context-thrift : Token budget conservation and targeted lookups
+  - fable-council   : Multi-agent deliberation council before finalizing plans
+  - fable-wise      : Low-level agentic design patterns and cognitive reflexes
 
 ${colors.red}Creator Pack:${colors.reset}
-  - skill-creator   : Author, refine, benchmark, and package skills
+  - fable-skill-creator : Author, refine, benchmark, and package skills
+  - fable-domain    : Domain workflow generator translating Fable methodology
 `,
   },
 
@@ -128,12 +147,12 @@ ${colors.bright}Recording Evidence:${colors.reset}
   platforms: {
     id: 'platforms',
     title: 'Supported AI Platforms & Integrations',
-    summary: 'How get-fable integrates across 30 AI platforms and coding agents.',
+    summary: 'How get-fable integrates across 32 AI platforms and coding agents.',
     content: `
-${colors.bright}${colors.cyan}SUPPORTED AI PLATFORMS (30 AGENTS & TOOLS)${colors.reset}
+${colors.bright}${colors.cyan}SUPPORTED AI PLATFORMS (32 AGENTS & TOOLS)${colors.reset}
 --------------------------------------------------
 ${colors.yellow}Proprietary & Commercial Markets:${colors.reset}
-1. Claude Code         : ~/.claude/settings.json, CLAUDE.md, and 6 lifecycle hooks
+1. Claude Code         : ~/.claude/settings.json, CLAUDE.md, and 12 lifecycle hooks
 2. Google Antigravity  : ~/.gemini/config/hooks.json, rules, and plugins
 3. OpenAI Codex        : ~/.codex/rules/, skills/, and .codex-plugin/plugin.json
 4. Cursor IDE          : ~/.cursor/rules/ and .cursor/rules/fable-lifecycle.mdc
@@ -164,7 +183,9 @@ ${colors.cyan}Open-Source & Community Markets:${colors.reset}
 27. Plandex            : ~/.plandex/rules/fable.md and .plandex/context.md
 28. AutoGPT            : ~/.autogpt/rules/fable.md
 29. Hermes Agent       : ~/.hermes/rules/fable.md and skills/
-30. Kiro               : ~/.kiro/rules/ and Python lifecycle hooks
+30. DeepSeek (DSH)     : Cordis patch bundle and dist/client.js combo bundling
+31. Kiro               : ~/.kiro/rules/ and Python lifecycle hooks
+32. Pi Code            : ~/.pi/agent/rules/fable.md
 `,
   },
 
@@ -202,6 +223,22 @@ ${colors.bright}${colors.cyan}COMMAND REFERENCE${colors.reset}
   get-fable evidence ...          Record typed evidence
   get-fable doctor [--fix]        Validate and auto-repair installation
   get-fable lint                  Check state, ledger, and evidence consistency
+  get-fable learn [options]       Extract failure lessons and durable project knowledge
+  get-fable toon <action>         Token-Oriented Object Notation: encode, decode, validate
+  get-fable redteam --target <url> Ethical penetration test audit with CVSS & SARIF
+  get-fable heal [options]        Synthesize and apply code patches and TDD guards
+  get-fable ui-polish [url]       Autonomous pixel-by-pixel UI/UX polish round
+  get-fable anti-slop [scan|..]   Native Rust anti-slop engine & test integrity check
+  get-fable anti-churn [check|..] Native Rust anti-churn engine & duplicate-work prevention
+  get-fable neural-test [action]  Native Rust Neural Testing & Auto-Arch Tournament Engine
+  get-fable test-engine [action]  Frontier Testing Engine (Midscene, Keploy, Tester-Army)
+  get-fable test-value [action]   Test-Value Spearhead Engine (risk-proportional test selection)
+  get-fable spearhead [options]   Run unified Test-Value Spearhead verification gate
+  get-fable mythos [action]       OpenMythos Recurrent-Depth Engine (MoE/MLA/MoDA)
+  get-fable harness [action]      Harness² Recursive Agent Harnessing Engine
+  get-fable graph [skill-id]      Inspect neural linking topology
+  get-fable recipes [list|inspect]List and view lifecycle workflow recipes
+  get-fable packs [list|inspect]  List and view grouped skill packs
   get-fable update [--check]      Check and perform auto-updates
   get-fable telemetry [status|..] Manage privacy-preserving local telemetry
   get-fable feed [list|search]    Explore and search available skills

@@ -44,6 +44,8 @@ bun ./bin/get-fable.js route "run-tests" --apply
 - `fable-outcome-first`
 - `fable-learning`
 - `fable-spark`
+- `fable-anti-slop-engineering`
+- `fable-anti-churn`
 
 ---
 

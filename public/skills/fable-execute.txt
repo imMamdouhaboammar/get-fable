@@ -30,6 +30,8 @@ Next Allowed Skills
 • fable-simplify
 • fable-run
 • fable-prove-it
+• fable-anti-slop-engineering
+• fable-anti-churn
 
 ---
 

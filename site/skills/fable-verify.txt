@@ -34,6 +34,8 @@ Next Allowed Skills
 • fable-outcome-first
 • fable-learning
 • fable-spark
+• fable-anti-slop-engineering
+• fable-anti-churn
 
 ---
 

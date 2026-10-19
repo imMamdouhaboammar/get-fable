@@ -15,7 +15,7 @@ jobs:
 
       - name: Verify zero forbidden private paths
         run: |
-          FORBIDDEN_PATHS=("_backups" "_quarantine" "Failure-lessons" "docs/internal" "evals/holdout")
+          FORBIDDEN_PATHS=("_backups" "_quarantine" "Failure-lessons" "docs/internal" "evals/holdout" "docs/get-fable-commercial-spec-v2" "docs/get-fable-commercial-spec-v2 2" "commercial")
           FOUND=0
           for p in "${FORBIDDEN_PATHS[@]}"; do
             if [ -e "$p" ]; then

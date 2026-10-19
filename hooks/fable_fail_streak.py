@@ -24,6 +24,7 @@ from _fable_common import (  # noqa: E402
     load_fail_streak,
     save_fail_streak,
     record_command_result,
+    read_state,
 )
 
 _EXIT_CODE_RE = re.compile(r"[Ee]xit code[: ]+([0-9]+)")
@@ -76,6 +77,52 @@ def event_failed(data):
     return command_failed(data.get("tool_response"))
 
 
+def check_anti_churn_failure(fable_dir, data):
+    tool_input = data.get("tool_input", {}) or {}
+    cmd = ""
+    if isinstance(tool_input, dict):
+        cmd = tool_input.get("command") or tool_input.get("CommandLine") or ""
+    elif isinstance(tool_input, str):
+        cmd = tool_input
+
+    if not cmd or len(cmd.strip()) < 3:
+        return ""
+
+    churn_dir = os.path.join(fable_dir, "anti-churn")
+    os.makedirs(churn_dir, exist_ok=True)
+    tracking_file = os.path.join(churn_dir, "last_failure.json")
+
+    import hashlib
+    cmd_hash = hashlib.sha256(cmd.strip().encode("utf-8")).hexdigest()
+
+    last = {}
+    if os.path.isfile(tracking_file):
+        try:
+            with open(tracking_file, "r", encoding="utf-8") as f:
+                last = json.load(f)
+        except Exception:
+            last = {}
+
+    state = read_state(fable_dir)
+    cur_gen = state.get("mutationGeneration", 0) if isinstance(state, dict) else 0
+
+    if last.get("cmd_hash") == cmd_hash and last.get("mutation_generation") == cur_gen:
+        count = last.get("count", 1) + 1
+        with open(tracking_file, "w", encoding="utf-8") as f:
+            json.dump({"cmd_hash": cmd_hash, "mutation_generation": cur_gen, "count": count}, f)
+        if count >= 2:
+            return (
+                "[get-fable] BLOCKED churn: deterministic local failure loop detected. "
+                "Command failed repeatedly with 0 intermediate workspace mutations. "
+                "Edit files or check environment before re-running identical command."
+            )
+    else:
+        with open(tracking_file, "w", encoding="utf-8") as f:
+            json.dump({"cmd_hash": cmd_hash, "mutation_generation": cur_gen, "count": 1}, f)
+
+    return ""
+
+
 def main():
     data = read_hook_input()
     fable_dir = find_fable_dir(start_dir(data))
@@ -97,17 +144,27 @@ def main():
             save_fail_streak(session_id, 0)
 
     if not failed:
+        tracking_file = os.path.join(fable_dir, "anti-churn", "last_failure.json")
+        if os.path.isfile(tracking_file):
+            try:
+                os.remove(tracking_file)
+            except Exception:
+                pass
         return 0
 
+    churn_warning = check_anti_churn_failure(fable_dir, data)
     streak = int(durable.get("failureStreak", 0)) if isinstance(durable, dict) else load_fail_streak(session_id)
-    if streak >= 2:
+    if streak >= 2 or churn_warning:
         event_name = data.get("hook_event_name")
         if not isinstance(event_name, str) or not event_name.strip():
             event_name = "PostToolUseFailure"
+        extra = RECOVERY_CONTEXT + " failureStreak=%d." % streak
+        if churn_warning:
+            extra = churn_warning + " " + extra
         print(json.dumps({
             "hookSpecificOutput": {
                 "hookEventName": event_name,
-                "additionalContext": RECOVERY_CONTEXT + " failureStreak=%d." % streak,
+                "additionalContext": extra,
             }
         }, ensure_ascii=False))
     return 0

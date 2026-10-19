@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "id": "fable-steward",
+  "entry": "SKILL.md",
+  "agents": [],
+  "references": [],
+  "templates": [],
+  "examples": [],
+  "evals": [],
+  "scripts": [],
+  "scriptPolicy": "data-only"
+}
