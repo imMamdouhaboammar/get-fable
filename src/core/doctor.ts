@@ -31,6 +31,7 @@ import { TEST_VALUE_REA_EVIDENCE_LEDGER } from './test-value/index.js';
 import { OPEN_MYTHOS_REA_EVIDENCE_LEDGER } from './mythos/index.js';
 import { FRONTIER_TEST_REA_EVIDENCE_LEDGER, FrontierTestOrchestrator } from './frontier-test/index.js';
 import { HARNESS2_REA_EVIDENCE_LEDGER, findLocalHarness2Binary } from './harness/index.js';
+import { FABLE_ORCHESTRATOR_REA_EVIDENCE_LEDGER, FableOrchestratorKernel } from './orchestrator/index.js';
 import { findAntiSlopBinary, findAntiChurnBinary, findNeuralTestBinary, runNativeNeuralTest } from '../eco/native-bridge.js';
 
 function check(id: string, status: DoctorCheck['status'], message: string): DoctorCheck {
@@ -931,6 +932,45 @@ export function runDoctor(
         'harness2-engine',
         'ERROR',
         `Harness² Engine check failed: ${error instanceof Error ? error.message : String(error)}`
+      )
+    );
+  }
+
+  try {
+    const protoPath = path.join(repoRoot, 'proto', 'fable_orchestrator.proto');
+    const protoExists = fs.existsSync(protoPath);
+    const kernel = new FableOrchestratorKernel({ inMemoryOnly: true });
+    const repoCount = Object.keys(FABLE_ORCHESTRATOR_REA_EVIDENCE_LEDGER.repositories).length;
+    const ok =
+      protoExists &&
+      repoCount >= 7 &&
+      typeof kernel.submitTask === 'function' &&
+      typeof kernel.scheduleNextWave === 'function' &&
+      typeof kernel.getStatus === 'function' &&
+      Boolean(kernel.ledger) &&
+      Boolean(kernel.blackboard) &&
+      Boolean(kernel.watchdog) &&
+      Boolean(kernel.healflow) &&
+      Boolean(kernel.adaptiveRouter);
+    checks.push(
+      ok
+        ? check(
+            'orchestrator-kernel',
+            'PASS',
+            `Fable Maestro Orchestrator active (${repoCount} REA-attested upstream architectures, proto IDL present, dual-plane micro-kernel healthy)`
+          )
+        : check(
+            'orchestrator-kernel',
+            'ERROR',
+            'Fable Orchestrator Kernel or proto verification failed'
+          )
+    );
+  } catch (error) {
+    checks.push(
+      check(
+        'orchestrator-kernel',
+        'ERROR',
+        `Orchestrator kernel check failed: ${error instanceof Error ? error.message : String(error)}`
       )
     );
   }

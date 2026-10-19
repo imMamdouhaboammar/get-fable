@@ -142,6 +142,12 @@ import { runNeuralTestCommand } from './cli/commands/neural-test.js';
 import { runStewardCommand } from './cli/commands/steward.js';
 import { loadReflexConfig, resolveRoute } from './core/reflex/index.js';
 import {
+  runOrchestrateCommand,
+  runBlackboardCommand,
+  runSentinelCommand,
+  runHealCommand,
+} from './cli/commands/orchestrator.js';
+import {
   executeDelegationWavePlanWithGrpc,
   orchestrateSubagentsWithJev,
 } from './core/orchestrator/index.js';
@@ -1896,8 +1902,22 @@ export function runCli(args: string[] = process.argv.slice(2)): number | Promise
       return runHarnessCommand(args.slice(1));
 
     case 'jev-orchestrate':
-    case 'orchestrate':
       return runJevOrchestrateCommand(args.slice(1));
+
+    case 'orchestrate':
+    case 'fable-orchestrate':
+    case 'maestro':
+      return runOrchestrateCommand(args.slice(1));
+
+    case 'blackboard':
+      return runBlackboardCommand(args.slice(1));
+
+    case 'sentinel':
+      return runSentinelCommand(args.slice(1));
+
+    case 'heal':
+    case 'healflow':
+      return runHealCommand(args.slice(1));
 
     case 'steward':
     case 'auto-steward':
