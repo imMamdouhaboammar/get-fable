@@ -64,17 +64,14 @@
         "fable-tend",
         "fable-anti-slop-engineering",
         "fable-anti-churn",
-        "fable-wise",
-        "fable-test",
-        "fable-core-test"
+        "fable-wise"
       ],
       "keywords": [
         "fable",
         "rigorous",
         "frontier-like",
         "lifecycle"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-discover",
@@ -115,8 +112,7 @@
         "unknown",
         "repository",
         "current behavior"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-research",
@@ -159,8 +155,7 @@
         "current version",
         "research",
         "primary source"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-plan",
@@ -213,8 +208,7 @@
         "refactor",
         "multi-file",
         "end to end"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-tdd",
@@ -256,8 +250,7 @@
         "bug fix",
         "behavior change",
         "feature"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-delegate",
@@ -299,8 +292,7 @@
         "workers",
         "multi-agent",
         "independent tasks"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-execute",
@@ -347,8 +339,7 @@
         "fix typo",
         "single file",
         "narrow scope"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-verify",
@@ -399,8 +390,7 @@
         "acceptance",
         "run check",
         "prove"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-review",
@@ -445,8 +435,7 @@
         "pr review",
         "critique",
         "independent pass"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-security",
@@ -488,8 +477,7 @@
         "vulnerability",
         "audit",
         "injection"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-redteam",
@@ -537,8 +525,7 @@
         "coverage-ledger",
         "cloudflare-audit",
         "adversarial-validation"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-heal",
@@ -583,8 +570,7 @@
         "vulnerability-fix",
         "auto-patch",
         "circuit-breaker"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-release",
@@ -622,8 +608,7 @@
         "ship",
         "tag",
         "ready for pr"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-handoff",
@@ -658,8 +643,7 @@
         "next session",
         "resume",
         "context transfer"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-eval",
@@ -700,8 +684,7 @@
         "skill quality",
         "prompt quality",
         "holdout"
-      ],
-      "audience": "maintainer"
+      ]
     },
     {
       "id": "fable-learning",
@@ -745,8 +728,7 @@
         "playbook",
         "gbrain",
         "fable-convo-learn"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-recover",
@@ -791,8 +773,7 @@
         "stale",
         "cache",
         "wrong branch"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-dataviz",
@@ -833,8 +814,7 @@
         "dashboard",
         "metric tile",
         "heatmap"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-artifact",
@@ -872,8 +852,7 @@
         "architecture diagram",
         "interactive component",
         "technical proposal"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-simplify",
@@ -910,8 +889,7 @@
         "dead code",
         "deduplicate",
         "code quality"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-loop",
@@ -950,103 +928,6 @@
         "cron",
         "schedule",
         "babysit"
-      ],
-      "audience": "consumer"
-    },
-    {
-      "id": "fable-test",
-      "order": 142,
-      "phase": "verifying",
-      "pack": "proof",
-      "audience": "consumer",
-      "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.",
-      "intents": [
-        "test-project",
-        "run-tests",
-        "test-coverage",
-        "quality-engineering",
-        "diagnose-tests"
-      ],
-      "requires": [
-        "test-runner"
-      ],
-      "produces": [
-        "test-execution-report",
-        "test-evidence"
-      ],
-      "gates": [
-        "machine-checked",
-        "no-skipped-tests",
-        "tests-executed-gt-zero"
-      ],
-      "fallback": "fable-recover",
-      "mutatesWorkspace": false,
-      "parallelSafe": true,
-      "next": [
-        "fable-tdd",
-        "fable-anti-slop-engineering",
-        "fable-verify",
-        "fable-review",
-        "fable-release"
-      ],
-      "keywords": [
-        "test",
-        "testing",
-        "test-guard",
-        "pytest",
-        "vitest",
-        "jest",
-        "tests",
-        "suite",
-        "unit",
-        "e2e",
-        "pyramid",
-        "coverage",
-        "qa",
-        "اختبر",
-        "تيست"
-      ]
-    },
-    {
-      "id": "fable-core-test",
-      "order": 143,
-      "phase": "verifying",
-      "pack": "proof",
-      "audience": "maintainer",
-      "description": "Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit.",
-      "intents": [
-        "test-crates",
-        "test-matrix",
-        "neural-test",
-        "doctor-audit"
-      ],
-      "requires": [
-        "test-runner",
-        "native-engines"
-      ],
-      "produces": [
-        "test-run-report",
-        "test-evidence-matrix"
-      ],
-      "gates": [
-        "all-tiers-checked",
-        "machine-checked",
-        "no-skipped-tests"
-      ],
-      "fallback": "fable-recover",
-      "mutatesWorkspace": false,
-      "parallelSafe": true,
-      "next": [
-        "fable-verify",
-        "fable-review",
-        "fable-release"
-      ],
-      "keywords": [
-        "core-test",
-        "internal-test",
-        "crates",
-        "fable-core",
-        "doctor"
       ]
     },
     {
@@ -1085,8 +966,7 @@
         "smoke test",
         "live server",
         "browser check"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-memory",
@@ -1124,8 +1004,7 @@
         "feedback",
         "project constraint",
         "MEMORY.md"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-config",
@@ -1162,8 +1041,7 @@
         "keybindings",
         "env vars",
         "hooks.json"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-simulator",
@@ -1201,8 +1079,7 @@
         "headless browser",
         "causal evidence",
         "truthfulness"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-cowork",
@@ -1239,8 +1116,7 @@
         "background mode",
         "clean tools",
         "lead with outcome"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-spark",
@@ -1274,8 +1150,7 @@
         "situational awareness",
         "smallest action",
         "minimal action"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-skill-creator",
@@ -1316,8 +1191,7 @@
         "skill creator",
         "fable skill creator",
         "eval suite"
-      ],
-      "audience": "maintainer"
+      ]
     },
     {
       "id": "fable-architecture",
@@ -1367,8 +1241,7 @@
         "api gateway",
         "decoupled domains",
         "scaffold microservices"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-eco",
@@ -1415,8 +1288,7 @@
         "install-plan",
         "execution-contract",
         "reproducible locks"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-context-thrift",
@@ -1450,8 +1322,7 @@
         "batch lookups",
         "targeted read",
         "conserve context"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-finish-your-turn",
@@ -1487,8 +1358,7 @@
         "do not stop",
         "investigate error",
         "finish what you started"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-native-code",
@@ -1524,8 +1394,7 @@
         "strip comments",
         "no defensive bloat",
         "clean diff"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-outcome-first",
@@ -1559,8 +1428,7 @@
         "no sycophancy",
         "first sentence answer",
         "concise summary"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-prove-it",
@@ -1595,8 +1463,7 @@
         "written runs verified",
         "no optimistic rounding",
         "machine proof"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-anti-slop-engineering",
@@ -1641,8 +1508,7 @@
         "test-integrity",
         "diff-guard",
         "assertions"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-anti-churn",
@@ -1687,8 +1553,7 @@
         "receipts",
         "typed-invalidation",
         "promotion-gate"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-scope-discipline",
@@ -1723,8 +1588,7 @@
         "surgical diff",
         "no drive-bys",
         "adjacency is not scope"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-domain",
@@ -1761,8 +1625,7 @@
         "sector workflow",
         "trap fixture",
         "domain nouns"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-judge",
@@ -1797,8 +1660,7 @@
         "adversarial verification",
         "detect weakened tests",
         "hunt false claims"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-method",
@@ -1831,8 +1693,7 @@
         "think act prove",
         "define done",
         "fable loop"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-council",
@@ -1867,8 +1728,7 @@
         "convene council",
         "deliberate with agents",
         "second opinion"
-      ],
-      "audience": "consumer"
+      ]
     },
     {
       "id": "fable-tend",
@@ -1906,8 +1766,7 @@
         "resolve conflicts",
         "repository maintainer",
         "nightly sweep"
-      ],
-      "audience": "maintainer"
+      ]
     },
     {
       "id": "fable-wise",
@@ -1945,8 +1804,7 @@
         "autobahn",
         "feynman check",
         "strip slop"
-      ],
-      "audience": "consumer"
+      ]
     }
   ]
 }
