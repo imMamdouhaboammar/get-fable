@@ -1,5 +1,7 @@
 ---
 name: agent-churn-control
+metadata:
+  internal: true
 description: Use before repeating an agent test, review, plan, retry, tool call, panel, or promotion check. Reuse matching accepted evidence, allow valid changed work through typed invalidation, and gate only the duplicate local action; never stop the overall task or use rate-limit percentage as authority.
 ---
 

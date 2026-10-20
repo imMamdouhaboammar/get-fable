@@ -1,5 +1,7 @@
 ---
 name: readchk
+metadata:
+  internal: true
 description: "Verify the model's understanding of a user's instruction before spending non-trivial work. Use when a request is long, bundled, high-stakes, hard to undo, or has ambiguous scope or referents such as this, that, it, the other one, whatever is cleaner, or whichever order makes sense. Restate internally, cross-check against available context, proceed silently when resolved, and surface only a genuine surviving fork."
 ---
 

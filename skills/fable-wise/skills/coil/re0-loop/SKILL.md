@@ -1,5 +1,7 @@
 ---
 name: re0-loop
+metadata:
+  internal: true
 description: "Run repeated build -> QA -> re0-memo -> re0-work cycles while preserving learning and letting code die. Use for long agentic projects where progress must be measured by quality-cleared templates, reusable modules, and eliminated anti-patterns rather than hours spent or features accumulated."
 ---
 

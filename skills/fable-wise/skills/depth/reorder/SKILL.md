@@ -1,5 +1,7 @@
 ---
 name: reorder
+metadata:
+  internal: true
 disable-model-invocation: true
 description: "Realign a listing whose order has gone arbitrary — a list, table, catalog, sections, an enum — into a logical sequence under one stated principle. Move items only: nothing is reworded, added, or removed. Use when the order no longer helps a reader follow the set."
 ---

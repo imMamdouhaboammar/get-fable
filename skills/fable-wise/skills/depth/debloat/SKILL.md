@@ -1,5 +1,7 @@
 ---
 name: debloat
+metadata:
+  internal: true
 disable-model-invocation: true
 description: "Compress an artifact that has accreted into bloat — padding, over-qualification, fused sentences, walls of enumeration, adjacent restatement — down to its load-bearing density, meaning preserved. Use when prose is correct and current but has grown verbose or patched-over and you want it tight without a full rewrite."
 ---

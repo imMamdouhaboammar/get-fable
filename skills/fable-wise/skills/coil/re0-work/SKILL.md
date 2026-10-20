@@ -1,5 +1,7 @@
 ---
 name: re0-work
+metadata:
+  internal: true
 description: "Restart a project or artifact from v0 while preserving only proven lessons, contracts, gates, vocabulary, real-surface tests, and negative corpus. Use when the foundation is wrong, accumulated code is misleading progress, or a new pass should learn from the old one without inheriting its accidental architecture."
 ---
 

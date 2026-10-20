@@ -1,5 +1,7 @@
 ---
 name: re0-upgrade
+metadata:
+  internal: true
 description: "Bring your installed paperthin skills up to the full current catalog in one step: retire what's been renamed, add every skill you don't have yet, and refresh the rest, all shown and confirmed before anything changes."
 disable-model-invocation: true
 ---

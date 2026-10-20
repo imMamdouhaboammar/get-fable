@@ -1,5 +1,7 @@
 ---
 name: shower
+metadata:
+  internal: true
 description: "Cold-read the artifact you're focused on from a fresh, zero-context sub-session to confirm it stands on its own — a shower-thought reset for accumulated session bias. Use when a long session has worn away your fresh eyes and you can no longer tell whether the artifact in focus is clear to someone with no prior context; before a handoff, publish, or merge; or when you want a clean-room comprehension smoke test. Spawns a separate context-free reviewer; it diagnoses, it does not fix."
 ---
 

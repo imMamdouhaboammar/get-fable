@@ -1,5 +1,7 @@
 ---
 name: detool
+metadata:
+  internal: true
 description: "Make durable artifacts portable by replacing incidental stack, vendor, model, CLI, path, quota, or harness nouns with the mechanism they mean, while keeping provenance, runbooks, and tool-subject claims concrete."
 ---
 

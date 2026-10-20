@@ -1,5 +1,7 @@
 ---
 name: fable-steward
+metadata:
+  internal: true
 description: Autonomous perpetual repository steward and continuous builder. Proactively monitors GitHub CI, triages and resolves issues via TDD, audits and verifies PRs, hunts anti-slop code debt, and packages roadmap capabilities in a self-driving perpetual loop. Use when asked to manage a repository autonomously, run continuous maintenance passes, triage issues, review PRs, or build features unattended.
 version: 1.0.0
 pack: delivery
