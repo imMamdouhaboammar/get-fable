@@ -1,5 +1,7 @@
 ---
 name: fable-test
+metadata:
+  internal: true
 description: "Orchestrate, execute, and diagnose the complete end-to-end testing pyramid for get-fable across unit, neural differential, anti-slop AST, integration, Cypress E2E, behavioral evals, and system doctor audit. Use when running tests, checking test coverage, testing all crates, validating behavioral benchmarks, running neural differential oracles, diagnosing flaky tests, or verifying the entire test pyramid — even if the user does not explicitly say \"fable-test\" (e.g. \"run all tests\", \"test the project\", \"execute e2e tests\", \"run neural tests\", \"اختبر المشروع\", \"شغل التيستات\"). Do NOT use for authoring a single failing test first during active coding (use fable-tdd) or gating a single mutation before completion (use fable-verify)."
 version: 1.0.0
 pack: proof

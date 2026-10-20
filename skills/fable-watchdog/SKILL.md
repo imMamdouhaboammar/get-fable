@@ -1,5 +1,7 @@
 ---
 name: fable-watchdog
+metadata:
+  internal: true
 description: Supervisor watchdog and circuit breaker protocol for autonomous agent loops.
 phase: executing
 schema: v2
