@@ -2,8 +2,8 @@
 
 - **Distribution:** `get-fable` (Public Cut Edition)
 - **Source Commit SHA:** `eae37962e62a0e6c12661ce564b98080b8f9b422`
-- **Export Timestamp:** `2026-10-20T09:31:49.802Z`
-- **Exported Files Count:** `1813`
+- **Export Timestamp:** `2026-10-20T09:39:53.570Z`
+- **Exported Files Count:** `1816`
 - **License:** AGPL-3.0-or-later
 - **Integrity Status:** Verified leak-free against `.fable-public-manifest.json`
 

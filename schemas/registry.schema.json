@@ -24,6 +24,7 @@
           "fallback": { "type": ["string", "null"] },
           "mutatesWorkspace": { "type": "boolean" },
           "parallelSafe": { "type": "boolean" },
+          "audience": { "type": "string", "enum": ["consumer", "maintainer"] },
           "next": { "type": "array", "items": { "type": "string" } },
           "keywords": { "type": "array", "items": { "type": "string" } }
         }
