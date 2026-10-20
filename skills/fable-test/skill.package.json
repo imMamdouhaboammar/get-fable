@@ -2,14 +2,15 @@
   "schemaVersion": 2,
   "id": "fable-test",
   "entry": "SKILL.md",
+  "audience": "consumer",
   "agents": [
     "agents/openai.yaml"
   ],
   "references": [
-    "references/anti-slop-and-diff-guard.md",
-    "references/e2e-and-cypress-guide.md",
-    "references/neural-test-and-differential-oracles.md",
-    "references/test-pyramid-and-tiers.md"
+    "references/test-guard-rules.md",
+    "references/stack-discovery.md",
+    "references/test-value-calculus.md",
+    "references/tool-dispatch.md"
   ],
   "templates": [
     "templates/test-pyramid-execution.toon",
@@ -22,8 +23,6 @@
   "evals": [
     "evals/scenarios.json"
   ],
-  "scripts": [
-    "scripts/run-test-pyramid.sh"
-  ],
+  "scripts": [],
   "scriptPolicy": "data-only"
 }
