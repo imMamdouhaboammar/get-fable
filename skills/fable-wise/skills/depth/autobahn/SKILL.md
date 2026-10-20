@@ -1,5 +1,7 @@
 ---
 name: autobahn
+metadata:
+  internal: true
 description: "Carve guardrail-adjacent items out of scope with safe alternatives before risk-adjacent work starts, then run the safe remainder at full strength in a fresh subagent that only ever sees the carved prompt, never the risky input. Use when a task includes stealth, scraping, privacy, IP, policy, licensing, security, or other safety-adjacent material that could be silently dropped, over-elaborated, or needlessly diluted. Fires on the impulse, not only the topic: the moment you notice yourself about to hedge, soften, silently skip, or brace for a refusal, carve before you execute."
 ---
 

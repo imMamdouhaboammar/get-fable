@@ -1,5 +1,7 @@
 ---
 name: factchk
+metadata:
+  internal: true
 description: "Verify reality-grounded claims against external sources in both directions before they ship — could the 'absurd' be real, could the 'obvious' be false or long-established? Use whenever an artifact, or the sentence you are about to write, asserts something as plausible, realistic, absurd, novel, or impossible from intuition rather than a checked source; before relying on a factual claim in prose, a design rationale, a research claim, or a plan. Fires on metacognitive doubt — when you can't actually know, verify instead of trusting the feeling. Scans read-only, then fixes the clear errors or flags the judgment calls; leaves deliberate fiction alone."
 ---
 

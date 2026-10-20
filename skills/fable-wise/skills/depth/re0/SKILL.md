@@ -1,5 +1,7 @@
 ---
 name: re0
+metadata:
+  internal: true
 description: "Refresh an existing artifact into the current best v0. Use when the user asks to clean up, sync up, dedupe, de-noise, smooth, rewrite, or update an artifact after iteration; when nearby artifacts may have drifted; or when changes in one place should be reflected across related artifacts while keeping the result minimal."
 ---
 

@@ -1,5 +1,7 @@
 ---
 name: ssotize
+metadata:
+  internal: true
 description: "Audit and consolidate a fact that's scattered across places into one canonical source, after approval, and replace the rest with references. Use when asked to find duplication, check consistency, locate the source of truth, deduplicate, consolidate, unify, or establish SSOT across artifacts or platforms. Starts read-only, reports the map and plan, then mutates only after explicit approval."
 ---
 

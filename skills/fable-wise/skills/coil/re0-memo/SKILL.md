@@ -1,5 +1,7 @@
 ---
 name: re0-memo
+metadata:
+  internal: true
 description: "Turn a finished, failed, or disappointing work cycle into portable lessons, anti-patterns, quality gates, and next-cycle vocabulary. Use after a build, QA pass, demo, user complaint, or abandoned attempt when the useful output is what the next pass must learn rather than the code itself."
 ---
 

@@ -1,5 +1,7 @@
 ---
 name: macrothink
+metadata:
+  internal: true
 disable-model-invocation: true
 description: "User-invoked read-only pass for checking whether the current direction is tunnel-visioned: strip the session's bait, fan out 2 to 5 same-model fresh reads, and report divergence first without treating convergence as proof."
 ---

@@ -1,5 +1,7 @@
 ---
 name: re0-git
+metadata:
+  internal: true
 disable-model-invocation: true
 description: "Rewrite a finished commit's message into a clean, handoff-ready form in your own log style, so `git log` alone tells the story. User-invoked: run it after a commit."
 ---

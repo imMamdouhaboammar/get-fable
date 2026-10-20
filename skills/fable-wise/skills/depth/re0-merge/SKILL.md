@@ -1,5 +1,7 @@
 ---
 name: re0-merge
+metadata:
+  internal: true
 disable-model-invocation: true
 description: "Review and land an external contribution the way this suite does: gate it against the thesis, land it with the author's credit intact, complete a new skill rather than merging it raw, then approve, credit, and explain before closing. Use when reviewing a pull request, as any collaborator or maintainer, not only the author."
 ---

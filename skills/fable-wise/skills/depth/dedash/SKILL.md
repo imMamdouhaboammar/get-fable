@@ -1,5 +1,7 @@
 ---
 name: dedash
+metadata:
+  internal: true
 disable-model-invocation: true
 description: "Remove em-dashes and the dashes standing in for them from a user-owned scope, reading each occurrence in context and choosing the punctuation or wording that fits."
 ---

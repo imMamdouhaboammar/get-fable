@@ -1,5 +1,7 @@
 ---
 name: catchup
+metadata:
+  internal: true
 description: "Rebuild the human's lost context on a project from live state, in plain language: what needs them, what changed, what new words mean. Use when the human returns after a gap, says they can't follow the project anymore, asks what happened or what a term means, or before deciding what to do next when their mental model is stale. Read-only; it briefs, it does not act."
 ---
 

@@ -1,5 +1,7 @@
 ---
 name: modelchk
+metadata:
+  internal: true
 description: "Size a task's run before spending it: the cheapest sufficient capability tier (fast, standard, frontier) and the reasoning effort within it, on a neutral scale that binds to whatever levels the model exposes. Use when work seems over- or under-powered, costly, ambiguous, or high-risk, or asks which model class and how much thinking is enough."
 ---
 
