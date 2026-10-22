@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 264" role="img" aria-labelledby="title desc">
+  <title id="title">Fable rabbit investigating code</title>
+  <desc id="desc">A mint-green line-art rabbit with a magnifying glass looking over a code window.</desc>
+  <g stroke="#5BBF9B" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M96 112C66 91 53 41 73 20c28-25 63 25 60 83M189 103c-3-58 32-108 60-83 20 21 7 71-23 92"/>
+    <path d="M88 43c4 28 15 43 25 52m108-52c-4 28-15 43-25 52" stroke-width="5"/>
+    <ellipse cx="160" cy="157" rx="98" ry="86"/>
+    <circle cx="119" cy="143" r="23" stroke-width="7"/>
+    <circle cx="201" cy="143" r="23" stroke-width="7"/>
+    <path d="M137 189q23 21 46 0" stroke-width="7"/>
+  </g>
+  <g fill="#5BBF9B">
+    <circle cx="124" cy="140" r="8"/>
+    <circle cx="206" cy="140" r="8"/>
+    <circle cx="151" cy="176" r="4"/>
+    <circle cx="169" cy="176" r="4"/>
+  </g>
+  <rect x="164" y="166" width="144" height="87" rx="12" fill="#F5FAF7" stroke="#315E52" stroke-width="5"/>
+  <rect x="164" y="166" width="144" height="21" rx="10" fill="#315E52"/>
+  <circle cx="179" cy="176" r="3" fill="#D3F2E5"/>
+  <circle cx="190" cy="176" r="3" fill="#D3F2E5"/>
+  <path d="m190 211 11-8m-11 8 11 8m23-16-8 18m23-18 11 8-11 8" stroke="#5BBF9B" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="260" cy="211" r="24" fill="none" stroke="#315E52" stroke-width="6"/>
+  <path d="m277 229 20 21" stroke="#315E52" stroke-width="7" stroke-linecap="round"/>
+</svg>
