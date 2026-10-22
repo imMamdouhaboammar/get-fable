@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 322" role="img" aria-labelledby="title desc">
+  <title id="title">The get-fable working loop</title>
+  <desc id="desc">Discover the code path, reproduce the problem with a failing test, make a bounded change, verify after the final mutation, and review. A later code mutation makes verification stale and sends the work back to verification.</desc>
+  <rect x="1" y="1" width="1038" height="320" rx="22" fill="#F6FAF8" stroke="#D7EAE2" stroke-width="2"/>
+  <text x="37" y="45" font-size="18" font-weight="700" font-family="Arial, Helvetica, sans-serif" fill="#172F3B">One possible route for a bug fix</text>
+  <text x="1003" y="45" text-anchor="end" font-size="13" font-family="Arial, Helvetica, sans-serif" fill="#527266">Routing changes with the evidence</text>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <rect x="32" y="84" width="174" height="138" rx="15" fill="#FFFFFF" stroke="#C9E2D8" stroke-width="2"/>
+    <circle cx="119" cy="118" r="17" fill="#E1F6ED"/>
+    <path d="M112 117l5 5 10-12" fill="none" stroke="#319F78" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="119" y="163" font-size="19" font-weight="700" fill="#172F3B">Discover</text>
+    <text x="119" y="188" font-size="13" fill="#507064">Trace the real path</text>
+    <rect x="232" y="84" width="174" height="138" rx="15" fill="#FFFFFF" stroke="#C9E2D8" stroke-width="2"/>
+    <circle cx="319" cy="118" r="17" fill="#FCEBEC"/>
+    <text x="319" y="124" font-size="16" font-weight="800" fill="#C35055">!</text>
+    <text x="319" y="163" font-size="19" font-weight="700" fill="#172F3B">Prove RED</text>
+    <text x="319" y="188" font-size="13" fill="#507064">Reproduce the bug</text>
+    <rect x="432" y="84" width="174" height="138" rx="15" fill="#FFFFFF" stroke="#C9E2D8" stroke-width="2"/>
+    <circle cx="519" cy="118" r="17" fill="#E1F6ED"/>
+    <path d="M513 113l-7 5 7 5m12-10l7 5-7 5" fill="none" stroke="#319F78" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="519" y="163" font-size="19" font-weight="700" fill="#172F3B">Edit</text>
+    <text x="519" y="188" font-size="13" fill="#507064">Small, bounded change</text>
+    <rect x="632" y="84" width="174" height="138" rx="15" fill="#FFFFFF" stroke="#C9E2D8" stroke-width="2"/>
+    <circle cx="719" cy="118" r="17" fill="#E1F6ED"/>
+    <path d="M711 117l6 6 11-13" fill="none" stroke="#319F78" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="719" y="163" font-size="19" font-weight="700" fill="#172F3B">Fresh GREEN</text>
+    <text x="719" y="188" font-size="13" fill="#507064">Verify the final code</text>
+    <rect x="832" y="84" width="174" height="138" rx="15" fill="#FFFFFF" stroke="#C9E2D8" stroke-width="2"/>
+    <circle cx="919" cy="118" r="17" fill="#E1F6ED"/>
+    <circle cx="916" cy="115" r="7" fill="none" stroke="#319F78" stroke-width="3"/>
+    <path d="m922 121 6 6" stroke="#319F78" stroke-width="3" stroke-linecap="round"/>
+    <text x="919" y="163" font-size="19" font-weight="700" fill="#172F3B">Review</text>
+    <text x="919" y="188" font-size="13" fill="#507064">Challenge the diff</text>
+  </g>
+  <g fill="none" stroke="#5BBF9B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M210 153h16m-6-6 6 6-6 6"/>
+    <path d="M410 153h16m-6-6 6 6-6 6"/>
+    <path d="M610 153h16m-6-6 6 6-6 6"/>
+    <path d="M810 153h16m-6-6 6 6-6 6"/>
+  </g>
+  <path d="M917 237v24H719v-22" stroke="#BA8462" stroke-width="2.5" stroke-dasharray="6 7" fill="none" stroke-linecap="round"/>
+  <path d="m713 247 6-9 6 9" fill="none" stroke="#BA8462" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="284" y="252" width="330" height="43" rx="21.5" fill="#E8F3EC"/>
+  <text x="449" y="279" text-anchor="middle" fill="#38634E" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">Changed the code again? Re-verify.</text>
+</svg>
