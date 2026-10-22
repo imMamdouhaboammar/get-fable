@@ -208,13 +208,13 @@ See [all 46 canonical Skills](docs/CANONICAL_SKILLS.md) and their full contracts
 
 Your repository has its own queue: CI breaks, pull requests wait, issues accumulate, and small problems compete with the next feature.
 
-`get-fable steward` implements a five-tier triage priority order:
+`get-fable steward` implements five tiers of repository triage and local work:
 
-1. Diagnose failing mainline CI.
-2. Review pending pull requests.
-3. Work through valid open issues.
-4. Inspect code hygiene and anti-slop findings.
-5. Consider a bounded roadmap task when higher-priority work is clear.
+1. Gather diagnostics for failing mainline CI and write an incident record.
+2. Inspect a pending PR and write an initial review artifact.
+3. Triage an open issue into a reproduction and TDD work plan.
+4. Run local hygiene checks and record the results.
+5. Work on a backlog-driven capability task, which may write source files.
 
 Start by inspecting what it *would* do:
 
@@ -228,7 +228,7 @@ Then start a single cycle if you want it to act within your configured repositor
 get-fable steward
 ```
 
-The default is one cycle. Continuous mode is opt-in with `--loop`; automatic PR merging requires `--allow-self-merge`. GitHub access, permissions, and successful checks still matter. This isn't a promise that every issue can be fixed or every PR merged without human judgment. [Read the lifecycle details](docs/USAGE.md).
+The default is one cycle. Continuous mode is opt-in with `--loop`. In the inspected implementation, issue triage writes a plan rather than fixing the issue, and PR triage writes a review artifact rather than merging the PR. The CLI accepts `--allow-self-merge`, but its PR action executor does not currently perform a merge. Treat generated findings as leads to verify, and inspect any workspace changes. [Read the lifecycle details](docs/USAGE.md).
 
 ## Bring your own agent
 
