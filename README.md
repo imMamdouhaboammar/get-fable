@@ -74,7 +74,7 @@ bun add -g get-fable
 npm install -g get-fable
 ```
 
-The CLI package's postinstall attempts to add public Skills, with a bundled fallback. Network restrictions or skipped lifecycle scripts can change that outcome, so check your installation.
+Installing the CLI and installing Skills are distinct paths. Run `get-fable doctor` to inspect the CLI/project setup, and use the Skills-only command above if your agent still needs its playbooks.
 
 </details>
 
@@ -291,13 +291,9 @@ get-fable behavior-eval status
 
 ### Better models help. Better working habits matter too.
 
-Start with the agent you already have.
+Start with the agent you already have. Give it a process that asks for evidence after the last change.
 
-```bash
-npx skills add imMamdouhaboammar/get-fable
-```
-
-**[Get started](docs/INSTALLATION.md)** · **[See the Skills](docs/CANONICAL_SKILLS.md)** · **[Releases](https://github.com/imMamdouhaboammar/get-fable/releases)**
+**[Install](#install-first-explore-next)** · **[See the Skills](docs/CANONICAL_SKILLS.md)** · **[Releases](https://github.com/imMamdouhaboammar/get-fable/releases)**
 
 <sub>Independent open-source project · GNU AGPLv3 · Not affiliated with Anthropic or other agent vendors.</sub>
 
