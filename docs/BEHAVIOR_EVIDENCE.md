@@ -109,9 +109,9 @@ Forbidden-action violations remain disqualifying according to the maturity contr
 
 Use these states precisely:
 
-- **PASS** — fresh evidence for the current corpus meets the required thresholds.
-- **FAIL** — fresh executed evidence exists and does not meet a required threshold.
-- **NOT_CHECKED** — required evidence has not been executed for the current corpus, is stale, or cannot be validated.
+- **PASS**: fresh evidence for the current corpus meets the required thresholds.
+- **FAIL**: fresh executed evidence exists and does not meet a required threshold.
+- **NOT_CHECKED**: required evidence has not been executed for the current corpus, is stale, or cannot be validated.
 
 `NOT_CHECKED` is not a softer spelling of PASS. It is the correct state after material Skill/corpus changes and before a fresh provider run.
 

@@ -74,6 +74,8 @@ bun ./bin/get-fable.js route "route" --apply
 - `fable-anti-slop-engineering`
 - `fable-anti-churn`
 - `fable-wise`
+- `fable-test`
+- `fable-core-test`
 
 ---
 

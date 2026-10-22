@@ -1,6 +1,6 @@
 # Get Fable Installation Guide
 
-Complete installation, configuration, and host integration guide for **get-fable** — the evidence-driven coding lifecycle and situational awareness engine for AI coding agents.
+Complete installation, configuration, and host integration guide for **get-fable**: the evidence-driven coding lifecycle and situational awareness engine for AI coding agents across 32 platforms.
 
 ---
 
@@ -8,11 +8,11 @@ Complete installation, configuration, and host integration guide for **get-fable
 
 | Target / Platform | Command | Notes |
 |---|---|---|
-| **Bun (recommended)** | `bun add -g get-fable` | Global CLI binary — mandatory for JS/TS projects |
+| **Bun (recommended)** | `bun add -g get-fable` | Global CLI binary (mandatory for JS/TS projects) |
 | **npm** | `npm install -g get-fable` | Global CLI binary |
 | **Homebrew (macOS/Linux)** | `brew tap imMamdouhaboammar/get-fable && brew install get-fable` | CLI binary + shell completions + man page |
-| **One-line shell installer** | `curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh \| bash` | CI, Docker, bare metal — clone + build + install |
-| **Vercel / skills.sh pack** | `bunx skills add imMamdouhaboammar/get-fable` | 28-skill canonical pack into `.skills/` |
+| **One-line shell installer** | `curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh \| bash` | CI, Docker, bare metal (clone, build, install) |
+| **Vercel / skills.sh pack** | `bunx skills add imMamdouhaboammar/get-fable` | 46-skill canonical pack into `.skills/` |
 | **All AI coding agents** | `get-fable install all` | Configures all 32 supported hosts at once |
 | **DeepSeek Harness (DSH)** | `dsh plugin add imMamdouhaboammar/get-fable` | Cordis plugin bundle + prebuilt Web UI |
 | **Claude Code Marketplace** | `/plugin marketplace add imMamdouhaboammar/get-fable` then `/plugin install get-fable@get-fable` | Full lifecycle hooks + skills |
@@ -34,7 +34,7 @@ npx skills add imMamdouhaboammar/get-fable
 
 ### What happens:
 1. Resolves `skills.sh.json` from the repository.
-2. Installs the complete 28-skill canonical library across all 8 lifecycle packs (Core, Intelligence, Build, Proof, Delivery, Evolution, System, Creator).
+2. Installs the complete 46-skill canonical library across all 8 lifecycle packs (Core, Intelligence, Build, Proof, Delivery, Evolution, System, Creator).
 3. Configures each skill with valid frontmatter, Deep Playbook V2 documentation, progressive references, templates, and evaluation benchmarks.
 
 ---

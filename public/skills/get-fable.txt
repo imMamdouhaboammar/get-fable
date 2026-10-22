@@ -64,6 +64,8 @@ Next Allowed Skills
 • fable-anti-slop-engineering
 • fable-anti-churn
 • fable-wise
+• fable-test
+• fable-core-test
 
 ---
 

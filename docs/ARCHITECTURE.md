@@ -1,8 +1,8 @@
-# Architecture: get-fable 1.12.0
+# Architecture: get-fable 1.15.0
 
 ## Purpose
 
-`get-fable` is a local-first coding lifecycle for AI-assisted software work. It makes high-value process behavior inspectable: evidence gathering, current-source research, bounded planning, test-first changes, delegation, verification, review, security checks, release readiness, handoff, evaluation, and failure recovery.
+`get-fable` is a local-first coding lifecycle for AI-assisted software work. It makes high-value process behavior inspectable: evidence gathering, current-source research, bounded planning, test-first changes, delegation, verification, review, security checks, release readiness, handoff, evaluation, and failure recovery across 46 canonical skills and 32 platforms.
 
 It changes process around a model. It does not modify model weights or claim proprietary-model equivalence.
 
@@ -25,23 +25,16 @@ repeated failure -> recovery -> new diagnosis -> next safe skill
 
 The root `skills/` directory and `skills/get-fable/registry.json` are the semantic source of truth. Host-specific files are adapters only.
 
-## Canonical packs
+## Canonical packs (46 skills)
 
-Core: `get-fable`, `fable-discover`, `fable-plan`, `fable-execute`, `fable-verify`, `fable-recover`
-
-Intelligence: `fable-research`
-
-Build: `fable-tdd`, `fable-delegate`
-
-Proof: `fable-review`, `fable-security`, `fable-redteam`, `fable-heal`
-
-Delivery: `fable-release`, `fable-handoff`
-
-Evolution: `fable-eval`, `fable-learning`
-
-System: `fable-dataviz`, `fable-artifact`, `fable-simplify`, `fable-loop`, `fable-run`, `fable-memory`, `fable-config`, `fable-simulator`, `fable-cowork`, `fable-spark`, `fable-architecture`
-
-Creator: `fable-skill-creator`
+- **Core (7)**: `get-fable`, `fable-discover`, `fable-plan`, `fable-execute`, `fable-verify`, `fable-recover`, `fable-method`
+- **Intelligence (1)**: `fable-research`
+- **Build (4)**: `fable-tdd`, `fable-delegate`, `fable-native-code`, `fable-scope-discipline`
+- **Proof (10)**: `fable-review`, `fable-security`, `fable-redteam`, `fable-heal`, `fable-test`, `fable-core-test`, `fable-prove-it`, `fable-anti-slop-engineering`, `fable-anti-churn`, `fable-judge`
+- **Delivery (5)**: `fable-release`, `fable-handoff`, `fable-finish-your-turn`, `fable-outcome-first`, `fable-tend`
+- **Evolution (2)**: `fable-eval`, `fable-learning`
+- **System (15)**: `fable-dataviz`, `fable-artifact`, `fable-simplify`, `fable-loop`, `fable-run`, `fable-memory`, `fable-config`, `fable-simulator`, `fable-cowork`, `fable-spark`, `fable-architecture`, `fable-eco`, `fable-context-thrift`, `fable-council`, `fable-wise`
+- **Creator (2)**: `fable-skill-creator`, `fable-domain`
 
 Historical material under `assets/` remains an optional reference library and is not the canonical lifecycle.
 
@@ -379,10 +372,10 @@ The Fable Worker gRPC framework provides high-performance distributed subagent e
 
 Source: `src/core/toon.ts`; dependency: `@toon-format/toon`
 
-Token-Optimized Object Notation achieves 30–50% token reduction across multi-agent communications through high-density tabular serialization. Used in:
+Token-Optimized Object Notation achieves 30-50% token reduction across multi-agent communications through high-density tabular serialization. Used in:
 
-- `skills/fable-delegate/templates/delegation-contract.toon` — subagent task delegation
-- `skills/fable-delegate/templates/return-packet.toon` — subagent return packets
+- `skills/fable-delegate/templates/delegation-contract.toon`: subagent task delegation
+- `skills/fable-delegate/templates/return-packet.toon`: subagent return packets
 - Durable state compaction and routing manifest output (`arch-eval`)
 
 ### Architecture Enforcement Skill
@@ -391,8 +384,8 @@ Source: `skills/fable-architecture/`, `hooks/fable_architecture_guard.py`
 
 `fable-architecture` evaluates project specifications at inception and enforces microservices architecture:
 
-- **Deterministic vector scoring**: Scale & Load, Domain Decoupling, Resource Intensity (0–10)
-- **Hard monolith lockout** when thresholds cross (Scale ≥ 7, Domains ≥ 6, Resource ≥ 8, or Composite ≥ 7.0)
+- **Deterministic vector scoring**: Scale & Load, Domain Decoupling, Resource Intensity (0-10)
+- **Hard monolith lockout** when thresholds cross (Scale >= 7, Domains >= 6, Resource >= 8, or Composite >= 7.0)
 - **Dual-transport standard (ADR 0007)**: North-South HTTP/REST for edge traffic; East-West gRPC Protobuf or message brokers for internal services
 - **Prescriptive language matrix**: Node.js/Bun for high-concurrency gateways; Go/gRPC for high-throughput microservices; Python/FastAPI/PyTorch for AI/ML; Rust/Axum/Tonic for ultra-low-latency systems
 - **CLI command**: `get-fable arch-eval "<spec>"`

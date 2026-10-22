@@ -1,6 +1,6 @@
 [not-shown] This file is the repository spec template; replace placeholders with measured or inferred claims for an active work round.
 
-# SPEC — <project / round name>
+# SPEC - <project / round name>
 
 ## Goal
 <One paragraph: what must exist when this round is done, and for whom.>
@@ -17,7 +17,7 @@ card has a machine-checkable acceptance test; mark dependencies and parallelism.
 - [1] <card title>
       Does: <what it changes>
       Acceptance: `<command>` -> <expected output / observable result>
-      Depends on: — | Parallel with: —
+      Depends on: none | Parallel with: none
 - [2] <card title>
       Does: ...
       Acceptance: ...

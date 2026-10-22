@@ -1,0 +1,63 @@
+{
+  "id": "fable-core-test",
+  "order": 143,
+  "pack": "proof",
+  "packName": "Proof Pack",
+  "phase": "verifying",
+  "description": "Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit.",
+  "intents": [
+    "test-crates",
+    "test-matrix",
+    "neural-test",
+    "doctor-audit"
+  ],
+  "requires": [
+    "test-runner",
+    "native-engines"
+  ],
+  "produces": [
+    "test-run-report",
+    "test-evidence-matrix"
+  ],
+  "gates": [
+    "all-tiers-checked",
+    "machine-checked",
+    "no-skipped-tests"
+  ],
+  "fallback": "fable-recover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-verify",
+    "fable-review",
+    "fable-release"
+  ],
+  "keywords": [
+    "core-test",
+    "internal-test",
+    "crates",
+    "fable-core",
+    "doctor"
+  ],
+  "frontmatter": {
+    "name": "fable-core-test",
+    "audience": "maintainer",
+    "metadata": "",
+    "version": "1.0.0",
+    "pack": "proof",
+    "phase": "verifying",
+    "description": "Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for the get-fable engine itself across unit, neural differential, anti-slop AST, integration, Cypress E2E, behavioral evals, and system doctor audit. For maintainers only. Use when testing get-fable crates, validating behavioral benchmarks, or verifying get-fable platform health.",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-recover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Core Test: Internal 7-Tier Engine Pyramid & Diagnostic Engine\n\nOrchestrate, execute, diagnose, and master the full 7-tier testing architecture of the `get-fable` engine.\n\n---\n\n## Mission\n\nMaintain 100% platform health and cross-runtime parity across all native Rust crates and TypeScript modules within the `get-fable` repository. `fable-core-test` coordinates:\n1. **TypeScript / Bun** unit and integration suites.\n2. **Rust** native kernels and workspace crates (`fable-core`, `fable-cli`, `fable-anti-slop`, `fable-anti-churn`, `fable-neural-test`, `fable-rig`, `fable-eco`, `fable-toon`, `fable-jev`).\n3. **Neural differential oracles** with SIMD tensor systolic arrays.\n4. **Anti-slop AST inspection** preventing skipped tests and fake assertions.\n5. **Cypress E2E browser flows** against bounded local servers.\n6. **Agent behavioral evaluation holdouts** across canonical skills.\n7. **System doctor ecosystem audits** ensuring 100% platform health.\n\n---\n\n## Activation Contract\n\n### Activate When\n- Maintainer requests executing get-fable's complete multi-tier test pyramid.\n- Testing all workspace Rust crates (`cargo test --workspace`) and TypeScript test suites (`bun test`).\n- Running differential neural oracles or auto-architecture tournaments on get-fable.\n- Verifying cross-runtime parity across native bridges and gRPC worker services.\n\n### Do Not Activate When\n- Testing a consumer application or user project codebase -> use `fable-test`.\n- Driving a single behavior change via red-green-refactor during implementation -> use `fable-tdd`.\n- Performing the mandatory final gating check before session completion -> use `fable-verify`.\n\n---\n\n## Situation Classification\n\n| Testing Context | Scope | Tiers Required |\n|---|---|---|\n| **TypeScript Change** | `src/` modules, router, state | Tier 1 (Bun test), Tier 3 (Anti-slop), Tier 7 (Doctor) |\n| **Native Rust Kernel Change** | `crates/` engines, bridges | Tier 1 (Cargo test), Tier 2 (Differential), Tier 4 (Rig RPC) |\n| **Documentation / Portal Change** | `site/`, HTML assets | Tier 5 (Cypress browser flows) |\n| **Skill Prompt / Catalog Change** | `skills/`, prompts, catalogs | Tier 6 (Behavioral evals holdouts), Tier 7 (Doctor) |\n| **Pre-Release Full Certification** | Complete engine room | Full 7-tier pyramid execution |\n\n---\n\n## Protocol\n\n```mermaid\nflowchart TD\n    T7[\"Tier 7: System Doctor & Ecosystem Audit (doctor --json-v1)\"]\n    T6[\"Tier 6: Behavioral Evals & Holdout Benchmarks (behavior-eval)\"]\n    T5[\"Tier 5: E2E Browser Flows (Cypress)\"]\n    T4[\"Tier 4: Native Rig LLM Tools & gRPC Worker RPC\"]\n    T3[\"Tier 3: Anti-Slop AST & Diff Integrity Guard\"]\n    T2[\"Tier 2: Neural Test Acceleration & Differential Oracles\"]\n    T1[\"Tier 1: Fast Local Unit & Property Suites (Bun + Cargo)\"]\n    \n    T1 --> T2 --> T3 --> T4 --> T5 --> T6 --> T7\n```\n\nExecute tiers sequentially:\n1. **Tier 1 (Unit & Property)**: `bun test` and `cargo test --workspace`.\n2. **Tier 2 (Neural Differential)**: `get-fable rig call-tool fable_neural_test`.\n3. **Tier 3 (Anti-Slop AST)**: `bun ./bin/get-fable.js anti-slop scan`.\n4. **Tier 4 (Integration & RPC)**: `bun test test/rig-integration.test.ts test/worker-rpc.test.ts`.\n5. **Tier 5 (Browser E2E)**: `bun run test:cypress`.\n6. **Tier 6 (Behavioral Evals)**: `bun ./bin/get-fable.js behavior-eval status`.\n7. **Tier 7 (System Doctor)**: `bun ./bin/get-fable.js doctor --json-v1`.\n\n---\n\n## Decision Rules\n\n1. **If Cargo test fails**: Halt immediately; do not proceed to Tier 2 until native code compiles and passes tests.\n2. **If anti-slop scan detects skipped tests**: Block release; no tests may be skipped to achieve green status.\n3. **If behavioral evals show drift**: Check scenario diffs against canonical holdouts before updating prompt assets.\n\n---\n\n## Invariants\n\n- **The Multi-Runtime Parity Invariant**: Native Rust and TypeScript dual-implementations must exhibit bit-exact or semantically identical outputs.\n- **The Zero-Error Doctor Invariant**: `get-fable doctor` must report zero error-severity checks before any core release.\n- **The Isolation Invariant**: Core maintainer tests must never leak into consumer project runs.\n\n---\n\n## Failure Taxonomy\n\n| Failure Mode | Diagnosis Step | Resolution |\n|---|---|---|\n| **Crate Compilation Failure** | Check Rust toolchain & missing dependencies | Fix Cargo.toml dependencies or syntax errors in crates. |\n| **Differential Drift** | Neural tensor output does not match oracle | Verify SIMD array alignment and precision thresholds. |\n| **Doctor Check Failure** | Inspect host-parity or supply-chain check | Re-sync generated catalogs or repair missing platform links. |\n\n---\n\n## Anti-Patterns\n\n| Anti-Pattern | Correct Practice |\n|---|---|\n| Running only `bun test` when Rust crates were edited | Always execute `cargo test --workspace` on native crate changes. |\n| Bypassing Cypress tests on portal changes | Run headless Cypress checks against local HTTP servers. |\n| Masking broken doctor checks with flags | Resolve underlying drift in catalog or manifest. |\n\n---\n\n## Completion Criteria\n\nA core testing run is complete when:\n- All 7 tiers have been evaluated or cleared for the target change.\n- `cargo test --workspace` passes with zero failures.\n- `bun test` passes with zero failures.\n- `bun ./bin/get-fable.js doctor --json-v1` reports zero errors.\n\n---\n\n## Progressive Resources\n\n- `references/test-pyramid-and-tiers.md`: Detailed breakdown of all 7 tiers.\n- `references/anti-slop-and-diff-guard.md`: Anti-slop AST scanning specifications.\n- `references/neural-test-and-differential-oracles.md`: Neural oracle architecture.\n- `references/e2e-and-cypress-guide.md`: Cypress browser testing setup.",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-core-test.html",
+  "license": "AGPL-3.0-or-later",
+  "updatedAt": "2026-10-22T06:58:13.604Z"
+}

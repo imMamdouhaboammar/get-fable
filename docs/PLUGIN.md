@@ -1,6 +1,6 @@
-# ChatGPT, Codex, and Claude Code plugin package
+# Multi-Platform Plugin Packages
 
-`get-fable` 1.8.0 ships a skill-only OpenAI plugin (`.codex-plugin/plugin.json`) plus a native Claude Code plugin and marketplace manifest (`.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json`). The universal semantic surface is the canonical lifecycle under `skills/`.
+`get-fable` ships platform plugin packages (`.claude-plugin/`, `.codex-plugin/`, `.chatgpt-plugin/`, `.gemini-plugin/`, `.grok-plugin/`, `.cursor-plugin/`, `.kimi-plugin/`, `.opencode-plugin/`, `.deepseek-plugin/`, `.kiro-plugin/`, `.pi-plugin/`). The universal semantic surface is the canonical lifecycle under `skills/`.
 
 ## Canonical lifecycle package
 

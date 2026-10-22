@@ -4,15 +4,15 @@
 
 > Evidence-driven coding lifecycle discipline and reusable Skills for AI coding agents.
 
-get-fable improves working conditions for AI coding agents (Claude Code, Antigravity, Grok, Codex, Cursor, etc.) through persistent state machines, lifecycle hooks, 44 canonical skills, automated verification gates, and error recovery.
+get-fable improves working conditions for AI coding agents (Claude Code, Antigravity, Grok, Codex, Cursor, etc.) through persistent state machines, lifecycle hooks, 46 canonical skills, automated verification gates, and error recovery.
 
 ## Documentation & Guides
 - [User Guide & Technical Documentation](https://get-fable.vercel.app/guide.html): Comprehensive lifecycle, state machine, hooks, and CLI reference.
 - [Workflows & Production Prompts](https://get-fable.vercel.app/workflows.html): End-to-end multi-agent pipelines and copy-paste prompt templates.
 - [Pricing & Open Source](https://get-fable.vercel.app/pricing.html): Free and open source GNU AGPLv3 license details.
-- [Skills Catalog](https://get-fable.vercel.app/skills.html): Index of all 44 canonical skills across 8 packs.
+- [Skills Catalog](https://get-fable.vercel.app/skills.html): Index of all 46 canonical skills across 8 packs.
 
-## Canonical Skills (44)
+## Canonical Skills (46)
 - [get-fable](https://get-fable.vercel.app/skills/get-fable.html): Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.
 - [fable-discover](https://get-fable.vercel.app/skills/fable-discover.html): Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.
 - [fable-research](https://get-fable.vercel.app/skills/fable-research.html): Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.
@@ -34,6 +34,8 @@ get-fable improves working conditions for AI coding agents (Claude Code, Antigra
 - [fable-artifact](https://get-fable.vercel.app/skills/fable-artifact.html): Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.
 - [fable-simplify](https://get-fable.vercel.app/skills/fable-simplify.html): Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.
 - [fable-loop](https://get-fable.vercel.app/skills/fable-loop.html): Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.
+- [fable-test](https://get-fable.vercel.app/skills/fable-test.html): Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.
+- [fable-core-test](https://get-fable.vercel.app/skills/fable-core-test.html): Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit.
 - [fable-run](https://get-fable.vercel.app/skills/fable-run.html): Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.
 - [fable-memory](https://get-fable.vercel.app/skills/fable-memory.html): Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.
 - [fable-config](https://get-fable.vercel.app/skills/fable-config.html): Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.
@@ -69,7 +71,7 @@ USER GUIDE & SYSTEM ARCHITECTURE
 
 # get-fable Authoritative User Guide & Architecture Documentation
 
-Version: **1.14.0** · Schema: **v3** · Canonical Skills: **44** · Supported Platforms: **32**
+Version: **1.15.0** · Schema: **v3** · Canonical Skills: **46** · Supported Platforms: **32**
 
 > **get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.**
 
@@ -431,7 +433,7 @@ Apply /fable-wise reflexes:
 
 
 ================================================================================
-ALL 44 CANONICAL SKILL SPECIFICATIONS
+ALL 46 CANONICAL SKILL SPECIFICATIONS
 ================================================================================
 
 --------------------------------------------------------------------------------
@@ -4241,6 +4243,284 @@ Loop completes when:
 - Deep guide: `references/polling-state-machines-and-backoff.md`
 - Existing guidelines: `references/loop-control-guidelines.md`
 - Example: `examples/poll-build-job.md`
+
+--------------------------------------------------------------------------------
+SKILL: fable-test (Pack: proof, Phase: verifying)
+--------------------------------------------------------------------------------
+Description: Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.
+Intents: test-project, run-tests, test-coverage, quality-engineering, diagnose-tests
+Gates: machine-checked, no-skipped-tests, tests-executed-gt-zero
+
+# Fable Test: Universal Quality Engineering & Testing Harness
+
+Orchestrate, author, and verify robust automated testing suites in any consumer application codebase.
+
+---
+
+## Mission
+
+Transform ad-hoc or hallucinated testing into an autonomous, rigorous, and deterministic quality engineering pipeline. `fable-test` serves as the universal testing orchestrator for developers and AI agents:
+1. **Stack & Topology Discovery**: Automatically inspect the project to identify runtimes, test frameworks, and boundary layers.
+2. **Test-Guard Rules Enforcement**: Eliminate AI-generated test bloat by applying 9 universal testing discipline rules.
+3. **Test-Value Calculus**: Validate each test's economic justification and protect against zero-selection false positives.
+4. **Tool & Skill Dispatch**: Orchestrate TDD workflows, visual E2E testing, API replay virtualization, and AST quality checks.
+
+---
+
+## Activation Contract
+
+### Activate When
+- User requests executing the test suite or improving test coverage: *"اختبر المشروع"*, *"run tests"*, *"test this feature"*, *"add tests for X"*.
+- Agent needs to assess existing test coverage or diagnose test suite failures.
+- Designing or auditing test architecture for a service, API, or frontend application.
+
+### Do Not Activate When
+- Driving a single behavior change via test-first red-green-refactor during implementation -> use `fable-tdd`.
+- Performing the mandatory final gating check before session completion -> use `fable-verify`.
+- Performing security penetration testing against external targets -> use `fable-redteam`.
+- Testing `get-fable`'s own internal engine crates (maintainer only) -> use `fable-core-test`.
+
+---
+
+## Situation Classification
+
+| Project Context | Primary Focus | Strategy |
+|---|---|---|
+| **Greenfield / New Feature** | Public behavioral contracts | Define data factories; enforce behavior-not-implementation (Rule 1); delegate to `fable-tdd`. |
+| **Existing Legacy Codebase** | Regressions & boundary characterization | Map external boundaries; use real test databases where appropriate (Rule 9). |
+| **Complex GUI / Web UI** | Visual layout & interactive state | Dispatch to `get-fable test-engine` with Midscene (AI vision testing). |
+| **High-Traffic Web API** | End-to-end replay & regression locking | Dispatch to `get-fable test-engine` with Keploy (traffic replay & DB virtualization). |
+| **Pre-Ship / PR Diff Review** | Anti-slop and test integrity | Run `anti-slop scan` to block skipped tests, swallowed errors, or weak assertions. |
+
+---
+
+## Protocol
+
+### Stage 1: Stack & Topology Discovery
+Inspect the repository topology to determine test commands rather than assuming conventions:
+- TypeScript/JavaScript: `bun test`, `vitest run`, or `jest`.
+- Python: `pytest` or `uv run pytest`.
+- Go: `go test ./...`.
+- Rust: `cargo test`.
+- PHP: `./vendor/bin/pest` or `./vendor/bin/phpunit`.
+
+### Stage 2: The 9 Universal Test-Guard Rules
+Every test authoring or modification pass must strictly enforce:
+1. **Test Behavior, Not Implementation**: Assert observable outputs and state changes from caller's view; never mock internal helper call counts.
+2. **Every Mock Must Be Justified**: Mock strictly at system boundaries (network, external storage, clocks, third-party APIs).
+3. **One Scenario Per Test**: Merge repetitive tests into parameterized data-driven suites.
+4. **Justify Existence**: Answer: *"What specific defect does this catch that no other test catches?"*
+5. **Semantic Scenario Naming**: Use `test_<scenario>_<expected_outcome>`.
+6. **Regression Tests Are Sacred**: Incident repro tests are permanent; never delete or weaken them.
+7. **No Tests for Framework Guarantees**: Test application business logic, not library defaults.
+8. **State & Value Objects Are Real**: Never mock DTOs or entities; use real instances and data factories.
+9. **Infrastructure Under Test Gets Real Infrastructure**: Persistence tests must run against real database instances.
+
+### Stage 3: Test-Value Correctness & Zero-Selection Guard
+1. Apply the 3-questions calculus:
+   - *Which concrete mistake fails this test, and what loss would it cause?*
+   - *Would an equivalent refactor fail?* (Detect and eliminate brittle tests).
+   - *Does added protection justify ongoing maintenance cost?*
+2. Verify executed test count: ensure `tests_executed >= 1`. Never accept exit code 0 when zero tests were matched.
+
+### Stage 4: Specialized Tool & Skill Dispatch
+- Route to `fable-tdd` when creating new features or fixing bugs.
+- Run `get-fable test-engine run --tool midscene` for vision-based browser testing.
+- Run `get-fable test-engine run --tool keploy` for deterministic API traffic capture and replay.
+- Run `bun ./bin/get-fable.js anti-slop scan` to eliminate skipped tests (`test.skip`) or tautological assertions.
+- Call `get-fable evidence pass test "<command>" "<detail>"` to record machine-checked proof.
+
+---
+
+## Decision Rules
+
+1. **If an assertion checks a mock of an internal private function**: Delete the mock, call the public interface, and assert the observable output.
+2. **If multiple tests differ only in scalar values**: Collapse into a single data-driven test table.
+3. **If a test runner exits with code 0 but reports 0 tests ran**: Mark as a fatal zero-selection violation and re-scope filter.
+4. **If a test would still pass when business logic returns undefined**: Refactor assertions to be strict and falsifiable.
+
+---
+
+## Invariants
+
+- **The Behavioral Assertion Invariant**: Tests must verify observable outcomes, state mutations, or contract boundaries — never internal execution sequence.
+- **The System Boundary Mock Invariant**: Mocking is permitted only at boundaries with external systems (network, clock, external persistence, third-party SDKs).
+- **The Zero-Selection Invariant**: A test command is valid evidence only if total executed tests > 0.
+- **The Anti-Slop Cleanliness Invariant**: Test suites must not contain skipped tests (`test.skip`, `xit`), empty error catches, or unconstrained assertions (`expect(x).toBeDefined()`).
+
+---
+
+## Failure Taxonomy
+
+| Failure Mode | Root Cause | Remediation Protocol |
+|---|---|---|
+| **Brittle Refactor Failure** | Test asserts internal variable or private helper | Rewrite test against the public caller API. |
+| **Zero-Selection False Green** | Regex filter matched 0 files/tests but exited 0 | Audit test runner pattern matching and verify execution counts. |
+| **Mock Drift / Mock Lie** | Mocked boundary does not match real API schema | Switch to real test database or update contract fixtures from upstream schemas. |
+| **Flaky Async Race** | Test relies on arbitrary `sleep()` rather than polling | Replace `sleep` with deterministic condition polling (`waitFor`, event listener). |
+
+---
+
+## Anti-Patterns
+
+| Prohibited Anti-Pattern | Correct Engineering Practice |
+|---|---|
+| Asserting `expect(internalHelper).toHaveBeenCalled()` | Assert return value or external observable state change. |
+| Mocking domain entities or database models | Construct real models with minimal factory helpers. |
+| Silencing tests with `test.skip` to pass CI | Fix underlying defect or delete obsolete test with recorded rationale. |
+| Writing tests for framework validation defaults | Write tests only for custom business validation rules. |
+| Accepting `0 tests passed` as success | Require strict verification that executed count > 0. |
+
+---
+
+## Completion Criteria
+
+A testing task is complete only when:
+- All target scenarios execute against real implementations and exit 0.
+- Executed test count is verified > 0 (zero-selection check passed).
+- Diff is scanned with `fable-anti-slop` with 0 blockers (no skipped tests or weak assertions).
+- Machine-checked passing test evidence is recorded via `get-fable evidence pass test ...`.
+
+---
+
+## Progressive Resources
+
+- [The Nine Universal Test-Guard Rules](references/test-guard-rules.md): In-depth violation patterns and fixes.
+- [Stack Discovery Guide](references/stack-discovery.md): Taxonomy of project runtimes and test runners.
+- [Test-Value Calculus & Anti-Brittleness Guard](references/test-value-calculus.md): The 3-questions calculus and zero-selection prevention.
+- [Tool Dispatch Matrix](references/tool-dispatch.md): How to route to TDD, Midscene, Keploy, and Anti-Slop.
+
+--------------------------------------------------------------------------------
+SKILL: fable-core-test (Pack: proof, Phase: verifying)
+--------------------------------------------------------------------------------
+Description: Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit.
+Intents: test-crates, test-matrix, neural-test, doctor-audit
+Gates: all-tiers-checked, machine-checked, no-skipped-tests
+
+# Fable Core Test: Internal 7-Tier Engine Pyramid & Diagnostic Engine
+
+Orchestrate, execute, diagnose, and master the full 7-tier testing architecture of the `get-fable` engine.
+
+---
+
+## Mission
+
+Maintain 100% platform health and cross-runtime parity across all native Rust crates and TypeScript modules within the `get-fable` repository. `fable-core-test` coordinates:
+1. **TypeScript / Bun** unit and integration suites.
+2. **Rust** native kernels and workspace crates (`fable-core`, `fable-cli`, `fable-anti-slop`, `fable-anti-churn`, `fable-neural-test`, `fable-rig`, `fable-eco`, `fable-toon`, `fable-jev`).
+3. **Neural differential oracles** with SIMD tensor systolic arrays.
+4. **Anti-slop AST inspection** preventing skipped tests and fake assertions.
+5. **Cypress E2E browser flows** against bounded local servers.
+6. **Agent behavioral evaluation holdouts** across canonical skills.
+7. **System doctor ecosystem audits** ensuring 100% platform health.
+
+---
+
+## Activation Contract
+
+### Activate When
+- Maintainer requests executing get-fable's complete multi-tier test pyramid.
+- Testing all workspace Rust crates (`cargo test --workspace`) and TypeScript test suites (`bun test`).
+- Running differential neural oracles or auto-architecture tournaments on get-fable.
+- Verifying cross-runtime parity across native bridges and gRPC worker services.
+
+### Do Not Activate When
+- Testing a consumer application or user project codebase -> use `fable-test`.
+- Driving a single behavior change via red-green-refactor during implementation -> use `fable-tdd`.
+- Performing the mandatory final gating check before session completion -> use `fable-verify`.
+
+---
+
+## Situation Classification
+
+| Testing Context | Scope | Tiers Required |
+|---|---|---|
+| **TypeScript Change** | `src/` modules, router, state | Tier 1 (Bun test), Tier 3 (Anti-slop), Tier 7 (Doctor) |
+| **Native Rust Kernel Change** | `crates/` engines, bridges | Tier 1 (Cargo test), Tier 2 (Differential), Tier 4 (Rig RPC) |
+| **Documentation / Portal Change** | `site/`, HTML assets | Tier 5 (Cypress browser flows) |
+| **Skill Prompt / Catalog Change** | `skills/`, prompts, catalogs | Tier 6 (Behavioral evals holdouts), Tier 7 (Doctor) |
+| **Pre-Release Full Certification** | Complete engine room | Full 7-tier pyramid execution |
+
+---
+
+## Protocol
+
+```mermaid
+flowchart TD
+    T7["Tier 7: System Doctor & Ecosystem Audit (doctor --json-v1)"]
+    T6["Tier 6: Behavioral Evals & Holdout Benchmarks (behavior-eval)"]
+    T5["Tier 5: E2E Browser Flows (Cypress)"]
+    T4["Tier 4: Native Rig LLM Tools & gRPC Worker RPC"]
+    T3["Tier 3: Anti-Slop AST & Diff Integrity Guard"]
+    T2["Tier 2: Neural Test Acceleration & Differential Oracles"]
+    T1["Tier 1: Fast Local Unit & Property Suites (Bun + Cargo)"]
+    
+    T1 --> T2 --> T3 --> T4 --> T5 --> T6 --> T7
+```
+
+Execute tiers sequentially:
+1. **Tier 1 (Unit & Property)**: `bun test` and `cargo test --workspace`.
+2. **Tier 2 (Neural Differential)**: `get-fable rig call-tool fable_neural_test`.
+3. **Tier 3 (Anti-Slop AST)**: `bun ./bin/get-fable.js anti-slop scan`.
+4. **Tier 4 (Integration & RPC)**: `bun test test/rig-integration.test.ts test/worker-rpc.test.ts`.
+5. **Tier 5 (Browser E2E)**: `bun run test:cypress`.
+6. **Tier 6 (Behavioral Evals)**: `bun ./bin/get-fable.js behavior-eval status`.
+7. **Tier 7 (System Doctor)**: `bun ./bin/get-fable.js doctor --json-v1`.
+
+---
+
+## Decision Rules
+
+1. **If Cargo test fails**: Halt immediately; do not proceed to Tier 2 until native code compiles and passes tests.
+2. **If anti-slop scan detects skipped tests**: Block release; no tests may be skipped to achieve green status.
+3. **If behavioral evals show drift**: Check scenario diffs against canonical holdouts before updating prompt assets.
+
+---
+
+## Invariants
+
+- **The Multi-Runtime Parity Invariant**: Native Rust and TypeScript dual-implementations must exhibit bit-exact or semantically identical outputs.
+- **The Zero-Error Doctor Invariant**: `get-fable doctor` must report zero error-severity checks before any core release.
+- **The Isolation Invariant**: Core maintainer tests must never leak into consumer project runs.
+
+---
+
+## Failure Taxonomy
+
+| Failure Mode | Diagnosis Step | Resolution |
+|---|---|---|
+| **Crate Compilation Failure** | Check Rust toolchain & missing dependencies | Fix Cargo.toml dependencies or syntax errors in crates. |
+| **Differential Drift** | Neural tensor output does not match oracle | Verify SIMD array alignment and precision thresholds. |
+| **Doctor Check Failure** | Inspect host-parity or supply-chain check | Re-sync generated catalogs or repair missing platform links. |
+
+---
+
+## Anti-Patterns
+
+| Anti-Pattern | Correct Practice |
+|---|---|
+| Running only `bun test` when Rust crates were edited | Always execute `cargo test --workspace` on native crate changes. |
+| Bypassing Cypress tests on portal changes | Run headless Cypress checks against local HTTP servers. |
+| Masking broken doctor checks with flags | Resolve underlying drift in catalog or manifest. |
+
+---
+
+## Completion Criteria
+
+A core testing run is complete when:
+- All 7 tiers have been evaluated or cleared for the target change.
+- `cargo test --workspace` passes with zero failures.
+- `bun test` passes with zero failures.
+- `bun ./bin/get-fable.js doctor --json-v1` reports zero errors.
+
+---
+
+## Progressive Resources
+
+- `references/test-pyramid-and-tiers.md`: Detailed breakdown of all 7 tiers.
+- `references/anti-slop-and-diff-guard.md`: Anti-slop AST scanning specifications.
+- `references/neural-test-and-differential-oracles.md`: Neural oracle architecture.
+- `references/e2e-and-cypress-guide.md`: Cypress browser testing setup.
 
 --------------------------------------------------------------------------------
 SKILL: fable-run (Pack: system, Phase: verifying)
