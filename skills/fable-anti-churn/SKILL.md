@@ -37,7 +37,7 @@ neural_links:
 
 ## Purpose
 
-`fable-anti-churn` is the authoritative duplicate-work and evidence-reuse prevention engine in get-fable. Powered by both a native Rust engine (`crates/fable-anti-churn`) and local CLI scripts, it cryptographically fingerprints work requests (RFC 8785 JCS + SHA-256), tracks reservation receipts, reuses identical prior passing evidence, blocks duplicate actions, halts repeated deterministic failures, and validates promotion proof with sub-millisecond execution.
+`fable-anti-churn` is the authoritative duplicate-work and evidence-reuse prevention engine in get-fable. Powered by both a native Rust engine (`crates/fable-anti-churn`) and local CLI scripts, it cryptographically fingerprints work requests (RFC 8785 JCS + SHA-256), tracks reservation receipts, reuses identical prior passing evidence, blocks duplicate actions, halts repeated deterministic failures, and validates promotion proof with sub-millisecond execution. Keep material progress separate from churn. Material output can prove progress; it is not a churn dimension.
 
 ## When to Use
 

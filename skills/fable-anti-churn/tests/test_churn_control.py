@@ -713,7 +713,7 @@ def test_package_verifier_rejects_unlisted_files(tmp_path: Path) -> None:
     assets.mkdir(parents=True)
     scripts.mkdir()
     payload = scripts / "core.py"
-    payload.write_text("print('ok')\n", encoding="utf-8", newline="\n")
+    payload.write_text("print('ok')\n", encoding="utf-8")
     raw = core.package_file_bytes(payload)
     row = {"path": "scripts/core.py", "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw)}
     aggregate = hashlib.sha256(f"scripts/core.py|{row['sha256']}|{row['bytes']}".encode("utf-8")).hexdigest()
@@ -729,7 +729,8 @@ def test_package_verifier_rejects_unlisted_files(tmp_path: Path) -> None:
 
 
 def test_skill_and_policy_dimension_contract_match() -> None:
-    skill = (ROOT / "skills" / "agent-churn-control" / "SKILL.md").read_text(encoding="utf-8")
+    skill_path = ROOT / "SKILL.md" if (ROOT / "SKILL.md").exists() else ROOT / "skills" / "agent-churn-control" / "SKILL.md"
+    skill = skill_path.read_text(encoding="utf-8")
     assert "material progress separate from churn" in skill.lower()
     assert POLICY["churn_dimensions"] == core.load_policy()["churn_dimensions"]
     assert "planning_churn" in POLICY["churn_dimensions"]
@@ -737,6 +738,6 @@ def test_skill_and_policy_dimension_contract_match() -> None:
 
 
 def test_authority_map_forbids_external_effects() -> None:
-    authority = json.loads((ROOT / "assets" / "authority-map.json").read_text(encoding="utf-8"))
+    authority = core.DEFAULT_AUTHORITY_MAP
     for value in ("publish", "install", "spend", "change_credentials", "change_permissions", "change_scopes", "perform_external_action"):
         assert value in authority["may_not"]

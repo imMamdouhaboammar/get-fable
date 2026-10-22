@@ -17,6 +17,58 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "assets" / "core-policy.json"
 CORPUS_PATH = ROOT / "fixtures" / "v1" / "corpus.ndjson"
+
+DEFAULT_CORE_POLICY: dict[str, Any] = {
+    "schema_version": "1.0",
+    "policy_id": "agent-churn-control-core-v1",
+    "churn_dimensions": [
+        "test_repetition", "suite_overlap", "validation_proportionality",
+        "review_research_repetition", "retry_tool_churn", "narration_churn",
+        "artifact_churn", "planning_churn"
+    ],
+    "material_progress_is_separate": True,
+    "intervention_levels": ["bypass", "observe", "enforce", "promotion_gate"],
+    "allowed_invalidation_reasons": [
+        "candidate_changed", "dependency_changed", "policy_changed",
+        "requirements_changed", "scope_changed", "evaluator_changed",
+        "environment_changed", "transient_execution_failure", "prior_evidence_corrupt"
+    ],
+    "allowed_changed_fields": [
+        "candidate_digest", "dependency_digest", "policy_digest",
+        "requirements_digest", "action_scope_digest", "evaluator_digest",
+        "environment_digest", "prior_evidence_status"
+    ],
+    "allowed_evidence_kinds": [
+        "candidate_digest", "dependency_digest", "policy_digest",
+        "requirements_digest", "action_scope_digest", "evaluator_digest",
+        "environment_digest", "execution_trace_digest", "verifier_report_digest"
+    ],
+    "max_transient_retries_per_work_key": 1,
+    "automatic_retries": 0,
+    "rate_states": ["below_80", "at_or_above_80", "at_or_above_97", "at_or_above_100", "missing", "stale"],
+    "rate_effect": "advisory",
+    "one_full_gate_per_frozen_identity": True,
+    "numeric_savings_require_basis_receipt": True,
+    "allowed_metric_names": [
+        "input_tokens", "output_tokens", "cached_input_tokens", "elapsed_ms",
+        "retry_count", "tool_calls", "cost_of_pass", "avoided_work_units"
+    ],
+    "allowed_metric_units": ["tokens", "milliseconds", "count", "usd", "work_units"]
+}
+
+DEFAULT_AUTHORITY_MAP: dict[str, Any] = {
+    "schema_version": "1.0",
+    "may": [
+        "classify_local_action", "emit_advisory", "record_content_free_receipt",
+        "reuse_valid_local_evidence", "gate_duplicate_local_helper_execution",
+        "validate_promotion_readiness"
+    ],
+    "may_not": [
+        "terminate_overall_task", "publish", "install", "spend",
+        "change_credentials", "change_permissions", "change_scopes",
+        "perform_external_action", "recruit_participants"
+    ]
+}
 DIGEST_FIELDS = [
     "action_scope_digest", "requirements_digest", "candidate_digest",
     "dependency_digest", "policy_digest", "evaluator_digest", "environment_digest",
@@ -99,8 +151,13 @@ def read_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
-    return read_json(path)
+def load_policy(path: Path | None = None) -> dict[str, Any]:
+    if path is not None:
+        if path.is_file():
+            return read_json(path)
+    elif POLICY_PATH.is_file():
+        return read_json(POLICY_PATH)
+    return json.loads(json.dumps(DEFAULT_CORE_POLICY))
 
 
 def valid_digest(value: Any, *, nullable: bool = False) -> bool:

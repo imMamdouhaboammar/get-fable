@@ -33,7 +33,7 @@ Horizon 3: Ecosystem Expansion & Autonomy (v1.15 - v2.0) [PLANNED]
 ## 🎯 Capability Pillars
 
 ### 1. Evidence-Driven Coding Lifecycle
-- **Status:** Production Active (v1.15.0)
+- **Status:** Production Active (v1.15.1)
 - **Features:**
   - Mutation-aware state transitions (`mutationGeneration` vs `verifiedGeneration`).
   - Precedence-ranked evidence gates (`test`, `build`, `runtime`, `review`, `observation`).

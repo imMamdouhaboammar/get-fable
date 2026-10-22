@@ -6,11 +6,8 @@
     "agents/openai.yaml"
   ],
   "references": [
-    "references/CLAUDE-INSTALL.md",
-    "references/CODEX-INSTALL.md",
     "references/DECISIONS-AND-RECEIPTS.md",
     "references/EVALUATION.md",
-    "references/OPENAI-PLUGIN-SUBMISSION.md",
     "references/PRIVACY.md",
     "references/THREAT-MODEL.md",
     "references/doctrine_review.md"
