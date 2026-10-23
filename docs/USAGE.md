@@ -1,4 +1,4 @@
-# Usage: get-fable 1.15.0
+# Usage: get-fable 1.15.2
 
 This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
 
@@ -595,6 +595,34 @@ Gemini-style contents remain normalized by `ProviderTranslator`, including struc
 
 Request-shape support is not a claim of complete compatibility with every provider API
 
+## Autonomous Perpetual Repository Steward
+
+Run continuous, unattended triage, maintenance, and capability packaging over any Git repository:
+
+```bash
+# Dry-run: Probe repository health and print triage decision without mutating workspace
+get-fable steward --dry-run
+
+# Run a single autonomous triage and execution cycle
+get-fable steward
+
+# Run perpetual continuous loop (60s interval, watchdog monitoring)
+get-fable steward --loop --interval 60 --max-cycles 100
+
+# Output machine-readable JSON v1 envelope
+get-fable steward --json-v1
+```
+
+### Triage priority matrix
+
+| Tier | Priority Target | Trigger Condition | Primary Skill | Autonomous Action |
+|---|---|---|---|---|
+| **Tier 1** | Mainline CI Runs | Mainline workflow run conclusion is `failure` | `fable-tend` | Diagnose logs, apply surgical repair, verify build |
+| **Tier 2** | Pending Pull Requests | Non-draft PRs targeting default branch exist | `fable-review` + `fable-judge` | Diff audit, anti-slop check, post structured verdict |
+| **Tier 3** | Open GitHub Issues | Unassigned open GitHub issues exist | `fable-plan` + `fable-tdd` | Reproduce failure via test fixture, repair, and PR |
+| **Tier 4** | Code Hygiene | Untracked or unstaged modifications present | `fable-anti-slop-engineering` | Remediate swallowed errors, weak assertions, dead code |
+| **Tier 5** | Feature Innovation | Mainline green, zero open PRs/issues, clean tree | `fable-spark` + `fable-cowork` | Package next roadmap capability with unit/integration tests |
+
 ## Historical assets
 
 ```bash
@@ -614,7 +642,6 @@ Review `THIRD_PARTY_NOTICES.md` before redistributing bundled upstream material
 
 ```bash
 bun install
->>>>>>> origin/master
 bun run typecheck
 bun test
 bun run build

@@ -1,4 +1,4 @@
-# Architecture: get-fable 1.15.0
+# Architecture: get-fable 1.15.2
 
 ## Purpose
 
@@ -356,7 +356,7 @@ Repository CI checks:
 
 Lifecycle-specific tests cover routing ambiguity, schema migration, canonical workspace identity, mutation freshness, scoped evidence boundaries, hook parity, installer idempotency, plugin shape, and holdout-style trap scenarios.
 
-## New components (v1.7.0 / v1.8.0)
+## Subsystems & Architectural Components (v1.7.0 – v1.15.2)
 
 ### gRPC Worker Service
 
@@ -403,6 +403,27 @@ Source: `src/integrations/no-mistakes-installer.ts`
 - Installing and configuring the no-mistakes quality gate
 - Template `.no-mistakes/` configuration in the project
 - Git pre-push hook integration for automated AI review, testing, linting, and docs before remote push
+
+### Autonomous Perpetual Repository Steward
+
+Source: `src/cli/commands/steward.ts`, `skills/fable-steward/`
+
+The Steward is an autonomous maintenance and continuous innovation engine running over repositories:
+- Evaluates live GitHub CI health, pull requests, open issues, and code hygiene via a deterministic 5-tier triage priority matrix.
+- Tier 1: Mainline CI repair (`fable-tend`).
+- Tier 2: Pull Request review & verification (`fable-review` + `fable-judge`).
+- Tier 3: Open Issue resolution via failing test fixture and TDD repair (`fable-plan` + `fable-tdd`).
+- Tier 4: Code hygiene and anti-slop remediation (`fable-anti-slop-engineering`).
+- Tier 5: Autonomous capability packaging from roadmap backlog (`fable-spark` + `fable-cowork`).
+
+### Advanced Autonomous Verification & Testing Engines
+
+1. **Test-Value Spearhead Engine**: Evaluates test value calculus, user/maintainer loss prevention, and cut-boundary discrimination (5 REA-attested upstream artifacts).
+2. **OpenMythos Recurrent-Depth Engine**: Recurrent depth reasoning and MoE routing across specialist attention heads (7 REA-attested upstream artifacts).
+3. **Frontier Testing Engine**: Multi-adapter test execution and regression locking (14 adapters, 5 REA-attested engines).
+4. **Harness² Recursive Agent Engine**: Recursive agent harnessing and supervisory watchdog (8 REA-attested artifacts).
+5. **Fable Maestro Orchestrator**: Dual-plane micro-kernel for multi-agent delegation, wave planning, and Sentinel watchdog execution.
+6. **Native Rust Engines**: High-performance Rust implementations for anti-slop detection (`crates/fable-anti-slop`) and work-identity anti-churn (`crates/fable-anti-churn`).
 
 ### DSH Web UI & Script Sanitizer
 

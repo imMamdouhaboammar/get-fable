@@ -8,7 +8,7 @@ This roadmap outlines the capabilities, platform support, and architectural evol
 
 ```text
 Horizon 1: Foundation & Governance (v1.0 - v1.8) [COMPLETED]
-├── 44 Canonical Skills with Deep Playbook V2 documentation
+├── 46 Canonical Skills with Deep Playbook V2 documentation
 ├── Schema v3 Deterministic State Machine with evidence-driven gates
 ├── Universal 32-Platform Harness Integration (Claude Code, Antigravity, Codex, Cursor...)
 └── ADR 0007 Transport Architecture & Dual-Protocol Model

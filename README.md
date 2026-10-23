@@ -8,11 +8,24 @@
 
 **Same model. Better working habits. A much stronger coding loop.**
 
-[![npm version](https://img.shields.io/npm/v/get-fable?style=flat-square&color=3178C6)](https://www.npmjs.com/package/get-fable)
-[![CI](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci-no-private-content.yml/badge.svg)](https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci-no-private-content.yml)
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue?style=flat-square)](./LICENSE)
-[![Platforms: 32](https://img.shields.io/badge/platforms-32%20hosts-8A2BE2?style=flat-square)](#works-with-the-coding-agent-you-already-use)
-[![Skills: 46](https://img.shields.io/badge/skills-46%20connected-success?style=flat-square)](#46-skills-across-8-packs-one-way-of-working)
+<p align="center">
+  <a href="https://www.npmjs.com/package/get-fable"><img src="https://img.shields.io/npm/v/get-fable?style=for-the-badge&logo=npm&logoColor=white&color=CB3837" alt="npm version" /></a>
+  <a href="https://bun.sh"><img src="https://img.shields.io/badge/Bun-%E2%89%A51.3.0-000000?style=for-the-badge&logo=bun&logoColor=white" alt="Bun runtime" /></a>
+  <a href="#subsystems--architectural-components"><img src="https://img.shields.io/badge/Rust-Native%20Engine-black?style=for-the-badge&logo=rust&logoColor=white" alt="Rust Native Engine" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-0052CC?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License: AGPL-3.0" /></a>
+</p>
+<p align="center">
+  <a href="#46-skills-across-8-packs-one-way-of-working"><img src="https://img.shields.io/badge/Skills-46%20Connected-10B981?style=for-the-badge&logo=speedtest&logoColor=white" alt="46 Canonical Skills" /></a>
+  <a href="#works-with-the-coding-agent-you-already-use"><img src="https://img.shields.io/badge/Platforms-32%20Hosts-8B5CF6?style=for-the-badge&logo=target&logoColor=white" alt="32 Platforms Supported" /></a>
+  <a href="#46-skills-across-8-packs-one-way-of-working"><img src="https://img.shields.io/badge/Packs-8%20Packs-2563EB?style=for-the-badge&logo=box&logoColor=white" alt="8 Skill Packs" /></a>
+  <a href="#step-7--security--quality-gates"><img src="https://img.shields.io/badge/Quality%20Gate-no--mistakes-0284C7?style=for-the-badge&logo=shieldcheck&logoColor=white" alt="Quality Gate: no-mistakes" /></a>
+</p>
+<p align="center">
+  <a href="https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci-no-private-content.yml"><img src="https://img.shields.io/github/actions/workflow/status/imMamdouhaboammar/get-fable/ci-no-private-content.yml?branch=master&style=for-the-badge&logo=githubactions&logoColor=white&label=CI" alt="CI Status" /></a>
+  <a href="#step-6--architecture-evaluation-new-projects"><img src="https://img.shields.io/badge/Architecture-ADR%200007-6366F1?style=for-the-badge&logo=diagram-project&logoColor=white" alt="ADR 0007 Transport Architecture" /></a>
+  <a href="#behavioral-proof-the-uncomfortable-part-is-intentional"><img src="https://img.shields.io/badge/Evals-1%2C105%20Blind%20Cases-EC4899?style=for-the-badge&logo=target&logoColor=white" alt="1,105 Behavioral Evaluation Cases" /></a>
+  <a href="#step-4--verify-health"><img src="https://img.shields.io/badge/Doctor-53%20Checks-10B981?style=for-the-badge&logo=checkmarx&logoColor=white" alt="53 Doctor Health Checks" /></a>
+</p>
 
 **46 connected Skills · Autonomous Repository Steward · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · anti-slop · anti-churn · recovery · gRPC worker · TOON protocol · Rust Jev engine · Frontier test engine · DSH plugin · release**
 
@@ -510,7 +523,7 @@ Creates `.fable/state.json`, `.fable/LEDGER.md`, `.fable/PROGRESS.md`, and `docs
 ### Step 4 — Verify health
 
 ```bash
-get-fable doctor          # 46+ system checks — skills, hooks, state, supply chain
+get-fable doctor          # 53 system checks — skills, manifests, hooks, state, supply chain
 get-fable doctor --json-v1  # machine-readable diagnostic envelope
 get-fable lint            # ledger + state completion semantics
 ```
@@ -623,7 +636,7 @@ That run is useful history.
 
 It is **not** fresh proof for Deep Skill Playbooks V2.
 
-V2 materially changes the instructions and expands the semantic scenario corpus. The evidence hashes should therefore make the old behavioral result stale.
+V2 materially changes the instructions and expands the semantic scenario corpus to 1,105 blinded evaluation cases across all 46 canonical skills. The evidence hashes should therefore make the old behavioral result stale.
 
 That is a feature, not a regression.
 
@@ -640,7 +653,7 @@ get-fable behavior-eval status
 get-fable doctor --json-v1
 ```
 
-The exported bundle is generated from the current Skill corpus, so the README deliberately does not hard-code a V2 request count.
+The exported bundle is generated from the current 46-skill corpus (1,105 blinded behavioral evaluation cases), ensuring transparent, reproducible evaluation before independent provider scoring.
 
 [Read the behavioral evidence protocol →](docs/BEHAVIOR_EVIDENCE.md)
 
