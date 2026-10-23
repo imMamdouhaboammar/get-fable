@@ -1,40 +1,10 @@
----
-id: fable-dataviz
-pack: system
-phase: executing
-order: 110
-canonical_url: https://get-fable.vercel.app/skills/fable-dataviz.html
----
-
 # fable-dataviz
 
-> **Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.**
+> Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `executing`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-execute`
+**Pack:** system · **Phase:** executing
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "dataviz" --apply
-```
-
-## Registered Intents
-- `dataviz`
-- `create-chart`
-- `visualize-data`
-- `dashboard-metrics`
-
-## Required Gates
-- `theme-contrast-valid`
-- `viewbox-defined`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-review`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-dataviz/SKILL.md)
 
 ---
 

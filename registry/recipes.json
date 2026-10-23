@@ -100,18 +100,6 @@
       ]
     },
     {
-      "id": "create-skill",
-      "path": "recipes/create-skill.yaml",
-      "targetShape": "feature",
-      "skills": [
-        "fable-discover",
-        "fable-skill-creator",
-        "fable-eval",
-        "fable-verify",
-        "fable-review"
-      ]
-    },
-    {
       "id": "ui-ux-polish-round",
       "path": "recipes/ui-ux-polish-round.yaml",
       "targetShape": "ui-ux-polish",
@@ -166,46 +154,6 @@
         "fable-simplify",
         "fable-finish-your-turn",
         "fable-outcome-first"
-      ]
-    },
-    {
-      "id": "autonomous-ci-tending-loop",
-      "path": "recipes/autonomous-ci-tending-loop.yaml",
-      "targetShape": "maintenance",
-      "skills": [
-        "fable-tend",
-        "fable-loop",
-        "fable-simulator",
-        "fable-verify",
-        "fable-learning"
-      ]
-    },
-    {
-      "id": "skill-and-visual-artifact-studio",
-      "path": "recipes/skill-and-visual-artifact-studio.yaml",
-      "targetShape": "feature",
-      "skills": [
-        "fable-skill-creator",
-        "fable-dataviz",
-        "fable-artifact",
-        "fable-eval"
-      ]
-    },
-    {
-      "id": "autonomous-repo-steward",
-      "path": "recipes/autonomous-repo-steward.yaml",
-      "targetShape": "maintenance",
-      "skills": [
-        "fable-discover",
-        "fable-tend",
-        "fable-review",
-        "fable-plan",
-        "fable-tdd",
-        "fable-execute",
-        "fable-anti-slop-engineering",
-        "fable-redteam",
-        "fable-verify",
-        "fable-release"
       ]
     }
   ]

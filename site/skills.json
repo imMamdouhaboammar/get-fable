@@ -1,7 +1,7 @@
 {
-  "title": "get-fable 41 Public Community Skills Catalog",
+  "title": "get-fable 42 Public Community Skills Catalog",
   "description": "Deterministic specialist skills for AI coding agents across 8 packs with formal gates and evidence contracts.",
-  "totalSkills": 41,
+  "totalSkills": 42,
   "packs": [
     {
       "id": "core",
@@ -48,7 +48,8 @@
         "fable-prove-it",
         "fable-anti-slop-engineering",
         "fable-anti-churn",
-        "fable-judge"
+        "fable-judge",
+        "fable-test"
       ]
     },
     {
@@ -648,6 +649,21 @@
         "strip-slop"
       ],
       "url": "https://get-fable.vercel.app/skills/fable-wise.html"
+    },
+    {
+      "id": "fable-test",
+      "order": 142,
+      "phase": "verifying",
+      "pack": "proof",
+      "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.",
+      "intents": [
+        "test-project",
+        "run-tests",
+        "test-coverage",
+        "quality-engineering",
+        "diagnose-tests"
+      ],
+      "url": "https://get-fable.vercel.app/skills/fable-test.html"
     }
   ],
   "canonical_url": "https://get-fable.vercel.app/skills.html"

@@ -1,0 +1,171 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.">
+<title>fable-test | get-fable Community Skill</title>
+<link rel="canonical" href="https://get-fable.vercel.app/skills/fable-test.html">
+<link rel="alternate" type="text/markdown" href="../skills/fable-test.md">
+<link rel="alternate" type="text/plain" href="../skills/fable-test.txt">
+<link rel="alternate" type="application/json" href="../skills/fable-test.json">
+<link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../styles.css"></head><body>
+<header class="site-header"><a href="../index.html">get-fable</a> · <a href="../skills.html">Community Skills</a></header>
+<main id="main-content" style="max-width:880px;margin:auto;padding:3rem 1.5rem;line-height:1.6;overflow-wrap:anywhere">
+<div class="section-marker">proof · verifying</div>
+<h1>fable-test</h1><p>Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.</p>
+<nav class="format-switcher" aria-label="Alternate formats">
+<a href="../skills/fable-test.md">Markdown</a> · <a href="../skills/fable-test.txt">Plain text</a> · <a href="../skills/fable-test.json">JSON</a> · <a href="https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-test/SKILL.md">Source</a>
+</nav><article class="docs-body"><h1>Fable Test: Universal Quality Engineering &amp; Testing Harness</h1>
+
+<p>Orchestrate, author, and verify robust automated testing suites in any consumer application codebase.</p>
+
+<p>---</p>
+
+<h2>Mission</h2>
+
+<p>Transform ad-hoc or hallucinated testing into an autonomous, rigorous, and deterministic quality engineering pipeline. `fable-test` serves as the universal testing orchestrator for developers and AI agents:</p>
+<p>1. **Stack &amp; Topology Discovery**: Automatically inspect the project to identify runtimes, test frameworks, and boundary layers.</p>
+<p>2. **Test-Guard Rules Enforcement**: Eliminate AI-generated test bloat by applying 9 universal testing discipline rules.</p>
+<p>3. **Test-Value Calculus**: Validate each test's economic justification and protect against zero-selection false positives.</p>
+<p>4. **Tool &amp; Skill Dispatch**: Orchestrate TDD workflows, visual E2E testing, API replay virtualization, and AST quality checks.</p>
+
+<p>---</p>
+
+<h2>Activation Contract</h2>
+
+<h3>Activate When</h3>
+<ul>
+<li>User requests executing the test suite or improving test coverage: *&quot;اختبر المشروع&quot;*, *&quot;run tests&quot;*, *&quot;test this feature&quot;*, *&quot;add tests for X&quot;*.</li>
+<li>Agent needs to assess existing test coverage or diagnose test suite failures.</li>
+<li>Designing or auditing test architecture for a service, API, or frontend application.</li>
+</ul>
+
+<h3>Do Not Activate When</h3>
+<ul>
+<li>Driving a single behavior change via test-first red-green-refactor during implementation -&gt; use `fable-tdd`.</li>
+<li>Performing the mandatory final gating check before session completion -&gt; use `fable-verify`.</li>
+<li>Performing security penetration testing against external targets -&gt; use `fable-redteam`.</li>
+<li>Testing `get-fable`'s own internal engine crates (maintainer only) -&gt; use `fable-core-test`.</li>
+</ul>
+
+<p>---</p>
+
+<h2>Situation Classification</h2>
+
+<pre class="table-source">| Project Context | Primary Focus | Strategy |</pre>
+<pre class="table-source">|---|---|---|</pre>
+<pre class="table-source">| **Greenfield / New Feature** | Public behavioral contracts | Define data factories; enforce behavior-not-implementation (Rule 1); delegate to `fable-tdd`. |</pre>
+<pre class="table-source">| **Existing Legacy Codebase** | Regressions &amp; boundary characterization | Map external boundaries; use real test databases where appropriate (Rule 9). |</pre>
+<pre class="table-source">| **Complex GUI / Web UI** | Visual layout &amp; interactive state | Dispatch to `get-fable test-engine` with Midscene (AI vision testing). |</pre>
+<pre class="table-source">| **High-Traffic Web API** | End-to-end replay &amp; regression locking | Dispatch to `get-fable test-engine` with Keploy (traffic replay &amp; DB virtualization). |</pre>
+<pre class="table-source">| **Pre-Ship / PR Diff Review** | Anti-slop and test integrity | Run `anti-slop scan` to block skipped tests, swallowed errors, or weak assertions. |</pre>
+
+<p>---</p>
+
+<h2>Protocol</h2>
+
+<h3>Stage 1: Stack &amp; Topology Discovery</h3>
+<p>Inspect the repository topology to determine test commands rather than assuming conventions:</p>
+<ul>
+<li>TypeScript/JavaScript: `bun test`, `vitest run`, or `jest`.</li>
+<li>Python: `pytest` or `uv run pytest`.</li>
+<li>Go: `go test ./...`.</li>
+<li>Rust: `cargo test`.</li>
+<li>PHP: `./vendor/bin/pest` or `./vendor/bin/phpunit`.</li>
+</ul>
+
+<h3>Stage 2: The 9 Universal Test-Guard Rules</h3>
+<p>Every test authoring or modification pass must strictly enforce:</p>
+<p>1. **Test Behavior, Not Implementation**: Assert observable outputs and state changes from caller's view; never mock internal helper call counts.</p>
+<p>2. **Every Mock Must Be Justified**: Mock strictly at system boundaries (network, external storage, clocks, third-party APIs).</p>
+<p>3. **One Scenario Per Test**: Merge repetitive tests into parameterized data-driven suites.</p>
+<p>4. **Justify Existence**: Answer: *&quot;What specific defect does this catch that no other test catches?&quot;*</p>
+<p>5. **Semantic Scenario Naming**: Use `test_&lt;scenario&gt;_&lt;expected_outcome&gt;`.</p>
+<p>6. **Regression Tests Are Sacred**: Incident repro tests are permanent; never delete or weaken them.</p>
+<p>7. **No Tests for Framework Guarantees**: Test application business logic, not library defaults.</p>
+<p>8. **State &amp; Value Objects Are Real**: Never mock DTOs or entities; use real instances and data factories.</p>
+<p>9. **Infrastructure Under Test Gets Real Infrastructure**: Persistence tests must run against real database instances.</p>
+
+<h3>Stage 3: Test-Value Correctness &amp; Zero-Selection Guard</h3>
+<p>1. Apply the 3-questions calculus:</p>
+<ul>
+<li>*Which concrete mistake fails this test, and what loss would it cause?*</li>
+<li>*Would an equivalent refactor fail?* (Detect and eliminate brittle tests).</li>
+<li>*Does added protection justify ongoing maintenance cost?*</li>
+</ul>
+<p>2. Verify executed test count: ensure `tests_executed &gt;= 1`. Never accept exit code 0 when zero tests were matched.</p>
+
+<h3>Stage 4: Specialized Tool &amp; Skill Dispatch</h3>
+<ul>
+<li>Route to `fable-tdd` when creating new features or fixing bugs.</li>
+<li>Run `get-fable test-engine run --tool midscene` for vision-based browser testing.</li>
+<li>Run `get-fable test-engine run --tool keploy` for deterministic API traffic capture and replay.</li>
+<li>Run `bun ./bin/get-fable.js anti-slop scan` to eliminate skipped tests (`test.skip`) or tautological assertions.</li>
+<li>Call `get-fable evidence pass test &quot;&lt;command&gt;&quot; &quot;&lt;detail&gt;&quot;` to record machine-checked proof.</li>
+</ul>
+
+<p>---</p>
+
+<h2>Decision Rules</h2>
+
+<p>1. **If an assertion checks a mock of an internal private function**: Delete the mock, call the public interface, and assert the observable output.</p>
+<p>2. **If multiple tests differ only in scalar values**: Collapse into a single data-driven test table.</p>
+<p>3. **If a test runner exits with code 0 but reports 0 tests ran**: Mark as a fatal zero-selection violation and re-scope filter.</p>
+<p>4. **If a test would still pass when business logic returns undefined**: Refactor assertions to be strict and falsifiable.</p>
+
+<p>---</p>
+
+<h2>Invariants</h2>
+
+<ul>
+<li>**The Behavioral Assertion Invariant**: Tests must verify observable outcomes, state mutations, or contract boundaries — never internal execution sequence.</li>
+<li>**The System Boundary Mock Invariant**: Mocking is permitted only at boundaries with external systems (network, clock, external persistence, third-party SDKs).</li>
+<li>**The Zero-Selection Invariant**: A test command is valid evidence only if total executed tests &gt; 0.</li>
+<li>**The Anti-Slop Cleanliness Invariant**: Test suites must not contain skipped tests (`test.skip`, `xit`), empty error catches, or unconstrained assertions (`expect(x).toBeDefined()`).</li>
+</ul>
+
+<p>---</p>
+
+<h2>Failure Taxonomy</h2>
+
+<pre class="table-source">| Failure Mode | Root Cause | Remediation Protocol |</pre>
+<pre class="table-source">|---|---|---|</pre>
+<pre class="table-source">| **Brittle Refactor Failure** | Test asserts internal variable or private helper | Rewrite test against the public caller API. |</pre>
+<pre class="table-source">| **Zero-Selection False Green** | Regex filter matched 0 files/tests but exited 0 | Audit test runner pattern matching and verify execution counts. |</pre>
+<pre class="table-source">| **Mock Drift / Mock Lie** | Mocked boundary does not match real API schema | Switch to real test database or update contract fixtures from upstream schemas. |</pre>
+<pre class="table-source">| **Flaky Async Race** | Test relies on arbitrary `sleep()` rather than polling | Replace `sleep` with deterministic condition polling (`waitFor`, event listener). |</pre>
+
+<p>---</p>
+
+<h2>Anti-Patterns</h2>
+
+<pre class="table-source">| Prohibited Anti-Pattern | Correct Engineering Practice |</pre>
+<pre class="table-source">|---|---|</pre>
+<pre class="table-source">| Asserting `expect(internalHelper).toHaveBeenCalled()` | Assert return value or external observable state change. |</pre>
+<pre class="table-source">| Mocking domain entities or database models | Construct real models with minimal factory helpers. |</pre>
+<pre class="table-source">| Silencing tests with `test.skip` to pass CI | Fix underlying defect or delete obsolete test with recorded rationale. |</pre>
+<pre class="table-source">| Writing tests for framework validation defaults | Write tests only for custom business validation rules. |</pre>
+<pre class="table-source">| Accepting `0 tests passed` as success | Require strict verification that executed count &gt; 0. |</pre>
+
+<p>---</p>
+
+<h2>Completion Criteria</h2>
+
+<p>A testing task is complete only when:</p>
+<ul>
+<li>All target scenarios execute against real implementations and exit 0.</li>
+<li>Executed test count is verified &gt; 0 (zero-selection check passed).</li>
+<li>Diff is scanned with `fable-anti-slop` with 0 blockers (no skipped tests or weak assertions).</li>
+<li>Machine-checked passing test evidence is recorded via `get-fable evidence pass test ...`.</li>
+</ul>
+
+<p>---</p>
+
+<h2>Progressive Resources</h2>
+
+<ul>
+<li>[The Nine Universal Test-Guard Rules](references/test-guard-rules.md): In-depth violation patterns and fixes.</li>
+<li>[Stack Discovery Guide](references/stack-discovery.md): Taxonomy of project runtimes and test runners.</li>
+<li>[Test-Value Calculus &amp; Anti-Brittleness Guard](references/test-value-calculus.md): The 3-questions calculus and zero-selection prevention.</li>
+<li>[Tool Dispatch Matrix](references/tool-dispatch.md): How to route to TDD, Midscene, Keploy, and Anti-Slop.</li>
+</ul></article>
+</main><footer style="text-align:center;padding:2rem">Public community Skill · AGPL-3.0-or-later</footer></body></html>

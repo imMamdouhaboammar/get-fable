@@ -1,49 +1,26 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+# Public bootstrap: install the released CLI, not a source-only GitHub checkout.
+set -eu
 
-REPO_URL="https://github.com/imMamdouhaboammar/get-fable.git"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || pwd)"
-TEMP_DIR=""
-
-cleanup() {
-  if [[ -n "$TEMP_DIR" && -d "$TEMP_DIR" ]]; then
-    rm -rf "$TEMP_DIR"
-  fi
-}
-trap cleanup EXIT
-
-if ! command -v bun >/dev/null 2>&1; then
-  echo "get-fable requires Bun. Install Bun first, then rerun this installer." >&2
+if command -v bun >/dev/null 2>&1; then
+  printf '%s\n' 'Installing the published get-fable CLI with Bun...'
+  bun add -g get-fable
+elif command -v npm >/dev/null 2>&1; then
+  printf '%s\n' 'Installing the published get-fable CLI with npm...'
+  npm install -g get-fable
+else
+  printf '%s\n' 'get-fable requires Bun or Node/npm. Please install Bun (https://bun.sh) or Node.js and rerun.' >&2
   exit 1
 fi
 
-if [[ -f "$SCRIPT_DIR/package.json" && -f "$SCRIPT_DIR/bin/get-fable.js" ]]; then
-  REPO_DIR="$SCRIPT_DIR"
-else
-  if ! command -v git >/dev/null 2>&1; then
-    echo "Git is required when install.sh is run outside a get-fable checkout." >&2
-    exit 1
-  fi
-
-  TEMP_DIR="$(mktemp -d)"
-  REPO_DIR="$TEMP_DIR/get-fable"
-  echo "Fetching get-fable..."
-  git clone --depth 1 --quiet "$REPO_URL" "$REPO_DIR"
+if ! command -v get-fable >/dev/null 2>&1; then
+  printf '%s\n' 'The package installed, but get-fable is not on PATH. Check your global binary directory.' >&2
+  exit 1
 fi
 
-echo "Running the get-fable global installer..."
-export FABLE_INSTALL_TARGET_DIR="${FABLE_INSTALL_TARGET_DIR:-$(pwd)}"
-if [[ -t 0 ]]; then
-  bun "$REPO_DIR/bin/get-fable.js" install "$@"
-elif [[ -r /dev/tty && -z "${CI:-}" ]]; then
-  bun "$REPO_DIR/bin/get-fable.js" install "$@" </dev/tty
-else
-  bun "$REPO_DIR/bin/get-fable.js" install "$@"
-fi
-
-echo "Installation complete"
-if [[ -z "$TEMP_DIR" ]]; then
-  echo "Run 'bun $REPO_DIR/bin/get-fable.js status' to inspect the configured targets"
-else
-  echo "Run the status command from a get-fable checkout to inspect the configured targets"
-fi
+get-fable --version
+printf '%s\n' 'Installation complete! From your project root, run:'
+printf '%s\n' '  get-fable init'
+printf '%s\n' '  get-fable install all'
+printf '%s\n' '  get-fable skills install all'
+printf '%s\n' '  get-fable doctor --json-v1'

@@ -7,7 +7,7 @@
 - [Agent setup prompt](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/AGENT_SETUP_PROMPT.md)
 - [Usage](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/USAGE.md)
 
-## Canonical Skills (41)
+## Canonical Skills (42)
 - [get-fable](https://get-fable.vercel.app/skills/get-fable.html): Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.
 - [fable-discover](https://get-fable.vercel.app/skills/fable-discover.html): Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.
 - [fable-research](https://get-fable.vercel.app/skills/fable-research.html): Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.
@@ -28,6 +28,7 @@
 - [fable-artifact](https://get-fable.vercel.app/skills/fable-artifact.html): Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.
 - [fable-simplify](https://get-fable.vercel.app/skills/fable-simplify.html): Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.
 - [fable-loop](https://get-fable.vercel.app/skills/fable-loop.html): Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.
+- [fable-test](https://get-fable.vercel.app/skills/fable-test.html): Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.
 - [fable-run](https://get-fable.vercel.app/skills/fable-run.html): Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.
 - [fable-memory](https://get-fable.vercel.app/skills/fable-memory.html): Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.
 - [fable-config](https://get-fable.vercel.app/skills/fable-config.html): Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.

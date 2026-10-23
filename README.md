@@ -738,7 +738,7 @@ get-fable doctor --json-v1
 
 The exported bundle is generated from the current 46-skill corpus (1,105 blinded behavioral evaluation cases), ensuring transparent, reproducible evaluation before independent provider scoring.
 
-[Read the behavioral evidence protocol →](docs/BEHAVIOR_EVIDENCE.md)
+[Read the evidence protocol →](docs/EVIDENCE.md)
 
 ---
 
@@ -804,9 +804,9 @@ The README tells the product story. The deep technical specifications and guides
 - [5 Mechanical Lifecycle Hooks](docs/HOOKS.md)
 - [Curated Capability Ecosystem (`fable-eco`)](docs/fable-eco-production-spec/README.md)
 - [System Architecture (ADR 0007)](docs/ARCHITECTURE.md)
-- [Behavioral Evidence & Evaluation Protocol](docs/BEHAVIOR_EVIDENCE.md)
+- [Evidence Protocol](docs/EVIDENCE.md)
 - [Multi-Platform Plugin Distribution](docs/PLUGIN.md)
-- [Release Verification & Gate Protocol](docs/RELEASE.md)
+- [Release Verification & Gate Policy](docs/PUBLIC_RELEASE_POLICY.md)
 - [Security & Trust Boundaries](SECURITY.md)
 - [Support & Community](SUPPORT.md)
 - [Contributing](CONTRIBUTING.md)

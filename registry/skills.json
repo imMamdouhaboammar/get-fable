@@ -33,7 +33,6 @@
         "fable-security",
         "fable-release",
         "fable-handoff",
-        "fable-eval",
         "fable-recover",
         "fable-dataviz",
         "fable-artifact",
@@ -45,7 +44,6 @@
         "fable-simulator",
         "fable-cowork",
         "fable-spark",
-        "fable-skill-creator",
         "fable-redteam",
         "fable-heal",
         "fable-learning",
@@ -61,12 +59,10 @@
         "fable-judge",
         "fable-method",
         "fable-council",
-        "fable-tend",
         "fable-anti-slop-engineering",
         "fable-anti-churn",
         "fable-wise",
-        "fable-test",
-        "fable-core-test"
+        "fable-test"
       ],
       "keywords": [
         "fable",
@@ -149,8 +145,7 @@
         "fable-execute",
         "fable-verify",
         "fable-domain",
-        "fable-memory",
-        "fable-skill-creator"
+        "fable-memory"
       ],
       "keywords": [
         "official docs",
@@ -202,8 +197,7 @@
         "fable-dataviz",
         "fable-method",
         "fable-scope-discipline",
-        "fable-cowork",
-        "fable-skill-creator"
+        "fable-cowork"
       ],
       "keywords": [
         "plan",
@@ -685,11 +679,10 @@
         "evidence-grounded",
         "atomic-claims"
       ],
-      "fallback": "fable-eval",
+      "fallback": null,
       "mutatesWorkspace": true,
       "parallelSafe": true,
       "next": [
-        "fable-eval",
         "fable-plan",
         "fable-handoff",
         "get-fable"
@@ -737,7 +730,6 @@
         "fable-tdd",
         "fable-execute",
         "fable-verify",
-        "fable-tend",
         "fable-method",
         "fable-loop"
       ],
@@ -897,8 +889,7 @@
       "parallelSafe": true,
       "next": [
         "fable-verify",
-        "fable-handoff",
-        "fable-tend"
+        "fable-handoff"
       ],
       "keywords": [
         "loop",

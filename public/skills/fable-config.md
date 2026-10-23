@@ -1,39 +1,10 @@
----
-id: fable-config
-pack: system
-phase: planned
-order: 170
-canonical_url: https://get-fable.vercel.app/skills/fable-config.html
----
-
 # fable-config
 
-> **Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.**
+> Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `planned`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-plan`
+**Pack:** system · **Phase:** planned
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "update-config" --apply
-```
-
-## Registered Intents
-- `update-config`
-- `manage-permissions`
-- `configure-hooks`
-
-## Required Gates
-- `valid-json`
-- `safe-permissions`
-
-## Next Allowed Skills
-- `fable-verify`
-- `get-fable`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-config/SKILL.md)
 
 ---
 

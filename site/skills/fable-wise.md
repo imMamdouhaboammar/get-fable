@@ -31,7 +31,7 @@ Enforce senior architectural wisdom through cognitive reflexes across Depth, Bre
 ## When NOT to Use
 
 - Routine small bugfixes with zero structural complexity (use `fable-execute`).
-- Automated dependency updates or standard CI repair (use the repository's approved maintenance workflow).
+- Automated dependency updates or standard CI repair (use `fable-tend`).
 - High-level multi-host lifecycle routing (use `get-fable`).
 
 ## Inputs

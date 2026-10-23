@@ -1,45 +1,10 @@
----
-id: fable-test
-pack: proof
-phase: verifying
-order: 142
-canonical_url: https://get-fable.vercel.app/skills/fable-test.html
----
-
 # fable-test
 
-> **Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.**
+> Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.
 
-- **Pack:** Proof Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-recover`
+**Pack:** proof · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "test-project" --apply
-```
-
-## Registered Intents
-- `test-project`
-- `run-tests`
-- `test-coverage`
-- `quality-engineering`
-- `diagnose-tests`
-
-## Required Gates
-- `machine-checked`
-- `no-skipped-tests`
-- `tests-executed-gt-zero`
-
-## Next Allowed Skills
-- `fable-tdd`
-- `fable-anti-slop-engineering`
-- `fable-verify`
-- `fable-review`
-- `fable-release`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-test/SKILL.md)
 
 ---
 

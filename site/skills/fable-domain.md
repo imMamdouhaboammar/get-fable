@@ -26,7 +26,7 @@ Generate validated, source-backed domain adapters and trap fixtures for new prof
 
 - When the requested domain requires professional human licensure or presents high-harm risks (medical diagnosis, formal legal advice, investment advice) — refuse and route to a qualified human.
 - When the domain does not differ fundamentally from standard software engineering (use `fable-execute` or `fable-plan`).
-- Generic Skill authoring without domain-specific adapters (use an approved public authoring workflow).
+- Generic skill authoring without domain-specific adapters (use `fable-skill-creator`).
 
 ## Inputs
 

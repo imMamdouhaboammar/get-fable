@@ -1,81 +1,10 @@
----
-id: get-fable
-pack: core
-phase: idle
-order: 0
-canonical_url: https://get-fable.vercel.app/skills/get-fable.html
----
-
 # get-fable
 
-> **Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.**
+> Orchestrate software engineering workflows across the canonical get-fable coding lifecycle with deterministic routing and evidence precedence.
 
-- **Pack:** Core Pack
-- **Lifecycle Phase:** `idle`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `None`
+**Pack:** core · **Phase:** idle
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "route" --apply
-```
-
-## Registered Intents
-- `route`
-- `resume`
-- `orchestrate`
-
-## Required Gates
-- None
-
-## Next Allowed Skills
-- `fable-discover`
-- `fable-research`
-- `fable-plan`
-- `fable-tdd`
-- `fable-delegate`
-- `fable-execute`
-- `fable-verify`
-- `fable-review`
-- `fable-security`
-- `fable-release`
-- `fable-handoff`
-- `fable-eval`
-- `fable-recover`
-- `fable-dataviz`
-- `fable-artifact`
-- `fable-simplify`
-- `fable-loop`
-- `fable-run`
-- `fable-memory`
-- `fable-config`
-- `fable-simulator`
-- `fable-cowork`
-- `fable-spark`
-- `fable-skill-creator`
-- `fable-redteam`
-- `fable-heal`
-- `fable-learning`
-- `fable-architecture`
-- `fable-eco`
-- `fable-context-thrift`
-- `fable-finish-your-turn`
-- `fable-native-code`
-- `fable-outcome-first`
-- `fable-prove-it`
-- `fable-scope-discipline`
-- `fable-domain`
-- `fable-judge`
-- `fable-method`
-- `fable-council`
-- `fable-tend`
-- `fable-anti-slop-engineering`
-- `fable-anti-churn`
-- `fable-wise`
-- `fable-test`
-- `fable-core-test`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/get-fable/SKILL.md)
 
 ---
 

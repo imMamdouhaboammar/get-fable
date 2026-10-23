@@ -50,7 +50,7 @@
 <li>Creating or updating the repository's `Failure-lessons/` knowledge base.</li>
 <li>Capturing user corrections, confirmations, or escalations as post-training signals.</li>
 <li>Synthesizing 3+ related problem-solution pairs into an `agent-kernel` Playbook.</li>
-<li>Compiling conversation takeaways into a new portable Skill package through an approved authoring workflow.</li>
+<li>Compiling conversation takeaways into a new portable Skill package via `fable-skill-creator`.</li>
 <li>Running headless at session completion (`Stop` / `SessionEnd` hook events) to record learning chunks.</li>
 </ul>
 
@@ -62,7 +62,7 @@
 <li>Reviewing code diffs or pull requests without transcript analysis (`fable-review`).</li>
 <li>Verifying whether an application feature or bugfix works against tests (`fable-verify`).</li>
 <li>Storing user preferences or static environment facts into memory (`fable-memory`).</li>
-<li>Running quantitative benchmarks or comparing prompt models (use an independent evaluation protocol).</li>
+<li>Running quantitative benchmarks or comparing prompt models (`fable-eval`).</li>
 </ul>
 
 <p>---</p>
@@ -75,7 +75,7 @@
 <pre class="table-source">| Explicit session ID or transcript file | `ANALYZE` | `Failure-lessons/` + `agent-kernel` + `gbrain` | Full 4-category extraction &amp; synthesis | Structured markdown report |</pre>
 <pre class="table-source">| Short session or `--depth lightweight` | `QUICK` | `agent-kernel` + `gbrain` | Top 5 atomic $L3+$ rules | Terminal output |</pre>
 <pre class="table-source">| Resolved non-trivial bug or harness issue | `COMPOUND` | `docs/solutions/` + `CONCEPTS.md` | Single atomic problem-solution doc | `docs/solutions/YYYY-MM-DD-&lt;slug&gt;.md` |</pre>
-<pre class="table-source">| &quot;make a skill from this&quot; or `--compile` | `COMPILE` | `skills/&lt;name&gt;/` | Full extraction + approved authoring review for `SKILL.md` | Skill package |</pre>
+<pre class="table-source">| &quot;make a skill from this&quot; or `--compile` | `COMPILE` | `skills/&lt;name&gt;/` | Full extraction + author `SKILL.md` via `fable-skill-creator` | Skill package |</pre>
 <pre class="table-source">| &quot;what did we learn?&quot; or `--recall` | `RECALL` | Terminal output / summary | Query `gbrain` and `agent-kernel` to synthesize | Interactive digest |</pre>
 <pre class="table-source">| Post-session hook (`Stop` / `SessionEnd`) | `HEADLESS` | `agent-kernel` + `gbrain` | Automated background extraction with fail-soft safety | `Documentation complete` / `skipped` |</pre>
 

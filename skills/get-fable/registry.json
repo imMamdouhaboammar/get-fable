@@ -33,7 +33,6 @@
         "fable-security",
         "fable-release",
         "fable-handoff",
-        "fable-eval",
         "fable-recover",
         "fable-dataviz",
         "fable-artifact",
@@ -45,7 +44,6 @@
         "fable-simulator",
         "fable-cowork",
         "fable-spark",
-        "fable-skill-creator",
         "fable-redteam",
         "fable-heal",
         "fable-learning",
@@ -61,12 +59,10 @@
         "fable-judge",
         "fable-method",
         "fable-council",
-        "fable-tend",
         "fable-anti-slop-engineering",
         "fable-anti-churn",
         "fable-wise",
-        "fable-test",
-        "fable-core-test"
+        "fable-test"
       ],
       "keywords": [
         "fable",
@@ -149,8 +145,7 @@
         "fable-execute",
         "fable-verify",
         "fable-domain",
-        "fable-memory",
-        "fable-skill-creator"
+        "fable-memory"
       ],
       "keywords": [
         "official docs",
@@ -202,8 +197,7 @@
         "fable-dataviz",
         "fable-method",
         "fable-scope-discipline",
-        "fable-cowork",
-        "fable-skill-creator"
+        "fable-cowork"
       ],
       "keywords": [
         "plan",
@@ -662,48 +656,6 @@
       "audience": "consumer"
     },
     {
-      "id": "fable-eval",
-      "order": 90,
-      "phase": "verifying",
-      "pack": "evolution",
-      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.",
-      "intents": [
-        "agent-eval",
-        "self-improvement",
-        "prompt-change"
-      ],
-      "requires": [
-        "reproducible-baseline"
-      ],
-      "produces": [
-        "eval-verdict",
-        "regression-evidence"
-      ],
-      "gates": [
-        "baseline-frozen",
-        "holdout-tested",
-        "rollback-defined"
-      ],
-      "fallback": "fable-plan",
-      "mutatesWorkspace": false,
-      "parallelSafe": true,
-      "next": [
-        "fable-plan",
-        "fable-execute",
-        "fable-verify",
-        "fable-recover"
-      ],
-      "keywords": [
-        "eval",
-        "benchmark",
-        "self improve",
-        "skill quality",
-        "prompt quality",
-        "holdout"
-      ],
-      "audience": "maintainer"
-    },
-    {
       "id": "fable-learning",
       "order": 95,
       "phase": "verifying",
@@ -727,11 +679,10 @@
         "evidence-grounded",
         "atomic-claims"
       ],
-      "fallback": "fable-eval",
+      "fallback": null,
       "mutatesWorkspace": true,
       "parallelSafe": true,
       "next": [
-        "fable-eval",
         "fable-plan",
         "fable-handoff",
         "get-fable"
@@ -779,7 +730,6 @@
         "fable-tdd",
         "fable-execute",
         "fable-verify",
-        "fable-tend",
         "fable-method",
         "fable-loop"
       ],
@@ -939,8 +889,7 @@
       "parallelSafe": true,
       "next": [
         "fable-verify",
-        "fable-handoff",
-        "fable-tend"
+        "fable-handoff"
       ],
       "keywords": [
         "loop",
@@ -1005,48 +954,6 @@
         "qa",
         "اختبر",
         "تيست"
-      ]
-    },
-    {
-      "id": "fable-core-test",
-      "order": 143,
-      "phase": "verifying",
-      "pack": "proof",
-      "audience": "maintainer",
-      "description": "Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit.",
-      "intents": [
-        "test-crates",
-        "test-matrix",
-        "neural-test",
-        "doctor-audit"
-      ],
-      "requires": [
-        "test-runner",
-        "native-engines"
-      ],
-      "produces": [
-        "test-run-report",
-        "test-evidence-matrix"
-      ],
-      "gates": [
-        "all-tiers-checked",
-        "machine-checked",
-        "no-skipped-tests"
-      ],
-      "fallback": "fable-recover",
-      "mutatesWorkspace": false,
-      "parallelSafe": true,
-      "next": [
-        "fable-verify",
-        "fable-review",
-        "fable-release"
-      ],
-      "keywords": [
-        "core-test",
-        "internal-test",
-        "crates",
-        "fable-core",
-        "doctor"
       ]
     },
     {
@@ -1276,48 +1183,6 @@
         "minimal action"
       ],
       "audience": "consumer"
-    },
-    {
-      "id": "fable-skill-creator",
-      "order": 210,
-      "phase": "executing",
-      "pack": "creator",
-      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.",
-      "intents": [
-        "create-skill",
-        "modify-skill",
-        "benchmark-skill",
-        "optimize-skill"
-      ],
-      "requires": [
-        "user-intent"
-      ],
-      "produces": [
-        "structured-skill-package",
-        "eval-benchmark-suite"
-      ],
-      "gates": [
-        "lack-of-surprise",
-        "objective-eval-criteria"
-      ],
-      "fallback": "fable-plan",
-      "mutatesWorkspace": true,
-      "parallelSafe": false,
-      "next": [
-        "fable-eval",
-        "fable-verify",
-        "fable-review"
-      ],
-      "keywords": [
-        "create skill",
-        "new skill",
-        "author skill",
-        "benchmark skill",
-        "skill creator",
-        "fable skill creator",
-        "eval suite"
-      ],
-      "audience": "maintainer"
     },
     {
       "id": "fable-architecture",
@@ -1869,45 +1734,6 @@
         "second opinion"
       ],
       "audience": "consumer"
-    },
-    {
-      "id": "fable-tend",
-      "order": 340,
-      "phase": "executing",
-      "pack": "delivery",
-      "description": "Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage.",
-      "intents": [
-        "triage-ci",
-        "fix-ci",
-        "resolve-conflicts",
-        "maintain-repo"
-      ],
-      "requires": [
-        "ci-failure-or-pr"
-      ],
-      "produces": [
-        "maintenance-pr"
-      ],
-      "gates": [
-        "ci-verified",
-        "human-merge-gate"
-      ],
-      "fallback": "fable-execute",
-      "mutatesWorkspace": true,
-      "parallelSafe": false,
-      "next": [
-        "fable-verify",
-        "fable-release"
-      ],
-      "keywords": [
-        "tend",
-        "fable-tend",
-        "ci fix",
-        "resolve conflicts",
-        "repository maintainer",
-        "nightly sweep"
-      ],
-      "audience": "maintainer"
     },
     {
       "id": "fable-wise",

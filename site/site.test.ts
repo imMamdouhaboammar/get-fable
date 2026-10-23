@@ -100,12 +100,12 @@ describe('deployment contract', () => {
   });
 });
 
-describe('41 consumer skills standalone pages and multi-format contract', () => {
+describe('42 consumer skills standalone pages and multi-format contract', () => {
   const registryRaw = read('skills/get-fable/registry.json');
   const registry = JSON.parse(registryRaw) as { skills: { id: string }[] };
 
-  test('verifies all 41 public Skills have .html, .md, .txt, and .json pages', () => {
-    expect(registry.skills.length).toBe(41);
+  test('verifies all 42 public Skills have .html, .md, .txt, and .json pages', () => {
+    expect(registry.skills.length).toBe(42);
     for (const skill of registry.skills) {
       const htmlFile = read(`site/skills/${skill.id}.html`);
       const mdFile = read(`site/skills/${skill.id}.md`);
@@ -176,9 +176,9 @@ describe('SEO, GEO and AI search discovery contract', () => {
 
     expect(llms).toContain('# get-fable');
     expect(llms).toContain('## Documentation & Guides');
-    expect(llms).toContain('## Canonical Skills (41)');
+    expect(llms).toContain('## Canonical Skills (42)');
     expect(llmsFull).toContain('PUBLIC SKILL INDEX');
-    expect(llmsFull).toContain('ALL 41 PUBLIC SKILL SPECIFICATIONS');
+    expect(llmsFull).toContain('ALL 42 PUBLIC SKILL SPECIFICATIONS');
   });
 });
 

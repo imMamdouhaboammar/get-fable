@@ -58,7 +58,7 @@ Classify the dominant reason the next action exists.
 | repeated/contradictory failure | `fable-recover` |
 | candidate is ready for distribution decision | `fable-release` |
 | another session/agent must resume | `fable-handoff` |
-| agent-control change needs benchmark proof | `fable-verify` (with an independent evaluation protocol) |
+| agent-control change needs benchmark proof | `fable-eval` |
 | next atomic move is unclear inside active work | `fable-spark` |
 
 ## Orchestration Protocol

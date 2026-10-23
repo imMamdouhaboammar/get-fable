@@ -1,6 +1,6 @@
 # Public Community Skills
 
-**41 installable Skills across 8 packs.** Generated from the public consumer registry.
+**42 installable Skills across 8 packs.** Generated from the public consumer registry.
 
 Install with `npx skills add imMamdouhaboammar/get-fable`.
 
@@ -31,7 +31,7 @@ Test-driven development, safe delegation, native code matching, and scope discip
 - [`fable-native-code`](./skills/fable-native-code.md): Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.
 - [`fable-scope-discipline`](./skills/fable-scope-discipline.md): Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.
 
-## Proof Pack (8)
+## Proof Pack (9)
 
 Adversarial review, penetration testing, automated healing, and evidence precedence.
 
@@ -43,6 +43,7 @@ Adversarial review, penetration testing, automated healing, and evidence precede
 - [`fable-anti-slop-engineering`](./skills/fable-anti-slop-engineering.md): Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.
 - [`fable-anti-churn`](./skills/fable-anti-churn.md): Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.
 - [`fable-judge`](./skills/fable-judge.md): Adversarial verification of finished work detecting weakened tests and false completion claims.
+- [`fable-test`](./skills/fable-test.md): Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.
 
 ## Delivery Pack (4)
 

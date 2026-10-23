@@ -1,40 +1,10 @@
----
-id: fable-release
-pack: delivery
-phase: verifying
-order: 80
-canonical_url: https://get-fable.vercel.app/skills/fable-release.html
----
-
 # fable-release
 
-> **Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.**
+> Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.
 
-- **Pack:** Delivery Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-verify`
+**Pack:** delivery · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "release" --apply
-```
-
-## Registered Intents
-- `release`
-- `merge`
-- `publish`
-
-## Required Gates
-- `required-checks-pass`
-- `no-blocking-findings`
-
-## Next Allowed Skills
-- `fable-handoff`
-- `fable-recover`
-- `fable-execute`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-release/SKILL.md)
 
 ---
 

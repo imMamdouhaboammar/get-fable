@@ -1,37 +1,10 @@
----
-id: fable-spark
-pack: system
-phase: idle
-order: 200
-canonical_url: https://get-fable.vercel.app/skills/fable-spark.html
----
-
 # fable-spark
 
-> **Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.**
+> Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `idle`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `get-fable`
+**Pack:** system · **Phase:** idle
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "predict-next-move" --apply
-```
-
-## Registered Intents
-- `predict-next-move`
-- `situational-awareness`
-- `minimal-action`
-
-## Required Gates
-- `minimal-action-tested`
-
-## Next Allowed Skills
-- `get-fable`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-spark/SKILL.md)
 
 ---
 

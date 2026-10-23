@@ -1,42 +1,10 @@
----
-id: fable-learning
-pack: evolution
-phase: verifying
-order: 95
-canonical_url: https://get-fable.vercel.app/skills/fable-learning.html
----
-
 # fable-learning
 
-> **Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.**
+> Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks.
 
-- **Pack:** Evolution Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-eval`
+**Pack:** evolution · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "extract-learnings" --apply
-```
-
-## Registered Intents
-- `extract-learnings`
-- `convo-learn`
-- `synthesize-knowledge`
-- `playbook-generation`
-
-## Required Gates
-- `evidence-grounded`
-- `atomic-claims`
-
-## Next Allowed Skills
-- `fable-eval`
-- `fable-plan`
-- `fable-handoff`
-- `get-fable`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-learning/SKILL.md)
 
 ---
 
@@ -56,13 +24,13 @@ This session contains engineering knowledge that should not disappear when the c
 
 Your task is to extract the reusable lessons from the work completed and persist them as durable project knowledge.
 
-> **Do not produce a simple session summary.**  
-> **Do not merely list what changed.**  
+> **Do not produce a simple session summary.**
+> **Do not merely list what changed.**
 > **Convert failures, discoveries, corrections, architectural decisions, debugging insights, testing strategies, and implementation mistakes into reusable engineering lessons that future contributors and coding agents can act on.**
 
 The core objective is:
 
-> **Pay for an engineering mistake once.**  
+> **Pay for an engineering mistake once.**
 > **After that, the project should remember it.**
 
 ---
