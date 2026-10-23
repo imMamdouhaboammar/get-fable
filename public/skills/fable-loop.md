@@ -1,40 +1,10 @@
----
-id: fable-loop
-pack: system
-phase: executing
-order: 140
-canonical_url: https://get-fable.vercel.app/skills/fable-loop.html
----
-
 # fable-loop
 
-> **Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.**
+> Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `executing`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-recover`
+**Pack:** system · **Phase:** executing
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "recurring-loop" --apply
-```
-
-## Registered Intents
-- `recurring-loop`
-- `poll-status`
-- `babysit-ci`
-
-## Required Gates
-- `budget-bounded`
-- `exit-condition-explicit`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-handoff`
-- `fable-tend`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-loop/SKILL.md)
 
 ---
 

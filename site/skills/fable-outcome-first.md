@@ -1,37 +1,10 @@
----
-id: fable-outcome-first
-pack: delivery
-phase: verifying
-order: 270
-canonical_url: https://get-fable.vercel.app/skills/fable-outcome-first.html
----
-
 # fable-outcome-first
 
-> **Response styling policy enforcing direct first-sentence answers and zero sycophancy.**
+> Response styling policy enforcing direct first-sentence answers and zero sycophancy.
 
-- **Pack:** Delivery Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-handoff`
+**Pack:** delivery · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "report-outcome" --apply
-```
-
-## Registered Intents
-- `report-outcome`
-- `deliver-answer`
-- `strip-sycophancy`
-
-## Required Gates
-- `first-sentence-outcome`
-
-## Next Allowed Skills
-- `fable-handoff`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-outcome-first/SKILL.md)
 
 ---
 

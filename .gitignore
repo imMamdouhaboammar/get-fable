@@ -2,9 +2,26 @@ node_modules/
 coverage/
 *.log
 .DS_Store
+.fable/
 .env
 .env.*
 !.env.example
+
+# Public distribution boundaries (ignored files still need a CI check).
+src/
+bin/
+crates/
+commercial/
+evals/holdout/
+docs/internal/
+docs/superpowers/
+docs/specs/
+docs/adr/
+docs/learning/
+docs/solutions/
+docs/fable-eco-production-spec/
+docs/get-fable-jev-integration-spec-v1/
+docs/security/
 
 # Ignore VS Code AI instructions
 .github/instructions/codacy.instructions.md

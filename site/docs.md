@@ -1,201 +1,39 @@
-# get-fable Authoritative User Guide & Architecture Documentation
+# Get-fable documentation
 
-Version: **1.14.0** · Schema: **v3** · Canonical Skills: **44** · Supported Platforms: **32**
+Install the community Skills, set up the published CLI, and verify your coding-agent environment.
 
-> **get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.**
+Current public source: 41 community Skills across 8 packs. CLI package manifest: 1.15.2.
 
----
-
-## 1. Introduction: The Working Conditions Thesis
-
-Frontier AI coding agents feel dramatically different not just because of raw model weights, but because of the **working conditions** around the model:
-1. **Spec before work**: Explicit constraints and tests defined before code generation.
-2. **State survives the conversation**: Persistent tasks, mutation tracking, and evidence stored on disk in `.fable/state.json` and `.fable/LEDGER.md`.
-3. **Failure changes strategy**: The Fable Circuit Breaker detects `failureStreak >= 2` and unconditionally routes to `fable-recover`.
-4. **Observable evidence before close**: Work cannot be marked complete without fresh, passing machine-checkable evidence recorded for the current mutation generation.
-
----
-
-## 2. Prerequisites & Quickstart
-
-### Runtime Requirements
-- **Bun ≥ 1.3.0** (mandatory package manager and runtime)
-- **Python 3.9+** (powers the 5 zero-overhead lifecycle hooks)
-- **Git** (for version control and repository isolation)
-
-### Installation
-Clone the repository and run the multi-platform installer:
+## Get the public Skills
 
 ```bash
-git clone https://github.com/imMamdouhaboammar/get-fable.git
-cd get-fable
-
-# Check health and environment
-bun ./bin/get-fable.js doctor
-
-# Enumerate bundled assets
-bun ./bin/get-fable.js assets
-
-# Install to all detected host environments
-bun ./bin/get-fable.js install all
+npx skills add imMamdouhaboammar/get-fable
 ```
 
----
-
-## 3. The 7-Phase State Machine Contract
-
-get-fable operates under a strictly enforced lifecycle state machine:
-
-```text
-idle -> discovering -> planned -> executing -> verifying -> complete
-                                           -> recovering
-                                           -> blocked
-```
-
-### Phase Definitions
-| Phase | Active Specialist | Expected Action |
-|---|---|---|
-| `idle` | `get-fable` | Task routing and situational assessment |
-| `discovering` | `fable-discover`, `fable-research` | Trace real execution paths and resolve unknowns |
-| `planned` | `fable-plan`, `fable-architecture` | Author bounded, falsifiable work cards |
-| `executing` | `fable-execute`, `fable-tdd` | Implement accepted card with zero scope drift |
-| `verifying` | `fable-verify`, `fable-review` | Execute fresh machine-checked tests & typechecks |
-| `recovering` | `fable-recover` | Diagnose harness & execution-path failures at streak >= 2 |
-| `complete` | Terminal | All criteria met with fresh evidence stamp |
-
----
-
-## 4. The Evidence Protocol
-
-A run is **never complete** because the model "thinks" it is done. It requires an observable evidence stamp recorded after the final file edit.
-
-### Recording Evidence
-```bash
-# Record passing test evidence
-bun ./bin/get-fable.js evidence pass test "bun test" "1049 tests pass across 154 files"
-
-# Record passing build evidence
-bun ./bin/get-fable.js evidence pass build "bun run build" "host and client bundles built cleanly"
-```
-
-### Invariants:
-1. `mutationGeneration` advances whenever a file editing tool is invoked (even on failed edits).
-2. All older verification becomes stale when `mutationGeneration > verifiedGeneration`.
-3. The Stop hook blocks termination if unverified mutations exist.
-
----
-
-## 5. 32-Platform Ecosystem Integration Matrix
-
-get-fable integrates seamlessly across all major AI coding platforms:
-
-### Tier 1: Full Lifecycle (Hooks + Rules + Skills)
-- **Claude Code**: 5 Python lifecycle hooks, `CLAUDE.md`, and 42 skills.
-- **Antigravity & Gemini CLI**: Native hook triggers, `plugin.json`, and rules.
-- **xAI Grok Build**: Full plugin manifest, hooks, and Grok bot adapter.
-
-### Tier 2: Skill + Plugin + Rule
-- **OpenAI Codex & ChatGPT**: OpenAPI Custom Actions and plugin manifest.
-
-### Tier 3: Skill + Rule
-- **Devin, Cline, Roo Code, OpenHands, Kilo Code, Hermes Agent**.
-
-### Tier 4: Advisory Rule
-- **Cursor, Windsurf, GitHub Copilot, Replit, Amazon Q, Trae, Warp, Aider**.
-
----
-
-## 6. Multi-Agent Delegation & TOON Protocol
-
-When delegating tasks across parallel subagents, get-fable enforces three prerequisites:
-1. **Write Independence**: Disjoint files or directories.
-2. **Semantic Independence**: Independent data contracts.
-3. **Verification Independence**: Independent validation checks.
-
-Multi-agent payloads use **TOON (Token-Optimized Object Notation)** via `@toon-format/toon`, reducing token overhead by 30–50% compared to raw JSON blobs.
-
----
-
-## 7. Architecture Enforcement (ADR 0007)
-
-The `fable-architecture` engine evaluates software specifications across three lockout vectors:
-- **Scale & Load (>= 7)**: Prohibits monolith architectures.
-- **Domain Decoupling (>= 6)**: Enforces bounded contexts.
-- **Resource Intensity (>= 8)**: Dictates specialized language matrix.
-
-**Transport Standard**:
-- **North-South (Edge)**: HTTP / REST / GraphQL.
-- **East-West (Internal Mesh)**: gRPC Protobuf or Message Broker. Prohibits internal HTTP/JSON meshes.
-
----
-
-## 8. Automated Penetration Testing & Self-Healing
-
-- `fable-redteam`: Executes black-box probes for injection, auth bypass, CORS reflection, sensitive file exposure, and BOLA. Emits CVSS v3.1 scores and SARIF reports.
-- `fable-heal`: Ingests SARIF findings, synthesizes surgical code fixes, verifies with regression tests, and seals an attestation proof.
-
----
-
-## 9. Durable Engineering Learning (`Failure-lessons/`)
-
-get-fable compounds learnings permanently so engineering teams never pay for the same mistake twice:
-```bash
-bun ./bin/get-fable.js learn --failure-lessons
-```
-Extracts session mistakes and root causes into `Failure-lessons/`, `.fable/learnings.json`, and `agent-kernel`.
-
----
-
-## 10. Autonomous Perpetual Repository Steward
-
-Autonomous repository triage, continuous maintenance, CI healing, PR verification, and capability packaging engine for `get-fable`.
+## Install the CLI
 
 ```bash
-# Probe live repository and GitHub platform status without mutating workspace
-bun ./bin/get-fable.js steward --dry-run
-
-# Execute a single triage and action cycle
-bun ./bin/get-fable.js steward
-
-# Run perpetual continuous stewardship loop with 60s cooldown between cycles
-bun ./bin/get-fable.js steward --loop --interval 60 --max-cycles 100
-
-# Output machine-readable JSON v1 envelope
-bun ./bin/get-fable.js steward --json-v1
+bun add -g get-fable
 ```
 
-### Triage Priority Matrix
-
-| Tier | Priority Target | Trigger Condition | Primary Skill | Action |
-|---|---|---|---|---|
-| **Tier 1** | Mainline CI Runs | Mainline workflow run conclusion is `failure` | `fable-tend` | Extract logs, reproduce failure locally, formulate minimal fix, verify build |
-| **Tier 2** | Pull Requests | Non-draft PRs targeting default branch exist | `fable-review` + `fable-judge` | Audit diff against anti-slop rules, run adversary tests, submit structured review |
-| **Tier 3** | Open Issues | Unassigned open GitHub issues exist | `fable-plan` + `fable-tdd` | Extract acceptance criteria, write failing reproduction test, apply native fix, open PR |
-| **Tier 4** | Code Hygiene | Untracked or unstaged modifications present | `fable-anti-slop-engineering` | Scan for swallowed errors, weak assertions, leftover debug code, enforce clean git tree |
-| **Tier 5** | Feature Innovation | Mainline green, zero open PRs/issues, clean tree | `fable-spark` + `fable-cowork` | Select next capability from roadmap backlog, execute with full unit/integration coverage |
-
----
-
-## 11. CLI Command Reference
+## Initialize your project
 
 ```bash
-# Lifecycle state management
-bun ./bin/get-fable.js status [--json-v1]
-bun ./bin/get-fable.js doctor [--json-v1]
-bun ./bin/get-fable.js route "<task>" [--apply]
-bun ./bin/get-fable.js state <phase> [--substantial]
-bun ./bin/get-fable.js card "<text>" [--clear]
-bun ./bin/get-fable.js evidence <pass|fail> <kind> "<source>" "<detail>"
-bun ./bin/get-fable.js lint
-
-# Autonomous Repository Steward
-bun ./bin/get-fable.js steward [--dry-run] [--loop] [--interval 60]
-
-# Architecture & Security
-bun ./bin/get-fable.js arch-eval "<spec>"
-bun ./bin/get-fable.js redteam scan --target <url>
-bun ./bin/get-fable.js heal
-
-# Multi-Agent gRPC Worker
-bun ./bin/get-fable.js worker-serve
+get-fable init
+get-fable install all
+get-fable skills install all
 ```
+
+## Check the setup
+
+```bash
+get-fable --version
+get-fable doctor --json-v1
+get-fable lint
+```
+
+For details, read the [installation guide](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/INSTALLATION.md),
+[agent onboarding playbook](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/install-and-init-get-fable.md),
+and [community catalog](https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/CANONICAL_SKILLS.md).
+
+The Skills are open source. Get-Fable Pro MCP is in development and is not required for community use.

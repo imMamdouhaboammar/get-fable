@@ -15,18 +15,18 @@ produces:
 gates:
   - evidence_grounded
   - atomic_claims
-fallback: fable-eval
+fallback: fable-plan
 mutatesWorkspace: true
 parallelSafe: true
 neural_links:
   precursors:
     - fable-handoff
-    - fable-eval
+    - fable-verify
     - fable-verify
   continuations:
-    - fable-eval
+    - fable-verify
     - fable-plan
-    - fable-skill-creator
+    - fable-plan
     - get-fable
   lateral_peers:
     - fable-memory
@@ -68,7 +68,7 @@ The core objective is:
 - Creating or updating the repository's `Failure-lessons/` knowledge base.
 - Capturing user corrections, confirmations, or escalations as post-training signals.
 - Synthesizing 3+ related problem-solution pairs into an `agent-kernel` Playbook.
-- Compiling conversation takeaways into a new portable Skill package via `fable-skill-creator`.
+- Compiling conversation takeaways into a new portable Skill package through an approved authoring workflow.
 - Running headless at session completion (`Stop` / `SessionEnd` hook events) to record learning chunks.
 
 ---
@@ -78,7 +78,7 @@ The core objective is:
 - Reviewing code diffs or pull requests without transcript analysis (`fable-review`).
 - Verifying whether an application feature or bugfix works against tests (`fable-verify`).
 - Storing user preferences or static environment facts into memory (`fable-memory`).
-- Running quantitative benchmarks or comparing prompt models (`fable-eval`).
+- Running quantitative benchmarks or comparing prompt models (use an independent evaluation protocol).
 
 ---
 
@@ -90,7 +90,7 @@ The core objective is:
 | Explicit session ID or transcript file | `ANALYZE` | `Failure-lessons/` + `agent-kernel` + `gbrain` | Full 4-category extraction & synthesis | Structured markdown report |
 | Short session or `--depth lightweight` | `QUICK` | `agent-kernel` + `gbrain` | Top 5 atomic $L3+$ rules | Terminal output |
 | Resolved non-trivial bug or harness issue | `COMPOUND` | `docs/solutions/` + `CONCEPTS.md` | Single atomic problem-solution doc | `docs/solutions/YYYY-MM-DD-<slug>.md` |
-| "make a skill from this" or `--compile` | `COMPILE` | `skills/<name>/` | Full extraction + author `SKILL.md` via `fable-skill-creator` | Skill package |
+| "make a skill from this" or `--compile` | `COMPILE` | `skills/<name>/` | Full extraction + approved authoring review for `SKILL.md` | Skill package |
 | "what did we learn?" or `--recall` | `RECALL` | Terminal output / summary | Query `gbrain` and `agent-kernel` to synthesize | Interactive digest |
 | Post-session hook (`Stop` / `SessionEnd`) | `HEADLESS` | `agent-kernel` + `gbrain` | Automated background extraction with fail-soft safety | `Documentation complete` / `skipped` |
 

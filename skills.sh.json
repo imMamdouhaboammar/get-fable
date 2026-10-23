@@ -111,11 +111,6 @@
       "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff."
     },
     {
-      "id": "fable-test",
-      "path": "skills/fable-test/SKILL.md",
-      "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch."
-    },
-    {
       "id": "fable-run",
       "path": "skills/fable-run/SKILL.md",
       "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown."

@@ -2,7 +2,7 @@
 
 ## Purpose
 Guide Phase 3 of Fable Learning: compiling extracted learnings into a portable SKILL.md
-using `fable-skill-creator` and `omni-skill CREATE`.
+using a reviewed public authoring workflow.
 
 ---
 

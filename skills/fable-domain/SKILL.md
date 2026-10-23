@@ -16,7 +16,7 @@ produces:
 gates:
   - no_redline_violations
   - trap_verified
-fallback: fable-skill-creator
+fallback: fable-plan
 mutatesWorkspace: true
 parallelSafe: false
 neural_links:
@@ -26,7 +26,7 @@ neural_links:
     - fable-judge
     - fable-verify
   lateral_peers:
-    - fable-skill-creator
+    - fable-plan
   recovery: fable-recover
 ---
 
@@ -48,7 +48,7 @@ Generate validated, source-backed domain adapters and trap fixtures for new prof
 
 - When the requested domain requires professional human licensure or presents high-harm risks (medical diagnosis, formal legal advice, investment advice) — refuse and route to a qualified human.
 - When the domain does not differ fundamentally from standard software engineering (use `fable-execute` or `fable-plan`).
-- Generic skill authoring without domain-specific adapters (use `fable-skill-creator`).
+- Generic Skill authoring without domain-specific adapters (use an approved public authoring workflow).
 
 ## Inputs
 

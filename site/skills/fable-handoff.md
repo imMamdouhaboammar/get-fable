@@ -1,37 +1,10 @@
----
-id: fable-handoff
-pack: delivery
-phase: verifying
-order: 85
-canonical_url: https://get-fable.vercel.app/skills/fable-handoff.html
----
-
 # fable-handoff
 
-> **Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.**
+> Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption.
 
-- **Pack:** Delivery Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `get-fable`
+**Pack:** delivery · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "handoff" --apply
-```
-
-## Registered Intents
-- `handoff`
-- `resume-later`
-- `continue-session`
-
-## Required Gates
-- `next-action-explicit`
-
-## Next Allowed Skills
-- `get-fable`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-handoff/SKILL.md)
 
 ---
 

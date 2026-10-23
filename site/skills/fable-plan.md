@@ -1,53 +1,10 @@
----
-id: fable-plan
-pack: core
-phase: planned
-order: 20
-canonical_url: https://get-fable.vercel.app/skills/fable-plan.html
----
-
 # fable-plan
 
-> **Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.**
+> Convert discovery evidence into bounded, testable work cards with explicit acceptance criteria and architectural invariants.
 
-- **Pack:** Core Pack
-- **Lifecycle Phase:** `planned`
-- **Mutates Workspace:** No
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-discover`
+**Pack:** core · **Phase:** planned
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "architecture" --apply
-```
-
-## Registered Intents
-- `architecture`
-- `migration`
-- `decomposition`
-
-## Required Gates
-- `bounded-scope`
-- `named-acceptance`
-
-## Next Allowed Skills
-- `fable-research`
-- `fable-tdd`
-- `fable-delegate`
-- `fable-execute`
-- `fable-discover`
-- `fable-architecture`
-- `fable-council`
-- `fable-wise`
-- `fable-eco`
-- `fable-config`
-- `fable-artifact`
-- `fable-dataviz`
-- `fable-method`
-- `fable-scope-discipline`
-- `fable-cowork`
-- `fable-skill-creator`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-plan/SKILL.md)
 
 ---
 

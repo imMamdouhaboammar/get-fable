@@ -1,46 +1,10 @@
----
-id: fable-anti-churn
-pack: proof
-phase: verifying
-order: 287
-canonical_url: https://get-fable.vercel.app/skills/fable-anti-churn.html
----
-
 # fable-anti-churn
 
-> **Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.**
+> Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.
 
-- **Pack:** Proof Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-recover`
+**Pack:** proof · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "anti-churn" --apply
-```
-
-## Registered Intents
-- `anti-churn`
-- `prevent-duplicate-work`
-- `reuse-evidence`
-- `gate-deterministic-failure`
-- `check-promotion`
-
-## Required Gates
-- `zero-duplicate-churn`
-- `typed-invalidation-satisfied`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-review`
-- `fable-heal`
-- `fable-prove-it`
-- `fable-judge`
-- `fable-handoff`
-- `fable-recover`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-anti-churn/SKILL.md)
 
 ---
 
@@ -48,7 +12,7 @@ bun ./bin/get-fable.js route "anti-churn" --apply
 
 ## Purpose
 
-`fable-anti-churn` is the authoritative duplicate-work and evidence-reuse prevention engine in get-fable. Powered by both a native Rust engine (`crates/fable-anti-churn`) and local CLI scripts, it cryptographically fingerprints work requests (RFC 8785 JCS + SHA-256), tracks reservation receipts, reuses identical prior passing evidence, blocks duplicate actions, halts repeated deterministic failures, and validates promotion proof with sub-millisecond execution.
+`fable-anti-churn` is the authoritative duplicate-work and evidence-reuse prevention engine in get-fable. Powered by both a native Rust engine (`crates/fable-anti-churn`) and local CLI scripts, it cryptographically fingerprints work requests (RFC 8785 JCS + SHA-256), tracks reservation receipts, reuses identical prior passing evidence, blocks duplicate actions, halts repeated deterministic failures, and validates promotion proof with sub-millisecond execution. Keep material progress separate from churn. Material output can prove progress; it is not a churn dimension.
 
 ## When to Use
 

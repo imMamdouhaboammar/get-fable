@@ -1,39 +1,10 @@
----
-id: fable-memory
-pack: system
-phase: discovering
-order: 160
-canonical_url: https://get-fable.vercel.app/skills/fable-memory.html
----
-
 # fable-memory
 
-> **Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.**
+> Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `discovering`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-discover`
+**Pack:** system · **Phase:** discovering
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "record-memory" --apply
-```
-
-## Registered Intents
-- `record-memory`
-- `recall-facts`
-- `index-memory`
-
-## Required Gates
-- `single-fact-file`
-- `index-synced`
-
-## Next Allowed Skills
-- `fable-plan`
-- `fable-discover`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-memory/SKILL.md)
 
 ---
 

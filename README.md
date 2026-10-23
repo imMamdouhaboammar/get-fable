@@ -1,835 +1,190 @@
 <div align="center">
 
-<img src="assets/mascot.svg" alt="get-fable rabbit mascot" width="124" height="124"/>
+<img src="assets/mascot.svg" alt="get-fable rabbit mascot" width="136" height="136" />
 
 # get-fable
 
 ### What if the coding agent you already use could work more like Claude Fable?
 
-**Same model. Better working habits. A much stronger coding loop.**
+**Same model. Better working habits. A more accountable coding loop.**
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/get-fable"><img src="https://img.shields.io/npm/v/get-fable?style=for-the-badge&logo=npm&logoColor=white&color=CB3837" alt="npm version" /></a>
-  <a href="https://bun.sh"><img src="https://img.shields.io/badge/Bun-%E2%89%A51.3.0-000000?style=for-the-badge&logo=bun&logoColor=white" alt="Bun runtime" /></a>
-  <a href="#subsystems--architectural-components"><img src="https://img.shields.io/badge/Rust-Native%20Engine-black?style=for-the-badge&logo=rust&logoColor=white" alt="Rust Native Engine" /></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-0052CC?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License: AGPL-3.0" /></a>
-</p>
-<p align="center">
-  <a href="#42-skills-across-8-packs-one-way-of-working"><img src="https://img.shields.io/badge/Skills-42%20Canonical-10B981?style=for-the-badge&logo=speedtest&logoColor=white" alt="42 Canonical Skills" /></a>
-  <a href="#works-with-the-coding-agent-you-already-use"><img src="https://img.shields.io/badge/Platforms-32%20Hosts-8B5CF6?style=for-the-badge&logo=target&logoColor=white" alt="32 Platforms Supported" /></a>
-  <a href="#42-skills-across-8-packs-one-way-of-working"><img src="https://img.shields.io/badge/Packs-8%20Packs-2563EB?style=for-the-badge&logo=box&logoColor=white" alt="8 Skill Packs" /></a>
-  <a href="#step-7--security--quality-gates"><img src="https://img.shields.io/badge/Quality%20Gate-no--mistakes-0284C7?style=for-the-badge&logo=shieldcheck&logoColor=white" alt="Quality Gate: no-mistakes" /></a>
-</p>
-<p align="center">
-  <a href="https://github.com/imMamdouhaboammar/get-fable/actions/workflows/ci-no-private-content.yml"><img src="https://img.shields.io/github/actions/workflow/status/imMamdouhaboammar/get-fable/ci-no-private-content.yml?branch=master&style=for-the-badge&logo=githubactions&logoColor=white&label=CI" alt="CI Status" /></a>
-  <a href="#step-6--architecture-evaluation-new-projects"><img src="https://img.shields.io/badge/Architecture-ADR%200007-6366F1?style=for-the-badge&logo=diagram-project&logoColor=white" alt="ADR 0007 Transport Architecture" /></a>
-  <a href="#behavioral-proof-the-uncomfortable-part-is-intentional"><img src="https://img.shields.io/badge/Evals-1%2C105%20Blind%20Cases-EC4899?style=for-the-badge&logo=target&logoColor=white" alt="1,105 Behavioral Evaluation Cases" /></a>
-  <a href="#step-4--verify-health"><img src="https://img.shields.io/badge/Doctor-53%20Checks-10B981?style=for-the-badge&logo=checkmarx&logoColor=white" alt="53 Doctor Health Checks" /></a>
-</p>
-
-**42 connected Skills · 32 AI Hosts · routing · research · planning · architecture · TDD · verification · review · redteam · security healing · anti-slop · anti-churn · recovery · gRPC worker · TOON protocol · Rust Jev engine · Frontier test engine · DSH plugin · release**
-
-```bash
-bun add -g get-fable
-```
-
-[Quick Install](#-quick-install) · [Start here](#start-in-under-a-minute) · [How it works](#so-what-does-get-fable-actually-do) · [The Skills](#42-skills-across-8-packs-one-way-of-working) · [Docs](#documentation)
+<a href="https://www.npmjs.com/package/get-fable"><img alt="npm version" src="https://img.shields.io/npm/v/get-fable?style=flat-square&logo=npm" /></a>
+<a href="./LICENSE"><img alt="AGPL-3.0-or-later" src="https://img.shields.io/badge/license-AGPL--3.0--or--later-2b9d7c?style=flat-square" /></a>
 
 </div>
-
----
-
-## ⚡ Quick Install
-
-Get up and running with `get-fable` in under 60 seconds:
-
-### Option 1: Universal Skills Installation (Instant AI Agent Superpowers)
-If you already use an AI coding tool (Claude Code, Cursor, Codex, Windsurf, Antigravity, Cline, RooCode, etc.), add all 42 connected canonical skills directly to your environment:
-
-```bash
-# Add canonical skills directly to your AI agent
-npx skills add imMamdouhaboammar/get-fable
-
-# Or using Bun
-bunx skills add imMamdouhaboammar/get-fable
-```
-
----
-
-### Option 2: Full CLI Harness & Multi-Host Platform Engine (Recommended)
-Install the standalone `get-fable` CLI engine to enable mechanical lifecycle hooks, workspace state tracking, doctor audits, and automated host distribution:
-
-```bash
-# 1. Approved Installation via Bun (Fastest)
-bun add -g get-fable
-
-# Or via npm
-npm install -g get-fable
-
-# Or via the direct automated shell installer
-curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/main/install.sh | sh
-
-# 2. Initialize workspace state machine (.fable/ schema v3)
-get-fable init
-
-# 3. Broadcast lifecycle hooks and configs to all 32 supported agent platforms
-get-fable install all
-
-# 4. Deploy and link all 42 canonical skills across all agent environments
-get-fable skills install all
-```
-
----
-
-### 🤖 Ask Your Agent to Configure & Install get-fable
-
-Prefer to delegate setup to your coding assistant? Copy and paste this prompt directly into your agent (Claude Code, ChatGPT/Codex, Cursor, Windsurf, Gemini/Antigravity, Cline, etc.):
-
-> [!TIP]
-> **Copy & Paste this prompt to your AI Assistant:**
-> 
-> ```text
-> Set up, configure, and verify get-fable for this workspace and my AI coding environment.
-> Follow the canonical onboarding guide at:
-> https://github.com/imMamdouhaboammar/get-fable/blob/main/docs/install-and-init-get-fable.md
-> 
-> Please execute the following sequence:
-> 1. Verify runtime requirements (Bun >= 1.3.0, Git, Python 3.9+).
-> 2. Install the latest get-fable CLI globally:
->    bun add -g get-fable
->    (or: npm install -g get-fable, or run: curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/main/install.sh | sh)
-> 3. Initialize this workspace's lifecycle state:
->    get-fable init
-> 4. Broadcast mechanical lifecycle hooks and platform configurations across all detected agent hosts:
->    get-fable install all
-> 5. Deploy all 42 canonical skills across all hosts:
->    get-fable skills install all
->    (or link via universal skills CLI: npx skills add imMamdouhaboammar/get-fable)
-> 6. Run doctor diagnostics and verify host integration:
->    get-fable doctor
->    get-fable status
-> 7. Verify that the latest version is active with 0 errors, and summarize how to use get-fable in daily engineering work.
-> 
-> Context & Activation Contract (install-and-init-get-fable):
-> "End-to-end onboarding, host installation, workspace initialization, supporting toolchain setup, interactive fable-eco capability provisioning, and bilingual (Arabic/English) workflow coaching for get-fable across 32 AI coding platforms and 42 canonical skills. Use when setting up get-fable on a user machine, initializing .fable/ in a repository, installing the 42 canonical skills and 5 Python lifecycle hooks across agent hosts, configuring git quality gates or shell aliases, asking the user whether to provision fable-eco capability profiles, or answering user questions on how to use get-fable in daily engineering work. Do NOT use for executing individual bounded coding cards once setup is complete (use fable-execute or fable-tdd) or performing standalone security penetration scans (use fable-redteam)."
-> ```
-
----
-
-> [!NOTE]
-> 💡 **Open-Source Skills Edition**: The current version of `get-fable` is 100% Free & Open-Source (AGPLv3) as connected canonical skills and lifecycle harnesses.
-> 
-> 🚀 **Coming Soon: Premium Pro Get-Fable MCP**:
-> We are currently engineering the **Premium Pro Get-Fable MCP** — the most advanced autonomous engineering harness, dual-plane microkernel, East-West gRPC orchestration, and real-time cognitive loop server for enterprise and frontier agents. Stay tuned!
-
-</div>
-
----
-
-## I kept coming back to one question
-
-What if you could take the coding agent you already have — Codex, Claude Code, Gemini, OpenCode, Cursor, a local model, a cheaper model, whatever you happen to use — and make it **work more like a serious coding partner**?
-
-Not by swapping the model.
-
-Not by writing one giant system prompt and hoping it still matters forty minutes later.
-
-But by changing what happens *around* the model.
-
-That question is where `get-fable` started.
-
-Because when people talk about a great coding agent, they usually talk about the model first. And obviously the model matters. A lot.
-
-But the model is not the whole experience.
-
-A strong coding partner also knows when to inspect before touching anything. When to stop guessing and check the current docs. When a bug needs a failing test before a fix. When a task is large enough to plan. When two workers can genuinely work in parallel — and when they absolutely should not. When a green test is stale because the code changed afterward. When three failed attempts mean *rethink the diagnosis*, not *try a fourth variation of the same patch*.
-
-That behavior is not just raw intelligence.
-
-A lot of it is **the harness**.
-
-`get-fable` is an attempt to bring that harness to almost any coding agent.
-
-> **The goal is deliberately ambitious: take the agent you already use and push its working behavior closer to the discipline you expect from a top-tier coding partner.**
-
-No, it does not magically turn a small local model into Claude Fable.
-
-But it can give that model a better way to approach real software work.
-
-And when the model underneath is already strong, the harness has more to work with.
-
----
-
-## The model is only part of the agent
-
-Two agents can use completely different models and still make the same mistakes.
-
-They can both start editing too early.
-
-They can both lose the original plan halfway through a long task.
-
-They can both rely on stale knowledge about an API.
-
-They can both patch a bug without proving the bug first.
-
-They can both run tests, change five more files, and still treat the old test run as proof.
-
-They can both split work across subagents because the files look different while the workers are quietly changing the same contract.
-
-They can both keep retrying an approach that clearly is not working.
-
-And they can both end with the most dangerous sentence in agentic coding:
-
-**“Done.”**
-
-`get-fable` works on that part of the problem.
-
-It does not replace the model.
-
-It surrounds it with a way of working.
-
-```text
-YOUR CODING AGENT
-       +
-GET-FABLE HARNESS
-       ↓
-DISCOVER
-RESEARCH
-PLAN
-TEST
-DELEGATE
-EXECUTE
-VERIFY
-REVIEW
-SECURITY
-RECOVER
-RELEASE
-       ↓
-A MORE DISCIPLINED CODING LOOP
-```
-
----
-
-## So what does get-fable actually do?
-
-It gives the agent 46 connected specialist Skills across 8 packs and a deterministic lifecycle that decides when each one should take over.
-
-A normal bug request should not immediately mean “edit production code.”
-
-```text
-"Fix the token refresh race condition"
-
-        ↓
-
-Where does the behavior actually live?
-        ↓
-Can we reproduce it reliably?
-        ↓
-What test level crosses the real failure boundary?
-        ↓
-Did RED fail for the right reason?
-        ↓
-Make the smallest production change
-        ↓
-Fresh GREEN
-        ↓
-Probe adjacent race/error paths
-        ↓
-Verify the current mutation
-        ↓
-Review the actual diff
-```
-
-A release request follows a different route.
-
-An unfamiliar SDK should trigger current primary-source research before implementation.
-
-A repeated failure should stop mutation and enter diagnosis.
-
-A security-sensitive change should be traced through trust boundaries, not waved through because a scanner came back clean.
-
-The workflow follows the work.
-
----
-
-## This is not a prompt pack
-
-This distinction matters.
-
-A prompt can say:
-
-> verify your work
-
-`get-fable` can track that the repository changed **after** verification and treat the old evidence as stale.
-
-A prompt can say:
-
-> use TDD
-
-`fable-tdd` now distinguishes a valid RED from a syntax error, a broken fixture, a stale artifact, a false-green mock, or a concurrency test that only passes because it slept long enough.
-
-A prompt can say:
-
-> use subagents
-
-`fable-delegate` asks whether the work is independent at the **semantic** level, not just whether two workers touch different files.
-
-A prompt can say:
-
-> debug carefully
-
-`fable-recover` freezes blind mutation, builds a ranked hypothesis queue, chooses discriminating probes, falsifies bad theories, and only then issues one bounded repair.
-
-A prompt can say:
-
-> make sure the release works
-
-`fable-release` separates source correctness from the artifact users actually install, then distinguishes `READY_NOT_PUBLISHED`, `PUBLISHED_UNVERIFIED`, and genuinely `RELEASED`.
-
-That is the direction of the project: not more instructions, but **more operational judgment around the instructions**.
-
----
-
-## Deep Skill Playbooks V2
-
-Every canonical Skill carries complete operational knowledge and architecture discipline:
-
-- **Activation boundaries**: Exact criteria for when to activate, refuse, or defer;
-- **Situational classification**: Taxonomy and decision branches for ambiguous cases before acting;
-- **Staged execution**: Verifiable, step-by-step evidence protocol with red/green gates;
-- **Architectural invariants**: Non-negotiable constraints that must remain true;
-- **Failure handling**: Actionable taxonomy that changes the next action upon error;
-- **Anti-pattern guards**: Explicit enumeration of tempting anti-patterns to avoid;
-- **Structured artifacts**: Machine-verifiable receipts, templates, and state handoffs;
-- **Progressive references**: Substantial deep-dive guides (>1,000 to >3,000 bytes) for complex scenarios;
-- **Behavioral evals**: Comprehensive 10-scenario evaluation benchmarks per skill.
-
-**The hard-earned engineering reasoning lives directly in the Skill — providing reliable, deterministic execution across all model tiers.**
-
----
-
-## 42 Skills across 8 Packs. One way of working.
-
-### Core Pack — Lifecycle Navigation & Execution
-- `get-fable` — choose the next specialist from intent + durable state, with precedence for failure, security, stale proof, and unknowns.
-- `fable-discover` — trace real repository/runtime execution paths instead of guessing from filenames and imports.
-- `fable-plan` — turn evidence into dependency-aware, risk-aware, falsifiable work cards.
-- `fable-execute` — implement one bounded card while protecting scope, source-of-truth, and user work.
-- `fable-verify` — build a claim → failure mode → evidence matrix and try to falsify the implementation.
-- `fable-recover` — stop blind retries and rebuild causal confidence after repeated failure.
-- `fable-method` — step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.
-
-### Intelligence Pack — Primary Source Grounding
-- `fable-research` — resolve current external facts against version-appropriate primary sources.
-
-### Build Pack — Disciplined Implementation
-- `fable-tdd` — prove the behavior gap through the right test boundary before production mutation.
-- `fable-delegate` — parallelize only when write, semantic, and verification independence are real.
-- `fable-native-code` — codebase idiom matching and anti-bloat policy ensuring diffs read like native code.
-- `fable-scope-discipline` — anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.
-
-### Proof Pack — Adversarial Review & Security
-- `fable-review` — inspect the actual diff for concrete failure scenarios instead of style-comment theater.
-- `fable-security` — trace attacker-controlled input across trust boundaries and validate findings skeptically.
-- `fable-redteam` — run enterprise-grade automated penetration testing, CVSS v3.1 scoring, circuit breaker protection, SARIF reports, and cryptographic run attestations.
-- `fable-heal` — automatically synthesize, apply, and verify security remediations for vulnerabilities identified by `fable-redteam`.
-- `fable-test` — orchestrate, author, and verify automated tests enforcing Test-Guard rules and test-value calculus.
-- `fable-prove-it` — evidence precedence and verification rung enforcement preventing unverified claims.
-- `fable-judge` — adversarial verification of finished work detecting weakened tests and false completion claims.
-- `fable-anti-slop-engineering` — high-performance native Rust engine detecting test tampering, weak assertions, swallowed errors, security bypasses, and type suppressions.
-- `fable-anti-churn` — work-identity deduplication, typed invalidation, and deterministic evidence reuse preventing repetitive test runs and agent thrashing.
-
-### Delivery Pack — Production Readiness & Continuity
-- `fable-release` — audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts.
-- `fable-handoff` — create a real resumability contract for another agent/session.
-- `fable-finish-your-turn` — autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.
-- `fable-outcome-first` — response styling policy enforcing direct first-sentence answers and zero sycophancy.
-
-### Evolution Pack — Agent Learning & Durable Knowledge
-- `fable-learning` — extract structured learnings, reusable patterns, failure lessons, and agent-kernel Playbooks from completed sessions.
-
-### System Pack — Architecture, Scale, Reflexes & Cognitive Primitives
-- `fable-architecture` — evaluate scale, domain decoupling, and resource intensity vectors, lock out monolithic scaffolds when thresholds cross limits, enforce dual-transport boundaries (REST vs. gRPC), and prescribe multi-language stack matrices before scaffolding.
-- `fable-eco` — provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.
-- `fable-context-thrift` — conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.
-- `fable-council` — convene multi-agent council across installed CLI agents to deliberate before finalizing plans.
-- `fable-wise` — low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.
-- `fable-spark` — predict the smallest atomic next move — or stay silent when another suggestion would just be noise.
-- `fable-dataviz` — choose truthful visual encodings, preserve metric semantics, and audit for misleading scales/transformations.
-- `fable-artifact` — produce source-grounded documents and diagrams that survive outside the conversation.
-- `fable-simplify` — reduce complexity without quietly changing behavior.
-- `fable-loop` — poll changing conditions with explicit state machines, budgets, backoff, and honest stop reasons.
-- `fable-run` — launch the exact runtime artifact and separate spawn, readiness, feature proof, and cleanup.
-- `fable-memory` — preserve durable facts with scope, provenance, supersession, and secret-safe rules.
-- `fable-config` — change harness settings with precedence, least privilege, host-capability honesty, and behavioral verification.
-- `fable-simulator` — compare against an independent oracle without confusing simulation with production proof.
-- `fable-cowork` — execute long scoped work autonomously without throwing away lifecycle gates or authorization boundaries.
-
-### Creator Pack — Domain Specialization
-- `fable-domain` — research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.
-
-[Explore the canonical Skill catalog →](docs/CANONICAL_SKILLS.md)
-
----
-
-## Fable Spark: sometimes the best next move is tiny
-
-During a long coding session, the agent usually does not need another page of advice.
-
-It needs one useful move.
-
-```text
-reproduce the bug
-check the exact installed SDK version
-write the failing contract test
-compare source and built entrypoints
-review the current diff
-rerun evidence after the last mutation
-stop retrying and diagnose
-```
-
-Or nothing.
-
-Spark is explicitly allowed to stay silent when the current specialist already owns an obvious next step.
-
-```bash
-get-fable spark
-```
-
----
-
-## Works with the coding agent you already use
-
-`get-fable` is portable across 32 AI coding agents, platforms, and IDEs rather than being tied to one model or editor.
-
-### Proprietary & Commercial Markets
-
-| Agent / Tool | Integration Tier | Key Capabilities |
-|:---|:---|:---|
-| <img src="assets/logos/claude.svg" width="20" height="20" alt="" /> [**Claude Code**](https://www.anthropic.com/claude-code) (Anthropic) | **Full Lifecycle** | 5 Python hooks (`settings.json`), 46 canonical skills, rules in `CLAUDE.md`, Marketplace plugin |
-| <img src="assets/logos/gemini.svg" width="20" height="20" alt="" /> **Gemini CLI / Google Antigravity** (Google) | **Full Lifecycle** | `hooks.json` lifecycle triggers, plugin manifest, canonical skills, constitution rules |
-| <img src="assets/logos/grok.svg" width="20" height="20" alt="" /> **Grok Build** (xAI) | **Full Lifecycle** | `hooks.json` lifecycle triggers, Grok plugin manifest, canonical skills, constitution rules |
-| <img src="assets/logos/openai.svg" width="20" height="20" alt="" /> [**OpenAI Codex & ChatGPT**](https://openai.com/codex) (OpenAI) | **Skill + Rule + Plugin** | `.codex-plugin/plugin.json`, ChatGPT OpenAPI Custom Actions, skills in `~/.codex/skills/` |
-| <img src="assets/logos/cursor.svg" width="20" height="20" alt="" /> **Cursor** (Anysphere) | **Advisory Rule + Plugin** | `.cursor/rules/fable-lifecycle.mdc`, `.cursor-plugin/marketplace.json` |
-| <img src="assets/logos/copilot.svg" width="20" height="20" alt="" /> [**GitHub Copilot Agent Mode**](https://github.com/features/copilot) (GitHub / Microsoft) | **Advisory Rule** | Global rules in `~/.copilot/rules/fable.md` & project `.github/copilot-instructions.md` |
-| <img src="assets/logos/devin.svg" width="20" height="20" alt="" /> **Devin** (Cognition) | **Skill + Rule** | Global `~/.devin/instructions.md`, rules, and canonical skills in `~/.devin/skills/` |
-| <img src="assets/logos/windsurf.svg" width="20" height="20" alt="" /> **Windsurf** (Codeium) | **Advisory Rule** | Global rules in `~/.codeium/windsurf/rules.md` & project `.windsurfrules` |
-| <img src="assets/logos/replit.svg" width="20" height="20" alt="" /> **Replit Agent** (Replit) | **Advisory Rule** | Global rules in `~/.replit/rules/fable.md` & project `.replit.md` |
-| <img src="assets/logos/aws.svg" width="20" height="20" alt="" /> [**Amazon Q Dev**](https://kilo.ai/articles/coding-agents-for-vscode) (Amazon Web Services) | **Advisory Rule** | Global rules in `~/.aws/amazon-q/rules/fable.md` & project `.amazonq/rules.md` |
-| <img src="assets/logos/trae.svg" width="20" height="20" alt="" /> **Trae** (ByteDance) | **Advisory Rule** | Global rules in `~/.trae/rules/fable.md` & project `.trae/rules/fable.md` |
-| <img src="assets/logos/warp.svg" width="20" height="20" alt="" /> **Warp AI** (Warp Terminal) | **Advisory Rule** | Global rules in `~/.warp/rules/fable.md` |
-| <img src="assets/logos/moonshot-kimi.svg" width="20" height="20" alt="" /> **Kimi K3** (Moonshot AI) | **Advisory Rule** | Rules in `~/.kimi/rules/fable.md` |
-| <img src="assets/logos/atlarix.svg" width="20" height="20" alt="" /> [**Atlarix**](https://martinterhaak.medium.com/best-ai-coding-agents-summer-2025-c4d20cd0c846) (Atlarix Desktop Copilot) | **Advisory Rule** | Rules in `~/.atlarix/rules/fable.md` |
-| <img src="assets/logos/vellum.svg" width="20" height="20" alt="" /> [**Vellum**](https://www.vellum.ai/blog/best-ai-coding-agents) (Vellum Workflow Platform) | **Advisory Rule** | Rules in `~/.vellum/rules/fable.md` |
-| <img src="assets/logos/codegen.svg" width="20" height="20" alt="" /> [**Codegen**](https://codegen.com/best-ai-coding-agents/) (Codegen Platforms) | **Advisory Rule** | Rules in `~/.codegen/rules/fable.md` |
-| <img src="assets/logos/muse.svg" width="20" height="20" alt="" /> [**Muse Code**](https://medium.com/the-tech-trek-by-tech-chick/10-ai-coding-agents-developers-should-know-in-2026-b369e3dc41ee) (Muse) | **Advisory Rule** | Rules in `~/.muse/rules/fable.md` |
-| <img src="assets/logos/jetbrains.svg" width="20" height="20" alt="" /> **Junie** (JetBrains) | **Advisory Rule** | Global rules in `~/.junie/rules/fable.md` & project `.junie/rules/fable.md` |
-| <img src="assets/logos/qodo.svg" width="20" height="20" alt="" /> **Qodo** (Formerly CodiumAI) | **Advisory Rule** | Global rules in `~/.qodo/rules/fable.md` & project `.qodo/rules/fable.md` |
-| <img src="assets/logos/roocode.svg" width="20" height="20" alt="" /> **Roo Code** | **Skill + Rule** | Global rules `~/.roo/rules/fable.md`, skills in `~/.roo/skills/`, and project `.roomodes` |
-
-### Open-Source & Community Markets
-
-| Agent / Tool | Integration Tier | Key Capabilities |
-|:---|:---|:---|
-| <img src="assets/logos/aider.svg" width="20" height="20" alt="" /> **Aider** (Git-first CLI agent) | **Advisory Rule** | Global rules in `~/.aider/rules/fable.md` & project `.aider.prompt.md` |
-| <img src="assets/logos/cline.svg" width="20" height="20" alt="" /> **Cline** (Autonomous BYOK Agent) | **Skill + Rule** | Global rules in `~/.cline/rules/fable.md`, skills in `~/.cline/skills/`, and `.clinerules` |
-| <img src="assets/logos/openhands.svg" width="20" height="20" alt="" /> **OpenHands** (Formerly OpenDevin) | **Skill + Rule** | Global microagents in `~/.openhands/microagents/`, skills in `~/.openhands/skills/` |
-| <img src="assets/logos/opencode.svg" width="20" height="20" alt="" /> **OpenCode** (SST) | **Skill + Rule** | Rules in `~/.opencode/rules/fable.md`, skills in `~/.opencode/skills/` |
-| <img src="assets/logos/continue.svg" width="20" height="20" alt="" /> **Continue** (IDE extension layer) | **Advisory Rule** | Global rules in `~/.continue/rules/fable.md` & project `.continue/rules/fable.md` |
-| <img src="assets/logos/kilo.svg" width="20" height="20" alt="" /> **Kilo Code** (Kilo Platform) | **Skill + Rule** | Global rules in `~/.kilo/rules/fable.md`, skills in `~/.kilo/skills/` |
-| <img src="assets/logos/plandex.svg" width="20" height="20" alt="" /> [**Plandex**](https://www.youtube.com/watch?v=Q0YgzCHkNXo) (Terminal multi-file engine) | **Advisory Rule** | Global rules in `~/.plandex/rules/fable.md` & project `.plandex/context.md` |
-| <img src="assets/logos/autogpt.svg" width="20" height="20" alt="" /> [**AutoGPT**](https://www.deeplearning.ai/the-batch/next-generation-coding-tools-empower-developers-with-agent-style-interactions) (Significant-Gravitas) | **Advisory Rule** | Global rules in `~/.autogpt/rules/fable.md` |
-| <img src="assets/logos/kiro.svg" width="20" height="20" alt="" /> **Kiro** | **Rule + Hooks** | Rules in `~/.kiro/rules/fable.md` and lifecycle triggers |
-| <img src="assets/logos/deepseek.svg" width="20" height="20" alt="" /> **DeepSeek Harness (DSH)** | **Plugin + UI** | Cordis plugin bundle (`cordis.patch.yml`), REST backend, and consumed React Web UI |
-| <img src="assets/logos/pi.svg" width="20" height="20" alt="" /> **Pi Code** | **Advisory Rule** | Rules in `~/.pi/rules/fable.md` |
-| <img src="assets/logos/hermes.svg" width="20" height="20" alt="" /> **Hermes Agent** | **Skill + Rule** | Rules in `~/.hermes/rules/fable.md` and Hermes tool skills |
-
-Integration depth depends on what each host actually exposes:
-
-- **Cordis Plugin & Consumed Web UI** — DeepSeek Harness (DSH)
-- **Full lifecycle integration** — Claude Code, Antigravity, Grok Build
-- **Skill + rule integration** — Codex, Devin, OpenCode, Roo Code, Cline, OpenHands, Kilo Code, Hermes Agent
-- **Advisory rule integration** — Cursor, Copilot, Windsurf, Replit, Amazon Q, Trae, Warp, Kimi, Atlarix, Vellum, Codegen, Muse, Junie, Qodo, Aider, Continue, Plandex, AutoGPT, Kiro, Pi Code
-
-That distinction is intentional. A host that can load rules but cannot register lifecycle hooks should not be described as if it has enforcement it does not actually provide.
-
-[See the host capability matrix →](docs/HOSTS.md)
-
-<details>
-<summary><strong>Installation commands by host</strong></summary>
-
-```bash
-get-fable install all
-get-fable install claude
-get-fable install antigravity
-get-fable install grok
-get-fable install codex
-get-fable install cursor
-get-fable install copilot
-get-fable install devin
-get-fable install windsurf
-get-fable install replit
-get-fable install amazonq
-get-fable install trae
-get-fable install warp
-get-fable install kimi
-get-fable install atlarix
-get-fable install vellum
-get-fable install codegen
-get-fable install muse
-get-fable install junie
-get-fable install qodo
-get-fable install roocode
-get-fable install aider
-get-fable install cline
-get-fable install openhands
-get-fable install opencode
-get-fable install continue
-get-fable install kilo
-get-fable install plandex
-get-fable install autogpt
-get-fable install hermes
-get-fable install deepseek
-get-fable install dsh
-get-fable install kiro
-get-fable install pi
-get-fable install no-mistakes
-```
-
-DeepSeek Harness (DSH) Plugin installation:
-
-```bash
-dsh plugin add imMamdouhaboammar/get-fable
-```
-
-When configuring the DSH plugin's `projectRoot`, fresh routing state belongs to
-that project even when the host starts elsewhere. A routing preview does not
-create `.fable` state; applying the route writes it to the configured project.
-
-Claude Code marketplace installation:
-
-```bash
-/plugin marketplace add imMamdouhaboammar/get-fable
-/plugin install get-fable@get-fable
-```
-
-</details>
-
----
 
 ## Quick install
 
+Add the open-source Skills to your coding agent or project:
+
 ```bash
-# Bun (recommended)
+npx skills add imMamdouhaboammar/get-fable
+```
+
+Install the CLI separately with your preferred package manager:
+
+```bash
+# Recommended: Bun 1.3+
 bun add -g get-fable
 
-# npm (automatically installs skills via npx skills add imMamdouhaboammar/get-fable)
+# Alternative: npm (the CLI still requires Bun to run)
 npm install -g get-fable
-# or locally in your project:
-npm install get-fable
-
-# Homebrew (macOS & Linux)
-brew tap imMamdouhaboammar/get-fable && brew install get-fable
-
-# One-line shell installer (CI, Docker, bare metal)
-curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh | bash
-
-# Skill pack only (Vercel / skills.sh)
-bunx skills add imMamdouhaboammar/get-fable
-
-# DeepSeek Harness (DSH) Cordis plugin
-dsh plugin add imMamdouhaboammar/get-fable
-
-# Claude Code Marketplace
-# /plugin marketplace add imMamdouhaboammar/get-fable
-# /plugin install get-fable@get-fable
 ```
 
----
-
-## Full install path
-
-Follow these steps once after installing the CLI to get the complete lifecycle active across your agents and project.
-
-### Step 1 — Install the CLI
+Or use the [shell installer](install.sh) after reviewing it:
 
 ```bash
-bun add -g get-fable
-get-fable --version   # confirm binary is on PATH
+curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh | sh
 ```
 
-### Step 2 — Configure your coding agents
+Then, from the root of your own project:
 
 ```bash
-# All agents at once (recommended)
+get-fable --version
+get-fable init
 get-fable install all
-
-# Or pick individually
-get-fable install claude        # Claude Code   — full lifecycle hooks + skills
-get-fable install antigravity   # Google Antigravity / Gemini CLI — hooks + plugin
-get-fable install grok          # Grok Build (xAI) — hooks + plugin
-get-fable install codex         # OpenAI Codex + ChatGPT — plugin + skills
-get-fable install cursor        # Cursor — advisory rule + plugin
-get-fable install copilot       # GitHub Copilot — advisory rule
-get-fable install devin         # Devin — skill + rule
-get-fable install windsurf      # Windsurf — advisory rule
-get-fable install replit        # Replit Agent — advisory rule
-get-fable install amazonq       # Amazon Q Dev — advisory rule
-get-fable install trae          # Trae — advisory rule
-get-fable install warp          # Warp AI — advisory rule
-get-fable install kimi          # Moonshot Kimi — advisory rule
-get-fable install roocode       # Roo Code — skill + rule
-get-fable install cline         # Cline — skill + rule
-get-fable install openhands     # OpenHands — skill + rule
-get-fable install opencode      # OpenCode — skill + rule
-get-fable install kilo          # Kilo Code — skill + rule
-get-fable install aider         # Aider — advisory rule
-get-fable install continue      # Continue — advisory rule
-get-fable install plandex       # Plandex — advisory rule
-get-fable install autogpt       # AutoGPT — advisory rule
-get-fable install hermes        # Hermes Agent — skill + rule
-get-fable install kiro          # Kiro — rule + hooks
-get-fable install dsh           # DeepSeek Harness — Cordis plugin + Web UI
-get-fable install pi            # Pi Code — advisory rule
-get-fable install no-mistakes   # no-mistakes quality gate + pre-push hook
-```
-
-### Step 3 — Initialize a project
-
-```bash
-cd your-project
-get-fable init
-```
-
-Creates `.fable/state.json`, `.fable/LEDGER.md`, `.fable/PROGRESS.md`, and `docs/SPEC.md`.
-
-### Step 4 — Verify health
-
-```bash
-get-fable doctor          # 53 system checks — skills, manifests, hooks, state, supply chain
-get-fable doctor --json-v1  # machine-readable diagnostic envelope
-get-fable lint            # ledger + state completion semantics
-```
-
-### Step 5 — Route your first task
-
-```bash
-get-fable route "Fix the checkout race condition and verify it with a regression test"
-```
-
-Get the smallest useful next move at any point:
-
-```bash
-get-fable spark
-```
-
-### Step 6 — Architecture evaluation (new projects)
-
-```bash
-get-fable arch-eval "High-throughput fintech ledger with 100k TPS and polyglot datastores"
-# → outputs composite score, monolith lockout decision, dual-transport contract, language matrix
-```
-
-### Step 7 — Security & quality gates
-
-```bash
-# Red team scan against a local target
-get-fable redteam scan --target http://127.0.0.1:3000 --profile api-logic
-
-# CI/CD baseline diff + CVSS threshold gate
-get-fable redteam scan --target http://127.0.0.1:3000 \
-  --baseline .fable/baseline.json --fail-on-cvss 7.0
-
-# Auto-heal findings from the last red team run
-get-fable route "remediate redteam findings"
-
-# no-mistakes pre-push quality gate
-get-fable install-no-mistakes
-```
-
-### Step 8 — gRPC worker (distributed execution)
-
-The built-in `worker-serve` command starts the gRPC transport **without an actual task executor**. An unconfigured worker returns `NOT_SERVING` and cannot claim tasks or skills were completed. Integrators must supply real `taskHandler` and `skillHandler` callbacks on `FableWorkerServer`. `jev-orchestrate --execute` requires `--worker-addr <host:port>` pointing to a configured worker. A completed event counts as successful orchestration only when it includes a matching, verified TOON return packet. Worker-reported verification is not independent proof that the prescribed command was executed.
-
-```bash
-# Start the transport-only Fable Worker gRPC server (no executor configured)
-get-fable worker-serve
-
-# Behavioral evaluation pipeline
-get-fable behavior-eval export --out /tmp/fable-behavior-requests.json
-get-fable behavior-eval score /tmp/provider-responses.json \
-  --out evals/results/agent-behavior-v1.json
-get-fable behavior-eval status
-```
-
-### Step 9 — Curated Capability Ecosystem (`fable-eco`)
-
-Provision verified development tools, fast search utilities, and curated MCP servers into your workspace with reproducible lockfiles (`.fable/eco.lock`):
-
-```bash
-# Discover which capabilities are installed on your machine
-get-fable eco discover
-
-# Plan capability installation for a curated profile (core, dev-fast, polyglot, mcp-core, agency)
-get-fable eco plan core
-
-# Provision the capabilities automatically
-get-fable eco install core --yes
-
-# Verify capability health and lockfile integrity
-get-fable eco doctor
-```
-
-| Profile | Included Capabilities | Target Use Case |
-|---|---|---|
-| **`core`** *(Recommended)* | `ripgrep`, `fd`, `jq`, `git-lfs`, `gh` | High-speed file search, JSON processing, and GitHub automation |
-| **`dev-fast`** | `core` + `uv`, `bun`, `ast-grep`, `hyperfine` | Lightning-fast Python/TypeScript tooling and AST analysis |
-| **`polyglot`** | `dev-fast` + `rustup`, `go`, `just`, `shellcheck` | Multi-language systems engineering and CI/CD validation |
-| **`mcp-core`** | Curated MCP servers (`filesystem`, `git`, `fetch`) | Model Context Protocol tool enrichment for agent hosts |
-| **`agency`** | Multi-agent CLI orchestration helpers | Parallel worker delegation and multi-model council deliberation |
-
-### Shell integration (optional)
-
-Add real-time prompt hints and lifecycle aliases to your shell profile:
-
-```bash
-# Zsh (~/.zshrc)
-eval "$(get-fable shell zsh)"
-
-# Bash (~/.bashrc or ~/.bash_profile)
-eval "$(get-fable shell bash)"
-
-# Fish (~/.config/fish/config.fish)
-get-fable shell fish | source
-```
-
-Aliases enabled: `gfr` (route), `gfs` (spark), `gfe` (evidence), `gfc` (card), `gfl` (lint), `gfd` (doctor), `gfm` (mutation), `gfst` (status).
-
-> 📖 **Full Multi-Host & Platform Guide**: See [docs/INSTALLATION.md](./docs/INSTALLATION.md) for detailed configuration of hooks, shell completions, and individual agent environments.
-
----
-
-## Behavioral proof: the uncomfortable part is intentional
-
-`get-fable` treats **“the Skill exists”** and **“the Skill has been proven to behave correctly”** as different claims.
-
-A previous version of the catalog had an external-provider evidence run across 115 blinded cases with 115 passes and zero forbidden-action violations.
-
-That run is useful history.
-
-It is **not** fresh proof for Deep Skill Playbooks V2.
-
-V2 materially changes the instructions and expands the semantic scenario corpus to 1,105 blinded evaluation cases across all 46 canonical skills. The evidence hashes should therefore make the old behavioral result stale.
-
-That is a feature, not a regression.
-
-Until the current V2 request bundle is executed against an independent provider and rescored, affected behavioral maturity should remain **`NOT_CHECKED`**, not magically inherit the old M4 badge.
-
-The current workflow is:
-
-```bash
-get-fable behavior-eval export --out /tmp/get-fable-behavior-requests.json
-# execute the blinded requests with an independent provider
-get-fable behavior-eval score /tmp/provider-responses.json \
-  --out evals/results/agent-behavior-v1.json
-get-fable behavior-eval status
+get-fable skills install all
 get-fable doctor --json-v1
+get-fable lint
 ```
 
-The exported bundle is generated from the current 46-skill corpus (1,105 blinded behavioral evaluation cases), ensuring transparent, reproducible evaluation before independent provider scoring.
-
-[Read the behavioral evidence protocol →](docs/BEHAVIOR_EVIDENCE.md)
-
----
-
-## Local-first by default
-
-`get-fable` is designed to add process without turning your repository into a telemetry product.
-
-- telemetry is disabled by default;
-- state and evidence live locally with the project;
-- minimal zero-telemetry dependencies (`@grpc/grpc-js`, `@grpc/proto-loader`, `@toon-format/toon`) for high-performance gRPC and TOON serialization;
-- Skill installation rejects traversal and symlink escapes;
-- the local proxy binds to loopback by default;
-- GitHub Actions are pinned to immutable commit SHAs;
-- CodeQL, Dependency Review, TruffleHog, and E2E workflows are part of the repository quality surface.
-
-For the full trust boundary, see [SECURITY.md](SECURITY.md).
-
----
-
-## A few commands you will actually use
-
-```bash
-get-fable init
-get-fable route "your task"
-get-fable spark
-get-fable arch-eval "your specification"
-get-fable doctor
-get-fable install-no-mistakes
-get-fable worker-serve
-get-fable feed list
-get-fable graph
-get-fable recipes
-get-fable packs
-get-fable behavior-eval status
-```
-
-Legacy `--json` output remains available, while supported commands can use the additive versioned `--json-v1` envelope.
-
-[Read the usage guide →](docs/USAGE.md)
-
----
-
-## Distribution
-
-- **npm** — [`get-fable`](https://www.npmjs.com/package/get-fable)
-- **GitHub Releases** — [release history](https://github.com/imMamdouhaboammar/get-fable/releases)
-- **Homebrew formula** — [`Formula/get-fable.rb`](Formula/get-fable.rb)
-- **Agent packaging** — Claude, Codex, Gemini, Cursor, OpenCode, Kimi, DeepSeek, Kiro, Grok, and Pi manifests ship with the project/package
-
----
-
-## Documentation
-
-The README tells the product story. The deep technical specifications and guides live here:
-
-- [Install & Initialization Guide (`install-and-init-get-fable`)](docs/install-and-init-get-fable.md)
-- [Getting Started & CLI Usage Guide](docs/USAGE.md)
-- [Canonical Skill Catalog (42 Skills)](docs/CANONICAL_SKILLS.md)
-- [Host Compatibility & 32 Platform Matrix](docs/COMPATIBILITY.md)
-- [Multi-Host Installation Deep Dive](docs/INSTALLATION.md)
-- [Lifecycle State Machine & Evidence Protocol](docs/LIFECYCLE.md)
-- [Deterministic Routing Precedence](docs/ROUTING.md)
-- [5 Mechanical Lifecycle Hooks](docs/HOOKS.md)
-- [Curated Capability Ecosystem (`fable-eco`)](docs/fable-eco-production-spec/README.md)
-- [System Architecture (ADR 0007)](docs/ARCHITECTURE.md)
-- [Behavioral Evidence & Evaluation Protocol](docs/BEHAVIOR_EVIDENCE.md)
-- [Multi-Platform Plugin Distribution](docs/PLUGIN.md)
-- [Release Verification & Gate Protocol](docs/RELEASE.md)
-- [Security & Trust Boundaries](SECURITY.md)
-- [Support & Community](SUPPORT.md)
-- [Contributing](CONTRIBUTING.md)
-
----
+`install all` targets supported coding hosts, while `skills install all` deploys the available Skills. Both can change local or global agent settings. Check what is installed and back up custom host configurations first. Run `init` only inside the project you intend to set up.
 
 <div align="center">
 
-## A better model helps.
-
-### A better harness helps too.
-
-```bash
-bun add -g get-fable
-get-fable init
-```
-
-[Get started](docs/USAGE.md) · [Explore the Skills](docs/CANONICAL_SKILLS.md) · [View releases](https://github.com/imMamdouhaboammar/get-fable/releases) · [Report an issue](https://github.com/imMamdouhaboammar/get-fable/issues)
-
-<br/>
-
-GNU AGPLv3 licensed
-
-<sub>get-fable is an independent open-source project and is not affiliated with Anthropic.</sub>
+**[Installation guide](docs/INSTALLATION.md) · [Agent setup playbook](docs/install-and-init-get-fable.md) · [Skill catalog](docs/CANONICAL_SKILLS.md)**
 
 </div>
+
+### Ask your agent to install and configure get-fable
+
+Copy this into Codex, Claude Code, Cursor, Gemini CLI, or the coding agent you use:
+
+```text
+Set up the latest public get-fable release for this project.
+
+Read and follow the install-and-init-get-fable onboarding playbook:
+https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/install-and-init-get-fable.md
+
+1. Inspect the OS, repo root, available agent hosts, existing configurations,
+   and Bun/Git/Python versions. Protect existing settings and uncommitted work.
+2. Install or update the get-fable CLI via bun add -g get-fable, or use npm
+   if Bun's package manager is not available. Verify the installed version.
+3. Install the public Skills via npx skills add imMamdouhaboammar/get-fable.
+4. In this project's root run get-fable init, then configure supported hosts
+   using get-fable install all and Skills using get-fable skills install all.
+5. Check get-fable status --json-v1, doctor --json-v1, and lint. Run a safe
+   routing smoke test without changing application code.
+6. Explain the daily workflow in my preferred language and provide a concise
+   report of versions, installed hosts, Skills, checks, skipped steps, and fixes.
+
+Before global toolchain changes, shell changes, git hook replacements, or
+fable-eco capability provisioning, show the plan and request my consent.
+Never overwrite custom configuration or handle credentials without approval.
+Do not claim success unless the final checks actually pass.
+```
+
+[Full copy-ready agent prompt with acceptance criteria →](docs/AGENT_SETUP_PROMPT.md)
+
+---
+
+## The problem is not always the model
+
+You ask an AI coding agent to fix a bug. It jumps into an edit, produces something plausible, runs a test, and declares victory. An hour later, you discover it tested the wrong thing, or changed more than the task needed, or forgot the original decision.
+
+Maybe a stronger model would have avoided it. But some of these failures come from *how the work is organized*.
+
+A useful engineering partner needs to know when to investigate, when to write a failing test, when to get the current API contract, and when to admit the evidence is not good enough yet.
+
+That is the idea behind get-fable.
+
+**It is a portable working method for the coding agent you already use.** The model still writes the code. The Skills and CLI help it make better decisions about the work around the code.
+
+### A bug fix, with a little more discipline
+
+| Without an explicit lifecycle | With get-fable |
+| --- | --- |
+| Start editing from a guess | Locate the real execution path first |
+| Fix the apparent symptom | Reproduce the failure at a meaningful test boundary |
+| Lose the plan across sessions | Keep work cards and decisions in `.fable/` |
+| Repeat the same failed patch | Pause and revisit the diagnosis |
+| Report a green test from before the last change | Collect fresh evidence against the current files |
+| Announce completion on confidence | Check acceptance criteria before closing |
+
+Get-fable does not guarantee correct code. It gives a coding agent a more explicit process, and gives you better places to check whether it followed that process.
+
+## One workflow, several specialized Skills
+
+The public source currently includes **41 installable community Skills across 8 packs**. The adapters cover **32 host targets**, with different integration levels depending on the platform. A rule file, an installed Skill, and a lifecycle hook are different levels of support; they are not interchangeable.
+
+| Stage | What the agent should establish | Example public Skills |
+| --- | --- | --- |
+| Discover | What actually runs, and where? | `get-fable`, `fable-discover`, `fable-research` |
+| Plan | What is in scope, and what proves success? | `fable-plan`, `fable-architecture` |
+| Build | Can we show the gap before changing production code? | `fable-tdd`, `fable-execute` |
+| Verify | What could still disprove the claim? | `fable-verify`, `fable-review`, `fable-security` |
+| Recover | Why did the previous approach fail? | `fable-recover` |
+| Deliver | Is the artifact ready, and can someone else resume? | `fable-release`, `fable-handoff` |
+
+The core lifecycle is useful on its own. Extra packs support architecture, security, visualization, memory, and other specialized work. See the [public catalog](docs/CANONICAL_SKILLS.md) for what is included in this repository.
+
+## Keep state outside the conversation
+
+The CLI can initialize project-local tracking files:
+
+```text
+.fable/
+  state.json      # lifecycle and evidence state
+  LEDGER.md       # work cards and acceptance checks
+  PROGRESS.md     # what changed and why
+```
+
+The exact files and host integration depend on the installed CLI version. A Skills-only setup works without requiring the CLI to be present, but it cannot provide CLI-backed state checks and hooks.
+
+That distinction is intentional: you can start small, inspect the method, and add the runtime support when you need it.
+
+## Works with the agent you already use
+
+Get-fable has integration targets for Claude Code, Codex, Gemini/Antigravity, Cursor, OpenCode, Grok, and other tools. Support varies by host: some receive Skills, others rule files or lifecycle hooks. Use [`get-fable install all`](docs/HOSTS.md) for supported host setup, or select a host individually, for example `get-fable install codex`.
+
+Run the CLI's doctor to inspect your actual environment. A listed target does not imply every feature works on every host.
+
+## Community today. A deeper MCP harness in development.
+
+<table>
+<tr><th>Available now: Community / OSS Skills</th><th>In development: Get-Fable Pro MCP</th></tr>
+<tr>
+<td>Open-source Skills, readable playbooks, documented lifecycle, and an optional CLI package. Licensed under AGPL-3.0-or-later.</td>
+<td>A planned premium MCP-based engineering harness with deeper agent and tool integration. No release date, specification, price, or performance claim is being made yet.</td>
+</tr>
+</table>
+
+**The public Skills remain open source.** Pro MCP is a future product direction, not a requirement for using the community edition. We want to build a remarkably capable harness, but we'll judge it by demonstrable behavior when it is released.
+
+## What it is, and what it is not
+
+- It **is** an inspectable set of engineering Skills and a separately distributed CLI.
+- It **does not** change a model's weights, grant capabilities its host does not have, or make verification automatic on every platform.
+- It **does not** promise zero mistakes, zero hallucinations, perfect autonomy, or a passing CI run for your project.
+- It **does** encourage evidence you can inspect: tests, logs, state, diffs, and clear reasons to stop or continue.
+
+If you are using the npm CLI, check its package version independently of the public GitHub checkout. The source-only public repository is **not** a runnable replacement for the npm CLI distribution.
+
+## Documentation
+
+| Looking for... | Start here |
+| --- | --- |
+| Quick setup and prerequisites | [Installation](docs/INSTALLATION.md) |
+| Complete guided onboarding | [Install and initialize](docs/install-and-init-get-fable.md) |
+| Copy/paste agent instruction | [Agent setup prompt](docs/AGENT_SETUP_PROMPT.md) |
+| Available community Skills | [Skill catalog](docs/CANONICAL_SKILLS.md) |
+| Host-specific integration levels | [Host matrix](docs/HOSTS.md) |
+| Day-to-day commands | [Usage](docs/USAGE.md) |
+| Architecture and evidence | [Architecture](docs/ARCHITECTURE.md) · [Evidence](docs/EVIDENCE.md) |
+| Contributing and responsible disclosure | [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) |
+
+## Contributing
+
+Issues, documentation corrections, tests, and contributions to public Skills are welcome. Please keep the [contribution guidelines](CONTRIBUTING.md) and [security policy](SECURITY.md) in mind. Internal engineering assets, credentials, private evaluations, and unpublished commercial material are not community distribution material.
+
+**License:** [AGPL-3.0-or-later](LICENSE). get-fable is an independent community project and is not affiliated with Anthropic or Claude Fable.

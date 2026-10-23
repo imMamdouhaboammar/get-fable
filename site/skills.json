@@ -1,7 +1,7 @@
 {
-  "title": "get-fable 42 Canonical Skills Catalog",
+  "title": "get-fable 41 Public Community Skills Catalog",
   "description": "Deterministic specialist skills for AI coding agents across 8 packs with formal gates and evidence contracts.",
-  "totalSkills": 44,
+  "totalSkills": 41,
   "packs": [
     {
       "id": "core",
@@ -59,8 +59,7 @@
         "fable-release",
         "fable-handoff",
         "fable-finish-your-turn",
-        "fable-outcome-first",
-        "fable-tend"
+        "fable-outcome-first"
       ]
     },
     {
@@ -68,7 +67,6 @@
       "name": "Evolution Pack",
       "description": "Agent-behavior evaluation and durable project engineering knowledge capture.",
       "skills": [
-        "fable-eval",
         "fable-learning"
       ]
     },
@@ -99,7 +97,6 @@
       "name": "Creator Pack",
       "description": "Deep Playbook V2 skill creation and domain adaptation.",
       "skills": [
-        "fable-skill-creator",
         "fable-domain"
       ]
     }
@@ -292,19 +289,6 @@
       "url": "https://get-fable.vercel.app/skills/fable-handoff.html"
     },
     {
-      "id": "fable-eval",
-      "order": 90,
-      "phase": "verifying",
-      "pack": "evolution",
-      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks.",
-      "intents": [
-        "agent-eval",
-        "self-improvement",
-        "prompt-change"
-      ],
-      "url": "https://get-fable.vercel.app/skills/fable-eval.html"
-    },
-    {
       "id": "fable-learning",
       "order": 95,
       "phase": "verifying",
@@ -461,20 +445,6 @@
         "minimal-action"
       ],
       "url": "https://get-fable.vercel.app/skills/fable-spark.html"
-    },
-    {
-      "id": "fable-skill-creator",
-      "order": 210,
-      "phase": "executing",
-      "pack": "creator",
-      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning.",
-      "intents": [
-        "create-skill",
-        "modify-skill",
-        "benchmark-skill",
-        "optimize-skill"
-      ],
-      "url": "https://get-fable.vercel.app/skills/fable-skill-creator.html"
     },
     {
       "id": "fable-architecture",
@@ -664,20 +634,6 @@
         "gather-peer-feedback"
       ],
       "url": "https://get-fable.vercel.app/skills/fable-council.html"
-    },
-    {
-      "id": "fable-tend",
-      "order": 340,
-      "phase": "executing",
-      "pack": "delivery",
-      "description": "Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage.",
-      "intents": [
-        "triage-ci",
-        "fix-ci",
-        "resolve-conflicts",
-        "maintain-repo"
-      ],
-      "url": "https://get-fable.vercel.app/skills/fable-tend.html"
     },
     {
       "id": "fable-wise",

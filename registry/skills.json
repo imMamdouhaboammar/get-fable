@@ -33,7 +33,6 @@
         "fable-security",
         "fable-release",
         "fable-handoff",
-        "fable-eval",
         "fable-recover",
         "fable-dataviz",
         "fable-artifact",
@@ -45,7 +44,6 @@
         "fable-simulator",
         "fable-cowork",
         "fable-spark",
-        "fable-skill-creator",
         "fable-redteam",
         "fable-heal",
         "fable-learning",
@@ -61,12 +59,9 @@
         "fable-judge",
         "fable-method",
         "fable-council",
-        "fable-tend",
         "fable-anti-slop-engineering",
         "fable-anti-churn",
-        "fable-wise",
-        "fable-test",
-        "fable-core-test"
+        "fable-wise"
       ],
       "keywords": [
         "fable",
@@ -149,8 +144,7 @@
         "fable-execute",
         "fable-verify",
         "fable-domain",
-        "fable-memory",
-        "fable-skill-creator"
+        "fable-memory"
       ],
       "keywords": [
         "official docs",
@@ -202,8 +196,7 @@
         "fable-dataviz",
         "fable-method",
         "fable-scope-discipline",
-        "fable-cowork",
-        "fable-skill-creator"
+        "fable-cowork"
       ],
       "keywords": [
         "plan",
@@ -685,11 +678,10 @@
         "evidence-grounded",
         "atomic-claims"
       ],
-      "fallback": "fable-eval",
+      "fallback": null,
       "mutatesWorkspace": true,
       "parallelSafe": true,
       "next": [
-        "fable-eval",
         "fable-plan",
         "fable-handoff",
         "get-fable"
@@ -737,7 +729,6 @@
         "fable-tdd",
         "fable-execute",
         "fable-verify",
-        "fable-tend",
         "fable-method",
         "fable-loop"
       ],
@@ -897,8 +888,7 @@
       "parallelSafe": true,
       "next": [
         "fable-verify",
-        "fable-handoff",
-        "fable-tend"
+        "fable-handoff"
       ],
       "keywords": [
         "loop",
@@ -910,60 +900,6 @@
         "babysit"
       ],
       "audience": "consumer"
-    },
-    {
-      "id": "fable-test",
-      "order": 142,
-      "phase": "verifying",
-      "pack": "proof",
-      "audience": "consumer",
-      "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.",
-      "intents": [
-        "test-project",
-        "run-tests",
-        "test-coverage",
-        "quality-engineering",
-        "diagnose-tests"
-      ],
-      "requires": [
-        "test-runner"
-      ],
-      "produces": [
-        "test-execution-report",
-        "test-evidence"
-      ],
-      "gates": [
-        "machine-checked",
-        "no-skipped-tests",
-        "tests-executed-gt-zero"
-      ],
-      "fallback": "fable-recover",
-      "mutatesWorkspace": false,
-      "parallelSafe": true,
-      "next": [
-        "fable-tdd",
-        "fable-anti-slop-engineering",
-        "fable-verify",
-        "fable-review",
-        "fable-release"
-      ],
-      "keywords": [
-        "test",
-        "testing",
-        "test-guard",
-        "pytest",
-        "vitest",
-        "jest",
-        "tests",
-        "suite",
-        "unit",
-        "e2e",
-        "pyramid",
-        "coverage",
-        "qa",
-        "اختبر",
-        "تيست"
-      ]
     },
     {
       "id": "fable-run",

@@ -1,43 +1,10 @@
----
-id: fable-tdd
-pack: build
-phase: executing
-order: 30
-canonical_url: https://get-fable.vercel.app/skills/fable-tdd.html
----
-
 # fable-tdd
 
-> **Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.**
+> Drive testable behavior changes and bug fixes through disciplined red-green-refactor cycles with observable regression tests.
 
-- **Pack:** Build Pack
-- **Lifecycle Phase:** `executing`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-recover`
+**Pack:** build · **Phase:** executing
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "feature" --apply
-```
-
-## Registered Intents
-- `feature`
-- `bug-fix`
-- `behavior-change`
-
-## Required Gates
-- `red-observed`
-- `green-observed`
-
-## Next Allowed Skills
-- `fable-execute`
-- `fable-verify`
-- `fable-recover`
-- `fable-native-code`
-- `fable-scope-discipline`
-- `fable-simplify`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-tdd/SKILL.md)
 
 ---
 

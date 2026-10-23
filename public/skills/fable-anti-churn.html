@@ -1,284 +1,183 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#FFFFFF">
-  <meta name="description" content="Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead. - get-fable canonical skill reference and activation guide.">
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-anti-churn.html">
-  <link rel="alternate" type="text/markdown" href="../skills/fable-anti-churn.md">
-  <link rel="alternate" type="text/plain" href="../skills/fable-anti-churn.txt">
-  <link rel="alternate" type="application/json" href="../skills/fable-anti-churn.json">
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.">
+<title>fable-anti-churn | get-fable Community Skill</title>
+<link rel="canonical" href="https://get-fable.vercel.app/skills/fable-anti-churn.html">
+<link rel="alternate" type="text/markdown" href="../skills/fable-anti-churn.md">
+<link rel="alternate" type="text/plain" href="../skills/fable-anti-churn.txt">
+<link rel="alternate" type="application/json" href="../skills/fable-anti-churn.json">
+<link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../styles.css"></head><body>
+<header class="site-header"><a href="../index.html">get-fable</a> · <a href="../skills.html">Community Skills</a></header>
+<main id="main-content" style="max-width:880px;margin:auto;padding:3rem 1.5rem;line-height:1.6;overflow-wrap:anywhere">
+<div class="section-marker">proof · verifying</div>
+<h1>fable-anti-churn</h1><p>Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.</p>
+<nav class="format-switcher" aria-label="Alternate formats">
+<a href="../skills/fable-anti-churn.md">Markdown</a> · <a href="../skills/fable-anti-churn.txt">Plain text</a> · <a href="../skills/fable-anti-churn.json">JSON</a> · <a href="https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-anti-churn/SKILL.md">Source</a>
+</nav><article class="docs-body"><h1>Fable Anti-Churn</h1>
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="fable-anti-churn — get-fable Skill Reference">
-  <meta property="og:description" content="Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-anti-churn.html">
-  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="fable-anti-churn — get-fable Skill">
-  <meta name="twitter:description" content="Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.">
-  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
-
-  <title>fable-anti-churn — get-fable Skill Reference</title>
-  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../styles.css">
-  <script src="../script.js" defer></script>
-
-  <!-- Schema.org JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "fable-anti-churn Skill Specification",
-    "description": "Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.",
-    "articleSection": "Proof Pack",
-    "url": "https://get-fable.vercel.app/skills/fable-anti-churn.html",
-    "author": {
-      "@type": "Organization",
-      "name": "get-fable Team"
-    },
-    "inLanguage": "en"
-  }
-  </script>
-</head>
-<body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
-
-  <header class="site-header">
-    <div class="shell header-inner">
-      <a class="brand" href="../index.html" aria-label="get-fable home">
-        <img src="../assets/mascot.svg" alt="" width="36" height="36">
-        <span>get-fable</span>
-      </a>
-
-      <nav class="site-nav" aria-label="Primary navigation">
-        <a href="../index.html#thesis">Thesis</a>
-        <a href="../skills.html" class="is-active">Skills (42)</a>
-        <a href="../guide.html">Guide &amp; Docs</a>
-        <a href="../workflows.html">Workflows &amp; Prompts</a>
-        <a href="../pricing.html">Pricing</a>
-      </nav>
-
-      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
-        GitHub
-        <span aria-hidden="true">↗</span>
-      </a>
-    </div>
-  </header>
-
-  <main id="main-content" class="skill-detail-main">
-    <div class="shell">
-      <nav class="breadcrumbs" aria-label="Breadcrumbs">
-        <a href="../index.html">Home</a>
-        <span>/</span>
-        <a href="../skills.html">Skills</a>
-        <span>/</span>
-        <span aria-current="page">fable-anti-churn</span>
-      </nav>
-
-      <aside class="format-switcher" aria-label="Alternate page formats">
-        <span class="format-label">Formats:</span>
-        <span class="format-badge is-active">HTML</span>
-        <a class="format-badge" href="../skills/fable-anti-churn.md" target="_blank">Markdown (.md)</a>
-        <a class="format-badge" href="../skills/fable-anti-churn.txt" target="_blank">Plain Text (.txt)</a>
-        <a class="format-badge" href="../skills/fable-anti-churn.json" target="_blank">JSON (.json)</a>
-      </aside>
-
-      <header class="skill-header">
-        <div class="skill-meta-tags">
-          <span class="pack-badge">Proof Pack</span>
-          <span class="phase-badge phase-verifying">Phase: verifying</span>
-          <span class="order-badge">Order: 287</span>
-        </div>
-        <h1 class="skill-title">fable-anti-churn</h1>
-        <p class="skill-lead">Prevent duplicate agent actions, infinite retry loops, and unverified churn across all lifecycles. Reuses matching accepted evidence, enforces typed invalidations for changed work, gates deterministic local failures for local repair, and manages candidate promotion readiness with zero token overhead.</p>
-      </header>
-
-      <section class="skill-command-box" aria-labelledby="quick-activation">
-        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
-        <div class="code-block">
-          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
-          <pre><code>bun ./bin/get-fable.js route "anti-churn" --apply</code></pre>
-        </div>
-      </section>
-
-      <div class="skill-layout">
-        <aside class="skill-specs-card">
-          <h2>Specifications</h2>
-          <dl class="specs-list">
-            <dt>Pack</dt>
-            <dd>Proof Pack</dd>
-            <dt>Lifecycle Phase</dt>
-            <dd><span class="phase-tag">verifying</span></dd>
-            <dt>Mutates Workspace</dt>
-            <dd>No (read-only)</dd>
-            <dt>Parallel Safe</dt>
-            <dd>Yes</dd>
-            <dt>Fallback Skill</dt>
-            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
-          </dl>
-
-          <h3>Intents</h3>
-          <div class="intents-list"><span class="intent-chip">anti-churn</span> <span class="intent-chip">prevent-duplicate-work</span> <span class="intent-chip">reuse-evidence</span> <span class="intent-chip">gate-deterministic-failure</span> <span class="intent-chip">check-promotion</span></div>
-
-          <h3>Required Gates</h3>
-          <ul class="gates-list"><li><code>zero-duplicate-churn</code></li><li><code>typed-invalidation-satisfied</code></li></ul>
-
-          <h3>Permitted Continuations</h3>
-          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a> <a class="token-link" href="../skills/fable-heal.html">fable-heal</a> <a class="token-link" href="../skills/fable-prove-it.html">fable-prove-it</a> <a class="token-link" href="../skills/fable-judge.html">fable-judge</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a></div>
-        </aside>
-
-        <article class="skill-content-body">
-          <h1>Fable Anti-Churn</h1>
 <h2>Purpose</h2>
-<p><code>fable-anti-churn</code> is the authoritative duplicate-work and evidence-reuse prevention engine in get-fable. Powered by both a native Rust engine (<code>crates/fable-anti-churn</code>) and local CLI scripts, it cryptographically fingerprints work requests (RFC 8785 JCS + SHA-256), tracks reservation receipts, reuses identical prior passing evidence, blocks duplicate actions, halts repeated deterministic failures, and validates promotion proof with sub-millisecond execution.</p>
+
+<p>`fable-anti-churn` is the authoritative duplicate-work and evidence-reuse prevention engine in get-fable. Powered by both a native Rust engine (`crates/fable-anti-churn`) and local CLI scripts, it cryptographically fingerprints work requests (RFC 8785 JCS + SHA-256), tracks reservation receipts, reuses identical prior passing evidence, blocks duplicate actions, halts repeated deterministic failures, and validates promotion proof with sub-millisecond execution. Keep material progress separate from churn. Material output can prove progress; it is not a churn dimension.</p>
+
 <h2>When to Use</h2>
-<ul class="docs-list">
+
+<ul>
 <li>Before dispatching repetitive test commands, build scripts, or static analysis tools.</li>
 <li>Before spawning subagents, background workflows, or external tool calls.</li>
 <li>When an action or command fails deterministically, requiring local repair rather than blind retries.</li>
 <li>When evaluating candidate promotion gates (package integrity, test passing, authority verification).</li>
-<li>Across all lifecycle hooks (<code>SessionStart</code>, <code>PreToolUse</code>, <code>PostToolUse</code>, <code>PostToolUseFailure</code>, <code>Stop</code>).</li>
+<li>Across all lifecycle hooks (`SessionStart`, `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Stop`).</li>
 </ul>
+
 <h2>When NOT to Use</h2>
-<ul class="docs-list">
+
+<ul>
 <li>NOT to cancel or terminate the entire user task — gates only the specific duplicate local action.</li>
-<li>NOT as a substitute for valid code changes; once code changes, compute a typed invalidation (<code>candidate_changed</code>, etc.) to run anew.</li>
+<li>NOT as a substitute for valid code changes; once code changes, compute a typed invalidation (`candidate_changed`, etc.) to run anew.</li>
 <li>NOT to bypass real human authorization or security boundaries.</li>
 </ul>
+
 <h2>Inputs</h2>
-<ul class="docs-list">
-<li><code>action_event</code>: Canonical JSON payload containing <code>action_kind</code>, <code>action_scope_digest</code>, <code>requirements_digest</code>, <code>candidate_digest</code>, and environmental hashes.</li>
-<li><code>prior_receipts</code>: Historical receipts ledger in NDJSON format (<code>.fable/anti-churn/receipts.ndjson</code>).</li>
-<li><code>core_policy</code>: Policy configuration containing intervention level thresholds and retry budget parameters.</li>
+
+<ul>
+<li>`action_event`: Canonical JSON payload containing `action_kind`, `action_scope_digest`, `requirements_digest`, `candidate_digest`, and environmental hashes.</li>
+<li>`prior_receipts`: Historical receipts ledger in NDJSON format (`.fable/anti-churn/receipts.ndjson`).</li>
+<li>`core_policy`: Policy configuration containing intervention level thresholds and retry budget parameters.</li>
 </ul>
+
 <h2>Expected Outputs</h2>
-<ul class="docs-list">
-<li><code>decision_receipt</code>: Cryptographically signed receipt with 35 canonical fields, <code>decision</code>, <code>reason_code</code>, and <code>evidence_digest</code>.</li>
-<li><code>evidence_acceptance</code>: Stamped evidence acceptance record updating a pending reservation with verified outcome.</li>
-<li><code>churn_status</code>: Real-time ledger status reporting total receipts, pending reservations, passing evidence, and blocked churn cycles.</li>
+
+<ul>
+<li>`decision_receipt`: Cryptographically signed receipt with 35 canonical fields, `decision`, `reason_code`, and `evidence_digest`.</li>
+<li>`evidence_acceptance`: Stamped evidence acceptance record updating a pending reservation with verified outcome.</li>
+<li>`churn_status`: Real-time ledger status reporting total receipts, pending reservations, passing evidence, and blocked churn cycles.</li>
 </ul>
+
 <h2>Procedure</h2>
-<p>1. <strong>Fingerprint Work Identity:</strong> Hash scope, requirements, candidate patch, dependencies, policy, and evaluator using RFC 8785 canonical JSON and SHA-256.</p>
-<p>2. <strong>Consult Prior Ledger:</strong> Scan <code>.fable/anti-churn/receipts.ndjson</code> for existing matching reservations or passing evidence.</p>
-<p>3. <strong>Evaluate Idempotency:</strong></p>
-<p>   - If exact passing evidence exists without invalidation: emit <code>reuse_prior_evidence</code>.</p>
-<p>   - If pending in-flight reservation exists: emit <code>block_this_local_action</code> (prevent race condition).</p>
-<p>   - If deterministic local failure exists without workspace mutation: emit <code>local_fix_required</code>.</p>
-<p>   - If work changed with valid typed invalidation: emit <code>allow_reexecution</code>.</p>
-<p>   - If first equivalent action: emit <code>allow</code> and record reservation receipt.</p>
-<p>4. <strong>Execute &amp; Record Outcome:</strong></p>
-<p>   - On success: run <code>accept</code> to transition reservation to <code>pass</code>.</p>
-<p>   - On local failure: record <code>local_failure</code> receipt to fence immediate duplicate execution.</p>
-<p>5. <strong>Enforce Hook Invariants:</strong> Intercept lifecycle events to ensure zero unaccepted reservations or churn loops remain at turn completion.</p>
-<h2>Decision Rules</h2>
-<ul class="docs-list">
-<li><strong>ALLOW:</strong> First equivalent action without prior reservation; reserves slot with pending receipt.</li>
-<li><strong>ALLOW_REEXECUTION:</strong> Allowed re-run after consuming a valid, unconsumed typed invalidation.</li>
-<li><strong>ALLOW_WITH_ADVISORY:</strong> Allowed when work identity is incomplete (rate advisory emitted).</li>
-<li><strong>REUSE_PRIOR_EVIDENCE:</strong> Exact matching work has prior passing evidence; returns stored <code>evidence_digest</code> with zero token overhead.</li>
-<li><strong>LOCAL_FIX_REQUIRED:</strong> Deterministic local failure detected; blocks execution until code is edited.</li>
-<li><strong>BLOCK_THIS_LOCAL_ACTION:</strong> Duplicate pending action, invalid fanout, or changed work without typed invalidation.</li>
+
+<p>1. **Fingerprint Work Identity:** Hash scope, requirements, candidate patch, dependencies, policy, and evaluator using RFC 8785 canonical JSON and SHA-256.</p>
+<p>2. **Consult Prior Ledger:** Scan `.fable/anti-churn/receipts.ndjson` for existing matching reservations or passing evidence.</p>
+<p>3. **Evaluate Idempotency:**</p>
+<ul>
+<li>If exact passing evidence exists without invalidation: emit `reuse_prior_evidence`.</li>
+<li>If pending in-flight reservation exists: emit `block_this_local_action` (prevent race condition).</li>
+<li>If deterministic local failure exists without workspace mutation: emit `local_fix_required`.</li>
+<li>If work changed with valid typed invalidation: emit `allow_reexecution`.</li>
+<li>If first equivalent action: emit `allow` and record reservation receipt.</li>
 </ul>
+<p>4. **Execute &amp; Record Outcome:**</p>
+<ul>
+<li>On success: run `accept` to transition reservation to `pass`.</li>
+<li>On local failure: record `local_failure` receipt to fence immediate duplicate execution.</li>
+</ul>
+<p>5. **Enforce Hook Invariants:** Intercept lifecycle events to ensure zero unaccepted reservations or churn loops remain at turn completion.</p>
+
+<h2>Decision Rules</h2>
+
+<ul>
+<li>**ALLOW:** First equivalent action without prior reservation; reserves slot with pending receipt.</li>
+<li>**ALLOW_REEXECUTION:** Allowed re-run after consuming a valid, unconsumed typed invalidation.</li>
+<li>**ALLOW_WITH_ADVISORY:** Allowed when work identity is incomplete (rate advisory emitted).</li>
+<li>**REUSE_PRIOR_EVIDENCE:** Exact matching work has prior passing evidence; returns stored `evidence_digest` with zero token overhead.</li>
+<li>**LOCAL_FIX_REQUIRED:** Deterministic local failure detected; blocks execution until code is edited.</li>
+<li>**BLOCK_THIS_LOCAL_ACTION:** Duplicate pending action, invalid fanout, or changed work without typed invalidation.</li>
+</ul>
+
 <h2>Tool Policy</h2>
-<ul class="docs-list">
+
+<ul>
 <li>Read-only queries preferred for check and verification steps.</li>
-<li>Native Rust engine binary (<code>fable-anti-churn</code> or <code>get-fable-native anti-churn</code>) used for sub-millisecond execution.</li>
-<li>Direct NDJSON state file updates guarded by atomic filesystem locking (<code>fs2</code>).</li>
+<li>Native Rust engine binary (`fable-anti-churn` or `get-fable-native anti-churn`) used for sub-millisecond execution.</li>
+<li>Direct NDJSON state file updates guarded by atomic filesystem locking (`fs2`).</li>
 <li>Never delete or corrupt historical receipts; maintain immutable append-only ledger.</li>
 </ul>
+
 <h2>Evidence Requirements</h2>
-<ul class="docs-list">
+
+<ul>
 <li>Validated receipts containing all 35 canonical fields and 0 prohibited keys.</li>
-<li>SHA-256 digests adhering to <code>sha256:[0-9a-f]{64}</code> format.</li>
+<li>SHA-256 digests adhering to `sha256:[0-9a-f]{64}` format.</li>
 <li>Passing self-test corpus report confirming 23/23 scenario verifications.</li>
 <li>Verified absence of pending reservations before marking lifecycle phases complete.</li>
 </ul>
+
 <h2>Failure Handling</h2>
-<ul class="docs-list">
-<li>If <code>local_fix_required</code> or <code>deterministic_local_failure</code> is encountered: edit target source code to resolve the defect. Workspace mutation clears the failure lock.</li>
+
+<ul>
+<li>If `local_fix_required` or `deterministic_local_failure` is encountered: edit target source code to resolve the defect. Workspace mutation clears the failure lock.</li>
 <li>If invalidation is rejected: inspect invalidation target receipt and ensure reason code matches the changed field.</li>
-<li>If failure streak reaches 2: route to <code>fable-recover</code> to diagnose root cause before attempting code edits.</li>
+<li>If failure streak reaches 2: route to `fable-recover` to diagnose root cause before attempting code edits.</li>
 </ul>
+
 <h2>Completion Criteria</h2>
-<ul class="docs-list">
-<li>All open reservations transitioned to <code>pass</code> or explicit terminal outcome.</li>
-<li>Zero unresolved pending reservations in <code>.fable/anti-churn/receipts.ndjson</code>.</li>
-<li>State ledger passes <code>anti-churn verify</code> with 0 validation errors.</li>
+
+<ul>
+<li>All open reservations transitioned to `pass` or explicit terminal outcome.</li>
+<li>Zero unresolved pending reservations in `.fable/anti-churn/receipts.ndjson`.</li>
+<li>State ledger passes `anti-churn verify` with 0 validation errors.</li>
 <li>Passing tests verified with fresh evidence matching current mutation generation.</li>
 </ul>
+
 <h2>CLI Commands</h2>
-<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Evaluate an action event against receipts ledger
+
+<pre><code>
+# Evaluate an action event against receipts ledger
+
 bun ./bin/get-fable.js anti-churn decide event.json
 
+
+
 # Accept passing evidence for an open reservation
+
 bun ./bin/get-fable.js anti-churn accept &lt;receipt-id&gt; &lt;evidence-digest&gt; [pass|local_failure]
 
+
+
 # Quick zero-latency check if an action/command is duplicate
+
 bun ./bin/get-fable.js anti-churn check --action-kind targeted_test --target src/core.ts --command &quot;bun test&quot;
 
+
+
 # Verify receipts ledger integrity
+
 bun ./bin/get-fable.js anti-churn verify
 
+
+
 # Run native 23-fixture self-test corpus
+
 bun ./bin/get-fable.js anti-churn self-test
 
+
+
 # Check anti-churn status &amp; metrics
-bun ./bin/get-fable.js anti-churn status</code></pre></div>
+
+bun ./bin/get-fable.js anti-churn status
+
+</code></pre>
+
 <h2>Lifecycle Hook Enforcement</h2>
-<p>1. <strong>SessionStart</strong>: Scan <code>.fable/anti-churn/receipts.ndjson</code> for open reservations or persistent local failure loops.</p>
-<p>2. <strong>PreToolUse (Bash / Agent)</strong>: Compute action key. If duplicate without invalidation, intercept and block.</p>
-<p>3. <strong>PostToolUse (Write / Edit)</strong>: Compute new candidate hash and clear local failure locks.</p>
-<p>4. <strong>PostToolUse (Bash Success)</strong>: Invalidate failure tracking.</p>
-<p>5. <strong>PostToolUseFailure (Bash Failure)</strong>: Detect deterministic local failure loops and block blind retries.</p>
-<p>6. <strong>Stop</strong>: Verify no unsettled reservations or corrupted receipts before closing turn.</p>
+
+<p>1. **SessionStart**: Scan `.fable/anti-churn/receipts.ndjson` for open reservations or persistent local failure loops.</p>
+<p>2. **PreToolUse (Bash / Agent)**: Compute action key. If duplicate without invalidation, intercept and block.</p>
+<p>3. **PostToolUse (Write / Edit)**: Compute new candidate hash and clear local failure locks.</p>
+<p>4. **PostToolUse (Bash Success)**: Invalidate failure tracking.</p>
+<p>5. **PostToolUseFailure (Bash Failure)**: Detect deterministic local failure loops and block blind retries.</p>
+<p>6. **Stop**: Verify no unsettled reservations or corrupted receipts before closing turn.</p>
+
 <h2>Progressive Resources</h2>
-<ul class="docs-list">
-<li><a href="references/DECISIONS-AND-RECEIPTS.md" rel="noreferrer">Decisions &amp; Receipts Architecture</a> — Comprehensive receipt schema and 35 canonical fields specification.</li>
-<li><a href="references/THREAT-MODEL.md" rel="noreferrer">Threat Model</a> — Security boundaries, trust domains, and tampering prevention.</li>
-<li><a href="references/PRIVACY.md" rel="noreferrer">Privacy Policy</a> — Prohibited fields and secret redaction enforcement.</li>
-<li><a href="references/EVALUATION.md" rel="noreferrer">Evaluation Protocol</a> — 23-scenario verification matrix and baseline assertions.</li>
-<li><a href="references/doctrine_review.md" rel="noreferrer">Doctrine Review</a> — Mathematical and architectural foundations of duplicate work prevention.</li>
-<li><a href="references/CLAUDE-INSTALL.md" rel="noreferrer">Claude Integration</a> — Host lifecycle hook setup for Claude Code.</li>
-<li><a href="references/CODEX-INSTALL.md" rel="noreferrer">Codex Integration</a> — Host lifecycle hook setup for OpenAI Codex.</li>
-<li><a href="templates/EVENT_TEMPLATE.json" rel="noreferrer">Event Template</a> — Standard action event JSON template.</li>
-<li><a href="templates/RECEIPT_TEMPLATE.json" rel="noreferrer">Receipt Template</a> — Canonical decision receipt JSON template.</li>
-</ul>
 
-        </article>
-      </div>
-
-      <nav class="page-bottom-nav">
-        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
-        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
-      </nav>
-    </div>
-  </main>
-
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <div class="footer-brand">
-        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
-        <span>get-fable</span>
-      </div>
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="../index.html">Home</a>
-        <a href="../skills.html">Skills Catalog</a>
-        <a href="../guide.html">User Guide</a>
-        <a href="../workflows.html">Workflows &amp; Prompts</a>
-        <a href="../pricing.html">Pricing (Free OSS)</a>
-        <a href="../llms.txt">llms.txt</a>
-        <a href="../sitemap.xml">Sitemap</a>
-      </nav>
-      <p>Open source under GNU AGPLv3 · <span data-year>2026</span></p>
-      <a href="#top">Back to top ↑</a>
-    </div>
-  </footer>
-</body>
-</html>
+<ul>
+<li>[Decisions &amp; Receipts Architecture](references/DECISIONS-AND-RECEIPTS.md) — Comprehensive receipt schema and 35 canonical fields specification.</li>
+<li>[Threat Model](references/THREAT-MODEL.md) — Security boundaries, trust domains, and tampering prevention.</li>
+<li>[Privacy Policy](references/PRIVACY.md) — Prohibited fields and secret redaction enforcement.</li>
+<li>[Evaluation Protocol](references/EVALUATION.md) — 23-scenario verification matrix and baseline assertions.</li>
+<li>[Doctrine Review](references/doctrine_review.md) — Mathematical and architectural foundations of duplicate work prevention.</li>
+<li>[Claude Integration](references/CLAUDE-INSTALL.md) — Host lifecycle hook setup for Claude Code.</li>
+<li>[Codex Integration](references/CODEX-INSTALL.md) — Host lifecycle hook setup for OpenAI Codex.</li>
+<li>[Event Template](templates/EVENT_TEMPLATE.json) — Standard action event JSON template.</li>
+<li>[Receipt Template](templates/RECEIPT_TEMPLATE.json) — Canonical decision receipt JSON template.</li>
+</ul></article>
+</main><footer style="text-align:center;padding:2rem">Public community Skill · AGPL-3.0-or-later</footer></body></html>
