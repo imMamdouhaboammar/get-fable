@@ -17,7 +17,6 @@
     "fable-heal",
     "fable-release",
     "fable-handoff",
-    "fable-eval",
     "fable-learning",
     "fable-recover",
     "fable-dataviz",
@@ -25,14 +24,12 @@
     "fable-simplify",
     "fable-loop",
     "fable-test",
-    "fable-core-test",
     "fable-run",
     "fable-memory",
     "fable-config",
     "fable-simulator",
     "fable-cowork",
     "fable-spark",
-    "fable-skill-creator",
     "fable-architecture",
     "fable-eco",
     "fable-context-thrift",
@@ -47,7 +44,6 @@
     "fable-judge",
     "fable-method",
     "fable-council",
-    "fable-tend",
     "fable-wise"
   ]
 }

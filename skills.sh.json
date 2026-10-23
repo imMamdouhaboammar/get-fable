@@ -81,11 +81,6 @@
       "description": "Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption."
     },
     {
-      "id": "fable-eval",
-      "path": "skills/fable-eval/SKILL.md",
-      "description": "Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks."
-    },
-    {
       "id": "fable-learning",
       "path": "skills/fable-learning/SKILL.md",
       "description": "Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks."
@@ -121,11 +116,6 @@
       "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch."
     },
     {
-      "id": "fable-core-test",
-      "path": "skills/fable-core-test/SKILL.md",
-      "description": "Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit."
-    },
-    {
       "id": "fable-run",
       "path": "skills/fable-run/SKILL.md",
       "description": "Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown."
@@ -154,11 +144,6 @@
       "id": "fable-spark",
       "path": "skills/fable-spark/SKILL.md",
       "description": "Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence."
-    },
-    {
-      "id": "fable-skill-creator",
-      "path": "skills/fable-skill-creator/SKILL.md",
-      "description": "Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning."
     },
     {
       "id": "fable-architecture",
@@ -229,11 +214,6 @@
       "id": "fable-council",
       "path": "skills/fable-council/SKILL.md",
       "description": "Convene multi-agent council across installed CLI agents to deliberate before finalizing plans."
-    },
-    {
-      "id": "fable-tend",
-      "path": "skills/fable-tend/SKILL.md",
-      "description": "Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage."
     },
     {
       "id": "fable-wise",

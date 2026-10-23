@@ -3,7 +3,6 @@
   "version": "1.15.2",
   "description": "Agent evaluation, prompt benchmarks, holdouts, and self-improvement tracking.",
   "skills": [
-    "fable-eval",
     "fable-learning"
   ]
 }

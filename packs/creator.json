@@ -3,7 +3,6 @@
   "version": "1.15.2",
   "description": "Skill creation, iterative benchmarking, eval suites, description optimization, and packaging.",
   "skills": [
-    "fable-skill-creator",
     "fable-domain"
   ]
 }

@@ -18,7 +18,6 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 78 | proof | consumer | `fable-heal` | executing | Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam. |
 | 80 | delivery | consumer | `fable-release` | verifying | Audit and certify repository merge and release readiness against required quality gates, clean git working trees, and verified distribution artifacts. |
 | 85 | delivery | consumer | `fable-handoff` | verifying | Compact session decisions, durable evidence, open blockers, and exact next actions into structured continuation state for cross-session resumption. |
-| 90 | evolution | maintainer | `fable-eval` | verifying | Evaluate changes to agent prompts, skills, routing policies, and harnesses against reproducible baselines, held-out suites, and regression benchmarks. |
 | 95 | evolution | consumer | `fable-learning` | verifying | Analyze conversation transcripts, session logs, and agent executions to extract structured learnings, reusable patterns, post-training signals, and agent-kernel Playbooks. |
 | 100 | core | consumer | `fable-recover` | recovering | Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits. |
 | 110 | system | consumer | `fable-dataviz` | executing | Design and generate accessible, cohesive data visualizations, SVG charts, metric cards, and dashboard tiles with theme-adaptive styling and verified viewports. |
@@ -26,14 +25,12 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 130 | system | consumer | `fable-simplify` | executing | Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior. |
 | 140 | system | consumer | `fable-loop` | executing | Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff. |
 | 142 | proof | consumer | `fable-test` | verifying | Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch. |
-| 143 | proof | maintainer | `fable-core-test` | verifying | Orchestrate, execute, and diagnose the complete internal 7-tier test pyramid for get-fable crates, Bun suites, Cypress, and system doctor audit. |
 | 150 | system | consumer | `fable-run` | verifying | Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown. |
 | 160 | system | consumer | `fable-memory` | discovering | Manage persistent file-based memory, indexing cross-session user preferences, feedback, and architectural constraints in structured MEMORY.md stores. |
 | 170 | system | consumer | `fable-config` | planned | Configure and audit AI agent harness settings, permissions allowlists, environment variables, editor keybindings, and lifecycle hook integrations. |
 | 180 | system | consumer | `fable-simulator` | verifying | Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states. |
 | 190 | system | consumer | `fable-cowork` | executing | Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement. |
 | 200 | system | consumer | `fable-spark` | idle | Predict the smallest atomic next engineering action from current workspace state, evidence gates, and mutation freshness with situational silence. |
-| 210 | creator | maintainer | `fable-skill-creator` | executing | Author, evaluate, refine, optimize, and package autonomous AI agent skills across multi-agent ecosystems with BinEval scoring and description tuning. |
 | 220 | system | consumer | `fable-architecture` | planned | Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture. |
 | 230 | system | consumer | `fable-eco` | planned | Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts. |
 | 240 | system | consumer | `fable-context-thrift` | discovering | Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups. |
@@ -48,5 +45,4 @@ Generated from `skills/get-fable/registry.json` by `bun run generate:catalog`. D
 | 310 | proof | consumer | `fable-judge` | verifying | Adversarial verification of finished work detecting weakened tests and false completion claims. |
 | 320 | core | consumer | `fable-method` | executing | Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation. |
 | 330 | system | consumer | `fable-council` | planned | Convene multi-agent council across installed CLI agents to deliberate before finalizing plans. |
-| 340 | delivery | maintainer | `fable-tend` | executing | Autonomous dutiful junior maintainer for repository CI repair, PR conflict resolution, and triage. |
 | 350 | system | consumer | `fable-wise` | planned | Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh. |

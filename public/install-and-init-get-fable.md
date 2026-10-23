@@ -1,6 +1,9 @@
 # Install & Initialize get-fable (`install-and-init-get-fable`)
 
-Deterministic, step-by-step onboarding, host installation, workspace initialization, and toolchain provisioning guide for AI agents and human developers across **32 AI coding platforms** and **46 canonical skills**.
+Deterministic, step-by-step onboarding, host installation, workspace initialization, and toolchain provisioning guide for AI agents and human developers across **32 AI coding platforms** and **42 canonical skills**.
+
+> **Playbook Definition & Purpose**:
+> End-to-end onboarding, host installation, workspace initialization, supporting toolchain setup, interactive fable-eco capability provisioning, and bilingual (Arabic/English) workflow coaching for get-fable across 32 AI coding platforms and 42 canonical skills. Use when setting up get-fable on a user machine, initializing .fable/ in a repository, installing the 42 canonical skills and 5 Python lifecycle hooks across agent hosts, configuring git quality gates or shell aliases, asking the user whether to provision fable-eco capability profiles, or answering user questions on how to use get-fable in daily engineering work. Do NOT use for executing individual bounded coding cards once setup is complete (use fable-execute or fable-tdd) or performing standalone security penetration scans (use fable-redteam).
 
 ---
 
@@ -9,7 +12,7 @@ Deterministic, step-by-step onboarding, host installation, workspace initializat
 Any autonomous agent or developer entering a machine or repository must execute this playbook if:
 1. `get-fable` CLI is not installed globally or not in `PATH`.
 2. The current repository does not have an initialized [`.fable/`](file:///.fable/) state directory.
-3. Installed AI host configurations (Claude, Antigravity, Codex, Cursor, Windsurf, etc.) lack the 46 canonical skills or 5 Python lifecycle hooks.
+3. Installed AI host configurations (Claude, Antigravity, Codex, Cursor, Windsurf, etc.) lack the 42 canonical skills or 5 Python lifecycle hooks.
 4. `get-fable doctor --json-v1` reports missing tools, unconfigured hooks, or errors.
 
 ---
@@ -20,7 +23,7 @@ Before mutating any global or workspace configuration, verify the host runtime e
 
 | Runtime / Tool | Minimum Version | Required For | Failure Remediation |
 |---|---|---|---|
-| **Bun** | `≥ 1.3.0` | Mandatory CLI runtime, script execution, package management | `curl -fsSL https://bun.sh/install \| bash` (never use `npm` or `yarn`) |
+| **Bun** | `≥ 1.3.0` | Mandatory CLI runtime, script execution, package management | `curl -fsSL https://bun.sh/install \| bash` (never use `npm` or `yarn` for project dev) |
 | **Git** | `≥ 2.30.0` | Version control, worktree isolation, pre-commit/pre-push hooks | System package manager (`brew install git` / `apt install git`) |
 | **Python** | `≥ 3.9` | 5 mechanical zero-overhead lifecycle hooks (`hooks/*.py`) | System package manager (`brew install python3` / `apt install python3`) |
 
@@ -31,24 +34,23 @@ which get-fable get-fable-native no-mistakes cargo 2>/dev/null || true
 ```
 
 > [!CAUTION]
-> **Bun-Only Invariant**: Every JavaScript/TypeScript execution in `get-fable` must use Bun first. `npm` and `yarn` are strictly prohibited.
+> **Bun-Only Invariant**: Every JavaScript/TypeScript execution in `get-fable` must use Bun first.
 > **No Symlink State**: `.fable` must be a real directory. Symlinked `.fable` directories are rejected by the security engine.
 
 ---
 
 ## 3. Global CLI Installation
 
-Install the `get-fable` binary on the machine using one of the following methods:
+Install the `get-fable` binary on the machine using one of the following approved methods:
 
-### Method A: Bun Global (Recommended across all platforms)
+### Method A: Bun Global (Approved & Recommended across all platforms)
 ```bash
 bun add -g get-fable
 ```
 
-### Method B: Homebrew (macOS & Linux)
+### Method B: npm Global (Node.js Environments)
 ```bash
-brew tap imMamdouhaboammar/get-fable https://github.com/imMamdouhaboammar/get-fable
-brew install get-fable
+npm install -g get-fable
 ```
 
 ### Method C: Standalone One-Line Installer (CI / Docker / Bare Metal)
@@ -56,7 +58,13 @@ brew install get-fable
 curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/main/install.sh | sh
 ```
 
-### Method D: Direct Cloned Source Repo
+### Method D: Homebrew (macOS & Linux)
+```bash
+brew tap imMamdouhaboammar/get-fable https://github.com/imMamdouhaboammar/get-fable
+brew install get-fable
+```
+
+### Method E: Direct Cloned Source Repo
 ```bash
 bun install && bun run build && bun link
 ```
@@ -70,7 +78,7 @@ get-fable --version
 
 ## 4. Multi-Host Integration & Skill Deployment (32 Platforms)
 
-`get-fable` integrates natively with 32 AI agent platforms, delivering the **46 canonical skills** across 8 lifecycle packs and wiring mechanical lifecycle hooks.
+`get-fable` integrates natively with 32 AI agent platforms, delivering the **42 canonical skills** across 8 lifecycle packs and wiring mechanical lifecycle hooks.
 
 ### Step 4.1: Deploy Host Integrations & Lifecycle Hooks
 ```bash
@@ -95,10 +103,12 @@ Full Lifecycle hosts (`claude`, `antigravity`, `grok`) receive the 5 mechanical 
 
 ### Step 4.2: Install Canonical Skills Pack
 ```bash
-# Deploy all 46 skills across Core, Intelligence, Build, Proof, Delivery, Evolution, System, and Creator packs
+# Deploy all 42 skills across Core, Intelligence, Build, Proof, Delivery, Evolution, System, and Creator packs
 get-fable skills install all
 
 # Universal skill package manager alternative
+npx skills add imMamdouhaboammar/get-fable
+# or using Bun
 bunx skills add imMamdouhaboammar/get-fable
 ```
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Fable Test"
+  short_description: "Orchestrate, execute, and diagnose the complete 7-tier test pyramid of get-fable across unit, neural differential, anti-slop, integration, and E2E suites."
+  default_prompt: "You are the end-to-end testing specialist for get-fable. Guide the agent to execute, verify, and diagnose the entire multi-tier test pyramid across TypeScript, Rust workspace crates, neural differential oracles, anti-slop AST guards, Rig tools, and system doctor audits with zero false green claims."
+policy:
+  allow_implicit_invocation: true

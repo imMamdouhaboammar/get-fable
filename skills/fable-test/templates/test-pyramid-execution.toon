@@ -1,0 +1,14 @@
+test_pyramid_execution: {schema_version, timestamp, total_tiers, overall_status}
+  1, 2026-10-20T12:00:00Z, 7, PASS
+
+tiers [7]: {tier_number, name, runtime, command, required, timeout_sec}
+  1, unit_and_property, bun_and_cargo, bun test && cargo test --workspace, true, 30
+  2, neural_differential, rust_native, get-fable rig call-tool fable_neural_test, true, 10
+  3, anti_slop_ast_guard, rust_native, get-fable anti-slop scan --base HEAD, true, 15
+  4, integration_rig_grpc, bun_and_rust, bun test test/rig-integration.test.ts, true, 30
+  5, browser_cypress_e2e, cypress_node, bun run test:cypress:smoke, false, 120
+  6, behavioral_evals, bun_runtime, get-fable behavior-eval status, false, 60
+  7, ecosystem_doctor, bun_runtime, get-fable doctor --json-v1, true, 45
+
+gates: {zero_skipped_tests, zero_blockers, fresh_evidence_required}
+  true, true, true
