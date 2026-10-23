@@ -17,6 +17,7 @@ Complete installation, configuration, and host integration guide for **get-fable
 | **DeepSeek Harness (DSH)** | `dsh plugin add imMamdouhaboammar/get-fable` | Cordis plugin bundle + prebuilt Web UI |
 | **Claude Code Marketplace** | `/plugin marketplace add imMamdouhaboammar/get-fable` then `/plugin install get-fable@get-fable` | Full lifecycle hooks + skills |
 | **no-mistakes quality gate** | `get-fable install-no-mistakes` | Git pre-push hook + AI review pipeline |
+| **Agent Onboarding Playbook** | Read [install-and-init-get-fable.md](install-and-init-get-fable.md) | Step-by-step autonomous agent bootstrapping guide |
 
 ---
 
