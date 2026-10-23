@@ -1,10 +1,51 @@
+---
+id: fable-verify
+pack: core
+phase: verifying
+order: 50
+canonical_url: https://get-fable.vercel.app/skills/fable-verify.html
+---
+
 # fable-verify
 
-> Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.
+> **Falsify software implementations and gather fresh, machine-checked acceptance proof across tests, builds, typechecks, and runtime smoke checks before completion.**
 
-**Pack:** core · **Phase:** verifying
+- **Pack:** Core Pack
+- **Lifecycle Phase:** `verifying`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-recover`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-verify/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "run-tests" --apply
+```
+
+## Registered Intents
+- `run-tests`
+- `typecheck`
+- `falsify-behavior`
+- `validate-acceptance`
+
+## Required Gates
+- `fresh-mutation-covered`
+- `machine-checked`
+
+## Next Allowed Skills
+- `fable-review`
+- `fable-security`
+- `fable-release`
+- `fable-recover`
+- `fable-execute`
+- `fable-prove-it`
+- `fable-judge`
+- `fable-simulator`
+- `fable-outcome-first`
+- `fable-learning`
+- `fable-spark`
+- `fable-anti-slop-engineering`
+- `fable-anti-churn`
 
 ---
 

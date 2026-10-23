@@ -1,7 +1,7 @@
 {
   "name": "full",
   "version": "1.12.0",
-  "description": "Complete get-fable skill collection generated from the canonical registry (41 skills across 8 packs).",
+  "description": "Complete get-fable skill collection generated from the canonical registry (46 skills across 8 packs).",
   "skills": [
     "get-fable",
     "fable-discover",
@@ -23,6 +23,7 @@
     "fable-artifact",
     "fable-simplify",
     "fable-loop",
+    "fable-test",
     "fable-run",
     "fable-memory",
     "fable-config",

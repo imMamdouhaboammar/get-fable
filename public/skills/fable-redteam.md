@@ -1,10 +1,43 @@
+---
+id: fable-redteam
+pack: proof
+phase: verifying
+order: 75
+canonical_url: https://get-fable.vercel.app/skills/fable-redteam.html
+---
+
 # fable-redteam
 
-> Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets.
+> **Execute native agentic ethical penetration testing and automated security audits against staging or authorized targets.**
 
-**Pack:** proof · **Phase:** verifying
+- **Pack:** Proof Pack
+- **Lifecycle Phase:** `verifying`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-security`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-redteam/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "redteam" --apply
+```
+
+## Registered Intents
+- `redteam`
+- `pentest`
+- `security-audit`
+- `vulnerability-discovery`
+
+## Required Gates
+- `scope_verified`
+- `non_destructive_mode`
+
+## Next Allowed Skills
+- `fable-heal`
+- `fable-plan`
+- `fable-tdd`
+- `fable-security`
+- `fable-recover`
 
 ---
 

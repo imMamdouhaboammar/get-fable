@@ -19,5 +19,5 @@ Comprehensive routing matrix and precedence rules governing transitions between 
 | PR / Diff ready | "Review my changes" | `fable-review` | Independent grounded code review. |
 | Release candidate | "Ship to prod", "Release tag" | `fable-release` | Certification and gate validation. |
 | Session ending | "Pause work", "Save context" | `fable-handoff` | Durable state serialization. |
-| Agent prompt / skill | "Benchmark skill", "Eval prompt" | `fable-verify` | Specify an independent evaluation protocol before making claims. |
+| Agent prompt / skill | "Benchmark skill", "Eval prompt" | `fable-eval` | Baseline and holdout evaluation. |
 | New skill needed | "Create a skill", "Author skill" | `skill-creator` | 6-mode skill lifecycle. |

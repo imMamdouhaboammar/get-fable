@@ -1,10 +1,44 @@
+---
+id: fable-architecture
+pack: system
+phase: planned
+order: 220
+canonical_url: https://get-fable.vercel.app/skills/fable-architecture.html
+---
+
 # fable-architecture
 
-> Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture.
+> **Evaluate project specifications at inception (Step One), assess Scale, Domain Decoupling, and Resource Intensity vectors, and automatically enforce a decoupled Microservices Architecture.**
 
-**Pack:** system · **Phase:** planned
+- **Pack:** System Pack
+- **Lifecycle Phase:** `planned`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-plan`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-architecture/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "evaluate-architecture" --apply
+```
+
+## Registered Intents
+- `evaluate-architecture`
+- `enforce-microservices`
+- `assign-tech-stack`
+- `scaffold-distributed-system`
+
+## Required Gates
+- `microservices-threshold-evaluated`
+- `monolith-prohibited-if-distributed`
+- `east-west-grpc-or-broker-enforced`
+
+## Next Allowed Skills
+- `fable-plan`
+- `fable-delegate`
+- `fable-tdd`
+- `fable-execute`
+- `fable-verify`
 
 ---
 

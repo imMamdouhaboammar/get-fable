@@ -1,10 +1,43 @@
+---
+id: fable-heal
+pack: proof
+phase: executing
+order: 78
+canonical_url: https://get-fable.vercel.app/skills/fable-heal.html
+---
+
 # fable-heal
 
-> Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.
+> **Automatically synthesize, apply, and verify security remediations for vulnerabilities identified by fable-redteam.**
 
-**Pack:** proof · **Phase:** executing
+- **Pack:** Proof Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-recover`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-heal/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "heal" --apply
+```
+
+## Registered Intents
+- `heal`
+- `security-fix`
+- `remediate-vulnerability`
+- `patch-security`
+
+## Required Gates
+- `syntax_verified`
+- `regression_tests_passed`
+- `repro_neutralized`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-release`
+- `fable-review`
+- `fable-recover`
 
 ---
 

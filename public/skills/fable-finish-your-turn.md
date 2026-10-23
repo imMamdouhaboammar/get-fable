@@ -1,10 +1,39 @@
+---
+id: fable-finish-your-turn
+pack: delivery
+phase: executing
+order: 250
+canonical_url: https://get-fable.vercel.app/skills/fable-finish-your-turn.html
+---
+
 # fable-finish-your-turn
 
-> Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.
+> **Autonomous task completion policy preventing premature stops, upward delegation, and unexecuted TODOs.**
 
-**Pack:** delivery · **Phase:** executing
+- **Pack:** Delivery Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-recover`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-finish-your-turn/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "finish-turn" --apply
+```
+
+## Registered Intents
+- `finish-turn`
+- `complete-task`
+- `diagnose-error`
+
+## Required Gates
+- `invariants-preserved`
+- `errors-resolved`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-handoff`
 
 ---
 

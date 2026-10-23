@@ -1,10 +1,39 @@
+---
+id: fable-cowork
+pack: system
+phase: executing
+order: 190
+canonical_url: https://get-fable.vercel.app/skills/fable-cowork.html
+---
+
 # fable-cowork
 
-> Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.
+> **Execute autonomous multi-step cowork sessions with silent tool chaining, outcome-first progress reporting, and strict safety boundary enforcement.**
 
-**Pack:** system · **Phase:** executing
+- **Pack:** System Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-execute`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-cowork/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "cowork-mode" --apply
+```
+
+## Registered Intents
+- `cowork-mode`
+- `autonomous-execution`
+- `clean-tool-chain`
+
+## Required Gates
+- `no-mid-chain-noise`
+- `outcome-first`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-handoff`
 
 ---
 

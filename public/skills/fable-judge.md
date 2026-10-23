@@ -1,10 +1,38 @@
+---
+id: fable-judge
+pack: proof
+phase: verifying
+order: 310
+canonical_url: https://get-fable.vercel.app/skills/fable-judge.html
+---
+
 # fable-judge
 
-> Adversarial verification of finished work detecting weakened tests and false completion claims.
+> **Adversarial verification of finished work detecting weakened tests and false completion claims.**
 
-**Pack:** proof · **Phase:** verifying
+- **Pack:** Proof Pack
+- **Lifecycle Phase:** `verifying`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-verify`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-judge/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "judge-work" --apply
+```
+
+## Registered Intents
+- `judge-work`
+- `hunt-frauds`
+- `verify-diff`
+
+## Required Gates
+- `adversarial-proof`
+
+## Next Allowed Skills
+- `fable-review`
+- `fable-handoff`
 
 ---
 

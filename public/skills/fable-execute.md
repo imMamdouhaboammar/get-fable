@@ -1,10 +1,47 @@
+---
+id: fable-execute
+pack: core
+phase: executing
+order: 40
+canonical_url: https://get-fable.vercel.app/skills/fable-execute.html
+---
+
 # fable-execute
 
-> Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.
+> **Implement one accepted, bounded work card with immediate local verification, invariant preservation, and zero scope drift.**
 
-**Pack:** core · **Phase:** executing
+- **Pack:** Core Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-plan`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-execute/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "implement-card" --apply
+```
+
+## Registered Intents
+- `implement-card`
+- `bounded-change`
+- `small-feature`
+
+## Required Gates
+- `invariants-preserved`
+- `acceptance-checked`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-recover`
+- `fable-native-code`
+- `fable-scope-discipline`
+- `fable-finish-your-turn`
+- `fable-simplify`
+- `fable-run`
+- `fable-prove-it`
+- `fable-anti-slop-engineering`
+- `fable-anti-churn`
 
 ---
 

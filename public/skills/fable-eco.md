@@ -1,10 +1,44 @@
+---
+id: fable-eco
+pack: system
+phase: planned
+order: 230
+canonical_url: https://get-fable.vercel.app/skills/fable-eco.html
+---
+
 # fable-eco
 
-> Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.
+> **Provision curated capabilities, manage reproducible capability locks, verify host integrations, and compile capability execution contracts.**
 
-**Pack:** system · **Phase:** planned
+- **Pack:** System Pack
+- **Lifecycle Phase:** `planned`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-plan`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-eco/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "discover-environment" --apply
+```
+
+## Registered Intents
+- `discover-environment`
+- `plan-capabilities`
+- `install-capabilities`
+- `update-capabilities`
+- `repair-capabilities`
+- `explain-run`
+
+## Required Gates
+- `deterministic_resolution`
+- `transaction_journal_committed`
+- `health_check_passed`
+
+## Next Allowed Skills
+- `fable-plan`
+- `fable-execute`
+- `fable-verify`
 
 ---
 

@@ -108,7 +108,8 @@
       ],
       "supporting_skills": [
         "fable-loop",
-        "fable-recover"
+        "fable-recover",
+        "fable-tend"
       ],
       "defaultSkills": [
         "fable-execute",
@@ -122,7 +123,8 @@
       ],
       "fallbackSkills": [
         "fable-loop",
-        "fable-recover"
+        "fable-recover",
+        "fable-tend"
       ]
     },
     {
@@ -139,6 +141,7 @@
       ],
       "supporting_skills": [
         "fable-recover",
+        "fable-eval",
         "fable-outcome-first"
       ],
       "defaultSkills": [
@@ -150,6 +153,7 @@
       ],
       "fallbackSkills": [
         "fable-recover",
+        "fable-eval",
         "fable-outcome-first"
       ]
     },
@@ -160,6 +164,7 @@
       "autonomy_level": "read-only",
       "primary_skills": [
         "fable-review",
+        "fable-eval",
         "fable-judge"
       ],
       "supporting_skills": [
@@ -171,6 +176,7 @@
       ],
       "defaultSkills": [
         "fable-review",
+        "fable-eval",
         "fable-judge"
       ],
       "fallbackSkills": [
@@ -217,7 +223,8 @@
       "primary_skills": [
         "fable-simulator",
         "fable-verify",
-        "fable-run"
+        "fable-run",
+        "fable-tend"
       ],
       "supporting_skills": [
         "fable-recover",
@@ -227,7 +234,8 @@
       "defaultSkills": [
         "fable-simulator",
         "fable-verify",
-        "fable-run"
+        "fable-run",
+        "fable-tend"
       ],
       "fallbackSkills": [
         "fable-recover",
@@ -241,6 +249,8 @@
       "role": "Skill Engineer & Prompt Optimizer",
       "autonomy_level": "bounded",
       "primary_skills": [
+        "fable-skill-creator",
+        "fable-eval",
         "fable-verify",
         "fable-learning",
         "fable-domain"
@@ -251,6 +261,8 @@
         "fable-wise"
       ],
       "defaultSkills": [
+        "fable-skill-creator",
+        "fable-eval",
         "fable-verify",
         "fable-learning",
         "fable-domain"

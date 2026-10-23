@@ -1,10 +1,46 @@
+---
+id: fable-review
+pack: proof
+phase: verifying
+order: 60
+canonical_url: https://get-fable.vercel.app/skills/fable-review.html
+---
+
 # fable-review
 
-> Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.
+> **Perform an independent, evidence-grounded review of git diffs against requested specifications, architectural invariants, and code standards.**
 
-**Pack:** proof · **Phase:** verifying
+- **Pack:** Proof Pack
+- **Lifecycle Phase:** `verifying`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-recover`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-review/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "code-review" --apply
+```
+
+## Registered Intents
+- `code-review`
+- `diff-audit`
+- `standards-check`
+
+## Required Gates
+- `grounded-diff-read`
+- `actionable-findings`
+
+## Next Allowed Skills
+- `fable-security`
+- `fable-release`
+- `fable-execute`
+- `fable-recover`
+- `fable-judge`
+- `fable-outcome-first`
+- `fable-simplify`
+- `fable-anti-slop-engineering`
+- `fable-anti-churn`
 
 ---
 

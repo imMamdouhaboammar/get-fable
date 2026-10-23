@@ -1,10 +1,39 @@
+---
+id: fable-artifact
+pack: system
+phase: executing
+order: 120
+canonical_url: https://get-fable.vercel.app/skills/fable-artifact.html
+---
+
 # fable-artifact
 
-> Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.
+> **Design and author structured technical proposals, responsive artifacts, architecture diagrams, Mermaid charts, and interactive components.**
 
-**Pack:** system · **Phase:** executing
+- **Pack:** System Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-plan`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-artifact/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "create-artifact" --apply
+```
+
+## Registered Intents
+- `create-artifact`
+- `diagram-architecture`
+- `interactive-component`
+
+## Required Gates
+- `hierarchy-clear`
+- `theme-adaptive`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-review`
 
 ---
 

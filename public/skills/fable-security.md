@@ -1,10 +1,42 @@
+---
+id: fable-security
+pack: proof
+phase: verifying
+order: 70
+canonical_url: https://get-fable.vercel.app/skills/fable-security.html
+---
+
 # fable-security
 
-> Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.
+> **Conduct threat modeling, vulnerability assessments, secret sanitization, and security reviews across trust boundaries, auth flows, and untrusted inputs.**
 
-**Pack:** proof · **Phase:** verifying
+- **Pack:** Proof Pack
+- **Lifecycle Phase:** `verifying`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-plan`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-security/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "security-review" --apply
+```
+
+## Registered Intents
+- `security-review`
+- `threat-model`
+- `audit-auth`
+- `validate-finding`
+
+## Required Gates
+- `threat-surface-checked`
+- `no-exposed-secrets`
+
+## Next Allowed Skills
+- `fable-release`
+- `fable-execute`
+- `fable-recover`
+- `fable-redteam`
 
 ---
 

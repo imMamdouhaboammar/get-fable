@@ -1,7 +1,7 @@
 {
   "$schema": "https://skills.sh/schema/v1.json",
   "name": "get-fable",
-  "version": "1.15.2",
+  "version": "1.16.0",
   "description": "Portable coding lifecycle discipline and situational awareness for AI agents.",
   "author": {
     "name": "Mamdouh Abo Ammar",
@@ -109,6 +109,11 @@
       "id": "fable-loop",
       "path": "skills/fable-loop/SKILL.md",
       "description": "Execute bounded recurring polling loops, CI build babysitting, interval-based status monitors, and self-paced test cycles with explicit timeouts and backoff."
+    },
+    {
+      "id": "fable-test",
+      "path": "skills/fable-test/SKILL.md",
+      "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch."
     },
     {
       "id": "fable-run",

@@ -1,10 +1,39 @@
+---
+id: fable-wise
+pack: system
+phase: planned
+order: 350
+canonical_url: https://get-fable.vercel.app/skills/fable-wise.html
+---
+
 # fable-wise
 
-> Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.
+> **Low-level agentic design patterns and cognitive reflexes across Depth, Breadth, Coil, and Mesh.**
 
-**Pack:** system · **Phase:** planned
+- **Pack:** System Pack
+- **Lifecycle Phase:** `planned`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-simplify`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-wise/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "apply-wise-pattern" --apply
+```
+
+## Registered Intents
+- `apply-wise-pattern`
+- `rewrite-v0`
+- `consolidate-ssot`
+- `strip-slop`
+
+## Required Gates
+- `contrarian-verified`
+
+## Next Allowed Skills
+- `fable-plan`
+- `fable-execute`
 
 ---
 
@@ -31,7 +60,7 @@ Enforce senior architectural wisdom through cognitive reflexes across Depth, Bre
 ## When NOT to Use
 
 - Routine small bugfixes with zero structural complexity (use `fable-execute`).
-- Automated dependency updates or standard CI repair (use the repository's approved maintenance workflow).
+- Automated dependency updates or standard CI repair (use `fable-tend`).
 - High-level multi-host lifecycle routing (use `get-fable`).
 
 ## Inputs

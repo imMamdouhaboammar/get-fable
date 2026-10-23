@@ -1,10 +1,39 @@
+---
+id: fable-simulator
+pack: system
+phase: verifying
+order: 180
+canonical_url: https://get-fable.vercel.app/skills/fable-simulator.html
+---
+
 # fable-simulator
 
-> Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.
+> **Verify complex code changes against independent mathematical oracles, derived specifications, headless browser environments, and isolated sandbox states.**
 
-**Pack:** system · **Phase:** verifying
+- **Pack:** System Pack
+- **Lifecycle Phase:** `verifying`
+- **Mutates Workspace:** No
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-verify`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-simulator/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "simulator-verify" --apply
+```
+
+## Registered Intents
+- `simulator-verify`
+- `derive-contract`
+- `headless-browser-test`
+
+## Required Gates
+- `oracle-independent`
+- `untracked-files-preserved`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-review`
 
 ---
 

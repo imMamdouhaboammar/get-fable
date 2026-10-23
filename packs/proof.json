@@ -1,12 +1,13 @@
 {
   "name": "proof",
-  "version": "1.15.2",
+  "version": "1.16.0",
   "description": "Independent diff review, code quality audit, and security boundary evaluation.",
   "skills": [
     "fable-review",
     "fable-security",
     "fable-redteam",
     "fable-heal",
+    "fable-test",
     "fable-prove-it",
     "fable-anti-slop-engineering",
     "fable-anti-churn",

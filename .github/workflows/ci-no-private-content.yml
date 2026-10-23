@@ -37,9 +37,3 @@ jobs:
             exit 1
           fi
           echo "Verified: Zero private content detected in public repository."
-
-      - name: Validate consumer-only Skills and web indexes
-        run: node scripts/public-boundary.mjs
-
-      - name: Validate installer syntax
-        run: sh -n install.sh

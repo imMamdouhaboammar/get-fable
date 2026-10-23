@@ -1,127 +1,220 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.">
-<title>fable-anti-slop-engineering | get-fable Community Skill</title>
-<link rel="canonical" href="https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html">
-<link rel="alternate" type="text/markdown" href="../skills/fable-anti-slop-engineering.md">
-<link rel="alternate" type="text/plain" href="../skills/fable-anti-slop-engineering.txt">
-<link rel="alternate" type="application/json" href="../skills/fable-anti-slop-engineering.json">
-<link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../styles.css"></head><body>
-<header class="site-header"><a href="../index.html">get-fable</a> · <a href="../skills.html">Community Skills</a></header>
-<main id="main-content" style="max-width:880px;margin:auto;padding:3rem 1.5rem;line-height:1.6;overflow-wrap:anywhere">
-<div class="section-marker">proof · verifying</div>
-<h1>fable-anti-slop-engineering</h1><p>Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.</p>
-<nav class="format-switcher" aria-label="Alternate formats">
-<a href="../skills/fable-anti-slop-engineering.md">Markdown</a> · <a href="../skills/fable-anti-slop-engineering.txt">Plain text</a> · <a href="../skills/fable-anti-slop-engineering.json">JSON</a> · <a href="https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-anti-slop-engineering/SKILL.md">Source</a>
-</nav><article class="docs-body"><h1>Fable Anti-Slop Engineering</h1>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories. - get-fable canonical skill reference and activation guide.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html">
+  <link rel="alternate" type="text/markdown" href="../skills/fable-anti-slop-engineering.md">
+  <link rel="alternate" type="text/plain" href="../skills/fable-anti-slop-engineering.txt">
+  <link rel="alternate" type="application/json" href="../skills/fable-anti-slop-engineering.json">
 
-<p>**Mission:** Deliver the smallest *coherent, correct, maintainable* change supported by independent evidence. Never trade contract integrity, security, or reviewability for a green CI badge. This skill applies to human and AI-authored changes equally.</p>
+  <!-- Open Graph -->
+  <meta property="og:title" content="fable-anti-slop-engineering — get-fable Skill Reference">
+  <meta property="og:description" content="Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
 
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="fable-anti-slop-engineering — get-fable Skill">
+  <meta name="twitter:description" content="Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.">
+  <meta name="twitter:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>fable-anti-slop-engineering — get-fable Skill Reference</title>
+  <link rel="icon" href="../assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "fable-anti-slop-engineering Skill Specification",
+    "description": "Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.",
+    "articleSection": "Proof Pack",
+    "url": "https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html",
+    "author": {
+      "@type": "Organization",
+      "name": "get-fable Team"
+    },
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="../index.html" aria-label="get-fable home">
+        <img src="../assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="../index.html#thesis">Thesis</a>
+        <a href="../skills.html" class="is-active">Skills (42)</a>
+        <a href="../guide.html">Guide &amp; Docs</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="skill-detail-main">
+    <div class="shell">
+      <nav class="breadcrumbs" aria-label="Breadcrumbs">
+        <a href="../index.html">Home</a>
+        <span>/</span>
+        <a href="../skills.html">Skills</a>
+        <span>/</span>
+        <span aria-current="page">fable-anti-slop-engineering</span>
+      </nav>
+
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="../skills/fable-anti-slop-engineering.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="../skills/fable-anti-slop-engineering.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="../skills/fable-anti-slop-engineering.json" target="_blank">JSON (.json)</a>
+      </aside>
+
+      <header class="skill-header">
+        <div class="skill-meta-tags">
+          <span class="pack-badge">Proof Pack</span>
+          <span class="phase-badge phase-verifying">Phase: verifying</span>
+          <span class="order-badge">Order: 285</span>
+        </div>
+        <h1 class="skill-title">fable-anti-slop-engineering</h1>
+        <p class="skill-lead">Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.</p>
+      </header>
+
+      <section class="skill-command-box" aria-labelledby="quick-activation">
+        <h2 id="quick-activation" class="visually-hidden">Quick Activation</h2>
+        <div class="code-block">
+          <button class="copy-button" data-copy aria-label="Copy activation command">Copy</button>
+          <pre><code>bun ./bin/get-fable.js route "audit-slop" --apply</code></pre>
+        </div>
+      </section>
+
+      <div class="skill-layout">
+        <aside class="skill-specs-card">
+          <h2>Specifications</h2>
+          <dl class="specs-list">
+            <dt>Pack</dt>
+            <dd>Proof Pack</dd>
+            <dt>Lifecycle Phase</dt>
+            <dd><span class="phase-tag">verifying</span></dd>
+            <dt>Mutates Workspace</dt>
+            <dd>No (read-only)</dd>
+            <dt>Parallel Safe</dt>
+            <dd>Yes</dd>
+            <dt>Fallback Skill</dt>
+            <dd><a href="../skills/fable-recover.html">fable-recover</a></dd>
+          </dl>
+
+          <h3>Intents</h3>
+          <div class="intents-list"><span class="intent-chip">audit-slop</span> <span class="intent-chip">verify-diff-integrity</span> <span class="intent-chip">prevent-slop</span> <span class="intent-chip">check-test-integrity</span></div>
+
+          <h3>Required Gates</h3>
+          <ul class="gates-list"><li><code>zero-slop-blockers</code></li><li><code>test-assertions-intact</code></li></ul>
+
+          <h3>Permitted Continuations</h3>
+          <div class="next-links"><a class="token-link" href="../skills/fable-verify.html">fable-verify</a> <a class="token-link" href="../skills/fable-review.html">fable-review</a> <a class="token-link" href="../skills/fable-heal.html">fable-heal</a> <a class="token-link" href="../skills/fable-prove-it.html">fable-prove-it</a> <a class="token-link" href="../skills/fable-judge.html">fable-judge</a> <a class="token-link" href="../skills/fable-handoff.html">fable-handoff</a> <a class="token-link" href="../skills/fable-anti-churn.html">fable-anti-churn</a> <a class="token-link" href="../skills/fable-recover.html">fable-recover</a></div>
+        </aside>
+
+        <article class="skill-content-body">
+          <h1>Fable Anti-Slop Engineering</h1>
+<p><strong>Mission:</strong> Deliver the smallest <em>coherent, correct, maintainable</em> change supported by independent evidence. Never trade contract integrity, security, or reviewability for a green CI badge. This skill applies to human and AI-authored changes equally.</p>
 <h2>Purpose</h2>
-
 <p>Enforce professional software engineering standards, contract preservation, test integrity, and security boundaries across every coding round and lifecycle phase. Detects and blocks AI coding slop, weak/tautological assertions, skipped tests, swallowed exceptions, type suppressions, security bypasses, and unconstrained diff bloat before code is committed or merged.</p>
-
 <h2>When to Use</h2>
-
-<ul>
+<ul class="docs-list">
 <li>Planning or implementing features and bug fixes where existing contracts must remain intact.</li>
 <li>Modifying test assertions, test fixtures, snapshots, or golden datasets.</li>
 <li>Reviewing pull requests and diffs for hidden regressions, cheat patterns, or bloat.</li>
 <li>Running pre-commit, pre-push, and lifecycle completion gates across all coding sessions.</li>
 <li>Auditing agent-generated code for silent error swallowing, mock overuse, UI dev-notes leakage, or security boundary escapes.</li>
-<li>**NOTED_SLOP:** Codifying newly observed AI slop into a diagnostic catalog pattern, agent directive, and automated diff guard heuristic.</li>
+<li><strong>NOTED_SLOP:</strong> Codifying newly observed AI slop into a diagnostic catalog pattern, agent directive, and automated diff guard heuristic.</li>
 </ul>
-
 <h2>When NOT to Use</h2>
-
-<ul>
+<ul class="docs-list">
 <li>NOT for speculative, unverified rewrites or large-scale re-architecting without a proven baseline contract.</li>
 <li>NOT for stylistic nitpicking or formatting bikeshedding that has zero bearing on behavioral contracts.</li>
 <li>NOT as a substitute for executable test suites, real dynamic testing, or penetration scanning.</li>
 </ul>
-
 <h2>Inputs</h2>
-
-<ul>
-<li>`task_specification`: User requirements, issue brief, or acceptance criteria.</li>
-<li>`current_diff`: Unified git diff against base ref (or file tree for clean code check).</li>
-<li>`repository_context`: Existing test suites, architecture contracts, error handling idioms, and security policies.</li>
+<ul class="docs-list">
+<li><code>task_specification</code>: User requirements, issue brief, or acceptance criteria.</li>
+<li><code>current_diff</code>: Unified git diff against base ref (or file tree for clean code check).</li>
+<li><code>repository_context</code>: Existing test suites, architecture contracts, error handling idioms, and security policies.</li>
 </ul>
-
 <h2>Expected Outputs</h2>
-
-<ul>
-<li>`slop_audit_report`: Structured audit report classifying findings into Blocker, Review, and Warning tiers with exact file and line citations.</li>
-<li>`diff_integrity_evidence`: Fresh passing verification evidence proving zero slop blockers in the active diff.</li>
-<li>`sarif_report`: Standard SARIF 2.1.0 output for CI/CD integration and automated code scanning.</li>
+<ul class="docs-list">
+<li><code>slop_audit_report</code>: Structured audit report classifying findings into Blocker, Review, and Warning tiers with exact file and line citations.</li>
+<li><code>diff_integrity_evidence</code>: Fresh passing verification evidence proving zero slop blockers in the active diff.</li>
+<li><code>sarif_report</code>: Standard SARIF 2.1.0 output for CI/CD integration and automated code scanning.</li>
 </ul>
-
 <h2>Procedure</h2>
-
 <p>Execute the 7-Gate Anti-Slop Protocol on every coding round:</p>
-
-<p>1. **Gate 0 (Discover):** Inspect repository architecture, package manifests, lockfiles, existing tests, and conventions. Never improvise conventions.</p>
-<p>2. **Gate 1 (Scaffolding &amp; Dependency Sanity):** For new projects or modules, use official generators (`uv init`, `cargo init`, `bun create`). For new dependencies, resolve and pin the latest stable release.</p>
-<p>3. **Gate 2 (Lock Test Baseline):** Inspect existing tests before editing. Protect assertions; never weaken tests to match buggy behavior.</p>
-<p>4. **Gate 3 (Implement Surgically):** Modify existing abstractions. Minimal justified complexity; no parallel duplicate abstractions; zero dev-notes or meta-dialogue in UI components.</p>
-<p>5. **Gate 4 (Verify Beyond Green):** Exercise real unit/integration/contract suites. Treat coverage and lint as signals, not proof.</p>
-<p>6. **Gate 5 (Scan Diff with Native Engine):** Run `get-fable anti-slop --base HEAD --fail-on-blocker` or `fable-anti-slop scan`.</p>
-<p>7. **Gate 6 (Evidence &amp; Decision):** Emit explicit merge verdict (PASS / REVIEW / REWORK / BLOCK) backed by machine-checked evidence.</p>
-
+<p>1. <strong>Gate 0 (Discover):</strong> Inspect repository architecture, package manifests, lockfiles, existing tests, and conventions. Never improvise conventions.</p>
+<p>2. <strong>Gate 1 (Scaffolding &amp; Dependency Sanity):</strong> For new projects or modules, use official generators (<code>uv init</code>, <code>cargo init</code>, <code>bun create</code>). For new dependencies, resolve and pin the latest stable release.</p>
+<p>3. <strong>Gate 2 (Lock Test Baseline):</strong> Inspect existing tests before editing. Protect assertions; never weaken tests to match buggy behavior.</p>
+<p>4. <strong>Gate 3 (Implement Surgically):</strong> Modify existing abstractions. Minimal justified complexity; no parallel duplicate abstractions; zero dev-notes or meta-dialogue in UI components.</p>
+<p>5. <strong>Gate 4 (Verify Beyond Green):</strong> Exercise real unit/integration/contract suites. Treat coverage and lint as signals, not proof.</p>
+<p>6. <strong>Gate 5 (Scan Diff with Native Engine):</strong> Run <code>get-fable anti-slop --base HEAD --fail-on-blocker</code> or <code>fable-anti-slop scan</code>.</p>
+<p>7. <strong>Gate 6 (Evidence &amp; Decision):</strong> Emit explicit merge verdict (PASS / REVIEW / REWORK / BLOCK) backed by machine-checked evidence.</p>
 <h2>Decision Rules</h2>
-
-<ul>
-<li>**BLOCK (Fail Closed):** Any test disabled/skipped without approval, weakened assertions, swallowed exceptions in production paths, dev notes / mock apologies leaked in UI components (`DEV_NOTE_IN_UI`), disabled authentication or security checks, hardcoded credentials, or broken build. Exit code 2.</li>
-<li>**REWORK:** Unnecessary code duplication, unjustified new dependencies, tests testing implementation details rather than contracts, unreviewed generated artifact churn.</li>
-<li>**REVIEW:** Diffs exceeding 400 added lines, type suppressions (`any` or `@ts-ignore`), or justified contract updates.</li>
-<li>**PASS:** All acceptance criteria satisfied, zero blocker findings, passing fresh tests, and clean focused diff.</li>
+<ul class="docs-list">
+<li><strong>BLOCK (Fail Closed):</strong> Any test disabled/skipped without approval, weakened assertions, swallowed exceptions in production paths, dev notes / mock apologies leaked in UI components (<code>DEV_NOTE_IN_UI</code>), disabled authentication or security checks, hardcoded credentials, or broken build. Exit code 2.</li>
+<li><strong>REWORK:</strong> Unnecessary code duplication, unjustified new dependencies, tests testing implementation details rather than contracts, unreviewed generated artifact churn.</li>
+<li><strong>REVIEW:</strong> Diffs exceeding 400 added lines, type suppressions (<code>any</code> or <code>@ts-ignore</code>), or justified contract updates.</li>
+<li><strong>PASS:</strong> All acceptance criteria satisfied, zero blocker findings, passing fresh tests, and clean focused diff.</li>
 </ul>
-
 <h2>Tool Policy</h2>
-
-<ul>
+<ul class="docs-list">
 <li>Read-only tools preferred for discovery and review phases.</li>
-<li>Native anti-slop engine (`fable-anti-slop`) invoked on unified git diffs with `--fail-on-blocker`.</li>
+<li>Native anti-slop engine (<code>fable-anti-slop</code>) invoked on unified git diffs with <code>--fail-on-blocker</code>.</li>
 <li>Do not use shell execution to bypass pre-commit hooks (bypassing verification flags is strictly prohibited).</li>
 </ul>
-
 <h2>Evidence Requirements</h2>
-
-<ul>
-<li>Machine-checked output from `fable-anti-slop scan --base HEAD --fail-on-blocker --json-v1` or `get-fable anti-slop`.</li>
-<li>Fresh passing test evidence recorded via `get-fable evidence pass test ...`.</li>
-<li>Verifiable diff statistics (`git diff --stat`) demonstrating bounded changes.</li>
+<ul class="docs-list">
+<li>Machine-checked output from <code>fable-anti-slop scan --base HEAD --fail-on-blocker --json-v1</code> or <code>get-fable anti-slop</code>.</li>
+<li>Fresh passing test evidence recorded via <code>get-fable evidence pass test ...</code>.</li>
+<li>Verifiable diff statistics (<code>git diff --stat</code>) demonstrating bounded changes.</li>
 </ul>
-
 <h2>Failure Handling</h2>
-
-<ul>
+<ul class="docs-list">
 <li>If blocker slop findings are detected: do NOT bypass or rebaseline. Identify the root cause, revert the slop pattern, restore test assertions, and re-run the scan.</li>
-<li>If failure streak reaches 2: route to `fable-recover` immediately to diagnose environmental or execution path faults.</li>
+<li>If failure streak reaches 2: route to <code>fable-recover</code> immediately to diagnose environmental or execution path faults.</li>
 </ul>
-
 <h2>Completion Criteria</h2>
-
-<ul>
-<li>`fable-anti-slop` scan completes with status `passed` (0 blockers).</li>
+<ul class="docs-list">
+<li><code>fable-anti-slop</code> scan completes with status <code>passed</code> (0 blockers).</li>
 <li>All modified and new tests pass on the real runtime.</li>
-<li>Fresh evidence recorded in `.fable/state.json` matching current `mutationGeneration`.</li>
+<li>Fresh evidence recorded in <code>.fable/state.json</code> matching current <code>mutationGeneration</code>.</li>
 </ul>
-
 <h2>Operating priorities</h2>
-
 <p>1. Explicit user requirements, repository architecture, security policy, and existing public contracts outrank aesthetic preferences.</p>
 <p>2. Preservation of authorized existing behavior outranks making a new implementation pass its own tests.</p>
 <p>3. Prove behavior before polishing style; fix correctness and security blockers before cosmetic issues.</p>
-<p>4. Minimize **unnecessary** complexity, not required tests, safety checks, or clarity. A short but incorrect solution fails.</p>
+<p>4. Minimize <strong>unnecessary</strong> complexity, not required tests, safety checks, or clarity. A short but incorrect solution fails.</p>
 <p>5. Do not declare a finding without file/line evidence and an impact story. Never invent tool results or test runs.</p>
 <p>6. Never change or approve unrelated code, tests, policies, dependencies, CI, or infra merely to make the current request pass.</p>
-
 <h2>Non-negotiable anti-cheating rules</h2>
-
-<ul>
-<li>Do not change a test's expected output to match the observed buggy output unless the new output is explicitly authorized by product contract.</li>
+<ul class="docs-list">
+<li>Do not change a test&#039;s expected output to match the observed buggy output unless the new output is explicitly authorized by product contract.</li>
 <li>Do not delete, skip, xfail, downgrade, mock away, or suppress a failing test to conceal a failure.</li>
 <li>Do not use fake logs, fabricated benchmarks, imagined browser screenshots, test results, or invented source references.</li>
 <li>Do not weaken lint/type/security/branch protection/CI policies simply to achieve success.</li>
@@ -130,25 +223,52 @@
 <li>Do not over-restrict legitimate design: duplication in readable tests can be preferable to an unreadable abstraction, and a larger implementation can be necessary for correct safety boundaries.</li>
 <li>Do not render dev-notes, internal TODOs, mock data disclaimers, or notes intended for other agents inside user-facing components or client DOM.</li>
 <li>Do not crowd interfaces with wall-of-text microcopy, over-instruction, compulsive decorative widgets, or congested navbars; preserve visual restraint, optical balance, and breathing room.</li>
-<li>Do not hand-craft boilerplate or build configs from memory when official CLI generators exist (`uv init`, `cargo init`, `bun create`, official SDK quickstarts); invoke official scaffolding tools first.</li>
+<li>Do not hand-craft boilerplate or build configs from memory when official CLI generators exist (<code>uv init</code>, <code>cargo init</code>, <code>bun create</code>, official SDK quickstarts); invoke official scaffolding tools first.</li>
 <li>Do not guess outdated or pre-cutoff library versions from model memory; resolve and pin the latest stable release from the official registry when introducing new dependencies.</li>
 </ul>
-
 <h2>Deliverable contract</h2>
-
-<p>For each implementation/review, produce a concise report in this order: **Outcome; Scope; Behavior preserved/changed; Verification (commands + results); Findings with exact file/line; Test modifications with rationale; Risks/limitations; Merge recommendation.** If available, distinguish baseline failures from new failures. Use `NOT RUN` and `UNKNOWN` literally when applicable.</p>
-
+<p>For each implementation/review, produce a concise report in this order: <strong>Outcome; Scope; Behavior preserved/changed; Verification (commands + results); Findings with exact file/line; Test modifications with rationale; Risks/limitations; Merge recommendation.</strong> If available, distinguish baseline failures from new failures. Use <code>NOT RUN</code> and <code>UNKNOWN</code> literally when applicable.</p>
 <h2>Progressive Resources</h2>
+<ul class="docs-list">
+<li><a href="references/anti-pattern-catalog.md" rel="noreferrer">Anti-Pattern Catalog</a> — Exhaustive directory of AI coding anti-patterns with before/after fixes.</li>
+<li><a href="references/test-integrity.md" rel="noreferrer">Test Integrity Policy</a> — Rules for assertion preservation, boundary testing, and test refactoring.</li>
+<li><a href="references/pr-review.md" rel="noreferrer">PR Review Protocol</a> — Skeptical reviewer checklist and structured finding templates.</li>
+<li><a href="references/security-and-operations.md" rel="noreferrer">Security &amp; Operations</a> — Trust boundaries, credential hygiene, and operational safety.</li>
+<li><a href="references/engineering-judgment.md" rel="noreferrer">Engineering Judgment</a> — Context-aware exception criteria and design tradeoffs.</li>
+<li><a href="references/evidence-and-sources.md" rel="noreferrer">Evidence &amp; Sources</a> — Concrete proof hierarchies and verification standards.</li>
+<li><a href="references/evaluation-cases.md" rel="noreferrer">Evaluation Cases</a> — Real-world evaluation benchmark cases.</li>
+<li><a href="templates/PR_REVIEW_TEMPLATE.md" rel="noreferrer">PR Review Template</a> — Reusable PR review markdown template.</li>
+<li><a href="templates/RUN_REPORT_TEMPLATE.md" rel="noreferrer">Run Report Template</a> — Reusable implementation run report template.</li>
+</ul>
 
-<ul>
-<li>[Anti-Pattern Catalog](references/anti-pattern-catalog.md) — Exhaustive directory of AI coding anti-patterns with before/after fixes.</li>
-<li>[Test Integrity Policy](references/test-integrity.md) — Rules for assertion preservation, boundary testing, and test refactoring.</li>
-<li>[PR Review Protocol](references/pr-review.md) — Skeptical reviewer checklist and structured finding templates.</li>
-<li>[Security &amp; Operations](references/security-and-operations.md) — Trust boundaries, credential hygiene, and operational safety.</li>
-<li>[Engineering Judgment](references/engineering-judgment.md) — Context-aware exception criteria and design tradeoffs.</li>
-<li>[Evidence &amp; Sources](references/evidence-and-sources.md) — Concrete proof hierarchies and verification standards.</li>
-<li>[Evaluation Cases](references/evaluation-cases.md) — Real-world evaluation benchmark cases.</li>
-<li>[PR Review Template](templates/PR_REVIEW_TEMPLATE.md) — Reusable PR review markdown template.</li>
-<li>[Run Report Template](templates/RUN_REPORT_TEMPLATE.md) — Reusable implementation run report template.</li>
-</ul></article>
-</main><footer style="text-align:center;padding:2rem">Public community Skill · AGPL-3.0-or-later</footer></body></html>
+        </article>
+      </div>
+
+      <nav class="page-bottom-nav">
+        <a href="../skills.html" class="action action-secondary">← Back to Skills Catalog</a>
+        <a href="../workflows.html" class="action action-primary">Explore Workflows &amp; Prompts →</a>
+      </nav>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="../assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="../index.html">Home</a>
+        <a href="../skills.html">Skills Catalog</a>
+        <a href="../guide.html">User Guide</a>
+        <a href="../workflows.html">Workflows &amp; Prompts</a>
+        <a href="../pricing.html">Pricing (Free OSS)</a>
+        <a href="../llms.txt">llms.txt</a>
+        <a href="../sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under GNU AGPLv3 · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

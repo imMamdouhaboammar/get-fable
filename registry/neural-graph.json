@@ -74,6 +74,12 @@
       "label": "Context Compactor & Session Handoff"
     },
     {
+      "id": "fable-eval",
+      "pack": "evolution",
+      "phase": "verifying",
+      "label": "Holdout Evaluator & Benchmark Runner"
+    },
+    {
       "id": "fable-recover",
       "pack": "core",
       "phase": "recovering",
@@ -138,6 +144,12 @@
       "pack": "system",
       "phase": "idle",
       "label": "Situational Awareness Next-Move Predictor"
+    },
+    {
+      "id": "fable-skill-creator",
+      "pack": "creator",
+      "phase": "executing",
+      "label": "Autonomous Skill Creator & Optimizer"
     },
     {
       "id": "fable-redteam",
@@ -230,6 +242,12 @@
       "label": "Multi-Agent Deliberation Council"
     },
     {
+      "id": "fable-tend",
+      "pack": "delivery",
+      "phase": "executing",
+      "label": "Repository Maintainer & CI Repair"
+    },
+    {
       "id": "fable-wise",
       "pack": "system",
       "phase": "planned",
@@ -246,6 +264,18 @@
       "pack": "proof",
       "phase": "verifying",
       "label": "Duplicate-Work & Anti-Churn Decision Engine"
+    },
+    {
+      "id": "fable-test",
+      "pack": "proof",
+      "phase": "verifying",
+      "label": "Universal Quality Engineering & Testing Harness"
+    },
+    {
+      "id": "fable-core-test",
+      "pack": "proof",
+      "phase": "verifying",
+      "label": "Internal 7-Tier Engine Test Pyramid"
     }
   ],
   "edges": [
@@ -388,6 +418,18 @@
       "weight": 1
     },
     {
+      "source": "fable-eval",
+      "target": "fable-plan",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 1
+    },
+    {
       "source": "fable-recover",
       "target": "fable-discover",
       "relation": "continuation",
@@ -484,6 +526,24 @@
       "weight": 1
     },
     {
+      "source": "fable-skill-creator",
+      "target": "fable-eval",
+      "relation": "continuation",
+      "weight": 1
+    },
+    {
+      "source": "fable-skill-creator",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-skill-creator",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
       "source": "fable-security",
       "target": "fable-redteam",
       "relation": "peer",
@@ -528,6 +588,12 @@
     {
       "source": "fable-handoff",
       "target": "fable-learning",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-learning",
+      "target": "fable-eval",
       "relation": "continuation",
       "weight": 0.9
     },
@@ -634,6 +700,12 @@
       "weight": 0.9
     },
     {
+      "source": "fable-domain",
+      "target": "fable-skill-creator",
+      "relation": "peer",
+      "weight": 0.8
+    },
+    {
       "source": "fable-judge",
       "target": "fable-review",
       "relation": "continuation",
@@ -656,6 +728,12 @@
       "target": "fable-plan",
       "relation": "peer",
       "weight": 0.9
+    },
+    {
+      "source": "fable-tend",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 1
     },
     {
       "source": "fable-wise",
@@ -725,6 +803,12 @@
     },
     {
       "source": "get-fable",
+      "target": "fable-eval",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
       "target": "fable-recover",
       "relation": "continuation",
       "weight": 0.85
@@ -786,6 +870,12 @@
     {
       "source": "get-fable",
       "target": "fable-spark",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-skill-creator",
       "relation": "continuation",
       "weight": 0.85
     },
@@ -881,6 +971,12 @@
     },
     {
       "source": "get-fable",
+      "target": "fable-tend",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "get-fable",
       "target": "fable-wise",
       "relation": "continuation",
       "weight": 0.85
@@ -971,6 +1067,12 @@
     },
     {
       "source": "fable-research",
+      "target": "fable-skill-creator",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-research",
       "target": "fable-discover",
       "relation": "recovery",
       "weight": 0.75
@@ -1038,6 +1140,12 @@
     {
       "source": "fable-plan",
       "target": "fable-cowork",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-plan",
+      "target": "fable-skill-creator",
       "relation": "continuation",
       "weight": 0.85
     },
@@ -1324,6 +1432,30 @@
       "weight": 0.75
     },
     {
+      "source": "fable-eval",
+      "target": "fable-execute",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-recover",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-eval",
+      "target": "fable-plan",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
       "source": "fable-learning",
       "target": "fable-plan",
       "relation": "continuation",
@@ -1334,6 +1466,12 @@
       "target": "fable-handoff",
       "relation": "continuation",
       "weight": 0.85
+    },
+    {
+      "source": "fable-learning",
+      "target": "fable-eval",
+      "relation": "recovery",
+      "weight": 0.75
     },
     {
       "source": "fable-recover",
@@ -1356,6 +1494,12 @@
     {
       "source": "fable-recover",
       "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-recover",
+      "target": "fable-tend",
       "relation": "continuation",
       "weight": 0.85
     },
@@ -1418,6 +1562,12 @@
       "target": "fable-verify",
       "relation": "recovery",
       "weight": 0.75
+    },
+    {
+      "source": "fable-loop",
+      "target": "fable-tend",
+      "relation": "continuation",
+      "weight": 0.85
     },
     {
       "source": "fable-loop",
@@ -1506,6 +1656,12 @@
     {
       "source": "fable-spark",
       "target": "get-fable",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
+      "source": "fable-skill-creator",
+      "target": "fable-plan",
       "relation": "recovery",
       "weight": 0.75
     },
@@ -1696,6 +1852,18 @@
       "weight": 0.75
     },
     {
+      "source": "fable-tend",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.85
+    },
+    {
+      "source": "fable-tend",
+      "target": "fable-execute",
+      "relation": "recovery",
+      "weight": 0.75
+    },
+    {
       "source": "fable-wise",
       "target": "fable-plan",
       "relation": "continuation",
@@ -1832,6 +2000,120 @@
       "target": "fable-anti-slop-engineering",
       "relation": "peer",
       "weight": 0.95
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-test",
+      "relation": "precursor",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-test",
+      "relation": "precursor",
+      "weight": 0.8
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-test",
+      "relation": "precursor",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-test",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-test",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-test",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-test",
+      "target": "fable-anti-slop-engineering",
+      "relation": "peer",
+      "weight": 0.7
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-test",
+      "relation": "peer",
+      "weight": 0.7
+    },
+    {
+      "source": "fable-test",
+      "target": "fable-tdd",
+      "relation": "peer",
+      "weight": 0.7
+    },
+    {
+      "source": "fable-tdd",
+      "target": "fable-test",
+      "relation": "peer",
+      "weight": 0.7
+    },
+    {
+      "source": "fable-test",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 1
+    },
+    {
+      "source": "fable-execute",
+      "target": "fable-core-test",
+      "relation": "precursor",
+      "weight": 0.8
+    },
+    {
+      "source": "get-fable",
+      "target": "fable-core-test",
+      "relation": "precursor",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-core-test",
+      "target": "fable-verify",
+      "relation": "continuation",
+      "weight": 0.9
+    },
+    {
+      "source": "fable-core-test",
+      "target": "fable-review",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-core-test",
+      "target": "fable-release",
+      "relation": "continuation",
+      "weight": 0.8
+    },
+    {
+      "source": "fable-core-test",
+      "target": "fable-anti-slop-engineering",
+      "relation": "peer",
+      "weight": 0.7
+    },
+    {
+      "source": "fable-anti-slop-engineering",
+      "target": "fable-core-test",
+      "relation": "peer",
+      "weight": 0.7
+    },
+    {
+      "source": "fable-core-test",
+      "target": "fable-recover",
+      "relation": "recovery",
+      "weight": 1
     }
   ]
 }

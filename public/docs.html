@@ -1,25 +1,280 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Install the community Skills, set up the published CLI, and verify your coding-agent environment."><title>Get-fable documentation | get-fable</title>
-<link rel="canonical" href="https://get-fable.vercel.app/docs.html">
-<link rel="alternate" type="text/markdown" href="./docs.md">
-<link rel="alternate" type="text/plain" href="./docs.txt">
-<link rel="alternate" type="application/json" href="./docs.json">
-<link rel="icon" type="image/svg+xml" href="./assets/mascot.svg"><link rel="stylesheet" href="./styles.css"></head>
-<body><header class="site-header"><a href="./index.html">get-fable</a> · <a href="./skills.html">41 public Skills</a> · <a href="./docs.html">Docs</a></header>
-<main id="main-content" style="max-width:850px;margin:auto;padding:4rem 1.5rem;line-height:1.6">
-<p>Community / AGPL-3.0-or-later</p><h1>Get-fable documentation</h1><p>Install the community Skills, set up the published CLI, and verify your coding-agent environment.</p>
-<p>41 public community Skills across 8 packs. Integration adapters target 32 hosts with varying levels of support.</p>
-<section><h2>Get the public Skills</h2><pre><code>npx skills add imMamdouhaboammar/get-fable</code></pre></section>
-<section><h2>Install the CLI</h2><pre><code>bun add -g get-fable</code></pre></section>
-<section><h2>Initialize your project</h2><pre><code>get-fable init
-get-fable install all
-get-fable skills install all</code></pre></section>
-<section><h2>Check the setup</h2><pre><code>get-fable --version
-get-fable doctor --json-v1
-get-fable lint</code></pre></section>
-<p><a href="https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/INSTALLATION.md">Full installation guide</a> ·
-<a href="https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/AGENT_SETUP_PROMPT.md">Ask your agent to install</a> ·
-<a href="https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/CANONICAL_SKILLS.md">Public catalog</a></p>
-<p>Community Skills are open source. Get-Fable Pro MCP is in development, not a released product.</p></main>
-<footer style="padding:2rem;text-align:center">Independent open-source engineering project · <a href="https://github.com/imMamdouhaboammar/get-fable">GitHub</a></footer></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Official get-fable User Guide and Architecture Documentation. Master the 7-phase state machine, evidence protocol, multi-agent TOON delegation, and CLI commands.">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://get-fable.vercel.app/guide.html">
+  <link rel="alternate" type="text/markdown" href="./guide.md">
+  <link rel="alternate" type="text/plain" href="./guide.txt">
+  <link rel="alternate" type="application/json" href="./guide.json">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="get-fable User Guide &amp; Technical Documentation">
+  <meta property="og:description" content="Master the 7-phase state machine, evidence protocol, multi-agent TOON delegation, and CLI commands.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://get-fable.vercel.app/guide.html">
+  <meta property="og:image" content="https://get-fable.vercel.app/assets/mascot.svg">
+
+  <title>User Guide &amp; Technical Documentation — get-fable</title>
+  <link rel="icon" href="./assets/mascot.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./script.js" defer></script>
+
+  <!-- Schema.org TechArticle & FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "get-fable User Guide & Technical Documentation",
+    "description": "Comprehensive guide for setting up and operating the get-fable coding lifecycle harness across 32 AI platforms.",
+    "url": "https://get-fable.vercel.app/guide.html",
+    "inLanguage": "en"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="./index.html" aria-label="get-fable home">
+        <img src="./assets/mascot.svg" alt="" width="36" height="36">
+        <span>get-fable</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="./index.html#thesis">Thesis</a>
+        <a href="./skills.html">Skills (42)</a>
+        <a href="./guide.html" class="is-active">Guide &amp; Docs</a>
+        <a href="./workflows.html">Workflows &amp; Prompts</a>
+        <a href="./pricing.html">Pricing</a>
+      </nav>
+
+      <a class="header-github" href="https://github.com/imMamdouhaboammar/get-fable" target="_blank" rel="noreferrer">
+        GitHub
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content" class="docs-main">
+    <div class="shell">
+      <header class="docs-header">
+        <div class="section-marker">DOCUMENTATION</div>
+        <h1>User Guide &amp; System Architecture</h1>
+        <p class="docs-lead">Complete operational manual for get-fable: lifecycle mechanics, state invariants, evidence verification, and multi-agent systems.</p>
+      <aside class="format-switcher" aria-label="Alternate page formats">
+        <span class="format-label">Formats:</span>
+        <span class="format-badge is-active">HTML</span>
+        <a class="format-badge" href="./guide.md" target="_blank">Markdown (.md)</a>
+        <a class="format-badge" href="./guide.txt" target="_blank">Plain Text (.txt)</a>
+        <a class="format-badge" href="./guide.json" target="_blank">JSON (.json)</a>
+      </aside>
+      </header>
+
+      <div class="guide-grid">
+        <aside class="docs-sidebar" aria-label="Table of contents">
+          <nav class="toc-nav">
+            <div class="toc-title">Table of Contents</div>
+            <ul class="toc-list">
+              <li><a href="#1-introduction-the-working-conditions-thesis">1. The Working Conditions Thesis</a></li>
+              <li><a href="#2-prerequisites--quickstart">2. Prerequisites &amp; Quickstart</a></li>
+              <li><a href="#3-the-7-phase-state-machine-contract">3. 7-Phase State Machine</a></li>
+              <li><a href="#4-the-evidence-protocol">4. Evidence Protocol</a></li>
+              <li><a href="#5-32-platform-ecosystem-integration-matrix">5. 32-Platform Ecosystem</a></li>
+              <li><a href="#6-multi-agent-delegation--toon-protocol">6. Multi-Agent &amp; TOON</a></li>
+              <li><a href="#7-architecture-enforcement-adr-0007">7. Architecture Enforcement</a></li>
+              <li><a href="#8-automated-penetration-testing--self-healing">8. Security &amp; Self-Healing</a></li>
+              <li><a href="#9-durable-engineering-learning-failure-lessons">9. Durable Learning</a></li>
+              <li><a href="#10-cli-command-reference">10. CLI Command Reference</a></li>
+            </ul>
+          </nav>
+        </aside>
+
+        <article class="docs-body">
+          <h1>get-fable Authoritative User Guide &amp; Architecture Documentation</h1>
+<p>Version: <strong>1.15.1</strong> · Schema: <strong>v3</strong> · Canonical Skills: <strong>46</strong> · Supported Platforms: <strong>32</strong></p>
+<blockquote><p><strong>get-fable adds frontier-style execution discipline around AI coding agents with specs, persistent task state, lifecycle hooks, reusable skills, failure handling, and verification.</strong></p></blockquote>
+<p>---</p>
+<h2>1. Introduction: The Working Conditions Thesis</h2>
+<p>Frontier AI coding agents feel dramatically different not just because of raw model weights, but because of the <strong>working conditions</strong> around the model:</p>
+<p>1. <strong>Spec before work</strong>: Explicit constraints and tests defined before code generation.</p>
+<p>2. <strong>State survives the conversation</strong>: Persistent tasks, mutation tracking, and evidence stored on disk in <code>.fable/state.json</code> and <code>.fable/LEDGER.md</code>.</p>
+<p>3. <strong>Failure changes strategy</strong>: The Fable Circuit Breaker detects <code>failureStreak &gt;= 2</code> and unconditionally routes to <code>fable-recover</code>.</p>
+<p>4. <strong>Observable evidence before close</strong>: Work cannot be marked complete without fresh, passing machine-checkable evidence recorded for the current mutation generation.</p>
+<p>---</p>
+<h2>2. Prerequisites &amp; Quickstart</h2>
+<h3>Runtime Requirements</h3>
+<ul class="docs-list">
+<li><strong>Bun ≥ 1.3.0</strong> (mandatory package manager and runtime)</li>
+<li><strong>Python 3.9+</strong> (powers the 5 zero-overhead lifecycle hooks)</li>
+<li><strong>Git</strong> (for version control and repository isolation)</li>
+</ul>
+<h3>Installation</h3>
+<p>Clone the repository and run the multi-platform installer:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash">git clone https://github.com/imMamdouhaboammar/get-fable.git
+cd get-fable
+
+# Check health and environment
+bun ./bin/get-fable.js doctor
+
+# Enumerate bundled assets
+bun ./bin/get-fable.js assets
+
+# Install to all detected host environments
+bun ./bin/get-fable.js install all</code></pre></div>
+<p>---</p>
+<h2>3. The 7-Phase State Machine Contract</h2>
+<p>get-fable operates under a strictly enforced lifecycle state machine:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-text">idle -&gt; discovering -&gt; planned -&gt; executing -&gt; verifying -&gt; complete
+                                           -&gt; recovering
+                                           -&gt; blocked</code></pre></div>
+<h3>Phase Definitions</h3>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Phase</th><th>Active Specialist</th><th>Expected Action</th></tr></thead><tbody>
+<tr><td><code>idle</code></td><td><code>get-fable</code></td><td>Task routing and situational assessment</td></tr>
+<tr><td><code>discovering</code></td><td><code>fable-discover</code>, <code>fable-research</code></td><td>Trace real execution paths and resolve unknowns</td></tr>
+<tr><td><code>planned</code></td><td><code>fable-plan</code>, <code>fable-architecture</code></td><td>Author bounded, falsifiable work cards</td></tr>
+<tr><td><code>executing</code></td><td><code>fable-execute</code>, <code>fable-tdd</code></td><td>Implement accepted card with zero scope drift</td></tr>
+<tr><td><code>verifying</code></td><td><code>fable-verify</code>, <code>fable-review</code></td><td>Execute fresh machine-checked tests &amp; typechecks</td></tr>
+<tr><td><code>recovering</code></td><td><code>fable-recover</code></td><td>Diagnose harness &amp; execution-path failures at streak &gt;= 2</td></tr>
+<tr><td><code>complete</code></td><td>Terminal</td><td>All criteria met with fresh evidence stamp</td></tr>
+</tbody></table></div>
+<p>---</p>
+<h2>4. The Evidence Protocol</h2>
+<p>A run is <strong>never complete</strong> because the model &quot;thinks&quot; it is done. It requires an observable evidence stamp recorded after the final file edit.</p>
+<h3>Recording Evidence</h3>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Record passing test evidence
+bun ./bin/get-fable.js evidence pass test &quot;bun test&quot; &quot;1049 tests pass across 154 files&quot;
+
+# Record passing build evidence
+bun ./bin/get-fable.js evidence pass build &quot;bun run build&quot; &quot;host and client bundles built cleanly&quot;</code></pre></div>
+<h3>Invariants:</h3>
+<p>1. <code>mutationGeneration</code> advances whenever a file editing tool is invoked (even on failed edits).</p>
+<p>2. All older verification becomes stale when <code>mutationGeneration &gt; verifiedGeneration</code>.</p>
+<p>3. The Stop hook blocks termination if unverified mutations exist.</p>
+<p>---</p>
+<h2>5. 32-Platform Ecosystem Integration Matrix</h2>
+<p>get-fable integrates seamlessly across all major AI coding platforms:</p>
+<h3>Tier 1: Full Lifecycle (Hooks + Rules + Skills)</h3>
+<ul class="docs-list">
+<li><strong>Claude Code</strong>: 5 Python lifecycle hooks, <code>CLAUDE.md</code>, and 42 skills.</li>
+<li><strong>Antigravity &amp; Gemini CLI</strong>: Native hook triggers, <code>plugin.json</code>, and rules.</li>
+<li><strong>xAI Grok Build</strong>: Full plugin manifest, hooks, and Grok bot adapter.</li>
+</ul>
+<h3>Tier 2: Skill + Plugin + Rule</h3>
+<ul class="docs-list">
+<li><strong>OpenAI Codex &amp; ChatGPT</strong>: OpenAPI Custom Actions and plugin manifest.</li>
+</ul>
+<h3>Tier 3: Skill + Rule</h3>
+<ul class="docs-list">
+<li><strong>Devin, Cline, Roo Code, OpenHands, Kilo Code, Hermes Agent</strong>.</li>
+</ul>
+<h3>Tier 4: Advisory Rule</h3>
+<ul class="docs-list">
+<li><strong>Cursor, Windsurf, GitHub Copilot, Replit, Amazon Q, Trae, Warp, Aider</strong>.</li>
+</ul>
+<p>---</p>
+<h2>6. Multi-Agent Delegation &amp; TOON Protocol</h2>
+<p>When delegating tasks across parallel subagents, get-fable enforces three prerequisites:</p>
+<p>1. <strong>Write Independence</strong>: Disjoint files or directories.</p>
+<p>2. <strong>Semantic Independence</strong>: Independent data contracts.</p>
+<p>3. <strong>Verification Independence</strong>: Independent validation checks.</p>
+<p>Multi-agent payloads use <strong>TOON (Token-Optimized Object Notation)</strong> via <code>@toon-format/toon</code>, reducing token overhead by 30–50% compared to raw JSON blobs.</p>
+<p>---</p>
+<h2>7. Architecture Enforcement (ADR 0007)</h2>
+<p>The <code>fable-architecture</code> engine evaluates software specifications across three lockout vectors:</p>
+<ul class="docs-list">
+<li><strong>Scale &amp; Load (&gt;= 7)</strong>: Prohibits monolith architectures.</li>
+<li><strong>Domain Decoupling (&gt;= 6)</strong>: Enforces bounded contexts.</li>
+<li><strong>Resource Intensity (&gt;= 8)</strong>: Dictates specialized language matrix.</li>
+</ul>
+<p><strong>Transport Standard</strong>:</p>
+<ul class="docs-list">
+<li><strong>North-South (Edge)</strong>: HTTP / REST / GraphQL.</li>
+<li><strong>East-West (Internal Mesh)</strong>: gRPC Protobuf or Message Broker. Prohibits internal HTTP/JSON meshes.</li>
+</ul>
+<p>---</p>
+<h2>8. Automated Penetration Testing &amp; Self-Healing</h2>
+<ul class="docs-list">
+<li><code>fable-redteam</code>: Executes black-box probes for injection, auth bypass, CORS reflection, sensitive file exposure, and BOLA. Emits CVSS v3.1 scores and SARIF reports.</li>
+<li><code>fable-heal</code>: Ingests SARIF findings, synthesizes surgical code fixes, verifies with regression tests, and seals an attestation proof.</li>
+</ul>
+<p>---</p>
+<h2>9. Durable Engineering Learning (<code>Failure-lessons/</code>)</h2>
+<p>get-fable compounds learnings permanently so engineering teams never pay for the same mistake twice:</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash">bun ./bin/get-fable.js learn --failure-lessons</code></pre></div>
+<p>Extracts session mistakes and root causes into <code>Failure-lessons/</code>, <code>.fable/learnings.json</code>, and <code>agent-kernel</code>.</p>
+<p>---</p>
+<h2>10. Autonomous Perpetual Repository Steward</h2>
+<p>Autonomous repository triage, continuous maintenance, CI healing, PR verification, and capability packaging engine for <code>get-fable</code>.</p>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Probe live repository and GitHub platform status without mutating workspace
+bun ./bin/get-fable.js steward --dry-run
+
+# Execute a single triage and action cycle
+bun ./bin/get-fable.js steward
+
+# Run perpetual continuous stewardship loop with 60s cooldown between cycles
+bun ./bin/get-fable.js steward --loop --interval 60 --max-cycles 100
+
+# Output machine-readable JSON v1 envelope
+bun ./bin/get-fable.js steward --json-v1</code></pre></div>
+<h3>Triage Priority Matrix</h3>
+<div class="table-wrapper"><table class="docs-table"><thead><tr><th>Tier</th><th>Priority Target</th><th>Trigger Condition</th><th>Primary Skill</th><th>Action</th></tr></thead><tbody>
+<tr><td><strong>Tier 1</strong></td><td>Mainline CI Runs</td><td>Mainline workflow run conclusion is <code>failure</code></td><td><code>fable-tend</code></td><td>Extract logs, reproduce failure locally, formulate minimal fix, verify build</td></tr>
+<tr><td><strong>Tier 2</strong></td><td>Pull Requests</td><td>Non-draft PRs targeting default branch exist</td><td><code>fable-review</code> + <code>fable-judge</code></td><td>Audit diff against anti-slop rules, run adversary tests, submit structured review</td></tr>
+<tr><td><strong>Tier 3</strong></td><td>Open Issues</td><td>Unassigned open GitHub issues exist</td><td><code>fable-plan</code> + <code>fable-tdd</code></td><td>Extract acceptance criteria, write failing reproduction test, apply native fix, open PR</td></tr>
+<tr><td><strong>Tier 4</strong></td><td>Code Hygiene</td><td>Untracked or unstaged modifications present</td><td><code>fable-anti-slop-engineering</code></td><td>Scan for swallowed errors, weak assertions, leftover debug code, enforce clean git tree</td></tr>
+<tr><td><strong>Tier 5</strong></td><td>Feature Innovation</td><td>Mainline green, zero open PRs/issues, clean tree</td><td><code>fable-spark</code> + <code>fable-cowork</code></td><td>Select next capability from roadmap backlog, execute with full unit/integration coverage</td></tr>
+</tbody></table></div>
+<p>---</p>
+<h2>11. CLI Command Reference</h2>
+<div class="code-block"><button class="copy-button" data-copy aria-label="Copy code">Copy</button><pre><code class="language-bash"># Lifecycle state management
+bun ./bin/get-fable.js status [--json-v1]
+bun ./bin/get-fable.js doctor [--json-v1]
+bun ./bin/get-fable.js route &quot;&lt;task&gt;&quot; [--apply]
+bun ./bin/get-fable.js state &lt;phase&gt; [--substantial]
+bun ./bin/get-fable.js card &quot;&lt;text&gt;&quot; [--clear]
+bun ./bin/get-fable.js evidence &lt;pass|fail&gt; &lt;kind&gt; &quot;&lt;source&gt;&quot; &quot;&lt;detail&gt;&quot;
+bun ./bin/get-fable.js lint
+
+# Autonomous Repository Steward
+bun ./bin/get-fable.js steward [--dry-run] [--loop] [--interval 60]
+
+# Architecture &amp; Security
+bun ./bin/get-fable.js arch-eval &quot;&lt;spec&gt;&quot;
+bun ./bin/get-fable.js redteam scan --target &lt;url&gt;
+bun ./bin/get-fable.js heal
+
+# Multi-Agent gRPC Worker
+bun ./bin/get-fable.js worker-serve</code></pre></div>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <img src="./assets/mascot.svg" alt="" width="28" height="28" loading="lazy">
+        <span>get-fable</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="./index.html">Home</a>
+        <a href="./skills.html">Skills Catalog</a>
+        <a href="./guide.html">User Guide</a>
+        <a href="./workflows.html">Workflows &amp; Prompts</a>
+        <a href="./pricing.html">Pricing (Free OSS)</a>
+        <a href="./llms.txt">llms.txt</a>
+        <a href="./sitemap.xml">Sitemap</a>
+      </nav>
+      <p>Open source under GNU AGPLv3 · <span data-year>2026</span></p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,122 +1,273 @@
-# Install and initialize get-fable
+# Install & Initialize get-fable (`install-and-init-get-fable`)
 
-This is the public onboarding playbook for developers and coding agents. It covers host installation, project setup, optional supporting tools, verification, and daily use across the 32 listed host integration targets and the community Skills actually shipped in this repository.
+Deterministic, step-by-step onboarding, host installation, workspace initialization, and toolchain provisioning guide for AI agents and human developers across **32 AI coding platforms** and **42 canonical skills**.
 
-Use this playbook when setting up a machine or project, adding Skills and supported lifecycle hooks, or coaching a team in Arabic or English. Use a focused implementation or testing Skill for an individual coding task once setup is finished.
+> **Playbook Definition & Purpose**:
+> End-to-end onboarding, host installation, workspace initialization, supporting toolchain setup, interactive fable-eco capability provisioning, and bilingual (Arabic/English) workflow coaching for get-fable across 32 AI coding platforms and 42 canonical skills. Use when setting up get-fable on a user machine, initializing .fable/ in a repository, installing the 42 canonical skills and 5 Python lifecycle hooks across agent hosts, configuring git quality gates or shell aliases, asking the user whether to provision fable-eco capability profiles, or answering user questions on how to use get-fable in daily engineering work. Do NOT use for executing individual bounded coding cards once setup is complete (use fable-execute or fable-tdd) or performing standalone security penetration scans (use fable-redteam).
 
-## 1. Inspect the environment
+---
 
-Run these checks before modifying global tools or repository state:
+## 1. Activation Contract (When to Run This Playbook)
 
+Any autonomous agent or developer entering a machine or repository must execute this playbook if:
+1. `get-fable` CLI is not installed globally or not in `PATH`.
+2. The current repository does not have an initialized [`.fable/`](file:///.fable/) state directory.
+3. Installed AI host configurations (Claude, Antigravity, Codex, Cursor, Windsurf, etc.) lack the 42 canonical skills or 5 Python lifecycle hooks.
+4. `get-fable doctor --json-v1` reports missing tools, unconfigured hooks, or errors.
+
+---
+
+## 2. Pre-Flight Runtime Requirements & Invariants
+
+Before mutating any global or workspace configuration, verify the host runtime environment:
+
+| Runtime / Tool | Minimum Version | Required For | Failure Remediation |
+|---|---|---|---|
+| **Bun** | `≥ 1.3.0` | Mandatory CLI runtime, script execution, package management | `curl -fsSL https://bun.sh/install \| bash` (never use `npm` or `yarn` for project dev) |
+| **Git** | `≥ 2.30.0` | Version control, worktree isolation, pre-commit/pre-push hooks | System package manager (`brew install git` / `apt install git`) |
+| **Python** | `≥ 3.9` | 5 mechanical zero-overhead lifecycle hooks (`hooks/*.py`) | System package manager (`brew install python3` / `apt install python3`) |
+
+### Pre-Flight Probe Command
 ```bash
-bun --version
-git --version
-python3 --version
-git status --short
+bun --version && git --version && python3 --version
+which get-fable get-fable-native no-mistakes cargo 2>/dev/null || true
 ```
 
-The CLI requires Bun 1.3 or newer to run, Git for repository workflows, and Python 3.9+ for Python-based hooks. The `skills` installer is invoked through `npx`, so Node.js/npm also needs to be present for that route.
+> [!CAUTION]
+> **Bun-Only Invariant**: Every JavaScript/TypeScript execution in `get-fable` must use Bun first.
+> **No Symlink State**: `.fable` must be a real directory. Symlinked `.fable` directories are rejected by the security engine.
 
-Identify the project root and existing agent configurations, `.fable/`, custom Skills, hooks, and uncommitted work. Do not overwrite them blindly. Ask before installing missing system tools or changing global settings.
+---
 
-## 2. Install the published CLI
+## 3. Global CLI Installation
 
-Preferred:
+Install the `get-fable` binary on the machine using one of the following approved methods:
 
+### Method A: Bun Global (Approved & Recommended across all platforms)
 ```bash
 bun add -g get-fable
 ```
 
-Or use npm as a package manager (Bun is still needed to execute the CLI):
-
+### Method B: npm Global (Node.js Environments)
 ```bash
 npm install -g get-fable
 ```
 
-For an inspected shell installer:
-
+### Method C: Standalone One-Line Installer (CI / Docker / Bare Metal)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/get-fable/main/install.sh | sh
 ```
 
-Verify the version:
+### Method D: Homebrew (macOS & Linux)
+```bash
+brew tap imMamdouhaboammar/get-fable https://github.com/imMamdouhaboammar/get-fable
+brew install get-fable
+```
 
+### Method E: Direct Cloned Source Repo
+```bash
+bun install && bun run build && bun link
+```
+
+### Verification
 ```bash
 get-fable --version
 ```
 
-The GitHub public distribution contains Skills, documentation, manifests, and assets. It is not a buildable substitute for the separately published npm CLI package.
+---
 
-## 3. Install public community Skills
+## 4. Multi-Host Integration & Skill Deployment (32 Platforms)
 
+`get-fable` integrates natively with 32 AI agent platforms, delivering the **42 canonical skills** across 8 lifecycle packs and wiring mechanical lifecycle hooks.
+
+### Step 4.1: Deploy Host Integrations & Lifecycle Hooks
 ```bash
-npx skills add imMamdouhaboammar/get-fable
+# Configure all detected hosts on the system at once
+get-fable install all
+
+# Or target specific hosts:
+get-fable install antigravity
+get-fable install claude
+get-fable install codex
+get-fable install cursor
+get-fable install windsurf
+get-fable install grok
 ```
 
-The public source currently has **41 on-disk consumer Skills across 8 packs**. These can be used independently from the CLI. Verify which Skills your host actually installs. Skill installation should not expose internal maintainer material or silently replace unrelated local Skills.
+Full Lifecycle hosts (`claude`, `antigravity`, `grok`) receive the 5 mechanical Python hooks:
+1. `hooks/fable_profile_inject.py`: Session start context injection (phase, mutation generation, streak).
+2. `hooks/fable_spawn_guard.py`: Guard against unauthorized large delegation without an open ledger card.
+3. `hooks/fable_fail_streak.py`: Automatic failure streak tracking; switches to `fable-recover` on `streak >= 2`.
+4. `hooks/fable_mutation.py`: Mutation generation tracking on write tool calls.
+5. `hooks/fable_close_guard.py`: Blocks completion when verification is stale or cards remain unverified.
 
-## 4. Initialize this project
+### Step 4.2: Install Canonical Skills Pack
+```bash
+# Deploy all 42 skills across Core, Intelligence, Build, Proof, Delivery, Evolution, System, and Creator packs
+get-fable skills install all
 
-From the target Git repository root:
+# Universal skill package manager alternative
+npx skills add imMamdouhaboammar/get-fable
+# or using Bun
+bunx skills add imMamdouhaboammar/get-fable
+```
+
+Verify skill distribution:
+```bash
+get-fable packs
+```
+
+---
+
+## 5. Workspace Lifecycle Initialization (`.fable/`)
+
+Run inside the root of any target Git repository to bootstrap the evidence state machine:
 
 ```bash
 get-fable init
-get-fable install all
-get-fable skills install all
 ```
 
-- `init` prepares the project lifecycle state (including `.fable/` files).
-- `install all` deploys available host integrations, which differ by platform.
-- `skills install all` distributes the Skills available to the installed CLI. Confirm the package's contents and installed destinations before using it on a shared machine.
+### Initialized Directory Layout (Schema v3)
+```text
+.fable/
+├── state.json              # Canonical runtime state (schema v3, workspaceId digest)
+├── LEDGER.md               # Persistent task ledger & active work cards
+├── PROGRESS.md             # Chronological milestone log
+├── events.jsonl            # Append-only structured event journal
+└── pending-mutations/      # Lock recovery tokens for concurrent writes
+docs/
+└── SPEC.md                 # Project requirement & verification specification
+```
 
-Review the [host matrix](HOSTS.md) to distinguish full lifecycle hooks, Skills, and advisory rules. A host being listed does not mean it supports every integration level. For selected hosts, use `get-fable install codex` or another documented host name instead of `all`.
+### Critical Workspace Invariants
+- `workspaceId`: SHA-256 digest of canonical repository path. Copied state from another workspace is rejected (`Rejected foreign state`).
+- `schemaVersion`: 3.
+- `stateRevision`: Monotonically increasing counter.
 
-## 5. Optional supporting toolchain
+---
 
-Offer the user a choice rather than automatically installing system-wide dependencies:
+## 6. Supporting Toolchain & Quality Gates
 
+Install accompanying engineering quality gates and developer productivity enhancements:
+
+```bash
+# 1. Canonical Git pre-commit & pre-push lifecycle hooks
+get-fable install git
+
+# 2. no-mistakes mandatory Git push quality gate (pre-push automated review, test, lint, and docs)
+get-fable install-no-mistakes
+
+# 3. TypeSafe AI Jev environment configuration template (.env + LLM provider fallback)
+get-fable install jev
+
+# 4. Shell prompt integration & power-user command aliases
+get-fable install shell
+```
+
+### Installed Shell Aliases
+| Alias | Canonical Command | Responsibility |
+|---|---|---|
+| `gfr` | `get-fable route` | Deterministic task routing |
+| `gfs` | `get-fable spark` | Next-atomic-step situational awareness |
+| `gfc` | `get-fable card` | Work card open/clear |
+| `gfe` | `get-fable evidence pass` | Evidence recording |
+| `gfm` | `get-fable mutation` | Explicit workspace mutation tracking |
+| `gfst` | `get-fable status` | Quick lifecycle inspection |
+| `gfd` | `get-fable doctor` | System health diagnostics |
+| `gfl` | `get-fable lint` | Ledger and state semantics lint |
+
+---
+
+## 7. Interactive Capability Provisioning (`/fable-eco`)
+
+`get-fable` provides curated external tooling profiles managed deterministically through `.fable/eco.json` and `.fable/eco.lock`.
+
+### Step 7.1: Discover Capability Deficits
 ```bash
 get-fable eco discover --json-v1
-get-fable eco plan core --json-v1
 ```
 
-Only after reviewing the plan and obtaining permission, consider the relevant `fable-eco` profile, shell setup, git hooks, or a quality gate. Tools that use credentials, network access, or global configuration require special care.
+### Step 7.2: Select and Install Profile
+Choose the capability profile that fits the project:
 
-## 6. Verify, diagnose, then coach
+| Profile | Included Tools & Capabilities | Target Workload |
+|---|---|---|
+| `core` *(Recommended)* | `ripgrep`, `fd`, `jq`, `git-lfs`, `gh` | High-speed search, JSON querying, GitHub CLI |
+| `dev-fast` | `core` + `uv`, `bun`, `ast-grep`, `hyperfine`, `watchexec` | Fast Python/TypeScript tooling, AST lint, file watch |
+| `polyglot` | `dev-fast` + `rustup`, `go`, `just`, `shellcheck`, `actionlint` | Systems engineering, Go/Rust runtimes, CI workflow lint |
+| `mcp-core` | Curated MCP servers (`filesystem`, `git`, `fetch`, `memory`) | Model Context Protocol tool enrichment |
+| `agency` | Multi-agent CLI orchestration helpers | Parallel subagent delegation & council workflows |
+| `full` | All curated CLI tools, MCP servers, and workflow packs | Complete developer workstation suite |
+
+### Step 7.3: Plan & Apply Provisioning
+```bash
+# Preview operations
+get-fable eco plan core --json-v1
+
+# Install capabilities
+get-fable eco install core --yes
+
+# Verify ecosystem health
+get-fable eco doctor --json-v1
+```
+
+---
+
+## 8. Health Verification & Auto-Repair
+
+Execute the full diagnostic suite to ensure 0 errors:
 
 ```bash
+# Auto-repair minor harness anomalies
+get-fable doctor --fix
+
+# Verify state and checks
 get-fable status --json-v1
 get-fable doctor --json-v1
 get-fable lint
-get-fable route "inspect this repository for its entry point"
 ```
 
-Record exit codes, installed version, host integration results, and doctor errors/warnings. The route example is a read-only smoke test without `--apply`; it is not a claim that an application build or test suite passes.
+Acceptance Gate: `doctor` must report **0 ERROR-severity checks**.
 
-If doctor reports errors, diagnose the actual failure, propose a bounded correction, obtain permission for sensitive changes, and rerun. A warning about an optional integration may be a documented limitation, not necessarily a broken install.
+---
 
-### Daily workflow coaching
+## 9. The Daily 6-Step Autonomous Coding Loop
 
-In Arabic or English, explain what each step means with an example from the user's project:
+Once installed and initialized, all feature work follows this canonical loop:
 
-1. **Discover** the execution path and required context.
-2. **Plan** a bounded task with acceptance criteria.
-3. **Test and implement** against an observable problem.
-4. **Verify and review** after the last relevant mutation.
-5. **Handoff or release** with current evidence and known limitations.
+```bash
+# 1. Route the task to the right specialist skill
+get-fable route "implement user authentication with JWT" --apply --json-v1
 
-### Setup receipt
+# 2. Open an active work card in .fable/LEDGER.md
+get-fable card "Add JWT authentication middleware and tests"
 
-At the end, report:
+# 3. Transition lifecycle phase to executing
+get-fable state executing --substantial
 
-| Check | Evidence to record |
-| --- | --- |
-| Runtime | OS, Bun, Git, Python, npm, get-fable versions |
-| Project | Absolute root, branch, changes to tracked/untracked files |
-| Skills | Installed public Skill count and locations |
-| Hosts | Detected host names, actual integration tier, skipped hosts |
-| Optional setup | Proposed versus explicitly approved changes |
-| Proof | Exit codes for status, doctor, lint, routing smoke test |
-| Recovery | Any failures, limitations, and rollback paths |
+# 4. Implement changes (edits automatically advance mutationGeneration)
+# Manual mutation record if not running on a Full Lifecycle host:
+get-fable mutation "src/auth.ts"
 
-For a paste-ready instruction that makes the agent follow this process, use [Ask your agent to install get-fable](AGENT_SETUP_PROMPT.md).
+# 5. Execute verification gates and record fresh machine-checked evidence
+bun run typecheck && bun test && bun run build
+get-fable evidence pass test "bun test" "All unit and integration tests pass"
+get-fable evidence pass build "bun run build" "Production bundle compiles cleanly"
+
+# 6. Complete lifecycle, clear active card, and codify durable learnings
+get-fable state complete
+get-fable card --clear
+get-fable learn --failure-lessons
+```
+
+---
+
+## 10. Agent Failure Recovery Matrix
+
+| Failure Symptom | Root Cause | Automated Remediation |
+|---|---|---|
+| `bun: command not found` | Bun runtime missing from `PATH` | Run `curl -fsSL https://bun.sh/install \| bash` and export `PATH="$HOME/.bun/bin:$PATH"` |
+| `verifiedGeneration < mutationGeneration` | Workspace mutated after last test pass | Re-run test/build verification suite and record fresh `evidence pass` |
+| `Rejected foreign state` | `.fable/state.json` was copied from another repo | Delete foreign state and run `get-fable init` to generate a native `workspaceId` |
+| `Pending mutation debt` | Hook could not acquire file lock during write | Run `get-fable doctor --fix` to reconcile pending mutation tokens |
+| `failureStreak >= 2` | 2 consecutive tool or command failures | Fable Circuit Breaker locks execution; route to `fable-recover` immediately |

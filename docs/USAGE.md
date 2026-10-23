@@ -1,62 +1,650 @@
-# Using get-fable day to day
+# Usage: get-fable 1.15.2
 
-Once the public Skills and optional CLI are installed, use get-fable to make your engineering loop explicit and easy to resume.
+This guide documents behavior implemented in the repository. Model names and historical prompt assets are not evidence of vendor affiliation or model equivalence.
 
-## Start in your project
+## Requirements
+
+- Bun 1.3.0 or newer
+- Python 3 for lifecycle hooks on hosts that use them
+- Git for source-based setup
+
+## Inspect first
 
 ```bash
-get-fable --version
+git clone https://github.com/imMamdouhaboammar/get-fable.git
+cd get-fable
+bun ./bin/get-fable.js help
+bun ./bin/get-fable.js doctor
+```
+
+Running the CLI without a command is non-mutating.
+
+## Initialize a project
+
+```bash
+bun /path/to/get-fable/bin/get-fable.js init
+```
+
+Initialization creates missing working files and installs the canonical lifecycle skills under `.agents/skills/`. Existing project-owned targets are preserved.
+
+The initial state uses schema v3 with `mutationGeneration=1` and `verifiedGeneration=-1`. Workspace identity is derived from the canonical real project path, so path aliases of the same workspace do not create separate identities.
+
+## Route work
+
+```bash
+get-fable route "Check the latest official API docs before implementation"
+get-fable route "Fix this regression test-first"
+get-fable route "Review this diff before merge"
+get-fable route "Review this authorization change for vulnerabilities"
+```
+
+Persist a routing decision when you want the durable state to follow it:
+
+```bash
+get-fable route "Design the migration" --apply --json
+```
+
+## Spark next move prediction
+
+`fable-spark` is a situational awareness micro-policy running continuously over the lifecycle. It predicts the single most natural atomic next action based on 6 core signals (`USER INTENT`, `ACTIVE CARD`, `CURRENT SKILL`, `MISSING GATES`, `MUTATION DELTA`, `LATEST EVIDENCE / FAILS`):
+
+```bash
+# Print next move for agent or human
+get-fable spark
+
+# Structured machine output
+get-fable spark "fix token refresh bug" --json
+```
+
+Output object format:
+```json
+{
+  "suggestion": "run the affected refresh tests",
+  "reasonCode": "verification-stale-after-mutation",
+  "confidence": 0.93,
+  "source": "mutation-delta",
+  "silent": false
+}
+```
+
+
+## Work cards
+
+Set the current bounded unit of work:
+
+```bash
+get-fable card "Add migration reader and prove legacy compatibility"
+```
+
+Clear it when no card is active:
+
+```bash
+get-fable card --clear
+```
+
+## Record mutations
+
+Hosts with write hooks do this automatically. On a host without mutation events, record the workspace change explicitly:
+
+```bash
+get-fable mutation "updated migration reader"
+```
+
+A mutation advances `mutationGeneration`. Earlier verification remains recorded but becomes stale for completion.
+
+## Record evidence
+
+```bash
+get-fable evidence pass test "bun test" "affected tests passed"
+get-fable evidence fail runtime "smoke" "integration path still fails"
+get-fable evidence pass security "diff review" "no reportable finding in changed trust boundary"
+get-fable evidence pass research "official docs" "API contract confirmed"
+```
+
+Evidence kinds:
+
+```text
+test
+build
+runtime
+review
+observation
+security
+research
+receipt
+handoff
+```
+
+For normal implementation work, test, build, runtime, review, and observation can advance `verifiedGeneration`.
+
+Security can advance `verifiedGeneration` when the routed job is itself a security review. A security pass alone does not prove a normal feature or bug repair. If a security repair changes product code, verify the changed behavior again with behavior-appropriate evidence.
+
+Research supports decisions. Receipt supports execution provenance. Handoff supports continuity. None of those three proves behavior correctness.
+
+## Complete substantial work
+
+Typical explicit CLI flow:
+
+```bash
+get-fable state executing --substantial
+get-fable mutation "implemented accepted card"
+get-fable state verifying
+get-fable evidence pass test "bun test" "all affected tests passed"
+get-fable state complete
+```
+
+Completion is rejected when the current mutation generation has no fresh passing evidence appropriate to the routed claim.
+
+## Extract failure lessons & durable learnings
+
+Extract engineering wisdom, failure classes, root causes, and prevention rules into `Failure-lessons/`, `agent-kernel`, and `gbrain`:
+
+```bash
+get-fable learn
+get-fable learn --target failure-lessons
+get-fable learn --session-id <id> --format report
+```
+
+`Failure-lessons/` preserves hard-won engineering wisdom so future contributors and coding agents avoid repeating past defects:
+- `README.md`: Knowledge base mission, principles, and maintenance triggers
+- `lessons-index.md`: Compact index table and "Rules We Now Enforce"
+- `testing-and-verification.md`: Regression mappings and 3-step test oracle
+- `<topic>.md`: Detailed failure lessons following the 14-section schema
+
+## Repeated failure
+
+Two consecutive failure-relevant evidence records move active work into `recovering` and select `fable-recover`.
+
+Recovery checks harness and environment first, actual execution path second, product logic third, and the violated invariant last.
+
+## Lifecycle skills
+
+```text
+Core
+  get-fable
+  fable-discover
+  fable-plan
+  fable-execute
+  fable-verify
+  fable-recover
+
+Intelligence
+  fable-research
+
+Build
+  fable-tdd
+  fable-delegate
+
+Proof
+  fable-review
+  fable-security
+  fable-redteam
+  fable-heal
+
+Delivery
+  fable-release
+  fable-handoff
+
+Evolution
+  fable-eval
+  fable-learning
+
+System
+  fable-dataviz
+  fable-artifact
+  fable-simplify
+  fable-loop
+  fable-run
+  fable-memory
+  fable-config
+  fable-simulator
+  fable-cowork
+  fable-spark
+
+Creator
+  fable-skill-creator
+```
+
+The registry decides which specialist is needed. Do not load the whole pack into context for every task.
+
+## Install host integrations
+
+```bash
+get-fable install
+get-fable install claude
+get-fable install antigravity
+get-fable install grok
+get-fable install codex
+get-fable install all
+```
+
+Supported installation paths include Claude Code and the repository's Antigravity / Gemini target. Agent Kernel rules are copied only when an existing Agent Kernel directory is detected.
+
+The Claude and Antigravity adapters use the same Python hook implementations for session context, delegation guard, failure recovery, mutation tracking, canonical workspace identity, and close enforcement.
+
+## Quality gate
+
+Install and configure the no-mistakes quality gate and Git pre-push hook:
+
+```bash
+get-fable install-no-mistakes
+# aliased as:
+get-fable install-quality-gate
+```
+
+## Architecture evaluation
+
+Evaluate a project specification against Scale, Domain Decoupling, and Resource Intensity vectors:
+
+```bash
+get-fable arch-eval "High-throughput fintech ledger with 100k TPS and polyglot datastores"
+```
+
+Outputs a TOON/JSON manifest with the composite score, monolith lockout decision, dual-transport contract, and prescriptive language matrix. The `fable-architecture` hook intercepts session starts to inject architectural constraints before any code is generated.
+
+## gRPC worker service
+
+Start the Fable Worker gRPC server for distributed subagent execution:
+
+```bash
+get-fable worker-serve
+# aliased as:
+get-fable rpc-serve
+```
+
+The worker exposes `ExecuteTask`, `StreamLogs`, `GetStatus`, and `CancelTask` RPC methods via `proto/fable_worker.proto`.
+
+## Red team and security
+
+Run automated security audits:
+
+```bash
+# Basic red team scan
+get-fable redteam scan --target http://127.0.0.1:3000 --profile api-logic
+
+# CI/CD regression gating with baseline diffing
+get-fable redteam scan --target http://127.0.0.1:3000 --baseline .fable/baseline.json --fail-on-cvss 7.0
+```
+
+After a red team run, route to `fable-heal` to synthesize and verify security remediations.
+
+## Behavioral evaluation
+
+Export evaluation requests, score provider responses, and check evidence freshness:
+
+```bash
+get-fable behavior-eval export --out /tmp/get-fable-behavior-requests.json
+get-fable behavior-eval score /tmp/provider-responses.json --out evals/results/agent-behavior-v1.json
+get-fable behavior-eval status
+```
+
+## Reflex routing & context compaction (Fable-Jev)
+
+Fable-Jev combines fast System One semantic routing and continuous context compaction via TypeSafe Jev models with deterministic lifecycle safety guarantees.
+
+### Diagnostics & status
+
+```bash
+get-fable reflex status
+get-fable reflex doctor
+get-fable reflex doctor --live    # probes live TypeSafe API connectivity
+get-fable reflex ledger           # views append-only shadow telemetry events
+```
+
+### Hybrid semantic routing
+
+```bash
+# Route a task using Jev Reflex advice and probability margins
+get-fable reflex route "Audit OAuth endpoints for vulnerabilities"
+get-fable reflex route "Investigate test failures" --live
+```
+
+### Benchmarking & calibration
+
+```bash
+get-fable reflex eval             # offline benchmark using simulated advice
+get-fable reflex eval --live      # live benchmark with real Jev API calls
+```
+
+### Transcript context compaction
+
+Verbatim context compaction that drops or truncates obsolete tool results using Jev Noul decisions:
+
+```bash
+get-fable reflex compact transcript.jsonl --out compacted.json --threshold 0.5 --preserve-recent 6
+```
+
+## Feed, graph, recipes, and packs
+
+```bash
+get-fable feed list    # list available skill feeds
+get-fable graph        # display the lifecycle skill graph
+get-fable recipes      # list available lifecycle recipes
+get-fable packs        # list available skill packs
+```
+
+## Request proxy
+
+```bash
+get-fable serve 8080
+```
+
+The proxy binds to loopback by default, does not enable permissive CORS by default, limits request bodies, and accepts only HTTP/HTTPS upstream URLs. Binding beyond loopback requires proxy authentication via `FABLE_PROXY_AUTH_TOKEN` or the equivalent `proxyAuthToken` option, plus an explicitly trusted TLS-terminating boundary via `FABLE_TRUST_PROXY_TLS_TERMINATION=1` or `trustProxyTlsTermination: true`.
+
+`FABLE_TRUST_PROXY_TLS_TERMINATION` is an operator assertion that a trusted reverse proxy or equivalent boundary terminates TLS before traffic reaches get-fable. The built-in request proxy remains an HTTP server and does not terminate TLS itself.
+
+Proxy access authentication and upstream provider authorization are separate. For network-accessible bindings, the inbound proxy bearer credential is never reused as upstream authorization. Configure upstream bearer authentication independently with `FABLE_UPSTREAM_AUTH_TOKEN` or `upstreamAuthToken`.
+
+Any upstream request carrying `Authorization` requires HTTPS. Plain HTTP upstreams remain usable only when no bearer credential will be forwarded.
+
+## Diagnostics
+
+```bash
+get-fable status
+get-fable status --json
 get-fable status --json-v1
+get-fable doctor
+get-fable doctor --json
 get-fable doctor --json-v1
-```
-
-If this project is new to get-fable, read the [installation guide](INSTALLATION.md) before running `get-fable init`.
-
-## Choose the next step
-
-```bash
-get-fable route "investigate checkout failures before changing code"
-```
-
-Routing guidance should be grounded in current evidence and repo state. A read-only route call does not implement or test the requested feature.
-
-## Work on a bounded task
-
-1. Locate the real code path and reproduce the issue.
-2. Define acceptance criteria in a work card or project spec.
-3. Use a failing test when behavior can be tested safely.
-4. Make the smallest useful production change.
-5. Rerun the relevant checks **after** the last change.
-6. Review the diff and summarize proof, risks, and remaining work.
-
-Typical CLI commands include:
-
-```bash
-get-fable card "Investigate duplicate payment event handling"
-get-fable status --json-v1
 get-fable lint
 ```
 
-CLI support and argument details can change between releases. Run `get-fable --help` and the relevant subcommand help in your installed version before automating an unfamiliar operation.
+`lint` checks human ledger contracts together with durable-state completion semantics.
 
-## Handle failure honestly
+`--json-v1` produces a versioned schema envelope (see `schemas/cli-json-envelope.schema.json`). Legacy `--json` output remains available.
 
-When an attempted fix or setup fails repeatedly, stop repeating the same command. Capture the error, verify which artifact and configuration are actually in use, and choose a discriminating diagnostic probe before trying again.
+## Repository gate
 
-Treat a passing doctor as evidence about the harness, not as proof that the application's tests passed.
-
-## Host setup and optional tools
+For changes to get-fable itself:
 
 ```bash
-get-fable install all
-get-fable skills install all
-get-fable eco discover --json-v1
+bun ./bin/get-fable.js lint
 ```
 
-Host setup can change files outside the project and `fable-eco` can propose external tool installation. Inspect the plan and obtain the user's consent for global configuration, git hook changes, credentials, or optional package provisioning.
+Lint checks
 
-## Skills and the CLI are different
+- open ledger cards have an explicit acceptance check
+- checked cards have substantive evidence annotations
+- state JSON is valid when present
+- substantial completed work contains passing evidence
+- repeated failure is not left in the executing phase
 
-The public Skills are readable markdown playbooks. They can influence the agent's work even without the CLI installed. CLI-backed state, host adapters, diagnostics, and hooks require the separately published runtime. The source-only public GitHub repository does not ship an executable `bin/get-fable.js` file.
+## Lifecycle hooks
 
-For a guided automated setup, send your agent the [setup prompt](AGENT_SETUP_PROMPT.md) and ask it to follow the [onboarding playbook](install-and-init-get-fable.md).
+Hosts with hook support can enforce parts of the contract mechanically
+
+### SessionStart
+
+`fable_profile_inject.py` adds compact state context
+
+```text
+phase
+failureStreak
+substantial
+selected canonical skill
+open ledger cards
+```
+
+It does not assign a model tier or rank model names
+
+### PreToolUse
+
+`fable_spawn_guard.py` requires a live open ledger card before a large delegation
+
+Small payloads, forks, and explicitly paused rounds are exempt
+
+### PostToolUse and PostToolUseFailure
+
+`fable_fail_streak.py` handles both Claude Bash result events. `PostToolUse`
+resets the consecutive-failure streak after success. `PostToolUseFailure`
+records a failure from Claude's top-level failure event, including failures that
+do not expose a process exit code.
+
+`fable_mutation.py` handles both result events for `Edit`, `Write`,
+`MultiEdit`, and `NotebookEdit`. Successful and failed write attempts both
+advance `mutationGeneration`, because a failed editor may already have changed
+part of the workspace. Read-only tool failures do not advance it.
+
+At two consecutive failures it selects `fable-recover` and injects the attribution order
+
+```text
+harness -> execution path -> product logic -> violated invariant
+```
+
+### Stop
+
+`fable_close_guard.py` can block
+
+- open cards
+- checked cards without substantive ledger evidence
+- substantial state without passing evidence
+- substantial state whose phase has not reached `complete`
+
+See `hooks/README.md` for the host-level contract
+
+## Global install
+
+```bash
+bun ./bin/get-fable.js install
+```
+
+The installer can write to
+
+```text
+~/.claude/
+~/.gemini/config/
+~/.agent-kernel/   # only when the directory already exists
+```
+
+### Claude Code
+
+The installer
+
+- installs the canonical six-skill pack under `~/.claude/skills/`
+- retains `fable-mode` as a compatibility skill
+- copies four lifecycle hooks under the compatibility skill
+- merges hook registrations into `settings.json`
+- appends the Fable workflow rules to `CLAUDE.md` once
+
+Malformed existing JSON stops installation instead of being replaced
+
+### Antigravity / Gemini target
+
+The installer
+
+- installs the canonical skill pack into the get-fable plugin
+- installs the same canonical skills globally under the configured skills directory
+- retains `fable-mode` for compatibility
+- installs the rule file
+- gives the plugin its own hook copies
+- registers those plugin-owned hook paths in `hooks.json`
+
+The historical broad asset library is not the default workflow payload
+
+Dedicated install
+
+```bash
+bun ./bin/get-fable.js install-antigravity
+```
+
+### Agent Kernel
+
+If the configured Agent Kernel directory already exists, the global installer writes the Fable rule under `rules/`
+
+It does not create a complete Agent Kernel installation
+
+### Test-safe directory overrides
+
+```text
+CLAUDE_CONFIG_DIR
+FABLE_GEMINI_CONFIG_DIR
+FABLE_AGENT_KERNEL_DIR
+```
+
+## Local request proxy
+
+Start in preview mode
+
+```bash
+bun ./bin/get-fable.js serve 8080
+```
+
+Alias
+
+```bash
+bun ./bin/get-fable.js router 8080
+```
+
+The proxy binds to `127.0.0.1` by default
+
+Endpoints
+
+```text
+GET  /health
+GET  /v1/health
+POST /chat/completions
+POST /v1/chat/completions
+```
+
+### Contextual compilation
+
+For each valid request, the proxy
+
+1. normalizes the supported request shape
+2. finds the latest user intent when available
+3. routes the task through the canonical skill registry
+4. compiles a short core contract plus only the selected skill
+5. includes compact project state when `.fable/state.json` is available
+6. prepends the compiled directive while preserving the caller's original system context
+
+Preview responses expose routing metadata
+
+```json
+{
+  "fableEnriched": true,
+  "previewMode": true,
+  "routing": {
+    "selectedSkill": "fable-verify",
+    "confidence": 0.9,
+    "reasons": ["task explicitly asks for adversarial verification"],
+    "nextSkills": ["fable-recover", "fable-execute"]
+  }
+}
+```
+
+The reasons explain routing rules and are not private chain-of-thought
+
+### Forwarding mode
+
+```bash
+export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
+export FABLE_UPSTREAM_AUTH_TOKEN="your-provider-token"
+bun ./bin/get-fable.js serve 8080
+```
+
+The upstream URL may use HTTP or HTTPS when no `Authorization` value is sent. Any upstream request carrying bearer authorization requires HTTPS.
+
+The proxy preserves upstream status, content type, and response bytes
+
+`FABLE_UPSTREAM_AUTH_TOKEN` is sent upstream as a bearer credential only when `UPSTREAM_OPENAI_URL` uses HTTPS. On loopback only, if no dedicated upstream token is configured, an inbound `Authorization` header remains eligible for forwarding as a compatibility fallback, and that fallback also requires an HTTPS upstream. If the fallback would send credentials over HTTP, the request fails before the upstream is contacted.
+
+For a non-loopback binding, configure proxy access and provider credentials separately and place get-fable behind a trusted TLS-terminating reverse proxy or equivalent boundary:
+
+```bash
+export FABLE_HOST="0.0.0.0"
+export FABLE_PROXY_AUTH_TOKEN="proxy-access-token"
+export FABLE_TRUST_PROXY_TLS_TERMINATION="1"
+export FABLE_UPSTREAM_AUTH_TOKEN="provider-token"
+export UPSTREAM_OPENAI_URL="https://your-provider.example/v1/chat/completions"
+bun ./bin/get-fable.js serve 8080
+```
+
+Set `FABLE_TRUST_PROXY_TLS_TERMINATION=1` only when a trusted boundary actually terminates TLS before traffic reaches get-fable. It does not enable TLS in the built-in HTTP server.
+
+Clients authenticate to the non-loopback proxy with `Authorization: Bearer <FABLE_PROXY_AUTH_TOKEN>`. That access credential is validated by the proxy and is not forwarded upstream.
+
+Defaults
+
+```text
+FABLE_HOST                         127.0.0.1
+FABLE_CORS_ORIGIN                  disabled unless set
+FABLE_MAX_BODY_BYTES               1048576
+FABLE_UPSTREAM_TIMEOUT_MS          30000
+FABLE_PROXY_AUTH_TOKEN             required for non-loopback bindings
+FABLE_TRUST_PROXY_TLS_TERMINATION  required for non-loopback bindings
+FABLE_UPSTREAM_AUTH_TOKEN          optional dedicated upstream bearer token; requires HTTPS upstream
+UPSTREAM_OPENAI_URL                optional
+```
+
+If you bind beyond loopback, keep `FABLE_PROXY_AUTH_TOKEN` distinct from `FABLE_UPSTREAM_AUTH_TOKEN`, terminate TLS at a trusted boundary before get-fable, set `FABLE_TRUST_PROXY_TLS_TERMINATION=1` to assert that deployment condition, and retain appropriate network controls for the environment.
+
+## Supported request shapes
+
+OpenAI-style messages
+
+```json
+{
+  "model": "example-model",
+  "messages": [
+    { "role": "user", "content": "Review this change before merge" }
+  ]
+}
+```
+
+Gemini-style contents remain normalized by `ProviderTranslator`, including structured system instructions
+
+Request-shape support is not a claim of complete compatibility with every provider API
+
+## Autonomous Perpetual Repository Steward
+
+Run continuous, unattended triage, maintenance, and capability packaging over any Git repository:
+
+```bash
+# Dry-run: Probe repository health and print triage decision without mutating workspace
+get-fable steward --dry-run
+
+# Run a single autonomous triage and execution cycle
+get-fable steward
+
+# Run perpetual continuous loop (60s interval, watchdog monitoring)
+get-fable steward --loop --interval 60 --max-cycles 100
+
+# Output machine-readable JSON v1 envelope
+get-fable steward --json-v1
+```
+
+### Triage priority matrix
+
+| Tier | Priority Target | Trigger Condition | Primary Skill | Autonomous Action |
+|---|---|---|---|---|
+| **Tier 1** | Mainline CI Runs | Mainline workflow run conclusion is `failure` | `fable-tend` | Diagnose logs, apply surgical repair, verify build |
+| **Tier 2** | Pending Pull Requests | Non-draft PRs targeting default branch exist | `fable-review` + `fable-judge` | Diff audit, anti-slop check, post structured verdict |
+| **Tier 3** | Open GitHub Issues | Unassigned open GitHub issues exist | `fable-plan` + `fable-tdd` | Reproduce failure via test fixture, repair, and PR |
+| **Tier 4** | Code Hygiene | Untracked or unstaged modifications present | `fable-anti-slop-engineering` | Remediate swallowed errors, weak assertions, dead code |
+| **Tier 5** | Feature Innovation | Mainline green, zero open PRs/issues, clean tree | `fable-spark` + `fable-cowork` | Package next roadmap capability with unit/integration tests |
+
+## Historical assets
+
+```bash
+bun ./bin/get-fable.js assets
+bun ./bin/get-fable.js prompt
+```
+
+`assets` reports the broader bundled reference library
+
+Those assets are not automatically part of the canonical execution workflow
+
+`prompt` prints the compatibility execution prompt and does not assign a synthetic model identity
+
+Review `THIRD_PARTY_NOTICES.md` before redistributing bundled upstream material
+
+## Development checks
+
+```bash
+bun install
+bun run typecheck
+bun test
+bun run build
+```
+
+CI additionally runs the declared Bun floor, the pinned current Bun runtime on Linux and macOS, coverage, lifecycle smoke tests, and package inspection.

@@ -1,10 +1,39 @@
+---
+id: fable-context-thrift
+pack: system
+phase: discovering
+order: 240
+canonical_url: https://get-fable.vercel.app/skills/fable-context-thrift.html
+---
+
 # fable-context-thrift
 
-> Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.
+> **Conserve token budget by eliminating redundant reads, batching queries, and targeting lookups.**
 
-**Pack:** system · **Phase:** discovering
+- **Pack:** System Pack
+- **Lifecycle Phase:** `discovering`
+- **Mutates Workspace:** No
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-discover`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-context-thrift/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "conserve-context" --apply
+```
+
+## Registered Intents
+- `conserve-context`
+- `budget-tokens`
+- `batch-reads`
+
+## Required Gates
+- `minimal-read-verified`
+
+## Next Allowed Skills
+- `fable-plan`
+- `fable-execute`
+- `fable-verify`
 
 ---
 

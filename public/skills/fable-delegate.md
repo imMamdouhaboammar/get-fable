@@ -1,10 +1,42 @@
+---
+id: fable-delegate
+pack: build
+phase: executing
+order: 32
+canonical_url: https://get-fable.vercel.app/skills/fable-delegate.html
+---
+
 # fable-delegate
 
-> Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.
+> **Delegate independent subtasks to parallel workers or subagents with strict disjoint ownership, bounded scope, and explicit acceptance contracts.**
 
-**Pack:** build · **Phase:** executing
+- **Pack:** Build Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** Yes
+- **Fallback Skill:** `fable-plan`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-delegate/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "parallel-work" --apply
+```
+
+## Registered Intents
+- `parallel-work`
+- `subagents`
+- `delegation`
+
+## Required Gates
+- `ownership-explicit`
+- `acceptance-explicit`
+
+## Next Allowed Skills
+- `fable-execute`
+- `fable-verify`
+- `fable-recover`
+- `fable-cowork`
+- `fable-handoff`
 
 ---
 

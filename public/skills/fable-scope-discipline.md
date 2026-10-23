@@ -1,10 +1,38 @@
+---
+id: fable-scope-discipline
+pack: build
+phase: executing
+order: 290
+canonical_url: https://get-fable.vercel.app/skills/fable-scope-discipline.html
+---
+
 # fable-scope-discipline
 
-> Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.
+> **Anti-scope-creep and atomic diff policy keeping changes strictly bounded to requests.**
 
-**Pack:** build · **Phase:** executing
+- **Pack:** Build Pack
+- **Lifecycle Phase:** `executing`
+- **Mutates Workspace:** Yes
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-execute`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-scope-discipline/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "bound-scope" --apply
+```
+
+## Registered Intents
+- `bound-scope`
+- `prevent-drift`
+- `surgical-diff`
+
+## Required Gates
+- `zero-scope-drift`
+
+## Next Allowed Skills
+- `fable-verify`
+- `fable-review`
 
 ---
 

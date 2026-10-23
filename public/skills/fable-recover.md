@@ -1,10 +1,45 @@
+---
+id: fable-recover
+pack: core
+phase: recovering
+order: 100
+canonical_url: https://get-fable.vercel.app/skills/fable-recover.html
+---
+
 # fable-recover
 
-> Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.
+> **Diagnose repeated command failures, stale build caches, branch drift, or contradictory evidence before attempting further code edits.**
 
-**Pack:** core · **Phase:** recovering
+- **Pack:** Core Pack
+- **Lifecycle Phase:** `recovering`
+- **Mutates Workspace:** No
+- **Parallel Safe:** No
+- **Fallback Skill:** `fable-discover`
 
-[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-recover/SKILL.md)
+## Activation CLI Command
+
+```bash
+bun ./bin/get-fable.js route "debug-failure" --apply
+```
+
+## Registered Intents
+- `debug-failure`
+- `stale-execution`
+- `contradictory-evidence`
+
+## Required Gates
+- `diagnosis-changed`
+
+## Next Allowed Skills
+- `fable-discover`
+- `fable-research`
+- `fable-plan`
+- `fable-tdd`
+- `fable-execute`
+- `fable-verify`
+- `fable-tend`
+- `fable-method`
+- `fable-loop`
 
 ---
 
