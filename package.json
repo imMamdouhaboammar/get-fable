@@ -1,6 +1,6 @@
 {
   "name": "get-fable",
-  "version": "1.16.0",
+  "version": "1.16.1",
   "description": "A portable coding lifecycle and autonomous repository steward for AI agents with deterministic routing across 46 skills, durable state, mutation-aware verification, continuous CI healing, specialized skill packs, lifecycle hooks, DeepSeek Harness plugin & consumed web UI, and an optional local request proxy.",
   "type": "module",
   "dsh": {

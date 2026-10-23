@@ -1,0 +1,74 @@
+{
+  "id": "fable-test",
+  "order": 142,
+  "pack": "proof",
+  "packName": "Proof Pack",
+  "phase": "verifying",
+  "description": "Orchestrate, author, and verify automated tests in any application codebase, enforcing Test-Guard anti-bloat rules, test-value calculus, and tool dispatch.",
+  "intents": [
+    "test-project",
+    "run-tests",
+    "test-coverage",
+    "quality-engineering",
+    "diagnose-tests"
+  ],
+  "requires": [
+    "test-runner"
+  ],
+  "produces": [
+    "test-execution-report",
+    "test-evidence"
+  ],
+  "gates": [
+    "machine-checked",
+    "no-skipped-tests",
+    "tests-executed-gt-zero"
+  ],
+  "fallback": "fable-recover",
+  "mutatesWorkspace": false,
+  "parallelSafe": true,
+  "next": [
+    "fable-tdd",
+    "fable-anti-slop-engineering",
+    "fable-verify",
+    "fable-review",
+    "fable-release"
+  ],
+  "keywords": [
+    "test",
+    "testing",
+    "test-guard",
+    "pytest",
+    "vitest",
+    "jest",
+    "tests",
+    "suite",
+    "unit",
+    "e2e",
+    "pyramid",
+    "coverage",
+    "qa",
+    "اختبر",
+    "تيست"
+  ],
+  "frontmatter": {
+    "name": "fable-test",
+    "audience": "consumer",
+    "version": "1.0.0",
+    "pack": "proof",
+    "phase": "verifying",
+    "description": "Orchestrate, author, and verify comprehensive automated tests in any application codebase. Discovers project stack, enforces the 9 universal Test-Guard anti-bloat rules (behavior over implementation, justified mocks, sacred regressions), evaluates test value with the 3-question calculus, and dispatches to specialized tools (TDD, visual E2E with Midscene, API replay with Keploy, and anti-slop AST inspection). Use whenever writing tests, running test suites, diagnosing test failures, or setting up test architecture in user projects (e.g. \\\"اختبر المشروع\\\", \\\"اكتب اختبارات\\\", \\\"run tests\\\", \\\"verify test coverage\\\").",
+    "inputs": "",
+    "requires": "",
+    "produces": "",
+    "gates": "",
+    "fallback": "fable-recover",
+    "mutatesWorkspace": "false",
+    "parallelSafe": "true",
+    "neural_links": ""
+  },
+  "content_markdown": "# Fable Test: Universal Quality Engineering & Testing Harness\n\nOrchestrate, author, and verify robust automated testing suites in any consumer application codebase.\n\n---\n\n## Mission\n\nTransform ad-hoc or hallucinated testing into an autonomous, rigorous, and deterministic quality engineering pipeline. `fable-test` serves as the universal testing orchestrator for developers and AI agents:\n1. **Stack & Topology Discovery**: Automatically inspect the project to identify runtimes, test frameworks, and boundary layers.\n2. **Test-Guard Rules Enforcement**: Eliminate AI-generated test bloat by applying 9 universal testing discipline rules.\n3. **Test-Value Calculus**: Validate each test's economic justification and protect against zero-selection false positives.\n4. **Tool & Skill Dispatch**: Orchestrate TDD workflows, visual E2E testing, API replay virtualization, and AST quality checks.\n\n---\n\n## Activation Contract\n\n### Activate When\n- User requests executing the test suite or improving test coverage: *\"اختبر المشروع\"*, *\"run tests\"*, *\"test this feature\"*, *\"add tests for X\"*.\n- Agent needs to assess existing test coverage or diagnose test suite failures.\n- Designing or auditing test architecture for a service, API, or frontend application.\n\n### Do Not Activate When\n- Driving a single behavior change via test-first red-green-refactor during implementation -> use `fable-tdd`.\n- Performing the mandatory final gating check before session completion -> use `fable-verify`.\n- Performing security penetration testing against external targets -> use `fable-redteam`.\n- Testing `get-fable`'s own internal engine crates (maintainer only) -> use `fable-core-test`.\n\n---\n\n## Situation Classification\n\n| Project Context | Primary Focus | Strategy |\n|---|---|---|\n| **Greenfield / New Feature** | Public behavioral contracts | Define data factories; enforce behavior-not-implementation (Rule 1); delegate to `fable-tdd`. |\n| **Existing Legacy Codebase** | Regressions & boundary characterization | Map external boundaries; use real test databases where appropriate (Rule 9). |\n| **Complex GUI / Web UI** | Visual layout & interactive state | Dispatch to `get-fable test-engine` with Midscene (AI vision testing). |\n| **High-Traffic Web API** | End-to-end replay & regression locking | Dispatch to `get-fable test-engine` with Keploy (traffic replay & DB virtualization). |\n| **Pre-Ship / PR Diff Review** | Anti-slop and test integrity | Run `anti-slop scan` to block skipped tests, swallowed errors, or weak assertions. |\n\n---\n\n## Protocol\n\n### Stage 1: Stack & Topology Discovery\nInspect the repository topology to determine test commands rather than assuming conventions:\n- TypeScript/JavaScript: `bun test`, `vitest run`, or `jest`.\n- Python: `pytest` or `uv run pytest`.\n- Go: `go test ./...`.\n- Rust: `cargo test`.\n- PHP: `./vendor/bin/pest` or `./vendor/bin/phpunit`.\n\n### Stage 2: The 9 Universal Test-Guard Rules\nEvery test authoring or modification pass must strictly enforce:\n1. **Test Behavior, Not Implementation**: Assert observable outputs and state changes from caller's view; never mock internal helper call counts.\n2. **Every Mock Must Be Justified**: Mock strictly at system boundaries (network, external storage, clocks, third-party APIs).\n3. **One Scenario Per Test**: Merge repetitive tests into parameterized data-driven suites.\n4. **Justify Existence**: Answer: *\"What specific defect does this catch that no other test catches?\"*\n5. **Semantic Scenario Naming**: Use `test_<scenario>_<expected_outcome>`.\n6. **Regression Tests Are Sacred**: Incident repro tests are permanent; never delete or weaken them.\n7. **No Tests for Framework Guarantees**: Test application business logic, not library defaults.\n8. **State & Value Objects Are Real**: Never mock DTOs or entities; use real instances and data factories.\n9. **Infrastructure Under Test Gets Real Infrastructure**: Persistence tests must run against real database instances.\n\n### Stage 3: Test-Value Correctness & Zero-Selection Guard\n1. Apply the 3-questions calculus:\n   - *Which concrete mistake fails this test, and what loss would it cause?*\n   - *Would an equivalent refactor fail?* (Detect and eliminate brittle tests).\n   - *Does added protection justify ongoing maintenance cost?*\n2. Verify executed test count: ensure `tests_executed >= 1`. Never accept exit code 0 when zero tests were matched.\n\n### Stage 4: Specialized Tool & Skill Dispatch\n- Route to `fable-tdd` when creating new features or fixing bugs.\n- Run `get-fable test-engine run --tool midscene` for vision-based browser testing.\n- Run `get-fable test-engine run --tool keploy` for deterministic API traffic capture and replay.\n- Run `bun ./bin/get-fable.js anti-slop scan` to eliminate skipped tests (`test.skip`) or tautological assertions.\n- Call `get-fable evidence pass test \"<command>\" \"<detail>\"` to record machine-checked proof.\n\n---\n\n## Decision Rules\n\n1. **If an assertion checks a mock of an internal private function**: Delete the mock, call the public interface, and assert the observable output.\n2. **If multiple tests differ only in scalar values**: Collapse into a single data-driven test table.\n3. **If a test runner exits with code 0 but reports 0 tests ran**: Mark as a fatal zero-selection violation and re-scope filter.\n4. **If a test would still pass when business logic returns undefined**: Refactor assertions to be strict and falsifiable.\n\n---\n\n## Invariants\n\n- **The Behavioral Assertion Invariant**: Tests must verify observable outcomes, state mutations, or contract boundaries — never internal execution sequence.\n- **The System Boundary Mock Invariant**: Mocking is permitted only at boundaries with external systems (network, clock, external persistence, third-party SDKs).\n- **The Zero-Selection Invariant**: A test command is valid evidence only if total executed tests > 0.\n- **The Anti-Slop Cleanliness Invariant**: Test suites must not contain skipped tests (`test.skip`, `xit`), empty error catches, or unconstrained assertions (`expect(x).toBeDefined()`).\n\n---\n\n## Failure Taxonomy\n\n| Failure Mode | Root Cause | Remediation Protocol |\n|---|---|---|\n| **Brittle Refactor Failure** | Test asserts internal variable or private helper | Rewrite test against the public caller API. |\n| **Zero-Selection False Green** | Regex filter matched 0 files/tests but exited 0 | Audit test runner pattern matching and verify execution counts. |\n| **Mock Drift / Mock Lie** | Mocked boundary does not match real API schema | Switch to real test database or update contract fixtures from upstream schemas. |\n| **Flaky Async Race** | Test relies on arbitrary `sleep()` rather than polling | Replace `sleep` with deterministic condition polling (`waitFor`, event listener). |\n\n---\n\n## Anti-Patterns\n\n| Prohibited Anti-Pattern | Correct Engineering Practice |\n|---|---|\n| Asserting `expect(internalHelper).toHaveBeenCalled()` | Assert return value or external observable state change. |\n| Mocking domain entities or database models | Construct real models with minimal factory helpers. |\n| Silencing tests with `test.skip` to pass CI | Fix underlying defect or delete obsolete test with recorded rationale. |\n| Writing tests for framework validation defaults | Write tests only for custom business validation rules. |\n| Accepting `0 tests passed` as success | Require strict verification that executed count > 0. |\n\n---\n\n## Completion Criteria\n\nA testing task is complete only when:\n- All target scenarios execute against real implementations and exit 0.\n- Executed test count is verified > 0 (zero-selection check passed).\n- Diff is scanned with `fable-anti-slop` with 0 blockers (no skipped tests or weak assertions).\n- Machine-checked passing test evidence is recorded via `get-fable evidence pass test ...`.\n\n---\n\n## Progressive Resources\n\n- [The Nine Universal Test-Guard Rules](references/test-guard-rules.md): In-depth violation patterns and fixes.\n- [Stack Discovery Guide](references/stack-discovery.md): Taxonomy of project runtimes and test runners.\n- [Test-Value Calculus & Anti-Brittleness Guard](references/test-value-calculus.md): The 3-questions calculus and zero-selection prevention.\n- [Tool Dispatch Matrix](references/tool-dispatch.md): How to route to TDD, Midscene, Keploy, and Anti-Slop.",
+  "canonical_url": "https://get-fable.vercel.app/skills/fable-test.html",
+  "license": "AGPL-3.0-or-later",
+  "updatedAt": "2026-10-22T07:32:46.662Z"
+}

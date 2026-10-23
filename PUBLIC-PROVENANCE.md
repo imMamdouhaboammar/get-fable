@@ -1,8 +1,8 @@
 # PUBLIC-PROVENANCE.md
 
 - **Distribution:** `get-fable` (Public Cut Edition)
-- **Source Commit SHA:** `237edf5166f36a082838f0e54be4b8d68426e730`
-- **Export Timestamp:** `2026-10-23T18:04:43.084Z`
+- **Source Commit SHA:** `552d53fc25bb999a88d63746891bdeca2432a31d`
+- **Export Timestamp:** `2026-10-23T18:26:14.546Z`
 - **Exported Files Count:** `1308`
 - **License:** AGPL-3.0-or-later
 - **Integrity Status:** Verified leak-free against `.fable-public-manifest.json`
