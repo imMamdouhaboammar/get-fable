@@ -1,46 +1,10 @@
----
-id: fable-anti-slop-engineering
-pack: proof
-phase: verifying
-order: 285
-canonical_url: https://get-fable.vercel.app/skills/fable-anti-slop-engineering.html
----
-
 # fable-anti-slop-engineering
 
-> **Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.**
+> Prevent, detect, and repair AI coding slop, dirty engineering, test tampering, weak assertions, error swallowing, and contract drift across repositories.
 
-- **Pack:** Proof Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-recover`
+**Pack:** proof · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "audit-slop" --apply
-```
-
-## Registered Intents
-- `audit-slop`
-- `verify-diff-integrity`
-- `prevent-slop`
-- `check-test-integrity`
-
-## Required Gates
-- `zero-slop-blockers`
-- `test-assertions-intact`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-review`
-- `fable-heal`
-- `fable-prove-it`
-- `fable-judge`
-- `fable-handoff`
-- `fable-anti-churn`
-- `fable-recover`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-anti-slop-engineering/SKILL.md)
 
 ---
 

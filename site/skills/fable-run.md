@@ -1,39 +1,10 @@
----
-id: fable-run
-pack: system
-phase: verifying
-order: 150
-canonical_url: https://get-fable.vercel.app/skills/fable-run.html
----
-
 # fable-run
 
-> **Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.**
+> Launch, manage, and verify live applications across CLI binaries, web servers, TUIs, Electron apps, and background daemons with readiness probes and clean teardown.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-recover`
+**Pack:** system · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "run-app" --apply
-```
-
-## Registered Intents
-- `run-app`
-- `live-smoke-test`
-- `start-server`
-
-## Required Gates
-- `process-clean-exit`
-- `status-200`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-release`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-run/SKILL.md)
 
 ---
 

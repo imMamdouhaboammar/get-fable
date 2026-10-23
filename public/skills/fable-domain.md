@@ -1,38 +1,10 @@
----
-id: fable-domain
-pack: creator
-phase: discovering
-order: 300
-canonical_url: https://get-fable.vercel.app/skills/fable-domain.html
----
-
 # fable-domain
 
-> **Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.**
+> Research-grounded domain adapter and workflow generator translating Fable methodology to sector nouns.
 
-- **Pack:** Creator Pack
-- **Lifecycle Phase:** `discovering`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-research`
+**Pack:** creator · **Phase:** discovering
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "generate-domain-adapter" --apply
-```
-
-## Registered Intents
-- `generate-domain-adapter`
-- `build-domain-workflow`
-- `create-trap-fixture`
-
-## Required Gates
-- `primary-sources-verified`
-
-## Next Allowed Skills
-- `fable-plan`
-- `fable-execute`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-domain/SKILL.md)
 
 ---
 
@@ -54,7 +26,7 @@ Generate validated, source-backed domain adapters and trap fixtures for new prof
 
 - When the requested domain requires professional human licensure or presents high-harm risks (medical diagnosis, formal legal advice, investment advice) — refuse and route to a qualified human.
 - When the domain does not differ fundamentally from standard software engineering (use `fable-execute` or `fable-plan`).
-- Generic skill authoring without domain-specific adapters (use `fable-skill-creator`).
+- Generic Skill authoring without domain-specific adapters (use an approved public authoring workflow).
 
 ## Inputs
 

@@ -30,10 +30,10 @@ describe('get-fable site structure', () => {
   });
 
   test('uses only supported quick-start commands and deploy-safe repository links', () => {
-    expect(html).toContain('git clone https://github.com/imMamdouhaboammar/get-fable.git');
-    expect(html).toContain('bun ./bin/get-fable.js status');
-    expect(html).toContain('bun ./bin/get-fable.js assets');
-    expect(html).toContain('bun ./bin/get-fable.js install');
+    expect(html).toContain('npx skills add imMamdouhaboammar/get-fable');
+    expect(html).toContain('bun add -g get-fable');
+    expect(html).toContain('get-fable init');
+    expect(html).toContain('get-fable skills install all');
     expect(html).toContain('https://github.com/imMamdouhaboammar/get-fable');
     expect(html).toContain('https://github.com/imMamdouhaboammar/get-fable/blob/master/LICENSE');
     expect(html).toContain('https://github.com/imMamdouhaboammar/get-fable/blob/master/THIRD_PARTY_NOTICES.md');
@@ -100,12 +100,12 @@ describe('deployment contract', () => {
   });
 });
 
-describe('44 canonical skills standalone pages and multi-format contract', () => {
+describe('41 consumer skills standalone pages and multi-format contract', () => {
   const registryRaw = read('skills/get-fable/registry.json');
   const registry = JSON.parse(registryRaw) as { skills: { id: string }[] };
 
-  test('verifies all 44 canonical skills have .html, .md, .txt, and .json pages', () => {
-    expect(registry.skills.length).toBe(44);
+  test('verifies all 41 public Skills have .html, .md, .txt, and .json pages', () => {
+    expect(registry.skills.length).toBe(41);
     for (const skill of registry.skills) {
       const htmlFile = read(`site/skills/${skill.id}.html`);
       const mdFile = read(`site/skills/${skill.id}.md`);
@@ -176,9 +176,9 @@ describe('SEO, GEO and AI search discovery contract', () => {
 
     expect(llms).toContain('# get-fable');
     expect(llms).toContain('## Documentation & Guides');
-    expect(llms).toContain('## Canonical Skills (44)');
-    expect(llmsFull).toContain('USER GUIDE & SYSTEM ARCHITECTURE');
-    expect(llmsFull).toContain('ALL 44 CANONICAL SKILL SPECIFICATIONS');
+    expect(llms).toContain('## Canonical Skills (41)');
+    expect(llmsFull).toContain('PUBLIC SKILL INDEX');
+    expect(llmsFull).toContain('ALL 41 PUBLIC SKILL SPECIFICATIONS');
   });
 });
 

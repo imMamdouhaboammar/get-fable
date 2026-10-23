@@ -1,18 +1,22 @@
 {
-  "title": "get-fable Pricing & Licensing",
-  "price": "$0",
-  "currency": "USD",
-  "billing_interval": "perpetual",
-  "license": "AGPL-3.0-or-later",
-  "open_source": true,
-  "canonical_url": "https://get-fable.vercel.app/pricing.html",
-  "features": [
-    "42 Canonical Skills",
-    "7-Phase Lifecycle State Machine",
-    "Fable Circuit Breaker Recovery",
-    "RedTeam Penetration Scanner & Self-Healing",
-    "32-Platform Integrations",
-    "Local-first, zero telemetry"
+  "title": "Community Skills and Pro MCP",
+  "summary": "The community Skills are fully open source under AGPL-3.0-or-later. A separate premium MCP harness is in development.",
+  "version": "1.15.2",
+  "publicSkills": 41,
+  "supportedHosts": 32,
+  "sections": [
+    {
+      "title": "Available now: open-source community Skills",
+      "command": "npx skills add imMamdouhaboammar/get-fable"
+    },
+    {
+      "title": "Optional published CLI",
+      "command": "bun add -g get-fable"
+    },
+    {
+      "title": "Get-Fable Pro MCP",
+      "command": "In development. No published availability, pricing, or performance claims yet."
+    }
   ],
-  "updatedAt": "2026-10-19T07:01:02.443Z"
+  "source": "https://github.com/imMamdouhaboammar/get-fable/blob/master/docs/install-and-init-get-fable.md"
 }

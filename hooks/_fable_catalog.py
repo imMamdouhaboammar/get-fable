@@ -16,7 +16,6 @@ CANONICAL_SKILLS = {
     "fable-heal",
     "fable-release",
     "fable-handoff",
-    "fable-eval",
     "fable-learning",
     "fable-recover",
     "fable-dataviz",
@@ -29,7 +28,6 @@ CANONICAL_SKILLS = {
     "fable-simulator",
     "fable-cowork",
     "fable-spark",
-    "fable-skill-creator",
     "fable-architecture",
     "fable-eco",
     "fable-context-thrift",
@@ -44,6 +42,5 @@ CANONICAL_SKILLS = {
     "fable-judge",
     "fable-method",
     "fable-council",
-    "fable-tend",
     "fable-wise",
 }

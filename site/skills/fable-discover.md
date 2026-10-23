@@ -1,44 +1,10 @@
----
-id: fable-discover
-pack: core
-phase: discovering
-order: 10
-canonical_url: https://get-fable.vercel.app/skills/fable-discover.html
----
-
 # fable-discover
 
-> **Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.**
+> Gather the smallest set of repository, environment, documentation, and runtime evidence needed before planning or changing code.
 
-- **Pack:** Core Pack
-- **Lifecycle Phase:** `discovering`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-recover`
+**Pack:** core · **Phase:** discovering
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "inspect-repository" --apply
-```
-
-## Registered Intents
-- `inspect-repository`
-- `trace-behavior`
-- `resolve-unknowns`
-
-## Required Gates
-- `load-bearing-unknowns-resolved`
-
-## Next Allowed Skills
-- `fable-research`
-- `fable-plan`
-- `fable-tdd`
-- `fable-execute`
-- `fable-verify`
-- `fable-context-thrift`
-- `fable-memory`
-- `fable-domain`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-discover/SKILL.md)
 
 ---
 

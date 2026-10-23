@@ -1,38 +1,10 @@
----
-id: fable-prove-it
-pack: proof
-phase: verifying
-order: 280
-canonical_url: https://get-fable.vercel.app/skills/fable-prove-it.html
----
-
 # fable-prove-it
 
-> **Evidence precedence and verification rung enforcement preventing unverified claims.**
+> Evidence precedence and verification rung enforcement preventing unverified claims.
 
-- **Pack:** Proof Pack
-- **Lifecycle Phase:** `verifying`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-verify`
+**Pack:** proof · **Phase:** verifying
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "prove-claims" --apply
-```
-
-## Registered Intents
-- `prove-claims`
-- `verify-rung`
-- `check-evidence`
-
-## Required Gates
-- `machine-checked-proof`
-
-## Next Allowed Skills
-- `fable-release`
-- `fable-handoff`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-prove-it/SKILL.md)
 
 ---
 

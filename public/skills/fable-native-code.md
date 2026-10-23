@@ -1,39 +1,10 @@
----
-id: fable-native-code
-pack: build
-phase: executing
-order: 260
-canonical_url: https://get-fable.vercel.app/skills/fable-native-code.html
----
-
 # fable-native-code
 
-> **Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.**
+> Codebase idiom matching and anti-bloat policy ensuring diffs read like native code.
 
-- **Pack:** Build Pack
-- **Lifecycle Phase:** `executing`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-execute`
+**Pack:** build · **Phase:** executing
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "write-native-code" --apply
-```
-
-## Registered Intents
-- `write-native-code`
-- `strip-bloat`
-- `match-idiom`
-
-## Required Gates
-- `idiom-matched`
-- `no-defensive-bloat`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-review`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-native-code/SKILL.md)
 
 ---
 

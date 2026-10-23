@@ -5,7 +5,7 @@
   "description": "Adds a complete coding lifecycle for AI-assisted software work: discovery, research, planning, test-first changes, delegation, verification, review, security, release, handoff, evaluation, and recovery.",
   "author": "Mamdouh Abo Ammar",
   "homepage": "https://github.com/imMamdouhaboammar/get-fable",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "skills": [
     "get-fable",
     "fable-discover",
@@ -19,9 +19,7 @@
     "fable-security",
     "fable-release",
     "fable-handoff",
-    "fable-eval",
-    "fable-recover",
-    "fable-mode"
+    "fable-recover"
   ],
   "rules": [
     "fable5-mode.md"

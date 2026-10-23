@@ -1,44 +1,10 @@
----
-id: fable-research
-pack: intelligence
-phase: discovering
-order: 15
-canonical_url: https://get-fable.vercel.app/skills/fable-research.html
----
-
 # fable-research
 
-> **Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.**
+> Resolve current external facts, official documentation, library behaviors, and API contracts against primary sources before implementation.
 
-- **Pack:** Intelligence Pack
-- **Lifecycle Phase:** `discovering`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-discover`
+**Pack:** intelligence · **Phase:** discovering
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "external-research" --apply
-```
-
-## Registered Intents
-- `external-research`
-- `current-docs`
-- `api-behavior`
-
-## Required Gates
-- `primary-source-grounding`
-
-## Next Allowed Skills
-- `fable-discover`
-- `fable-plan`
-- `fable-tdd`
-- `fable-execute`
-- `fable-verify`
-- `fable-domain`
-- `fable-memory`
-- `fable-skill-creator`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-research/SKILL.md)
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "full",
   "version": "1.12.0",
-  "description": "Complete get-fable skill collection generated from the canonical registry (46 skills across 8 packs).",
+  "description": "Complete get-fable skill collection generated from the canonical registry (41 skills across 8 packs).",
   "skills": [
     "get-fable",
     "fable-discover",
@@ -17,22 +17,18 @@
     "fable-heal",
     "fable-release",
     "fable-handoff",
-    "fable-eval",
     "fable-learning",
     "fable-recover",
     "fable-dataviz",
     "fable-artifact",
     "fable-simplify",
     "fable-loop",
-    "fable-test",
-    "fable-core-test",
     "fable-run",
     "fable-memory",
     "fable-config",
     "fable-simulator",
     "fable-cowork",
     "fable-spark",
-    "fable-skill-creator",
     "fable-architecture",
     "fable-eco",
     "fable-context-thrift",
@@ -47,7 +43,6 @@
     "fable-judge",
     "fable-method",
     "fable-council",
-    "fable-tend",
     "fable-wise"
   ]
 }

@@ -1,39 +1,10 @@
----
-id: fable-simplify
-pack: system
-phase: executing
-order: 130
-canonical_url: https://get-fable.vercel.app/skills/fable-simplify.html
----
-
 # fable-simplify
 
-> **Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.**
+> Refactor and simplify settled, recently modified code to improve readability, remove dead branches, flatten deeply nested logic, and reduce duplication while preserving behavior.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `executing`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-verify`
+**Pack:** system · **Phase:** executing
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "simplify-code" --apply
-```
-
-## Registered Intents
-- `simplify-code`
-- `remove-duplication`
-- `clean-architecture`
-
-## Required Gates
-- `behavior-preserved`
-- `tests-pass`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-review`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-simplify/SKILL.md)
 
 ---
 

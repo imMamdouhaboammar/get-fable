@@ -73,9 +73,6 @@ SKILL_RULES = {
     "fable-handoff": (
         "Handoff rule: compact session decisions, generation stamps, and one explicit next action into continuation state without claiming behavior completion."
     ),
-    "fable-eval": (
-        "Eval rule: freeze reproducible baselines, test against held-out suites, and define rollback criteria before promoting prompt or router changes."
-    ),
     "fable-learning": (
         "Learning rule: extract evidence-grounded failure lessons and reusable engineering patterns into Failure-lessons/ and .fable/learnings.json."
     ),
@@ -112,9 +109,6 @@ SKILL_RULES = {
     "fable-spark": (
         "Spark rule: predict the single smallest atomic next engineering move from live state, or remain silent when no high-confidence move exists."
     ),
-    "fable-skill-creator": (
-        "Skill-creator rule: author Deep Playbook V2 skills with valid YAML frontmatter, containment-safe resources, and objective BinEval benchmarks."
-    ),
     "fable-architecture": (
         "Architecture rule: evaluate Scale, Domain Decoupling, and Resource Intensity vectors at inception and enforce microservices + gRPC/broker East-West transport when thresholds cross."
     ),
@@ -150,9 +144,6 @@ SKILL_RULES = {
     ),
     "fable-council": (
         "Council rule: convene independent CLI agents to deliberate and challenge assumptions before locking high-impact plans."
-    ),
-    "fable-tend": (
-        "Tend rule: autonomously triage CI failures and resolve PR conflicts with verified patches while respecting human merge gates."
     ),
     "fable-wise": (
         "Wise rule: apply Depth, Breadth, Coil, and Mesh cognitive reflexes to consolidate single sources of truth and strip architectural slop."

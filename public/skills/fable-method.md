@@ -1,38 +1,10 @@
----
-id: fable-method
-pack: core
-phase: executing
-order: 320
-canonical_url: https://get-fable.vercel.app/skills/fable-method.html
----
-
 # fable-method
 
-> **Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.**
+> Step-by-step problem-solving loop classifying asks, defining done, acting surgically, and verifying by observation.
 
-- **Pack:** Core Pack
-- **Lifecycle Phase:** `executing`
-- **Mutates Workspace:** Yes
-- **Parallel Safe:** No
-- **Fallback Skill:** `fable-plan`
+**Pack:** core · **Phase:** executing
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "execute-method-loop" --apply
-```
-
-## Registered Intents
-- `execute-method-loop`
-- `classify-ask`
-- `define-done`
-
-## Required Gates
-- `invariants-preserved`
-
-## Next Allowed Skills
-- `fable-verify`
-- `fable-judge`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-method/SKILL.md)
 
 ---
 

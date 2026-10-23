@@ -1,38 +1,10 @@
----
-id: fable-council
-pack: system
-phase: planned
-order: 330
-canonical_url: https://get-fable.vercel.app/skills/fable-council.html
----
-
 # fable-council
 
-> **Convene multi-agent council across installed CLI agents to deliberate before finalizing plans.**
+> Convene multi-agent council across installed CLI agents to deliberate before finalizing plans.
 
-- **Pack:** System Pack
-- **Lifecycle Phase:** `planned`
-- **Mutates Workspace:** No
-- **Parallel Safe:** Yes
-- **Fallback Skill:** `fable-plan`
+**Pack:** system · **Phase:** planned
 
-## Activation CLI Command
-
-```bash
-bun ./bin/get-fable.js route "convene-council" --apply
-```
-
-## Registered Intents
-- `convene-council`
-- `deliberate-plan`
-- `gather-peer-feedback`
-
-## Required Gates
-- `multi-agent-deliberation`
-
-## Next Allowed Skills
-- `fable-plan`
-- `fable-execute`
+[View the canonical Skill source](https://github.com/imMamdouhaboammar/get-fable/blob/master/skills/fable-council/SKILL.md)
 
 ---
 
